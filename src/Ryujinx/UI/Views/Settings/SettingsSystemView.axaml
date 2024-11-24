@@ -135,6 +135,12 @@
                             <ComboBoxItem>
                                 <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageBrazilianPortuguese}" />
                             </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageSwedish}" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <TextBlock Text="{locale:Locale SettingsTabSystemSystemLanguageFinnish}" />
+                            </ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
                     <StackPanel

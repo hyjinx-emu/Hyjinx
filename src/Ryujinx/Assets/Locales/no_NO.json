@@ -1,5 +1,5 @@
 {
-  "Language": "English (US)",
+  "Language": "Norsk",
   "MenuBarFileOpenApplet": "Open Applet",
   "MenuBarFileOpenAppletOpenMiiAppletToolTip": "Open Mii Editor Applet in Standalone mode",
   "SettingsTabInputDirectMouseAccess": "Direct Mouse Access",
@@ -127,8 +127,6 @@
   "SettingsTabSystemSystemLanguageDutch": "Dutch",
   "SettingsTabSystemSystemLanguagePortuguese": "Portuguese",
   "SettingsTabSystemSystemLanguageRussian": "Russian",
-  "SettingsTabSystemSystemLanguageSwedish": "Swedish",
-  "SettingsTabSystemSystemLanguageFinnish": "Finnish",
   "SettingsTabSystemSystemLanguageTaiwanese": "Taiwanese",
   "SettingsTabSystemSystemLanguageBritishEnglish": "British English",
   "SettingsTabSystemSystemLanguageCanadianFrench": "Canadian French",
