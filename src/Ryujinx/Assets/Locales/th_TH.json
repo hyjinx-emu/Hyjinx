@@ -776,5 +776,15 @@
   "MultiplayerMode": "โหมด:",
   "MultiplayerModeTooltip": "เปลี่ยนโหมดผู้เล่นหลายคนของ LDN\n\nLdnMitm จะปรับเปลี่ยนฟังก์ชันการเล่นแบบไร้สาย/ภายใน จะให้เกมทำงานเหมือนกับว่าเป็น LAN ช่วยให้สามารถเชื่อมต่อภายในเครือข่ายเดียวกันกับอินสแตนซ์ Ryujinx อื่น ๆ และคอนโซล Nintendo Switch ที่ถูกแฮ็กซึ่งมีโมดูล ldn_mitm ติดตั้งอยู่\n\nผู้เล่นหลายคนต้องการให้ผู้เล่นทุกคนอยู่ในเกมเวอร์ชันเดียวกัน (เช่น Super Smash Bros. Ultimate v13.0.1 ไม่สามารถเชื่อมต่อกับ v13.0.0)\n\nปล่อยให้ปิดการใช้งานหากไม่แน่ใจ",
   "MultiplayerModeDisabled": "Disabled",
-  "MultiplayerModeLdnMitm": "ldn_mitm"
+  "MultiplayerModeLdnMitm": "ldn_mitm",
+  "CompatibilityListOpen": "Open Compatibility List",
+  "CompatibilityListLastUpdated": "Last updated: {0}",
+  "CompatibilityListWarning": "This compatibility list might contain out of date entries.\nDo not be opposed to testing games in the \"Ingame\" status.",
+  "CompatibilityListSearchBoxWatermark": "Search compatibility entries...",
+  "CompatibilityListOnlyShowOwnedGames": "Only show owned games",
+  "CompatibilityListPlayable": "Playable",
+  "CompatibilityListIngame": "Ingame",
+  "CompatibilityListMenus": "Menus",
+  "CompatibilityListBoots": "Boots",
+  "CompatibilityListNothing": "Nothing"
 }

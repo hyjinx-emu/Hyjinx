@@ -776,5 +776,15 @@
   "MultiplayerMode": "モード:",
   "MultiplayerModeTooltip": "LDNマルチプレイヤーモードを変更します.\n\nldn_mitmモジュールがインストールされた, 他のRyujinxインスタンスや,ハックされたNintendo Switchコンソールとのローカル/同一ネットワーク接続を可能にします.\n\nマルチプレイでは, すべてのプレイヤーが同じゲームバージョンである必要があります（例：Super Smash Bros. Ultimate v13.0.1はv13.0.0に接続できません）.\n\n不明な場合は｢無効｣のままにしてください.",
   "MultiplayerModeDisabled": "無効",
-  "MultiplayerModeLdnMitm": "ldn_mitm"
+  "MultiplayerModeLdnMitm": "ldn_mitm",
+  "CompatibilityListOpen": "Open Compatibility List",
+  "CompatibilityListLastUpdated": "Last updated: {0}",
+  "CompatibilityListWarning": "This compatibility list might contain out of date entries.\nDo not be opposed to testing games in the \"Ingame\" status.",
+  "CompatibilityListSearchBoxWatermark": "Search compatibility entries...",
+  "CompatibilityListOnlyShowOwnedGames": "Only show owned games",
+  "CompatibilityListPlayable": "Playable",
+  "CompatibilityListIngame": "Ingame",
+  "CompatibilityListMenus": "Menus",
+  "CompatibilityListBoots": "Boots",
+  "CompatibilityListNothing": "Nothing"
 }

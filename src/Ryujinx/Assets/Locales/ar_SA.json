@@ -776,5 +776,15 @@
   "MultiplayerMode": "الوضع:",
   "MultiplayerModeTooltip": "تغيير وضع LDN متعدد اللاعبين.\n\nسوف يقوم LdnMitm بتعديل وظيفة اللعب المحلية/اللاسلكية المحلية في الألعاب لتعمل كما لو كانت شبكة LAN، مما يسمح باتصالات الشبكة المحلية نفسها مع محاكيات ريوجينكس الأخرى وأجهزة نينتندو سويتش المخترقة التي تم تثبيت وحدة ldn_mitm عليها.\n\nيتطلب وضع اللاعبين المتعددين أن يكون جميع اللاعبين على نفس إصدار اللعبة (على سبيل المثال، يتعذر على الإصدار 13.0.1 من سوبر سماش برذرز ألتميت الاتصال بالإصدار 13.0.0).\n\nاتركه معطلا إذا لم تكن متأكدا.",
   "MultiplayerModeDisabled": "معطل",
-  "MultiplayerModeLdnMitm": "ldn_mitm"
+  "MultiplayerModeLdnMitm": "ldn_mitm",
+  "CompatibilityListOpen": "Open Compatibility List",
+  "CompatibilityListLastUpdated": "Last updated: {0}",
+  "CompatibilityListWarning": "This compatibility list might contain out of date entries.\nDo not be opposed to testing games in the \"Ingame\" status.",
+  "CompatibilityListSearchBoxWatermark": "Search compatibility entries...",
+  "CompatibilityListOnlyShowOwnedGames": "Only show owned games",
+  "CompatibilityListPlayable": "Playable",
+  "CompatibilityListIngame": "Ingame",
+  "CompatibilityListMenus": "Menus",
+  "CompatibilityListBoots": "Boots",
+  "CompatibilityListNothing": "Nothing"
 }

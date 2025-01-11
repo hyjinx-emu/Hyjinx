@@ -15,6 +15,7 @@ using Ryujinx.UI.App.Common;
 using Ryujinx.UI.Common;
 using Ryujinx.UI.Common.Configuration;
 using Ryujinx.UI.Common.Helper;
+using Ryujinx.UI.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -265,6 +266,11 @@ namespace Ryujinx.Ava.UI.Views.Main
         public async void OpenAboutWindow(object sender, RoutedEventArgs e)
         {
             await AboutWindow.Show();
+        }
+        
+        public async void OpenCompatibilityList(object sender, RoutedEventArgs e)
+        {
+            await CompatibilityList.Show();
         }
 
         public void CloseWindow(object sender, RoutedEventArgs e)

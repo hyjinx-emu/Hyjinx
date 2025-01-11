@@ -776,5 +776,15 @@
   "MultiplayerMode": "Modus:",
   "MultiplayerModeTooltip": "Ändert den LDN-Mehrspielermodus.\n\nLdnMitm ändert die lokale drahtlose/lokale Spielfunktionalität in Spielen so, dass sie wie ein LAN funktioniert und lokale, netzwerkgleiche Verbindungen mit anderen Ryujinx-Instanzen und gehackten Nintendo Switch-Konsolen ermöglicht, auf denen das ldn_mitm-Modul installiert ist.\n\nMultiplayer erfordert, dass alle Spieler die gleiche Spielversion verwenden (d.h. Super Smash Bros. Ultimate v13.0.1 kann sich nicht mit v13.0.0 verbinden).\n\nIm Zweifelsfall auf DISABLED lassen.",
   "MultiplayerModeDisabled": "Deaktiviert",
-  "MultiplayerModeLdnMitm": "ldn_mitm"
+  "MultiplayerModeLdnMitm": "ldn_mitm",
+  "CompatibilityListOpen": "Open Compatibility List",
+  "CompatibilityListLastUpdated": "Last updated: {0}",
+  "CompatibilityListWarning": "This compatibility list might contain out of date entries.\nDo not be opposed to testing games in the \"Ingame\" status.",
+  "CompatibilityListSearchBoxWatermark": "Search compatibility entries...",
+  "CompatibilityListOnlyShowOwnedGames": "Only show owned games",
+  "CompatibilityListPlayable": "Playable",
+  "CompatibilityListIngame": "Ingame",
+  "CompatibilityListMenus": "Menus",
+  "CompatibilityListBoots": "Boots",
+  "CompatibilityListNothing": "Nothing"
 }
