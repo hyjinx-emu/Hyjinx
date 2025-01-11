@@ -776,5 +776,15 @@
   "MultiplayerMode": "联机模式：",
   "MultiplayerModeTooltip": "修改 LDN 多人联机游玩模式。\n\nldn_mitm 联机插件将修改游戏中的本地无线和本地游玩功能，使其表现得像局域网一样，允许和其他安装了 ldn_mitm 插件的 Ryujinx 模拟器和破解的任天堂 Switch 主机在同一网络下进行本地连接，实现多人联机游玩。\n\n多人联机游玩要求所有玩家必须运行相同的游戏版本（例如，任天堂明星大乱斗特别版 v13.0.1 无法与 v13.0.0 版本联机）。\n\n如果不确定，请保持为“禁用”。",
   "MultiplayerModeDisabled": "禁用",
-  "MultiplayerModeLdnMitm": "ldn_mitm"
+  "MultiplayerModeLdnMitm": "ldn_mitm",
+  "CompatibilityListOpen": "Open Compatibility List",
+  "CompatibilityListLastUpdated": "Last updated: {0}",
+  "CompatibilityListWarning": "This compatibility list might contain out of date entries.\\nDo not be opposed to testing games in the \"Ingame\" status.",
+  "CompatibilityListSearchBoxWatermark": "Search compatibility entries...",
+  "CompatibilityListOnlyShowOwnedGames": "Only show owned games",
+  "CompatibilityListPlayable": "Playable",
+  "CompatibilityListIngame": "Ingame",
+  "CompatibilityListMenus": "Menus",
+  "CompatibilityListBoots": "Boots",
+  "CompatibilityListNothing": "Nothing"
 }
