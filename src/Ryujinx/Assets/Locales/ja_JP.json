@@ -779,7 +779,7 @@
   "MultiplayerModeLdnMitm": "ldn_mitm",
   "CompatibilityListOpen": "Open Compatibility List",
   "CompatibilityListLastUpdated": "Last updated: {0}",
-  "CompatibilityListWarning": "This compatibility list might contain out of date entries.\\nDo not be opposed to testing games in the \"Ingame\" status.",
+  "CompatibilityListWarning": "This compatibility list might contain out of date entries.\nDo not be opposed to testing games in the \"Ingame\" status.",
   "CompatibilityListSearchBoxWatermark": "Search compatibility entries...",
   "CompatibilityListOnlyShowOwnedGames": "Only show owned games",
   "CompatibilityListPlayable": "Playable",
