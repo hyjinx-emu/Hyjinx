@@ -206,6 +206,9 @@
                     Click="OpenAboutWindow"
                     Header="{locale:Locale MenuBarHelpAbout}"
                     ToolTip.Tip="{locale:Locale OpenAboutTooltip}" />
+                <MenuItem
+                    Click="OpenCompatibilityList"
+                    Header="{locale:Locale CompatibilityListOpen}" />
             </MenuItem>
         </Menu>
     </DockPanel>

@@ -77,6 +77,18 @@ namespace Ryujinx.Ava.Modules.Compatibility
         }
         
         public string GameName { get; }
+
+        public bool CheckTitleId(Func<string, bool> checker) => TitleId is not null && checker(TitleId);
+
+        public bool MatchesId(string titleId) =>
+            TitleId is not null && TitleId.Equals(titleId, StringComparison.OrdinalIgnoreCase);
+        
+        public bool NearMatchesId(string titleId) =>
+            TitleId is not null && TitleId.Contains(titleId, StringComparison.OrdinalIgnoreCase);
+        
+        public bool MatchesAnyId(params string[] titleIds) =>
+            TitleId is not null && titleIds.Any(it => TitleId.Equals(it, StringComparison.OrdinalIgnoreCase));
+
         public string TitleId { get; }
         public string[] Labels { get; }
         internal LocaleKeys? Status { get; }
