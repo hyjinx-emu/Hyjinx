@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="../.build/exe.props" />
+  
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
 
     <TargetOS Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">windows</TargetOS>

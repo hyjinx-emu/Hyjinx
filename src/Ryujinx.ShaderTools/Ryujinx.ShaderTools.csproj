@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="../.build/exe.props" />
+  
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <OutputType>Exe</OutputType>
     <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
