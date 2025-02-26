@@ -30,9 +30,9 @@ namespace Ryujinx.Input.Motion.CemuHook
 
         private readonly bool[] _clientErrorStatus = new bool[Enum.GetValues<PlayerIndex>().Length];
         private readonly long[] _clientRetryTimer = new long[Enum.GetValues<PlayerIndex>().Length];
-        private readonly NpadManager _npadManager;
+        private readonly INpadManager _npadManager;
 
-        public Client(NpadManager npadManager)
+        public Client(INpadManager npadManager)
         {
             _npadManager = npadManager;
             _hosts = new Dictionary<int, IPEndPoint>();

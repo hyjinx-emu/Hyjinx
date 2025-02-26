@@ -14,7 +14,7 @@ using Switch = Ryujinx.HLE.Switch;
 
 namespace Ryujinx.Input.HLE
 {
-    public class NpadManager : IDisposable
+    public class NpadManager : INpadManager
     {
         private readonly CemuHookClient _cemuHookClient;
 
@@ -316,7 +316,7 @@ namespace Ryujinx.Input.HLE
             }
         }
 
-        internal InputConfig GetPlayerInputConfigByIndex(int index)
+        public InputConfig GetPlayerInputConfigByIndex(int index)
         {
             lock (_lock)
             {
