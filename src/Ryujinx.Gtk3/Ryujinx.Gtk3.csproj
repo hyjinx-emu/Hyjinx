@@ -73,7 +73,6 @@
   <!-- Due to .net core 3.1 embedded resource loading -->
   <PropertyGroup>
     <EmbeddedResourceUseDependentUponConvention>false</EmbeddedResourceUseDependentUponConvention>
-    <ApplicationIcon>Ryujinx.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
