@@ -1,5 +1,6 @@
 using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Configuration.Hid.Keyboard;
+using Ryujinx.Input;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -7,8 +8,9 @@ using System.Runtime.CompilerServices;
 using static SDL2.SDL;
 
 using ConfigKey = Ryujinx.Common.Configuration.Hid.Key;
+using Key = Ryujinx.Input.Key;
 
-namespace Ryujinx.Input.SDL2
+namespace Hyjinx.Input.SDL2
 {
     class SDL2Keyboard : IKeyboard
     {

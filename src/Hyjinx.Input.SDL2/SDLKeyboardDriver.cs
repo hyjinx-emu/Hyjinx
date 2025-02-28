@@ -1,7 +1,8 @@
 using Ryujinx.SDL2.Common;
+using Ryujinx.Input;
 using System;
 
-namespace Ryujinx.Input.SDL2
+namespace Hyjinx.Input.SDL2
 {
     public class SDL2KeyboardDriver : IGamepadDriver
     {

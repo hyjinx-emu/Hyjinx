@@ -1,9 +1,10 @@
+using Ryujinx.Input;
 using Ryujinx.SDL2.Common;
 using System;
 using System.Collections.Generic;
 using static SDL2.SDL;
 
-namespace Ryujinx.Input.SDL2
+namespace Hyjinx.Input.SDL2
 {
     public class SDL2GamepadDriver : IGamepadDriver
     {

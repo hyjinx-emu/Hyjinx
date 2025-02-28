@@ -24,7 +24,7 @@ using Ryujinx.HLE.HOS.Services.Account.Acc;
 using Ryujinx.HLE.HOS.SystemState;
 using Ryujinx.Input.GTK3;
 using Ryujinx.Input.HLE;
-using Ryujinx.Input.SDL2;
+using Hyjinx.Input.SDL2;
 using Ryujinx.Modules;
 using Ryujinx.UI.App.Common;
 using Ryujinx.UI.Applet;

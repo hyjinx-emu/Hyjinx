@@ -53,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Audio.Backends.Sound
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Input", "src\Ryujinx.Input\Ryujinx.Input.csproj", "{C16F112F-38C3-40BC-9F5F-4791112063D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Input.SDL2", "src\Ryujinx.Input.SDL2\Ryujinx.Input.SDL2.csproj", "{DFAB6F2D-B9BF-4AFF-B22B-7684A328EBA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Input.SDL2", "src\Hyjinx.Input.SDL2\Hyjinx.Input.SDL2.csproj", "{DFAB6F2D-B9BF-4AFF-B22B-7684A328EBA3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.SDL2.Common", "src\Ryujinx.SDL2.Common\Ryujinx.SDL2.Common.csproj", "{2D5D3A1D-5730-4648-B0AB-06C53CB910C0}"
 EndProject

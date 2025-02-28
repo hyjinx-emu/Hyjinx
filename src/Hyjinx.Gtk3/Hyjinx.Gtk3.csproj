@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ryujinx.Input\Ryujinx.Input.csproj" />
-    <ProjectReference Include="..\Ryujinx.Input.SDL2\Ryujinx.Input.SDL2.csproj" />
+    <ProjectReference Include="..\Hyjinx.Input.SDL2\Hyjinx.Input.SDL2.csproj" />
     <ProjectReference Include="..\Hyjinx.Audio.Backends.OpenAL\Hyjinx.Audio.Backends.OpenAL.csproj" />
     <ProjectReference Include="..\Hyjinx.Audio.Backends.SDL2\Hyjinx.Audio.Backends.SDL2.csproj" />
     <ProjectReference Include="..\Hyjinx.Audio.Backends.SoundIo\Hyjinx.Audio.Backends.SoundIo.csproj" />
