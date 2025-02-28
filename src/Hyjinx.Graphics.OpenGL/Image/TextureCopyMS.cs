@@ -1,5 +1,5 @@
 using OpenTK.Graphics.OpenGL;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using System;
 using System.Numerics;
 

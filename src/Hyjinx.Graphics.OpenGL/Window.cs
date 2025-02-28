@@ -1,5 +1,5 @@
 using OpenTK.Graphics.OpenGL;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL.Effects;
 using Hyjinx.Graphics.OpenGL.Effects.Smaa;
 using Hyjinx.Graphics.OpenGL.Image;

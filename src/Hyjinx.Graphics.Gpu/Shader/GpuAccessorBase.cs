@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
 using Ryujinx.Graphics.Shader;
 using Ryujinx.Graphics.Shader.Translation;

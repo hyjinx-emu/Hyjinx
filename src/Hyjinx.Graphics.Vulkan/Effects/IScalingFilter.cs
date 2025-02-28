@@ -1,6 +1,6 @@
 using Silk.NET.Vulkan;
 using System;
-using Extent2D = Ryujinx.Graphics.GAL.Extents2D;
+using Extent2D = Hyjinx.Graphics.GAL.Extents2D;
 
 namespace Hyjinx.Graphics.Vulkan.Effects
 {

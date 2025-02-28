@@ -200,7 +200,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.InlineToMemory
                     {
                         target.SynchronizeMemory();
                         var dataCopy = MemoryOwner<byte>.RentCopy(data);
-                        target.SetData(dataCopy, 0, 0, new Ryujinx.Graphics.GAL.Rectangle<int>(_dstX, _dstY, _lineLengthIn / target.Info.FormatInfo.BytesPerPixel, _lineCount));
+                        target.SetData(dataCopy, 0, 0, new Hyjinx.Graphics.GAL.Rectangle<int>(_dstX, _dstY, _lineLengthIn / target.Info.FormatInfo.BytesPerPixel, _lineCount));
                         target.SignalModified();
 
                         return;

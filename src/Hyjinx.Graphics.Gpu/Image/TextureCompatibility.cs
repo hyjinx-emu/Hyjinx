@@ -1,5 +1,5 @@
 using Ryujinx.Common;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Ryujinx.Graphics.Texture;
 using System;
 using System.Diagnostics;

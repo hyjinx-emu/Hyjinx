@@ -57,7 +57,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ryujinx.Common\Ryujinx.Common.csproj" />
-    <ProjectReference Include="..\Ryujinx.Graphics.GAL\Ryujinx.Graphics.GAL.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.GAL\Hyjinx.Graphics.GAL.csproj" />
   </ItemGroup>
 
 </Project>

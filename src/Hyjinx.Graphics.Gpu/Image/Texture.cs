@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Memory;
 using Ryujinx.Graphics.Texture;
 using Ryujinx.Graphics.Texture.Astc;

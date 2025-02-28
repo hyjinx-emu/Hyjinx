@@ -1,5 +1,5 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader.DiskCache;

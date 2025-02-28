@@ -1,11 +1,11 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Silk.NET.Vulkan;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Format = Ryujinx.Graphics.GAL.Format;
+using Format = Hyjinx.Graphics.GAL.Format;
 using VkBuffer = Silk.NET.Vulkan.Buffer;
 using VkFormat = Silk.NET.Vulkan.Format;
 

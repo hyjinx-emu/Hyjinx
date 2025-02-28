@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Synchronization;
 using Ryujinx.Memory.Range;
 using Ryujinx.Memory.Tracking;

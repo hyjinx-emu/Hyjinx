@@ -2,7 +2,7 @@ using LibHac.Tools.FsSystem;
 using Hyjinx.Audio.Integration;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Multiplayer;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
 using Ryujinx.HLE.HOS.Services.Account.Acc;

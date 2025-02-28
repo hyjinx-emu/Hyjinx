@@ -1,12 +1,12 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Ryujinx.Graphics.Shader;
 using Silk.NET.Vulkan;
 using System;
 using BlendFactor = Silk.NET.Vulkan.BlendFactor;
 using BlendOp = Silk.NET.Vulkan.BlendOp;
 using CompareOp = Silk.NET.Vulkan.CompareOp;
-using Format = Ryujinx.Graphics.GAL.Format;
+using Format = Hyjinx.Graphics.GAL.Format;
 using FrontFace = Silk.NET.Vulkan.FrontFace;
 using IndexType = Silk.NET.Vulkan.IndexType;
 using PrimitiveTopology = Silk.NET.Vulkan.PrimitiveTopology;
@@ -110,30 +110,30 @@ namespace Hyjinx.Graphics.Vulkan
             };
         }
 
-        public static BlendFactor Convert(this Ryujinx.Graphics.GAL.BlendFactor factor)
+        public static BlendFactor Convert(this Hyjinx.Graphics.GAL.BlendFactor factor)
         {
             return factor switch
             {
-                Ryujinx.Graphics.GAL.BlendFactor.Zero or Ryujinx.Graphics.GAL.BlendFactor.ZeroGl => BlendFactor.Zero,
-                Ryujinx.Graphics.GAL.BlendFactor.One or Ryujinx.Graphics.GAL.BlendFactor.OneGl => BlendFactor.One,
-                Ryujinx.Graphics.GAL.BlendFactor.SrcColor or Ryujinx.Graphics.GAL.BlendFactor.SrcColorGl => BlendFactor.SrcColor,
-                Ryujinx.Graphics.GAL.BlendFactor.OneMinusSrcColor or Ryujinx.Graphics.GAL.BlendFactor.OneMinusSrcColorGl => BlendFactor.OneMinusSrcColor,
-                Ryujinx.Graphics.GAL.BlendFactor.SrcAlpha or Ryujinx.Graphics.GAL.BlendFactor.SrcAlphaGl => BlendFactor.SrcAlpha,
-                Ryujinx.Graphics.GAL.BlendFactor.OneMinusSrcAlpha or Ryujinx.Graphics.GAL.BlendFactor.OneMinusSrcAlphaGl => BlendFactor.OneMinusSrcAlpha,
-                Ryujinx.Graphics.GAL.BlendFactor.DstAlpha or Ryujinx.Graphics.GAL.BlendFactor.DstAlphaGl => BlendFactor.DstAlpha,
-                Ryujinx.Graphics.GAL.BlendFactor.OneMinusDstAlpha or Ryujinx.Graphics.GAL.BlendFactor.OneMinusDstAlphaGl => BlendFactor.OneMinusDstAlpha,
-                Ryujinx.Graphics.GAL.BlendFactor.DstColor or Ryujinx.Graphics.GAL.BlendFactor.DstColorGl => BlendFactor.DstColor,
-                Ryujinx.Graphics.GAL.BlendFactor.OneMinusDstColor or Ryujinx.Graphics.GAL.BlendFactor.OneMinusDstColorGl => BlendFactor.OneMinusDstColor,
-                Ryujinx.Graphics.GAL.BlendFactor.SrcAlphaSaturate or Ryujinx.Graphics.GAL.BlendFactor.SrcAlphaSaturateGl => BlendFactor.SrcAlphaSaturate,
-                Ryujinx.Graphics.GAL.BlendFactor.Src1Color or Ryujinx.Graphics.GAL.BlendFactor.Src1ColorGl => BlendFactor.Src1Color,
-                Ryujinx.Graphics.GAL.BlendFactor.OneMinusSrc1Color or Ryujinx.Graphics.GAL.BlendFactor.OneMinusSrc1ColorGl => BlendFactor.OneMinusSrc1Color,
-                Ryujinx.Graphics.GAL.BlendFactor.Src1Alpha or Ryujinx.Graphics.GAL.BlendFactor.Src1AlphaGl => BlendFactor.Src1Alpha,
-                Ryujinx.Graphics.GAL.BlendFactor.OneMinusSrc1Alpha or Ryujinx.Graphics.GAL.BlendFactor.OneMinusSrc1AlphaGl => BlendFactor.OneMinusSrc1Alpha,
-                Ryujinx.Graphics.GAL.BlendFactor.ConstantColor => BlendFactor.ConstantColor,
-                Ryujinx.Graphics.GAL.BlendFactor.OneMinusConstantColor => BlendFactor.OneMinusConstantColor,
-                Ryujinx.Graphics.GAL.BlendFactor.ConstantAlpha => BlendFactor.ConstantAlpha,
-                Ryujinx.Graphics.GAL.BlendFactor.OneMinusConstantAlpha => BlendFactor.OneMinusConstantAlpha,
-                _ => LogInvalidAndReturn(factor, nameof(Ryujinx.Graphics.GAL.BlendFactor), BlendFactor.Zero),
+                Hyjinx.Graphics.GAL.BlendFactor.Zero or Hyjinx.Graphics.GAL.BlendFactor.ZeroGl => BlendFactor.Zero,
+                Hyjinx.Graphics.GAL.BlendFactor.One or Hyjinx.Graphics.GAL.BlendFactor.OneGl => BlendFactor.One,
+                Hyjinx.Graphics.GAL.BlendFactor.SrcColor or Hyjinx.Graphics.GAL.BlendFactor.SrcColorGl => BlendFactor.SrcColor,
+                Hyjinx.Graphics.GAL.BlendFactor.OneMinusSrcColor or Hyjinx.Graphics.GAL.BlendFactor.OneMinusSrcColorGl => BlendFactor.OneMinusSrcColor,
+                Hyjinx.Graphics.GAL.BlendFactor.SrcAlpha or Hyjinx.Graphics.GAL.BlendFactor.SrcAlphaGl => BlendFactor.SrcAlpha,
+                Hyjinx.Graphics.GAL.BlendFactor.OneMinusSrcAlpha or Hyjinx.Graphics.GAL.BlendFactor.OneMinusSrcAlphaGl => BlendFactor.OneMinusSrcAlpha,
+                Hyjinx.Graphics.GAL.BlendFactor.DstAlpha or Hyjinx.Graphics.GAL.BlendFactor.DstAlphaGl => BlendFactor.DstAlpha,
+                Hyjinx.Graphics.GAL.BlendFactor.OneMinusDstAlpha or Hyjinx.Graphics.GAL.BlendFactor.OneMinusDstAlphaGl => BlendFactor.OneMinusDstAlpha,
+                Hyjinx.Graphics.GAL.BlendFactor.DstColor or Hyjinx.Graphics.GAL.BlendFactor.DstColorGl => BlendFactor.DstColor,
+                Hyjinx.Graphics.GAL.BlendFactor.OneMinusDstColor or Hyjinx.Graphics.GAL.BlendFactor.OneMinusDstColorGl => BlendFactor.OneMinusDstColor,
+                Hyjinx.Graphics.GAL.BlendFactor.SrcAlphaSaturate or Hyjinx.Graphics.GAL.BlendFactor.SrcAlphaSaturateGl => BlendFactor.SrcAlphaSaturate,
+                Hyjinx.Graphics.GAL.BlendFactor.Src1Color or Hyjinx.Graphics.GAL.BlendFactor.Src1ColorGl => BlendFactor.Src1Color,
+                Hyjinx.Graphics.GAL.BlendFactor.OneMinusSrc1Color or Hyjinx.Graphics.GAL.BlendFactor.OneMinusSrc1ColorGl => BlendFactor.OneMinusSrc1Color,
+                Hyjinx.Graphics.GAL.BlendFactor.Src1Alpha or Hyjinx.Graphics.GAL.BlendFactor.Src1AlphaGl => BlendFactor.Src1Alpha,
+                Hyjinx.Graphics.GAL.BlendFactor.OneMinusSrc1Alpha or Hyjinx.Graphics.GAL.BlendFactor.OneMinusSrc1AlphaGl => BlendFactor.OneMinusSrc1Alpha,
+                Hyjinx.Graphics.GAL.BlendFactor.ConstantColor => BlendFactor.ConstantColor,
+                Hyjinx.Graphics.GAL.BlendFactor.OneMinusConstantColor => BlendFactor.OneMinusConstantColor,
+                Hyjinx.Graphics.GAL.BlendFactor.ConstantAlpha => BlendFactor.ConstantAlpha,
+                Hyjinx.Graphics.GAL.BlendFactor.OneMinusConstantAlpha => BlendFactor.OneMinusConstantAlpha,
+                _ => LogInvalidAndReturn(factor, nameof(Hyjinx.Graphics.GAL.BlendFactor), BlendFactor.Zero),
             };
         }
 
@@ -191,16 +191,16 @@ namespace Hyjinx.Graphics.Vulkan
             };
         }
 
-        public static BlendOp Convert(this Ryujinx.Graphics.GAL.BlendOp op)
+        public static BlendOp Convert(this Hyjinx.Graphics.GAL.BlendOp op)
         {
             return op switch
             {
-                Ryujinx.Graphics.GAL.BlendOp.Add or Ryujinx.Graphics.GAL.BlendOp.AddGl => BlendOp.Add,
-                Ryujinx.Graphics.GAL.BlendOp.Subtract or Ryujinx.Graphics.GAL.BlendOp.SubtractGl => BlendOp.Subtract,
-                Ryujinx.Graphics.GAL.BlendOp.ReverseSubtract or Ryujinx.Graphics.GAL.BlendOp.ReverseSubtractGl => BlendOp.ReverseSubtract,
-                Ryujinx.Graphics.GAL.BlendOp.Minimum or Ryujinx.Graphics.GAL.BlendOp.MinimumGl => BlendOp.Min,
-                Ryujinx.Graphics.GAL.BlendOp.Maximum or Ryujinx.Graphics.GAL.BlendOp.MaximumGl => BlendOp.Max,
-                _ => LogInvalidAndReturn(op, nameof(Ryujinx.Graphics.GAL.BlendOp), BlendOp.Add),
+                Hyjinx.Graphics.GAL.BlendOp.Add or Hyjinx.Graphics.GAL.BlendOp.AddGl => BlendOp.Add,
+                Hyjinx.Graphics.GAL.BlendOp.Subtract or Hyjinx.Graphics.GAL.BlendOp.SubtractGl => BlendOp.Subtract,
+                Hyjinx.Graphics.GAL.BlendOp.ReverseSubtract or Hyjinx.Graphics.GAL.BlendOp.ReverseSubtractGl => BlendOp.ReverseSubtract,
+                Hyjinx.Graphics.GAL.BlendOp.Minimum or Hyjinx.Graphics.GAL.BlendOp.MinimumGl => BlendOp.Min,
+                Hyjinx.Graphics.GAL.BlendOp.Maximum or Hyjinx.Graphics.GAL.BlendOp.MaximumGl => BlendOp.Max,
+                _ => LogInvalidAndReturn(op, nameof(Hyjinx.Graphics.GAL.BlendOp), BlendOp.Add),
             };
         }
 
@@ -215,19 +215,19 @@ namespace Hyjinx.Graphics.Vulkan
             };
         }
 
-        public static CompareOp Convert(this Ryujinx.Graphics.GAL.CompareOp op)
+        public static CompareOp Convert(this Hyjinx.Graphics.GAL.CompareOp op)
         {
             return op switch
             {
-                Ryujinx.Graphics.GAL.CompareOp.Never or Ryujinx.Graphics.GAL.CompareOp.NeverGl => CompareOp.Never,
-                Ryujinx.Graphics.GAL.CompareOp.Less or Ryujinx.Graphics.GAL.CompareOp.LessGl => CompareOp.Less,
-                Ryujinx.Graphics.GAL.CompareOp.Equal or Ryujinx.Graphics.GAL.CompareOp.EqualGl => CompareOp.Equal,
-                Ryujinx.Graphics.GAL.CompareOp.LessOrEqual or Ryujinx.Graphics.GAL.CompareOp.LessOrEqualGl => CompareOp.LessOrEqual,
-                Ryujinx.Graphics.GAL.CompareOp.Greater or Ryujinx.Graphics.GAL.CompareOp.GreaterGl => CompareOp.Greater,
-                Ryujinx.Graphics.GAL.CompareOp.NotEqual or Ryujinx.Graphics.GAL.CompareOp.NotEqualGl => CompareOp.NotEqual,
-                Ryujinx.Graphics.GAL.CompareOp.GreaterOrEqual or Ryujinx.Graphics.GAL.CompareOp.GreaterOrEqualGl => CompareOp.GreaterOrEqual,
-                Ryujinx.Graphics.GAL.CompareOp.Always or Ryujinx.Graphics.GAL.CompareOp.AlwaysGl => CompareOp.Always,
-                _ => LogInvalidAndReturn(op, nameof(Ryujinx.Graphics.GAL.CompareOp), CompareOp.Never),
+                Hyjinx.Graphics.GAL.CompareOp.Never or Hyjinx.Graphics.GAL.CompareOp.NeverGl => CompareOp.Never,
+                Hyjinx.Graphics.GAL.CompareOp.Less or Hyjinx.Graphics.GAL.CompareOp.LessGl => CompareOp.Less,
+                Hyjinx.Graphics.GAL.CompareOp.Equal or Hyjinx.Graphics.GAL.CompareOp.EqualGl => CompareOp.Equal,
+                Hyjinx.Graphics.GAL.CompareOp.LessOrEqual or Hyjinx.Graphics.GAL.CompareOp.LessOrEqualGl => CompareOp.LessOrEqual,
+                Hyjinx.Graphics.GAL.CompareOp.Greater or Hyjinx.Graphics.GAL.CompareOp.GreaterGl => CompareOp.Greater,
+                Hyjinx.Graphics.GAL.CompareOp.NotEqual or Hyjinx.Graphics.GAL.CompareOp.NotEqualGl => CompareOp.NotEqual,
+                Hyjinx.Graphics.GAL.CompareOp.GreaterOrEqual or Hyjinx.Graphics.GAL.CompareOp.GreaterOrEqualGl => CompareOp.GreaterOrEqual,
+                Hyjinx.Graphics.GAL.CompareOp.Always or Hyjinx.Graphics.GAL.CompareOp.AlwaysGl => CompareOp.Always,
+                _ => LogInvalidAndReturn(op, nameof(Hyjinx.Graphics.GAL.CompareOp), CompareOp.Never),
             };
         }
 
@@ -242,25 +242,25 @@ namespace Hyjinx.Graphics.Vulkan
             };
         }
 
-        public static FrontFace Convert(this Ryujinx.Graphics.GAL.FrontFace frontFace)
+        public static FrontFace Convert(this Hyjinx.Graphics.GAL.FrontFace frontFace)
         {
             // Flipped to account for origin differences.
             return frontFace switch
             {
-                Ryujinx.Graphics.GAL.FrontFace.Clockwise => FrontFace.CounterClockwise,
-                Ryujinx.Graphics.GAL.FrontFace.CounterClockwise => FrontFace.Clockwise,
-                _ => LogInvalidAndReturn(frontFace, nameof(Ryujinx.Graphics.GAL.FrontFace), FrontFace.Clockwise),
+                Hyjinx.Graphics.GAL.FrontFace.Clockwise => FrontFace.CounterClockwise,
+                Hyjinx.Graphics.GAL.FrontFace.CounterClockwise => FrontFace.Clockwise,
+                _ => LogInvalidAndReturn(frontFace, nameof(Hyjinx.Graphics.GAL.FrontFace), FrontFace.Clockwise),
             };
         }
 
-        public static IndexType Convert(this Ryujinx.Graphics.GAL.IndexType type)
+        public static IndexType Convert(this Hyjinx.Graphics.GAL.IndexType type)
         {
             return type switch
             {
-                Ryujinx.Graphics.GAL.IndexType.UByte => IndexType.Uint8Ext,
-                Ryujinx.Graphics.GAL.IndexType.UShort => IndexType.Uint16,
-                Ryujinx.Graphics.GAL.IndexType.UInt => IndexType.Uint32,
-                _ => LogInvalidAndReturn(type, nameof(Ryujinx.Graphics.GAL.IndexType), IndexType.Uint16),
+                Hyjinx.Graphics.GAL.IndexType.UByte => IndexType.Uint8Ext,
+                Hyjinx.Graphics.GAL.IndexType.UShort => IndexType.Uint16,
+                Hyjinx.Graphics.GAL.IndexType.UInt => IndexType.Uint32,
+                _ => LogInvalidAndReturn(type, nameof(Hyjinx.Graphics.GAL.IndexType), IndexType.Uint16),
             };
         }
 
@@ -288,41 +288,41 @@ namespace Hyjinx.Graphics.Vulkan
             };
         }
 
-        public static PrimitiveTopology Convert(this Ryujinx.Graphics.GAL.PrimitiveTopology topology)
+        public static PrimitiveTopology Convert(this Hyjinx.Graphics.GAL.PrimitiveTopology topology)
         {
             return topology switch
             {
-                Ryujinx.Graphics.GAL.PrimitiveTopology.Points => PrimitiveTopology.PointList,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.Lines => PrimitiveTopology.LineList,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.LineStrip => PrimitiveTopology.LineStrip,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.Triangles => PrimitiveTopology.TriangleList,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.TriangleStrip => PrimitiveTopology.TriangleStrip,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.TriangleFan => PrimitiveTopology.TriangleFan,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.LinesAdjacency => PrimitiveTopology.LineListWithAdjacency,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.LineStripAdjacency => PrimitiveTopology.LineStripWithAdjacency,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.TrianglesAdjacency => PrimitiveTopology.TriangleListWithAdjacency,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.TriangleStripAdjacency => PrimitiveTopology.TriangleStripWithAdjacency,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.Patches => PrimitiveTopology.PatchList,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.Polygon => PrimitiveTopology.TriangleFan,
-                Ryujinx.Graphics.GAL.PrimitiveTopology.Quads => throw new NotSupportedException("Quad topology is not available in Vulkan."),
-                Ryujinx.Graphics.GAL.PrimitiveTopology.QuadStrip => throw new NotSupportedException("QuadStrip topology is not available in Vulkan."),
-                _ => LogInvalidAndReturn(topology, nameof(Ryujinx.Graphics.GAL.PrimitiveTopology), PrimitiveTopology.TriangleList),
+                Hyjinx.Graphics.GAL.PrimitiveTopology.Points => PrimitiveTopology.PointList,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.Lines => PrimitiveTopology.LineList,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.LineStrip => PrimitiveTopology.LineStrip,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.Triangles => PrimitiveTopology.TriangleList,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.TriangleStrip => PrimitiveTopology.TriangleStrip,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.TriangleFan => PrimitiveTopology.TriangleFan,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.LinesAdjacency => PrimitiveTopology.LineListWithAdjacency,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.LineStripAdjacency => PrimitiveTopology.LineStripWithAdjacency,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.TrianglesAdjacency => PrimitiveTopology.TriangleListWithAdjacency,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.TriangleStripAdjacency => PrimitiveTopology.TriangleStripWithAdjacency,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.Patches => PrimitiveTopology.PatchList,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.Polygon => PrimitiveTopology.TriangleFan,
+                Hyjinx.Graphics.GAL.PrimitiveTopology.Quads => throw new NotSupportedException("Quad topology is not available in Vulkan."),
+                Hyjinx.Graphics.GAL.PrimitiveTopology.QuadStrip => throw new NotSupportedException("QuadStrip topology is not available in Vulkan."),
+                _ => LogInvalidAndReturn(topology, nameof(Hyjinx.Graphics.GAL.PrimitiveTopology), PrimitiveTopology.TriangleList),
             };
         }
 
-        public static StencilOp Convert(this Ryujinx.Graphics.GAL.StencilOp op)
+        public static StencilOp Convert(this Hyjinx.Graphics.GAL.StencilOp op)
         {
             return op switch
             {
-                Ryujinx.Graphics.GAL.StencilOp.Keep or Ryujinx.Graphics.GAL.StencilOp.KeepGl => StencilOp.Keep,
-                Ryujinx.Graphics.GAL.StencilOp.Zero or Ryujinx.Graphics.GAL.StencilOp.ZeroGl => StencilOp.Zero,
-                Ryujinx.Graphics.GAL.StencilOp.Replace or Ryujinx.Graphics.GAL.StencilOp.ReplaceGl => StencilOp.Replace,
-                Ryujinx.Graphics.GAL.StencilOp.IncrementAndClamp or Ryujinx.Graphics.GAL.StencilOp.IncrementAndClampGl => StencilOp.IncrementAndClamp,
-                Ryujinx.Graphics.GAL.StencilOp.DecrementAndClamp or Ryujinx.Graphics.GAL.StencilOp.DecrementAndClampGl => StencilOp.DecrementAndClamp,
-                Ryujinx.Graphics.GAL.StencilOp.Invert or Ryujinx.Graphics.GAL.StencilOp.InvertGl => StencilOp.Invert,
-                Ryujinx.Graphics.GAL.StencilOp.IncrementAndWrap or Ryujinx.Graphics.GAL.StencilOp.IncrementAndWrapGl => StencilOp.IncrementAndWrap,
-                Ryujinx.Graphics.GAL.StencilOp.DecrementAndWrap or Ryujinx.Graphics.GAL.StencilOp.DecrementAndWrapGl => StencilOp.DecrementAndWrap,
-                _ => LogInvalidAndReturn(op, nameof(Ryujinx.Graphics.GAL.StencilOp), StencilOp.Keep),
+                Hyjinx.Graphics.GAL.StencilOp.Keep or Hyjinx.Graphics.GAL.StencilOp.KeepGl => StencilOp.Keep,
+                Hyjinx.Graphics.GAL.StencilOp.Zero or Hyjinx.Graphics.GAL.StencilOp.ZeroGl => StencilOp.Zero,
+                Hyjinx.Graphics.GAL.StencilOp.Replace or Hyjinx.Graphics.GAL.StencilOp.ReplaceGl => StencilOp.Replace,
+                Hyjinx.Graphics.GAL.StencilOp.IncrementAndClamp or Hyjinx.Graphics.GAL.StencilOp.IncrementAndClampGl => StencilOp.IncrementAndClamp,
+                Hyjinx.Graphics.GAL.StencilOp.DecrementAndClamp or Hyjinx.Graphics.GAL.StencilOp.DecrementAndClampGl => StencilOp.DecrementAndClamp,
+                Hyjinx.Graphics.GAL.StencilOp.Invert or Hyjinx.Graphics.GAL.StencilOp.InvertGl => StencilOp.Invert,
+                Hyjinx.Graphics.GAL.StencilOp.IncrementAndWrap or Hyjinx.Graphics.GAL.StencilOp.IncrementAndWrapGl => StencilOp.IncrementAndWrap,
+                Hyjinx.Graphics.GAL.StencilOp.DecrementAndWrap or Hyjinx.Graphics.GAL.StencilOp.DecrementAndWrapGl => StencilOp.DecrementAndWrap,
+                _ => LogInvalidAndReturn(op, nameof(Hyjinx.Graphics.GAL.StencilOp), StencilOp.Keep),
             };
         }
 

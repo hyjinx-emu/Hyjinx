@@ -1,5 +1,5 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Ryujinx.Graphics.Shader;
 using Silk.NET.Vulkan;
 using System;
@@ -7,9 +7,9 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using CompareOp = Ryujinx.Graphics.GAL.CompareOp;
-using Format = Ryujinx.Graphics.GAL.Format;
-using SamplerCreateInfo = Ryujinx.Graphics.GAL.SamplerCreateInfo;
+using CompareOp = Hyjinx.Graphics.GAL.CompareOp;
+using Format = Hyjinx.Graphics.GAL.Format;
+using SamplerCreateInfo = Hyjinx.Graphics.GAL.SamplerCreateInfo;
 
 namespace Hyjinx.Graphics.Vulkan
 {

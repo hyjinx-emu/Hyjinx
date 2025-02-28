@@ -1,6 +1,6 @@
 using OpenTK.Graphics.OpenGL;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Ryujinx.Graphics.Shader;
 
 namespace Hyjinx.Graphics.OpenGL
@@ -411,19 +411,19 @@ namespace Hyjinx.Graphics.OpenGL
             return TextureMinFilter.Nearest;
         }
 
-        public static OpenTK.Graphics.OpenGL.PolygonMode Convert(this Ryujinx.Graphics.GAL.PolygonMode mode)
+        public static OpenTK.Graphics.OpenGL.PolygonMode Convert(this Hyjinx.Graphics.GAL.PolygonMode mode)
         {
             switch (mode)
             {
-                case Ryujinx.Graphics.GAL.PolygonMode.Point:
+                case Hyjinx.Graphics.GAL.PolygonMode.Point:
                     return OpenTK.Graphics.OpenGL.PolygonMode.Point;
-                case Ryujinx.Graphics.GAL.PolygonMode.Line:
+                case Hyjinx.Graphics.GAL.PolygonMode.Line:
                     return OpenTK.Graphics.OpenGL.PolygonMode.Line;
-                case Ryujinx.Graphics.GAL.PolygonMode.Fill:
+                case Hyjinx.Graphics.GAL.PolygonMode.Fill:
                     return OpenTK.Graphics.OpenGL.PolygonMode.Fill;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(Ryujinx.Graphics.GAL.PolygonMode)} enum value: {mode}.");
+            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(Hyjinx.Graphics.GAL.PolygonMode)} enum value: {mode}.");
 
             return OpenTK.Graphics.OpenGL.PolygonMode.Fill;
         }
@@ -494,37 +494,37 @@ namespace Hyjinx.Graphics.OpenGL
             return TransformFeedbackPrimitiveType.Points;
         }
 
-        public static OpenTK.Graphics.OpenGL.StencilOp Convert(this Ryujinx.Graphics.GAL.StencilOp op)
+        public static OpenTK.Graphics.OpenGL.StencilOp Convert(this Hyjinx.Graphics.GAL.StencilOp op)
         {
             switch (op)
             {
-                case Ryujinx.Graphics.GAL.StencilOp.Keep:
-                case Ryujinx.Graphics.GAL.StencilOp.KeepGl:
+                case Hyjinx.Graphics.GAL.StencilOp.Keep:
+                case Hyjinx.Graphics.GAL.StencilOp.KeepGl:
                     return OpenTK.Graphics.OpenGL.StencilOp.Keep;
-                case Ryujinx.Graphics.GAL.StencilOp.Zero:
-                case Ryujinx.Graphics.GAL.StencilOp.ZeroGl:
+                case Hyjinx.Graphics.GAL.StencilOp.Zero:
+                case Hyjinx.Graphics.GAL.StencilOp.ZeroGl:
                     return OpenTK.Graphics.OpenGL.StencilOp.Zero;
-                case Ryujinx.Graphics.GAL.StencilOp.Replace:
-                case Ryujinx.Graphics.GAL.StencilOp.ReplaceGl:
+                case Hyjinx.Graphics.GAL.StencilOp.Replace:
+                case Hyjinx.Graphics.GAL.StencilOp.ReplaceGl:
                     return OpenTK.Graphics.OpenGL.StencilOp.Replace;
-                case Ryujinx.Graphics.GAL.StencilOp.IncrementAndClamp:
-                case Ryujinx.Graphics.GAL.StencilOp.IncrementAndClampGl:
+                case Hyjinx.Graphics.GAL.StencilOp.IncrementAndClamp:
+                case Hyjinx.Graphics.GAL.StencilOp.IncrementAndClampGl:
                     return OpenTK.Graphics.OpenGL.StencilOp.Incr;
-                case Ryujinx.Graphics.GAL.StencilOp.DecrementAndClamp:
-                case Ryujinx.Graphics.GAL.StencilOp.DecrementAndClampGl:
+                case Hyjinx.Graphics.GAL.StencilOp.DecrementAndClamp:
+                case Hyjinx.Graphics.GAL.StencilOp.DecrementAndClampGl:
                     return OpenTK.Graphics.OpenGL.StencilOp.Decr;
-                case Ryujinx.Graphics.GAL.StencilOp.Invert:
-                case Ryujinx.Graphics.GAL.StencilOp.InvertGl:
+                case Hyjinx.Graphics.GAL.StencilOp.Invert:
+                case Hyjinx.Graphics.GAL.StencilOp.InvertGl:
                     return OpenTK.Graphics.OpenGL.StencilOp.Invert;
-                case Ryujinx.Graphics.GAL.StencilOp.IncrementAndWrap:
-                case Ryujinx.Graphics.GAL.StencilOp.IncrementAndWrapGl:
+                case Hyjinx.Graphics.GAL.StencilOp.IncrementAndWrap:
+                case Hyjinx.Graphics.GAL.StencilOp.IncrementAndWrapGl:
                     return OpenTK.Graphics.OpenGL.StencilOp.IncrWrap;
-                case Ryujinx.Graphics.GAL.StencilOp.DecrementAndWrap:
-                case Ryujinx.Graphics.GAL.StencilOp.DecrementAndWrapGl:
+                case Hyjinx.Graphics.GAL.StencilOp.DecrementAndWrap:
+                case Hyjinx.Graphics.GAL.StencilOp.DecrementAndWrapGl:
                     return OpenTK.Graphics.OpenGL.StencilOp.DecrWrap;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(Ryujinx.Graphics.GAL.StencilOp)} enum value: {op}.");
+            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(Hyjinx.Graphics.GAL.StencilOp)} enum value: {op}.");
 
             return OpenTK.Graphics.OpenGL.StencilOp.Keep;
         }

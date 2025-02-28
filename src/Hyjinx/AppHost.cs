@@ -23,8 +23,8 @@ using Ryujinx.Common.Configuration.Multiplayer;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.SystemInterop;
 using Ryujinx.Common.Utilities;
-using Ryujinx.Graphics.GAL;
-using Ryujinx.Graphics.GAL.Multithreading;
+using Hyjinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.OpenGL;
 using Hyjinx.Graphics.Vulkan;
@@ -52,7 +52,7 @@ using System.Threading.Tasks;
 using static Hyjinx.Ava.UI.Helpers.Win32NativeInterop;
 using AntiAliasing = Ryujinx.Common.Configuration.AntiAliasing;
 using InputManager = Ryujinx.Input.HLE.InputManager;
-using IRenderer = Ryujinx.Graphics.GAL.IRenderer;
+using IRenderer = Hyjinx.Graphics.GAL.IRenderer;
 using Key = Ryujinx.Input.Key;
 using MouseButton = Ryujinx.Input.MouseButton;
 using ScalingFilter = Ryujinx.Common.Configuration.ScalingFilter;
@@ -275,13 +275,13 @@ namespace Hyjinx.Ava
 
         private void UpdateScalingFilterLevel(object sender, ReactiveEventArgs<int> e)
         {
-            _renderer.Window?.SetScalingFilter((Ryujinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
+            _renderer.Window?.SetScalingFilter((Hyjinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
             _renderer.Window?.SetScalingFilterLevel(ConfigurationState.Instance.Graphics.ScalingFilterLevel.Value);
         }
 
         private void UpdateScalingFilter(object sender, ReactiveEventArgs<ScalingFilter> e)
         {
-            _renderer.Window?.SetScalingFilter((Ryujinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
+            _renderer.Window?.SetScalingFilter((Hyjinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
             _renderer.Window?.SetScalingFilterLevel(ConfigurationState.Instance.Graphics.ScalingFilterLevel.Value);
         }
 
@@ -456,7 +456,7 @@ namespace Hyjinx.Ava
 
         private void UpdateAntiAliasing(object sender, ReactiveEventArgs<AntiAliasing> e)
         {
-            _renderer?.Window?.SetAntiAliasing((Ryujinx.Graphics.GAL.AntiAliasing)e.NewValue);
+            _renderer?.Window?.SetAntiAliasing((Hyjinx.Graphics.GAL.AntiAliasing)e.NewValue);
         }
 
         private void UpdateDockedModeState(object sender, ReactiveEventArgs<bool> e)
@@ -980,8 +980,8 @@ namespace Hyjinx.Ava
 
             Device.Gpu.Renderer.Initialize(_glLogLevel);
 
-            _renderer?.Window?.SetAntiAliasing((Ryujinx.Graphics.GAL.AntiAliasing)ConfigurationState.Instance.Graphics.AntiAliasing.Value);
-            _renderer?.Window?.SetScalingFilter((Ryujinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
+            _renderer?.Window?.SetAntiAliasing((Hyjinx.Graphics.GAL.AntiAliasing)ConfigurationState.Instance.Graphics.AntiAliasing.Value);
+            _renderer?.Window?.SetScalingFilter((Hyjinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
             _renderer?.Window?.SetScalingFilterLevel(ConfigurationState.Instance.Graphics.ScalingFilterLevel.Value);
             _renderer?.Window?.SetColorSpacePassthrough(ConfigurationState.Instance.Graphics.EnableColorSpacePassthrough.Value);
 

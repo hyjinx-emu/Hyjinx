@@ -1,6 +1,6 @@
 using OpenTK.Graphics.OpenGL;
 using Ryujinx.Common;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL.Image;
 using System;
 using static Hyjinx.Graphics.OpenGL.Effects.ShaderHelper;

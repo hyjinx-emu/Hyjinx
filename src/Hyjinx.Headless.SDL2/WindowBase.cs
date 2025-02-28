@@ -1,8 +1,8 @@
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.GAL;
-using Ryujinx.Graphics.GAL.Multithreading;
+using Hyjinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.OpenGL;
 using Ryujinx.HLE.HOS.Applets;
@@ -217,12 +217,12 @@ namespace Hyjinx.Headless.SDL2
 
         private void SetAntiAliasing()
         {
-            Renderer?.Window.SetAntiAliasing((Ryujinx.Graphics.GAL.AntiAliasing)AntiAliasing);
+            Renderer?.Window.SetAntiAliasing((Hyjinx.Graphics.GAL.AntiAliasing)AntiAliasing);
         }
 
         private void SetScalingFilter()
         {
-            Renderer?.Window.SetScalingFilter((Ryujinx.Graphics.GAL.ScalingFilter)ScalingFilter);
+            Renderer?.Window.SetScalingFilter((Hyjinx.Graphics.GAL.ScalingFilter)ScalingFilter);
             Renderer?.Window.SetScalingFilterLevel(ScalingFilterLevel);
         }
 

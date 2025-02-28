@@ -4,8 +4,8 @@ using Ryujinx.Common;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Utilities;
-using Ryujinx.Graphics.GAL;
-using Ryujinx.Graphics.GAL.Multithreading;
+using Hyjinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
 using Ryujinx.Input;
 using Ryujinx.Input.GTK3;
@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Key = Ryujinx.Input.Key;
-using ScalingFilter = Ryujinx.Graphics.GAL.ScalingFilter;
+using ScalingFilter = Hyjinx.Graphics.GAL.ScalingFilter;
 using Switch = Ryujinx.HLE.Switch;
 
 namespace Ryujinx.UI
@@ -180,7 +180,7 @@ namespace Ryujinx.UI
 
         private void UpdateAnriAliasing(object sender, ReactiveEventArgs<Ryujinx.Common.Configuration.AntiAliasing> e)
         {
-            Renderer?.Window.SetAntiAliasing((Graphics.GAL.AntiAliasing)e.NewValue);
+            Renderer?.Window.SetAntiAliasing((Hyjinx.Graphics.GAL.AntiAliasing)e.NewValue);
         }
 
         protected override bool OnMotionNotifyEvent(EventMotion evnt)
@@ -448,8 +448,8 @@ namespace Ryujinx.UI
 
             Device.Gpu.Renderer.Initialize(_glLogLevel);
 
-            Renderer.Window.SetAntiAliasing((Graphics.GAL.AntiAliasing)ConfigurationState.Instance.Graphics.AntiAliasing.Value);
-            Renderer.Window.SetScalingFilter((Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
+            Renderer.Window.SetAntiAliasing((Hyjinx.Graphics.GAL.AntiAliasing)ConfigurationState.Instance.Graphics.AntiAliasing.Value);
+            Renderer.Window.SetScalingFilter((Hyjinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
             Renderer.Window.SetScalingFilterLevel(ConfigurationState.Instance.Graphics.ScalingFilterLevel.Value);
 
             _gpuBackendName = GetGpuBackendName();

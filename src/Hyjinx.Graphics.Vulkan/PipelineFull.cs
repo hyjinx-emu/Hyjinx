@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Vulkan.Queries;
 using Silk.NET.Vulkan;
 using System;

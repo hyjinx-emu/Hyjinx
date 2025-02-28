@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 

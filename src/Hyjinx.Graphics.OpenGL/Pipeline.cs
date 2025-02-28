@@ -1,6 +1,6 @@
 using OpenTK.Graphics.OpenGL;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL.Image;
 using Hyjinx.Graphics.OpenGL.Queries;
 using Ryujinx.Graphics.Shader;
@@ -1081,7 +1081,7 @@ namespace Hyjinx.Graphics.OpenGL
             GL.PointSize(Math.Max(float.Epsilon, size));
         }
 
-        public void SetPolygonMode(Ryujinx.Graphics.GAL.PolygonMode frontMode, Ryujinx.Graphics.GAL.PolygonMode backMode)
+        public void SetPolygonMode(Hyjinx.Graphics.GAL.PolygonMode frontMode, Hyjinx.Graphics.GAL.PolygonMode backMode)
         {
             if (frontMode == backMode)
             {

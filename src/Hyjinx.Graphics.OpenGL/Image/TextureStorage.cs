@@ -1,6 +1,6 @@
 using OpenTK.Graphics.OpenGL;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 
 namespace Hyjinx.Graphics.OpenGL.Image
 {

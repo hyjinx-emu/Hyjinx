@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ARMeilleure", "src\ARMeille
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Gpu", "src\Hyjinx.Graphics.Gpu\Hyjinx.Graphics.Gpu.csproj", "{ADA7EA87-0D63-4D97-9433-922A2124401F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.GAL", "src\Ryujinx.Graphics.GAL\Ryujinx.Graphics.GAL.csproj", "{A602AE97-91A5-4608-8DF1-EBF4ED7A0B9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.GAL", "src\Hyjinx.Graphics.GAL\Hyjinx.Graphics.GAL.csproj", "{A602AE97-91A5-4608-8DF1-EBF4ED7A0B9E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.OpenGL", "src\Hyjinx.Graphics.OpenGL\Hyjinx.Graphics.OpenGL.csproj", "{9558FB96-075D-4219-8FFF-401979DC0B69}"
 EndProject

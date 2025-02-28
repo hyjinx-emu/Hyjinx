@@ -1,6 +1,6 @@
 using Ryujinx.Common;
 using Hyjinx.Graphics.Device;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.GPFifo;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader;

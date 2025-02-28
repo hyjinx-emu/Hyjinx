@@ -1,10 +1,10 @@
 using Ryujinx.Common;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Ryujinx.Graphics.Shader;
 using Ryujinx.Graphics.Shader.Translation;
 using Silk.NET.Vulkan;
 using System;
-using SamplerCreateInfo = Ryujinx.Graphics.GAL.SamplerCreateInfo;
+using SamplerCreateInfo = Hyjinx.Graphics.GAL.SamplerCreateInfo;
 
 namespace Hyjinx.Graphics.Vulkan.Effects
 {

@@ -1,5 +1,5 @@
 using Ryujinx.Common;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Threed;
 using Hyjinx.Graphics.Gpu.Engine.Twod;
 using Hyjinx.Graphics.Gpu.Engine.Types;

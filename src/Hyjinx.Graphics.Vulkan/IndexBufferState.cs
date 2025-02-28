@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using IndexType = Silk.NET.Vulkan.IndexType;
 
 namespace Hyjinx.Graphics.Vulkan

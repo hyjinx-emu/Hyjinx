@@ -1,6 +1,6 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

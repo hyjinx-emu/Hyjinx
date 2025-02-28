@@ -1,7 +1,7 @@
 using OpenTK.Graphics.OpenGL;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL.Image;
 using Hyjinx.Graphics.OpenGL.Queries;
 using Ryujinx.Graphics.Shader.Translation;
@@ -57,13 +57,13 @@ namespace Hyjinx.Graphics.OpenGL
             ResourcePool = new ResourcePool();
         }
 
-        public BufferHandle CreateBuffer(int size, Ryujinx.Graphics.GAL.BufferAccess access)
+        public BufferHandle CreateBuffer(int size, Hyjinx.Graphics.GAL.BufferAccess access)
         {
             BufferCount++;
 
-            var memType = access & Ryujinx.Graphics.GAL.BufferAccess.MemoryTypeMask;
+            var memType = access & Hyjinx.Graphics.GAL.BufferAccess.MemoryTypeMask;
 
-            if (memType == Ryujinx.Graphics.GAL.BufferAccess.HostMemory)
+            if (memType == Hyjinx.Graphics.GAL.BufferAccess.HostMemory)
             {
                 BufferHandle handle = Buffer.CreatePersistent(size);
 

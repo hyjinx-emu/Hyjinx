@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
 
 namespace Hyjinx.Graphics.Gpu.Engine.Types

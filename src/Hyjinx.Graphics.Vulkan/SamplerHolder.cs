@@ -1,6 +1,6 @@
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Silk.NET.Vulkan;
-using SamplerCreateInfo = Ryujinx.Graphics.GAL.SamplerCreateInfo;
+using SamplerCreateInfo = Hyjinx.Graphics.GAL.SamplerCreateInfo;
 
 namespace Hyjinx.Graphics.Vulkan
 {

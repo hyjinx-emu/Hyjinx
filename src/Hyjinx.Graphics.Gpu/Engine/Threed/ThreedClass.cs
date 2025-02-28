@@ -1,6 +1,6 @@
 using Ryujinx.Common.Memory;
 using Hyjinx.Graphics.Device;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.GPFifo;
 using Hyjinx.Graphics.Gpu.Engine.InlineToMemory;
 using Hyjinx.Graphics.Gpu.Engine.Threed.Blender;

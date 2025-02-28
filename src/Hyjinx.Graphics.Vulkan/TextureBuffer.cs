@@ -1,9 +1,9 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Silk.NET.Vulkan;
 using System;
 using System.Collections.Generic;
-using Format = Ryujinx.Graphics.GAL.Format;
+using Format = Hyjinx.Graphics.GAL.Format;
 using VkFormat = Silk.NET.Vulkan.Format;
 
 namespace Hyjinx.Graphics.Vulkan

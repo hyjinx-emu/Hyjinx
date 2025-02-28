@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Ryujinx.Graphics.Shader;
 using Silk.NET.Vulkan;
 using System;
@@ -7,13 +7,13 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using CompareOp = Ryujinx.Graphics.GAL.CompareOp;
-using Format = Ryujinx.Graphics.GAL.Format;
-using FrontFace = Ryujinx.Graphics.GAL.FrontFace;
-using IndexType = Ryujinx.Graphics.GAL.IndexType;
-using PolygonMode = Ryujinx.Graphics.GAL.PolygonMode;
-using PrimitiveTopology = Ryujinx.Graphics.GAL.PrimitiveTopology;
-using Viewport = Ryujinx.Graphics.GAL.Viewport;
+using CompareOp = Hyjinx.Graphics.GAL.CompareOp;
+using Format = Hyjinx.Graphics.GAL.Format;
+using FrontFace = Hyjinx.Graphics.GAL.FrontFace;
+using IndexType = Hyjinx.Graphics.GAL.IndexType;
+using PolygonMode = Hyjinx.Graphics.GAL.PolygonMode;
+using PrimitiveTopology = Hyjinx.Graphics.GAL.PrimitiveTopology;
+using Viewport = Hyjinx.Graphics.GAL.Viewport;
 
 namespace Hyjinx.Graphics.Vulkan
 {

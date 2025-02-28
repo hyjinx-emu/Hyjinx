@@ -1,5 +1,5 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.Graphics.GAL;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Threed;
 using Ryujinx.Graphics.Shader;
 
