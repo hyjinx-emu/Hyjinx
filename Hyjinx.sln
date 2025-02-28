@@ -59,7 +59,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.SDL2.Common", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Audio.Backends.SDL2", "src\Ryujinx.Audio.Backends.SDL2\Ryujinx.Audio.Backends.SDL2.csproj", "{D99A395A-8569-4DB0-B336-900647890052}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Headless.SDL2", "src\Ryujinx.Headless.SDL2\Ryujinx.Headless.SDL2.csproj", "{390DC343-5CB4-4C79-A5DD-E3ED235E4C49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Headless.SDL2", "src\Hyjinx.Headless.SDL2\Hyjinx.Headless.SDL2.csproj", "{390DC343-5CB4-4C79-A5DD-E3ED235E4C49}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Nvdec.FFmpeg", "src\Ryujinx.Graphics.Nvdec.FFmpeg\Ryujinx.Graphics.Nvdec.FFmpeg.csproj", "{BEE1C184-C9A4-410B-8DFC-FB74D5C93AEB}"
 EndProject

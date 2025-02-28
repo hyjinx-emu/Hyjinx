@@ -2,7 +2,7 @@ using CommandLine;
 using Ryujinx.Common.Configuration;
 using Ryujinx.HLE.HOS.SystemState;
 
-namespace Ryujinx.Headless.SDL2
+namespace Hyjinx.Headless.SDL2
 {
     public class Options
     {

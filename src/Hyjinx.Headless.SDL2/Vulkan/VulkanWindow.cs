@@ -6,7 +6,7 @@ using System;
 using System.Runtime.InteropServices;
 using static SDL2.SDL;
 
-namespace Ryujinx.Headless.SDL2.Vulkan
+namespace Hyjinx.Headless.SDL2.Vulkan
 {
     class VulkanWindow : WindowBase
     {

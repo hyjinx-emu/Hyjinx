@@ -20,8 +20,8 @@ using Ryujinx.Graphics.Gpu.Shader;
 using Ryujinx.Graphics.OpenGL;
 using Ryujinx.Graphics.Vulkan;
 using Ryujinx.Graphics.Vulkan.MoltenVK;
-using Ryujinx.Headless.SDL2.OpenGL;
-using Ryujinx.Headless.SDL2.Vulkan;
+using Hyjinx.Headless.SDL2.OpenGL;
+using Hyjinx.Headless.SDL2.Vulkan;
 using Ryujinx.HLE;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
@@ -40,7 +40,7 @@ using ConfigGamepadInputId = Ryujinx.Common.Configuration.Hid.Controller.Gamepad
 using ConfigStickInputId = Ryujinx.Common.Configuration.Hid.Controller.StickInputId;
 using Key = Ryujinx.Common.Configuration.Hid.Key;
 
-namespace Ryujinx.Headless.SDL2
+namespace Hyjinx.Headless.SDL2
 {
     class Program
     {
@@ -580,7 +580,7 @@ namespace Ryujinx.Headless.SDL2
                 options.AudioVolume,
                 options.UseHypervisor ?? true,
                 options.MultiplayerLanInterfaceId,
-                Common.Configuration.Multiplayer.MultiplayerMode.Disabled);
+                Ryujinx.Common.Configuration.Multiplayer.MultiplayerMode.Disabled);
 
             return new Switch(configuration);
         }

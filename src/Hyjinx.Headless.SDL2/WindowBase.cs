@@ -23,7 +23,7 @@ using AntiAliasing = Ryujinx.Common.Configuration.AntiAliasing;
 using ScalingFilter = Ryujinx.Common.Configuration.ScalingFilter;
 using Switch = Ryujinx.HLE.Switch;
 
-namespace Ryujinx.Headless.SDL2
+namespace Hyjinx.Headless.SDL2
 {
     abstract partial class WindowBase : IHostUIHandler, IDisposable
     {
@@ -128,34 +128,6 @@ namespace Ryujinx.Headless.SDL2
             TouchScreenManager.Initialize(device);
         }
 
-        private void SetWindowIcon()
-        {
-            Stream iconStream = typeof(WindowBase).Assembly.GetManifestResourceStream("Ryujinx.Headless.SDL2.Ryujinx.bmp");
-            byte[] iconBytes = new byte[iconStream!.Length];
-
-            if (iconStream.Read(iconBytes, 0, iconBytes.Length) != iconBytes.Length)
-            {
-                Logger.Error?.Print(LogClass.Application, "Failed to read icon to byte array.");
-                iconStream.Close();
-
-                return;
-            }
-
-            iconStream.Close();
-
-            unsafe
-            {
-                fixed (byte* iconPtr = iconBytes)
-                {
-                    IntPtr rwOpsStruct = SDL_RWFromConstMem((IntPtr)iconPtr, iconBytes.Length);
-                    IntPtr iconHandle = SDL_LoadBMP_RW(rwOpsStruct, 1);
-
-                    SDL_SetWindowIcon(WindowHandle, iconHandle);
-                    SDL_FreeSurface(iconHandle);
-                }
-            }
-        }
-
         private void InitializeWindow()
         {
             var activeProcess = Device.Processes.ActiveApplication;
@@ -194,8 +166,6 @@ namespace Ryujinx.Headless.SDL2
 
                 throw new Exception(errorMessage);
             }
-
-            SetWindowIcon();
 
             _windowId = SDL_GetWindowID(WindowHandle);
             SDL2Driver.Instance.RegisterWindow(_windowId, HandleWindowEvent);
@@ -248,12 +218,12 @@ namespace Ryujinx.Headless.SDL2
 
         private void SetAntiAliasing()
         {
-            Renderer?.Window.SetAntiAliasing((Graphics.GAL.AntiAliasing)AntiAliasing);
+            Renderer?.Window.SetAntiAliasing((Ryujinx.Graphics.GAL.AntiAliasing)AntiAliasing);
         }
 
         private void SetScalingFilter()
         {
-            Renderer?.Window.SetScalingFilter((Graphics.GAL.ScalingFilter)ScalingFilter);
+            Renderer?.Window.SetScalingFilter((Ryujinx.Graphics.GAL.ScalingFilter)ScalingFilter);
             Renderer?.Window.SetScalingFilterLevel(ScalingFilterLevel);
         }
 

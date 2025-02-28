@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.Headless.SDL2
+namespace Hyjinx.Headless.SDL2
 {
     class StatusUpdatedEventArgs : EventArgs
     {

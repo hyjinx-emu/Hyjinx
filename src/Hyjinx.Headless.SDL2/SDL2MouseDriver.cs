@@ -8,7 +8,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using static SDL2.SDL;
 
-namespace Ryujinx.Headless.SDL2
+namespace Hyjinx.Headless.SDL2
 {
     class SDL2MouseDriver : IGamepadDriver
     {
