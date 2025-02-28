@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Audio", "src\Hyjinx.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Memory", "src\Ryujinx.Memory\Ryujinx.Memory.csproj", "{A5E6C691-9E22-4263-8F40-42F002CE66BE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Tests.Memory", "src\Ryujinx.Tests.Memory\Ryujinx.Tests.Memory.csproj", "{D1CC5322-7325-4F6B-9625-194B30BE1296}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Tests.Memory", "src\Hyjinx.Tests.Memory\Hyjinx.Tests.Memory.csproj", "{D1CC5322-7325-4F6B-9625-194B30BE1296}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Cpu", "src\Hyjinx.Cpu\Hyjinx.Cpu.csproj", "{3DF35E3D-D844-4399-A9A1-A9E923264C17}"
 EndProject

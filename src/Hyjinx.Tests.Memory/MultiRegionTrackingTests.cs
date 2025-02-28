@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ryujinx.Tests.Memory
+namespace Hyjinx.Tests.Memory
 {
     public class MultiRegionTrackingTests
     {

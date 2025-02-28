@@ -4,7 +4,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 
-namespace Ryujinx.Tests.Memory
+namespace Hyjinx.Tests.Memory
 {
     public class MockVirtualMemoryManager : IVirtualMemoryManager
     {

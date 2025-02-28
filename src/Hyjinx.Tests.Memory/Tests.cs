@@ -3,7 +3,7 @@ using Ryujinx.Memory;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.Tests.Memory
+namespace Hyjinx.Tests.Memory
 {
     public class Tests
     {

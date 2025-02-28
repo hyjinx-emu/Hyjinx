@@ -1,7 +1,7 @@
 using ARMeilleure.Memory;
 using System;
 
-namespace Ryujinx.Tests.Memory
+namespace Hyjinx.Tests.Memory
 {
     internal class MockMemoryManager : IMemoryManager
     {

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Ryujinx.Tests.Memory
+namespace Hyjinx.Tests.Memory
 {
     public class TrackingTests
     {
