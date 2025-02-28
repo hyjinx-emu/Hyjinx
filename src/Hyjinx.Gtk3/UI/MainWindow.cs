@@ -509,7 +509,7 @@ namespace Ryujinx.UI
             if (ConfigurationState.Instance.Graphics.GraphicsBackend == GraphicsBackend.Vulkan)
             {
                 string preferredGpu = ConfigurationState.Instance.Graphics.PreferredGpu.Value;
-                renderer = new Graphics.Vulkan.VulkanRenderer(Vk.GetApi(), CreateVulkanSurface, VulkanHelper.GetRequiredInstanceExtensions, preferredGpu);
+                renderer = new Hyjinx.Graphics.Vulkan.VulkanRenderer(Vk.GetApi(), CreateVulkanSurface, VulkanHelper.GetRequiredInstanceExtensions, preferredGpu);
             }
             else
             {

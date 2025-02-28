@@ -7,7 +7,7 @@ using Ryujinx.Common.Configuration;
 using Ryujinx.Common.GraphicsDriver;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.SystemInterop;
-using Ryujinx.Graphics.Vulkan.MoltenVK;
+using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Modules;
 using Hyjinx.SDL2.Common;
 using Hyjinx.UI.Common;

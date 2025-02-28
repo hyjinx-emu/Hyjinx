@@ -13,7 +13,7 @@ using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Multiplayer;
 using Ryujinx.Common.GraphicsDriver;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.Vulkan;
+using Hyjinx.Graphics.Vulkan;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.UI.Common.Configuration;

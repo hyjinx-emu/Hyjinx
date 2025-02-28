@@ -62,7 +62,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Ryujinx.Common\Ryujinx.Common.csproj" />
     <ProjectReference Include="..\Ryujinx.HLE\Ryujinx.HLE.csproj" />
-    <ProjectReference Include="..\Ryujinx.Graphics.Vulkan\Ryujinx.Graphics.Vulkan.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Vulkan\Hyjinx.Graphics.Vulkan.csproj" />
   </ItemGroup>
 
 </Project>

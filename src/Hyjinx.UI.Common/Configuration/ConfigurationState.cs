@@ -5,7 +5,7 @@ using Ryujinx.Common.Configuration.Hid.Controller;
 using Ryujinx.Common.Configuration.Hid.Keyboard;
 using Ryujinx.Common.Configuration.Multiplayer;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.Vulkan;
+using Hyjinx.Graphics.Vulkan;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using Hyjinx.UI.Common.Helper;
