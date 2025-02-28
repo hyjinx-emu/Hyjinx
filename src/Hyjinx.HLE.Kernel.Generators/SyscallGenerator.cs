@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Ryujinx.Horizon.Kernel.Generators
+namespace Hyjinx.HLE.Kernel.Generators
 {
     [Generator]
     class SyscallGenerator : ISourceGenerator

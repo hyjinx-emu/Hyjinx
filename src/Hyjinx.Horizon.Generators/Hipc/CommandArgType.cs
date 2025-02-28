@@ -1,4 +1,4 @@
-namespace Ryujinx.Horizon.Generators.Hipc
+namespace Hyjinx.Horizon.Generators.Hipc
 {
     enum CommandArgType : byte
     {

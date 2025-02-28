@@ -67,7 +67,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx", "src\Hyjinx\Hyjinx
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.UI.Common", "src\Hyjinx.UI.Common\Hyjinx.UI.Common.csproj", "{BA161CA0-CD65-4E6E-B644-51C8D1E542DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Horizon.Generators", "src\Ryujinx.Horizon.Generators\Ryujinx.Horizon.Generators.csproj", "{6AE2A5E8-4C5A-48B9-997B-E1455C0355C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Horizon.Generators", "src\Hyjinx.Horizon.Generators\Hyjinx.Horizon.Generators.csproj", "{6AE2A5E8-4C5A-48B9-997B-E1455C0355C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Vulkan", "src\Ryujinx.Graphics.Vulkan\Ryujinx.Graphics.Vulkan.csproj", "{D4D09B08-D580-4D69-B886-C35D2853F6C8}"
 EndProject
@@ -79,9 +79,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Horizon.Common", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Horizon", "src\Ryujinx.Horizon\Ryujinx.Horizon.csproj", "{AF34127A-3A92-43E5-8496-14960A50B1F1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Horizon.Kernel.Generators", "src\Ryujinx.Horizon.Kernel.Generators\Ryujinx.Horizon.Kernel.Generators.csproj", "{7F55A45D-4E1D-4A36-ADD3-87F29A285AA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.HLE.Kernel.Generators", "src\Hyjinx.HLE.Kernel.Generators\Hyjinx.HLE.Kernel.Generators.csproj", "{7F55A45D-4E1D-4A36-ADD3-87F29A285AA2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.HLE.Generators", "src\Ryujinx.HLE.Generators\Ryujinx.HLE.Generators.csproj", "{B575BCDE-2FD8-4A5D-8756-31CDD7FE81F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.HLE.Generators", "src\Hyjinx.HLE.Generators\Hyjinx.HLE.Generators.csproj", "{B575BCDE-2FD8-4A5D-8756-31CDD7FE81F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{0BA89F51-4EA2-495D-A732-FAABFE0A9725}"
 EndProject

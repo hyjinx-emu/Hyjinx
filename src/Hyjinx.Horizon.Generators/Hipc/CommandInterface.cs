@@ -1,7 +1,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 
-namespace Ryujinx.Horizon.Generators.Hipc
+namespace Hyjinx.Horizon.Generators.Hipc
 {
     class CommandInterface
     {

@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
 
-namespace Ryujinx.HLE.Generators
+namespace Hyjinx.HLE.Generators
 {
     [Generator]
     public class IpcServiceGenerator : ISourceGenerator

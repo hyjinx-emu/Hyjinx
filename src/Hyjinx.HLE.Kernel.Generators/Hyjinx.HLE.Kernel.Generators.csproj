@@ -3,6 +3,7 @@
   
   <PropertyGroup>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <RootNamespace>Hyjinx.HLE.Kernel.Generators</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

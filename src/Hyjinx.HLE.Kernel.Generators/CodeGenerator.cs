@@ -1,13 +1,12 @@
 using System.Text;
 
-namespace Ryujinx.Horizon.Generators
+namespace Hyjinx.HLE.Kernel.Generators
 {
     class CodeGenerator
     {
-        private const int IndentLength = 4;
-
+        private const string Indent = "    ";
         private readonly StringBuilder _sb;
-        private int _currentIndentCount;
+        private string _currentIndent;
 
         public CodeGenerator()
         {
@@ -25,23 +24,20 @@ namespace Ryujinx.Horizon.Generators
             IncreaseIndentation();
         }
 
-        public void LeaveScope(string suffix = "")
+        public void LeaveScope()
         {
             DecreaseIndentation();
-            AppendLine($"}}{suffix}");
+            AppendLine("}");
         }
 
         public void IncreaseIndentation()
         {
-            _currentIndentCount++;
+            _currentIndent += Indent;
         }
 
         public void DecreaseIndentation()
         {
-            if (_currentIndentCount - 1 >= 0)
-            {
-                _currentIndentCount--;
-            }
+            _currentIndent = _currentIndent.Substring(0, _currentIndent.Length - Indent.Length);
         }
 
         public void AppendLine()
@@ -51,8 +47,7 @@ namespace Ryujinx.Horizon.Generators
 
         public void AppendLine(string text)
         {
-            _sb.Append(' ', IndentLength * _currentIndentCount);
-            _sb.AppendLine(text);
+            _sb.AppendLine(_currentIndent + text);
         }
 
         public override string ToString()

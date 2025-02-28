@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ryujinx.Horizon.Generators.Hipc
+namespace Hyjinx.Horizon.Generators.Hipc
 {
     class HipcSyntaxReceiver : ISyntaxReceiver
     {
