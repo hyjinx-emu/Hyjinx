@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.ShaderTools
+namespace Hyjinx.ShaderTools
 {
     class Program
     {

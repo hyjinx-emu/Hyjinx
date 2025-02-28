@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../.build/exe.props" />
-  
-  <PropertyGroup>
-    <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Ryujinx.Graphics.Shader\Ryujinx.Graphics.Shader.csproj" />
