@@ -41,7 +41,7 @@ namespace Ryujinx.UI.Windows
         [GUI] RadioButton _noUpdateRadioButton;
 #pragma warning restore CS0649, IDE0044
 
-        public TitleUpdateWindow(MainWindow parent, VirtualFileSystem virtualFileSystem, ApplicationData applicationData) : this(new Builder("Ryujinx.Gtk3.UI.Windows.TitleUpdateWindow.glade"), parent, virtualFileSystem, applicationData) { }
+        public TitleUpdateWindow(MainWindow parent, VirtualFileSystem virtualFileSystem, ApplicationData applicationData) : this(new Builder("Hyjinx.Gtk3.UI.Windows.TitleUpdateWindow.glade"), parent, virtualFileSystem, applicationData) { }
 
         private TitleUpdateWindow(Builder builder, MainWindow parent, VirtualFileSystem virtualFileSystem, ApplicationData applicationData) : base(builder.GetRawOwnedObject("_titleUpdateWindow"))
         {

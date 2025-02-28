@@ -36,7 +36,7 @@ namespace Ryujinx.UI.Windows
         [GUI] TreeSelection _dlcTreeSelection;
 #pragma warning restore CS0649, IDE0044
 
-        public DlcWindow(VirtualFileSystem virtualFileSystem, string applicationIdBase, ApplicationData applicationData) : this(new Builder("Ryujinx.Gtk3.UI.Windows.DlcWindow.glade"), virtualFileSystem, applicationIdBase, applicationData) { }
+        public DlcWindow(VirtualFileSystem virtualFileSystem, string applicationIdBase, ApplicationData applicationData) : this(new Builder("Hyjinx.Gtk3.UI.Windows.DlcWindow.glade"), virtualFileSystem, applicationIdBase, applicationData) { }
 
         private DlcWindow(Builder builder, VirtualFileSystem virtualFileSystem, string applicationIdBase, ApplicationData applicationData) : base(builder.GetRawOwnedObject("_dlcWindow"))
         {
