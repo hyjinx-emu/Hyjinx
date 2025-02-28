@@ -10,7 +10,7 @@
     <ProjectReference Include="..\Hyjinx.Graphics.Device\Hyjinx.Graphics.Device.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Nvdec.FFmpeg\Hyjinx.Graphics.Nvdec.FFmpeg.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Nvdec.Vp9\Hyjinx.Graphics.Nvdec.Vp9.csproj" />
-    <ProjectReference Include="..\Ryujinx.Graphics.Texture\Ryujinx.Graphics.Texture.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Texture\Hyjinx.Graphics.Texture.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Video\Hyjinx.Graphics.Video.csproj" />
   </ItemGroup>
 

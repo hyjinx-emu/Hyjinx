@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.GAL", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.OpenGL", "src\Hyjinx.Graphics.OpenGL\Hyjinx.Graphics.OpenGL.csproj", "{9558FB96-075D-4219-8FFF-401979DC0B69}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Texture", "src\Ryujinx.Graphics.Texture\Ryujinx.Graphics.Texture.csproj", "{E1B1AD28-289D-47B7-A106-326972240207}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Texture", "src\Hyjinx.Graphics.Texture\Hyjinx.Graphics.Texture.csproj", "{E1B1AD28-289D-47B7-A106-326972240207}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Shader", "src\Hyjinx.Graphics.Shader\Hyjinx.Graphics.Shader.csproj", "{03B955CD-AD84-4B93-AAA7-BF17923BBAA5}"
 EndProject

@@ -1,6 +1,6 @@
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
-using Ryujinx.Graphics.Texture;
+using Hyjinx.Graphics.Texture;
 using Ryujinx.Memory.Range;
 using System;
 using System.Collections.Concurrent;

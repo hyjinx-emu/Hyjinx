@@ -1,6 +1,6 @@
 using Ryujinx.Common;
 using Hyjinx.Graphics.Device;
-using Ryujinx.Graphics.Texture;
+using Hyjinx.Graphics.Texture;
 using Hyjinx.Graphics.Video;
 using System;
 using System.Runtime.Intrinsics;

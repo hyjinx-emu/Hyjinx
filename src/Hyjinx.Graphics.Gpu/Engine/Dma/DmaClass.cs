@@ -3,7 +3,7 @@ using Ryujinx.Common.Memory;
 using Hyjinx.Graphics.Device;
 using Hyjinx.Graphics.Gpu.Engine.Threed;
 using Hyjinx.Graphics.Gpu.Memory;
-using Ryujinx.Graphics.Texture;
+using Hyjinx.Graphics.Texture;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

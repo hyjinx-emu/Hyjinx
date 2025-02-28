@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
-using Ryujinx.Graphics.Texture;
+using Hyjinx.Graphics.Texture;
 using Hyjinx.Graphics.Vic.Types;
 using System;
 using System.Runtime.CompilerServices;

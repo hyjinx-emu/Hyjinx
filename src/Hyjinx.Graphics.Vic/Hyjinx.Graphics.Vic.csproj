@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Ryujinx.Common\Ryujinx.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Device\Hyjinx.Graphics.Device.csproj" />
-    <ProjectReference Include="..\Ryujinx.Graphics.Texture\Ryujinx.Graphics.Texture.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Texture\Hyjinx.Graphics.Texture.csproj" />
   </ItemGroup>
 
 </Project>

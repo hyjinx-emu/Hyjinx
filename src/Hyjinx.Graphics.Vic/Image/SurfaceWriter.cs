@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.Texture;
+using Hyjinx.Graphics.Texture;
 using Hyjinx.Graphics.Vic.Types;
 using System;
 using System.Runtime.Intrinsics;

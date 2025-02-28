@@ -5,7 +5,7 @@ using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Gpu.Shader;
 using Hyjinx.Graphics.Shader;
-using Ryujinx.Graphics.Texture;
+using Hyjinx.Graphics.Texture;
 using System;
 using System.Runtime.CompilerServices;
 

@@ -3,7 +3,7 @@ using Hyjinx.Graphics.Device;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Image;
-using Ryujinx.Graphics.Texture;
+using Hyjinx.Graphics.Texture;
 using Ryujinx.Memory;
 using System;
 using System.Collections.Generic;

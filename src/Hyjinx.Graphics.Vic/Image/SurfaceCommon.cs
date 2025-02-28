@@ -1,5 +1,5 @@
 using Ryujinx.Common;
-using Ryujinx.Graphics.Texture;
+using Hyjinx.Graphics.Texture;
 
 namespace Hyjinx.Graphics.Vic.Image
 {

@@ -1,7 +1,7 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Memory;
 using Hyjinx.Graphics.Device;
-using Ryujinx.Graphics.Texture;
+using Hyjinx.Graphics.Texture;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
