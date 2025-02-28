@@ -1,6 +1,6 @@
 using Ryujinx.Graphics.Device;
 using Ryujinx.Graphics.Host1x;
-using Ryujinx.Graphics.Nvdec;
+using Hyjinx.Graphics.Nvdec;
 using Ryujinx.Graphics.Vic;
 using System;
 using GpuContext = Ryujinx.Graphics.Gpu.GpuContext;

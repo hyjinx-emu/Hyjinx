@@ -10,7 +10,7 @@
     <ProjectReference Include="..\Hyjinx.Cpu\Hyjinx.Cpu.csproj" />
     <ProjectReference Include="..\Ryujinx.Graphics.Gpu\Ryujinx.Graphics.Gpu.csproj" />
     <ProjectReference Include="..\Ryujinx.Graphics.Host1x\Ryujinx.Graphics.Host1x.csproj" />
-    <ProjectReference Include="..\Ryujinx.Graphics.Nvdec\Ryujinx.Graphics.Nvdec.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Nvdec\Hyjinx.Graphics.Nvdec.csproj" />
     <ProjectReference Include="..\Ryujinx.Graphics.Vic\Ryujinx.Graphics.Vic.csproj" />
     <ProjectReference Include="..\Hyjinx.HLE.Generators\Hyjinx.HLE.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Ryujinx.Horizon.Common\Ryujinx.Horizon.Common.csproj" />
