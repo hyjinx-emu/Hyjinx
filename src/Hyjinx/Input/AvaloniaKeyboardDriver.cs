@@ -1,11 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Hyjinx.Ava.Common.Locale;
-using Ryujinx.Input;
+using Hyjinx.Input;
 using System;
 using System.Collections.Generic;
 using AvaKey = Avalonia.Input.Key;
-using Key = Ryujinx.Input.Key;
+using Key = Hyjinx.Input.Key;
 
 namespace Hyjinx.Ava.Input
 {

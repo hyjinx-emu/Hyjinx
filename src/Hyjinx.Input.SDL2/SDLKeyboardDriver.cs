@@ -1,5 +1,5 @@
 using Hyjinx.SDL2.Common;
-using Ryujinx.Input;
+using Hyjinx.Input;
 using System;
 
 namespace Hyjinx.Input.SDL2

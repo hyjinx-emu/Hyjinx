@@ -1,10 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Ryujinx.Input;
+using Hyjinx.Input;
 using System;
 using System.Numerics;
-using MouseButton = Ryujinx.Input.MouseButton;
+using MouseButton = Hyjinx.Input.MouseButton;
 using Size = System.Drawing.Size;
 
 namespace Hyjinx.Ava.Input

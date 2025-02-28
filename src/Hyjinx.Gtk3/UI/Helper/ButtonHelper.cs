@@ -1,5 +1,5 @@
 using Ryujinx.Common.Configuration.Hid.Controller;
-using Ryujinx.Input;
+using Hyjinx.Input;
 using System;
 using System.Collections.Generic;
 using Key = Ryujinx.Common.Configuration.Hid.Key;

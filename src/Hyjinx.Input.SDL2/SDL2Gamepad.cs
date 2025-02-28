@@ -1,13 +1,13 @@
 using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Configuration.Hid.Controller;
 using Ryujinx.Common.Logging;
-using Ryujinx.Input;
+using Hyjinx.Input;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using static SDL2.SDL;
 
-using StickInputId = Ryujinx.Input.StickInputId;
+using StickInputId = Hyjinx.Input.StickInputId;
 
 namespace Hyjinx.Input.SDL2
 {

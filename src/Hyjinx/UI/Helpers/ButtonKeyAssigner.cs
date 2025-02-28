@@ -1,7 +1,7 @@
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
-using Ryujinx.Input;
-using Ryujinx.Input.Assigner;
+using Hyjinx.Input;
+using Hyjinx.Input.Assigner;
 using System;
 using System.Threading.Tasks;
 

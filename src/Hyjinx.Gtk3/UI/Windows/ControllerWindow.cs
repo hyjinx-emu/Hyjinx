@@ -6,9 +6,9 @@ using Ryujinx.Common.Configuration.Hid.Controller.Motion;
 using Ryujinx.Common.Configuration.Hid.Keyboard;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Utilities;
-using Ryujinx.Input;
-using Ryujinx.Input.Assigner;
-using Ryujinx.Input.GTK3;
+using Hyjinx.Input;
+using Hyjinx.Input.Assigner;
+using Hyjinx.Input.GTK3;
 using Hyjinx.UI.Common.Configuration;
 using Ryujinx.UI.Helper;
 using Ryujinx.UI.Widgets;
@@ -18,7 +18,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading;
-using Button = Ryujinx.Input.Button;
+using Button = Hyjinx.Input.Button;
 using ConfigGamepadInputId = Ryujinx.Common.Configuration.Hid.Controller.GamepadInputId;
 using ConfigStickInputId = Ryujinx.Common.Configuration.Hid.Controller.StickInputId;
 using GUI = Gtk.Builder.ObjectAttribute;
@@ -889,13 +889,13 @@ namespace Ryujinx.UI.Windows
                     Thread.Sleep(10);
                     assigner.ReadInput();
 
-                    if (_mousePressed || keyboard.IsPressed(Ryujinx.Input.Key.Escape) || assigner.IsAnyButtonPressed() || assigner.ShouldCancel())
+                    if (_mousePressed || keyboard.IsPressed(Hyjinx.Input.Key.Escape) || assigner.IsAnyButtonPressed() || assigner.ShouldCancel())
                     {
                         break;
                     }
                 }
 
-                string pressedButton = ButtonHelper.ToString(assigner.GetPressedButton() ?? new Button(Input.Key.Unknown));
+                string pressedButton = ButtonHelper.ToString(assigner.GetPressedButton() ?? new Button(Hyjinx.Input.Key.Unknown));
 
                 Application.Invoke(delegate
                 {

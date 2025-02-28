@@ -6,8 +6,8 @@ using Avalonia.LogicalTree;
 using Hyjinx.Ava.Input;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
-using Ryujinx.Input;
-using Ryujinx.Input.Assigner;
+using Hyjinx.Input;
+using Hyjinx.Input.Assigner;
 using Key = Ryujinx.Common.Configuration.Hid.Key;
 
 namespace Hyjinx.Ava.UI.Views.Settings

@@ -18,7 +18,7 @@ using Ryujinx.Common.Configuration.Hid.Controller.Motion;
 using Ryujinx.Common.Configuration.Hid.Keyboard;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Utilities;
-using Ryujinx.Input;
+using Hyjinx.Input;
 using Hyjinx.UI.Common.Configuration;
 using System;
 using System.Collections.Generic;

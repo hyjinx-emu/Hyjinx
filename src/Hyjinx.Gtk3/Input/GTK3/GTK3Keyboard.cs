@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using ConfigKey = Ryujinx.Common.Configuration.Hid.Key;
 
-namespace Ryujinx.Input.GTK3
+namespace Hyjinx.Input.GTK3
 {
     public class GTK3Keyboard : IKeyboard
     {

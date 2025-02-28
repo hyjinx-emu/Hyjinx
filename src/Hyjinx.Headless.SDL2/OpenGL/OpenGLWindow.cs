@@ -3,7 +3,7 @@ using OpenTK.Graphics.OpenGL;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Hyjinx.Graphics.OpenGL;
-using Ryujinx.Input.HLE;
+using Hyjinx.Input.HLE;
 using System;
 using static SDL2.SDL;
 

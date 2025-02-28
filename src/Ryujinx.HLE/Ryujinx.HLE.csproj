@@ -16,7 +16,7 @@
     <ProjectReference Include="..\Hyjinx.Horizon.Common\Hyjinx.Horizon.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.HLE.Kernel.Generators\Hyjinx.HLE.Kernel.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Hyjinx.Horizon\Hyjinx.Horizon.csproj" />
-    <ProjectReference Include="..\Ryujinx.Input\Ryujinx.Input.csproj" />
+    <ProjectReference Include="..\Hyjinx.Input\Hyjinx.Input.csproj" />
     <ProjectReference Include="..\Ryujinx.Memory\Ryujinx.Memory.csproj" />
   </ItemGroup>
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using GtkKey = Gdk.Key;
 
-namespace Ryujinx.Input.GTK3
+namespace Hyjinx.Input.GTK3
 {
     public static class GTK3MappingHelper
     {

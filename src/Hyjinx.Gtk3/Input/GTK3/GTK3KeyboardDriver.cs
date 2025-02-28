@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using GtkKey = Gdk.Key;
 
-namespace Ryujinx.Input.GTK3
+namespace Hyjinx.Input.GTK3
 {
     public class GTK3KeyboardDriver : IGamepadDriver
     {

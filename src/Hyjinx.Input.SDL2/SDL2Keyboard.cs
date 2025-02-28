@@ -1,6 +1,6 @@
 using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Configuration.Hid.Keyboard;
-using Ryujinx.Input;
+using Hyjinx.Input;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using static SDL2.SDL;
 
 using ConfigKey = Ryujinx.Common.Configuration.Hid.Key;
-using Key = Ryujinx.Input.Key;
+using Key = Hyjinx.Input.Key;
 
 namespace Hyjinx.Input.SDL2
 {

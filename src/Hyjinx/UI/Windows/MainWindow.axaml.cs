@@ -17,7 +17,7 @@ using Hyjinx.Graphics.Gpu;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
 using Ryujinx.HLE.HOS.Services.Account.Acc;
-using Ryujinx.Input.HLE;
+using Hyjinx.Input.HLE;
 using Hyjinx.Input.SDL2;
 using Hyjinx.Modules;
 using Ryujinx.UI.App.Common;

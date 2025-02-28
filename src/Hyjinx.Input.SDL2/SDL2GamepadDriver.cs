@@ -1,4 +1,4 @@
-using Ryujinx.Input;
+using Hyjinx.Input;
 using Hyjinx.SDL2.Common;
 using System;
 using System.Collections.Generic;

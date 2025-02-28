@@ -1,6 +1,6 @@
 using Gdk;
 using Ryujinx.Common.Configuration;
-using Ryujinx.Input.HLE;
+using Hyjinx.Input.HLE;
 using Ryujinx.UI.Helper;
 using SPB.Graphics.Vulkan;
 using SPB.Platform.Metal;

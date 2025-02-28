@@ -1,5 +1,5 @@
 using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Input;
+using Hyjinx.Input;
 using System;
 using System.Drawing;
 using System.Numerics;

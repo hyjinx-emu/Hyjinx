@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.Input.HLE
+namespace Hyjinx.Input.HLE
 {
     public class InputManager : IDisposable
     {

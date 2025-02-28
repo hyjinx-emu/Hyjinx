@@ -27,7 +27,7 @@ using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
 using Ryujinx.HLE.HOS.Services.Account.Acc;
 using Ryujinx.HLE.UI;
-using Ryujinx.Input.HLE;
+using Hyjinx.Input.HLE;
 using Hyjinx.Modules;
 using Ryujinx.UI.App.Common;
 using Hyjinx.UI.Common;
@@ -41,7 +41,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Key = Ryujinx.Input.Key;
+using Key = Hyjinx.Input.Key;
 using MissingKeyException = LibHac.Common.Keys.MissingKeyException;
 using ShaderCacheLoadingState = Hyjinx.Graphics.Gpu.Shader.ShaderCacheState;
 

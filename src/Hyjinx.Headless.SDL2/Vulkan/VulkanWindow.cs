@@ -1,6 +1,6 @@
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
-using Ryujinx.Input.HLE;
+using Hyjinx.Input.HLE;
 using Hyjinx.SDL2.Common;
 using System;
 using System.Runtime.InteropServices;

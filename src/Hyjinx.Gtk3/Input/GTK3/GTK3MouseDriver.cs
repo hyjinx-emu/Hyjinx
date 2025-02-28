@@ -4,7 +4,7 @@ using System;
 using System.Numerics;
 using Size = System.Drawing.Size;
 
-namespace Ryujinx.Input.GTK3
+namespace Hyjinx.Input.GTK3
 {
     public class GTK3MouseDriver : IGamepadDriver
     {

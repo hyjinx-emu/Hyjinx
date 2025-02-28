@@ -3,7 +3,7 @@ using Ryujinx.HLE.HOS.Services.Hid;
 using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
 using System;
 
-namespace Ryujinx.Input.HLE
+namespace Hyjinx.Input.HLE
 {
     public class TouchScreenManager : IDisposable
     {

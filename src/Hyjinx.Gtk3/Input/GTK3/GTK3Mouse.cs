@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-namespace Ryujinx.Input.GTK3
+namespace Hyjinx.Input.GTK3
 {
     public class GTK3Mouse : IMouse
     {
