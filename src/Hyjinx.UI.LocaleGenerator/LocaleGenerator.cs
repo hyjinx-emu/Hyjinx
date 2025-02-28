@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
-namespace Ryujinx.UI.LocaleGenerator
+namespace Hyjinx.UI.LocaleGenerator
 {
     [Generator]
     public class LocaleGenerator : IIncrementalGenerator

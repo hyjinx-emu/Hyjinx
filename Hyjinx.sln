@@ -73,7 +73,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Vulkan", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spv.Generator", "src\Spv.Generator\Spv.Generator.csproj", "{2BCB3D7A-38C0-4FE7-8FDA-374C6AD56D0E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.UI.LocaleGenerator", "src\Ryujinx.UI.LocaleGenerator\Ryujinx.UI.LocaleGenerator.csproj", "{77D01AD9-2C98-478E-AE1D-8F7100738FB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.UI.LocaleGenerator", "src\Hyjinx.UI.LocaleGenerator\Hyjinx.UI.LocaleGenerator.csproj", "{77D01AD9-2C98-478E-AE1D-8F7100738FB4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Horizon.Common", "src\Ryujinx.Horizon.Common\Ryujinx.Horizon.Common.csproj", "{77F96ECE-4952-42DB-A528-DED25572A573}"
 EndProject
