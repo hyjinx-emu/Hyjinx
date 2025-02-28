@@ -3,7 +3,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.Audio.Backends.SoundIo.Native
+namespace Hyjinx.Audio.Backends.SoundIo.Native
 {
     public static partial class SoundIo
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
-using static Ryujinx.Audio.Backends.SoundIo.Native.SoundIo;
+using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
-namespace Ryujinx.Audio.Backends.SoundIo.Native
+namespace Hyjinx.Audio.Backends.SoundIo.Native
 {
     internal class SoundIoException : Exception
     {

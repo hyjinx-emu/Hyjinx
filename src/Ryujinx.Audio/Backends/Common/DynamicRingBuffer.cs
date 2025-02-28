@@ -3,7 +3,7 @@ using Ryujinx.Common.Memory;
 using System;
 using System.Buffers;
 
-namespace Ryujinx.Audio.Backends.Common
+namespace Hyjinx.Audio.Backends.Common
 {
     /// <summary>
     /// A ring buffer that grow if data written to it is too big to fit.

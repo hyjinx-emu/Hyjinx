@@ -3,7 +3,7 @@ using Ryujinx.Audio.Integration;
 using Ryujinx.Memory;
 using System;
 
-namespace Ryujinx.Audio.Backends.Dummy
+namespace Hyjinx.Audio.Backends.Dummy
 {
     class DummyHardwareDeviceSessionInput : IHardwareDeviceSession
     {

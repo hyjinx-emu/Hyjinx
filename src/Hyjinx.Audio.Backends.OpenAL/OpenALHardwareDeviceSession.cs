@@ -1,12 +1,12 @@
 using OpenTK.Audio.OpenAL;
-using Ryujinx.Audio.Backends.Common;
+using Hyjinx.Audio.Backends.Common;
 using Ryujinx.Audio.Common;
 using Ryujinx.Memory;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Ryujinx.Audio.Backends.OpenAL
+namespace Hyjinx.Audio.Backends.OpenAL
 {
     class OpenALHardwareDeviceSession : HardwareDeviceSessionOutputBase
     {

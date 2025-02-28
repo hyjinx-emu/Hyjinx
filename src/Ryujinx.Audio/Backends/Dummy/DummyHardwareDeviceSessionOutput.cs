@@ -1,10 +1,10 @@
-using Ryujinx.Audio.Backends.Common;
+using Hyjinx.Audio.Backends.Common;
 using Ryujinx.Audio.Common;
 using Ryujinx.Audio.Integration;
 using Ryujinx.Memory;
 using System.Threading;
 
-namespace Ryujinx.Audio.Backends.Dummy
+namespace Hyjinx.Audio.Backends.Dummy
 {
     internal class DummyHardwareDeviceSessionOutput : HardwareDeviceSessionOutputBase
     {

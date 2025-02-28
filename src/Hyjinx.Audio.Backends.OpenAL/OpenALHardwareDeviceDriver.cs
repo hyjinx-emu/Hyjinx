@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using static Ryujinx.Audio.Integration.IHardwareDeviceDriver;
 
-namespace Ryujinx.Audio.Backends.OpenAL
+namespace Hyjinx.Audio.Backends.OpenAL
 {
     public class OpenALHardwareDeviceDriver : IHardwareDeviceDriver
     {
@@ -82,7 +82,7 @@ namespace Ryujinx.Audio.Backends.OpenAL
 
             if (sampleRate == 0)
             {
-                sampleRate = Constants.TargetSampleRate;
+                sampleRate = Ryujinx.Audio.Constants.TargetSampleRate;
             }
 
             if (direction != Direction.Output)

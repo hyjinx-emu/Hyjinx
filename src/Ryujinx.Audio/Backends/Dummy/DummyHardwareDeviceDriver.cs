@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using static Ryujinx.Audio.Integration.IHardwareDeviceDriver;
 
-namespace Ryujinx.Audio.Backends.Dummy
+namespace Hyjinx.Audio.Backends.Dummy
 {
     public class DummyHardwareDeviceDriver : IHardwareDeviceDriver
     {
@@ -28,7 +28,7 @@ namespace Ryujinx.Audio.Backends.Dummy
         {
             if (sampleRate == 0)
             {
-                sampleRate = Constants.TargetSampleRate;
+                sampleRate = Ryujinx.Audio.Constants.TargetSampleRate;
             }
 
             if (channelCount == 0)

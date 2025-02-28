@@ -1,8 +1,8 @@
 using Gtk;
 using LibHac.Tools.FsSystem;
-using Ryujinx.Audio.Backends.OpenAL;
-using Ryujinx.Audio.Backends.SDL2;
-using Ryujinx.Audio.Backends.SoundIo;
+using Hyjinx.Audio.Backends.OpenAL;
+using Hyjinx.Audio.Backends.SDL2;
+using Hyjinx.Audio.Backends.SoundIo;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Configuration.Multiplayer;

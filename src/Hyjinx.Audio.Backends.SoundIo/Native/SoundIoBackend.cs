@@ -1,4 +1,4 @@
-namespace Ryujinx.Audio.Backends.SoundIo.Native
+namespace Hyjinx.Audio.Backends.SoundIo.Native
 {
     public enum SoundIoBackend
     {

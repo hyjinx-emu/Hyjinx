@@ -1,6 +1,6 @@
 using CommandLine;
 using LibHac.Tools.FsSystem;
-using Ryujinx.Audio.Backends.SDL2;
+using Hyjinx.Audio.Backends.SDL2;
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Hid;

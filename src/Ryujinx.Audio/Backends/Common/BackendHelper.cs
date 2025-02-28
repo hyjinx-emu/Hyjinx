@@ -1,7 +1,7 @@
 using Ryujinx.Audio.Common;
 using System;
 
-namespace Ryujinx.Audio.Backends.Common
+namespace Hyjinx.Audio.Backends.Common
 {
     public static class BackendHelper
     {

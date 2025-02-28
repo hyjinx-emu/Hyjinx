@@ -3,7 +3,7 @@ using Ryujinx.Audio.Integration;
 using Ryujinx.Memory;
 using System.Runtime.CompilerServices;
 
-namespace Ryujinx.Audio.Backends.Common
+namespace Hyjinx.Audio.Backends.Common
 {
     public abstract class HardwareDeviceSessionOutputBase : IHardwareDeviceSession
     {

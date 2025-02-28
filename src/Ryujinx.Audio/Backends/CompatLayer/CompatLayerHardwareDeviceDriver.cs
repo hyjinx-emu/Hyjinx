@@ -1,5 +1,5 @@
-using Ryujinx.Audio.Backends.Common;
-using Ryujinx.Audio.Backends.Dummy;
+using Hyjinx.Audio.Backends.Common;
+using Hyjinx.Audio.Backends.Dummy;
 using Ryujinx.Audio.Common;
 using Ryujinx.Audio.Integration;
 using Ryujinx.Common.Logging;
@@ -8,7 +8,7 @@ using System;
 using System.Threading;
 using static Ryujinx.Audio.Integration.IHardwareDeviceDriver;
 
-namespace Ryujinx.Audio.Backends.CompatLayer
+namespace Hyjinx.Audio.Backends.CompatLayer
 {
     public class CompatLayerHardwareDeviceDriver : IHardwareDeviceDriver
     {
@@ -105,7 +105,7 @@ namespace Ryujinx.Audio.Backends.CompatLayer
 
             if (sampleRate == 0)
             {
-                sampleRate = Constants.TargetSampleRate;
+                sampleRate = Ryujinx.Audio.Constants.TargetSampleRate;
             }
 
             if (!_realDriver.SupportsDirection(direction))
@@ -174,7 +174,7 @@ namespace Ryujinx.Audio.Backends.CompatLayer
         public bool SupportsSampleRate(uint sampleRate)
         {
             // TODO: More sample rates.
-            return sampleRate == Constants.TargetSampleRate;
+            return sampleRate == Ryujinx.Audio.Constants.TargetSampleRate;
         }
 
         public IHardwareDeviceDriver GetRealDeviceDriver()

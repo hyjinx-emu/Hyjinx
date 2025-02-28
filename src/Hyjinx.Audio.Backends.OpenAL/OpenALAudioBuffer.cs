@@ -1,4 +1,4 @@
-namespace Ryujinx.Audio.Backends.OpenAL
+namespace Hyjinx.Audio.Backends.OpenAL
 {
     class OpenALAudioBuffer
     {

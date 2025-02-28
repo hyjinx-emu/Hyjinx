@@ -1,5 +1,5 @@
-using Ryujinx.Audio.Backends.Common;
-using Ryujinx.Audio.Backends.SoundIo.Native;
+using Hyjinx.Audio.Backends.Common;
+using Hyjinx.Audio.Backends.SoundIo.Native;
 using Ryujinx.Audio.Common;
 using Ryujinx.Common.Memory;
 using Ryujinx.Memory;
@@ -8,9 +8,9 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using static Ryujinx.Audio.Backends.SoundIo.Native.SoundIo;
+using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
-namespace Ryujinx.Audio.Backends.SoundIo
+namespace Hyjinx.Audio.Backends.SoundIo
 {
     class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
     {

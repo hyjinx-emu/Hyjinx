@@ -1,10 +1,10 @@
-using Ryujinx.Audio.Backends.Common;
+using Hyjinx.Audio.Backends.Common;
 using Ryujinx.Audio.Common;
 using Ryujinx.Audio.Renderer.Dsp;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.Audio.Backends.CompatLayer
+namespace Hyjinx.Audio.Backends.CompatLayer
 {
     class CompatLayerHardwareDeviceSession : HardwareDeviceSessionOutputBase
     {
