@@ -5,7 +5,7 @@ using Ryujinx.HLE.HOS.Services.Settings.Types;
 using Ryujinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService;
 using Ryujinx.HLE.HOS.SystemState;
 using Hyjinx.Horizon.Common;
-using Ryujinx.Horizon.Sdk.Lbl;
+using Hyjinx.Horizon.Sdk.Lbl;
 using System;
 
 namespace Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy

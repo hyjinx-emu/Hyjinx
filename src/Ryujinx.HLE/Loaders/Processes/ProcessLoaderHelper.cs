@@ -19,7 +19,7 @@ using Ryujinx.HLE.HOS.Kernel.Process;
 using Ryujinx.HLE.Loaders.Executables;
 using Ryujinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.Horizon.Common;
-using Ryujinx.Horizon.Sdk.Arp;
+using Hyjinx.Horizon.Sdk.Arp;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -435,14 +435,14 @@ namespace Ryujinx.HLE.Loaders.Processes
 
             // Register everything in arp service.
             device.System.ServiceTable.ArpWriter.AcquireRegistrar(out IRegistrar registrar);
-            registrar.SetApplicationControlProperty(MemoryMarshal.Cast<byte, Horizon.Sdk.Ns.ApplicationControlProperty>(applicationControlProperties.ByteSpan)[0]);
+            registrar.SetApplicationControlProperty(MemoryMarshal.Cast<byte, Hyjinx.Horizon.Sdk.Ns.ApplicationControlProperty>(applicationControlProperties.ByteSpan)[0]);
             // TODO: Handle Version and StorageId when it will be needed.
             registrar.SetApplicationLaunchProperty(new ApplicationLaunchProperty()
             {
-                ApplicationId = new Horizon.Sdk.Ncm.ApplicationId(programId),
+                ApplicationId = new Hyjinx.Horizon.Sdk.Ncm.ApplicationId(programId),
                 Version = 0x00,
-                Storage = Horizon.Sdk.Ncm.StorageId.BuiltInUser,
-                PatchStorage = Horizon.Sdk.Ncm.StorageId.None,
+                Storage = Hyjinx.Horizon.Sdk.Ncm.StorageId.BuiltInUser,
+                PatchStorage = Hyjinx.Horizon.Sdk.Ncm.StorageId.None,
                 ApplicationKind = ApplicationKind.Application,
             });
 

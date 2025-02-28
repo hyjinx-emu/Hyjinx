@@ -4,7 +4,7 @@ using LibHac.Fs;
 using LibHac.Fs.Shim;
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.Horizon.Sdk.Account;
+using Hyjinx.Horizon.Sdk.Account;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

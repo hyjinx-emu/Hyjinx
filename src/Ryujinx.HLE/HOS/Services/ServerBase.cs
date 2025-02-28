@@ -6,7 +6,7 @@ using Ryujinx.HLE.HOS.Kernel;
 using Ryujinx.HLE.HOS.Kernel.Ipc;
 using Ryujinx.HLE.HOS.Kernel.Process;
 using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.Horizon;
+using Hyjinx.Horizon;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Buffers;

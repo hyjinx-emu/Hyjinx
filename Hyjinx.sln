@@ -77,7 +77,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.UI.LocaleGenerator",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Horizon.Common", "src\Hyjinx.Horizon.Common\Hyjinx.Horizon.Common.csproj", "{77F96ECE-4952-42DB-A528-DED25572A573}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Horizon", "src\Ryujinx.Horizon\Ryujinx.Horizon.csproj", "{AF34127A-3A92-43E5-8496-14960A50B1F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Horizon", "src\Hyjinx.Horizon\Hyjinx.Horizon.csproj", "{AF34127A-3A92-43E5-8496-14960A50B1F1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.HLE.Kernel.Generators", "src\Hyjinx.HLE.Kernel.Generators\Hyjinx.HLE.Kernel.Generators.csproj", "{7F55A45D-4E1D-4A36-ADD3-87F29A285AA2}"
 EndProject

@@ -26,12 +26,12 @@ namespace Hyjinx.Horizon.Generators.Hipc
         public const string CommandAttributeName = "CmifCommandAttribute";
 
         private const string TypeResult = "Hyjinx.Horizon.Common.Result";
-        private const string TypeBufferAttribute = "Ryujinx.Horizon.Sdk.Sf.BufferAttribute";
-        private const string TypeCopyHandleAttribute = "Ryujinx.Horizon.Sdk.Sf.CopyHandleAttribute";
-        private const string TypeMoveHandleAttribute = "Ryujinx.Horizon.Sdk.Sf.MoveHandleAttribute";
-        private const string TypeClientProcessIdAttribute = "Ryujinx.Horizon.Sdk.Sf.ClientProcessIdAttribute";
-        private const string TypeCommandAttribute = "Ryujinx.Horizon.Sdk.Sf." + CommandAttributeName;
-        private const string TypeIServiceObject = "Ryujinx.Horizon.Sdk.Sf.IServiceObject";
+        private const string TypeBufferAttribute = "Hyjinx.Horizon.Sdk.Sf.BufferAttribute";
+        private const string TypeCopyHandleAttribute = "Hyjinx.Horizon.Sdk.Sf.CopyHandleAttribute";
+        private const string TypeMoveHandleAttribute = "Hyjinx.Horizon.Sdk.Sf.MoveHandleAttribute";
+        private const string TypeClientProcessIdAttribute = "Hyjinx.Horizon.Sdk.Sf.ClientProcessIdAttribute";
+        private const string TypeCommandAttribute = "Hyjinx.Horizon.Sdk.Sf." + CommandAttributeName;
+        private const string TypeIServiceObject = "Hyjinx.Horizon.Sdk.Sf.IServiceObject";
 
         private enum Modifier
         {
@@ -72,9 +72,9 @@ namespace Hyjinx.Horizon.Generators.Hipc
                 string className = commandInterface.ClassDeclarationSyntax.Identifier.ToString();
 
                 generator.AppendLine("using Hyjinx.Horizon.Common;");
-                generator.AppendLine("using Ryujinx.Horizon.Sdk.Sf;");
-                generator.AppendLine("using Ryujinx.Horizon.Sdk.Sf.Cmif;");
-                generator.AppendLine("using Ryujinx.Horizon.Sdk.Sf.Hipc;");
+                generator.AppendLine("using Hyjinx.Horizon.Sdk.Sf;");
+                generator.AppendLine("using Hyjinx.Horizon.Sdk.Sf.Cmif;");
+                generator.AppendLine("using Hyjinx.Horizon.Sdk.Sf.Hipc;");
                 generator.AppendLine("using System;");
                 generator.AppendLine("using System.Collections.Frozen;");
                 generator.AppendLine("using System.Collections.Generic;");

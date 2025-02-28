@@ -28,7 +28,7 @@ using Ryujinx.HLE.HOS.Services.Time.Clock;
 using Ryujinx.HLE.HOS.SystemState;
 using Ryujinx.HLE.Loaders.Executables;
 using Ryujinx.HLE.Loaders.Processes;
-using Ryujinx.Horizon;
+using Hyjinx.Horizon;
 using System;
 using System.Collections.Generic;
 using System.IO;
