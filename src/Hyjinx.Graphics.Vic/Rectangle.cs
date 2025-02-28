@@ -1,4 +1,4 @@
-namespace Ryujinx.Graphics.Vic
+namespace Hyjinx.Graphics.Vic
 {
     readonly struct Rectangle
     {

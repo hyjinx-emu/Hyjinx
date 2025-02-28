@@ -1,5 +1,5 @@
-using Ryujinx.Graphics.Vic.Image;
-using Ryujinx.Graphics.Vic.Types;
+using Hyjinx.Graphics.Vic.Image;
+using Hyjinx.Graphics.Vic.Types;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -7,7 +7,7 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 
-namespace Ryujinx.Graphics.Vic
+namespace Hyjinx.Graphics.Vic
 {
     static class Blender
     {

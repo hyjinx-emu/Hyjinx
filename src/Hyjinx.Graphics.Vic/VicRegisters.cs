@@ -1,6 +1,6 @@
 using Ryujinx.Common.Memory;
 
-namespace Ryujinx.Graphics.Vic
+namespace Hyjinx.Graphics.Vic
 {
     struct PlaneOffsets
     {

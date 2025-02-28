@@ -1,10 +1,10 @@
 using Hyjinx.Graphics.Device;
-using Ryujinx.Graphics.Vic.Image;
-using Ryujinx.Graphics.Vic.Types;
+using Hyjinx.Graphics.Vic.Image;
+using Hyjinx.Graphics.Vic.Types;
 using System;
 using System.Collections.Generic;
 
-namespace Ryujinx.Graphics.Vic
+namespace Hyjinx.Graphics.Vic
 {
     public class VicDevice : IDeviceState
     {

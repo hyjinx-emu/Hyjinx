@@ -1,13 +1,13 @@
 using Ryujinx.Common.Logging;
 using Ryujinx.Graphics.Texture;
-using Ryujinx.Graphics.Vic.Types;
+using Hyjinx.Graphics.Vic.Types;
 using System;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
-using static Ryujinx.Graphics.Vic.Image.SurfaceCommon;
+using static Hyjinx.Graphics.Vic.Image.SurfaceCommon;
 
-namespace Ryujinx.Graphics.Vic.Image
+namespace Hyjinx.Graphics.Vic.Image
 {
     class SurfaceWriter
     {

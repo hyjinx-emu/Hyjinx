@@ -1,4 +1,4 @@
-namespace Ryujinx.Graphics.Vic.Types
+namespace Hyjinx.Graphics.Vic.Types
 {
     enum PixelFormat
     {

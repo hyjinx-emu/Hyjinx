@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.Graphics.Vic.Image
+namespace Hyjinx.Graphics.Vic.Image
 {
     ref struct RentedBuffer
     {

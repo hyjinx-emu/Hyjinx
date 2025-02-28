@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Ryujinx.Graphics.Vic.Image
+namespace Hyjinx.Graphics.Vic.Image
 {
     readonly struct Surface : IDisposable
     {

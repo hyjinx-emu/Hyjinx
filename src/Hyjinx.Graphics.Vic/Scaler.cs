@@ -2,7 +2,7 @@ using System;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
-namespace Ryujinx.Graphics.Vic
+namespace Hyjinx.Graphics.Vic
 {
     static class Scaler
     {

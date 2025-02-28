@@ -1,4 +1,4 @@
-namespace Ryujinx.Graphics.Vic.Image
+namespace Hyjinx.Graphics.Vic.Image
 {
     struct Pixel
     {

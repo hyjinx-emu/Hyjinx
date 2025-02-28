@@ -1,6 +1,6 @@
 using Ryujinx.Common.Memory;
 
-namespace Ryujinx.Graphics.Vic.Types
+namespace Hyjinx.Graphics.Vic.Types
 {
     struct ConfigStruct
     {

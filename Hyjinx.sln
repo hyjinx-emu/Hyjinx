@@ -43,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Host1x", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Nvdec.Vp9", "src\Hyjinx.Graphics.Nvdec.Vp9\Hyjinx.Graphics.Nvdec.Vp9.csproj", "{B9AECA11-E248-4886-A10B-81B631CAAF29}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Vic", "src\Ryujinx.Graphics.Vic\Ryujinx.Graphics.Vic.csproj", "{81BB2C11-9408-4EA3-822E-42987AF54429}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Vic", "src\Hyjinx.Graphics.Vic\Hyjinx.Graphics.Vic.csproj", "{81BB2C11-9408-4EA3-822E-42987AF54429}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Video", "src\Hyjinx.Graphics.Video\Hyjinx.Graphics.Video.csproj", "{FD4A2C14-8E3D-4957-ABBE-3C38897B3E2D}"
 EndProject

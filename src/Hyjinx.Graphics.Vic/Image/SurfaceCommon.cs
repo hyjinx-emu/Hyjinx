@@ -1,7 +1,7 @@
 using Ryujinx.Common;
 using Ryujinx.Graphics.Texture;
 
-namespace Ryujinx.Graphics.Vic.Image
+namespace Hyjinx.Graphics.Vic.Image
 {
     static class SurfaceCommon
     {

@@ -1,7 +1,7 @@
 using Hyjinx.Graphics.Device;
-using Ryujinx.Graphics.Vic.Image;
+using Hyjinx.Graphics.Vic.Image;
 
-namespace Ryujinx.Graphics.Vic
+namespace Hyjinx.Graphics.Vic
 {
     readonly struct ResourceManager
     {
