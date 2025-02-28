@@ -1,6 +1,6 @@
 using Ryujinx.Common.Memory;
 using Hyjinx.Graphics.GAL;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using Silk.NET.Vulkan;
 using System;
 using System.Buffers;

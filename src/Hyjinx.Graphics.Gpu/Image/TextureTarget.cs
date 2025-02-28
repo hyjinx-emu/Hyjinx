@@ -1,5 +1,5 @@
 using Hyjinx.Graphics.GAL;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 
 namespace Hyjinx.Graphics.Gpu.Image
 {

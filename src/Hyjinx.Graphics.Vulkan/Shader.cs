@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using shaderc;
 using Silk.NET.Vulkan;
 using System;

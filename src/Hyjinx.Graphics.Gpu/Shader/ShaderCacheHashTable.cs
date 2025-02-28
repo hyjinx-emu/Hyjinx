@@ -1,6 +1,6 @@
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader.HashTable;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using System;
 using System.Collections.Generic;
 

@@ -4,7 +4,7 @@ using Ryujinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL.Image;
 using Hyjinx.Graphics.OpenGL.Queries;
-using Ryujinx.Graphics.Shader.Translation;
+using Hyjinx.Graphics.Shader.Translation;
 using System;
 
 namespace Hyjinx.Graphics.OpenGL

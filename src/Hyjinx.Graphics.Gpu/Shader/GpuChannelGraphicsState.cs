@@ -1,7 +1,7 @@
 using Ryujinx.Common.Memory;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Threed;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 
 namespace Hyjinx.Graphics.Gpu.Shader
 {

@@ -1,6 +1,6 @@
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Memory;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 

@@ -2,7 +2,7 @@
   <Import Project="../.build/exe.props" />
 
   <ItemGroup>
-    <ProjectReference Include="..\Ryujinx.Graphics.Shader\Ryujinx.Graphics.Shader.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Shader\Hyjinx.Graphics.Shader.csproj" />
   </ItemGroup>
 
   <ItemGroup>

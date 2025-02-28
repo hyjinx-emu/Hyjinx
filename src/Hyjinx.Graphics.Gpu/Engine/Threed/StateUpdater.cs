@@ -4,7 +4,7 @@ using Hyjinx.Graphics.Gpu.Engine.Threed.Blender;
 using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Gpu.Shader;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using Ryujinx.Graphics.Texture;
 using System;
 using System.Runtime.CompilerServices;

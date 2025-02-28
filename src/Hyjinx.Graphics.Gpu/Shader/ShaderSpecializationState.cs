@@ -3,7 +3,7 @@ using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader.DiskCache;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using System;
 using System.Collections.Generic;
 using System.Linq;

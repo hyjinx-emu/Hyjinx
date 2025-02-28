@@ -11,7 +11,7 @@
     <ProjectReference Include="..\Hyjinx.Graphics.GAL\Hyjinx.Graphics.GAL.csproj" />
     <ProjectReference Include="..\Ryujinx.Common\Ryujinx.Common.csproj" />
     <ProjectReference Include="..\Ryujinx.Graphics.Texture\Ryujinx.Graphics.Texture.csproj" />
-    <ProjectReference Include="..\Ryujinx.Graphics.Shader\Ryujinx.Graphics.Shader.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Shader\Hyjinx.Graphics.Shader.csproj" />
   </ItemGroup>
 
 </Project>

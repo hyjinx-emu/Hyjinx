@@ -1,7 +1,7 @@
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine;
 using Hyjinx.Graphics.Gpu.Image;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using System;
 using System.Linq;
 

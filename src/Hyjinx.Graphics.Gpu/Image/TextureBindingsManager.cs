@@ -3,7 +3,7 @@ using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader;
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

@@ -5,8 +5,8 @@ using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader;
-using Ryujinx.Graphics.Shader;
-using Ryujinx.Graphics.Shader.Translation;
+using Hyjinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader.Translation;
 using System;
 
 namespace Hyjinx.Graphics.Gpu.Engine.Threed.ComputeDraw

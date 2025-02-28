@@ -1,8 +1,8 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Memory;
 using Hyjinx.Graphics.GAL;
-using Ryujinx.Graphics.Shader;
-using Ryujinx.Graphics.Shader.Translation;
+using Hyjinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader.Translation;
 using System.Collections.Generic;
 using System.IO;
 

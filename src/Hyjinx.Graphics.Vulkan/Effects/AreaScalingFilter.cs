@@ -1,7 +1,7 @@
 using Ryujinx.Common;
 using Hyjinx.Graphics.GAL;
-using Ryujinx.Graphics.Shader;
-using Ryujinx.Graphics.Shader.Translation;
+using Hyjinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader.Translation;
 using Silk.NET.Vulkan;
 using System;
 using Extent2D = Hyjinx.Graphics.GAL.Extents2D;

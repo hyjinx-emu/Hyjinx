@@ -1,6 +1,6 @@
 using CommandLine;
-using Ryujinx.Graphics.Shader;
-using Ryujinx.Graphics.Shader.Translation;
+using Hyjinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader.Translation;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;

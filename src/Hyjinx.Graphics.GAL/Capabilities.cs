@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.Shader.Translation;
+using Hyjinx.Graphics.Shader.Translation;
 
 namespace Hyjinx.Graphics.GAL
 {

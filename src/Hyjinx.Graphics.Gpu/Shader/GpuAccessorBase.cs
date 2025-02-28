@@ -1,8 +1,8 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
-using Ryujinx.Graphics.Shader;
-using Ryujinx.Graphics.Shader.Translation;
+using Hyjinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader.Translation;
 
 namespace Hyjinx.Graphics.Gpu.Shader
 {

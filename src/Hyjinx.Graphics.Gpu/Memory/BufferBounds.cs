@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using Ryujinx.Memory.Range;
 using System;
 

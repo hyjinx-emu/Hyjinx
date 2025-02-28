@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader;
 using System.Runtime.CompilerServices;
 
 namespace Hyjinx.Graphics.Gpu.Memory

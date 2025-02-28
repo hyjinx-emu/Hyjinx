@@ -1,6 +1,6 @@
 using Hyjinx.Graphics.GAL;
-using Ryujinx.Graphics.Shader;
-using Ryujinx.Graphics.Shader.Translation;
+using Hyjinx.Graphics.Shader;
+using Hyjinx.Graphics.Shader.Translation;
 
 namespace Hyjinx.Graphics.Gpu.Shader
 {
