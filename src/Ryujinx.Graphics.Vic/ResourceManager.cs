@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using Ryujinx.Graphics.Vic.Image;
 
 namespace Ryujinx.Graphics.Vic

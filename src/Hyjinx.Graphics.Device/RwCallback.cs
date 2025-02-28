@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.Graphics.Device
+namespace Hyjinx.Graphics.Device
 {
     public readonly struct RwCallback
     {

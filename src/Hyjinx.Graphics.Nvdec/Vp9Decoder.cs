@@ -1,5 +1,5 @@
 using Ryujinx.Common;
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using Hyjinx.Graphics.Nvdec.Image;
 using Hyjinx.Graphics.Nvdec.Types.Vp9;
 using Hyjinx.Graphics.Nvdec.Vp9;

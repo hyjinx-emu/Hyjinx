@@ -1,5 +1,5 @@
 using Ryujinx.Common;
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using Ryujinx.Graphics.Texture;
 using Hyjinx.Graphics.Video;
 using System;

@@ -1,4 +1,4 @@
-namespace Ryujinx.Graphics.Device
+namespace Hyjinx.Graphics.Device
 {
     public interface IDeviceState
     {

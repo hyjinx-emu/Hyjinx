@@ -2,7 +2,7 @@
   <Import Project="../.build/library.props" />
 
   <ItemGroup>
-    <ProjectReference Include="..\Ryujinx.Graphics.Device\Ryujinx.Graphics.Device.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Device\Hyjinx.Graphics.Device.csproj" />
   </ItemGroup>
 
 </Project>

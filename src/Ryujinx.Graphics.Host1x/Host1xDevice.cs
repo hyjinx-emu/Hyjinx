@@ -1,6 +1,6 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using System;
 using System.Numerics;
 

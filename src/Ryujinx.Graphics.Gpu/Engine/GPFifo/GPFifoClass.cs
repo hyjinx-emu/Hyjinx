@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using Ryujinx.Graphics.Gpu.Engine.MME;
 using Ryujinx.Graphics.Gpu.Synchronization;
 using System;

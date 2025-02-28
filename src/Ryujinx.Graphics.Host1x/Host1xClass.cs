@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using System.Collections.Generic;
 using System.Threading;
 

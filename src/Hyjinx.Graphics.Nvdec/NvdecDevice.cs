@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using Hyjinx.Graphics.Nvdec.Image;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

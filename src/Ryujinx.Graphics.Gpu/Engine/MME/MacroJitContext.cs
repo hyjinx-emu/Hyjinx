@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using System.Collections.Generic;
 
 namespace Ryujinx.Graphics.Gpu.Engine.MME

@@ -4,7 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.Graphics.Device
+namespace Hyjinx.Graphics.Device
 {
     /// <summary>
     /// Device memory manager.

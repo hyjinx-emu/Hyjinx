@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Tests.Memory", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Cpu", "src\Hyjinx.Cpu\Hyjinx.Cpu.csproj", "{3DF35E3D-D844-4399-A9A1-A9E923264C17}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Device", "src\Ryujinx.Graphics.Device\Ryujinx.Graphics.Device.csproj", "{C3002C3C-7B09-4FE7-894A-372EDA22FC6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Device", "src\Hyjinx.Graphics.Device\Hyjinx.Graphics.Device.csproj", "{C3002C3C-7B09-4FE7-894A-372EDA22FC6E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Host1x", "src\Ryujinx.Graphics.Host1x\Ryujinx.Graphics.Host1x.csproj", "{C35F1536-7DE5-4F9D-9604-B5B4E1561947}"
 EndProject

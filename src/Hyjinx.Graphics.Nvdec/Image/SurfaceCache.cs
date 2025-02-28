@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using Hyjinx.Graphics.Video;
 using System;
 using System.Diagnostics;

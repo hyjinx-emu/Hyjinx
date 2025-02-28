@@ -1,6 +1,6 @@
 using Ryujinx.Common.Memory;
 using Hyjinx.Cpu;
-using Ryujinx.Graphics.Device;
+using Hyjinx.Graphics.Device;
 using Ryujinx.Graphics.Gpu.Image;
 using Ryujinx.Graphics.Gpu.Shader;
 using Ryujinx.Memory;
