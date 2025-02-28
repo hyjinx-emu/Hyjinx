@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Ryujinx.Audio.Renderer.Server.MemoryPool;
+using Hyjinx.Audio.Renderer.Server.MemoryPool;
 using System;
 using System.Runtime.CompilerServices;
 

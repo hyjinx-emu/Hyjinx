@@ -1,5 +1,5 @@
-using Ryujinx.Audio.Renderer.Device;
-using Ryujinx.Audio.Renderer.Server;
+using Hyjinx.Audio.Renderer.Device;
+using Hyjinx.Audio.Renderer.Server;
 using Ryujinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Applet;
 using Ryujinx.Horizon.Sdk.OsTypes;

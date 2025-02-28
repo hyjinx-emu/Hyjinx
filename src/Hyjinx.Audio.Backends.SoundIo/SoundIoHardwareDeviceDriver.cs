@@ -1,12 +1,12 @@
 using Hyjinx.Audio.Backends.SoundIo.Native;
-using Ryujinx.Audio.Common;
-using Ryujinx.Audio.Integration;
+using Hyjinx.Audio.Common;
+using Hyjinx.Audio.Integration;
 using Ryujinx.Memory;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
-using static Ryujinx.Audio.Integration.IHardwareDeviceDriver;
+using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;
 
 namespace Hyjinx.Audio.Backends.SoundIo
 {
@@ -150,7 +150,7 @@ namespace Hyjinx.Audio.Backends.SoundIo
 
             if (sampleRate == 0)
             {
-                sampleRate = Ryujinx.Audio.Constants.TargetSampleRate;
+                sampleRate = Hyjinx.Audio.Constants.TargetSampleRate;
             }
 
             if (direction != Direction.Output)

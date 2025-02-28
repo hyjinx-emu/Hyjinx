@@ -9,7 +9,7 @@ using Hyjinx.Audio.Backends.Dummy;
 using Hyjinx.Audio.Backends.OpenAL;
 using Hyjinx.Audio.Backends.SDL2;
 using Hyjinx.Audio.Backends.SoundIo;
-using Ryujinx.Audio.Integration;
+using Hyjinx.Audio.Integration;
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Multiplayer;

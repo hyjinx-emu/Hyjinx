@@ -1,5 +1,5 @@
 using LibHac.Tools.FsSystem;
-using Ryujinx.Audio.Integration;
+using Hyjinx.Audio.Integration;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Multiplayer;
 using Ryujinx.Graphics.GAL;

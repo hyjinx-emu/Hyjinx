@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Ryujinx.Audio.Renderer.Parameter.Sink;
+using Hyjinx.Audio.Renderer.Parameter.Sink;
 using System.Runtime.CompilerServices;
 
 namespace Ryujinx.Tests.Audio.Renderer.Parameter.Sink

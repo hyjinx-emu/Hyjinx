@@ -1,4 +1,4 @@
-using Ryujinx.Audio.Renderer.Parameter;
+using Hyjinx.Audio.Renderer.Parameter;
 
 namespace Ryujinx.Horizon.Sdk.Audio.Detail
 {

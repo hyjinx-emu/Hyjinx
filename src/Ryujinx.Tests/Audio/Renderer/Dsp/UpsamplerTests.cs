@@ -1,6 +1,6 @@
 using NUnit.Framework;
-using Ryujinx.Audio.Renderer.Dsp;
-using Ryujinx.Audio.Renderer.Server.Upsampler;
+using Hyjinx.Audio.Renderer.Dsp;
+using Hyjinx.Audio.Renderer.Server.Upsampler;
 using System;
 
 namespace Ryujinx.Tests.Audio.Renderer.Dsp

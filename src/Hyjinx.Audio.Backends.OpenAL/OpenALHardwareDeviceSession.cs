@@ -1,6 +1,6 @@
 using OpenTK.Audio.OpenAL;
 using Hyjinx.Audio.Backends.Common;
-using Ryujinx.Audio.Common;
+using Hyjinx.Audio.Common;
 using Ryujinx.Memory;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Ryujinx.Audio.Renderer.Parameter.Performance;
+using Hyjinx.Audio.Renderer.Parameter.Performance;
 using System.Runtime.CompilerServices;
 
 namespace Ryujinx.Tests.Audio.Renderer.Parameter

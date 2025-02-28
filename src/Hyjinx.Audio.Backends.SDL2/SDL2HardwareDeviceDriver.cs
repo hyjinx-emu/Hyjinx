@@ -1,5 +1,5 @@
-using Ryujinx.Audio.Common;
-using Ryujinx.Audio.Integration;
+using Hyjinx.Audio.Common;
+using Hyjinx.Audio.Integration;
 using Ryujinx.Common.Logging;
 using Ryujinx.Memory;
 using Ryujinx.SDL2.Common;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using System.Threading;
-using static Ryujinx.Audio.Integration.IHardwareDeviceDriver;
+using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;
 using static SDL2.SDL;
 
 namespace Hyjinx.Audio.Backends.SDL2
@@ -58,7 +58,7 @@ namespace Hyjinx.Audio.Backends.SDL2
 
         private static bool IsSupportedInternal()
         {
-            uint device = OpenStream(SampleFormat.PcmInt16, Ryujinx.Audio.Constants.TargetSampleRate, Ryujinx.Audio.Constants.ChannelCountMax, Ryujinx.Audio.Constants.TargetSampleCount, null);
+            uint device = OpenStream(SampleFormat.PcmInt16, Hyjinx.Audio.Constants.TargetSampleRate, Hyjinx.Audio.Constants.ChannelCountMax, Hyjinx.Audio.Constants.TargetSampleCount, null);
 
             if (device != 0)
             {
@@ -87,7 +87,7 @@ namespace Hyjinx.Audio.Backends.SDL2
 
             if (sampleRate == 0)
             {
-                sampleRate = Ryujinx.Audio.Constants.TargetSampleRate;
+                sampleRate = Hyjinx.Audio.Constants.TargetSampleRate;
             }
 
             if (direction != Direction.Output)

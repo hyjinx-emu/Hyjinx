@@ -8,7 +8,7 @@ using Hyjinx.Audio.Backends.Dummy;
 using Hyjinx.Audio.Backends.OpenAL;
 using Hyjinx.Audio.Backends.SDL2;
 using Hyjinx.Audio.Backends.SoundIo;
-using Ryujinx.Audio.Integration;
+using Hyjinx.Audio.Integration;
 using Hyjinx.Ava.Common;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.Input;

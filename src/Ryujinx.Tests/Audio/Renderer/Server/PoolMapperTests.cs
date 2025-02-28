@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using Ryujinx.Audio;
-using Ryujinx.Audio.Renderer.Server.MemoryPool;
+using Hyjinx.Audio;
+using Hyjinx.Audio.Renderer.Server.MemoryPool;
 using System;
-using static Ryujinx.Audio.Renderer.Common.BehaviourParameter;
+using static Hyjinx.Audio.Renderer.Common.BehaviourParameter;
 using CpuAddress = System.UInt64;
 using DspAddress = System.UInt64;
 

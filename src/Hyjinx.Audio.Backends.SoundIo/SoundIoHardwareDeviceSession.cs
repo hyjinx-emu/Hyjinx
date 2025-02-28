@@ -1,6 +1,6 @@
 using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Backends.SoundIo.Native;
-using Ryujinx.Audio.Common;
+using Hyjinx.Audio.Common;
 using Ryujinx.Common.Memory;
 using Ryujinx.Memory;
 using System;

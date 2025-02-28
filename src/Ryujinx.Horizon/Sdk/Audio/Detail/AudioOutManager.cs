@@ -1,6 +1,6 @@
-using Ryujinx.Audio;
-using Ryujinx.Audio.Common;
-using Ryujinx.Audio.Output;
+using Hyjinx.Audio;
+using Hyjinx.Audio.Common;
+using Hyjinx.Audio.Output;
 using Ryujinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Applet;
 using Ryujinx.Horizon.Sdk.Sf;

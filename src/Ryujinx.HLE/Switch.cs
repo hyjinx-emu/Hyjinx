@@ -1,5 +1,5 @@
 using Hyjinx.Audio.Backends.CompatLayer;
-using Ryujinx.Audio.Integration;
+using Hyjinx.Audio.Integration;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Graphics.Gpu;
 using Ryujinx.HLE.FileSystem;

@@ -1,5 +1,5 @@
 using Hyjinx.Audio.Backends.Common;
-using Ryujinx.Audio.Common;
+using Hyjinx.Audio.Common;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
 using Ryujinx.Memory;
@@ -46,11 +46,11 @@ namespace Hyjinx.Audio.Backends.SDL2
         {
             uint bufferSampleCount = (uint)GetSampleCount(buffer);
             bool needAudioSetup = (_outputStream == 0 && !_hasSetupError) ||
-                (bufferSampleCount >= Ryujinx.Audio.Constants.TargetSampleCount && bufferSampleCount < _sampleCount);
+                (bufferSampleCount >= Hyjinx.Audio.Constants.TargetSampleCount && bufferSampleCount < _sampleCount);
 
             if (needAudioSetup)
             {
-                _sampleCount = Math.Max(Ryujinx.Audio.Constants.TargetSampleCount, bufferSampleCount);
+                _sampleCount = Math.Max(Hyjinx.Audio.Constants.TargetSampleCount, bufferSampleCount);
 
                 uint newOutputStream = SDL2HardwareDeviceDriver.OpenStream(RequestedSampleFormat, RequestedSampleRate, RequestedChannelCount, _sampleCount, _callbackDelegate);
 

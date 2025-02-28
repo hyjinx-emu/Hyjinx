@@ -1,12 +1,12 @@
 using OpenTK.Audio.OpenAL;
-using Ryujinx.Audio.Common;
-using Ryujinx.Audio.Integration;
+using Hyjinx.Audio.Common;
+using Hyjinx.Audio.Integration;
 using Ryujinx.Memory;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
-using static Ryujinx.Audio.Integration.IHardwareDeviceDriver;
+using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;
 
 namespace Hyjinx.Audio.Backends.OpenAL
 {
@@ -82,7 +82,7 @@ namespace Hyjinx.Audio.Backends.OpenAL
 
             if (sampleRate == 0)
             {
-                sampleRate = Ryujinx.Audio.Constants.TargetSampleRate;
+                sampleRate = Hyjinx.Audio.Constants.TargetSampleRate;
             }
 
             if (direction != Direction.Output)

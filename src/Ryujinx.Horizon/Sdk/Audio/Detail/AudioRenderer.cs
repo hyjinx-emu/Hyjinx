@@ -1,6 +1,6 @@
-using Ryujinx.Audio;
-using Ryujinx.Audio.Integration;
-using Ryujinx.Audio.Renderer.Server;
+using Hyjinx.Audio;
+using Hyjinx.Audio.Integration;
+using Hyjinx.Audio.Renderer.Server;
 using Ryujinx.Common.Memory;
 using Ryujinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Sf;

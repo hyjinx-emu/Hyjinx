@@ -1,5 +1,5 @@
-using Ryujinx.Audio.Renderer.Device;
-using Ryujinx.Audio.Renderer.Server;
+using Hyjinx.Audio.Renderer.Device;
+using Hyjinx.Audio.Renderer.Server;
 using Ryujinx.Common.Logging;
 using Ryujinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Applet;
@@ -11,10 +11,10 @@ namespace Ryujinx.Horizon.Sdk.Audio.Detail
     {
         private const uint InitialRevision = ('R' << 0) | ('E' << 8) | ('V' << 16) | ('1' << 24);
 
-        private readonly Ryujinx.Audio.Renderer.Server.AudioRendererManager _impl;
+        private readonly Hyjinx.Audio.Renderer.Server.AudioRendererManager _impl;
         private readonly VirtualDeviceSessionRegistry _registry;
 
-        public AudioRendererManager(Ryujinx.Audio.Renderer.Server.AudioRendererManager impl, VirtualDeviceSessionRegistry registry)
+        public AudioRendererManager(Hyjinx.Audio.Renderer.Server.AudioRendererManager impl, VirtualDeviceSessionRegistry registry)
         {
             _impl = impl;
             _registry = registry;
@@ -62,7 +62,7 @@ namespace Ryujinx.Horizon.Sdk.Audio.Detail
         {
             if (BehaviourContext.CheckValidRevision(parameter.Configuration.Revision))
             {
-                workBufferSize = (long)Ryujinx.Audio.Renderer.Server.AudioRendererManager.GetWorkBufferSize(ref parameter.Configuration);
+                workBufferSize = (long)Hyjinx.Audio.Renderer.Server.AudioRendererManager.GetWorkBufferSize(ref parameter.Configuration);
 
                 Logger.Debug?.Print(LogClass.ServiceAudio, $"WorkBufferSize is 0x{workBufferSize:x16}.");
 

@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Ryujinx.Audio.Renderer.Server.Voice;
+using Hyjinx.Audio.Renderer.Server.Voice;
 using System.Runtime.CompilerServices;
 
 namespace Ryujinx.Tests.Audio.Renderer.Server
