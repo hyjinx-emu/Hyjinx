@@ -4,9 +4,9 @@ using ARMeilleure.Translation;
 using NUnit.Framework;
 using Hyjinx.Cpu.Jit;
 using Ryujinx.Memory;
-using Ryujinx.Tests.Unicorn;
+using Hyjinx.Tests.Unicorn;
 using System;
-using MemoryPermission = Ryujinx.Tests.Unicorn.MemoryPermission;
+using MemoryPermission = Hyjinx.Tests.Unicorn.MemoryPermission;
 
 namespace Ryujinx.Tests.Cpu
 {

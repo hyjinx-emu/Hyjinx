@@ -28,13 +28,13 @@
     <ProjectReference Include="..\Ryujinx.HLE\Ryujinx.HLE.csproj" />
     <ProjectReference Include="..\Ryujinx.Tests.Memory\Ryujinx.Tests.Memory.csproj" />
     <ProjectReference Include="..\Ryujinx.Memory\Ryujinx.Memory.csproj" />
-    <ProjectReference Include="..\Ryujinx.Tests.Unicorn\Ryujinx.Tests.Unicorn.csproj" />
+    <ProjectReference Include="..\Hyjinx.Tests.Unicorn\Hyjinx.Tests.Unicorn.csproj" />
     <ProjectReference Include="..\ARMeilleure\ARMeilleure.csproj" />
   </ItemGroup>
 
   <Target Name="CopyUnicorn" AfterTargets="Build">
     <ItemGroup>
-      <UnicornLib Include="..\Ryujinx.Tests.Unicorn\libs\$(TargetOS)\*unicorn.*" />
+      <UnicornLib Include="..\Hyjinx.Tests.Unicorn\libs\$(TargetOS)\*unicorn.*" />
     </ItemGroup>
     <Copy SourceFiles="@(UnicornLib)" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
   </Target>

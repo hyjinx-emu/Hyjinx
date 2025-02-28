@@ -690,7 +690,7 @@ namespace Ryujinx.Tests.Cpu
         {
             /*if (size == 2u)
             {
-                Assert.Ignore("Ryujinx.Tests.Unicorn.UnicornException : Invalid instruction (UC_ERR_INSN_INVALID)");
+                Assert.Ignore("Hyjinx.Tests.Unicorn.UnicornException : Invalid instruction (UC_ERR_INSN_INVALID)");
             }*/
 
             uint opcode = 0xf2800e00u; // VMULL.P8 Q0, D0, D0

@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.Tests.Unicorn
+namespace Hyjinx.Tests.Unicorn
 {
     public class IndexedProperty<TIndex, TValue>
     {

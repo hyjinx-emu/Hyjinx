@@ -1,7 +1,7 @@
 using System;
 using UnicornEngine.Const;
 
-namespace Ryujinx.Tests.Unicorn
+namespace Hyjinx.Tests.Unicorn
 {
     public class UnicornAArch32 : IDisposable
     {

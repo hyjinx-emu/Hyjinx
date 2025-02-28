@@ -3,7 +3,6 @@
   
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <PropertyGroup>
