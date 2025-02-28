@@ -1,6 +1,6 @@
 using Gtk;
-using Ryujinx.UI.Common;
-using Ryujinx.UI.Common.Helper;
+using Hyjinx.UI.Common;
+using Hyjinx.UI.Common.Helper;
 
 namespace Ryujinx.UI.Widgets
 {

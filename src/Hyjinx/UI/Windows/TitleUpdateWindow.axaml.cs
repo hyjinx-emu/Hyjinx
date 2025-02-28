@@ -9,7 +9,7 @@ using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.ViewModels;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.UI.App.Common;
-using Ryujinx.UI.Common.Helper;
+using Hyjinx.UI.Common.Helper;
 using System.Threading.Tasks;
 
 namespace Hyjinx.Ava.UI.Windows

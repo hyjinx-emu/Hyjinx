@@ -9,8 +9,8 @@ using Ryujinx.Common.Configuration.Multiplayer;
 using Ryujinx.Common.GraphicsDriver;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS.Services.Time.TimeZone;
-using Ryujinx.UI.Common.Configuration;
-using Ryujinx.UI.Common.Configuration.System;
+using Hyjinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Configuration.System;
 using Ryujinx.UI.Helper;
 using Ryujinx.UI.Widgets;
 using System;
@@ -124,7 +124,7 @@ namespace Ryujinx.UI.Windows
 
         private SettingsWindow(MainWindow parent, Builder builder, VirtualFileSystem virtualFileSystem, ContentManager contentManager) : base(builder.GetRawOwnedObject("_settingsWin"))
         {
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Ryujinx.png");
+            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
 
             _parent = parent;
 
@@ -642,7 +642,7 @@ namespace Ryujinx.UI.Windows
             ConfigurationState.Instance.Hid.EnableMouse.Value = _directMouseAccess.Active;
             ConfigurationState.Instance.UI.EnableCustomTheme.Value = _custThemeToggle.Active;
             ConfigurationState.Instance.System.Language.Value = Enum.Parse<Language>(_systemLanguageSelect.ActiveId);
-            ConfigurationState.Instance.System.Region.Value = Enum.Parse<Common.Configuration.System.Region>(_systemRegionSelect.ActiveId);
+            ConfigurationState.Instance.System.Region.Value = Enum.Parse<Hyjinx.UI.Common.Configuration.System.Region>(_systemRegionSelect.ActiveId);
             ConfigurationState.Instance.System.SystemTimeOffset.Value = _systemTimeOffset;
             ConfigurationState.Instance.UI.CustomThemePath.Value = _custThemePath.Buffer.Text;
             ConfigurationState.Instance.Graphics.ShadersDumpPath.Value = _graphicsShadersDumpPath.Buffer.Text;

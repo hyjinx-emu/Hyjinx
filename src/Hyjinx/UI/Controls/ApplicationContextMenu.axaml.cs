@@ -12,7 +12,7 @@ using Hyjinx.Ava.UI.Windows;
 using Ryujinx.Common.Configuration;
 using Ryujinx.HLE.HOS;
 using Ryujinx.UI.App.Common;
-using Ryujinx.UI.Common.Helper;
+using Hyjinx.UI.Common.Helper;
 using System;
 using System.Collections.Generic;
 using System.IO;

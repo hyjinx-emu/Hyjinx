@@ -1,6 +1,6 @@
 using Gtk;
 using Ryujinx.Common.Utilities;
-using Ryujinx.UI.Common.Helper;
+using Hyjinx.UI.Common.Helper;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Reflection;
@@ -12,7 +12,7 @@ namespace Ryujinx.UI.Windows
     {
         public AboutWindow() : base($"Ryujinx {Program.Version} - About")
         {
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(OpenHelper)), "Ryujinx.UI.Common.Resources.Logo_Ryujinx.png");
+            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(OpenHelper)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
             InitializeComponent();
         }
 

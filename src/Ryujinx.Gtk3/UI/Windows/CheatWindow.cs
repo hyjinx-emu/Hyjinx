@@ -3,7 +3,7 @@ using LibHac.Tools.FsSystem;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
 using Ryujinx.UI.App.Common;
-using Ryujinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;

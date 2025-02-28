@@ -8,7 +8,7 @@ using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common.Memory;
 using Ryujinx.HLE.FileSystem;
-using Ryujinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Configuration;
 using SkiaSharp;
 using System;
 using System.Buffers.Binary;
@@ -33,7 +33,7 @@ namespace Ryujinx.UI.Windows
 
         public AvatarWindow() : base($"Ryujinx {Program.Version} - Manage Accounts - Avatar")
         {
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Ryujinx.png");
+            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
 
             CanFocus = false;
             Resizable = false;

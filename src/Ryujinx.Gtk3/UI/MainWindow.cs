@@ -28,9 +28,9 @@ using Ryujinx.Input.SDL2;
 using Ryujinx.Modules;
 using Ryujinx.UI.App.Common;
 using Ryujinx.UI.Applet;
-using Ryujinx.UI.Common;
-using Ryujinx.UI.Common.Configuration;
-using Ryujinx.UI.Common.Helper;
+using Hyjinx.UI.Common;
+using Hyjinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Helper;
 using Ryujinx.UI.Helper;
 using Ryujinx.UI.Widgets;
 using Ryujinx.UI.Windows;
@@ -157,7 +157,7 @@ namespace Ryujinx.UI
 
             SetWindowSizePosition();
 
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Ryujinx.png");
+            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
             Title = $"Ryujinx {Program.Version}";
 
             // Hide emulation context status bar.

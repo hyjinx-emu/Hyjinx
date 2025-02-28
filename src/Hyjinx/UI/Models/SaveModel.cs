@@ -4,7 +4,7 @@ using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.UI.App.Common;
-using Ryujinx.UI.Common.Helper;
+using Hyjinx.UI.Common.Helper;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;

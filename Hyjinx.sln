@@ -65,7 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Nvdec.FFmp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx", "src\Hyjinx\Hyjinx.csproj", "{7C1B2721-13DA-4B62-B046-C626605ECCE6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.UI.Common", "src\Ryujinx.UI.Common\Ryujinx.UI.Common.csproj", "{BA161CA0-CD65-4E6E-B644-51C8D1E542DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.UI.Common", "src\Hyjinx.UI.Common\Hyjinx.UI.Common.csproj", "{BA161CA0-CD65-4E6E-B644-51C8D1E542DC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Horizon.Generators", "src\Ryujinx.Horizon.Generators\Ryujinx.Horizon.Generators.csproj", "{6AE2A5E8-4C5A-48B9-997B-E1455C0355C6}"
 EndProject

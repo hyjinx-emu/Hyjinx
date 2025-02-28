@@ -12,7 +12,7 @@ using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.Loaders.Processes.Extensions;
 using Ryujinx.HLE.Utilities;
 using Ryujinx.UI.App.Common;
-using Ryujinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Configuration;
 using Ryujinx.UI.Widgets;
 using System;
 using System.Collections.Generic;

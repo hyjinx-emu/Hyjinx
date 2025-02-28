@@ -1,6 +1,6 @@
 ﻿using Gtk;
 using Pango;
-using Ryujinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Configuration;
 using System.Reflection;
 
 namespace Ryujinx.UI.Windows
@@ -88,7 +88,7 @@ namespace Ryujinx.UI.Windows
             //
             // _ryujinxLogo
             //
-            _ryujinxLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Ryujinx.png", 100, 100))
+            _ryujinxLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png", 100, 100))
             {
                 Margin = 10,
                 MarginStart = 15,
@@ -223,7 +223,7 @@ namespace Ryujinx.UI.Windows
             //
             // _patreonLogo
             //
-            _patreonLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Patreon_Light.png", 30, 30))
+            _patreonLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Patreon_Light.png", 30, 30))
             {
                 Margin = 10,
             };
@@ -253,7 +253,7 @@ namespace Ryujinx.UI.Windows
             //
             // _githubLogo
             //
-            _githubLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_GitHub_Light.png", 30, 30))
+            _githubLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_GitHub_Light.png", 30, 30))
             {
                 Margin = 10,
             };
@@ -283,7 +283,7 @@ namespace Ryujinx.UI.Windows
             //
             // _discordLogo
             //
-            _discordLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Discord_Light.png", 30, 30))
+            _discordLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Discord_Light.png", 30, 30))
             {
                 Margin = 10,
             };
@@ -313,7 +313,7 @@ namespace Ryujinx.UI.Windows
             //
             // _twitterLogo
             //
-            _twitterLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Twitter_Light.png", 30, 30))
+            _twitterLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Twitter_Light.png", 30, 30))
             {
                 Margin = 10,
             };

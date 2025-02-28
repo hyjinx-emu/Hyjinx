@@ -5,7 +5,7 @@ using Avalonia.Threading;
 using Hyjinx.Ava.Common;
 using Hyjinx.Ava.Common.Locale;
 using Ryujinx.Common.Utilities;
-using Ryujinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Configuration;
 using System;
 using System.Net.Http;
 using System.Net.NetworkInformation;
@@ -103,13 +103,13 @@ namespace Hyjinx.Ava.UI.ViewModels
         {
             bool isDarkTheme = theme == "Dark" || (theme == "Auto" && App.DetectSystemTheme() == ThemeVariant.Dark);
 
-            string basePath = "resm:Ryujinx.UI.Common.Resources.";
+            string basePath = "resm:Hyjinx.UI.Common.Resources.";
             string themeSuffix = isDarkTheme ? "Dark.png" : "Light.png";
 
-            GithubLogo = LoadBitmap($"{basePath}Logo_GitHub_{themeSuffix}?assembly=Ryujinx.UI.Common");
-            DiscordLogo = LoadBitmap($"{basePath}Logo_Discord_{themeSuffix}?assembly=Ryujinx.UI.Common");
-            PatreonLogo = LoadBitmap($"{basePath}Logo_Patreon_{themeSuffix}?assembly=Ryujinx.UI.Common");
-            TwitterLogo = LoadBitmap($"{basePath}Logo_Twitter_{themeSuffix}?assembly=Ryujinx.UI.Common");
+            GithubLogo = LoadBitmap($"{basePath}Logo_GitHub_{themeSuffix}?assembly=Hyjinx.UI.Common");
+            DiscordLogo = LoadBitmap($"{basePath}Logo_Discord_{themeSuffix}?assembly=Hyjinx.UI.Common");
+            PatreonLogo = LoadBitmap($"{basePath}Logo_Patreon_{themeSuffix}?assembly=Hyjinx.UI.Common");
+            TwitterLogo = LoadBitmap($"{basePath}Logo_Twitter_{themeSuffix}?assembly=Hyjinx.UI.Common");
         }
 
         private Bitmap LoadBitmap(string uri)

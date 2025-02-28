@@ -20,8 +20,8 @@ using Ryujinx.HLE.HOS.Services.Account.Acc;
 using Ryujinx.HLE.Loaders.Processes.Extensions;
 using Ryujinx.HLE.Utilities;
 using Ryujinx.UI.App.Common;
-using Ryujinx.UI.Common.Configuration;
-using Ryujinx.UI.Common.Helper;
+using Hyjinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Helper;
 using Ryujinx.UI.Windows;
 using System;
 using System.Buffers;
@@ -309,7 +309,7 @@ namespace Ryujinx.UI.Widgets
                                     MessageDialog dialog = new(null, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, null)
                                     {
                                         Title = "Ryujinx - NCA Section Extractor",
-                                        Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Ryujinx.png"),
+                                        Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png"),
                                         SecondaryText = "Extraction completed successfully.",
                                         WindowPosition = WindowPosition.Center,
                                     };

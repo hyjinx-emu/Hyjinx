@@ -9,7 +9,7 @@ using Ryujinx.Common.Utilities;
 using Ryujinx.Input;
 using Ryujinx.Input.Assigner;
 using Ryujinx.Input.GTK3;
-using Ryujinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Configuration;
 using Ryujinx.UI.Helper;
 using Ryujinx.UI.Widgets;
 using System;
@@ -129,7 +129,7 @@ namespace Ryujinx.UI.Windows
             // NOTE: To get input in this window, we need to bind a custom keyboard driver instead of using the InputManager one as the main window isn't focused...
             _gtk3KeyboardDriver = new GTK3KeyboardDriver(this);
 
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Ryujinx.png");
+            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
 
             builder.Autoconnect(this);
 
@@ -379,10 +379,10 @@ namespace Ryujinx.UI.Windows
             {
                 _controllerImage.Pixbuf = _controllerType.ActiveId switch
                 {
-                    "ProController" => new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Controller_ProCon.svg", 400, 400),
-                    "JoyconLeft" => new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Controller_JoyConLeft.svg", 400, 500),
-                    "JoyconRight" => new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Controller_JoyConRight.svg", 400, 500),
-                    _ => new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Controller_JoyConPair.svg", 400, 500),
+                    "ProController" => new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Controller_ProCon.svg", 400, 400),
+                    "JoyconLeft" => new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Controller_JoyConLeft.svg", 400, 500),
+                    "JoyconRight" => new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Controller_JoyConRight.svg", 400, 500),
+                    _ => new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Controller_JoyConPair.svg", 400, 500),
                 };
             }
         }

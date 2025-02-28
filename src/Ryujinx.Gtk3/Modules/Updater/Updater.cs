@@ -6,7 +6,7 @@ using Ryujinx.Common;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Utilities;
 using Ryujinx.UI;
-using Ryujinx.UI.Common.Models.Github;
+using Hyjinx.UI.Common.Models.Github;
 using Ryujinx.UI.Widgets;
 using System;
 using System.Collections.Generic;

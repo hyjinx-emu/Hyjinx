@@ -1,6 +1,6 @@
 using Gtk;
 using Ryujinx.Common.Logging;
-using Ryujinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Configuration;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -14,7 +14,7 @@ namespace Ryujinx.UI.Widgets
             : base(null, DialogFlags.Modal, messageType, buttonsType, null)
         {
             Title = title;
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Ryujinx.UI.Common.Resources.Logo_Ryujinx.png");
+            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
             Text = mainText;
             SecondaryText = secondaryText;
             WindowPosition = WindowPosition.Center;
