@@ -37,7 +37,7 @@
     <ProjectReference Include="..\Hyjinx.Audio.Backends.SDL2\Hyjinx.Audio.Backends.SDL2.csproj" />
     <ProjectReference Include="..\Hyjinx.Audio.Backends.SoundIo\Hyjinx.Audio.Backends.SoundIo.csproj" />
     <ProjectReference Include="..\Ryujinx.Common\Ryujinx.Common.csproj" />
-    <ProjectReference Include="..\Ryujinx.HLE\Ryujinx.HLE.csproj" />
+    <ProjectReference Include="..\Hyjinx.HLE\Hyjinx.HLE.csproj" />
     <ProjectReference Include="..\ARMeilleure\ARMeilleure.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.OpenGL\Hyjinx.Graphics.OpenGL.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Vulkan\Hyjinx.Graphics.Vulkan.csproj" />

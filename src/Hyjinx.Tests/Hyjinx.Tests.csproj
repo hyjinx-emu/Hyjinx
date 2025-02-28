@@ -25,7 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Audio\Hyjinx.Audio.csproj" />
     <ProjectReference Include="..\Hyjinx.Cpu\Hyjinx.Cpu.csproj" />
-    <ProjectReference Include="..\Ryujinx.HLE\Ryujinx.HLE.csproj" />
+    <ProjectReference Include="..\Hyjinx.HLE\Hyjinx.HLE.csproj" />
     <ProjectReference Include="..\Hyjinx.Tests.Memory\Hyjinx.Tests.Memory.csproj" />
     <ProjectReference Include="..\Ryujinx.Memory\Ryujinx.Memory.csproj" />
     <ProjectReference Include="..\Hyjinx.Tests.Unicorn\Hyjinx.Tests.Unicorn.csproj" />
