@@ -16,11 +16,5 @@
       <TargetPath>libarmeilleure-jitsupport.dylib</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Ryujinx.Tests</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-
+  
 </Project>

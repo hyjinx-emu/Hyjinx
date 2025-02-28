@@ -267,6 +267,6 @@ dotnet_diagnostic.CA1822.severity = none
 # Disable "mark members as static" rule for services
 dotnet_diagnostic.CA1822.severity = none
 
-[src/Ryujinx.Tests/Cpu/*.cs]
+[src/Hyjinx.Tests/Cpu/*.cs]
 # Disable naming rules for CPU tests
 dotnet_diagnostic.IDE1006.severity = none

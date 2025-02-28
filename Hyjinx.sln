@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Gtk3", "src\Hyjinx.Gtk3\Hyjinx.Gtk3.csproj", "{074045D4-3ED2-4711-9169-E385F2BFB5A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Tests", "src\Ryujinx.Tests\Ryujinx.Tests.csproj", "{EBB55AEA-C7D7-4DEB-BF96-FA1789E225E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Tests", "src\Hyjinx.Tests\Hyjinx.Tests.csproj", "{EBB55AEA-C7D7-4DEB-BF96-FA1789E225E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Tests.Unicorn", "src\Hyjinx.Tests.Unicorn\Hyjinx.Tests.Unicorn.csproj", "{D8F72938-78EF-4E8C-BAFE-531C9C3C8F15}"
 EndProject
