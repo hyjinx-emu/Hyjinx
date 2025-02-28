@@ -1,8 +1,8 @@
 using ARMeilleure.Memory;
 using ARMeilleure.State;
 using ARMeilleure.Translation;
-using Ryujinx.Cpu;
-using Ryujinx.Cpu.Jit;
+using Hyjinx.Cpu;
+using Hyjinx.Cpu.Jit;
 
 namespace Ryujinx.Tests.Cpu
 {

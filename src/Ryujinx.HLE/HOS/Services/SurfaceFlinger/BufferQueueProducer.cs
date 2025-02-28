@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.Kernel.Threading;
 using Ryujinx.HLE.HOS.Services.Settings;
 using Ryujinx.HLE.HOS.Services.SurfaceFlinger.Types;

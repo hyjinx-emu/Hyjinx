@@ -1,5 +1,5 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.HLE.Exceptions;
 using Ryujinx.HLE.HOS.Ipc;
 using Ryujinx.HLE.HOS.Kernel.Threading;

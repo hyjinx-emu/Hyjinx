@@ -1,9 +1,9 @@
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
-using Ryujinx.Cpu;
-using Ryujinx.Cpu.AppleHv;
-using Ryujinx.Cpu.Jit;
-using Ryujinx.Cpu.LightningJit;
+using Hyjinx.Cpu;
+using Hyjinx.Cpu.AppleHv;
+using Hyjinx.Cpu.Jit;
+using Hyjinx.Cpu.LightningJit;
 using Ryujinx.Graphics.Gpu;
 using Ryujinx.HLE.HOS.Kernel;
 using Ryujinx.HLE.HOS.Kernel.Process;

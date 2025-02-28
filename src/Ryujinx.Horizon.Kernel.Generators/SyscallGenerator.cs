@@ -131,7 +131,7 @@ namespace Ryujinx.Horizon.Kernel.Generators
             CodeGenerator generator = new CodeGenerator();
 
             generator.AppendLine("using Ryujinx.Common.Logging;");
-            generator.AppendLine("using Ryujinx.Cpu;");
+            generator.AppendLine("using Hyjinx.Cpu;");
             generator.AppendLine($"using {NamespaceKernel}.Common;");
             generator.AppendLine($"using {NamespaceKernel}.Memory;");
             generator.AppendLine($"using {NamespaceKernel}.Process;");

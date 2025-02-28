@@ -1,6 +1,6 @@
 using LibHac.Tools.FsSystem;
 using Ryujinx.Common;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.Kernel.Memory;
 using Ryujinx.HLE.HOS.Kernel.Process;
 using Ryujinx.HLE.Loaders.Executables;

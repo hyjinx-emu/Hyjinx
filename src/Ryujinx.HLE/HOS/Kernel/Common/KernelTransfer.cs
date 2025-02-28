@@ -1,4 +1,4 @@
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.Kernel.Process;
 using System;
 using System.Runtime.CompilerServices;

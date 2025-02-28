@@ -1,6 +1,6 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.Services.Account.Acc;
 
 namespace Ryujinx.HLE.HOS.Services.Mnpp

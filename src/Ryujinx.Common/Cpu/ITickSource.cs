@@ -1,7 +1,7 @@
 using ARMeilleure.State;
 using System;
 
-namespace Ryujinx.Cpu
+namespace Hyjinx.Cpu
 {
     /// <summary>
     /// Tick source interface.

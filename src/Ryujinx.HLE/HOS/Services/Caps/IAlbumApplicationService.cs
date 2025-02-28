@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.Services.Caps.Types;
 
 namespace Ryujinx.HLE.HOS.Services.Caps

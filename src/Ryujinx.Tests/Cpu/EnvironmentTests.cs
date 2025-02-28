@@ -1,6 +1,6 @@
 using ARMeilleure.Translation;
 using NUnit.Framework;
-using Ryujinx.Cpu.Jit;
+using Hyjinx.Cpu.Jit;
 using Ryujinx.Tests.Memory;
 using System;
 using System.Runtime.CompilerServices;

@@ -12,7 +12,7 @@ using Ryujinx.Common.Logging;
 using Ryujinx.Common.Logging.Targets;
 using Ryujinx.Common.SystemInterop;
 using Ryujinx.Common.Utilities;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.Graphics.GAL;
 using Ryujinx.Graphics.GAL.Multithreading;
 using Ryujinx.Graphics.Gpu;

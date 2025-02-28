@@ -1,5 +1,5 @@
 using LibHac;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.Services.Mii.Types;
 using System;
 

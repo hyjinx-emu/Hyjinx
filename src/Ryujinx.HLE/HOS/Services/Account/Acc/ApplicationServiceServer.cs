@@ -1,6 +1,6 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.Kernel.Threading;
 using Ryujinx.HLE.HOS.Services.Account.Acc.AccountService;
 using Ryujinx.HLE.HOS.Services.Account.Acc.AsyncContext;

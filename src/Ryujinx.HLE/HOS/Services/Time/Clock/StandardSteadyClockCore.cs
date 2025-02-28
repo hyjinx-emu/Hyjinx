@@ -1,4 +1,4 @@
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 
 namespace Ryujinx.HLE.HOS.Services.Time.Clock
 {

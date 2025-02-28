@@ -1,6 +1,6 @@
 using LibHac;
 using Ryujinx.Audio.Integration;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.Horizon.Sdk.Account;
 using Ryujinx.Horizon.Sdk.Fs;
 

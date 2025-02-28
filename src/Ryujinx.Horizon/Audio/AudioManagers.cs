@@ -4,7 +4,7 @@ using Ryujinx.Audio.Integration;
 using Ryujinx.Audio.Output;
 using Ryujinx.Audio.Renderer.Device;
 using Ryujinx.Audio.Renderer.Server;
-using Ryujinx.Cpu;
+using Hyjinx.Cpu;
 using Ryujinx.Horizon.Sdk.Audio;
 using System;
 
