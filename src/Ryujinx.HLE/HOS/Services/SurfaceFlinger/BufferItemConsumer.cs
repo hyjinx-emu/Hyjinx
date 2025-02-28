@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.Gpu;
+using Hyjinx.Graphics.Gpu;
 using System;
 
 namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger

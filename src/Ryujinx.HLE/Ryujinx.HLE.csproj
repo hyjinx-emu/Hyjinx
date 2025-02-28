@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Ryujinx.Common\Ryujinx.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.Cpu\Hyjinx.Cpu.csproj" />
-    <ProjectReference Include="..\Ryujinx.Graphics.Gpu\Ryujinx.Graphics.Gpu.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Gpu\Hyjinx.Graphics.Gpu.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Host1x\Hyjinx.Graphics.Host1x.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Nvdec\Hyjinx.Graphics.Nvdec.csproj" />
     <ProjectReference Include="..\Ryujinx.Graphics.Vic\Ryujinx.Graphics.Vic.csproj" />

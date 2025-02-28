@@ -1,6 +1,6 @@
 using ARMeilleure.Memory;
 using Hyjinx.Cpu;
-using Ryujinx.Graphics.Gpu;
+using Hyjinx.Graphics.Gpu;
 using Ryujinx.HLE.HOS.Kernel.Process;
 using Ryujinx.Memory;
 

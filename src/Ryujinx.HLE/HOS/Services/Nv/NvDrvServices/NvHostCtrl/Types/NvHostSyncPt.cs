@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.Gpu.Synchronization;
+using Hyjinx.Graphics.Gpu.Synchronization;
 using System;
 using System.Threading;
 

@@ -1,4 +1,4 @@
-using Ryujinx.Graphics.Gpu;
+using Hyjinx.Graphics.Gpu;
 
 namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 {

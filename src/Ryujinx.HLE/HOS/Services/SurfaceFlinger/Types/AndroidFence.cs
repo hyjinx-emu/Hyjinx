@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.Gpu;
-using Ryujinx.Graphics.Gpu.Synchronization;
+using Hyjinx.Graphics.Gpu;
+using Hyjinx.Graphics.Gpu.Synchronization;
 using Ryujinx.HLE.HOS.Services.Nv.Types;
 using System;
 using System.Runtime.CompilerServices;

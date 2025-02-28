@@ -13,7 +13,7 @@ using Hyjinx.Ava.UI.Applet;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.Gpu;
+using Hyjinx.Graphics.Gpu;
 using Ryujinx.HLE.FileSystem;
 using Ryujinx.HLE.HOS;
 using Ryujinx.HLE.HOS.Services.Account.Acc;

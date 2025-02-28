@@ -3,7 +3,7 @@ using Hyjinx.Graphics.Host1x;
 using Hyjinx.Graphics.Nvdec;
 using Ryujinx.Graphics.Vic;
 using System;
-using GpuContext = Ryujinx.Graphics.Gpu.GpuContext;
+using GpuContext = Hyjinx.Graphics.Gpu.GpuContext;
 
 namespace Ryujinx.HLE.HOS.Services.Nv
 {

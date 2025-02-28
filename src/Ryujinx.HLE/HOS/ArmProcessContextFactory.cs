@@ -4,7 +4,7 @@ using Hyjinx.Cpu;
 using Hyjinx.Cpu.AppleHv;
 using Hyjinx.Cpu.Jit;
 using Hyjinx.Cpu.LightningJit;
-using Ryujinx.Graphics.Gpu;
+using Hyjinx.Graphics.Gpu;
 using Ryujinx.HLE.HOS.Kernel;
 using Ryujinx.HLE.HOS.Kernel.Process;
 using Ryujinx.Memory;

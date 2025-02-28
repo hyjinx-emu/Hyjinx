@@ -204,7 +204,7 @@ namespace Ryujinx.HLE.Loaders.Processes
             }
 
             // Explicitly null TitleId to disable the shader cache.
-            Graphics.Gpu.GraphicsConfig.TitleId = null;
+            Hyjinx.Graphics.Gpu.GraphicsConfig.TitleId = null;
             _device.Gpu.HostInitalized.Set();
 
             ProcessResult processResult = ProcessLoaderHelper.LoadNsos(_device,
