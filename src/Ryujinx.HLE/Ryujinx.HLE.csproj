@@ -13,7 +13,7 @@
     <ProjectReference Include="..\Hyjinx.Graphics.Nvdec\Hyjinx.Graphics.Nvdec.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Vic\Hyjinx.Graphics.Vic.csproj" />
     <ProjectReference Include="..\Hyjinx.HLE.Generators\Hyjinx.HLE.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\Ryujinx.Horizon.Common\Ryujinx.Horizon.Common.csproj" />
+    <ProjectReference Include="..\Hyjinx.Horizon.Common\Hyjinx.Horizon.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.HLE.Kernel.Generators\Hyjinx.HLE.Kernel.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Ryujinx.Horizon\Ryujinx.Horizon.csproj" />
     <ProjectReference Include="..\Ryujinx.Input\Ryujinx.Input.csproj" />

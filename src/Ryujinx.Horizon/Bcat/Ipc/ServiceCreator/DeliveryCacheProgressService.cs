@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
 using Ryujinx.Horizon.Bcat.Ipc.Types;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Bcat;
 using Ryujinx.Horizon.Sdk.OsTypes;
 using Ryujinx.Horizon.Sdk.Sf;

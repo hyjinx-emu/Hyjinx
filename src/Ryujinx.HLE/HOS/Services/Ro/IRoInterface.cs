@@ -4,7 +4,7 @@ using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.Kernel.Memory;
 using Ryujinx.HLE.HOS.Kernel.Process;
 using Ryujinx.HLE.Loaders.Executables;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Memory;
 using System;
 using System.Collections.Generic;

@@ -8,7 +8,7 @@ using Ryujinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService;
 using Ryujinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService.Types;
 using Ryujinx.HLE.HOS.Services.Vi.Types;
 using Ryujinx.HLE.UI;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

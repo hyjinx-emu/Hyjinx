@@ -4,7 +4,7 @@ using Ryujinx.HLE.HOS.Ipc;
 using Ryujinx.HLE.HOS.Services.Time.Clock;
 using Ryujinx.HLE.HOS.Services.Time.StaticService;
 using Ryujinx.HLE.HOS.Services.Time.TimeZone;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System;
 using System.Diagnostics;
 using System.IO;

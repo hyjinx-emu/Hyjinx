@@ -1,5 +1,5 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Ns;
 using Ryujinx.Horizon.Sdk.Sf.Cmif;
 using Ryujinx.Horizon.Sdk.Sf.Hipc;

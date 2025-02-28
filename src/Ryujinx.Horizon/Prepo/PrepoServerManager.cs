@@ -1,4 +1,4 @@
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Prepo.Ipc;
 using Ryujinx.Horizon.Prepo.Types;
 using Ryujinx.Horizon.Sdk.Arp;

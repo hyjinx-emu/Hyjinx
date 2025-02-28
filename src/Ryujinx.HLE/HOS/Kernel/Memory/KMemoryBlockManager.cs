@@ -1,5 +1,5 @@
 using Ryujinx.Common.Collections;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System.Diagnostics;
 
 namespace Ryujinx.HLE.HOS.Kernel.Memory

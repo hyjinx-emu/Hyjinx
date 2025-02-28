@@ -1,4 +1,4 @@
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Arp;
 using Ryujinx.Horizon.Sdk.Arp.Detail;
 using Ryujinx.Horizon.Sdk.OsTypes;

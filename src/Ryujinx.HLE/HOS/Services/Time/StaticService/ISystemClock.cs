@@ -3,7 +3,7 @@ using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.Ipc;
 using Ryujinx.HLE.HOS.Kernel.Threading;
 using Ryujinx.HLE.HOS.Services.Time.Clock;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System;
 
 namespace Ryujinx.HLE.HOS.Services.Time.StaticService

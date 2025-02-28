@@ -1,5 +1,5 @@
 using Ryujinx.Common;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System;
 using System.Collections.Generic;
 

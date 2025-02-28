@@ -1,6 +1,6 @@
 using Ryujinx.HLE.HOS.Ipc;
 using Ryujinx.HLE.HOS.Services.Sdb.Pl.Types;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System;
 
 namespace Ryujinx.HLE.HOS.Services.Sdb.Pl

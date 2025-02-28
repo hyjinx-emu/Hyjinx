@@ -1,7 +1,7 @@
 using Ryujinx.HLE.HOS.Kernel.Memory;
 using Ryujinx.HLE.HOS.Kernel.Process;
 using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System;
 using System.Threading;
 

@@ -1,7 +1,7 @@
 using Ryujinx.HLE.HOS.Ipc;
 using Ryujinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager;
 using Ryujinx.HLE.HOS.Services.Pcv.Types;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System;
 
 namespace Ryujinx.HLE.HOS.Services.Pcv.Clkrst

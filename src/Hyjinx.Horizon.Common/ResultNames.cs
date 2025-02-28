@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ryujinx.Horizon.Common
+namespace Hyjinx.Horizon.Common
 {
     static class ResultNames
     {

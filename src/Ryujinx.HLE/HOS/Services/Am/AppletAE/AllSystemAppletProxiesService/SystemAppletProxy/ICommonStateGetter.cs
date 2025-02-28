@@ -4,7 +4,7 @@ using Ryujinx.HLE.HOS.Kernel.Threading;
 using Ryujinx.HLE.HOS.Services.Settings.Types;
 using Ryujinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService;
 using Ryujinx.HLE.HOS.SystemState;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Lbl;
 using System;
 

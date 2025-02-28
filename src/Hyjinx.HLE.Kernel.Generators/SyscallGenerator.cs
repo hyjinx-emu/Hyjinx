@@ -26,7 +26,7 @@ namespace Hyjinx.HLE.Kernel.Generators
         private const string TypeSystemUInt64 = "System.UInt64";
 
         private const string NamespaceKernel = "Ryujinx.HLE.HOS.Kernel";
-        private const string NamespaceHorizonCommon = "Ryujinx.Horizon.Common";
+        private const string NamespaceHorizonCommon = "Hyjinx.Horizon.Common";
         private const string TypeSvcAttribute = NamespaceKernel + ".SupervisorCall.SvcAttribute";
         private const string TypePointerSizedAttribute = NamespaceKernel + ".SupervisorCall.PointerSizedAttribute";
         private const string TypeResultName = "Result";

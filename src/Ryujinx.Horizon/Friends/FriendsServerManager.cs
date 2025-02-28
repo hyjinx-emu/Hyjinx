@@ -1,4 +1,4 @@
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Account;
 using Ryujinx.Horizon.Sdk.Friends.Detail.Ipc;
 using Ryujinx.Horizon.Sdk.Sf.Hipc;

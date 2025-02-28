@@ -1,4 +1,4 @@
-namespace Ryujinx.Horizon.Common
+namespace Hyjinx.Horizon.Common
 {
     public interface IThreadContext
     {

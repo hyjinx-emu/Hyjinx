@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.LogManager.Types;
 using Ryujinx.Horizon.Sdk.Lm;
 using Ryujinx.Horizon.Sdk.Sf;

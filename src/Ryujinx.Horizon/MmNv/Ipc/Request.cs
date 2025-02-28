@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.MmNv;
 using Ryujinx.Horizon.Sdk.Sf;
 using System.Collections.Generic;

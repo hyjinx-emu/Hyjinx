@@ -1,7 +1,7 @@
 using Hyjinx.Audio;
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Input;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Applet;
 using Ryujinx.Horizon.Sdk.Sf;
 using Ryujinx.Horizon.Sdk.Sf.Hipc;

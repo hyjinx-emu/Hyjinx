@@ -3,7 +3,7 @@ using Ryujinx.Common.Logging;
 using Ryujinx.HLE.HOS.Ipc;
 using Ryujinx.HLE.HOS.Services.Hid.HidServer;
 using Ryujinx.HLE.HOS.Services.Hid.Irs.Types;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System;
 
 namespace Ryujinx.HLE.HOS.Services.Hid.Irs

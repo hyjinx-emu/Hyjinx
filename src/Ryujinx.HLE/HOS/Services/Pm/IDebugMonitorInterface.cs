@@ -1,7 +1,7 @@
 using Ryujinx.HLE.HOS.Ipc;
 using Ryujinx.HLE.HOS.Kernel;
 using Ryujinx.HLE.HOS.Kernel.Process;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 
 namespace Ryujinx.HLE.HOS.Services.Pm
 {

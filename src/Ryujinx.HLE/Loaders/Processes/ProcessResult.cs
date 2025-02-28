@@ -5,7 +5,7 @@ using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
 using Ryujinx.HLE.HOS.SystemState;
 using Ryujinx.HLE.Loaders.Processes.Extensions;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using System;
 
 namespace Ryujinx.HLE.Loaders.Processes

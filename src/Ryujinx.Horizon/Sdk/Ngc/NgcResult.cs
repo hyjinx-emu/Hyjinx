@@ -1,4 +1,4 @@
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 
 namespace Ryujinx.Horizon.Sdk.Ngc
 {

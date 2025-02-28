@@ -1,5 +1,5 @@
 using Hyjinx.Audio.Common;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Applet;
 using Ryujinx.Horizon.Sdk.Sf;
 using System;

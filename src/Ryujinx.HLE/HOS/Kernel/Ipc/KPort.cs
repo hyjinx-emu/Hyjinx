@@ -1,5 +1,5 @@
 using Ryujinx.HLE.HOS.Kernel.Common;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 
 namespace Ryujinx.HLE.HOS.Kernel.Ipc
 {

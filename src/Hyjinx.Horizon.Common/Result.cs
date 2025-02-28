@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.Horizon.Common
+namespace Hyjinx.Horizon.Common
 {
     public struct Result : IEquatable<Result>
     {

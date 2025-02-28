@@ -25,7 +25,7 @@ namespace Hyjinx.Horizon.Generators.Hipc
 
         public const string CommandAttributeName = "CmifCommandAttribute";
 
-        private const string TypeResult = "Ryujinx.Horizon.Common.Result";
+        private const string TypeResult = "Hyjinx.Horizon.Common.Result";
         private const string TypeBufferAttribute = "Ryujinx.Horizon.Sdk.Sf.BufferAttribute";
         private const string TypeCopyHandleAttribute = "Ryujinx.Horizon.Sdk.Sf.CopyHandleAttribute";
         private const string TypeMoveHandleAttribute = "Ryujinx.Horizon.Sdk.Sf.MoveHandleAttribute";
@@ -71,7 +71,7 @@ namespace Hyjinx.Horizon.Generators.Hipc
                 CodeGenerator generator = new CodeGenerator();
                 string className = commandInterface.ClassDeclarationSyntax.Identifier.ToString();
 
-                generator.AppendLine("using Ryujinx.Horizon.Common;");
+                generator.AppendLine("using Hyjinx.Horizon.Common;");
                 generator.AppendLine("using Ryujinx.Horizon.Sdk.Sf;");
                 generator.AppendLine("using Ryujinx.Horizon.Sdk.Sf.Cmif;");
                 generator.AppendLine("using Ryujinx.Horizon.Sdk.Sf.Hipc;");

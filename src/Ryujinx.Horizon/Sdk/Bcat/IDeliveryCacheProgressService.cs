@@ -1,5 +1,5 @@
 using Ryujinx.Horizon.Bcat.Ipc.Types;
-using Ryujinx.Horizon.Common;
+using Hyjinx.Horizon.Common;
 using Ryujinx.Horizon.Sdk.Sf;
 
 namespace Ryujinx.Horizon.Sdk.Bcat
