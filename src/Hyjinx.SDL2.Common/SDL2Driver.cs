@@ -7,7 +7,7 @@ using System.IO;
 using System.Threading;
 using static SDL2.SDL;
 
-namespace Ryujinx.SDL2.Common
+namespace Hyjinx.SDL2.Common
 {
     public class SDL2Driver : IDisposable
     {

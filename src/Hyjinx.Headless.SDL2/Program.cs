@@ -29,7 +29,7 @@ using Ryujinx.HLE.HOS.Services.Account.Acc;
 using Ryujinx.Input;
 using Ryujinx.Input.HLE;
 using Hyjinx.Input.SDL2;
-using Ryujinx.SDL2.Common;
+using Hyjinx.SDL2.Common;
 using Silk.NET.Vulkan;
 using System;
 using System.Collections.Generic;
