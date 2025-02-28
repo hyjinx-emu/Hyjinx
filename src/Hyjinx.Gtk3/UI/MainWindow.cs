@@ -513,7 +513,7 @@ namespace Ryujinx.UI
             }
             else
             {
-                renderer = new Graphics.OpenGL.OpenGLRenderer();
+                renderer = new Hyjinx.Graphics.OpenGL.OpenGLRenderer();
             }
 
             BackendThreading threadingMode = ConfigurationState.Instance.Graphics.BackendThreading;

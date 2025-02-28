@@ -92,7 +92,7 @@ namespace Ryujinx.UI
         public override void InitializeRenderer()
         {
             // First take exclusivity on the OpenGL context.
-            ((Graphics.OpenGL.OpenGLRenderer)Renderer).InitializeBackgroundContext(SPBOpenGLContext.CreateBackgroundContext(_openGLContext));
+            ((Hyjinx.Graphics.OpenGL.OpenGLRenderer)Renderer).InitializeBackgroundContext(SPBOpenGLContext.CreateBackgroundContext(_openGLContext));
 
             _openGLContext.MakeCurrent(_nativeWindow);
 

@@ -26,7 +26,7 @@ using Ryujinx.Common.Utilities;
 using Ryujinx.Graphics.GAL;
 using Ryujinx.Graphics.GAL.Multithreading;
 using Ryujinx.Graphics.Gpu;
-using Ryujinx.Graphics.OpenGL;
+using Hyjinx.Graphics.OpenGL;
 using Hyjinx.Graphics.Vulkan;
 using Ryujinx.HLE;
 using Ryujinx.HLE.FileSystem;

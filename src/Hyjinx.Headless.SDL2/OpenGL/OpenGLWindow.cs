@@ -2,7 +2,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
-using Ryujinx.Graphics.OpenGL;
+using Hyjinx.Graphics.OpenGL;
 using Ryujinx.Input.HLE;
 using System;
 using static SDL2.SDL;

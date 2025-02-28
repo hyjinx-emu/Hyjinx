@@ -4,7 +4,7 @@ using Ryujinx.Common.Logging;
 using Ryujinx.Graphics.GAL;
 using Ryujinx.Graphics.GAL.Multithreading;
 using Ryujinx.Graphics.Gpu;
-using Ryujinx.Graphics.OpenGL;
+using Hyjinx.Graphics.OpenGL;
 using Ryujinx.HLE.HOS.Applets;
 using Ryujinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
 using Ryujinx.HLE.UI;

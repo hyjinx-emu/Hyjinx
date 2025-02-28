@@ -1,5 +1,5 @@
 using Hyjinx.Graphics.Device;
-using Ryujinx.Graphics.Host1x;
+using Hyjinx.Graphics.Host1x;
 using Hyjinx.Graphics.Nvdec;
 using Ryujinx.Graphics.Vic;
 using System;

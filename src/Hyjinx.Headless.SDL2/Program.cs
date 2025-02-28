@@ -17,7 +17,7 @@ using Ryujinx.Graphics.GAL;
 using Ryujinx.Graphics.GAL.Multithreading;
 using Ryujinx.Graphics.Gpu;
 using Ryujinx.Graphics.Gpu.Shader;
-using Ryujinx.Graphics.OpenGL;
+using Hyjinx.Graphics.OpenGL;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Headless.SDL2.OpenGL;

@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Gpu", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.GAL", "src\Ryujinx.Graphics.GAL\Ryujinx.Graphics.GAL.csproj", "{A602AE97-91A5-4608-8DF1-EBF4ED7A0B9E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.OpenGL", "src\Ryujinx.Graphics.OpenGL\Ryujinx.Graphics.OpenGL.csproj", "{9558FB96-075D-4219-8FFF-401979DC0B69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.OpenGL", "src\Hyjinx.Graphics.OpenGL\Hyjinx.Graphics.OpenGL.csproj", "{9558FB96-075D-4219-8FFF-401979DC0B69}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Texture", "src\Ryujinx.Graphics.Texture\Ryujinx.Graphics.Texture.csproj", "{E1B1AD28-289D-47B7-A106-326972240207}"
 EndProject
@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Cpu", "src\Hyjinx.Cp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Device", "src\Hyjinx.Graphics.Device\Hyjinx.Graphics.Device.csproj", "{C3002C3C-7B09-4FE7-894A-372EDA22FC6E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Graphics.Host1x", "src\Ryujinx.Graphics.Host1x\Ryujinx.Graphics.Host1x.csproj", "{C35F1536-7DE5-4F9D-9604-B5B4E1561947}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Host1x", "src\Hyjinx.Graphics.Host1x\Hyjinx.Graphics.Host1x.csproj", "{C35F1536-7DE5-4F9D-9604-B5B4E1561947}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Nvdec.Vp9", "src\Hyjinx.Graphics.Nvdec.Vp9\Hyjinx.Graphics.Nvdec.Vp9.csproj", "{B9AECA11-E248-4886-A10B-81B631CAAF29}"
 EndProject

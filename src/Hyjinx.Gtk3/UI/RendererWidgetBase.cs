@@ -544,7 +544,7 @@ namespace Ryujinx.UI
             renderLoopThread.Start();
 
             Thread nvidiaStutterWorkaround = null;
-            if (Renderer is Graphics.OpenGL.OpenGLRenderer)
+            if (Renderer is Hyjinx.Graphics.OpenGL.OpenGLRenderer)
             {
                 nvidiaStutterWorkaround = new Thread(NvidiaStutterWorkaround)
                 {

@@ -2,7 +2,7 @@ using OpenTK.Graphics.OpenGL;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Ryujinx.Graphics.GAL;
-using Ryujinx.Graphics.OpenGL;
+using Hyjinx.Graphics.OpenGL;
 using Hyjinx.UI.Common.Configuration;
 using SPB.Graphics;
 using SPB.Graphics.Exceptions;

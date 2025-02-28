@@ -1,5 +1,5 @@
 using OpenTK.Graphics.OpenGL;
-using Ryujinx.Graphics.OpenGL;
+using Hyjinx.Graphics.OpenGL;
 using SPB.Graphics;
 using SPB.Graphics.OpenGL;
 using SPB.Platform;
