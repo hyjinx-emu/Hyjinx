@@ -187,7 +187,6 @@ namespace Hyjinx.UI.Widgets
                         _dialog = new MessageDialog(null, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Cancel, null)
                         {
                             Title = "Ryujinx - NCA Section Extractor",
-                            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.Gtk3.UI.Common.Resources.Logo_Ryujinx.png"),
                             SecondaryText = $"Extracting {ncaSectionType} section from {System.IO.Path.GetFileName(_applicationData.Path)}...",
                             WindowPosition = WindowPosition.Center,
                         };
@@ -309,7 +308,6 @@ namespace Hyjinx.UI.Widgets
                                     MessageDialog dialog = new(null, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, null)
                                     {
                                         Title = "Ryujinx - NCA Section Extractor",
-                                        Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png"),
                                         SecondaryText = "Extraction completed successfully.",
                                         WindowPosition = WindowPosition.Center,
                                     };

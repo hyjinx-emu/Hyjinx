@@ -52,8 +52,6 @@ namespace Hyjinx.UI.Windows
 
         public AmiiboWindow() : base($"Ryujinx {Program.Version} - Amiibo")
         {
-            Icon = new Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
-
             InitializeComponent();
 
             _httpClient = new HttpClient

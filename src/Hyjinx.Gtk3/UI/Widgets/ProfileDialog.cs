@@ -20,7 +20,6 @@ namespace Hyjinx.UI.Widgets
         private ProfileDialog(Builder builder) : base(builder.GetRawOwnedObject("_profileDialog"))
         {
             builder.Autoconnect(this);
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
         }
 
         private void OkToggle_Activated(object sender, EventArgs args)

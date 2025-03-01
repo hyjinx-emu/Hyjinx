@@ -14,7 +14,6 @@ namespace Hyjinx.UI.Widgets
             : base(null, DialogFlags.Modal, messageType, buttonsType, null)
         {
             Title = title;
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
             Text = mainText;
             SecondaryText = secondaryText;
             WindowPosition = WindowPosition.Center;

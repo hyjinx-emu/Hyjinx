@@ -124,8 +124,6 @@ namespace Hyjinx.UI.Windows
 
         private SettingsWindow(MainWindow parent, Builder builder, VirtualFileSystem virtualFileSystem, ContentManager contentManager) : base(builder.GetRawOwnedObject("_settingsWin"))
         {
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
-
             _parent = parent;
 
             builder.Autoconnect(this);

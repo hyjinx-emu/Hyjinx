@@ -33,8 +33,6 @@ namespace Hyjinx.UI.Windows
 
         public AvatarWindow() : base($"Ryujinx {Program.Version} - Manage Accounts - Avatar")
         {
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
-
             CanFocus = false;
             Resizable = false;
             Modal = true;

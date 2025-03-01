@@ -31,8 +31,7 @@ namespace Hyjinx.Modules
 
             _mainWindow = mainWindow;
             _buildUrl = buildUrl;
-
-            Icon = new Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.Gtk3.UI.Common.Resources.Logo_Ryujinx.png");
+            
             MainText.Text = "Do you want to update Ryujinx to the latest version?";
             SecondaryText.Text = $"{Program.Version} -> {newVersion}";
 

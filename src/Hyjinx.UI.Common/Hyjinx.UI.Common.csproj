@@ -19,7 +19,6 @@
     <None Remove="Resources\Logo_Discord.png" />
     <None Remove="Resources\Logo_GitHub.png" />
     <None Remove="Resources\Logo_Patreon.png" />
-    <None Remove="Resources\Logo_Ryujinx.png" />
     <None Remove="Resources\Logo_Twitter.png" />
   </ItemGroup>
 

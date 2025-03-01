@@ -84,16 +84,7 @@ namespace Hyjinx.UI.Windows
             // _logoBox
             //
             _logoBox = new Box(Orientation.Horizontal, 0);
-
-            //
-            // _ryujinxLogo
-            //
-            _ryujinxLogo = new Image(new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png", 100, 100))
-            {
-                Margin = 10,
-                MarginStart = 15,
-            };
-
+            
             //
             // _logoTextBox
             //

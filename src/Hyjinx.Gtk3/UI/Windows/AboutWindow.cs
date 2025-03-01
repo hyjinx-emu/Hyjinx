@@ -12,7 +12,6 @@ namespace Hyjinx.UI.Windows
     {
         public AboutWindow() : base($"Ryujinx {Program.Version} - About")
         {
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(OpenHelper)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
             InitializeComponent();
         }
 

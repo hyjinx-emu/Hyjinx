@@ -27,8 +27,7 @@ namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
         private SKImageInfo _imageInfo;
         private SKSurface _surface = null;
         private byte[] _bufferData = null;
-
-        private readonly SKBitmap _ryujinxLogo = null;
+        
         private readonly SKBitmap _padAcceptIcon = null;
         private readonly SKBitmap _padCancelIcon = null;
         private readonly SKBitmap _keyModeIcon = null;
@@ -61,11 +60,6 @@ namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 
         public SoftwareKeyboardRendererBase(IHostUITheme uiTheme)
         {
-            int ryujinxLogoSize = 32;
-
-            string ryujinxIconPath = "Hyjinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Logo_Ryujinx.png";
-            _ryujinxLogo = LoadResource(typeof(SoftwareKeyboardRendererBase).Assembly, ryujinxIconPath, ryujinxLogoSize, ryujinxLogoSize);
-
             string padAcceptIconPath = "Hyjinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Icon_BtnA.png";
             string padCancelIconPath = "Hyjinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Icon_BtnB.png";
             string keyModeIconPath = "Hyjinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Icon_KeyF6.png";
@@ -201,7 +195,6 @@ namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 
             canvas.Clear(SKColors.Transparent);
             canvas.DrawRect(_panelRectangle, _panelBrush);
-            canvas.DrawBitmap(_ryujinxLogo, _logoPosition);
 
             float halfWidth = _panelRectangle.Width / 2;
             float buttonsY = _panelRectangle.Top + 185;
@@ -295,12 +288,8 @@ namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
             _panelRectangle = SKRect.Create(0, panelPositionY, totalWidth, panelHeight);
 
             _messagePositionY = panelPositionY + 60;
-
-            int logoPositionX = (totalWidth - _ryujinxLogo.Width) / 2;
-            int logoPositionY = panelPositionY + 18;
-
-            _logoPosition = new SKPoint(logoPositionX, logoPositionY);
         }
+        
         private static SKRect MeasureString(string text, SKPaint paint)
         {
             SKRect bounds = SKRect.Empty;

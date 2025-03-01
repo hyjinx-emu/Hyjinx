@@ -156,8 +156,7 @@ namespace Hyjinx.UI
             ThemeHelper.ApplyTheme();
 
             SetWindowSizePosition();
-
-            Icon = new Gdk.Pixbuf(Assembly.GetAssembly(typeof(ConfigurationState)), "Hyjinx.UI.Common.Resources.Logo_Ryujinx.png");
+            
             Title = $"Ryujinx {Program.Version}";
 
             // Hide emulation context status bar.
