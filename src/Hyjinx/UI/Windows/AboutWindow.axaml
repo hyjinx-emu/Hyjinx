@@ -174,20 +174,7 @@
                         Background="Transparent"
                         Click="Button_OnClick"
                         CornerRadius="15"
-                        Tag="https://twitter.com/RyujinxEmu"
-                        ToolTip.Tip="{locale:Locale AboutTwitterUrlTooltipMessage}">
-                        <Image Source="{Binding TwitterLogo}" />
-                    </Button>
-                    <Button
-                        MinWidth="30"
-                        MinHeight="30"
-                        MaxWidth="30"
-                        MaxHeight="30"
-                        Padding="8"
-                        Background="Transparent"
-                        Click="Button_OnClick"
-                        CornerRadius="15"
-                        Tag="https://www.ryujinx.org"
+                        Tag="https://www.hyjinxemulator.org"
                         ToolTip.Tip="{locale:Locale AboutUrlTooltipMessage}">
                         <ui:SymbolIcon Foreground="{DynamicResource ThemeForegroundColor}" Symbol="Link" />
                     </Button>
