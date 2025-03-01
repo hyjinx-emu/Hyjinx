@@ -58,7 +58,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
                 infosCount++;
             }
 
-            using (WritableRegion region = context.Memory.GetWritableRegion(context.Request.ReceiveBuff[0].Position, (int)context.Request.ReceiveBuff[0].Size))
+            using (var region = context.Memory.GetWritableRegion(context.Request.ReceiveBuff[0].Position, (int)context.Request.ReceiveBuff[0].Size))
             {
                 Span<byte> rawData = region.Memory.Span;
                 Span<BuiltInCertificateInfo> infos = MemoryMarshal.Cast<byte, BuiltInCertificateInfo>(rawData)[..infosCount];

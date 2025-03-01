@@ -8,7 +8,7 @@ namespace Hyjinx.Memory.Range
         /// <summary>
         /// Special address value used to indicate than an address is invalid.
         /// </summary>
-        internal const ulong InvalidAddress = ulong.MaxValue;
+        public const ulong InvalidAddress = ulong.MaxValue;
 
         /// <summary>
         /// An empty memory range, with a null address and zero size.
@@ -69,7 +69,7 @@ namespace Hyjinx.Memory.Range
         /// </summary>
         /// <param name="subRange">Memory range to check</param>
         /// <returns>True if the memory range is considered invalid, false otherwise</returns>
-        internal static bool IsInvalid(ref MemoryRange subRange)
+        public static bool IsInvalid(ref MemoryRange subRange)
         {
             return subRange.Address == InvalidAddress;
         }

@@ -1075,9 +1075,9 @@ namespace Hyjinx.Graphics.Gpu.Image
         /// </remarks>
         /// <param name="tracked">True if writing the texture data is tracked, false otherwise</param>
         /// <param name="texture">The specific host texture to flush. Defaults to this texture</param>
-        public void FlushTextureDataToGuest(bool tracked, ITexture texture = null)
+        public void FlushTextureDataToGuest(bool tracked, ITexture? texture = null)
         {
-            using WritableRegion region = _physicalMemory.GetWritableRegion(Range, tracked);
+            using var region = _physicalMemory.GetWritableRegion(Range, tracked);
 
             GetTextureDataFromGpu(region.Memory.Span, tracked, texture);
         }

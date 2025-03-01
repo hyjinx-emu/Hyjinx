@@ -136,7 +136,7 @@ namespace Hyjinx.Graphics.Device
         /// <param name="va">Start address of the range</param>
         /// <param name="size">Size in bytes to be range</param>
         /// <returns>A writable region with the data at the specified memory location</returns>
-        public WritableRegion GetWritableRegion(ulong va, int size)
+        public IWritableRegion GetWritableRegion(ulong va, int size)
         {
             if (IsContiguous(va, size))
             {

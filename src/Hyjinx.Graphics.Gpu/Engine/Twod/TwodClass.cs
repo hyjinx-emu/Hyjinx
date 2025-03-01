@@ -161,7 +161,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.Twod
             }
             else
             {
-                using WritableRegion dstRegion = memoryManager.GetWritableRegion(dstGpuVa, srcSize, true);
+                using var dstRegion = memoryManager.GetWritableRegion(dstGpuVa, srcSize, true);
                 Span<byte> dstSpan = dstRegion.Memory.Span;
 
                 if (src.LinearLayout)

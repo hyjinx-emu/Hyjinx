@@ -164,7 +164,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
             context.Memory.Read(bufferPosition, temp);
 
             using MemoryStream timeZoneBinaryStream = new(temp);
-            using WritableRegion region = context.Memory.GetWritableRegion(timeZoneRuleBufferPosition, Unsafe.SizeOf<TimeZoneRule>());
+            using var region = context.Memory.GetWritableRegion(timeZoneRuleBufferPosition, Unsafe.SizeOf<TimeZoneRule>());
 
             ref TimeZoneRule rule = ref MemoryMarshal.Cast<byte, TimeZoneRule>(region.Memory.Span)[0];
 

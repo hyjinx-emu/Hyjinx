@@ -171,7 +171,7 @@ namespace Hyjinx.Graphics.Gpu.Memory
         /// <param name="size">Size in bytes to be range</param>
         /// <param name="tracked">True if write tracking is triggered on the span</param>
         /// <returns>A writable region with the data at the specified memory location</returns>
-        public WritableRegion GetWritableRegion(ulong address, int size, bool tracked = false)
+        public IWritableRegion GetWritableRegion(ulong address, int size, bool tracked = false)
         {
             return _cpuMemory.GetWritableRegion(address, size, tracked);
         }
@@ -182,7 +182,7 @@ namespace Hyjinx.Graphics.Gpu.Memory
         /// <param name="range">Range</param>
         /// <param name="tracked">True if write tracking is triggered on the span</param>
         /// <returns>A writable region with the data at the specified memory location</returns>
-        public WritableRegion GetWritableRegion(MultiRange range, bool tracked = false)
+        public IWritableRegion GetWritableRegion(MultiRange range, bool tracked = false)
         {
             if (range.Count == 1)
             {
@@ -356,7 +356,7 @@ namespace Hyjinx.Graphics.Gpu.Memory
         {
             _cpuMemory.SignalMemoryTracking(address, size, write: true, precise: true, (int)kind);
 
-            using WritableRegion region = _cpuMemory.GetWritableRegion(address, (int)size);
+            using var region = _cpuMemory.GetWritableRegion(address, (int)size);
 
             MemoryMarshal.Cast<byte, uint>(region.Memory.Span).Fill(value);
         }
