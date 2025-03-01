@@ -2,7 +2,7 @@ using Hyjinx.Audio.Renderer.Common;
 using Hyjinx.Audio.Renderer.Parameter;
 using Hyjinx.Audio.Renderer.Server.Effect;
 using Hyjinx.Audio.Renderer.Server.Splitter;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Utilities;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

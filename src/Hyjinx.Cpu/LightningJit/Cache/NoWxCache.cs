@@ -1,5 +1,5 @@
 using ARMeilleure.Memory;
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Memory;
 using System;
 using System.Collections.Generic;

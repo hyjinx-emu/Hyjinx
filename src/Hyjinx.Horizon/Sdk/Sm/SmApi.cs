@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Sf.Cmif;
 using System;

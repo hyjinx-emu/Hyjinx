@@ -6,10 +6,10 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels.Input;
-using Ryujinx.Common.Configuration.Hid.Controller;
+using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Input;
 using Hyjinx.Input.Assigner;
-using StickInputId = Ryujinx.Common.Configuration.Hid.Controller.StickInputId;
+using StickInputId = Hyjinx.Common.Configuration.Hid.Controller.StickInputId;
 
 namespace Hyjinx.Ava.UI.Views.Input
 {

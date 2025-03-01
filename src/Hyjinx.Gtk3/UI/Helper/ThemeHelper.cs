@@ -1,6 +1,6 @@
 using Gtk;
-using Ryujinx.Common;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common;
+using Hyjinx.Common.Logging;
 using Hyjinx.UI.Common.Configuration;
 using System.IO;
 

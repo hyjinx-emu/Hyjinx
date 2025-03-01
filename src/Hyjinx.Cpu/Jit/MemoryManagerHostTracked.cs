@@ -1,5 +1,5 @@
 using ARMeilleure.Memory;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Cpu.Jit.HostTracked;
 using Hyjinx.Cpu.Signal;
 using Hyjinx.Memory;

@@ -1,5 +1,5 @@
 using Gtk;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.UI.Common.Configuration;
 using System.Collections.Generic;
 using System.Reflection;

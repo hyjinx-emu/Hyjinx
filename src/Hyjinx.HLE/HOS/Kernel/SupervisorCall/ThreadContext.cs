@@ -1,5 +1,5 @@
 using ARMeilleure.State;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 
 namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
 {

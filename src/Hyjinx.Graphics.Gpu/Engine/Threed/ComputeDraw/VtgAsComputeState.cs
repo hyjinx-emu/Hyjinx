@@ -1,5 +1,5 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common;
+using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Image;

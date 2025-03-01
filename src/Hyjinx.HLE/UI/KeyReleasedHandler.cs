@@ -1,4 +1,4 @@
-using Ryujinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Hid;
 
 namespace Hyjinx.HLE.UI
 {

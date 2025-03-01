@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 
 namespace Hyjinx.HLE.HOS.Services.Mii
 {

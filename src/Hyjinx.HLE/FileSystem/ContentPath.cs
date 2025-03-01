@@ -1,6 +1,6 @@
 using LibHac.Fs;
 using LibHac.Ncm;
-using Ryujinx.Common.Configuration;
+using Hyjinx.Common.Configuration;
 using System;
 using static Hyjinx.HLE.FileSystem.VirtualFileSystem;
 using Path = System.IO.Path;

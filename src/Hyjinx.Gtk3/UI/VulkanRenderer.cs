@@ -1,5 +1,5 @@
 using Gdk;
-using Ryujinx.Common.Configuration;
+using Hyjinx.Common.Configuration;
 using Hyjinx.Input.HLE;
 using Ryujinx.UI.Helper;
 using SPB.Graphics.Vulkan;

@@ -1,4 +1,4 @@
-using Ryujinx.Common.Collections;
+using Hyjinx.Common.Collections;
 using Hyjinx.Horizon.Common;
 using System.Diagnostics;
 

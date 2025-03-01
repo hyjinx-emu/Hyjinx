@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Tests.Unicorn", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.ShaderTools", "src\Hyjinx.ShaderTools\Hyjinx.ShaderTools.csproj", "{3AB294D0-2230-468F-9EB3-BDFCAEAE99A5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ryujinx.Common", "src\Ryujinx.Common\Ryujinx.Common.csproj", "{5FD4E4F6-8928-4B3C-BE07-28A675C17226}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Common", "src\Hyjinx.Common\Hyjinx.Common.csproj", "{5FD4E4F6-8928-4B3C-BE07-28A675C17226}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ARMeilleure", "src\ARMeilleure\ARMeilleure.csproj", "{ABF09A5E-2D8B-4B6F-A51D-5CE414DDB15A}"
 EndProject

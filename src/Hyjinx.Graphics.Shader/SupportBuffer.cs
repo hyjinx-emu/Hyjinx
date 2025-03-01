@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Graphics.Shader.StructuredIr;
 using Hyjinx.Graphics.Shader.Translation;
 using System.Runtime.CompilerServices;

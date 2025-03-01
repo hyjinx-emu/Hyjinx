@@ -8,7 +8,7 @@ using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Input;
 using Hyjinx.Input.Assigner;
-using Key = Ryujinx.Common.Configuration.Hid.Key;
+using Key = Hyjinx.Common.Configuration.Hid.Key;
 
 namespace Hyjinx.Ava.UI.Views.Settings
 {

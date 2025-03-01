@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Applets;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel;

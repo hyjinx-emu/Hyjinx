@@ -1,5 +1,5 @@
 using Microsoft.IO;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Memory;
 using System;
 using System.Runtime.CompilerServices;

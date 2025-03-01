@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Graphics.Nvdec.Vp9.Dsp;
 using Hyjinx.Graphics.Nvdec.Vp9.Types;
 using Hyjinx.Graphics.Video;

@@ -1,9 +1,9 @@
 using LibHac.Ns;
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration.Multiplayer;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Memory;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration.Multiplayer;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Memory;
+using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;

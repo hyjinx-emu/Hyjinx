@@ -1,9 +1,9 @@
 using Gdk;
 using Gtk;
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Models.Amiibo;
 using Ryujinx.UI.Widgets;

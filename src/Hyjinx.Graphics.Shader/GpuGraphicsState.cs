@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 
 namespace Hyjinx.Graphics.Shader
 {

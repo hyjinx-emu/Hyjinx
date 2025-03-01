@@ -1,6 +1,6 @@
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Memory;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Memory;
+using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Types;

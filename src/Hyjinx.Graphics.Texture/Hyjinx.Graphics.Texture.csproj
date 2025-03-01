@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ryujinx.Common\Ryujinx.Common.csproj" />
+    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
   </ItemGroup>
 
 </Project>

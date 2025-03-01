@@ -1,5 +1,5 @@
 using CommandLine;
-using Ryujinx.Common.Configuration;
+using Hyjinx.Common.Configuration;
 using Hyjinx.HLE.HOS.SystemState;
 
 namespace Hyjinx.Headless.SDL2

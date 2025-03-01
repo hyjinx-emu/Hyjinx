@@ -1,5 +1,5 @@
 using OpenTK.Graphics.OpenGL;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 
 namespace Hyjinx.Graphics.OpenGL.Effects
 {

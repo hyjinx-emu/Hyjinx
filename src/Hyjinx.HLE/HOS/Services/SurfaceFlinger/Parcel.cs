@@ -1,6 +1,6 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Memory;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Memory;
+using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
 using System;
 using System.Diagnostics;

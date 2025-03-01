@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Tamper.Operations;
 using System.Runtime.CompilerServices;
 

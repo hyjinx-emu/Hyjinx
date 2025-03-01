@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using System;
 using System.Numerics;

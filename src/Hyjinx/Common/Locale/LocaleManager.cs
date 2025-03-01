@@ -1,6 +1,6 @@
 using Hyjinx.Ava.UI.ViewModels;
-using Ryujinx.Common;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Utilities;
 using Hyjinx.UI.Common.Configuration;
 using System;
 using System.Collections.Concurrent;

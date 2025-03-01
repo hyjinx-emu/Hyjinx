@@ -1,7 +1,7 @@
 using MsgPack;
 using MsgPack.Serialization;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Prepo.Types;
 using Hyjinx.Horizon.Sdk.Account;

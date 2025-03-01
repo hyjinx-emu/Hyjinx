@@ -1,6 +1,6 @@
 using OpenTK.Graphics.OpenGL;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
 using Hyjinx.Input.HLE;
 using SPB.Graphics;
 using SPB.Graphics.Exceptions;

@@ -1,5 +1,5 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Services.Hid.HidServer;
 using Hyjinx.HLE.HOS.Services.Hid.Irs.Types;

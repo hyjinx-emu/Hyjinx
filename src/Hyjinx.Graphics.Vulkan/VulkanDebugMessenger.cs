@@ -1,6 +1,6 @@
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;
 using System;

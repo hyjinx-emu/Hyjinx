@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Graphics.Video;
 
 namespace Hyjinx.Graphics.Nvdec.Vp9.Types

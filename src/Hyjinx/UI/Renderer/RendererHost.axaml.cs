@@ -1,6 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
-using Ryujinx.Common.Configuration;
+using Hyjinx.Common.Configuration;
 using Hyjinx.UI.Common.Configuration;
 using System;
 

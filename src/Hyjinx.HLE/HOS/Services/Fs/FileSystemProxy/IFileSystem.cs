@@ -2,7 +2,7 @@ using LibHac;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Path = LibHac.FsSrv.Sf.Path;
 
 namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy

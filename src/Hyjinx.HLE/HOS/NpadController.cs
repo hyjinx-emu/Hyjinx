@@ -1,15 +1,15 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Configuration.Hid.Controller;
-using Ryujinx.Common.Configuration.Hid.Controller.Motion;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Hid.Controller;
+using Hyjinx.Common.Configuration.Hid.Controller.Motion;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Hid;
 using System;
 using System.Collections.Concurrent;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using CemuHookClient = Hyjinx.Input.Motion.CemuHook.Client;
-using ConfigControllerType = Ryujinx.Common.Configuration.Hid.ControllerType;
+using ConfigControllerType = Hyjinx.Common.Configuration.Hid.ControllerType;
 
 namespace Hyjinx.Input.HLE
 {

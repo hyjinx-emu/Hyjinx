@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Graphics.Shader.IntermediateRepresentation;
 using Hyjinx.Graphics.Shader.StructuredIr;
 using System;

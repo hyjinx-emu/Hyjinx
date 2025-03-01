@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.Audio.Renderer.Parameter.Effect

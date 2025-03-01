@@ -1,6 +1,6 @@
 using ARMeilleure.CodeGen.RegisterAllocators;
 using ARMeilleure.IntermediateRepresentation;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using System.IO;
 using System.Numerics;
 

@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Threading;
 using Hyjinx.Ava.Common.Locale;
-using Ryujinx.Common;
+using Hyjinx.Common;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;

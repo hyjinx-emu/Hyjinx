@@ -1,5 +1,5 @@
 using Hyjinx.Audio.Renderer.Server.Upsampler;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using System;
 using System.Diagnostics;
 using System.Numerics;

@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Gpu.Synchronization;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types;
 using Hyjinx.HLE.HOS.Services.Nv.Types;

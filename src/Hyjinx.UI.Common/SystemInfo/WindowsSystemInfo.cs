@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using System;
 using System.Management;
 using System.Runtime.InteropServices;

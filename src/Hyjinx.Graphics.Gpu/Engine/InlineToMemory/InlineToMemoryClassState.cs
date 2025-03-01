@@ -1,6 +1,6 @@
 // This file was auto-generated from NVIDIA official Maxwell definitions.
 
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 
 namespace Hyjinx.Graphics.Gpu.Engine.InlineToMemory
 {

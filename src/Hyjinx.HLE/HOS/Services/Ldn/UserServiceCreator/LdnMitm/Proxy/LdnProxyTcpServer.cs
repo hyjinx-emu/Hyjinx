@@ -1,5 +1,5 @@
 using NetCoreServer;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using System;
 using System.Net;
 using System.Net.Sockets;

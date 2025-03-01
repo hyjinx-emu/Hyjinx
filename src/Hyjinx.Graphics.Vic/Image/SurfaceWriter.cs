@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Texture;
 using Hyjinx.Graphics.Vic.Types;
 using System;

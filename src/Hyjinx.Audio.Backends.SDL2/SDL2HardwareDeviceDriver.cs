@@ -1,6 +1,6 @@
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Memory;
 using Hyjinx.SDL2.Common;
 using System;

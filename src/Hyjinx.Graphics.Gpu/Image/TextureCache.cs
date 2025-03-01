@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Threed;
 using Hyjinx.Graphics.Gpu.Engine.Twod;

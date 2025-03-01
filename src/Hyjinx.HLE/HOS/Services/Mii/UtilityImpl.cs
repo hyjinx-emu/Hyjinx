@@ -1,4 +1,4 @@
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Mii.Types;
 using Hyjinx.HLE.HOS.Services.Time;

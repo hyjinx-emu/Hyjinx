@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Graphics.Device;
 using System;
 using System.Collections.Generic;

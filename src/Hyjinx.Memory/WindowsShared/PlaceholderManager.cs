@@ -1,5 +1,5 @@
-using Ryujinx.Common.Collections;
-using Ryujinx.Common.Memory.PartialUnmaps;
+using Hyjinx.Common.Collections;
+using Hyjinx.Common.Memory.PartialUnmaps;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

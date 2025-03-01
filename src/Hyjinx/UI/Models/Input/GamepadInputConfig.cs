@@ -1,7 +1,7 @@
 using Hyjinx.Ava.UI.ViewModels;
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Configuration.Hid.Controller;
-using Ryujinx.Common.Configuration.Hid.Controller.Motion;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Hid.Controller;
+using Hyjinx.Common.Configuration.Hid.Controller.Motion;
 using System;
 
 namespace Hyjinx.Ava.UI.Models.Input

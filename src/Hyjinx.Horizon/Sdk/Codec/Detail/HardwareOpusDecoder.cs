@@ -1,7 +1,7 @@
 using Concentus;
 using Concentus.Enums;
 using Concentus.Structs;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Sf;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;

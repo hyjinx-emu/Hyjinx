@@ -3,7 +3,7 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Loader;
 using LibHac.Util;
-using Ryujinx.Common;
+using Hyjinx.Common;
 using System;
 
 namespace Hyjinx.HLE.Loaders.Processes.Extensions

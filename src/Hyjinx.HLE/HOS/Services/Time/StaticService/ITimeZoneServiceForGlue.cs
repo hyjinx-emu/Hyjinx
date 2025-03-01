@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.HLE.Utilities;

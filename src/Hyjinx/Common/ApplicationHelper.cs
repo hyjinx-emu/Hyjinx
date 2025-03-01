@@ -15,7 +15,7 @@ using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Helpers;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.Loaders.Processes.Extensions;

@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Ssl.SslService;
 using Hyjinx.HLE.HOS.Services.Ssl.Types;
 using Hyjinx.Memory;

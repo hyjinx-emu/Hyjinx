@@ -1,5 +1,5 @@
 using LibHac.Ns;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Utilities;
 
 namespace Hyjinx.HLE.HOS.Services.Ns
 {

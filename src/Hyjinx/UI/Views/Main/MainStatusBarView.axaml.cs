@@ -3,8 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Hyjinx.Ava.UI.Windows;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
 using Hyjinx.UI.Common.Configuration;
 using System;
 

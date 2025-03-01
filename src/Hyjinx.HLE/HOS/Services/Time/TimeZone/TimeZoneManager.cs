@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Services.Time.Clock;
 using System;
 using System.IO;

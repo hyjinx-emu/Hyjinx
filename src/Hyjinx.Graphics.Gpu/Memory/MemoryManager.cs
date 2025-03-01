@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Memory;
 using Hyjinx.Memory.Range;

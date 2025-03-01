@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
 using Hyjinx.HLE.HOS.Services.Time.Clock;
 using System;

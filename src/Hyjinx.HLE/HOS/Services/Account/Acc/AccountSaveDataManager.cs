@@ -1,6 +1,6 @@
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Account.Acc.Types;
 using System;
 using System.Collections.Concurrent;

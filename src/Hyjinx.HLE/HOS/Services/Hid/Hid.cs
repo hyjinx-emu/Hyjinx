@@ -1,6 +1,6 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Memory;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory;

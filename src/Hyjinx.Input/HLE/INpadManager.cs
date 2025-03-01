@@ -1,4 +1,4 @@
-﻿using Ryujinx.Common.Configuration.Hid;
+﻿using Hyjinx.Common.Configuration.Hid;
 using System;
 using System.Collections.Generic;
 

@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Silk.NET.Vulkan;
 using System;
 using System.Runtime.CompilerServices;

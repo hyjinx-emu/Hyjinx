@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Ptm.Ipc;
 using Hyjinx.Horizon.Sdk.Sf;

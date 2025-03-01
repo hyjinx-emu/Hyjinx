@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Gpu.Synchronization;
 using System;
 using System.Threading;

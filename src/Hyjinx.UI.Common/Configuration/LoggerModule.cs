@@ -1,7 +1,7 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Logging.Targets;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Logging.Targets;
 using System;
 using System.IO;
 

@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Keyboard;

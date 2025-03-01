@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using System.IO;
 
 namespace Hyjinx.Graphics.Gpu.Shader.DiskCache

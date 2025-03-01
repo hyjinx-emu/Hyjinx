@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd;
 using Hyjinx.HLE.HOS.Services.Ssl.Types;

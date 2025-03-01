@@ -1,6 +1,6 @@
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Renderer.Common;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using System.Runtime.InteropServices;
 using CpuAddress = System.UInt64;
 

@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletProxy
 {

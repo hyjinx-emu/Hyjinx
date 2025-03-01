@@ -1,5 +1,5 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Collections;
+using Hyjinx.Common;
+using Hyjinx.Common.Collections;
 using Hyjinx.Memory;
 using System;
 using System.Diagnostics;

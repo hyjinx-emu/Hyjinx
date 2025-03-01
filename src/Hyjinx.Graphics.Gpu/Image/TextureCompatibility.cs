@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Texture;
 using System;

@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Horizon.Bcat.Ipc.Types;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Bcat;

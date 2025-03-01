@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Silk.NET.Vulkan;
 using System.Collections.Generic;
 using System.Diagnostics;

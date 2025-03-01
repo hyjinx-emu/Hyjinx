@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using System;
 
 namespace Hyjinx.HLE.HOS.Kernel.Memory

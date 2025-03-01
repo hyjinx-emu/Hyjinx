@@ -1,5 +1,5 @@
 using ARMeilleure.Signal;
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Memory;
 using System;
 using System.Diagnostics;

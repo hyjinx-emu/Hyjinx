@@ -1,17 +1,17 @@
 using CommandLine;
 using LibHac.Tools.FsSystem;
 using Hyjinx.Audio.Backends.SDL2;
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Configuration.Hid.Controller;
-using Ryujinx.Common.Configuration.Hid.Controller.Motion;
-using Ryujinx.Common.Configuration.Hid.Keyboard;
-using Ryujinx.Common.GraphicsDriver;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Logging.Targets;
-using Ryujinx.Common.SystemInterop;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Hid.Controller;
+using Hyjinx.Common.Configuration.Hid.Controller.Motion;
+using Hyjinx.Common.Configuration.Hid.Keyboard;
+using Hyjinx.Common.GraphicsDriver;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Logging.Targets;
+using Hyjinx.Common.SystemInterop;
+using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
@@ -36,9 +36,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
-using ConfigGamepadInputId = Ryujinx.Common.Configuration.Hid.Controller.GamepadInputId;
-using ConfigStickInputId = Ryujinx.Common.Configuration.Hid.Controller.StickInputId;
-using Key = Ryujinx.Common.Configuration.Hid.Key;
+using ConfigGamepadInputId = Hyjinx.Common.Configuration.Hid.Controller.GamepadInputId;
+using ConfigStickInputId = Hyjinx.Common.Configuration.Hid.Controller.StickInputId;
+using Key = Hyjinx.Common.Configuration.Hid.Key;
 
 namespace Hyjinx.Headless.SDL2
 {
@@ -580,7 +580,7 @@ namespace Hyjinx.Headless.SDL2
                 options.AudioVolume,
                 options.UseHypervisor ?? true,
                 options.MultiplayerLanInterfaceId,
-                Ryujinx.Common.Configuration.Multiplayer.MultiplayerMode.Disabled);
+                Hyjinx.Common.Configuration.Multiplayer.MultiplayerMode.Disabled);
 
             return new Switch(configuration);
         }

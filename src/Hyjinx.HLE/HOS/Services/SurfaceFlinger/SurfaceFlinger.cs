@@ -1,7 +1,7 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.PreciseSleep;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.PreciseSleep;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;

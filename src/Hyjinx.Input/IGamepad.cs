@@ -1,5 +1,5 @@
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Memory;
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;

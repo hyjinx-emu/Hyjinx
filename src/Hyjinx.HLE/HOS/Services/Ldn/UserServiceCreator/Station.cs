@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
 using System;

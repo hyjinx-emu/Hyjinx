@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using System.Net;

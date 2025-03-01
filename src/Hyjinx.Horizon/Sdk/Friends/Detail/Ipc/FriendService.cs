@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Account;
 using Hyjinx.Horizon.Sdk.OsTypes;

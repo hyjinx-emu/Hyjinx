@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Account.Acc.AccountService;
 using Hyjinx.HLE.HOS.Services.Arp;
 

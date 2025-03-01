@@ -1,4 +1,4 @@
-using Ryujinx.Common.Configuration;
+using Hyjinx.Common.Configuration;
 using System;
 using System.Threading;
 

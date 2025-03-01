@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Horizon.Sdk.Settings;
 using System;
 using System.Runtime.InteropServices;

@@ -1,5 +1,5 @@
 using Hyjinx.Audio.Renderer.Parameter;
-using Ryujinx.Common.Extensions;
+using Hyjinx.Common.Extensions;
 using System;
 using System.Buffers;
 using System.Diagnostics;

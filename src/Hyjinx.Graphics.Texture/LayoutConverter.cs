@@ -1,5 +1,5 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common;
+using Hyjinx.Common.Memory;
 using System;
 using System.Runtime.Intrinsics;
 using static Hyjinx.Graphics.Texture.BlockLinearConstants;

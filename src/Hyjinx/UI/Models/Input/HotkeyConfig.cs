@@ -1,5 +1,5 @@
 using Hyjinx.Ava.UI.ViewModels;
-using Ryujinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Hid;
 
 namespace Hyjinx.Ava.UI.Models.Input
 {

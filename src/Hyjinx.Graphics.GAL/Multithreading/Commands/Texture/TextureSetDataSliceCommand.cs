@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 using Hyjinx.Graphics.GAL.Multithreading.Resources;
 

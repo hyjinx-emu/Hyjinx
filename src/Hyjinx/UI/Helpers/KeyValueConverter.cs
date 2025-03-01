@@ -1,7 +1,7 @@
 using Avalonia.Data.Converters;
 using Hyjinx.Ava.Common.Locale;
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Configuration.Hid.Controller;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Hid.Controller;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

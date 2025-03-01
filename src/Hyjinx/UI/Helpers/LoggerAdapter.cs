@@ -1,6 +1,6 @@
 using Avalonia.Logging;
 using Avalonia.Utilities;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using System;
 using System.Text;
 
@@ -9,7 +9,7 @@ namespace Hyjinx.Ava.UI.Helpers
     using AvaLogger = Avalonia.Logging.Logger;
     using AvaLogLevel = LogEventLevel;
     using RyuLogClass = LogClass;
-    using RyuLogger = Ryujinx.Common.Logging.Logger;
+    using RyuLogger = Hyjinx.Common.Logging.Logger;
 
     internal class LoggerAdapter : ILogSink
     {

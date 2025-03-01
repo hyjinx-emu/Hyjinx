@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Platform;
-using Ryujinx.Common.Configuration;
+using Hyjinx.Common.Configuration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using SPB.Graphics;

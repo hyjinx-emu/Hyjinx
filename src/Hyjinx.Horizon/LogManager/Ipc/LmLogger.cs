@@ -1,5 +1,5 @@
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Memory;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.LogManager.Types;
 using Hyjinx.Horizon.Sdk.Lm;

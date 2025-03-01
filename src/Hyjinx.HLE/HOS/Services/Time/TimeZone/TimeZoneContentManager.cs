@@ -6,7 +6,7 @@ using LibHac.FsSystem;
 using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.FileSystem;
@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using TimeZoneRuleBox = Ryujinx.Common.Memory.Box<Hyjinx.HLE.HOS.Services.Time.TimeZone.TimeZoneRule>;
+using TimeZoneRuleBox = Hyjinx.Common.Memory.Box<Hyjinx.HLE.HOS.Services.Time.TimeZone.TimeZoneRule>;
 
 namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
 {

@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Ipc;

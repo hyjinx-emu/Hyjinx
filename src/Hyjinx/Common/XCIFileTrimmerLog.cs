@@ -2,7 +2,7 @@ using Hyjinx.Ava.UI.ViewModels;
 
 namespace Hyjinx.Ava.Common
 {
-    internal class XCIFileTrimmerLog : Ryujinx.Common.Logging.XCIFileTrimmerLog
+    internal class XCIFileTrimmerLog : Hyjinx.Common.Logging.XCIFileTrimmerLog
     {
         private readonly MainWindowViewModel _viewModel;
 

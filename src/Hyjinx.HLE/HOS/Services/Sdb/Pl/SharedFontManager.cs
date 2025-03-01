@@ -5,7 +5,7 @@ using LibHac.FsSystem;
 using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Kernel.Memory;

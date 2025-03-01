@@ -1,7 +1,7 @@
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.OpenGL;
 using Hyjinx.Input.HLE;
 using System;

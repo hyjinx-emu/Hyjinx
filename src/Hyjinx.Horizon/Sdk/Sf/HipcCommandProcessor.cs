@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Sf.Cmif;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;

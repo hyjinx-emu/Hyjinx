@@ -1,9 +1,9 @@
-using Ryujinx.Common.Configuration.Hid.Controller;
+using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Input;
 using System;
 using System.Collections.Generic;
-using Key = Ryujinx.Common.Configuration.Hid.Key;
-using StickInputId = Ryujinx.Common.Configuration.Hid.Controller.StickInputId;
+using Key = Hyjinx.Common.Configuration.Hid.Key;
+using StickInputId = Hyjinx.Common.Configuration.Hid.Controller.StickInputId;
 
 namespace Ryujinx.UI.Helper
 {

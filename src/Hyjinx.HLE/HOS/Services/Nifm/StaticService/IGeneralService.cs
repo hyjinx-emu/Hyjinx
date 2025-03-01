@@ -1,6 +1,6 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Nifm.StaticService.GeneralService;
 using Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types;
 using System;

@@ -1,5 +1,5 @@
 using OpenTK.Graphics.OpenGL;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;

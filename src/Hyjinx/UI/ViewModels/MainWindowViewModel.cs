@@ -17,10 +17,10 @@ using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Models.Generic;
 using Hyjinx.Ava.UI.Renderer;
 using Hyjinx.Ava.UI.Windows;
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
 using Hyjinx.HLE;
 using Hyjinx.HLE.FileSystem;
@@ -369,7 +369,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
         public bool OpenDeviceSaveDirectoryEnabled => !SelectedApplication.ControlHolder.ByteSpan.IsZeros() && SelectedApplication.ControlHolder.Value.DeviceSaveDataSize > 0;
 
-        public bool TrimXCIEnabled => Ryujinx.Common.Utilities.XCIFileTrimmer.CanTrim(SelectedApplication.Path, new Common.XCIFileTrimmerLog(this));
+        public bool TrimXCIEnabled => Hyjinx.Common.Utilities.XCIFileTrimmer.CanTrim(SelectedApplication.Path, new Common.XCIFileTrimmerLog(this));
 
         public bool OpenBcatSaveDirectoryEnabled => !SelectedApplication.ControlHolder.ByteSpan.IsZeros() && SelectedApplication.ControlHolder.Value.BcatDeliveryCacheStorageSize > 0;
 
@@ -1775,31 +1775,31 @@ namespace Hyjinx.Ava.UI.ViewModels
             }
         }
 
-        public async void ProcessTrimResult(String filename, Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome operationOutcome)
+        public async void ProcessTrimResult(String filename, Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome operationOutcome)
         {
             string notifyUser = null;
 
             switch (operationOutcome)
             {
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.NoTrimNecessary:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.NoTrimNecessary:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileNoTrimNecessary];
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.ReadOnlyFileCannotFix:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.ReadOnlyFileCannotFix:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileReadOnlyFileCannotFix];
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FreeSpaceCheckFailed:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FreeSpaceCheckFailed:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileFreeSpaceCheckFailed];
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.InvalidXCIFile:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.InvalidXCIFile:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileInvalidXCIFile];
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileIOWriteError:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileIOWriteError:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileFileIOWriteError];
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileSizeChanged:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileSizeChanged:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileFileSizeChanged];
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.Successful:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.Successful:
                     if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                     {
                         if (desktop.MainWindow is MainWindow mainWindow)

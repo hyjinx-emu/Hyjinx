@@ -1,5 +1,5 @@
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
 using Hyjinx.Input;
 using System;
 using System.Diagnostics;

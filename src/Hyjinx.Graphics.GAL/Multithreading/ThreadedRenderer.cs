@@ -1,5 +1,5 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
 using Hyjinx.Graphics.GAL.Multithreading.Commands;
 using Hyjinx.Graphics.GAL.Multithreading.Commands.Buffer;
 using Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer;

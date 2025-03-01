@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.MmNv;
 using Hyjinx.Horizon.Sdk.Sf;

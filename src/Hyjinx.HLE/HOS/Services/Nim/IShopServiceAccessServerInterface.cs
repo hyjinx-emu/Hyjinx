@@ -1,5 +1,5 @@
 using LibHac.Ncm;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Arp;
 using Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface;
 

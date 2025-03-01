@@ -1,7 +1,7 @@
 using Gdk;
 using Gtk;
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
 using Ryujinx.UI;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;

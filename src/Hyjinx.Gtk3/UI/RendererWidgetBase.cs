@@ -1,9 +1,9 @@
 using Gdk;
 using Gtk;
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
@@ -127,7 +127,7 @@ namespace Ryujinx.UI
             Renderer.Window.SetScalingFilterLevel(ConfigurationState.Instance.Graphics.ScalingFilterLevel.Value);
         }
 
-        private void UpdateScalingFilter(object sender, ReactiveEventArgs<Ryujinx.Common.Configuration.ScalingFilter> e)
+        private void UpdateScalingFilter(object sender, ReactiveEventArgs<Hyjinx.Common.Configuration.ScalingFilter> e)
         {
             Renderer.Window.SetScalingFilter((ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
             Renderer.Window.SetScalingFilterLevel(ConfigurationState.Instance.Graphics.ScalingFilterLevel.Value);
@@ -178,7 +178,7 @@ namespace Ryujinx.UI
             Dispose();
         }
 
-        private void UpdateAnriAliasing(object sender, ReactiveEventArgs<Ryujinx.Common.Configuration.AntiAliasing> e)
+        private void UpdateAnriAliasing(object sender, ReactiveEventArgs<Hyjinx.Common.Configuration.AntiAliasing> e)
         {
             Renderer?.Window.SetAntiAliasing((Hyjinx.Graphics.GAL.AntiAliasing)e.NewValue);
         }

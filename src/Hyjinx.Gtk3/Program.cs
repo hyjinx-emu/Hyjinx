@@ -1,10 +1,10 @@
 using Gtk;
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.GraphicsDriver;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.SystemInterop;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.GraphicsDriver;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.SystemInterop;
+using Hyjinx.Common.Utilities;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Ryujinx.Modules;
 using Hyjinx.SDL2.Common;

@@ -1,6 +1,6 @@
 using Microsoft.Win32;
-using Ryujinx.Common;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common;
+using Hyjinx.Common.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;

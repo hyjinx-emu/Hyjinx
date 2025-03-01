@@ -1,6 +1,6 @@
 using Hyjinx.Audio.Renderer.Parameter;
-using Ryujinx.Common.Memory;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Memory;
+using Hyjinx.Common.Utilities;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

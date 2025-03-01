@@ -2,7 +2,7 @@ using LibHac.Common.FixedArrays;
 using LibHac.Fs;
 using LibHac.Loader;
 using LibHac.Tools.FsSystem;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;

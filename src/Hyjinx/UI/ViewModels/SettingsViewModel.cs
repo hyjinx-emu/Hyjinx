@@ -9,10 +9,10 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models.Input;
 using Hyjinx.Ava.UI.Windows;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Configuration.Multiplayer;
-using Ryujinx.Common.GraphicsDriver;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Configuration.Multiplayer;
+using Hyjinx.Common.GraphicsDriver;
+using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
@@ -160,7 +160,7 @@ namespace Hyjinx.Ava.UI.ViewModels
         public bool IsSoundIoEnabled { get; set; }
         public bool IsSDL2Enabled { get; set; }
         public bool IsCustomResolutionScaleActive => _resolutionScale == 4;
-        public bool IsScalingFilterActive => _scalingFilter == (int)Ryujinx.Common.Configuration.ScalingFilter.Fsr;
+        public bool IsScalingFilterActive => _scalingFilter == (int)Hyjinx.Common.Configuration.ScalingFilter.Fsr;
 
         public bool IsVulkanSelected => GraphicsBackendIndex == 0;
         public bool UseHypervisor { get; set; }

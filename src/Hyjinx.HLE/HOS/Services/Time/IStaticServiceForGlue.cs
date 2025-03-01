@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.HLE.HOS.Services.Pcv.Bpc;
 using Hyjinx.HLE.HOS.Services.Settings;
 using Hyjinx.HLE.HOS.Services.Time.Clock;

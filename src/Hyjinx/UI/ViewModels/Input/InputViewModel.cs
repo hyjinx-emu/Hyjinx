@@ -10,14 +10,14 @@ using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Models.Input;
 using Hyjinx.Ava.UI.Windows;
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Configuration.Hid.Controller;
-using Ryujinx.Common.Configuration.Hid.Controller.Motion;
-using Ryujinx.Common.Configuration.Hid.Keyboard;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Hid.Controller;
+using Hyjinx.Common.Configuration.Hid.Controller.Motion;
+using Hyjinx.Common.Configuration.Hid.Keyboard;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Hyjinx.Input;
 using Hyjinx.UI.Common.Configuration;
 using System;
@@ -26,9 +26,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using ConfigGamepadInputId = Ryujinx.Common.Configuration.Hid.Controller.GamepadInputId;
-using ConfigStickInputId = Ryujinx.Common.Configuration.Hid.Controller.StickInputId;
-using Key = Ryujinx.Common.Configuration.Hid.Key;
+using ConfigGamepadInputId = Hyjinx.Common.Configuration.Hid.Controller.GamepadInputId;
+using ConfigStickInputId = Hyjinx.Common.Configuration.Hid.Controller.StickInputId;
+using Key = Hyjinx.Common.Configuration.Hid.Key;
 
 namespace Hyjinx.Ava.UI.ViewModels.Input
 {

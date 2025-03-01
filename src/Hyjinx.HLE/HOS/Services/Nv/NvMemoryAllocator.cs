@@ -1,5 +1,5 @@
-using Ryujinx.Common.Collections;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Collections;
+using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Gpu.Memory;
 using System;
 using System.Collections.Generic;

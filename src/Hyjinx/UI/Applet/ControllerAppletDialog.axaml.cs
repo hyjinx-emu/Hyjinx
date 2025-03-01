@@ -6,7 +6,7 @@ using FluentAvalonia.UI.Controls;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.HLE.HOS.Applets;
 using Hyjinx.HLE.HOS.Services.Hid;
 using System.Linq;

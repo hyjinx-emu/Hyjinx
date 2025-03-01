@@ -10,10 +10,10 @@ using LibHac.Ns;
 using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
-using Ryujinx.Common;
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
@@ -76,7 +76,7 @@ namespace Ryujinx.UI.Widgets
             _extractLogoMenuItem.Sensitive = hasNca;
 
             _createShortcutMenuItem.Sensitive = !ReleaseInformation.IsFlatHubBuild;
-            _trimXCIMenuItem.Sensitive = _applicationData != null && Ryujinx.Common.Utilities.XCIFileTrimmer.CanTrim(_applicationData.Path, new XCIFileTrimmerLog(_parent));
+            _trimXCIMenuItem.Sensitive = _applicationData != null && Hyjinx.Common.Utilities.XCIFileTrimmer.CanTrim(_applicationData.Path, new XCIFileTrimmerLog(_parent));
 
             PopupAtPointer(null);
         }
@@ -633,31 +633,31 @@ namespace Ryujinx.UI.Widgets
             ShortcutHelper.CreateAppShortcut(_applicationData.Path, _applicationData.Name, _applicationData.IdString, appIcon);
         }
 
-        private void ProcessTrimResult(String filename, Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome operationOutcome)
+        private void ProcessTrimResult(String filename, Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome operationOutcome)
         {
             string notifyUser = null;
 
             switch (operationOutcome)
             {
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.NoTrimNecessary:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.NoTrimNecessary:
                     notifyUser = "XCI File does not need to be trimmed. Check logs for further details";
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.ReadOnlyFileCannotFix:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.ReadOnlyFileCannotFix:
                     notifyUser = "XCI File is Read Only and could not be made writable. Check logs for further details";
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FreeSpaceCheckFailed:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FreeSpaceCheckFailed:
                     notifyUser = "XCI File has data in the free space area, it is not safe to trim";
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.InvalidXCIFile:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.InvalidXCIFile:
                     notifyUser = "XCI File contains invalid data. Check logs for further details";
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileIOWriteError:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileIOWriteError:
                     notifyUser = "XCI File could not be opened for writing. Check logs for further details";
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileSizeChanged:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileSizeChanged:
                     notifyUser = "XCI File has changed in size since it was scanned. Please check the file is not being written to and try again.";
                     break;
-                case Ryujinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.Successful:
+                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.Successful:
                     _parent.UpdateGameTable();
                     break;
             }

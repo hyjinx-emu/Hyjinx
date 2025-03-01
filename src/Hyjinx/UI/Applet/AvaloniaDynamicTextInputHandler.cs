@@ -8,7 +8,7 @@ using Hyjinx.Ava.UI.Windows;
 using Hyjinx.HLE.UI;
 using System;
 using System.Threading;
-using HidKey = Ryujinx.Common.Configuration.Hid.Key;
+using HidKey = Hyjinx.Common.Configuration.Hid.Key;
 
 namespace Hyjinx.Ava.UI.Applet
 {

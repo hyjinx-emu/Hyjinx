@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.HOS.Services.Sdb.Pdm.QueryService.Types;

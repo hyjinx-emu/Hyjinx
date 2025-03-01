@@ -1,5 +1,5 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Time.Clock;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.HLE.Utilities;

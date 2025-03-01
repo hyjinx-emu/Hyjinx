@@ -1,7 +1,7 @@
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Renderer.Common;
 using Hyjinx.Audio.Renderer.Dsp.State;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.Memory;
 using System;
 using System.Diagnostics;

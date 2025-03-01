@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Silk.NET.Vulkan;
 using System;
 using System.Numerics;

@@ -1,6 +1,6 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
 using System;

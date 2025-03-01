@@ -1,5 +1,5 @@
 using DiscordRPC;
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.UI.Common.Configuration;
 using System.Text;
 

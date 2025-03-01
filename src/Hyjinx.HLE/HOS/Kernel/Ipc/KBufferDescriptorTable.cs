@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.Horizon.Common;
 using System.Collections.Generic;

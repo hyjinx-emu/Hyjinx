@@ -9,7 +9,7 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
-using Ryujinx.Common.Configuration;
+using Hyjinx.Common.Configuration;
 using Hyjinx.HLE.HOS;
 using Ryujinx.UI.App.Common;
 using Hyjinx.UI.Common.Helper;

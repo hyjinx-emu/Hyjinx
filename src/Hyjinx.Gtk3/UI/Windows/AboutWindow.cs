@@ -1,5 +1,5 @@
 using Gtk;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Utilities;
 using Hyjinx.UI.Common.Helper;
 using System.Net.Http;
 using System.Net.NetworkInformation;

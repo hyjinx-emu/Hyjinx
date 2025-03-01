@@ -1,4 +1,4 @@
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Utilities;
 
 namespace Hyjinx.Horizon.Sdk.Sf.Hipc
 {

@@ -1,6 +1,6 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Ipc;

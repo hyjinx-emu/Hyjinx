@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Ryujinx.Common.Collections;
+using Hyjinx.Common.Collections;
 using System;
 using System.Collections.Generic;
 

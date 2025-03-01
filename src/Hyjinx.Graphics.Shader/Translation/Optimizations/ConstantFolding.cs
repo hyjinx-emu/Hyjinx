@@ -1,4 +1,4 @@
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Utilities;
 using Hyjinx.Graphics.Shader.IntermediateRepresentation;
 using System;
 using static Hyjinx.Graphics.Shader.IntermediateRepresentation.OperandHelper;

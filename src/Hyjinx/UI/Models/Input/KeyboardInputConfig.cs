@@ -1,6 +1,6 @@
 using Hyjinx.Ava.UI.ViewModels;
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Configuration.Hid.Keyboard;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Hid.Keyboard;
 
 namespace Hyjinx.Ava.UI.Models.Input
 {

@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Graphics.Texture;
 
 namespace Hyjinx.Graphics.Vic.Image

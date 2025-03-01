@@ -1,5 +1,5 @@
 using LibHac.Tools.FsSystem;
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.HLE.HOS.Kernel.Process;

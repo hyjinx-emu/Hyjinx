@@ -1,5 +1,5 @@
-using Ryujinx.Common;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common;
+using Hyjinx.Common.Logging;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Kernel.Common;

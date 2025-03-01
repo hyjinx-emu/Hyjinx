@@ -1,6 +1,6 @@
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
@@ -18,8 +18,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using static SDL2.SDL;
-using AntiAliasing = Ryujinx.Common.Configuration.AntiAliasing;
-using ScalingFilter = Ryujinx.Common.Configuration.ScalingFilter;
+using AntiAliasing = Hyjinx.Common.Configuration.AntiAliasing;
+using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
 using Switch = Hyjinx.HLE.Switch;
 
 namespace Hyjinx.Headless.SDL2

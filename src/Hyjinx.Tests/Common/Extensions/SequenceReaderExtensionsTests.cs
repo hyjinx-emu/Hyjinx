@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Ryujinx.Common.Extensions;
+using Hyjinx.Common.Extensions;
 using Hyjinx.Memory;
 using System;
 using System.Buffers;

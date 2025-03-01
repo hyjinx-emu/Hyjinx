@@ -1,10 +1,10 @@
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Configuration.Hid.Keyboard;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Input;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using ConfigKey = Ryujinx.Common.Configuration.Hid.Key;
+using ConfigKey = Hyjinx.Common.Configuration.Hid.Key;
 using Key = Hyjinx.Input.Key;
 
 namespace Hyjinx.Ava.Input

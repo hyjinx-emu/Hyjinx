@@ -1,4 +1,4 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using System.Runtime.CompilerServices;

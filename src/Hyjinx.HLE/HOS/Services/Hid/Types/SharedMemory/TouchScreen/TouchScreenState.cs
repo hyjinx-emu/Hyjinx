@@ -1,4 +1,4 @@
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using System.Runtime.InteropServices;
 

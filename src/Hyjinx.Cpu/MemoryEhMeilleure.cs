@@ -1,4 +1,4 @@
-using Ryujinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Cpu.Signal;
 using Hyjinx.Memory;
 using Hyjinx.Memory.Tracking;

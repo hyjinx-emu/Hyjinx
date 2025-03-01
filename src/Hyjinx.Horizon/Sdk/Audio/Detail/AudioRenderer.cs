@@ -1,7 +1,7 @@
 using Hyjinx.Audio;
 using Hyjinx.Audio.Integration;
 using Hyjinx.Audio.Renderer.Server;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Sf;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;

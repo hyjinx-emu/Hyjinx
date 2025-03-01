@@ -1,4 +1,4 @@
-using Ryujinx.Common.Collections;
+using Hyjinx.Common.Collections;
 using System;
 
 namespace Hyjinx.Memory.WindowsShared

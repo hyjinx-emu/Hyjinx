@@ -1,9 +1,9 @@
-using Ryujinx.Common.Logging;
+using Hyjinx.Common.Logging;
 using System;
 
 namespace Ryujinx.UI
 {
-    internal class XCIFileTrimmerLog : Ryujinx.Common.Logging.XCIFileTrimmerLog
+    internal class XCIFileTrimmerLog : Hyjinx.Common.Logging.XCIFileTrimmerLog
     {
         private readonly MainWindow _mainWindow;
 

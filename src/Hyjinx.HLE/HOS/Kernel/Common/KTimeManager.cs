@@ -1,5 +1,5 @@
-using Ryujinx.Common;
-using Ryujinx.Common.PreciseSleep;
+using Hyjinx.Common;
+using Hyjinx.Common.PreciseSleep;
 using System;
 using System.Collections.Generic;
 using System.Threading;

@@ -1,8 +1,8 @@
-using Ryujinx.Common.Configuration;
-using Ryujinx.Common.Configuration.Hid;
-using Ryujinx.Common.Configuration.Multiplayer;
-using Ryujinx.Common.Logging;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Configuration;
+using Hyjinx.Common.Configuration.Hid;
+using Hyjinx.Common.Configuration.Multiplayer;
+using Hyjinx.Common.Logging;
+using Hyjinx.Common.Utilities;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using System.Collections.Generic;

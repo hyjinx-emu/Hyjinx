@@ -4,7 +4,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Hyjinx.Ava.Common;
 using Hyjinx.Ava.Common.Locale;
-using Ryujinx.Common.Utilities;
+using Hyjinx.Common.Utilities;
 using Hyjinx.UI.Common.Configuration;
 using System;
 using System.Net.Http;

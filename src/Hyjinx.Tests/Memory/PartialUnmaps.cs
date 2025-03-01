@@ -1,7 +1,7 @@
 using ARMeilleure.Signal;
 using ARMeilleure.Translation;
 using NUnit.Framework;
-using Ryujinx.Common.Memory.PartialUnmaps;
+using Hyjinx.Common.Memory.PartialUnmaps;
 using Hyjinx.Cpu;
 using Hyjinx.Cpu.Jit;
 using Hyjinx.Memory;
