@@ -218,7 +218,7 @@
                 <TextBlock
                     FontSize="15"
                     FontWeight="Bold"
-                    Text="{locale:Locale AboutRyujinxAboutTitle}" />
+                    Text="{locale:Locale AboutHyjinxAboutTitle}" />
                 <TextBlock
                     FontSize="10"
                     Text="Hyjinx is an emulator for the Nintendo Switch™."
@@ -244,9 +244,9 @@
                     Tag="https://github.com/ryujinx-mirror/Ryujinx/graphs/contributors?type=a">
                     <TextBlock
                         FontSize="10"
-                        Text="{locale:Locale AboutRyujinxContributorsButtonHeader}"
+                        Text="{locale:Locale AboutHyjinxContributorsButtonHeader}"
                         TextAlignment="End"
-                        ToolTip.Tip="{locale:Locale AboutRyujinxMaintainersContentTooltipMessage}" />
+                        ToolTip.Tip="{locale:Locale AboutHyjinxMaintainersContentTooltipMessage}" />
                 </Button>
             </StackPanel>
             <!--
@@ -257,7 +257,7 @@
                 <TextBlock
                     FontSize="15"
                     FontWeight="Bold"
-                    Text="{locale:Locale AboutRyujinxSupprtersTitle}" />
+                    Text="{locale:Locale AboutHyjinxSupprtersTitle}" />
                 <ScrollViewer
                     Height="70"
                     HorizontalScrollBarVisibility="Disabled"

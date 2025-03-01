@@ -462,7 +462,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                 LocaleManager.Instance[LocaleKeys.DialogAmiiboApiFailFetchMessage],
                 LocaleManager.Instance[LocaleKeys.InputDialogOk],
                 "",
-                LocaleManager.Instance[LocaleKeys.RyujinxInfo]);
+                LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
 
             return null;
         }
@@ -512,7 +512,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                 LocaleManager.Instance[LocaleKeys.DialogAmiiboApiConnectErrorMessage],
                 LocaleManager.Instance[LocaleKeys.InputDialogOk],
                 "",
-                LocaleManager.Instance[LocaleKeys.RyujinxInfo]);
+                LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
         }
     }
 }

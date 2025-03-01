@@ -44,11 +44,11 @@
                 <MenuItem
                     Command="{Binding OpenRyujinxFolder}"
                     Header="{locale:Locale MenuBarFileOpenEmuFolder}"
-                    ToolTip.Tip="{locale:Locale OpenRyujinxFolderTooltip}" />
+                    ToolTip.Tip="{locale:Locale OpenHyjinxFolderTooltip}" />
                 <MenuItem
                     Command="{Binding OpenLogsFolder}"
                     Header="{locale:Locale MenuBarFileOpenLogsFolder}"
-                    ToolTip.Tip="{locale:Locale OpenRyujinxLogsTooltip}" />
+                    ToolTip.Tip="{locale:Locale OpenHyjinxLogsTooltip}" />
                 <Separator />
                 <MenuItem
                     Click="CloseWindow"

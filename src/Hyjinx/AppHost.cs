@@ -647,7 +647,7 @@ namespace Hyjinx.Ava
                                     LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstallEmbeddedSuccessMessage, firmwareVersion.VersionString),
                                     LocaleManager.Instance[LocaleKeys.InputDialogOk],
                                     "",
-                                    LocaleManager.Instance[LocaleKeys.RyujinxInfo]);
+                                    LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
                             }
                         }
                         else

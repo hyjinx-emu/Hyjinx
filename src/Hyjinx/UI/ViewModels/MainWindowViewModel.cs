@@ -1060,7 +1060,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                     dialogMessage,
                     LocaleManager.Instance[LocaleKeys.InputDialogYes],
                     LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.RyujinxConfirm]);
+                    LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
                 UpdateWaitWindow waitingDialog = new(dialogTitle, LocaleManager.Instance[LocaleKeys.DialogFirmwareInstallerFirmwareInstallWaitMessage]);
 
@@ -1085,7 +1085,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
                                 string message = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstallerFirmwareInstallSuccessMessage, firmwareVersion.VersionString);
 
-                                await ContentDialogHelper.CreateInfoDialog(dialogTitle, message, LocaleManager.Instance[LocaleKeys.InputDialogOk], "", LocaleManager.Instance[LocaleKeys.RyujinxInfo]);
+                                await ContentDialogHelper.CreateInfoDialog(dialogTitle, message, LocaleManager.Instance[LocaleKeys.InputDialogOk], "", LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
 
                                 Logger.Info?.Print(LogClass.Application, message);
 
@@ -1560,7 +1560,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                     LocaleManager.Instance[LocaleKeys.DialogLoadAppGameAlreadyLoadedSubMessage],
                     LocaleManager.Instance[LocaleKeys.InputDialogOk],
                     "",
-                    LocaleManager.Instance[LocaleKeys.RyujinxInfo]);
+                    LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
 
                 return;
             }
@@ -1744,7 +1744,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                     secondaryMessage,
                     LocaleManager.Instance[LocaleKeys.InputDialogYes],
                     LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.RyujinxConfirm]);
+                    LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
                 if (result == UserResult.Yes)
                 {
@@ -1764,7 +1764,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                     secondaryMessage,
                     LocaleManager.Instance[LocaleKeys.InputDialogYes],
                     LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.RyujinxConfirm]);
+                    LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
                 if (result == UserResult.Yes)
                 {

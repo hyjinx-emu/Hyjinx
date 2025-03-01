@@ -71,7 +71,7 @@ namespace Hyjinx.Ava.UI.Windows
                         LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogModManagerDeletionWarningMessage, model.Name),
                         LocaleManager.Instance[LocaleKeys.InputDialogYes],
                         LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                        LocaleManager.Instance[LocaleKeys.RyujinxConfirm]);
+                        LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
                     if (result == UserResult.Yes)
                     {
@@ -88,7 +88,7 @@ namespace Hyjinx.Ava.UI.Windows
                 LocaleManager.Instance[LocaleKeys.DialogModManagerDeletionAllWarningMessage],
                 LocaleManager.Instance[LocaleKeys.InputDialogYes],
                 LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                LocaleManager.Instance[LocaleKeys.RyujinxConfirm]);
+                LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
             if (result == UserResult.Yes)
             {

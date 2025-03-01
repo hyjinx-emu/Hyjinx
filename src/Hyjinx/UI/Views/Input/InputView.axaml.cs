@@ -34,7 +34,7 @@ namespace Hyjinx.Ava.UI.Views.Input
                     LocaleManager.Instance[LocaleKeys.DialogControllerSettingsModifiedConfirmSubMessage],
                     LocaleManager.Instance[LocaleKeys.InputDialogYes],
                     LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.RyujinxConfirm]);
+                    LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
                 if (result == UserResult.Yes)
                 {

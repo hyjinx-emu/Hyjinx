@@ -164,7 +164,7 @@ namespace Hyjinx.Ava.UI.Controls
                     LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogPPTCDeletionMessage, viewModel.SelectedApplication.Name),
                     LocaleManager.Instance[LocaleKeys.InputDialogYes],
                     LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.RyujinxConfirm]);
+                    LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
                 if (result == UserResult.Yes)
                 {
@@ -212,7 +212,7 @@ namespace Hyjinx.Ava.UI.Controls
                     LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogShaderDeletionMessage, viewModel.SelectedApplication.Name),
                     LocaleManager.Instance[LocaleKeys.InputDialogYes],
                     LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.RyujinxConfirm]);
+                    LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
                 if (result == UserResult.Yes)
                 {

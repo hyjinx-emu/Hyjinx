@@ -205,8 +205,8 @@ namespace Hyjinx.Modules
             {
                 // Show a message asking the user if they want to update
                 var shouldUpdate = await ContentDialogHelper.CreateChoiceDialog(
-                    LocaleManager.Instance[LocaleKeys.RyujinxUpdater],
-                    LocaleManager.Instance[LocaleKeys.RyujinxUpdaterMessage],
+                    LocaleManager.Instance[LocaleKeys.HyjinxUpdater],
+                    LocaleManager.Instance[LocaleKeys.HyjinxUpdaterMessage],
                     $"{Program.Version} -> {newVersion}");
 
                 if (shouldUpdate)
@@ -246,7 +246,7 @@ namespace Hyjinx.Modules
 
             TaskDialog taskDialog = new()
             {
-                Header = LocaleManager.Instance[LocaleKeys.RyujinxUpdater],
+                Header = LocaleManager.Instance[LocaleKeys.HyjinxUpdater],
                 SubHeader = LocaleManager.Instance[LocaleKeys.UpdaterDownloading],
                 IconSource = new SymbolIconSource { Symbol = Symbol.Download },
                 ShowProgressBar = true,
@@ -273,7 +273,7 @@ namespace Hyjinx.Modules
 
                 if (!OperatingSystem.IsMacOS())
                 {
-                    shouldRestart = await ContentDialogHelper.CreateChoiceDialog(LocaleManager.Instance[LocaleKeys.RyujinxUpdater],
+                    shouldRestart = await ContentDialogHelper.CreateChoiceDialog(LocaleManager.Instance[LocaleKeys.HyjinxUpdater],
                         LocaleManager.Instance[LocaleKeys.DialogUpdaterCompleteMessage],
                         LocaleManager.Instance[LocaleKeys.DialogUpdaterRestartMessage]);
                 }

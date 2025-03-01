@@ -798,7 +798,7 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
                 LocaleManager.Instance[LocaleKeys.DialogProfileDeleteProfileMessage],
                 LocaleManager.Instance[LocaleKeys.InputDialogYes],
                 LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                LocaleManager.Instance[LocaleKeys.RyujinxConfirm]);
+                LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
             if (result == UserResult.Yes)
             {
