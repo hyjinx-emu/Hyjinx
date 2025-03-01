@@ -1,7 +1,5 @@
 using Gdk;
 using Gtk;
-using Hyjinx.Common;
-using Hyjinx.Common.Configuration;
 using Hyjinx.UI;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;

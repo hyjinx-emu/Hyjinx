@@ -9,7 +9,7 @@
     <TieredPGO>true</TieredPGO>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <RootNamespace>Hyjinx</RootNamespace>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([MSBuild]::IsOSPlatform('OSX'))">

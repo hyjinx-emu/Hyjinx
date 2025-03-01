@@ -49,11 +49,6 @@
                         Orientation="Horizontal"
                         HorizontalAlignment="Center"
                         Spacing="10">
-                        <Image
-                            Height="80"
-                            Source="resm:Hyjinx.UI.Common.Resources.Logo_Ryujinx.png?assembly=Hyjinx.UI.Common"
-                            HorizontalAlignment="Center"
-                            IsHitTestVisible="True" />
                         <WrapPanel
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"

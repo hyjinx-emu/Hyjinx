@@ -27,14 +27,6 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Image
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Grid.Column="0"
-            Height="80"
-            MinWidth="50"
-            Margin="5,10,20,10"
-            Source="resm:Hyjinx.UI.Common.Resources.Logo_Ryujinx.png?assembly=Hyjinx.UI.Common" />
         <TextBlock
             Grid.Row="1"
             Grid.Column="1"
