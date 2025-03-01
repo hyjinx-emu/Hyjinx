@@ -3,6 +3,7 @@
   
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Description>Provides high level emulation (HLE) capabilities for the Hyjinx emulator.</Description>
   </PropertyGroup>
 
   <ItemGroup>
