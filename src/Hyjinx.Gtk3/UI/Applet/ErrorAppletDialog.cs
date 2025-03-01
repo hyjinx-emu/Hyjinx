@@ -2,7 +2,7 @@ using Gtk;
 using Hyjinx.UI.Common.Configuration;
 using System.Reflection;
 
-namespace Ryujinx.UI.Applet
+namespace Hyjinx.UI.Applet
 {
     internal class ErrorAppletDialog : MessageDialog
     {

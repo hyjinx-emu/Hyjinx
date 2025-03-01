@@ -2,14 +2,14 @@ using Gdk;
 using Gtk;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
-using Ryujinx.UI;
+using Hyjinx.UI;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using System;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Ryujinx.Modules
+namespace Hyjinx.Modules
 {
     public class UpdateDialog : Gtk.Window
     {

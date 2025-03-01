@@ -1,7 +1,7 @@
 using Hyjinx.Common.Logging;
 using System;
 
-namespace Ryujinx.UI
+namespace Hyjinx.UI
 {
     internal class XCIFileTrimmerLog : Hyjinx.Common.Logging.XCIFileTrimmerLog
     {

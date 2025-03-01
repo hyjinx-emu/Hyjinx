@@ -6,7 +6,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public partial class AboutWindow : Window
     {

@@ -6,22 +6,22 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Common.SystemInterop;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
-using Ryujinx.Modules;
+using Hyjinx.Modules;
 using Hyjinx.SDL2.Common;
-using Ryujinx.UI;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Hyjinx.UI.Common.SystemInfo;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.Widgets;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Ryujinx
+namespace Hyjinx
 {
     partial class Program
     {

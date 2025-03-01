@@ -2,7 +2,7 @@ using Gtk;
 using Hyjinx.UI.Common.Helper;
 using System;
 
-namespace Ryujinx.UI.Helper
+namespace Hyjinx.UI.Helper
 {
     static class SortHelper
     {

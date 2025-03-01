@@ -2,7 +2,7 @@ using Gtk;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Helper;
 
-namespace Ryujinx.UI.Widgets
+namespace Hyjinx.UI.Widgets
 {
     internal class UserErrorDialog : MessageDialog
     {

@@ -3,7 +3,7 @@ using LibHac.Ncm;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.HLE.FileSystem;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Helper;
 using System.IO;
 using System.Linq;

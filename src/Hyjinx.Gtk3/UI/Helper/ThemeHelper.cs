@@ -4,7 +4,7 @@ using Hyjinx.Common.Logging;
 using Hyjinx.UI.Common.Configuration;
 using System.IO;
 
-namespace Ryujinx.UI.Helper
+namespace Hyjinx.UI.Helper
 {
     static class ThemeHelper
     {

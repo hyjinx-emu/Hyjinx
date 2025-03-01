@@ -10,8 +10,8 @@ using Hyjinx.Input;
 using Hyjinx.Input.Assigner;
 using Hyjinx.Input.GTK3;
 using Hyjinx.UI.Common.Configuration;
-using Ryujinx.UI.Helper;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.Helper;
+using Hyjinx.UI.Widgets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,7 +24,7 @@ using ConfigStickInputId = Hyjinx.Common.Configuration.Hid.Controller.StickInput
 using GUI = Gtk.Builder.ObjectAttribute;
 using Key = Hyjinx.Common.Configuration.Hid.Key;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public class ControllerWindow : Window
     {

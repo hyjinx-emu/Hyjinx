@@ -29,7 +29,7 @@ using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.UI;
 using Hyjinx.Input.HLE;
 using Hyjinx.Modules;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;

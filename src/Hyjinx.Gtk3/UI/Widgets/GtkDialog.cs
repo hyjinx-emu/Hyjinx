@@ -4,7 +4,7 @@ using Hyjinx.UI.Common.Configuration;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Ryujinx.UI.Widgets
+namespace Hyjinx.UI.Widgets
 {
     internal class GtkDialog : MessageDialog
     {

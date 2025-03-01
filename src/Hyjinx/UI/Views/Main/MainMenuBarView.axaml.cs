@@ -11,7 +11,7 @@ using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Modules;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;

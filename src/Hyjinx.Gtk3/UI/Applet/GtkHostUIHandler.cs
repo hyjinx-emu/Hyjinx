@@ -2,11 +2,11 @@ using Gtk;
 using Hyjinx.HLE.HOS.Applets;
 using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
 using Hyjinx.HLE.UI;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.Widgets;
 using System;
 using System.Threading;
 
-namespace Ryujinx.UI.Applet
+namespace Hyjinx.UI.Applet
 {
     internal class GtkHostUIHandler : IHostUIHandler
     {

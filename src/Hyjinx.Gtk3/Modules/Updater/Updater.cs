@@ -5,9 +5,9 @@ using ICSharpCode.SharpZipLib.Zip;
 using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.Common.Utilities;
-using Ryujinx.UI;
+using Hyjinx.UI;
 using Hyjinx.UI.Common.Models.Github;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.Widgets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ryujinx.Modules
+namespace Hyjinx.Modules
 {
     public static class Updater
     {

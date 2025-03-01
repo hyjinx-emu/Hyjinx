@@ -1,6 +1,6 @@
 using Gtk;
 
-namespace Ryujinx.UI.Widgets
+namespace Hyjinx.UI.Widgets
 {
     public class GtkInputDialog : MessageDialog
     {

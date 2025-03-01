@@ -20,7 +20,7 @@ using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.Input.HLE;
 using Hyjinx.Input.SDL2;
 using Hyjinx.Modules;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;

@@ -18,7 +18,7 @@ using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.HLE.Utilities;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Configuration;
 using System;
 using System.Collections.Generic;

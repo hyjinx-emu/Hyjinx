@@ -1,4 +1,4 @@
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using System;
 
 namespace Hyjinx.Ava.UI.ViewModels

@@ -10,8 +10,8 @@ using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.HLE.Utilities;
-using Ryujinx.UI.App.Common;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.App.Common;
+using Hyjinx.UI.Widgets;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,7 +19,7 @@ using System.IO;
 using System.Linq;
 using GUI = Gtk.Builder.ObjectAttribute;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public class DlcWindow : Window
     {

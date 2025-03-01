@@ -1,6 +1,6 @@
 ﻿using Gtk;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public partial class AmiiboWindow : Window
     {

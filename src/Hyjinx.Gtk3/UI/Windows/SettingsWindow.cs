@@ -11,8 +11,8 @@ using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Configuration.System;
-using Ryujinx.UI.Helper;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.Helper;
+using Hyjinx.UI.Widgets;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -23,7 +23,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GUI = Gtk.Builder.ObjectAttribute;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public class SettingsWindow : Window
     {

@@ -6,7 +6,7 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.HLE.FileSystem;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Helper;
 using System.Threading.Tasks;
 

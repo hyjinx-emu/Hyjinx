@@ -19,10 +19,10 @@ using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.HLE.Utilities;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
-using Ryujinx.UI.Windows;
+using Hyjinx.UI.Windows;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 
-namespace Ryujinx.UI.Widgets
+namespace Hyjinx.UI.Widgets
 {
     public partial class GameTableContextMenu : Menu
     {

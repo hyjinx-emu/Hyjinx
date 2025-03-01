@@ -3,7 +3,7 @@ using Pango;
 using Hyjinx.UI.Common.Configuration;
 using System.Reflection;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public partial class AboutWindow : Window
     {

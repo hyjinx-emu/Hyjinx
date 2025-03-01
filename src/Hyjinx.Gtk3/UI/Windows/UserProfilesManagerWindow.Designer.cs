@@ -2,7 +2,7 @@
 using Pango;
 using System;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public partial class UserProfilesManagerWindow : Window
     {

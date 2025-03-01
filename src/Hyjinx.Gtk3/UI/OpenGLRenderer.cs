@@ -12,7 +12,7 @@ using SPB.Windowing;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.UI
+namespace Hyjinx.UI
 {
     public partial class OpenGLRenderer : RendererWidgetBase
     {

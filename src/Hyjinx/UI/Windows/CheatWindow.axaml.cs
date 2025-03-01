@@ -4,7 +4,7 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Configuration;
 using System;
 using System.Collections.Generic;

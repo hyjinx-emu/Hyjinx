@@ -3,7 +3,7 @@ using Hyjinx.Common.Memory;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.UI.Common.Configuration;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.Widgets;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public partial class UserProfilesManagerWindow : Window
     {

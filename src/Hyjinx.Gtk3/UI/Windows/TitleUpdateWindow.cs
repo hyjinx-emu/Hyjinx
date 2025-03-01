@@ -11,9 +11,9 @@ using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.HLE.Utilities;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Configuration;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.Widgets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +21,7 @@ using System.Linq;
 using GUI = Gtk.Builder.ObjectAttribute;
 using SpanHelpers = LibHac.Common.SpanHelpers;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public class TitleUpdateWindow : Window
     {

@@ -6,7 +6,7 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Common.Utilities;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Models.Amiibo;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.Widgets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +18,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Window = Gtk.Window;
 
-namespace Ryujinx.UI.Windows
+namespace Hyjinx.UI.Windows
 {
     public partial class AmiiboWindow : Window
     {

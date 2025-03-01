@@ -12,7 +12,7 @@ using Hyjinx.Input.GTK3;
 using Hyjinx.Input.HLE;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
-using Ryujinx.UI.Widgets;
+using Hyjinx.UI.Widgets;
 using SkiaSharp;
 using System;
 using System.Diagnostics;
@@ -24,7 +24,7 @@ using Key = Hyjinx.Input.Key;
 using ScalingFilter = Hyjinx.Graphics.GAL.ScalingFilter;
 using Switch = Hyjinx.HLE.Switch;
 
-namespace Ryujinx.UI
+namespace Hyjinx.UI
 {
     public abstract class RendererWidgetBase : DrawingArea
     {

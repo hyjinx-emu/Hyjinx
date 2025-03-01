@@ -25,15 +25,15 @@ using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Input.GTK3;
 using Hyjinx.Input.HLE;
 using Hyjinx.Input.SDL2;
-using Ryujinx.Modules;
-using Ryujinx.UI.App.Common;
-using Ryujinx.UI.Applet;
+using Hyjinx.Modules;
+using Hyjinx.UI.App.Common;
+using Hyjinx.UI.Applet;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
-using Ryujinx.UI.Helper;
-using Ryujinx.UI.Widgets;
-using Ryujinx.UI.Windows;
+using Hyjinx.UI.Helper;
+using Hyjinx.UI.Widgets;
+using Hyjinx.UI.Windows;
 using Silk.NET.Vulkan;
 using SPB.Graphics.Vulkan;
 using System;
@@ -47,7 +47,7 @@ using System.Threading.Tasks;
 using GUI = Gtk.Builder.ObjectAttribute;
 using ShaderCacheLoadingState = Hyjinx.Graphics.Gpu.Shader.ShaderCacheState;
 
-namespace Ryujinx.UI
+namespace Hyjinx.UI
 {
     public class MainWindow : Window
     {

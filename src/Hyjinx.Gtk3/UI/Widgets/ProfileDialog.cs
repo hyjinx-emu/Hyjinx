@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 using GUI = Gtk.Builder.ObjectAttribute;
 
-namespace Ryujinx.UI.Widgets
+namespace Hyjinx.UI.Widgets
 {
     public class ProfileDialog : Dialog
     {

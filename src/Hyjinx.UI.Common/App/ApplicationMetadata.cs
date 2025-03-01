@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace Ryujinx.UI.App.Common
+namespace Hyjinx.UI.App.Common
 {
     public class ApplicationMetadata
     {

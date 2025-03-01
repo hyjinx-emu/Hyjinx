@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Ryujinx.UI.Helper
+namespace Hyjinx.UI.Helper
 {
     public delegate void UpdateBoundsCallbackDelegate(Window window);
 

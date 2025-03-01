@@ -35,7 +35,7 @@ using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Input;
 using Hyjinx.Input.HLE;
-using Ryujinx.UI.App.Common;
+using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
