@@ -1,6 +1,6 @@
 using ARMeilleure.CodeGen.Linking;
 using ARMeilleure.IntermediateRepresentation;
-using Ryujinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

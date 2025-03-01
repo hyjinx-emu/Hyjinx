@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/library.props" />
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
+    <ProjectReference Include="..\Spv.Generator\Spv.Generator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CodeGen\Glsl\HelperFunctions\MultiplyHighS32.glsl" />
+    <EmbeddedResource Include="CodeGen\Glsl\HelperFunctions\MultiplyHighU32.glsl" />
+    <EmbeddedResource Include="CodeGen\Glsl\HelperFunctions\SwizzleAdd.glsl" />
+  </ItemGroup>
+
+</Project>

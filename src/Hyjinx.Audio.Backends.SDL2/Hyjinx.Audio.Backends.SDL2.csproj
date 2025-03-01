@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/library.props" />
+  
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Audio\Hyjinx.Audio.csproj" />
+    <ProjectReference Include="..\Hyjinx.SDL2.Common\Hyjinx.SDL2.Common.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/library.props" />
+
+  <ItemGroup>
+    <PackageReference Include="OpenTK.Audio.OpenAL" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Audio\Hyjinx.Audio.csproj" />
+  </ItemGroup>
+
+</Project>

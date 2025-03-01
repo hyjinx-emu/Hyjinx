@@ -1,0 +1,118 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/exe.props" />
+  
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>1.1.0-dirty</Version>
+    <DefineConstants Condition=" '$(ExtraDefineConstants)' != '' ">$(DefineConstants);$(ExtraDefineConstants)</DefineConstants>
+    <SigningCertificate Condition=" '$(SigningCertificate)' == '' ">-</SigningCertificate>
+    <TieredPGO>true</TieredPGO>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <Exec Command="codesign --entitlements '$(ProjectDir)..\..\distribution\macos\entitlements.xml' -f --deep -s $(SigningCertificate) '$(TargetDir)$(TargetName)'" />
+  </Target>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <PublishSingleFile>true</PublishSingleFile>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
+  </PropertyGroup>
+
+  <!--
+    FluentAvalonia, used in the Avalonia UI, requires a workaround for the json serializer used internally when using .NET 8+ System.Text.Json.
+    See:
+      https://github.com/amwx/FluentAvalonia/issues/481
+      https://devblogs.microsoft.com/dotnet/system-text-json-in-dotnet-8/
+  -->
+  <PropertyGroup>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Diagnostics" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" />
+    <PackageReference Include="Avalonia.Svg" />
+    <PackageReference Include="Avalonia.Svg.Skia" />
+    <PackageReference Include="DynamicData" />
+    <PackageReference Include="FluentAvaloniaUI" />
+
+    <PackageReference Include="OpenTK.Core" />
+    <PackageReference Include="Ryujinx.Audio.OpenAL.Dependencies" Condition="'$(RuntimeIdentifier)' != 'linux-x64' AND '$(RuntimeIdentifier)' != 'linux-arm64' AND '$(RuntimeIdentifier)' != 'osx-x64' AND '$(RuntimeIdentifier)' != 'osx-arm64'" />
+    <PackageReference Include="Ryujinx.Graphics.Nvdec.Dependencies" />
+    <PackageReference Include="Ryujinx.Graphics.Vulkan.Dependencies.MoltenVK" Condition="'$(RuntimeIdentifier)' != 'linux-x64' AND '$(RuntimeIdentifier)' != 'linux-arm64' AND '$(RuntimeIdentifier)' != 'win-x64'" />
+    <PackageReference Include="Silk.NET.Vulkan" />
+    <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" />
+    <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" />
+    <PackageReference Include="SPB" />
+    <PackageReference Include="SharpZipLib" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Audio.Backends.SDL2\Hyjinx.Audio.Backends.SDL2.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Vulkan\Hyjinx.Graphics.Vulkan.csproj" />
+    <ProjectReference Include="..\Hyjinx.Input\Hyjinx.Input.csproj" />
+    <ProjectReference Include="..\Hyjinx.Input.SDL2\Hyjinx.Input.SDL2.csproj" />
+    <ProjectReference Include="..\Hyjinx.Audio.Backends.OpenAL\Hyjinx.Audio.Backends.OpenAL.csproj" />
+    <ProjectReference Include="..\Hyjinx.Audio.Backends.SoundIo\Hyjinx.Audio.Backends.SoundIo.csproj" />
+    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
+    <ProjectReference Include="..\Hyjinx.HLE\Hyjinx.HLE.csproj" />
+    <ProjectReference Include="..\ARMeilleure\ARMeilleure.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.OpenGL\Hyjinx.Graphics.OpenGL.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Gpu\Hyjinx.Graphics.Gpu.csproj" />
+    <ProjectReference Include="..\Hyjinx.UI.Common\Hyjinx.UI.Common.csproj" />
+    <ProjectReference Include="..\Hyjinx.UI.LocaleGenerator\Hyjinx.UI.LocaleGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\distribution\windows\alsoft.ini" Condition="'$(RuntimeIdentifier)' != 'linux-x64' AND '$(RuntimeIdentifier)' != 'linux-arm64' AND '$(RuntimeIdentifier)' != 'osx-x64'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>alsoft.ini</TargetPath>
+    </Content>
+    <Content Include="..\..\distribution\legal\THIRDPARTY.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>THIRDPARTY.md</TargetPath>
+    </Content>
+    <Content Include="..\..\LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>LICENSE.txt</TargetPath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64' OR '$(RuntimeIdentifier)' == 'linux-arm64' OR ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOSPlatform('Linux')))">
+    <Content Include="..\..\distribution\linux\Hyjinx.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\distribution\linux\mime\Hyjinx.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>mime\Hyjinx.xml</TargetPath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="UI\**\*.xaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
+    <AvaloniaResource Include="Assets\Fonts\SegoeFluentIcons.ttf" />
+    <AvaloniaResource Include="Assets\Styles\Themes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
+    <AvaloniaResource Include="Assets\Styles\Styles.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\**\*" />
+    <EmbeddedResource Include="Assets\**\*" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <AdditionalFiles Include="Assets\Locales\en_US.json" />
+  </ItemGroup>
+</Project>

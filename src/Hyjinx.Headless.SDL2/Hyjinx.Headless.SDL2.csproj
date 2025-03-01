@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/exe.props" />
+  
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>1.0.0-dirty</Version>
+    <DefineConstants Condition=" '$(ExtraDefineConstants)' != '' ">$(DefineConstants);$(ExtraDefineConstants)</DefineConstants>
+    <SigningCertificate Condition=" '$(SigningCertificate)' == '' ">-</SigningCertificate>
+    <TieredPGO>true</TieredPGO>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTK.Core" />
+    <PackageReference Include="Ryujinx.Graphics.Nvdec.Dependencies" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <Exec Command="codesign --entitlements '$(ProjectDir)..\..\distribution\macos\entitlements.xml' -f --deep -s $(SigningCertificate) '$(TargetDir)$(TargetName)'" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Graphics.Vulkan\Hyjinx.Graphics.Vulkan.csproj" />
+    <ProjectReference Include="..\Hyjinx.Input\Hyjinx.Input.csproj" />
+    <ProjectReference Include="..\Hyjinx.Input.SDL2\Hyjinx.Input.SDL2.csproj" />
+    <ProjectReference Include="..\Hyjinx.Audio.Backends.SDL2\Hyjinx.Audio.Backends.SDL2.csproj" />
+    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
+    <ProjectReference Include="..\Hyjinx.HLE\Hyjinx.HLE.csproj" />
+    <ProjectReference Include="..\ARMeilleure\ARMeilleure.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.OpenGL\Hyjinx.Graphics.OpenGL.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Gpu\Hyjinx.Graphics.Gpu.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" />
+    <PackageReference Include="Ryujinx.Graphics.Vulkan.Dependencies.MoltenVK" Condition="'$(RuntimeIdentifier)' != 'linux-x64' AND '$(RuntimeIdentifier)' != 'linux-arm64' AND '$(RuntimeIdentifier)' != 'win-x64'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\distribution\legal\THIRDPARTY.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>THIRDPARTY.md</TargetPath>
+    </Content>
+    <Content Include="..\..\LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>LICENSE.txt</TargetPath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64' OR '$(RuntimeIdentifier)' == 'linux-arm64' OR ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOSPlatform('Linux')))">
+    <Content Include="..\..\distribution\linux\Hyjinx.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!-- Due to .net core 3.1 embedded resource loading -->
+  <PropertyGroup>
+    <EmbeddedResourceUseDependentUponConvention>false</EmbeddedResourceUseDependentUponConvention>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
+  </PropertyGroup>
+</Project>

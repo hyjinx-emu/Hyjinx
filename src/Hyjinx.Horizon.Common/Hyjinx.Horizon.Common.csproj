@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/library.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Memory\Hyjinx.Memory.csproj" />
+  </ItemGroup>
+
+</Project>

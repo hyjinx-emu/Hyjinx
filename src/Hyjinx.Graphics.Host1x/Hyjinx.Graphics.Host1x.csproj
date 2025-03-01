@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/library.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Graphics.Device\Hyjinx.Graphics.Device.csproj" />
+  </ItemGroup>
+
+</Project>

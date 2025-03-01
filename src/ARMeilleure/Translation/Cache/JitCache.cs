@@ -2,7 +2,7 @@ using ARMeilleure.CodeGen;
 using ARMeilleure.CodeGen.Unwinding;
 using ARMeilleure.Memory;
 using ARMeilleure.Native;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

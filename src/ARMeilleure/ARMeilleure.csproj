@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/library.props" />
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ryujinx.Common\Ryujinx.Common.csproj" />
-    <ProjectReference Include="..\Ryujinx.Memory\Ryujinx.Memory.csproj" />
+    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
+    <ProjectReference Include="..\Hyjinx.Memory\Hyjinx.Memory.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,11 +16,5 @@
       <TargetPath>libarmeilleure-jitsupport.dylib</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Ryujinx.Tests</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-
+  
 </Project>

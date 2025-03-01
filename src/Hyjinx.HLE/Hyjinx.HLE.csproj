@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/library.props" />
+  
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Description>Provides high level emulation (HLE) capabilities for the Hyjinx emulator.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
+    <ProjectReference Include="..\Hyjinx.Cpu\Hyjinx.Cpu.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Gpu\Hyjinx.Graphics.Gpu.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Host1x\Hyjinx.Graphics.Host1x.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Nvdec\Hyjinx.Graphics.Nvdec.csproj" />
+    <ProjectReference Include="..\Hyjinx.Graphics.Vic\Hyjinx.Graphics.Vic.csproj" />
+    <ProjectReference Include="..\Hyjinx.HLE.Generators\Hyjinx.HLE.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Hyjinx.Horizon.Common\Hyjinx.Horizon.Common.csproj" />
+    <ProjectReference Include="..\Hyjinx.HLE.Kernel.Generators\Hyjinx.HLE.Kernel.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Hyjinx.Horizon\Hyjinx.Horizon.csproj" />
+    <ProjectReference Include="..\Hyjinx.Input\Hyjinx.Input.csproj" />
+    <ProjectReference Include="..\Hyjinx.Memory\Hyjinx.Memory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibHac" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+    <PackageReference Include="MsgPack.Cli" />
+    <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+    <PackageReference Include="NetCoreServer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Homebrew.npdm" />
+    <None Remove="HOS\Applets\SoftwareKeyboard\Resources\Icon_BtnA.png" />
+    <None Remove="HOS\Applets\SoftwareKeyboard\Resources\Icon_BtnB.png" />
+    <None Remove="HOS\Applets\SoftwareKeyboard\Resources\Icon_KeyF6.png" />
+    <None Remove="HOS\Services\Account\Acc\DefaultUserImage.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Homebrew.npdm" />
+    <EmbeddedResource Include="HOS\Applets\SoftwareKeyboard\Resources\Icon_BtnA.png" />
+    <EmbeddedResource Include="HOS\Applets\SoftwareKeyboard\Resources\Icon_BtnB.png" />
+    <EmbeddedResource Include="HOS\Applets\SoftwareKeyboard\Resources\Icon_KeyF6.png" />
+    <EmbeddedResource Include="HOS\Services\Account\Acc\DefaultUserImage.jpg" />
+  </ItemGroup>
+
+</Project>
