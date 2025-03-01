@@ -385,7 +385,7 @@ namespace Hyjinx.UI
                         string directory = AppDataManager.Mode switch
                         {
                             AppDataManager.LaunchMode.Portable or AppDataManager.LaunchMode.Custom => System.IO.Path.Combine(AppDataManager.BaseDirPath, "screenshots"),
-                            _ => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Ryujinx"),
+                            _ => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Hyjinx"),
                         };
 
                         string path = System.IO.Path.Combine(directory, filename);

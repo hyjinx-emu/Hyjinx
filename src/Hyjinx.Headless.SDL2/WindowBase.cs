@@ -155,7 +155,7 @@ namespace Hyjinx.Headless.SDL2
                 FullscreenFlag = SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP;
             }
 
-            WindowHandle = SDL_CreateWindow($"Ryujinx {Program.Version}{titleNameSection}{titleVersionSection}{titleIdSection}{titleArchSection}", SDL_WINDOWPOS_CENTERED_DISPLAY(DisplayId), SDL_WINDOWPOS_CENTERED_DISPLAY(DisplayId), Width, Height, DefaultFlags | FullscreenFlag | GetWindowFlags());
+            WindowHandle = SDL_CreateWindow($"Hyjinx {Program.Version}{titleNameSection}{titleVersionSection}{titleIdSection}{titleArchSection}", SDL_WINDOWPOS_CENTERED_DISPLAY(DisplayId), SDL_WINDOWPOS_CENTERED_DISPLAY(DisplayId), Width, Height, DefaultFlags | FullscreenFlag | GetWindowFlags());
 
             if (WindowHandle == IntPtr.Zero)
             {
@@ -437,7 +437,7 @@ namespace Hyjinx.Headless.SDL2
         public bool DisplayInputDialog(SoftwareKeyboardUIArgs args, out string userText)
         {
             // SDL2 doesn't support input dialogs
-            userText = "Ryujinx";
+            userText = "Hyjinx";
 
             return true;
         }

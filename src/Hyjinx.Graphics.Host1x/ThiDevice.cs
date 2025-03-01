@@ -53,7 +53,7 @@ namespace Hyjinx.Graphics.Host1x
             _classId = classId;
             _device = device;
             _syncptIncrMgr = syncptIncrMgr;
-            _commandQueue = new AsyncWorkQueue<CommandAction>(Process, $"Ryujinx.{classId}Processor");
+            _commandQueue = new AsyncWorkQueue<CommandAction>(Process, $"Hyjinx.{classId}Processor");
             _state = new DeviceState<ThiRegisters>(new Dictionary<string, RwCallback>
             {
                 { nameof(ThiRegisters.IncrSyncpt), new RwCallback(IncrSyncpt, null) },

@@ -9,5 +9,5 @@ GenericName=Nintendo Switch Emulator
 Terminal=false
 Categories=Game;Emulator;
 Keywords=Switch;Nintendo;Emulator;
-StartupWMClass=Ryujinx
+StartupWMClass=Hyjinx
 PrefersNonDefaultGPU=true

@@ -85,7 +85,7 @@ namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp
                 Reserved1 = new Array64<byte>(),
                 Reserved2 = new Array58<byte>(),
             };
-            "Ryujinx"u8.CopyTo(registerInfo.Nickname.AsSpan());
+            "Hyjinx"u8.CopyTo(registerInfo.Nickname.AsSpan());
 
             return registerInfo;
         }

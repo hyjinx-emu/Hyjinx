@@ -7,7 +7,7 @@ namespace Hyjinx.Common.GraphicsDriver
 {
     static partial class NVThreadedOptimization
     {
-        private const string ProfileName = "Ryujinx Nvidia Profile";
+        private const string ProfileName = "Hyjinx Nvidia Profile";
 
         private const uint NvAPI_Initialize_ID = 0x0150E828;
         private const uint NvAPI_DRS_CreateSession_ID = 0x0694D52E;
@@ -118,8 +118,8 @@ namespace Hyjinx.Common.GraphicsDriver
                     IsPredefined = 0,
                     Flags = 3, // IsMetro, IsCommandLine
                 };
-                application.AppName.Set("Ryujinx.exe");
-                application.UserFriendlyName.Set("Ryujinx");
+                application.AppName.Set("Hyjinx.exe");
+                application.UserFriendlyName.Set("Hyjinx");
                 application.Launcher.Set("");
                 application.FileInFolder.Set("");
 

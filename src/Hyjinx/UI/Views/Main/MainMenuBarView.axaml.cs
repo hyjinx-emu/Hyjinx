@@ -57,7 +57,7 @@ namespace Hyjinx.Ava.UI.Views.Main
         {
             List<MenuItem> menuItems = new();
 
-            string localePath = "Ryujinx/Assets/Locales";
+            string localePath = "Hyjinx/Assets/Locales";
             string localeExt = ".json";
 
             string[] localesPath = EmbeddedResources.GetAllAvailableResources(localePath, localeExt);

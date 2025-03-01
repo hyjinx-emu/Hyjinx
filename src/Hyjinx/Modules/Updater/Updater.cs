@@ -35,7 +35,7 @@ namespace Hyjinx.Modules
         private static readonly GithubReleasesJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
         private static readonly string _homeDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string _updateDir = Path.Combine(Path.GetTempPath(), "Ryujinx", "update");
+        private static readonly string _updateDir = Path.Combine(Path.GetTempPath(), "Hyjinx", "update");
         private const int ConnectionCount = 4;
 
         private static string _buildVer;
@@ -80,7 +80,7 @@ namespace Hyjinx.Modules
             }
             catch
             {
-                Logger.Error?.Print(LogClass.Application, "Failed to convert the current Ryujinx version!");
+                Logger.Error?.Print(LogClass.Application, "Failed to convert the current Hyjinx version!");
 
                 await ContentDialogHelper.CreateWarningDialog(
                     LocaleManager.Instance[LocaleKeys.DialogUpdaterConvertFailedMessage],
@@ -158,7 +158,7 @@ namespace Hyjinx.Modules
             }
             catch
             {
-                Logger.Error?.Print(LogClass.Application, "Failed to convert the received Ryujinx version from Github!");
+                Logger.Error?.Print(LogClass.Application, "Failed to convert the received Hyjinx version from Github!");
 
                 await ContentDialogHelper.CreateWarningDialog(
                     LocaleManager.Instance[LocaleKeys.DialogUpdaterConvertFailedGithubMessage],
@@ -211,7 +211,7 @@ namespace Hyjinx.Modules
 
                 if (shouldUpdate)
                 {
-                    await UpdateRyujinx(mainWindow, _buildUrl);
+                    await UpdateHyjinx(mainWindow, _buildUrl);
                 }
                 else
                 {
@@ -225,12 +225,12 @@ namespace Hyjinx.Modules
             HttpClient result = new();
 
             // Required by GitHub to interact with APIs.
-            result.DefaultRequestHeaders.Add("User-Agent", "Ryujinx-Updater/1.0.0");
+            result.DefaultRequestHeaders.Add("User-Agent", "Hyjinx-Updater/1.0.0");
 
             return result;
         }
 
-        private static async Task UpdateRyujinx(Window parent, string downloadUrl)
+        private static async Task UpdateHyjinx(Window parent, string downloadUrl)
         {
             _updateSuccessful = false;
 
@@ -287,7 +287,7 @@ namespace Hyjinx.Modules
                     if (OperatingSystem.IsMacOS())
                     {
                         string baseBundlePath = Path.GetFullPath(Path.Combine(executableDirectory, "..", ".."));
-                        string newBundlePath = Path.Combine(_updateDir, "Ryujinx.app");
+                        string newBundlePath = Path.Combine(_updateDir, "Hyjinx.app");
                         string updaterScriptPath = Path.Combine(newBundlePath, "Contents", "Resources", "updater.sh");
                         string currentPid = Environment.ProcessId.ToString();
 
@@ -315,7 +315,7 @@ namespace Hyjinx.Modules
                         // Fallback if the executable could not be found.
                         if (ryuName.Length == 0 || !Path.Exists(Path.Combine(executableDirectory, ryuName)))
                         {
-                            ryuName = OperatingSystem.IsWindows() ? "Ryujinx.exe" : "Ryujinx";
+                            ryuName = OperatingSystem.IsWindows() ? "Hyjinx.exe" : "Hyjinx";
                         }
 
                         ProcessStartInfo processStart = new(ryuName)
@@ -766,14 +766,14 @@ namespace Hyjinx.Modules
                 File.Delete(file);
             }
 
-            // Migration: Delete old Ryujinx binary.
+            // Migration: Delete old Hyjinx binary.
             // TODO: Remove this in a future update.
             if (!OperatingSystem.IsMacOS())
             {
                 string[] oldRyuFiles = Directory.GetFiles(_homeDir, "Hyjinx.Ava*", SearchOption.TopDirectoryOnly);
                 // Assume we are running the new one if the process path is not available.
                 // This helps to prevent an infinite loop of restarts.
-                string currentRyuName = Path.GetFileName(Environment.ProcessPath) ?? (OperatingSystem.IsWindows() ? "Ryujinx.exe" : "Ryujinx");
+                string currentRyuName = Path.GetFileName(Environment.ProcessPath) ?? (OperatingSystem.IsWindows() ? "Hyjinx.exe" : "Hyjinx");
 
                 string newRyuName = Path.Combine(_homeDir, currentRyuName.Replace(".Ava", ""));
                 if (!currentRyuName.Contains("Hyjinx.Ava"))

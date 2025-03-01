@@ -31,34 +31,34 @@ namespace Hyjinx.UI.Widgets
 
         internal static void CreateInfoDialog(string mainText, string secondaryText)
         {
-            new GtkDialog("Ryujinx - Info", mainText, secondaryText, MessageType.Info).Run();
+            new GtkDialog("Hyjinx - Info", mainText, secondaryText, MessageType.Info).Run();
         }
 
         internal static void CreateUpdaterInfoDialog(string mainText, string secondaryText)
         {
-            new GtkDialog("Ryujinx - Updater", mainText, secondaryText, MessageType.Info).Run();
+            new GtkDialog("Hyjinx - Updater", mainText, secondaryText, MessageType.Info).Run();
         }
 
         internal static MessageDialog CreateWaitingDialog(string mainText, string secondaryText)
         {
-            return new GtkDialog("Ryujinx - Waiting", mainText, secondaryText, MessageType.Info, ButtonsType.None);
+            return new GtkDialog("Hyjinx - Waiting", mainText, secondaryText, MessageType.Info, ButtonsType.None);
         }
 
         internal static void CreateWarningDialog(string mainText, string secondaryText)
         {
-            new GtkDialog("Ryujinx - Warning", mainText, secondaryText, MessageType.Warning).Run();
+            new GtkDialog("Hyjinx - Warning", mainText, secondaryText, MessageType.Warning).Run();
         }
 
         internal static void CreateErrorDialog(string errorMessage)
         {
             Logger.Error?.Print(LogClass.Application, errorMessage);
 
-            new GtkDialog("Ryujinx - Error", "Ryujinx has encountered an error", errorMessage, MessageType.Error).Run();
+            new GtkDialog("Hyjinx - Error", "Hyjinx has encountered an error", errorMessage, MessageType.Error).Run();
         }
 
         internal static MessageDialog CreateConfirmationDialog(string mainText, string secondaryText = "")
         {
-            return new GtkDialog("Ryujinx - Confirmation", mainText, secondaryText, MessageType.Question, ButtonsType.YesNo);
+            return new GtkDialog("Hyjinx - Confirmation", mainText, secondaryText, MessageType.Question, ButtonsType.YesNo);
         }
 
         internal static bool CreateChoiceDialog(string title, string mainText, string secondaryText)
@@ -107,7 +107,7 @@ namespace Hyjinx.UI.Widgets
 
         internal static bool CreateExitDialog()
         {
-            return CreateChoiceDialog("Ryujinx - Exit", "Are you sure you want to close Ryujinx?", "All unsaved data will be lost!");
+            return CreateChoiceDialog("Hyjinx - Exit", "Are you sure you want to close Hyjinx?", "All unsaved data will be lost!");
         }
     }
 }

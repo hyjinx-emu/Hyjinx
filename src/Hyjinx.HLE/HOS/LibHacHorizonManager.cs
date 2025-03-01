@@ -14,7 +14,7 @@ namespace Hyjinx.HLE.HOS
     {
         private LibHac.Horizon Server { get; set; }
 
-        public HorizonClient RyujinxClient { get; private set; }
+        public HorizonClient HyjinxClient { get; private set; }
         public HorizonClient ApplicationClient { get; private set; }
         public HorizonClient AccountClient { get; private set; }
         public HorizonClient AmClient { get; private set; }
@@ -36,13 +36,13 @@ namespace Hyjinx.HLE.HOS
         {
             Server = new LibHac.Horizon(new HorizonConfiguration());
 
-            RyujinxClient = Server.CreatePrivilegedHorizonClient();
+            HyjinxClient = Server.CreatePrivilegedHorizonClient();
         }
 
         public void InitializeArpServer()
         {
             _arpIReader.Reset(new LibHacIReader());
-            RyujinxClient.Sm.RegisterService(new LibHacArpServiceObject(ref _arpIReader), "arp:r").ThrowIfFailure();
+            HyjinxClient.Sm.RegisterService(new LibHacArpServiceObject(ref _arpIReader), "arp:r").ThrowIfFailure();
         }
 
         public void InitializeBcatServer()

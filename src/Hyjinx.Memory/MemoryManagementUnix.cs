@@ -140,7 +140,7 @@ namespace Hyjinx.Memory
 
             if (OperatingSystem.IsMacOS())
             {
-                byte[] memName = "Ryujinx-XXXXXX"u8.ToArray();
+                byte[] memName = "Hyjinx-XXXXXX"u8.ToArray();
 
                 fixed (byte* pMemName = memName)
                 {
@@ -158,7 +158,7 @@ namespace Hyjinx.Memory
             }
             else
             {
-                byte[] fileName = "/dev/shm/Ryujinx-XXXXXX"u8.ToArray();
+                byte[] fileName = "/dev/shm/Hyjinx-XXXXXX"u8.ToArray();
 
                 fixed (byte* pFileName = fileName)
                 {

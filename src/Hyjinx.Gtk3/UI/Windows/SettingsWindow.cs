@@ -151,7 +151,7 @@ namespace Hyjinx.UI.Windows
             {
                 if (_galThreading.ActiveId != ConfigurationState.Instance.Graphics.BackendThreading.Value.ToString())
                 {
-                    GtkDialog.CreateInfoDialog("Warning - Backend Threading", "Ryujinx must be restarted after changing this option for it to apply fully. Depending on your platform, you may need to manually disable your driver's own multithreading when using Ryujinx's.");
+                    GtkDialog.CreateInfoDialog("Warning - Backend Threading", "Hyjinx must be restarted after changing this option for it to apply fully. Depending on your platform, you may need to manually disable your driver's own multithreading when using Hyjinx's.");
                 }
             };
 

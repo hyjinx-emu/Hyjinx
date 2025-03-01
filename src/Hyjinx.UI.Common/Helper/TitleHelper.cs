@@ -17,7 +17,7 @@ namespace Hyjinx.UI.Common.Helper
             string titleIdSection = $" ({activeProcess.ProgramIdText.ToUpper()})";
             string titleArchSection = activeProcess.Is64Bit ? " (64-bit)" : " (32-bit)";
 
-            string appTitle = $"Ryujinx {applicationVersion} -{titleNameSection}{titleVersionSection}{titleIdSection}{titleArchSection}";
+            string appTitle = $"Hyjinx {applicationVersion} -{titleNameSection}{titleVersionSection}{titleIdSection}{titleArchSection}";
 
             if (!string.IsNullOrEmpty(pauseString))
             {

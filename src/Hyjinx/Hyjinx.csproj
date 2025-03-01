@@ -87,12 +87,12 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64' OR '$(RuntimeIdentifier)' == 'linux-arm64' OR ('$(RuntimeIdentifier)' == '' AND $([MSBuild]::IsOSPlatform('Linux')))">
-    <Content Include="..\..\distribution\linux\Ryujinx.sh">
+    <Content Include="..\..\distribution\linux\Hyjinx.sh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\distribution\linux\mime\Ryujinx.xml">
+    <Content Include="..\..\distribution\linux\mime\Hyjinx.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>mime\Ryujinx.xml</TargetPath>
+      <TargetPath>mime\Hyjinx.xml</TargetPath>
     </Content>
   </ItemGroup>
 

@@ -19,7 +19,7 @@ namespace Hyjinx.HLE.HOS.Applets
 {
     internal class SoftwareKeyboardApplet : IApplet
     {
-        private const string DefaultInputText = "Ryujinx";
+        private const string DefaultInputText = "Hyjinx";
 
         private const int StandardBufferSize = 0x7D8;
         private const int InteractiveBufferSize = 0x7D4;

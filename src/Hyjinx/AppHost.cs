@@ -765,7 +765,7 @@ namespace Hyjinx.Ava
                             }
                             catch (ArgumentOutOfRangeException)
                             {
-                                Logger.Error?.Print(LogClass.Application, "The specified file is not supported by Ryujinx.");
+                                Logger.Error?.Print(LogClass.Application, "The specified file is not supported by Hyjinx.");
 
                                 Device.Dispose();
 

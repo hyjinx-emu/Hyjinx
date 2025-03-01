@@ -30,7 +30,7 @@ namespace Hyjinx.Modules
         internal static bool Running;
 
         private static readonly string _homeDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string _updateDir = Path.Combine(Path.GetTempPath(), "Ryujinx", "update");
+        private static readonly string _updateDir = Path.Combine(Path.GetTempPath(), "Hyjinx", "update");
         private static readonly string _updatePublishDir = Path.Combine(_updateDir, "publish");
 
         private static string _buildVer;
@@ -48,7 +48,7 @@ namespace Hyjinx.Modules
             HttpClient result = new();
 
             // Required by GitHub to interact with APIs.
-            result.DefaultRequestHeaders.Add("User-Agent", "Ryujinx-Updater/1.0.0");
+            result.DefaultRequestHeaders.Add("User-Agent", "Hyjinx-Updater/1.0.0");
 
             return result;
         }
@@ -99,8 +99,8 @@ namespace Hyjinx.Modules
             }
             catch
             {
-                GtkDialog.CreateWarningDialog("Failed to convert the current Ryujinx version.", "Cancelling Update!");
-                Logger.Error?.Print(LogClass.Application, "Failed to convert the current Ryujinx version!");
+                GtkDialog.CreateWarningDialog("Failed to convert the current Hyjinx version.", "Cancelling Update!");
+                Logger.Error?.Print(LogClass.Application, "Failed to convert the current Hyjinx version!");
 
                 return;
             }
@@ -126,7 +126,7 @@ namespace Hyjinx.Modules
                         {
                             if (showVersionUpToDate)
                             {
-                                GtkDialog.CreateUpdaterInfoDialog("You are already using the latest version of Ryujinx!", "");
+                                GtkDialog.CreateUpdaterInfoDialog("You are already using the latest version of Hyjinx!", "");
                             }
 
                             return;
@@ -140,7 +140,7 @@ namespace Hyjinx.Modules
                 {
                     if (showVersionUpToDate)
                     {
-                        GtkDialog.CreateUpdaterInfoDialog("You are already using the latest version of Ryujinx!", "");
+                        GtkDialog.CreateUpdaterInfoDialog("You are already using the latest version of Hyjinx!", "");
                     }
 
                     return;
@@ -160,8 +160,8 @@ namespace Hyjinx.Modules
             }
             catch
             {
-                GtkDialog.CreateWarningDialog("Failed to convert the received Ryujinx version from GitHub Release.", "Cancelling Update!");
-                Logger.Error?.Print(LogClass.Application, "Failed to convert the received Ryujinx version from GitHub Release!");
+                GtkDialog.CreateWarningDialog("Failed to convert the received Hyjinx version from GitHub Release.", "Cancelling Update!");
+                Logger.Error?.Print(LogClass.Application, "Failed to convert the received Hyjinx version from GitHub Release!");
 
                 return;
             }
@@ -170,7 +170,7 @@ namespace Hyjinx.Modules
             {
                 if (showVersionUpToDate)
                 {
-                    GtkDialog.CreateUpdaterInfoDialog("You are already using the latest version of Ryujinx!", "");
+                    GtkDialog.CreateUpdaterInfoDialog("You are already using the latest version of Hyjinx!", "");
                 }
 
                 Running = false;
@@ -202,7 +202,7 @@ namespace Hyjinx.Modules
             updateDialog.Show();
         }
 
-        public static void UpdateRyujinx(UpdateDialog updateDialog, string downloadUrl)
+        public static void UpdateHyjinx(UpdateDialog updateDialog, string downloadUrl)
         {
             // Empty update dir, although it shouldn't ever have anything inside it
             if (Directory.Exists(_updateDir))
@@ -502,7 +502,7 @@ namespace Hyjinx.Modules
             Directory.Delete(_updateDir, true);
 
             updateDialog.MainText.Text = "Update Complete!";
-            updateDialog.SecondaryText.Text = "Do you want to restart Ryujinx now?";
+            updateDialog.SecondaryText.Text = "Do you want to restart Hyjinx now?";
             updateDialog.Modal = true;
 
             updateDialog.ProgressBar.Hide();
@@ -527,7 +527,7 @@ namespace Hyjinx.Modules
             {
                 if (showWarnings)
                 {
-                    GtkDialog.CreateWarningDialog("You cannot update a Dirty build of Ryujinx!", "Please download Ryujinx at https://ryujinx.org/ if you are looking for a supported version.");
+                    GtkDialog.CreateWarningDialog("You cannot update a Dirty build of Hyjinx!", "Please download Hyjinx at https://ryujinx.org/ if you are looking for a supported version.");
                 }
 
                 return false;
@@ -539,11 +539,11 @@ namespace Hyjinx.Modules
             {
                 if (ReleaseInformation.IsFlatHubBuild)
                 {
-                    GtkDialog.CreateWarningDialog("Updater Disabled!", "Please update Ryujinx via FlatHub.");
+                    GtkDialog.CreateWarningDialog("Updater Disabled!", "Please update Hyjinx via FlatHub.");
                 }
                 else
                 {
-                    GtkDialog.CreateWarningDialog("Updater Disabled!", "Please download Ryujinx at https://ryujinx.org/ if you are looking for a supported version.");
+                    GtkDialog.CreateWarningDialog("Updater Disabled!", "Please download Hyjinx at https://ryujinx.org/ if you are looking for a supported version.");
                 }
             }
 

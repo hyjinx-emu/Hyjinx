@@ -45,7 +45,7 @@ namespace Hyjinx.HLE.HOS.SystemState
         {
             // TODO: Let user specify fields.
             DesiredKeyboardLayout = (long)KeyboardLayout.Default;
-            DeviceNickName = "Ryujinx's Switch";
+            DeviceNickName = "Hyjinx's Switch";
         }
 
         public void SetLanguage(SystemLanguage language)

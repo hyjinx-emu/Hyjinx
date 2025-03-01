@@ -50,7 +50,7 @@ namespace Hyjinx.UI.Windows
 
         private static readonly AmiiboJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
-        public AmiiboWindow() : base($"Ryujinx {Program.Version} - Amiibo")
+        public AmiiboWindow() : base($"Hyjinx {Program.Version} - Amiibo")
         {
             InitializeComponent();
 

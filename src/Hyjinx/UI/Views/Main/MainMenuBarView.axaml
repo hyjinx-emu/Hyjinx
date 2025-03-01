@@ -42,7 +42,7 @@
                 </MenuItem>
                 <Separator />
                 <MenuItem
-                    Command="{Binding OpenRyujinxFolder}"
+                    Command="{Binding OpenHyjinxFolder}"
                     Header="{locale:Locale MenuBarFileOpenEmuFolder}"
                     ToolTip.Tip="{locale:Locale OpenHyjinxFolderTooltip}" />
                 <MenuItem

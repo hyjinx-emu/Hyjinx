@@ -1399,7 +1399,7 @@ namespace Hyjinx.Ava.UI.ViewModels
             }
         }
 
-        public void OpenRyujinxFolder()
+        public void OpenHyjinxFolder()
         {
             OpenHelper.OpenFolder(AppDataManager.BaseDirPath);
         }
@@ -1448,7 +1448,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
         public async Task ManageProfiles()
         {
-            await NavigationDialogHost.Show(AccountManager, ContentManager, VirtualFileSystem, LibHacHorizonManager.RyujinxClient);
+            await NavigationDialogHost.Show(AccountManager, ContentManager, VirtualFileSystem, LibHacHorizonManager.HyjinxClient);
         }
 
         public void SimulateWakeUpMessage()

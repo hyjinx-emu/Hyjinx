@@ -1292,7 +1292,7 @@ namespace Hyjinx.HLE.HOS.Services.Fs
         {
             string message = ReadUtf8StringSend(context);
 
-            // FS ends each line with a newline. Remove it because Ryujinx logging adds its own newline
+            // FS ends each line with a newline. Remove it because Hyjinx logging adds its own newline
             Logger.AccessLog?.PrintMsg(LogClass.ServiceFs, message.TrimEnd('\n'));
 
             return ResultCode.Success;

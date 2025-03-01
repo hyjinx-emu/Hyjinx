@@ -134,7 +134,7 @@ namespace Hyjinx.UI.Windows
             _playerIndex = controllerId;
             _inputConfig = ConfigurationState.Instance.Hid.InputConfig.Value.Find(inputConfig => inputConfig.PlayerIndex == _playerIndex);
 
-            Title = $"Ryujinx - Controller Settings - {_playerIndex}";
+            Title = $"Hyjinx - Controller Settings - {_playerIndex}";
 
             if (_playerIndex == PlayerIndex.Handheld)
             {

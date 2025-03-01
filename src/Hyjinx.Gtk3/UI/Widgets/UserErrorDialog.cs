@@ -6,7 +6,7 @@ namespace Hyjinx.UI.Widgets
 {
     internal class UserErrorDialog : MessageDialog
     {
-        private const string SetupGuideUrl = "https://github.com/ryujinx-mirror/Ryujinx/wiki/Ryujinx-Setup-&-Configuration-Guide";
+        private const string SetupGuideUrl = "https://github.com/ryujinx-mirror/Hyjinx/wiki/Hyjinx-Setup-&-Configuration-Guide";
         private const int OkResponseId = 0;
         private const int SetupGuideResponseId = 1;
 
@@ -36,7 +36,7 @@ namespace Hyjinx.UI.Widgets
 
             SecondaryUseMarkup = true;
 
-            Title = $"Ryujinx error ({errorCode})";
+            Title = $"Hyjinx error ({errorCode})";
             Text = $"{errorCode}: {GetErrorTitle(error)}";
             SecondaryText = GetErrorDescription(error);
 
@@ -68,10 +68,10 @@ namespace Hyjinx.UI.Widgets
         {
             return error switch
             {
-                UserError.NoKeys => "Ryujinx was unable to find your 'prod.keys' file",
-                UserError.NoFirmware => "Ryujinx was unable to find any firmwares installed",
-                UserError.FirmwareParsingFailed => "Ryujinx was unable to parse the provided firmware. This is usually caused by outdated keys.",
-                UserError.ApplicationNotFound => "Ryujinx couldn't find a valid application at the given path.",
+                UserError.NoKeys => "Hyjinx was unable to find your 'prod.keys' file",
+                UserError.NoFirmware => "Hyjinx was unable to find any firmwares installed",
+                UserError.FirmwareParsingFailed => "Hyjinx was unable to parse the provided firmware. This is usually caused by outdated keys.",
+                UserError.ApplicationNotFound => "Hyjinx couldn't find a valid application at the given path.",
                 UserError.Unknown => "An unknown error occured!",
                 _ => "An undefined error occured! This shouldn't happen, please contact a dev!",
             };

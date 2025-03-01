@@ -65,7 +65,7 @@ namespace Hyjinx.Headless.SDL2.OpenGL
 
                 // Ensure we share our contexts.
                 SetupOpenGLAttributes(true, GraphicsDebugLevel.None);
-                IntPtr windowHandle = SDL_CreateWindow("Ryujinx background context window", 0, 0, 1, 1, SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
+                IntPtr windowHandle = SDL_CreateWindow("Hyjinx background context window", 0, 0, 1, 1, SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL_WindowFlags.SDL_WINDOW_HIDDEN);
                 IntPtr context = SDL_GL_CreateContext(windowHandle);
 
                 GL.LoadBindings(new OpenToolkitBindingsContext());

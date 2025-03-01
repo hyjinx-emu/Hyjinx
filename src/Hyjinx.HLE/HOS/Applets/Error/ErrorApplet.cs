@@ -160,7 +160,7 @@ namespace Hyjinx.HLE.HOS.Applets.Error
             {
                 message = "An error has occured.\n\n"
                         + "Please try again later.\n\n"
-                        + "If the problem persists, please refer to the Ryujinx website.\n"
+                        + "If the problem persists, please refer to the Hyjinx website.\n"
                         + "www.ryujinx.org";
             }
 

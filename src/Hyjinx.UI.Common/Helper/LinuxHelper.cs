@@ -11,7 +11,7 @@ namespace Hyjinx.UI.Common.Helper
         // NOTE: This value was determined by manual tests and might need to be increased again.
         public const int RecommendedVmMaxMapCount = 524288;
         public const string VmMaxMapCountPath = "/proc/sys/vm/max_map_count";
-        public const string SysCtlConfigPath = "/etc/sysctl.d/99-Ryujinx.conf";
+        public const string SysCtlConfigPath = "/etc/sysctl.d/99-Hyjinx.conf";
         public static int VmMaxMapCount => int.Parse(File.ReadAllText(VmMaxMapCountPath));
         public static string PkExecPath { get; } = GetBinaryPath("pkexec");
 

@@ -329,7 +329,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
                         _device.System?.SignalVsync();
 
-                        // Apply a maximum bound of 3 frames to the tick remainder, in case some event causes Ryujinx to pause for a long time or messes with the timer.
+                        // Apply a maximum bound of 3 frames to the tick remainder, in case some event causes Hyjinx to pause for a long time or messes with the timer.
                         _ticks = Math.Min(_ticks - _ticksPerFrame, _ticksPerFrame * 3);
                     }
 

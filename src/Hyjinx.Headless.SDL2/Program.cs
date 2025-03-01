@@ -68,7 +68,7 @@ namespace Hyjinx.Headless.SDL2
             // Make process DPI aware for proper window sizing on high-res screens.
             ForceDpiAware.Windows();
 
-            Console.Title = $"Ryujinx Console {Version} (Headless SDL2)";
+            Console.Title = $"Hyjinx Console {Version} (Headless SDL2)";
 
             if (OperatingSystem.IsMacOS() || OperatingSystem.IsLinux())
             {
@@ -343,7 +343,7 @@ namespace Hyjinx.Headless.SDL2
             _libHacHorizonManager.InitializeSystemClients();
 
             _contentManager = new ContentManager(_virtualFileSystem);
-            _accountManager = new AccountManager(_libHacHorizonManager.RyujinxClient, option.UserProfile);
+            _accountManager = new AccountManager(_libHacHorizonManager.HyjinxClient, option.UserProfile);
             _userChannelPersistence = new UserChannelPersistence();
 
             _inputManager = new InputManager(new SDL2KeyboardDriver(), new SDL2GamepadDriver());
@@ -452,7 +452,7 @@ namespace Hyjinx.Headless.SDL2
                 }
                 else
                 {
-                    Logger.Error?.Print(LogClass.Application, "No writable log directory available. Make sure either the Logs directory, Application Data, or the Ryujinx directory is writable.");
+                    Logger.Error?.Print(LogClass.Application, "No writable log directory available. Make sure either the Logs directory, Application Data, or the Hyjinx directory is writable.");
                 }
             }
 
@@ -714,7 +714,7 @@ namespace Hyjinx.Headless.SDL2
                         }
                         catch (ArgumentOutOfRangeException)
                         {
-                            Logger.Error?.Print(LogClass.Application, "The specified file is not supported by Ryujinx.");
+                            Logger.Error?.Print(LogClass.Application, "The specified file is not supported by Hyjinx.");
 
                             _emulationContext.Dispose();
 

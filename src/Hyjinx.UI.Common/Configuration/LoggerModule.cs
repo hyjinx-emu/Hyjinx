@@ -92,7 +92,7 @@ namespace Hyjinx.UI.Common.Configuration
 
                 if (logFile == null)
                 {
-                    Logger.Error?.Print(LogClass.Application, "No writable log directory available. Make sure either the Logs directory, Application Data, or the Ryujinx directory is writable.");
+                    Logger.Error?.Print(LogClass.Application, "No writable log directory available. Make sure either the Logs directory, Application Data, or the Hyjinx directory is writable.");
                     Logger.RemoveTarget("file");
 
                     return;

@@ -10,7 +10,7 @@ namespace Hyjinx.Common
         private const int HexTableColumnWidth = 8;
         private const int HexTableColumnSpace = 3;
 
-        // Modified for Ryujinx
+        // Modified for Hyjinx
         // Original by Pascal Ganaye - CPOL License
         // https://www.codeproject.com/Articles/36747/Quick-and-Dirty-HexDump-of-a-Byte-Array
         public static string HexTable(byte[] bytes, int bytesPerLine = 16)

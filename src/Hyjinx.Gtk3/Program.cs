@@ -73,7 +73,7 @@ namespace Hyjinx
 
             if (OperatingSystem.IsWindows() && !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17134))
             {
-                MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nRyujinx supports Windows 10 version 1803 and newer.\n", $"Ryujinx {Version}", MbIconWarning);
+                MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nHyjinx supports Windows 10 version 1803 and newer.\n", $"Hyjinx {Version}", MbIconWarning);
             }
 
             // Parse arguments
@@ -91,7 +91,7 @@ namespace Hyjinx
             // Delete backup files after updating.
             Task.Run(Updater.CleanupUpdate);
 
-            Console.Title = $"Ryujinx Console {Version}";
+            Console.Title = $"Hyjinx Console {Version}";
 
             // NOTE: GTK3 doesn't init X11 in a multi threaded way.
             // This ends up causing race condition and abort of XCB when a context is created by SPB (even if SPB do call XInitThreads).
@@ -271,10 +271,10 @@ namespace Hyjinx
                         };
 
                         ResponseType response = GtkDialog.CreateCustomDialog(
-                            "Ryujinx - Low limit for memory mappings detected",
+                            "Hyjinx - Low limit for memory mappings detected",
                             $"Would you like to increase the value of vm.max_map_count to {LinuxHelper.RecommendedVmMaxMapCount}?",
                             "Some games might try to create more memory mappings than currently allowed. " +
-                            "Ryujinx will crash as soon as this limit gets exceeded.",
+                            "Hyjinx will crash as soon as this limit gets exceeded.",
                             buttonTexts,
                             MessageType.Question);
 
@@ -312,8 +312,8 @@ namespace Hyjinx
                             "Max amount of memory mappings is lower than recommended.",
                             $"The current value of vm.max_map_count ({currentVmMaxMapCount}) is lower than {LinuxHelper.RecommendedVmMaxMapCount}." +
                             "Some games might try to create more memory mappings than currently allowed. " +
-                            "Ryujinx will crash as soon as this limit gets exceeded.\n\n" +
-                            "You might want to either manually increase the limit or install pkexec, which allows Ryujinx to assist with that.");
+                            "Hyjinx will crash as soon as this limit gets exceeded.\n\n" +
+                            "You might want to either manually increase the limit or install pkexec, which allows Hyjinx to assist with that.");
                     }
                 }
             }
@@ -364,7 +364,7 @@ namespace Hyjinx
 
         private static void PrintSystemInfo()
         {
-            Logger.Notice.Print(LogClass.Application, $"Ryujinx Version: {Version}");
+            Logger.Notice.Print(LogClass.Application, $"Hyjinx Version: {Version}");
             SystemInfo.Gather().Print();
 
             var enabledLogs = Logger.GetEnabledLevels();

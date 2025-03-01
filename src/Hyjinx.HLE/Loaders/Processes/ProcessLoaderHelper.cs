@@ -114,7 +114,7 @@ namespace Hyjinx.HLE.Loaders.Processes
                 Logger.Warning?.Print(LogClass.Application, "No control file was found for this game. Using a dummy one instead. This may cause inaccuracies in some games.");
             }
 
-            LibHac.Result resultCode = device.System.LibHacHorizonManager.RyujinxClient.Fs.EnsureApplicationCacheStorage(out _, out _, applicationId, in control);
+            LibHac.Result resultCode = device.System.LibHacHorizonManager.HyjinxClient.Fs.EnsureApplicationCacheStorage(out _, out _, applicationId, in control);
             if (resultCode.IsFailure())
             {
                 Logger.Error?.Print(LogClass.Application, $"Error calling EnsureApplicationCacheStorage. Result code {resultCode.ToStringWithName()}");
@@ -124,7 +124,7 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             Uid userId = device.System.AccountManager.LastOpenedUser.UserId.ToLibHacUid();
 
-            resultCode = device.System.LibHacHorizonManager.RyujinxClient.Fs.EnsureApplicationSaveData(out _, applicationId, in control, in userId);
+            resultCode = device.System.LibHacHorizonManager.HyjinxClient.Fs.EnsureApplicationSaveData(out _, applicationId, in control, in userId);
             if (resultCode.IsFailure())
             {
                 Logger.Error?.Print(LogClass.Application, $"Error calling EnsureApplicationSaveData. Result code {resultCode.ToStringWithName()}");

@@ -8,7 +8,7 @@ namespace Hyjinx.Headless.SDL2
     {
         // General
 
-        [Option("root-data-dir", Required = false, HelpText = "Set the custom folder path for Ryujinx data.")]
+        [Option("root-data-dir", Required = false, HelpText = "Set the custom folder path for Hyjinx data.")]
         public string BaseDataDir { get; set; }
 
         [Option("profile", Required = false, HelpText = "Set the user profile to launch the game with.")]

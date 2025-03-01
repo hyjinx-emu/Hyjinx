@@ -10,7 +10,7 @@ namespace Hyjinx.UI.Windows
 {
     public partial class AboutWindow : Window
     {
-        public AboutWindow() : base($"Ryujinx {Program.Version} - About")
+        public AboutWindow() : base($"Hyjinx {Program.Version} - About")
         {
             InitializeComponent();
         }
@@ -18,7 +18,7 @@ namespace Hyjinx.UI.Windows
         //
         // Events
         //
-        private void RyujinxButton_Pressed(object sender, ButtonPressEventArgs args)
+        private void HyjinxButton_Pressed(object sender, ButtonPressEventArgs args)
         {
             OpenHelper.OpenUrl("https://example.com/");
         }
@@ -35,7 +35,7 @@ namespace Hyjinx.UI.Windows
 
         private void GitHubButton_Pressed(object sender, ButtonPressEventArgs args)
         {
-            OpenHelper.OpenUrl("https://github.com/ryujinx-mirror/Ryujinx");
+            OpenHelper.OpenUrl("https://github.com/ryujinx-mirror/Hyjinx");
         }
 
         private void DiscordButton_Pressed(object sender, ButtonPressEventArgs args)
@@ -50,12 +50,12 @@ namespace Hyjinx.UI.Windows
 
         private void ContributorsButton_Pressed(object sender, ButtonPressEventArgs args)
         {
-            OpenHelper.OpenUrl("https://github.com/ryujinx-mirror/Ryujinx/graphs/contributors?type=a");
+            OpenHelper.OpenUrl("https://github.com/ryujinx-mirror/Hyjinx/graphs/contributors?type=a");
         }
 
         private void ChangelogButton_Pressed(object sender, ButtonPressEventArgs args)
         {
-            OpenHelper.OpenUrl("https://github.com/ryujinx-mirror/Ryujinx/wiki/Changelog#ryujinx-changelog");
+            OpenHelper.OpenUrl("https://github.com/ryujinx-mirror/Hyjinx/wiki/Changelog#ryujinx-changelog");
         }
     }
 }

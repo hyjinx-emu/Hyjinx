@@ -84,7 +84,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
             networkProfile.IpSettingData.IpAddressSetting = new IpAddressSetting(interfaceProperties, unicastAddress);
             networkProfile.IpSettingData.DnsSetting = new DnsSetting(interfaceProperties);
 
-            "RyujinxNetwork"u8.CopyTo(networkProfile.Name.AsSpan());
+            "HyjinxNetwork"u8.CopyTo(networkProfile.Name.AsSpan());
 
             context.Memory.Write(networkProfileDataPosition, networkProfile);
 

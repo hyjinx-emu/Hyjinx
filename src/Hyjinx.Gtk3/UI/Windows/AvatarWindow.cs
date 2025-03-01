@@ -31,7 +31,7 @@ namespace Hyjinx.UI.Windows
         private readonly Button _setBackgroungColorButton;
         private Gdk.RGBA _backgroundColor;
 
-        public AvatarWindow() : base($"Ryujinx {Program.Version} - Manage Accounts - Avatar")
+        public AvatarWindow() : base($"Hyjinx {Program.Version} - Manage Accounts - Avatar")
         {
             CanFocus = false;
             Resizable = false;

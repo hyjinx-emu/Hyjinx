@@ -48,7 +48,7 @@
   </object>
   <object class="GtkWindow" id="_settingsWin">
     <property name="can-focus">False</property>
-    <property name="title" translatable="yes">Ryujinx - Settings</property>
+    <property name="title" translatable="yes">Hyjinx - Settings</property>
     <property name="modal">True</property>
     <property name="window-position">center</property>
     <property name="default-width">650</property>
@@ -116,7 +116,7 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="receives-default">False</property>
-                                    <property name="tooltip-text" translatable="yes">Choose whether or not to display Ryujinx on your "currently playing" Discord activity</property>
+                                    <property name="tooltip-text" translatable="yes">Choose whether or not to display Hyjinx on your "currently playing" Discord activity</property>
                                     <property name="halign">start</property>
                                     <property name="draw-indicator">True</property>
                                   </object>
@@ -1717,7 +1717,7 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="receives-default">False</property>
-                                    <property name="tooltip-text" translatable="yes">Directly map memory, but do not mask the address within the guest address space before access. Faster, but at the cost of safety. The guest application can access memory from anywhere in Ryujinx, so only run programs you trust with this mode.</property>
+                                    <property name="tooltip-text" translatable="yes">Directly map memory, but do not mask the address within the guest address space before access. Faster, but at the cost of safety. The guest application can access memory from anywhere in Hyjinx, so only run programs you trust with this mode.</property>
                                     <property name="halign">start</property>
                                     <property name="margin-top">5</property>
                                     <property name="margin-bottom">5</property>

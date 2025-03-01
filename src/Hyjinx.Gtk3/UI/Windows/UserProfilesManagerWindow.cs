@@ -28,7 +28,7 @@ namespace Hyjinx.UI.Windows
 
         private readonly ManualResetEvent _avatarsPreloadingEvent = new(false);
 
-        public UserProfilesManagerWindow(AccountManager accountManager, ContentManager contentManager, VirtualFileSystem virtualFileSystem) : base($"Ryujinx {Program.Version} - Manage User Profiles")
+        public UserProfilesManagerWindow(AccountManager accountManager, ContentManager contentManager, VirtualFileSystem virtualFileSystem) : base($"Hyjinx {Program.Version} - Manage User Profiles")
         {
             InitializeComponent();
 

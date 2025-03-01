@@ -204,7 +204,7 @@ namespace Hyjinx.Audio.Backends.SoundIo
 
             SoundIoOutStreamContext result = _audioDevice.CreateOutStream();
 
-            result.Name = "Ryujinx";
+            result.Name = "Hyjinx";
             result.Layout = SoundIoChannelLayout.GetDefaultValue((int)requestedChannelCount);
             result.Format = driverSampleFormat;
             result.SampleRate = (int)requestedSampleRate;

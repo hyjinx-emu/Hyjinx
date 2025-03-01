@@ -235,13 +235,13 @@ namespace Hyjinx.Ava.UI.Windows
             // save data indexer, which should be enough to check access permissions for user saves.
             // Every single save data's extra data will be checked and fixed if needed each time the emulator is opened.
             // Consider removing this at some point in the future when we don't need to worry about old saves.
-            VirtualFileSystem.FixExtraData(LibHacHorizonManager.RyujinxClient);
+            VirtualFileSystem.FixExtraData(LibHacHorizonManager.HyjinxClient);
 
-            AccountManager = new AccountManager(LibHacHorizonManager.RyujinxClient, CommandLineState.Profile);
+            AccountManager = new AccountManager(LibHacHorizonManager.HyjinxClient, CommandLineState.Profile);
 
             VirtualFileSystem.ReloadKeySet();
 
-            ApplicationHelper.Initialize(VirtualFileSystem, AccountManager, LibHacHorizonManager.RyujinxClient);
+            ApplicationHelper.Initialize(VirtualFileSystem, AccountManager, LibHacHorizonManager.HyjinxClient);
         }
 
         [SupportedOSPlatform("linux")]

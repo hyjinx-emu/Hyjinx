@@ -153,7 +153,7 @@ namespace Hyjinx.UI.Common.Configuration
         public bool EnableDiscordIntegration { get; set; }
 
         /// <summary>
-        /// Checks for updates when Ryujinx starts when enabled
+        /// Checks for updates when Hyjinx starts when enabled
         /// </summary>
         public bool CheckUpdatesOnStart { get; set; }
 

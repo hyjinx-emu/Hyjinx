@@ -93,7 +93,7 @@ namespace Hyjinx.UI.Windows
             //
             // _ryujinxLabel
             //
-            _ryujinxLabel = new Label("Ryujinx")
+            _ryujinxLabel = new Label("Hyjinx")
             {
                 MarginTop = 15,
                 Justify = Justification.Center,
@@ -116,14 +116,14 @@ namespace Hyjinx.UI.Windows
             {
                 Margin = 5
             };
-            _ryujinxLink.ButtonPressEvent += RyujinxButton_Pressed;
+            _ryujinxLink.ButtonPressEvent += HyjinxButton_Pressed;
 
             //
             // _ryujinxLinkLabel
             //
             _ryujinxLinkLabel = new Label("www.ryujinx.org")
             {
-                TooltipText = "Click to open the Ryujinx website in your default browser.",
+                TooltipText = "Click to open the Hyjinx website in your default browser.",
                 Justify = Justification.Center,
                 Attributes = new AttrList(),
             };
@@ -159,7 +159,7 @@ namespace Hyjinx.UI.Windows
             //
             // _disclaimerLabel
             //
-            _disclaimerLabel = new Label("Ryujinx is not affiliated with Nintendo™,\nor any of its partners, in any way.")
+            _disclaimerLabel = new Label("Hyjinx is not affiliated with Nintendo™,\nor any of its partners, in any way.")
             {
                 Expand = true,
                 Justify = Justification.Center,
@@ -202,7 +202,7 @@ namespace Hyjinx.UI.Windows
             //
             _patreonEventBox = new EventBox()
             {
-                TooltipText = "Click to open the Ryujinx Patreon page in your default browser.",
+                TooltipText = "Click to open the Hyjinx Patreon page in your default browser.",
             };
             _patreonEventBox.ButtonPressEvent += PatreonButton_Pressed;
 
@@ -232,7 +232,7 @@ namespace Hyjinx.UI.Windows
             //
             _githubEventBox = new EventBox()
             {
-                TooltipText = "Click to open the Ryujinx GitHub page in your default browser.",
+                TooltipText = "Click to open the Hyjinx GitHub page in your default browser.",
             };
             _githubEventBox.ButtonPressEvent += GitHubButton_Pressed;
 
@@ -267,7 +267,7 @@ namespace Hyjinx.UI.Windows
             //
             _discordEventBox = new EventBox()
             {
-                TooltipText = "Click to open an invite to the Ryujinx Discord server in your default browser.",
+                TooltipText = "Click to open an invite to the Hyjinx Discord server in your default browser.",
             };
             _discordEventBox.ButtonPressEvent += DiscordButton_Pressed;
 
@@ -292,7 +292,7 @@ namespace Hyjinx.UI.Windows
             //
             _twitterEventBox = new EventBox()
             {
-                TooltipText = "Click to open the Ryujinx Twitter page in your default browser.",
+                TooltipText = "Click to open the Hyjinx Twitter page in your default browser.",
             };
             _twitterEventBox.ButtonPressEvent += TwitterButton_Pressed;
 
@@ -348,7 +348,7 @@ namespace Hyjinx.UI.Windows
             //
             // _aboutDescriptionLabel
             //
-            _aboutDescriptionLabel = new Label("Ryujinx is an emulator for the Nintendo Switch™.\n" +
+            _aboutDescriptionLabel = new Label("Hyjinx is an emulator for the Nintendo Switch™.\n" +
                                                "Please support us on Patreon.\n" +
                                                "Get all the latest news on our Twitter or Discord.\n" +
                                                "Developers interested in contributing can find out more on our GitHub or Discord.")

@@ -139,7 +139,7 @@ namespace Hyjinx.Common.Configuration
             {
                 if (OperatingSystem.IsMacOS())
                 {
-                    // NOTE: Should evaluate to "~/Library/Logs/Ryujinx/".
+                    // NOTE: Should evaluate to "~/Library/Logs/Hyjinx/".
                     logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Logs", DefaultBaseDir);
                     try
                     {
@@ -153,7 +153,7 @@ namespace Hyjinx.Common.Configuration
 
                     if (string.IsNullOrEmpty(logDir))
                     {
-                        // NOTE: Should evaluate to "~/Library/Application Support/Ryujinx/Logs".
+                        // NOTE: Should evaluate to "~/Library/Application Support/Hyjinx/Logs".
                         logDir = Path.Combine(BaseDirPath, "Logs");
 
                         try
@@ -170,7 +170,7 @@ namespace Hyjinx.Common.Configuration
                 }
                 else if (OperatingSystem.IsWindows())
                 {
-                    // NOTE: Should evaluate to a "Logs" directory in whatever directory Ryujinx was launched from.
+                    // NOTE: Should evaluate to a "Logs" directory in whatever directory Hyjinx was launched from.
                     logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
                     try
                     {
@@ -184,7 +184,7 @@ namespace Hyjinx.Common.Configuration
 
                     if (string.IsNullOrEmpty(logDir))
                     {
-                        // NOTE: Should evaluate to "C:\Users\user\AppData\Roaming\Ryujinx\Logs".
+                        // NOTE: Should evaluate to "C:\Users\user\AppData\Roaming\Hyjinx\Logs".
                         logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DefaultBaseDir, "Logs");
 
                         try
@@ -201,7 +201,7 @@ namespace Hyjinx.Common.Configuration
                 }
                 else if (OperatingSystem.IsLinux())
                 {
-                    // NOTE: Should evaluate to "~/.config/Ryujinx/Logs".
+                    // NOTE: Should evaluate to "~/.config/Hyjinx/Logs".
                     logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DefaultBaseDir, "Logs");
 
                     try
@@ -268,17 +268,17 @@ namespace Hyjinx.Common.Configuration
                 catch (Exception exception)
                 {
                     Logger.Error?.Print(LogClass.Application,
-                        $"Critical error copying Ryujinx application data into the temp folder. {exception}");
+                        $"Critical error copying Hyjinx application data into the temp folder. {exception}");
                     try
                     {
                         FileSystemInfo resolvedDirectoryInfo =
                             Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
                         string resolvedPath = resolvedDirectoryInfo.FullName;
-                        Logger.Error?.Print(LogClass.Application, $"Please manually move your Ryujinx data from {resolvedPath} to {correctApplicationDataDirectoryPath}, and remove the symlink.");
+                        Logger.Error?.Print(LogClass.Application, $"Please manually move your Hyjinx data from {resolvedPath} to {correctApplicationDataDirectoryPath}, and remove the symlink.");
                     }
                     catch (Exception symlinkException)
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Unable to resolve the symlink for Ryujinx application data: {symlinkException}. Follow the symlink at {correctApplicationDataDirectoryPath} and move your data back to the Application Support folder.");
+                        Logger.Error?.Print(LogClass.Application, $"Unable to resolve the symlink for Hyjinx application data: {symlinkException}. Follow the symlink at {correctApplicationDataDirectoryPath} and move your data back to the Application Support folder.");
                     }
                     return;
                 }
@@ -292,17 +292,17 @@ namespace Hyjinx.Common.Configuration
                 catch (Exception exception)
                 {
                     Logger.Error?.Print(LogClass.Application,
-                        $"Critical error deleting the Ryujinx application data folder symlink at {correctApplicationDataDirectoryPath}. {exception}");
+                        $"Critical error deleting the Hyjinx application data folder symlink at {correctApplicationDataDirectoryPath}. {exception}");
                     try
                     {
                         FileSystemInfo resolvedDirectoryInfo =
                             Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
                         string resolvedPath = resolvedDirectoryInfo.FullName;
-                        Logger.Error?.Print(LogClass.Application, $"Please manually move your Ryujinx data from {resolvedPath} to {correctApplicationDataDirectoryPath}, and remove the symlink.");
+                        Logger.Error?.Print(LogClass.Application, $"Please manually move your Hyjinx data from {resolvedPath} to {correctApplicationDataDirectoryPath}, and remove the symlink.");
                     }
                     catch (Exception symlinkException)
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Unable to resolve the symlink for Ryujinx application data: {symlinkException}. Follow the symlink at {correctApplicationDataDirectoryPath} and move your data back to the Application Support folder.");
+                        Logger.Error?.Print(LogClass.Application, $"Unable to resolve the symlink for Hyjinx application data: {symlinkException}. Follow the symlink at {correctApplicationDataDirectoryPath} and move your data back to the Application Support folder.");
                     }
                     return;
                 }
@@ -315,7 +315,7 @@ namespace Hyjinx.Common.Configuration
                 catch (Exception exception)
                 {
                     Logger.Error?.Print(LogClass.Application,
-                        $"Critical error copying Ryujinx application data into the correct location. {exception}. Please manually move your application data from {tempPath} to {correctApplicationDataDirectoryPath}.");
+                        $"Critical error copying Hyjinx application data into the correct location. {exception}. Please manually move your application data from {tempPath} to {correctApplicationDataDirectoryPath}.");
                 }
             }
         }

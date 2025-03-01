@@ -157,7 +157,7 @@ namespace Hyjinx.UI
 
             SetWindowSizePosition();
             
-            Title = $"Ryujinx {Program.Version}";
+            Title = $"Hyjinx {Program.Version}";
 
             // Hide emulation context status bar.
             _statusBar.Hide();
@@ -176,10 +176,10 @@ namespace Hyjinx.UI
             // save data indexer, which should be enough to check access permissions for user saves.
             // Every single save data's extra data will be checked and fixed if needed each time the emulator is opened.
             // Consider removing this at some point in the future when we don't need to worry about old saves.
-            VirtualFileSystem.FixExtraData(_libHacHorizonManager.RyujinxClient);
+            VirtualFileSystem.FixExtraData(_libHacHorizonManager.HyjinxClient);
 
             _contentManager = new ContentManager(_virtualFileSystem);
-            _accountManager = new AccountManager(_libHacHorizonManager.RyujinxClient, CommandLineState.Profile);
+            _accountManager = new AccountManager(_libHacHorizonManager.HyjinxClient, CommandLineState.Profile);
             _userChannelPersistence = new UserChannelPersistence();
 
             IntegrityCheckLevel checkLevel = ConfigurationState.Instance.System.EnableFsIntegrityChecks
@@ -787,7 +787,7 @@ namespace Hyjinx.UI
             {
                 MessageDialog debugWarningDialog = new(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.YesNo, null)
                 {
-                    Title = "Ryujinx - Warning",
+                    Title = "Hyjinx - Warning",
                     Text = "You have trace logging enabled, which is designed to be used by developers only.",
                     SecondaryText = "For optimal performance, it's recommended to disable trace logging. Would you like to disable trace logging now?",
                 };
@@ -805,7 +805,7 @@ namespace Hyjinx.UI
             {
                 MessageDialog shadersDumpWarningDialog = new(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.YesNo, null)
                 {
-                    Title = "Ryujinx - Warning",
+                    Title = "Hyjinx - Warning",
                     Text = "You have shader dumping enabled, which is designed to be used by developers only.",
                     SecondaryText = "For optimal performance, it's recommended to disable shader dumping. Would you like to disable shader dumping now?",
                 };
@@ -845,7 +845,7 @@ namespace Hyjinx.UI
 
                     RefreshFirmwareLabel();
 
-                    message = $"No installed firmware was found but Ryujinx was able to install firmware {firmwareVersion.VersionString} from the provided game.\nThe emulator will now start.";
+                    message = $"No installed firmware was found but Hyjinx was able to install firmware {firmwareVersion.VersionString} from the provided game.\nThe emulator will now start.";
 
                     GtkDialog.CreateInfoDialog($"Firmware {firmwareVersion.VersionString} was installed", message);
                 }
@@ -912,7 +912,7 @@ namespace Hyjinx.UI
                         }
                         catch (ArgumentOutOfRangeException)
                         {
-                            Logger.Error?.Print(LogClass.Application, "The specified file is not supported by Ryujinx.");
+                            Logger.Error?.Print(LogClass.Application, "The specified file is not supported by Hyjinx.");
 
                             return false;
                         }
@@ -1053,7 +1053,7 @@ namespace Hyjinx.UI
 
             _gameTableWindow.Expand = true;
 
-            Window.Title = $"Ryujinx {Program.Version}";
+            Window.Title = $"Hyjinx {Program.Version}";
 
             _emulationContext = null;
             _gameLoaded = false;
@@ -1378,7 +1378,7 @@ namespace Hyjinx.UI
                 ControlHolder = (BlitStruct<ApplicationControlProperty>)_tableStore.GetValue(treeIter, 10),
             };
 
-            _ = new GameTableContextMenu(this, _virtualFileSystem, _accountManager, _libHacHorizonManager.RyujinxClient, application);
+            _ = new GameTableContextMenu(this, _virtualFileSystem, _accountManager, _libHacHorizonManager.HyjinxClient, application);
         }
 
         private void Load_Application_File(object sender, EventArgs args)

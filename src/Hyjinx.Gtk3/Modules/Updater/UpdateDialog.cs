@@ -32,7 +32,7 @@ namespace Hyjinx.Modules
             _mainWindow = mainWindow;
             _buildUrl = buildUrl;
             
-            MainText.Text = "Do you want to update Ryujinx to the latest version?";
+            MainText.Text = "Do you want to update Hyjinx to the latest version?";
             SecondaryText.Text = $"{Program.Version} -> {newVersion}";
 
             ProgressBar.Hide();
@@ -45,7 +45,7 @@ namespace Hyjinx.Modules
         {
             if (_restartQuery)
             {
-                string ryuName = OperatingSystem.IsWindows() ? "Ryujinx.exe" : "Ryujinx";
+                string ryuName = OperatingSystem.IsWindows() ? "Hyjinx.exe" : "Hyjinx";
 
                 ProcessStartInfo processStart = new(ryuName)
                 {
@@ -74,7 +74,7 @@ namespace Hyjinx.Modules
                 SecondaryText.Text = "";
                 _restartQuery = true;
 
-                Updater.UpdateRyujinx(this, _buildUrl);
+                Updater.UpdateHyjinx(this, _buildUrl);
             }
         }
 

@@ -25,7 +25,7 @@ namespace Hyjinx.UI.Common.Helper
         public static bool IsTypeAssociationSupported => (OperatingSystem.IsLinux() || OperatingSystem.IsWindows()) && !ReleaseInformation.IsFlatHubBuild;
 
         [SupportedOSPlatform("linux")]
-        private static bool AreMimeTypesRegisteredLinux() => File.Exists(Path.Combine(_mimeDbPath, "packages", "Ryujinx.xml"));
+        private static bool AreMimeTypesRegisteredLinux() => File.Exists(Path.Combine(_mimeDbPath, "packages", "Hyjinx.xml"));
 
         [SupportedOSPlatform("linux")]
         private static bool InstallLinuxMimeTypes(bool uninstall = false)
@@ -34,7 +34,7 @@ namespace Hyjinx.UI.Common.Helper
 
             if ((uninstall && AreMimeTypesRegisteredLinux()) || (!uninstall && !AreMimeTypesRegisteredLinux()))
             {
-                string mimeTypesFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mime", "Ryujinx.xml");
+                string mimeTypesFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mime", "Hyjinx.xml");
                 string additionalArgs = !uninstall ? "--novendor" : "";
 
                 using Process mimeProcess = new();
@@ -85,7 +85,7 @@ namespace Hyjinx.UI.Common.Helper
 
                 string keyValue = (string)openCmd.GetValue("");
 
-                return keyValue is not null && (keyValue.Contains("Ryujinx") || keyValue.Contains(AppDomain.CurrentDomain.FriendlyName));
+                return keyValue is not null && (keyValue.Contains("Hyjinx") || keyValue.Contains(AppDomain.CurrentDomain.FriendlyName));
             }
 
             bool registered = false;

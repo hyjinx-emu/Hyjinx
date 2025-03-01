@@ -37,7 +37,7 @@ namespace Hyjinx.Graphics.Host1x
         public Host1xDevice(ISynchronizationManager syncMgr)
         {
             _syncptIncrMgr = new SyncptIncrManager(syncMgr);
-            _commandQueue = new AsyncWorkQueue<Command>(Process, "Ryujinx.Host1xProcessor");
+            _commandQueue = new AsyncWorkQueue<Command>(Process, "Hyjinx.Host1xProcessor");
 
             Class = new Host1xClass(syncMgr);
 

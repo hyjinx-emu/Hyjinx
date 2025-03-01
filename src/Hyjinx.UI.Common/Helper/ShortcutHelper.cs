@@ -30,7 +30,7 @@ namespace Hyjinx.UI.Common.Helper
         [SupportedOSPlatform("linux")]
         private static void CreateShortcutLinux(string applicationFilePath, string applicationId, byte[] iconData, string iconPath, string desktopPath, string cleanedAppName)
         {
-            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Ryujinx.sh");
+            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Hyjinx.sh");
             var desktopFile = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-template.desktop");
             iconPath += ".png";
 
@@ -46,7 +46,7 @@ namespace Hyjinx.UI.Common.Helper
         [SupportedOSPlatform("macos")]
         private static void CreateShortcutMacos(string appFilePath, string applicationId, byte[] iconData, string desktopPath, string cleanedAppName)
         {
-            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Ryujinx");
+            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Hyjinx");
             var plistFile = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-template.plist");
             var shortcutScript = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-launch-script.sh");
             // Macos .App folder
@@ -103,7 +103,7 @@ namespace Hyjinx.UI.Common.Helper
 
             if (OperatingSystem.IsLinux())
             {
-                string iconPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share", "icons", "Ryujinx");
+                string iconPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share", "icons", "Hyjinx");
 
                 Directory.CreateDirectory(iconPath);
                 CreateShortcutLinux(applicationFilePath, applicationId, iconData, Path.Combine(iconPath, applicationId), desktopPath, cleanedAppName);
