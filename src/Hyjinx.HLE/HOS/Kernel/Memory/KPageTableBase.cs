@@ -2,8 +2,8 @@ using Ryujinx.Common;
 using Hyjinx.HLE.HOS.Kernel.Common;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Horizon.Common;
-using Ryujinx.Memory;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory;
+using Hyjinx.Memory.Range;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -2948,7 +2948,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Memory
         /// <param name="va">Virtual address of the range</param>
         /// <param name="size">Size of the range</param>
         /// <returns>The host regions</returns>
-        /// <exception cref="Ryujinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
+        /// <exception cref="Hyjinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
         protected abstract IEnumerable<HostMemoryRange> GetHostRegions(ulong va, ulong size);
 
         /// <summary>
@@ -2969,7 +2969,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Memory
         /// <param name="va">Virtual address of the data</param>
         /// <param name="size">Size of the data</param>
         /// <returns>A read-only sequence of the data</returns>
-        /// <exception cref="Ryujinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
+        /// <exception cref="Hyjinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
         protected abstract ReadOnlySequence<byte> GetReadOnlySequence(ulong va, int size);
 
         /// <summary>
@@ -2982,7 +2982,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Memory
         /// <param name="va">Virtual address of the data</param>
         /// <param name="size">Size of the data</param>
         /// <returns>A read-only span of the data</returns>
-        /// <exception cref="Ryujinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
+        /// <exception cref="Hyjinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
         protected abstract ReadOnlySpan<byte> GetSpan(ulong va, int size);
 
         /// <summary>
@@ -3093,7 +3093,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Memory
         /// </summary>
         /// <param name="va">Virtual address to write the data into</param>
         /// <param name="data">Data to be written</param>
-        /// <exception cref="Ryujinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
+        /// <exception cref="Hyjinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
         protected abstract void Write(ulong va, ReadOnlySequence<byte> data);
 
         /// <summary>
@@ -3101,7 +3101,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Memory
         /// </summary>
         /// <param name="va">Virtual address to write the data into</param>
         /// <param name="data">Data to be written</param>
-        /// <exception cref="Ryujinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
+        /// <exception cref="Hyjinx.Memory.InvalidMemoryRegionException">Throw for unhandled invalid or unmapped memory accesses</exception>
         protected abstract void Write(ulong va, ReadOnlySpan<byte> data);
     }
 }

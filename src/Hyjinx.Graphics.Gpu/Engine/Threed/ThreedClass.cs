@@ -6,7 +6,7 @@ using Hyjinx.Graphics.Gpu.Engine.InlineToMemory;
 using Hyjinx.Graphics.Gpu.Engine.Threed.Blender;
 using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Synchronization;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory.Range;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

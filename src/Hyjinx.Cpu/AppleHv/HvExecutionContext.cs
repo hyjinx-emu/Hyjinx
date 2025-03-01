@@ -1,6 +1,6 @@
 using ARMeilleure.State;
 using Hyjinx.Cpu.AppleHv.Arm;
-using Ryujinx.Memory.Tracking;
+using Hyjinx.Memory.Tracking;
 using System;
 using System.Runtime.Versioning;
 using System.Threading;

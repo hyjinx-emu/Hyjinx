@@ -1,6 +1,6 @@
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Threading;
 using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;

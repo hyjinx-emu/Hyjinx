@@ -7,7 +7,7 @@ using Hyjinx.Cpu.LightningJit;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Process;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Runtime.InteropServices;
 

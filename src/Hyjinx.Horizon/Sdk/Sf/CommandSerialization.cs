@@ -1,6 +1,6 @@
 using Hyjinx.Horizon.Sdk.Sf.Cmif;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;

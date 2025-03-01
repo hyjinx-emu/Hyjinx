@@ -1,7 +1,7 @@
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types;
 using Hyjinx.Horizon.Common;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel

@@ -1,5 +1,5 @@
 using Ryujinx.Common.Pools;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory.Range;
 using System;
 using System.Linq;
 

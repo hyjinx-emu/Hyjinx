@@ -1,7 +1,7 @@
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Shader;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory.Range;
 
 namespace Hyjinx.Graphics.Gpu.Memory
 {

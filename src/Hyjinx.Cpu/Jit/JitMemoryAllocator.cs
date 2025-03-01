@@ -1,5 +1,5 @@
 using ARMeilleure.Memory;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 
 namespace Hyjinx.Cpu.Jit
 {

@@ -1,6 +1,6 @@
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory.Range;
 
 namespace Hyjinx.Graphics.Gpu.Memory
 {

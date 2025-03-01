@@ -1,7 +1,7 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Collections;
-using Ryujinx.Memory;
-using Ryujinx.Memory.Tracking;
+using Hyjinx.Memory;
+using Hyjinx.Memory.Tracking;
 using System;
 
 namespace Hyjinx.Cpu.Jit.HostTracked

@@ -2,7 +2,7 @@ using Hyjinx.HLE.HOS.Diagnostics.Demangler;
 using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.Loaders.Elf;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

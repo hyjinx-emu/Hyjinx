@@ -1,7 +1,7 @@
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Synchronization;
-using Ryujinx.Memory.Range;
-using Ryujinx.Memory.Tracking;
+using Hyjinx.Memory.Range;
+using Hyjinx.Memory.Tracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;

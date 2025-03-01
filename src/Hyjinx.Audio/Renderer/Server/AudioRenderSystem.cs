@@ -15,7 +15,7 @@ using Hyjinx.Audio.Renderer.Server.Voice;
 using Hyjinx.Audio.Renderer.Utils;
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Buffers;
 using System.Diagnostics;

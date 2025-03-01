@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Runtime.InteropServices;
 

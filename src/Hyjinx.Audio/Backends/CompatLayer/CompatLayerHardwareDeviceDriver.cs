@@ -3,7 +3,7 @@ using Hyjinx.Audio.Backends.Dummy;
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
 using Ryujinx.Common.Logging;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Threading;
 using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;

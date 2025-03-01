@@ -5,7 +5,7 @@ using Hyjinx.Cpu.LightningJit.Cache;
 using Hyjinx.Cpu.LightningJit.CodeGen.Arm64;
 using Hyjinx.Cpu.LightningJit.State;
 using Hyjinx.Cpu.Signal;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

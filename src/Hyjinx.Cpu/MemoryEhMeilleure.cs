@@ -1,7 +1,7 @@
 using Ryujinx.Common;
 using Hyjinx.Cpu.Signal;
-using Ryujinx.Memory;
-using Ryujinx.Memory.Tracking;
+using Hyjinx.Memory;
+using Hyjinx.Memory.Tracking;
 using System;
 using System.Runtime.InteropServices;
 

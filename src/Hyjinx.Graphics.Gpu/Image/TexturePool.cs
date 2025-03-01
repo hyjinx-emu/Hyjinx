@@ -2,7 +2,7 @@ using Ryujinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Texture;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory.Range;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

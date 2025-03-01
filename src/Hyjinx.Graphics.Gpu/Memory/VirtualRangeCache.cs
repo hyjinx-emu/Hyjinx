@@ -1,4 +1,4 @@
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory.Range;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;

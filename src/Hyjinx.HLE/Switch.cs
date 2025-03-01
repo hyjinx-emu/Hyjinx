@@ -8,7 +8,7 @@ using Hyjinx.HLE.HOS.Services.Apm;
 using Hyjinx.HLE.HOS.Services.Hid;
 using Hyjinx.HLE.Loaders.Processes;
 using Hyjinx.HLE.UI;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 
 namespace Hyjinx.HLE

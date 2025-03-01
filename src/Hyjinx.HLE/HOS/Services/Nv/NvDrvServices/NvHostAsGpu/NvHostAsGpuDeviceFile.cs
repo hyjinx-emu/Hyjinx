@@ -3,7 +3,7 @@ using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

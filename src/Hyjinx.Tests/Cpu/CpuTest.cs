@@ -2,7 +2,7 @@ using ARMeilleure;
 using ARMeilleure.State;
 using NUnit.Framework;
 using Hyjinx.Cpu.Jit;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using Hyjinx.Tests.Unicorn;
 using System;
 using MemoryPermission = Hyjinx.Tests.Unicorn.MemoryPermission;

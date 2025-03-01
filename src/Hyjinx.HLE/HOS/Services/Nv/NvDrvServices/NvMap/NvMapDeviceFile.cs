@@ -1,7 +1,7 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
 using Hyjinx.Graphics.Gpu.Memory;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap

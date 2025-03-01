@@ -1,5 +1,5 @@
 using Hyjinx.Cpu.AppleHv.Arm;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Runtime.Versioning;
 

@@ -1,5 +1,5 @@
 using Hyjinx.Graphics.Gpu.Memory;
-using Ryujinx.Memory.Tracking;
+using Hyjinx.Memory.Tracking;
 using System;
 using System.Runtime.InteropServices;
 

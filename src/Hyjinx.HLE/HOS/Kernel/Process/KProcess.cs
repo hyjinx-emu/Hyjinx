@@ -6,7 +6,7 @@ using Hyjinx.HLE.HOS.Kernel.Common;
 using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;

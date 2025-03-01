@@ -3,7 +3,7 @@ using Hyjinx.Graphics.Gpu.Synchronization;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
 using Hyjinx.HLE.HOS.Services.Settings;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Text;
 using System.Threading;

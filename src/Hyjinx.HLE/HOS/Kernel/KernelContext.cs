@@ -4,7 +4,7 @@ using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.HOS.Kernel.SupervisorCall;
 using Hyjinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;

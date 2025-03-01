@@ -1,4 +1,4 @@
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System.Runtime.Versioning;
 
 namespace Hyjinx.Cpu.AppleHv

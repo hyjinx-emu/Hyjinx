@@ -2,7 +2,7 @@ using Ryujinx.Common.Logging;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types;
 using Hyjinx.Horizon.Common;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Diagnostics;
 

@@ -1,5 +1,5 @@
 using Hyjinx.Horizon.Common;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 
 namespace Hyjinx.Horizon

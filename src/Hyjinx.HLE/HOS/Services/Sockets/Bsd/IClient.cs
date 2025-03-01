@@ -2,7 +2,7 @@ using Ryujinx.Common;
 using Ryujinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Collections.Generic;
 using System.Net;

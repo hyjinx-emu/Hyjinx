@@ -1,4 +1,4 @@
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.Audio.Renderer.Dsp.State

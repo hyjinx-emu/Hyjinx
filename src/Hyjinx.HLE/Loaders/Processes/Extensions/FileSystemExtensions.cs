@@ -7,7 +7,7 @@ using LibHac.Tools.FsSystem;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Hyjinx.HLE.Loaders.Executables;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Linq;
 using static Hyjinx.HLE.HOS.ModLoader;

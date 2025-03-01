@@ -1,7 +1,7 @@
 using Ryujinx.Common.Memory;
 using Hyjinx.Graphics.Gpu.Image;
-using Ryujinx.Memory;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory;
+using Hyjinx.Memory.Range;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

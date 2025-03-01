@@ -3,7 +3,7 @@ using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Sockets.Nsd.Manager;
 using Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy;
 using Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Types;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;

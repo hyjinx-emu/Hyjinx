@@ -5,7 +5,7 @@ using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.Horizon.Common;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Collections.Generic;
 using System.IO;

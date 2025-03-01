@@ -1,7 +1,7 @@
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System.IO;
 
 namespace Hyjinx.HLE.HOS

@@ -1,7 +1,7 @@
 using OpenTK.Audio.OpenAL;
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;

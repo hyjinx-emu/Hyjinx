@@ -1,5 +1,5 @@
 using ARMeilleure.State;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;

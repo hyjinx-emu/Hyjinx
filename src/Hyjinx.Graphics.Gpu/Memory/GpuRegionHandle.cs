@@ -1,4 +1,4 @@
-using Ryujinx.Memory.Tracking;
+using Hyjinx.Memory.Tracking;
 using System;
 
 namespace Hyjinx.Graphics.Gpu.Memory

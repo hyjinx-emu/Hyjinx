@@ -2,7 +2,7 @@ using ARMeilleure.Memory;
 using Hyjinx.Cpu;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.HOS.Kernel.Process;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 
 namespace Hyjinx.HLE.HOS
 {

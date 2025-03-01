@@ -1,5 +1,5 @@
-using Ryujinx.Memory;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory;
+using Hyjinx.Memory.Range;
 using System;
 
 namespace Hyjinx.Graphics.Gpu.Memory

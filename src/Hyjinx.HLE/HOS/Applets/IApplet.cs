@@ -1,6 +1,6 @@
 using Hyjinx.HLE.HOS.Services.Am.AppletAE;
 using Hyjinx.HLE.UI;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Runtime.InteropServices;
 

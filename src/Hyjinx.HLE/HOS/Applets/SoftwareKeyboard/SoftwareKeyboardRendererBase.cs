@@ -1,5 +1,5 @@
 using Hyjinx.HLE.UI;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using SkiaSharp;
 using System;
 using System.Diagnostics;

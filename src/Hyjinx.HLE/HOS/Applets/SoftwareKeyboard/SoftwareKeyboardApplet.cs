@@ -6,7 +6,7 @@ using Hyjinx.HLE.HOS.Services.Am.AppletAE;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
 using Hyjinx.HLE.UI;
 using Hyjinx.HLE.UI.Input;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;

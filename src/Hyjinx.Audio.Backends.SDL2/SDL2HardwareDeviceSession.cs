@@ -2,7 +2,7 @@ using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Common;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;

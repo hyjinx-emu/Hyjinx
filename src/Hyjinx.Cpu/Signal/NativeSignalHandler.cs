@@ -1,6 +1,6 @@
 using ARMeilleure.Signal;
 using Ryujinx.Common;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

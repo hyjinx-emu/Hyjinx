@@ -1,6 +1,6 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Collections;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Diagnostics;
 using System.Threading;

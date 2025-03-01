@@ -1,7 +1,7 @@
 using ARMeilleure.Memory;
-using Ryujinx.Memory;
-using Ryujinx.Memory.Range;
-using Ryujinx.Memory.Tracking;
+using Hyjinx.Memory;
+using Hyjinx.Memory.Range;
+using Hyjinx.Memory.Tracking;
 using System;
 using System.Buffers;
 using System.Collections.Generic;

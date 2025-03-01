@@ -1,5 +1,5 @@
 using Hyjinx.Graphics.Gpu.Synchronization;
-using Ryujinx.Memory.Tracking;
+using Hyjinx.Memory.Tracking;
 using System;
 using System.Collections.Generic;
 using System.Threading;

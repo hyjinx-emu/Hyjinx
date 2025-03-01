@@ -1,5 +1,5 @@
 using Hyjinx.Graphics.GAL;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory.Range;
 using System;
 using System.Collections.Generic;
 using System.Linq;

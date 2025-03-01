@@ -1,7 +1,7 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Ssl.SslService;
 using Hyjinx.HLE.HOS.Services.Ssl.Types;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

@@ -12,7 +12,7 @@ using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostDbgGpu;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostProfGpu;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

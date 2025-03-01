@@ -5,7 +5,7 @@ using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;

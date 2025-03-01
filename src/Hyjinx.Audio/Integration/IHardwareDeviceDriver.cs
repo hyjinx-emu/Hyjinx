@@ -1,5 +1,5 @@
 using Hyjinx.Audio.Common;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Threading;
 

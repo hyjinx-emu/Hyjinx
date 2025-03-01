@@ -3,7 +3,7 @@ using Hyjinx.Audio.Renderer.Dsp;
 using Hyjinx.Audio.Renderer.Parameter;
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Diagnostics;
 using System.Linq;

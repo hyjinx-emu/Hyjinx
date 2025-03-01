@@ -1,4 +1,4 @@
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostProfGpu
 {

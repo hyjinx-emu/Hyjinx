@@ -1,6 +1,6 @@
 using NUnit.Framework;
-using Ryujinx.Memory;
-using Ryujinx.Memory.Tracking;
+using Hyjinx.Memory;
+using Hyjinx.Memory.Tracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;

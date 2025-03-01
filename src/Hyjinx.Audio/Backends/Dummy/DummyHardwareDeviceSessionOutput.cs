@@ -1,7 +1,7 @@
 using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System.Threading;
 
 namespace Hyjinx.Audio.Backends.Dummy

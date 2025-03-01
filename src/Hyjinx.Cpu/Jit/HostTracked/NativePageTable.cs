@@ -1,5 +1,5 @@
 using Hyjinx.Cpu.Signal;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 using System.Diagnostics;
 using System.Numerics;

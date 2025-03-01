@@ -1,5 +1,5 @@
 using Hyjinx.Cpu;
-using Ryujinx.Memory;
+using Hyjinx.Memory;
 using System;
 
 namespace Hyjinx.HLE.HOS.Kernel.Process

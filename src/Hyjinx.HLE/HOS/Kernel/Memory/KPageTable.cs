@@ -1,6 +1,6 @@
 using Hyjinx.Horizon.Common;
-using Ryujinx.Memory;
-using Ryujinx.Memory.Range;
+using Hyjinx.Memory;
+using Hyjinx.Memory.Range;
 using System;
 using System.Buffers;
 using System.Collections.Generic;

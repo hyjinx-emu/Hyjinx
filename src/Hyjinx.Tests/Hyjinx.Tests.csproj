@@ -27,7 +27,7 @@
     <ProjectReference Include="..\Hyjinx.Cpu\Hyjinx.Cpu.csproj" />
     <ProjectReference Include="..\Hyjinx.HLE\Hyjinx.HLE.csproj" />
     <ProjectReference Include="..\Hyjinx.Tests.Memory\Hyjinx.Tests.Memory.csproj" />
-    <ProjectReference Include="..\Ryujinx.Memory\Ryujinx.Memory.csproj" />
+    <ProjectReference Include="..\Hyjinx.Memory\Hyjinx.Memory.csproj" />
     <ProjectReference Include="..\Hyjinx.Tests.Unicorn\Hyjinx.Tests.Unicorn.csproj" />
     <ProjectReference Include="..\ARMeilleure\ARMeilleure.csproj" />
   </ItemGroup>
