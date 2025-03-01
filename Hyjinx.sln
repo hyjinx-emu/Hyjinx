@@ -95,6 +95,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{0533BEC5-3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.HLE", "src\Hyjinx.HLE\Hyjinx.HLE.csproj", "{F81C3AEF-A870-4DCC-8EB6-99235F4EBB99}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Memory.Abstractions", "src\Hyjinx.Memory.Abstractions\Hyjinx.Memory.Abstractions.csproj", "{6BC3E1B4-0627-467A-B46E-F4B44BF00583}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -257,6 +259,10 @@ Global
 		{F81C3AEF-A870-4DCC-8EB6-99235F4EBB99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F81C3AEF-A870-4DCC-8EB6-99235F4EBB99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F81C3AEF-A870-4DCC-8EB6-99235F4EBB99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BC3E1B4-0627-467A-B46E-F4B44BF00583}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BC3E1B4-0627-467A-B46E-F4B44BF00583}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BC3E1B4-0627-467A-B46E-F4B44BF00583}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BC3E1B4-0627-467A-B46E-F4B44BF00583}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -289,5 +295,6 @@ Global
 		{DFAB6F2D-B9BF-4AFF-B22B-7684A328EBA3} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
 		{2D5D3A1D-5730-4648-B0AB-06C53CB910C0} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
 		{390DC343-5CB4-4C79-A5DD-E3ED235E4C49} = {5C86EA50-A78D-4456-B2F9-7F6D2448EBF7}
+		{6BC3E1B4-0627-467A-B46E-F4B44BF00583} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 	EndGlobalSection
 EndGlobal
