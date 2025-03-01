@@ -1,5 +1,5 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Caps.Types;
+using Hyjinx.HLE.HOS.Services.Caps.Types;
 using SkiaSharp;
 using System;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
-namespace Ryujinx.HLE.HOS.Services.Caps
+namespace Hyjinx.HLE.HOS.Services.Caps
 {
     class CaptureManager
     {

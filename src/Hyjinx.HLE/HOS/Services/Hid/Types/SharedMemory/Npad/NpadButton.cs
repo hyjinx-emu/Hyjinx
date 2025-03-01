@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
 {
     [Flags]
     enum NpadButton : ulong

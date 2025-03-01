@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types
 {
     enum NetworkType : uint
     {

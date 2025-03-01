@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Nv.Types;
+using Hyjinx.HLE.HOS.Services.Nv.Types;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types
 {
     [StructLayout(LayoutKind.Sequential)]
     struct SyncptWaitArguments

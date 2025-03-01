@@ -1,12 +1,12 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Services.Sockets.Bsd;
-using Ryujinx.HLE.HOS.Services.Ssl.Types;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Services.Sockets.Bsd;
+using Hyjinx.HLE.HOS.Services.Ssl.Types;
 using Ryujinx.Memory;
 using System;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Ssl.SslService
+namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 {
     class ISslConnection : IpcService, IDisposable
     {

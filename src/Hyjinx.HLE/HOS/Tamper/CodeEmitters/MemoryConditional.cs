@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Tamper.Conditions;
+using Hyjinx.HLE.HOS.Tamper.Conditions;
 
-namespace Ryujinx.HLE.HOS.Tamper.CodeEmitters
+namespace Hyjinx.HLE.HOS.Tamper.CodeEmitters
 {
     /// <summary>
     /// Code type 1 performs a comparison of the contents of memory to a static value.

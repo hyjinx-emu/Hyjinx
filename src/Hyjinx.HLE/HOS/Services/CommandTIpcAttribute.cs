@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services
+namespace Hyjinx.HLE.HOS.Services
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     class CommandTipcAttribute : Attribute

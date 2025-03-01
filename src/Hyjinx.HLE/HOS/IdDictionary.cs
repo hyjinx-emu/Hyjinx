@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS
+namespace Hyjinx.HLE.HOS
 {
     class IdDictionary
     {

@@ -2,7 +2,7 @@ using Hyjinx.Cpu;
 using Ryujinx.Memory;
 using System;
 
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     interface IProcessContext : IDisposable
     {

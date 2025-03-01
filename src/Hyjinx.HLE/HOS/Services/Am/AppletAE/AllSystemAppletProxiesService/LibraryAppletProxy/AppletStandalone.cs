@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletProxy
 {
     class AppletStandalone
     {

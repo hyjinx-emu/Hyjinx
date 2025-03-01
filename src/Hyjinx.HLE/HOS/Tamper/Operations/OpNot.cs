@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Tamper.Operations
+namespace Hyjinx.HLE.HOS.Tamper.Operations
 {
     class OpNot<T> : IOperation where T : unmanaged
     {

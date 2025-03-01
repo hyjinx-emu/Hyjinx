@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletCreator;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletCreator;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
     class ILibraryAppletCreator : IpcService
     {

@@ -4,7 +4,7 @@ using Hyjinx.Graphics.Gpu.Memory;
 using Ryujinx.Memory;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
 {
     internal class NvMapDeviceFile : NvDeviceFile
     {

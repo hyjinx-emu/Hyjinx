@@ -2,8 +2,8 @@ using Avalonia.Media;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Views.User;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
-using Profile = Ryujinx.HLE.HOS.Services.Account.Acc.UserProfile;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
+using Profile = Hyjinx.HLE.HOS.Services.Account.Acc.UserProfile;
 
 namespace Hyjinx.Ava.UI.Models
 {

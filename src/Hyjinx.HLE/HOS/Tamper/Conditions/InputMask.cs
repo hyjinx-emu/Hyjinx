@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Tamper.Conditions
+namespace Hyjinx.HLE.HOS.Tamper.Conditions
 {
     class InputMask : ICondition
     {

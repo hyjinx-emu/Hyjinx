@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Sockets.Bsd
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 {
     [Service("bsdcfg")]
     class ServerInterface : IpcService

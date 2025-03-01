@@ -1,12 +1,12 @@
 using Hyjinx.Cpu;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
-using Ryujinx.HLE.HOS.Services.Time.TimeZone;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Services.Time
+namespace Hyjinx.HLE.HOS.Services.Time
 {
     class TimeManager
     {

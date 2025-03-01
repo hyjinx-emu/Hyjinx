@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Kernel.Common
+namespace Hyjinx.HLE.HOS.Kernel.Common
 {
     interface IKFutureSchedulerObject
     {

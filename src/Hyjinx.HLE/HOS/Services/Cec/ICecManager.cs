@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Cec
+namespace Hyjinx.HLE.HOS.Services.Cec
 {
     [Service("cec-mgr")]
     class ICecManager : IpcService

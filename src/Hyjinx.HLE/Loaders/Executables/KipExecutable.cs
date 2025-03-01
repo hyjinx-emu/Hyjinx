@@ -3,7 +3,7 @@ using LibHac.Fs;
 using LibHac.Kernel;
 using System;
 
-namespace Ryujinx.HLE.Loaders.Executables
+namespace Hyjinx.HLE.Loaders.Executables
 {
     class KipExecutable : IExecutable
     {

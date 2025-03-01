@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.UI
+namespace Hyjinx.HLE.UI
 {
     public interface IHostUITheme
     {

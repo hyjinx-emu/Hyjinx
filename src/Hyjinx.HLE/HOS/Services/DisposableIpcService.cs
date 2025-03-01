@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services
+namespace Hyjinx.HLE.HOS.Services
 {
     abstract class DisposableIpcService : IpcService, IDisposable
     {

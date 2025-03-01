@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.Loaders.Elf
+namespace Hyjinx.HLE.Loaders.Elf
 {
     enum ElfSymbolBinding
     {

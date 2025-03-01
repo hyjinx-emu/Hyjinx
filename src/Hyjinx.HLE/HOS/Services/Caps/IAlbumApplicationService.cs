@@ -1,8 +1,8 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Services.Caps.Types;
+using Hyjinx.HLE.HOS.Services.Caps.Types;
 
-namespace Ryujinx.HLE.HOS.Services.Caps
+namespace Hyjinx.HLE.HOS.Services.Caps
 {
     [Service("caps:u")]
     class IAlbumApplicationService : IpcService

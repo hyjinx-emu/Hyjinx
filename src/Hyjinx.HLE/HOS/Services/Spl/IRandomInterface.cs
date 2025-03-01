@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Ryujinx.HLE.HOS.Services.Spl
+namespace Hyjinx.HLE.HOS.Services.Spl
 {
     [Service("csrng")]
     class IRandomInterface : DisposableIpcService

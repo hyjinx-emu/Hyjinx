@@ -1,6 +1,6 @@
 using Ryujinx.Memory;
 
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     class ProcessContextFactory : IProcessContextFactory
     {

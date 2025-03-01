@@ -1,6 +1,6 @@
 using Ryujinx.Common.Memory;
 
-namespace Ryujinx.HLE.HOS.Services.Fatal.Types
+namespace Hyjinx.HLE.HOS.Services.Fatal.Types
 {
     public struct CpuContext32
     {

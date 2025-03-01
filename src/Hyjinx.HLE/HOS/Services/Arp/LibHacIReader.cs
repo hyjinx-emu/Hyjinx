@@ -5,7 +5,7 @@ using LibHac.Ns;
 using System;
 using ApplicationId = LibHac.ApplicationId;
 
-namespace Ryujinx.HLE.HOS.Services.Arp
+namespace Hyjinx.HLE.HOS.Services.Arp
 {
     class LibHacIReader : LibHac.Arp.Impl.IReader
     {

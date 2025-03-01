@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading
 {
     [Flags]
     enum ThreadSchedState : ushort

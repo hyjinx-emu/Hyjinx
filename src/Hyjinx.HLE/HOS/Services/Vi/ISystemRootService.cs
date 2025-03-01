@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Vi.RootService;
-using Ryujinx.HLE.HOS.Services.Vi.Types;
+using Hyjinx.HLE.HOS.Services.Vi.RootService;
+using Hyjinx.HLE.HOS.Services.Vi.Types;
 
-namespace Ryujinx.HLE.HOS.Services.Vi
+namespace Hyjinx.HLE.HOS.Services.Vi
 {
     [Service("vi:s")]
     class ISystemRootService : IpcService

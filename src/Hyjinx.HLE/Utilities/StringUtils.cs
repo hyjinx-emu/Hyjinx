@@ -1,14 +1,14 @@
 using LibHac.Common;
 using Microsoft.IO;
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS;
+using Hyjinx.HLE.HOS;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Ryujinx.HLE.Utilities
+namespace Hyjinx.HLE.Utilities
 {
     static class StringUtils
     {

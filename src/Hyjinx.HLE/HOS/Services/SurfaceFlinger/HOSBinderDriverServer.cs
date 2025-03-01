@@ -1,9 +1,9 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using System;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     class HOSBinderDriverServer : IHOSBinderDriver
     {

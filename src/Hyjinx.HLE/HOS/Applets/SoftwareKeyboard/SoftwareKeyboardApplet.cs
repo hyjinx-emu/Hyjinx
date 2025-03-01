@@ -1,11 +1,11 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Applets.SoftwareKeyboard;
-using Ryujinx.HLE.HOS.Services.Am.AppletAE;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
-using Ryujinx.HLE.UI;
-using Ryujinx.HLE.UI.Input;
+using Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+using Hyjinx.HLE.UI;
+using Hyjinx.HLE.UI.Input;
 using Ryujinx.Memory;
 using System;
 using System.Diagnostics;
@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets
 {
     internal class SoftwareKeyboardApplet : IApplet
     {

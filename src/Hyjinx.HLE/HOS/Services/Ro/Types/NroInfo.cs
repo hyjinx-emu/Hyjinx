@@ -1,6 +1,6 @@
-using Ryujinx.HLE.Loaders.Executables;
+using Hyjinx.HLE.Loaders.Executables;
 
-namespace Ryujinx.HLE.HOS.Services.Ro
+namespace Hyjinx.HLE.HOS.Services.Ro
 {
     class NroInfo
     {

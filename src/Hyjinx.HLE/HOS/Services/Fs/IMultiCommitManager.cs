@@ -1,8 +1,8 @@
 using LibHac;
 using LibHac.Common;
-using Ryujinx.HLE.HOS.Services.Fs.FileSystemProxy;
+using Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy;
 
-namespace Ryujinx.HLE.HOS.Services.Fs
+namespace Hyjinx.HLE.HOS.Services.Fs
 {
     class IMultiCommitManager : DisposableIpcService // 6.0.0+
     {

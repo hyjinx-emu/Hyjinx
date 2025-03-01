@@ -1,9 +1,9 @@
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.HidServer
+namespace Hyjinx.HLE.HOS.Services.Hid.HidServer
 {
     class IAppletResource : IpcService
     {

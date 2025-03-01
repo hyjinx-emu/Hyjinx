@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Sockets.Bsd;
-using Ryujinx.HLE.HOS.Services.Sockets.Bsd.Impl;
-using Ryujinx.HLE.HOS.Services.Ssl.Types;
+using Hyjinx.HLE.HOS.Services.Sockets.Bsd;
+using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl;
+using Hyjinx.HLE.HOS.Services.Ssl.Types;
 using System;
 using System.IO;
 using System.Net;
@@ -8,7 +8,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
 
-namespace Ryujinx.HLE.HOS.Services.Ssl.SslService
+namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 {
     class SslManagedSocketConnection : ISslConnectionBase
     {

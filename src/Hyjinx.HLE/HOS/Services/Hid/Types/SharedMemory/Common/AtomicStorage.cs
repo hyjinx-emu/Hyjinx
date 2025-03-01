@@ -1,6 +1,6 @@
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
 {
     struct AtomicStorage<T> where T : unmanaged, ISampledDataStruct
     {

@@ -1,7 +1,7 @@
 using Ryujinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Time.TimeZone
+namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
 {
     [StructLayout(LayoutKind.Sequential, Size = Size, Pack = 4)]
     public struct TimeTypeInfo

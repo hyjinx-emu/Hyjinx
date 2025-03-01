@@ -1,12 +1,12 @@
-using Ryujinx.HLE.HOS.Kernel.Common;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading
 {
     class KAddressArbiter
     {

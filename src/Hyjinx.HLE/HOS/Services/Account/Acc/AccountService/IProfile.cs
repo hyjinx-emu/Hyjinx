@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Account.Acc.AccountService
+namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
 {
     class IProfile : IpcService
     {

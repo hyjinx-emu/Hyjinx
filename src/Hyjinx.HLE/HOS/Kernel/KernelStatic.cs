@@ -1,11 +1,11 @@
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Kernel.Process;
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel
+namespace Hyjinx.HLE.HOS.Kernel
 {
     static class KernelStatic
     {

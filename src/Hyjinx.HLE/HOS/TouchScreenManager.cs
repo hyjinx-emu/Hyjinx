@@ -1,6 +1,6 @@
-using Ryujinx.HLE;
-using Ryujinx.HLE.HOS.Services.Hid;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
+using Hyjinx.HLE;
+using Hyjinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
 using System;
 
 namespace Hyjinx.Input.HLE

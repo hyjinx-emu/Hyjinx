@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Ns
+namespace Hyjinx.HLE.HOS.Services.Ns
 {
     [Service("ns:am2")]
     [Service("ns:ec")]

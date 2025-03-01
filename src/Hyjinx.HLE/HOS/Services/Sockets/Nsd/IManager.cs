@@ -1,13 +1,13 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Services.Settings;
-using Ryujinx.HLE.HOS.Services.Sockets.Nsd.Manager;
-using Ryujinx.HLE.HOS.Services.Sockets.Nsd.Types;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Services.Settings;
+using Hyjinx.HLE.HOS.Services.Sockets.Nsd.Manager;
+using Hyjinx.HLE.HOS.Services.Sockets.Nsd.Types;
 using System;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Nsd
+namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd
 {
     [Service("nsd:a")] // Max sessions: 5
     [Service("nsd:u")] // Max sessions: 20

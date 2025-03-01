@@ -1,8 +1,8 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Account.Acc.AsyncContext;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ryujinx.HLE.HOS.Services.Account.Acc.AccountService
+namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
 {
     class ManagerServer
     {

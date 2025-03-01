@@ -1,10 +1,10 @@
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel.Process;
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using Ryujinx.Memory;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS
+namespace Hyjinx.HLE.HOS
 {
     class ServiceCtx
     {

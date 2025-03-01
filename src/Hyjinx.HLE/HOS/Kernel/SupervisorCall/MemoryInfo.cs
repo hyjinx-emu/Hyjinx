@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Kernel.Memory;
 
-namespace Ryujinx.HLE.HOS.Kernel.SupervisorCall
+namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
 {
     struct MemoryInfo
     {

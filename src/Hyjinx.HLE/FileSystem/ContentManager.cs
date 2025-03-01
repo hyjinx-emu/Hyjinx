@@ -11,10 +11,10 @@ using LibHac.Tools.Ncm;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
 using Ryujinx.Common.Utilities;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Services.Ssl;
-using Ryujinx.HLE.HOS.Services.Time;
-using Ryujinx.HLE.Utilities;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Services.Ssl;
+using Hyjinx.HLE.HOS.Services.Time;
+using Hyjinx.HLE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +23,7 @@ using System.Linq;
 using System.Text;
 using Path = System.IO.Path;
 
-namespace Ryujinx.HLE.FileSystem
+namespace Hyjinx.HLE.FileSystem
 {
     public class ContentManager
     {

@@ -1,8 +1,8 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Hid.HidServer;
-using Ryujinx.HLE.HOS.Services.Hid.Types;
+using Hyjinx.HLE.HOS.Services.Hid.HidServer;
+using Hyjinx.HLE.HOS.Services.Hid.Types;
 
-namespace Ryujinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid
 {
     [Service("hid:sys")]
     class IHidSystemServer : IpcService

@@ -4,7 +4,7 @@ using Hyjinx.Graphics.Gpu.Memory;
 using System;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Services.Nv
+namespace Hyjinx.HLE.HOS.Services.Nv
 {
     class NvMemoryAllocator
     {

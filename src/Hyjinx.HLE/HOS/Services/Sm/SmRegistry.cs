@@ -1,8 +1,8 @@
-using Ryujinx.HLE.HOS.Kernel.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Ipc;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Sm
+namespace Hyjinx.HLE.HOS.Services.Sm
 {
     class SmRegistry
     {

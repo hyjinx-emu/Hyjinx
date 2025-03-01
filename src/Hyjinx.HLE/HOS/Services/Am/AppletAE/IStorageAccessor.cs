@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletAE
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE
 {
     class IStorageAccessor : IpcService
     {

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS
+namespace Hyjinx.HLE.HOS
 {
     class HomebrewRomFsStream : Stream
     {

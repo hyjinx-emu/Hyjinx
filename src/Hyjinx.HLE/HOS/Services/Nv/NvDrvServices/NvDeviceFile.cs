@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
 {
     abstract class NvDeviceFile
     {

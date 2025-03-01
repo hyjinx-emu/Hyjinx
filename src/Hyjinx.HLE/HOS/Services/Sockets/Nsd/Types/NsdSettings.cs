@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Sockets.Nsd
+namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd
 {
     class NsdSettings
     {

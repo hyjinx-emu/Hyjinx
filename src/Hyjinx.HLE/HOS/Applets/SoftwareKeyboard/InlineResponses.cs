@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     internal class InlineResponses
     {

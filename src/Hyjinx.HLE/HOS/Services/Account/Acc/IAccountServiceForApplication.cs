@@ -1,8 +1,8 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Account.Acc.AccountService;
-using Ryujinx.HLE.HOS.Services.Arp;
+using Hyjinx.HLE.HOS.Services.Account.Acc.AccountService;
+using Hyjinx.HLE.HOS.Services.Arp;
 
-namespace Ryujinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
     [Service("acc:u0", AccountServiceFlag.Application)] // Max Sessions: 4
     class IAccountServiceForApplication : IpcService

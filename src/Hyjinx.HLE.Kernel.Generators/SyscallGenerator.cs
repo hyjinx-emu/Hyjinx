@@ -11,7 +11,7 @@ namespace Hyjinx.HLE.Kernel.Generators
     [Generator]
     class SyscallGenerator : ISourceGenerator
     {
-        private const string ClassNamespace = "Ryujinx.HLE.HOS.Kernel.SupervisorCall";
+        private const string ClassNamespace = "Hyjinx.HLE.HOS.Kernel.SupervisorCall";
         private const string ClassName = "SyscallDispatch";
         private const string A32Suffix = "32";
         private const string A64Suffix = "64";
@@ -25,7 +25,7 @@ namespace Hyjinx.HLE.Kernel.Generators
         private const string TypeSystemUInt32 = "System.UInt32";
         private const string TypeSystemUInt64 = "System.UInt64";
 
-        private const string NamespaceKernel = "Ryujinx.HLE.HOS.Kernel";
+        private const string NamespaceKernel = "Hyjinx.HLE.HOS.Kernel";
         private const string NamespaceHorizonCommon = "Hyjinx.Horizon.Common";
         private const string TypeSvcAttribute = NamespaceKernel + ".SupervisorCall.SvcAttribute";
         private const string TypePointerSizedAttribute = NamespaceKernel + ".SupervisorCall.PointerSizedAttribute";

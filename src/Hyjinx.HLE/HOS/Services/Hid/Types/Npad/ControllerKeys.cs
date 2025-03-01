@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid
 {
     [Flags]
     public enum ControllerKeys : long

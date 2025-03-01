@@ -1,9 +1,9 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Ldn.Types;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using System.Net;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn
+namespace Hyjinx.HLE.HOS.Services.Ldn
 {
     internal class NetworkInterface
     {

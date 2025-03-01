@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
 
-namespace Ryujinx.HLE.HOS.Kernel.SupervisorCall
+namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
 {
     readonly struct ExternalEvent : IExternalEvent
     {

@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Ryujinx.HLE.HOS.Services.Loader
+namespace Hyjinx.HLE.HOS.Services.Loader
 {
     [SuppressMessage("Design", "CA1069: Enums values should not be duplicated")]
     enum ResultCode

@@ -1,10 +1,10 @@
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Kernel.Common
+namespace Hyjinx.HLE.HOS.Kernel.Common
 {
     static class KernelTransfer
     {

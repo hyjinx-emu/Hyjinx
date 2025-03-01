@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.Types
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x20)]
     struct NvStatus

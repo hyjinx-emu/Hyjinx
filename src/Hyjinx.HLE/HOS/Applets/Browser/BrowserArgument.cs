@@ -1,10 +1,10 @@
-using Ryujinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser
 {
     class BrowserArgument
     {

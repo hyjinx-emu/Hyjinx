@@ -1,19 +1,19 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Keyboard;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Mouse;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Keyboard;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Mouse;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Ryujinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid
 {
     public class Hid
     {

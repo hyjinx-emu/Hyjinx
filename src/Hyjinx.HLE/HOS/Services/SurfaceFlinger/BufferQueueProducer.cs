@@ -1,13 +1,13 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Settings;
-using Ryujinx.HLE.HOS.Services.SurfaceFlinger.Types;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Settings;
+using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
 using System;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     class BufferQueueProducer : IGraphicBufferProducer
     {

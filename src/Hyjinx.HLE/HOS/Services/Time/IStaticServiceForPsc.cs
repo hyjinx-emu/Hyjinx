@@ -1,9 +1,9 @@
 using Ryujinx.Common;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
-using Ryujinx.HLE.HOS.Services.Time.StaticService;
-using Ryujinx.HLE.HOS.Services.Time.TimeZone;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.Time.StaticService;
+using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Diagnostics;
@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Time
+namespace Hyjinx.HLE.HOS.Services.Time
 {
     [Service("time:s", TimePermissions.System)]
     [Service("time:su", TimePermissions.SystemUpdate)]

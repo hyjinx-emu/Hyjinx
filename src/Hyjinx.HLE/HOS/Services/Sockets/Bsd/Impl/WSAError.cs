@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Bsd.Impl
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     enum WsaError

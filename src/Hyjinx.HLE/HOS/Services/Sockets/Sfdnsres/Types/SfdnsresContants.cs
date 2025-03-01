@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Sockets.Sfdnsres.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Types
 {
     class SfdnsresContants
     {

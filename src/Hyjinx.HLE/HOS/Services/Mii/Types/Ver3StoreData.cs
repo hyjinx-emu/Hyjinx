@@ -3,7 +3,7 @@ using Ryujinx.Common.Utilities;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types
 {
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = Size)]
     struct Ver3StoreData

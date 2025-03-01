@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
+namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
 {
     static partial class DnsBlacklist
     {

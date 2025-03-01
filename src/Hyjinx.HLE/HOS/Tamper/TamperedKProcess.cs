@@ -1,9 +1,9 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using System.Runtime.CompilerServices;
 
-namespace Ryujinx.HLE.HOS.Tamper
+namespace Hyjinx.HLE.HOS.Tamper
 {
     class TamperedKProcess : ITamperedProcess
     {

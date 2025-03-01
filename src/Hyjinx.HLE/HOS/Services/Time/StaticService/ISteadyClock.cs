@@ -1,8 +1,8 @@
 using Ryujinx.Common;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
 
-namespace Ryujinx.HLE.HOS.Services.Time.StaticService
+namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
     class ISteadyClock : IpcService
     {

@@ -1,7 +1,7 @@
 using Ryujinx.Common;
 using System.Timers;
 
-namespace Ryujinx.HLE
+namespace Hyjinx.HLE
 {
     public class PerformanceStatistics
     {

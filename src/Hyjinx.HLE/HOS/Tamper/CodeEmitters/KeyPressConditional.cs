@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Tamper.Conditions;
+using Hyjinx.HLE.HOS.Tamper.Conditions;
 
-namespace Ryujinx.HLE.HOS.Tamper.CodeEmitters
+namespace Hyjinx.HLE.HOS.Tamper.CodeEmitters
 {
     /// <summary>
     /// Code type 8 enters or skips a conditional block based on whether a key combination is pressed.

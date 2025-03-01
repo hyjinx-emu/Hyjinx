@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Ryujinx.HLE.Loaders.Elf
+namespace Hyjinx.HLE.Loaders.Elf
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     [SuppressMessage("Design", "CA1069: Enums values should not be duplicated")]

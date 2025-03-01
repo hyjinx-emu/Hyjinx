@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     [StructLayout(LayoutKind.Explicit, Size = 0x144, Pack = 1)]
     struct NvGraphicBuffer

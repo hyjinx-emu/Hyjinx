@@ -1,12 +1,12 @@
 using Ryujinx.Common;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Time.StaticService
+namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
     class ISystemClock : IpcService
     {

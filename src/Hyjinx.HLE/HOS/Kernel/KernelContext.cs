@@ -1,15 +1,15 @@
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Kernel.Common;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Kernel.Process;
-using Ryujinx.HLE.HOS.Kernel.SupervisorCall;
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.SupervisorCall;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using Ryujinx.Memory;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel
+namespace Hyjinx.HLE.HOS.Kernel
 {
     class KernelContext : IDisposable
     {

@@ -1,16 +1,16 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Memory;
 using Ryujinx.Common.Utilities;
-using Ryujinx.HLE.Utilities;
+using Hyjinx.HLE.Utilities;
 using System;
 using System.Buffers.Binary;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using static Ryujinx.HLE.HOS.Services.Time.TimeZone.TimeZoneRule;
+using static Hyjinx.HLE.HOS.Services.Time.TimeZone.TimeZoneRule;
 
-namespace Ryujinx.HLE.HOS.Services.Time.TimeZone
+namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
 {
     public class TimeZone
     {

@@ -1,8 +1,8 @@
 using Ryujinx.Common;
-using Ryujinx.HLE.HOS.Services.Mii.StaticService;
-using Ryujinx.HLE.HOS.Services.Mii.Types;
+using Hyjinx.HLE.HOS.Services.Mii.StaticService;
+using Hyjinx.HLE.HOS.Services.Mii.Types;
 
-namespace Ryujinx.HLE.HOS.Services.Mii
+namespace Hyjinx.HLE.HOS.Services.Mii
 {
     [Service("mii:e", true)]
     [Service("mii:u", false)]

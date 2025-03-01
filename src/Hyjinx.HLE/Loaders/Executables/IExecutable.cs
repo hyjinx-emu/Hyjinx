@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.Loaders.Executables
+namespace Hyjinx.HLE.Loaders.Executables
 {
     interface IExecutable
     {

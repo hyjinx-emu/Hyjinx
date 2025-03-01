@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services
+namespace Hyjinx.HLE.HOS.Services
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     class ServiceAttribute : Attribute

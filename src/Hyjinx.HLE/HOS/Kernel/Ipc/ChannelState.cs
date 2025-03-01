@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Kernel.Ipc
+namespace Hyjinx.HLE.HOS.Kernel.Ipc
 {
     enum ChannelState
     {

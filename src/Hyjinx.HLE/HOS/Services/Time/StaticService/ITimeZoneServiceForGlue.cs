@@ -1,14 +1,14 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Services.Time.TimeZone;
-using Ryujinx.HLE.Utilities;
+using Hyjinx.HLE.HOS.Services.Time.TimeZone;
+using Hyjinx.HLE.Utilities;
 using Ryujinx.Memory;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Time.StaticService
+namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
     class ITimeZoneServiceForGlue : IpcService
     {

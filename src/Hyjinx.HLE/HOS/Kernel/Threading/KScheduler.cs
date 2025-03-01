@@ -1,10 +1,10 @@
 using Ryujinx.Common;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using System;
 using System.Numerics;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading
 {
     partial class KScheduler : IDisposable
     {

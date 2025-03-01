@@ -1,10 +1,10 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Kernel.Common;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
 using Ryujinx.Memory;
 using System;
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     class KProcess : KSynchronizationObject
     {

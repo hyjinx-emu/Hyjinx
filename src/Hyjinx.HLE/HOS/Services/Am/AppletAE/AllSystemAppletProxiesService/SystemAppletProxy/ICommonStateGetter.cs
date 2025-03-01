@@ -1,14 +1,14 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Settings.Types;
-using Ryujinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService;
-using Ryujinx.HLE.HOS.SystemState;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Settings.Types;
+using Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService;
+using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Lbl;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
     class ICommonStateGetter : DisposableIpcService
     {

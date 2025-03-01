@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Mouse;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Mouse;
 
-namespace Ryujinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid
 {
     public class MouseDevice : BaseDevice
     {

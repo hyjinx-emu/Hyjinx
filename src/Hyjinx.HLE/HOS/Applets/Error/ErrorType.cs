@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Applets.Error
+namespace Hyjinx.HLE.HOS.Applets.Error
 {
     enum ErrorType : byte
     {

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Ngct
+namespace Hyjinx.HLE.HOS.Services.Ngct
 {
     [Service("ngct:u")] // 9.0.0+
     class IService : IpcService

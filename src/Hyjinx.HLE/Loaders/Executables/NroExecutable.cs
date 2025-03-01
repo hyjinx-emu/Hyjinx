@@ -2,7 +2,7 @@ using LibHac.Fs;
 using LibHac.Tools.Ro;
 using System;
 
-namespace Ryujinx.HLE.Loaders.Executables
+namespace Hyjinx.HLE.Loaders.Executables
 {
     class NroExecutable : Nro, IExecutable
     {

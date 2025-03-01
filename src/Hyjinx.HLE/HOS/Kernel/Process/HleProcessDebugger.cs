@@ -1,14 +1,14 @@
-using Ryujinx.HLE.HOS.Diagnostics.Demangler;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.Loaders.Elf;
+using Hyjinx.HLE.HOS.Diagnostics.Demangler;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.Loaders.Elf;
 using Ryujinx.Memory;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     class HleProcessDebugger
     {

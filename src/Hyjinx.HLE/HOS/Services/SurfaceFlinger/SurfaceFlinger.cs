@@ -4,14 +4,14 @@ using Ryujinx.Common.Logging;
 using Ryujinx.Common.PreciseSleep;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     class SurfaceFlinger : IConsumerListener, IDisposable
     {

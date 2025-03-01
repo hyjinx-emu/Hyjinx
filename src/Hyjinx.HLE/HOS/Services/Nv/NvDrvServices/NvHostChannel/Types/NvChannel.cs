@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 {
     class NvChannel
     {

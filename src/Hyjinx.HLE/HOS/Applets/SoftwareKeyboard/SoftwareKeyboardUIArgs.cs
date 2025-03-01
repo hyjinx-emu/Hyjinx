@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Applets.SoftwareKeyboard;
+using Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
 
-namespace Ryujinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets
 {
     public struct SoftwareKeyboardUIArgs
     {

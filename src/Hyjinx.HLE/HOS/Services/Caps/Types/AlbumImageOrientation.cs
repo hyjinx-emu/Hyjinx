@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Caps.Types
+namespace Hyjinx.HLE.HOS.Services.Caps.Types
 {
     enum AlbumImageOrientation : uint
     {

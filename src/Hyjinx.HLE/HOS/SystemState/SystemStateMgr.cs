@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.SystemState
+namespace Hyjinx.HLE.HOS.SystemState
 {
     public class SystemStateMgr
     {

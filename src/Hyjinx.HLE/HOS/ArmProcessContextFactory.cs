@@ -5,13 +5,13 @@ using Hyjinx.Cpu.AppleHv;
 using Hyjinx.Cpu.Jit;
 using Hyjinx.Cpu.LightningJit;
 using Hyjinx.Graphics.Gpu;
-using Ryujinx.HLE.HOS.Kernel;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using Ryujinx.Memory;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS
+namespace Hyjinx.HLE.HOS
 {
     class ArmProcessContextFactory : IProcessContextFactory
     {

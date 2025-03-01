@@ -1,7 +1,7 @@
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock
 {
     abstract class SystemClockCore
     {

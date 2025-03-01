@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Nv.Types;
+using Hyjinx.HLE.HOS.Services.Nv.Types;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types
 {
     [StructLayout(LayoutKind.Sequential)]
     struct AllocGpfifoExArguments

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid
 {
     public enum NpadIdType
     {

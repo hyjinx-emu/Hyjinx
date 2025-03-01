@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Ryujinx.HLE.Loaders.Mods
+namespace Hyjinx.HLE.Loaders.Mods
 {
     class IPSwitchPatcher
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Services.Account.Acc.Types
+namespace Hyjinx.HLE.HOS.Services.Account.Acc.Types
 {
     internal struct ProfilesJson
     {

@@ -1,11 +1,11 @@
 using Ryujinx.Common.Memory;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Hid;
-using Ryujinx.HLE.HOS.Services.Hid.HidServer;
-using Ryujinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.HOS.Services.Hid.HidServer;
+using Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Buffers.Binary;
@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ryujinx.HLE.HOS.Services.Nfc.Nfp
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp
 {
     class INfp : IpcService
     {

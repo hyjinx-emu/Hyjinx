@@ -2,7 +2,7 @@ using Ryujinx.Common.Logging;
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.Loaders.Mods
+namespace Hyjinx.HLE.Loaders.Mods
 {
     class IpsPatcher
     {

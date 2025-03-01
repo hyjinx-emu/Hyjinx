@@ -1,16 +1,16 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Hid.HidServer;
-using Ryujinx.HLE.HOS.Services.Hid.Types;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Hid.HidServer;
+using Hyjinx.HLE.HOS.Services.Hid.Types;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid
 {
     [Service("hid")]
     class IHidServer : IpcService

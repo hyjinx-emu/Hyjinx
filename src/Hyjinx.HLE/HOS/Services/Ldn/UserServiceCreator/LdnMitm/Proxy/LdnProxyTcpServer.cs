@@ -4,7 +4,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {
     internal class LdnProxyTcpServer : TcpServer, ILdnTcpSocket
     {

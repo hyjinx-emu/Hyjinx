@@ -1,11 +1,11 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel;
-using Ryujinx.HLE.HOS.Kernel.Ipc;
-using Ryujinx.HLE.HOS.Kernel.Process;
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel;
+using Hyjinx.HLE.HOS.Kernel.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon;
 using Hyjinx.Horizon.Common;
 using System;
@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services
+namespace Hyjinx.HLE.HOS.Services
 {
     class ServerBase : IDisposable
     {

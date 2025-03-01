@@ -1,9 +1,9 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.Utilities;
+using Hyjinx.HLE.Utilities;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Account.Acc.AccountService
+namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
 {
     class ProfileServer
     {

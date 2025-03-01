@@ -1,9 +1,9 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Arp;
+using Hyjinx.HLE.HOS.Services.Arp;
 using System;
 using static LibHac.Ns.ApplicationControlProperty;
 
-namespace Ryujinx.HLE.HOS.Services.Pctl.ParentalControlServiceFactory
+namespace Hyjinx.HLE.HOS.Services.Pctl.ParentalControlServiceFactory
 {
     class IParentalControlService : IpcService
     {

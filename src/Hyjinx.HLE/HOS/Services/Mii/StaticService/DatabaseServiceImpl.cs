@@ -1,8 +1,8 @@
-using Ryujinx.HLE.HOS.Services.Mii.Types;
-using Ryujinx.HLE.HOS.Services.Settings;
+using Hyjinx.HLE.HOS.Services.Mii.Types;
+using Hyjinx.HLE.HOS.Services.Settings;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Mii.StaticService
+namespace Hyjinx.HLE.HOS.Services.Mii.StaticService
 {
     class DatabaseServiceImpl : IDatabaseService
     {

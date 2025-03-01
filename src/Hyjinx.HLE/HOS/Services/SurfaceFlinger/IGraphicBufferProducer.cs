@@ -1,11 +1,11 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.SurfaceFlinger.Types;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     abstract class IGraphicBufferProducer : IBinder
     {

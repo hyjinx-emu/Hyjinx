@@ -3,7 +3,7 @@ using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.ViewModels;
-using Ryujinx.HLE.FileSystem;
+using Hyjinx.HLE.FileSystem;
 using System;
 
 namespace Hyjinx.Ava.UI.Windows

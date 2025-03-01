@@ -1,10 +1,10 @@
 using ARMeilleure.Memory;
 using Hyjinx.Cpu;
 using Hyjinx.Graphics.Gpu;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using Ryujinx.Memory;
 
-namespace Ryujinx.HLE.HOS
+namespace Hyjinx.HLE.HOS
 {
     interface IArmProcessContext : IProcessContext
     {

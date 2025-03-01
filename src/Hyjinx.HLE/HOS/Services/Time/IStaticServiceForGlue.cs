@@ -1,11 +1,11 @@
 using Ryujinx.Common;
-using Ryujinx.HLE.HOS.Services.Pcv.Bpc;
-using Ryujinx.HLE.HOS.Services.Settings;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
-using Ryujinx.HLE.HOS.Services.Time.StaticService;
+using Hyjinx.HLE.HOS.Services.Pcv.Bpc;
+using Hyjinx.HLE.HOS.Services.Settings;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.Time.StaticService;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Time
+namespace Hyjinx.HLE.HOS.Services.Time
 {
     [Service("time:a", TimePermissions.Admin)]
     [Service("time:r", TimePermissions.Repair)]

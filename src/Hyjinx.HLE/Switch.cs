@@ -2,16 +2,16 @@ using Hyjinx.Audio.Backends.CompatLayer;
 using Hyjinx.Audio.Integration;
 using Ryujinx.Common.Configuration;
 using Hyjinx.Graphics.Gpu;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS;
-using Ryujinx.HLE.HOS.Services.Apm;
-using Ryujinx.HLE.HOS.Services.Hid;
-using Ryujinx.HLE.Loaders.Processes;
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS;
+using Hyjinx.HLE.HOS.Services.Apm;
+using Hyjinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.Loaders.Processes;
+using Hyjinx.HLE.UI;
 using Ryujinx.Memory;
 using System;
 
-namespace Ryujinx.HLE
+namespace Hyjinx.HLE
 {
     public class Switch : IDisposable
     {

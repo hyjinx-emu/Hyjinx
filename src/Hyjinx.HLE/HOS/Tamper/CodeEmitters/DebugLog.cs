@@ -1,7 +1,7 @@
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Tamper.Operations;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Tamper.Operations;
 
-namespace Ryujinx.HLE.HOS.Tamper.CodeEmitters
+namespace Hyjinx.HLE.HOS.Tamper.CodeEmitters
 {
     /// <summary>
     /// Code type 0xFFF writes a debug log.

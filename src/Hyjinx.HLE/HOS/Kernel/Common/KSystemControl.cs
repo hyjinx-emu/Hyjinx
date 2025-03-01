@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Kernel.Memory;
 using System;
 
-namespace Ryujinx.HLE.HOS.Kernel.Common
+namespace Hyjinx.HLE.HOS.Kernel.Common
 {
     static class KSystemControl
     {

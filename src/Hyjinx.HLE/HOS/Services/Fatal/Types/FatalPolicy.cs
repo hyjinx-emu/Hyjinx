@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Fatal.Types
+namespace Hyjinx.HLE.HOS.Services.Fatal.Types
 {
     enum FatalPolicy
     {

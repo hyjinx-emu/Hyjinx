@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
 {
     class NvMapIdDictionary
     {

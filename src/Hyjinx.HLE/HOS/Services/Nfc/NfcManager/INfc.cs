@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
 
-namespace Ryujinx.HLE.HOS.Services.Nfc.NfcManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.NfcManager
 {
     class INfc : IpcService
     {

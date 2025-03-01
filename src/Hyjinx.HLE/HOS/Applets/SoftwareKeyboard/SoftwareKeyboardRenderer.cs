@@ -1,9 +1,9 @@
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.UI;
 using Ryujinx.Memory;
 using System;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// Class that manages the renderer base class and its state in a multithreaded context.

@@ -1,6 +1,6 @@
-using Ryujinx.HLE.Exceptions;
+using Hyjinx.HLE.Exceptions;
 
-namespace Ryujinx.HLE.HOS.Tamper.CodeEmitters
+namespace Hyjinx.HLE.HOS.Tamper.CodeEmitters
 {
     /// <summary>
     /// Code type 5 allows loading a value from memory into a register, either using a fixed address or by

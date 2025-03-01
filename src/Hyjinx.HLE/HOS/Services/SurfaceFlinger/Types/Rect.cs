@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x10)]
     struct Rect : IEquatable<Rect>

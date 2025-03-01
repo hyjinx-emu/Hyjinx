@@ -1,7 +1,7 @@
 using Hyjinx.Graphics.Gpu.Memory;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types
 {
     class AddressSpaceContext
     {

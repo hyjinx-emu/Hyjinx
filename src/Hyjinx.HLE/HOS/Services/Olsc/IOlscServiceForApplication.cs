@@ -1,9 +1,9 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Services.Olsc
+namespace Hyjinx.HLE.HOS.Services.Olsc
 {
     [Service("olsc:u")] // 10.0.0+
     class IOlscServiceForApplication : IpcService

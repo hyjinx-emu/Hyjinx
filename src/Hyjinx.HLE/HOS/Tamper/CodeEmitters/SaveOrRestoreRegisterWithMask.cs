@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Tamper.CodeEmitters
+namespace Hyjinx.HLE.HOS.Tamper.CodeEmitters
 {
     /// <summary>
     /// Code type 0xC2 performs saving or restoring of multiple registers using a bitmask.

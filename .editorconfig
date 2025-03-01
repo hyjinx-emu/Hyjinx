@@ -263,7 +263,7 @@ dotnet_diagnostic.CA1862.severity = none
 # Disable "mark members as static" rule for ViewModels
 dotnet_diagnostic.CA1822.severity = none
 
-[src/Ryujinx.HLE/HOS/Services/**.cs]
+[src/Hyjinx.HLE/HOS/Services/**.cs]
 # Disable "mark members as static" rule for services
 dotnet_diagnostic.CA1822.severity = none
 

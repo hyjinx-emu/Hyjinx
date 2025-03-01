@@ -1,7 +1,7 @@
 using Ryujinx.Common;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletProxy
 {
     class ILibraryAppletSelfAccessor : IpcService
     {

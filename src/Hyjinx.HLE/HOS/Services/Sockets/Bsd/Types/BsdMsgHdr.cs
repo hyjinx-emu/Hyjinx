@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Bsd.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
 {
     class BsdMsgHdr
     {

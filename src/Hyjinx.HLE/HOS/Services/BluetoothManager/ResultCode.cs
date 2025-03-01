@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.BluetoothManager
+namespace Hyjinx.HLE.HOS.Services.BluetoothManager
 {
     enum ResultCode
     {

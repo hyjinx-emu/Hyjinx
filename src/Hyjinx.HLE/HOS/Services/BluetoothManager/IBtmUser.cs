@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.BluetoothManager.BtmUser;
+using Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser;
 
-namespace Ryujinx.HLE.HOS.Services.BluetoothManager
+namespace Hyjinx.HLE.HOS.Services.BluetoothManager
 {
     [Service("btm:u")] // 5.0.0+
     class IBtmUser : IpcService

@@ -1,9 +1,9 @@
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services.Sdb.Pl.Types;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services.Sdb.Pl.Types;
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Sdb.Pl
+namespace Hyjinx.HLE.HOS.Services.Sdb.Pl
 {
     [Service("pl:u")]
     [Service("pl:s")] // 9.0.0+

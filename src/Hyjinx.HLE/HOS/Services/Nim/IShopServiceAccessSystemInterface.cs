@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Nim
+namespace Hyjinx.HLE.HOS.Services.Nim
 {
     [Service("nim:ecas")] // 7.0.0+
     class IShopServiceAccessSystemInterface : IpcService

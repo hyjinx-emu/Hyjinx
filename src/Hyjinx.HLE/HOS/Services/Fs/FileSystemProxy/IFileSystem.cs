@@ -5,7 +5,7 @@ using LibHac.Fs.Fsa;
 using Ryujinx.Common.Logging;
 using Path = LibHac.FsSrv.Sf.Path;
 
-namespace Ryujinx.HLE.HOS.Services.Fs.FileSystemProxy
+namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy
 {
     class IFileSystem : DisposableIpcService
     {

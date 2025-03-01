@@ -2,7 +2,7 @@ using System;
 using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
 {
     /// <summary>
     /// This is a "marker interface" to add some compile-time safety to a convention-based optimization.

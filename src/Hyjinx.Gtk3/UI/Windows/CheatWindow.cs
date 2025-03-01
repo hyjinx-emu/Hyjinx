@@ -1,7 +1,7 @@
 using Gtk;
 using LibHac.Tools.FsSystem;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS;
 using Ryujinx.UI.App.Common;
 using Hyjinx.UI.Common.Configuration;
 using System;

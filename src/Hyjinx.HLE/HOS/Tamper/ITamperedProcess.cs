@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Process;
 
-namespace Ryujinx.HLE.HOS.Tamper
+namespace Hyjinx.HLE.HOS.Tamper
 {
     interface ITamperedProcess
     {

@@ -3,7 +3,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types
 {
     [StructLayout(LayoutKind.Sequential, Pack = 8, Size = 0x1A98)]
     struct NintendoFigurineDatabase

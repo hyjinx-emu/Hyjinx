@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
 
-namespace Ryujinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid
 {
     public struct TouchPoint
     {

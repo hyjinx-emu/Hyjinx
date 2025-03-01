@@ -1,7 +1,7 @@
 using ARMeilleure.State;
 using Ryujinx.Common.Memory;
 
-namespace Ryujinx.HLE.HOS.Kernel.SupervisorCall
+namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
 {
     struct ThreadContext
     {

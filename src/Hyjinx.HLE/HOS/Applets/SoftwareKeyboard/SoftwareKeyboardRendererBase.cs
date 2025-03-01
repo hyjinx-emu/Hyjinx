@@ -1,4 +1,4 @@
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.UI;
 using Ryujinx.Memory;
 using SkiaSharp;
 using System;
@@ -7,7 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// Base class that generates the graphics for the software keyboard applet during inline mode.
@@ -63,12 +63,12 @@ namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
         {
             int ryujinxLogoSize = 32;
 
-            string ryujinxIconPath = "Ryujinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Logo_Ryujinx.png";
+            string ryujinxIconPath = "Hyjinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Logo_Ryujinx.png";
             _ryujinxLogo = LoadResource(typeof(SoftwareKeyboardRendererBase).Assembly, ryujinxIconPath, ryujinxLogoSize, ryujinxLogoSize);
 
-            string padAcceptIconPath = "Ryujinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Icon_BtnA.png";
-            string padCancelIconPath = "Ryujinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Icon_BtnB.png";
-            string keyModeIconPath = "Ryujinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Icon_KeyF6.png";
+            string padAcceptIconPath = "Hyjinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Icon_BtnA.png";
+            string padCancelIconPath = "Hyjinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Icon_BtnB.png";
+            string keyModeIconPath = "Hyjinx.HLE.HOS.Applets.SoftwareKeyboard.Resources.Icon_KeyF6.png";
 
             _padAcceptIcon = LoadResource(typeof(SoftwareKeyboardRendererBase).Assembly, padAcceptIconPath, 0, 0);
             _padCancelIcon = LoadResource(typeof(SoftwareKeyboardRendererBase).Assembly, padCancelIconPath, 0, 0);

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletAE
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE
 {
     internal class AppletFifo<T> : IAppletFifo<T>
     {

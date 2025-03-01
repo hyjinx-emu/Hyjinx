@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace Ryujinx.HLE.HOS.Kernel.Common
+namespace Hyjinx.HLE.HOS.Kernel.Common
 {
     class MersenneTwister
     {

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.News
+namespace Hyjinx.HLE.HOS.Services.News
 {
     [Service("news:a")]
     [Service("news:c")]

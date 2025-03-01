@@ -1,7 +1,7 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Nim.Ntc.StaticService;
+using Hyjinx.HLE.HOS.Services.Nim.Ntc.StaticService;
 
-namespace Ryujinx.HLE.HOS.Services.Nim.Ntc
+namespace Hyjinx.HLE.HOS.Services.Nim.Ntc
 {
     [Service("ntc")]
     class IStaticService : IpcService

@@ -1,5 +1,5 @@
 using Gtk;
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.UI;
 using Hyjinx.Input.GTK3;
 using Ryujinx.UI.Widgets;
 using System.Threading;

@@ -1,9 +1,9 @@
-using Ryujinx.HLE.HOS.Kernel.Common;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Horizon.Common;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel.Ipc
+namespace Hyjinx.HLE.HOS.Kernel.Ipc
 {
     class KClientPort : KSynchronizationObject
     {

@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Account.Acc.AsyncContext;
+using Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
 
-namespace Ryujinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
     class IAsyncNetworkServiceLicenseKindContext : IAsyncContext
     {

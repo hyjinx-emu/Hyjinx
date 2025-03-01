@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Eupld
+namespace Hyjinx.HLE.HOS.Services.Eupld
 {
     [Service("eupld:c")]
     class IControl : IpcService

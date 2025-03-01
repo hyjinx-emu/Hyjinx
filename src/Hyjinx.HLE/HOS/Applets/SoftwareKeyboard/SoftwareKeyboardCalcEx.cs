@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// A structure with configuration options of the software keyboard when starting a new input request in inline mode.

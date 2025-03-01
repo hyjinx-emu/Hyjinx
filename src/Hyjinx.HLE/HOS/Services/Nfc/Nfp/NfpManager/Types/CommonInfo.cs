@@ -1,7 +1,7 @@
 using Ryujinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x40)]
     struct CommonInfo

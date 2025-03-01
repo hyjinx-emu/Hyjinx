@@ -5,9 +5,9 @@ using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.OpenGL;
-using Ryujinx.HLE.HOS.Applets;
-using Ryujinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.HOS.Applets;
+using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
+using Hyjinx.HLE.UI;
 using Hyjinx.Input;
 using Hyjinx.Input.HLE;
 using Hyjinx.SDL2.Common;
@@ -20,7 +20,7 @@ using System.Threading;
 using static SDL2.SDL;
 using AntiAliasing = Ryujinx.Common.Configuration.AntiAliasing;
 using ScalingFilter = Ryujinx.Common.Configuration.ScalingFilter;
-using Switch = Ryujinx.HLE.Switch;
+using Switch = Hyjinx.HLE.Switch;
 
 namespace Hyjinx.Headless.SDL2
 {

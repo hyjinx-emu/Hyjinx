@@ -1,9 +1,9 @@
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Tamper.Conditions;
-using Ryujinx.HLE.HOS.Tamper.Operations;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Tamper.Conditions;
+using Hyjinx.HLE.HOS.Tamper.Operations;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Tamper.CodeEmitters
+namespace Hyjinx.HLE.HOS.Tamper.CodeEmitters
 {
     /// <summary>
     /// Code type 2 marks the end of a conditional block (started by Code Type 1, Code Type 8 or Code Type C0).

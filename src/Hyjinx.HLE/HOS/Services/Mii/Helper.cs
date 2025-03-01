@@ -2,7 +2,7 @@ using Ryujinx.Common.Utilities;
 using System;
 using System.Buffers.Binary;
 
-namespace Ryujinx.HLE.HOS.Services.Mii
+namespace Hyjinx.HLE.HOS.Services.Mii
 {
     static class Helper
     {

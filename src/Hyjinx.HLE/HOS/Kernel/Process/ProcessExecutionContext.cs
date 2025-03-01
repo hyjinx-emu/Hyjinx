@@ -1,7 +1,7 @@
 using ARMeilleure.State;
 using Hyjinx.Cpu;
 
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     class ProcessExecutionContext : IExecutionContext
     {

@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Hid;
-using Ryujinx.HLE.HOS.Tamper.Operations;
+using Hyjinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.HOS.Tamper.Operations;
 
-namespace Ryujinx.HLE.HOS.Tamper
+namespace Hyjinx.HLE.HOS.Tamper
 {
     class AtmosphereProgram : ITamperProgram
     {

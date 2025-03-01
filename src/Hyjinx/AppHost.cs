@@ -28,11 +28,11 @@ using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.OpenGL;
 using Hyjinx.Graphics.Vulkan;
-using Ryujinx.HLE;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
-using Ryujinx.HLE.HOS.SystemState;
+using Hyjinx.HLE;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Input;
 using Hyjinx.Input.HLE;
 using Ryujinx.UI.App.Common;
@@ -57,7 +57,7 @@ using Key = Hyjinx.Input.Key;
 using MouseButton = Hyjinx.Input.MouseButton;
 using ScalingFilter = Ryujinx.Common.Configuration.ScalingFilter;
 using Size = Avalonia.Size;
-using Switch = Ryujinx.HLE.Switch;
+using Switch = Hyjinx.HLE.Switch;
 
 namespace Hyjinx.Ava
 {

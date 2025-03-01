@@ -1,8 +1,8 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Pcv.Types;
+using Hyjinx.HLE.HOS.Services.Pcv.Types;
 using System.Linq;
 
-namespace Ryujinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager
+namespace Hyjinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager
 {
     class IClkrstSession : IpcService
     {

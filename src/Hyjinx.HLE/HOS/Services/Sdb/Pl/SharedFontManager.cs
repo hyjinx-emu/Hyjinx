@@ -6,16 +6,16 @@ using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Services.Sdb.Pl.Types;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Services.Sdb.Pl.Types;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Services.Sdb.Pl
+namespace Hyjinx.HLE.HOS.Services.Sdb.Pl
 {
     class SharedFontManager
     {

@@ -1,10 +1,10 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Fatal.Types;
+using Hyjinx.HLE.HOS.Services.Fatal.Types;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Fatal
+namespace Hyjinx.HLE.HOS.Services.Fatal
 {
     [Service("fatal:u")]
     class IService : IpcService

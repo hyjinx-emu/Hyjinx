@@ -1,6 +1,6 @@
 using Avalonia.Media;
 using Hyjinx.Ava.UI.Windows;
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.UI;
 using System;
 
 namespace Hyjinx.Ava.UI.Applet

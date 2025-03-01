@@ -1,7 +1,7 @@
 using Ryujinx.Common;
-using Ryujinx.HLE.HOS;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services;
+using Hyjinx.HLE.HOS;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Ryujinx.HLE.Exceptions
+namespace Hyjinx.HLE.Exceptions
 {
     [Serializable]
     internal class ServiceNotImplementedException : Exception

@@ -1,11 +1,11 @@
 using Ryujinx.Common.Utilities;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Services.Mii.Types;
-using Ryujinx.HLE.HOS.Services.Time;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.Mii.Types;
+using Hyjinx.HLE.HOS.Services.Time;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Mii
+namespace Hyjinx.HLE.HOS.Services.Mii
 {
     class UtilityImpl
     {

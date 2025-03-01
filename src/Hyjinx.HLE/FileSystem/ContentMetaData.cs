@@ -3,10 +3,10 @@ using LibHac.Fs.Fsa;
 using LibHac.Ncm;
 using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Tools.Ncm;
-using Ryujinx.HLE.Loaders.Processes.Extensions;
+using Hyjinx.HLE.Loaders.Processes.Extensions;
 using System;
 
-namespace Ryujinx.HLE.FileSystem
+namespace Hyjinx.HLE.FileSystem
 {
     /// <summary>
     /// Thin wrapper around <see cref="Cnmt"/>

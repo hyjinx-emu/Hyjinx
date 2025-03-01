@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Ssl.Types
+namespace Hyjinx.HLE.HOS.Services.Ssl.Types
 {
     [Flags]
     enum SslVersion : uint

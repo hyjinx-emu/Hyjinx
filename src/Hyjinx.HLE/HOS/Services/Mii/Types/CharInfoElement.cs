@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x5C)]
     struct CharInfoElement : IElement

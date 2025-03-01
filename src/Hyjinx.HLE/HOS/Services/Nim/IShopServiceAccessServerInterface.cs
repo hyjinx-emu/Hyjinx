@@ -1,9 +1,9 @@
 using LibHac.Ncm;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Arp;
-using Ryujinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface;
+using Hyjinx.HLE.HOS.Services.Arp;
+using Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface;
 
-namespace Ryujinx.HLE.HOS.Services.Nim
+namespace Hyjinx.HLE.HOS.Services.Nim
 {
     [Service("nim:eca")] // 5.0.0+
     class IShopServiceAccessServerInterface : IpcService

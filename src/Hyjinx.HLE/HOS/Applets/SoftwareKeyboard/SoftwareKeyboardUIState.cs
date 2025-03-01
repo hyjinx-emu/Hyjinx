@@ -1,6 +1,6 @@
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.UI;
 
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// TODO

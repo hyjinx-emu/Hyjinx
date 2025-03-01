@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator;
+using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn
+namespace Hyjinx.HLE.HOS.Services.Ldn
 {
     [Service("ldn:u")]
     class IUserServiceCreator : IpcService

@@ -1,6 +1,6 @@
 using Ryujinx.Common;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletProxy
 {
     class IProcessWindingController : IpcService
     {

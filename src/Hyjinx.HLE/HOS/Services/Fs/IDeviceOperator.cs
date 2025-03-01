@@ -3,7 +3,7 @@ using LibHac.Common;
 
 using GameCardHandle = System.UInt32;
 
-namespace Ryujinx.HLE.HOS.Services.Fs
+namespace Hyjinx.HLE.HOS.Services.Fs
 {
     class IDeviceOperator : DisposableIpcService
     {

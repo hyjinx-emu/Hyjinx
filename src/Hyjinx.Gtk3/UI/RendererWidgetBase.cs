@@ -22,7 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Key = Hyjinx.Input.Key;
 using ScalingFilter = Hyjinx.Graphics.GAL.ScalingFilter;
-using Switch = Ryujinx.HLE.Switch;
+using Switch = Hyjinx.HLE.Switch;
 
 namespace Ryujinx.UI
 {

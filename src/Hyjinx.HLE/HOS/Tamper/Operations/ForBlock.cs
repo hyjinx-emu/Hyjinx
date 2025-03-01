@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Tamper.Operations
+namespace Hyjinx.HLE.HOS.Tamper.Operations
 {
     class ForBlock : IOperation
     {

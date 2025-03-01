@@ -3,7 +3,7 @@ using Hyjinx.Graphics.Gpu.Synchronization;
 using System;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {
     class NvHostSyncpt
     {

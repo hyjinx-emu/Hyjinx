@@ -5,22 +5,22 @@ using LibHac.Ns;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Am.AppletAE.Storage;
-using Ryujinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
-using Ryujinx.HLE.HOS.Services.Sdb.Pdm.QueryService;
-using Ryujinx.HLE.HOS.SystemState;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE.Storage;
+using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
+using Hyjinx.HLE.HOS.Services.Sdb.Pdm.QueryService;
+using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Numerics;
 using System.Threading;
-using AccountUid = Ryujinx.HLE.HOS.Services.Account.Acc.UserId;
+using AccountUid = Hyjinx.HLE.HOS.Services.Account.Acc.UserId;
 using ApplicationId = LibHac.Ncm.ApplicationId;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy
 {
     class IApplicationFunctions : IpcService
     {

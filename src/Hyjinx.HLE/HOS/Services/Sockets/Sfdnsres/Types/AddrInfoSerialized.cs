@@ -1,5 +1,5 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.Utilities;
+using Hyjinx.HLE.Utilities;
 using System;
 using System.Diagnostics;
 using System.Net.Sockets;
@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Sfdnsres.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Types
 {
     class AddrInfoSerialized
     {

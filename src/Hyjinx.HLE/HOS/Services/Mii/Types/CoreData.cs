@@ -2,9 +2,9 @@ using Ryujinx.Common.Memory;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static Ryujinx.HLE.HOS.Services.Mii.Types.RandomMiiConstants;
+using static Hyjinx.HLE.HOS.Services.Mii.Types.RandomMiiConstants;
 
-namespace Ryujinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types
 {
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = Size)]
     struct CoreData : IEquatable<CoreData>

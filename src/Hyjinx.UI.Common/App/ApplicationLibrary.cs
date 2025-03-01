@@ -12,10 +12,10 @@ using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Utilities;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS.SystemState;
-using Ryujinx.HLE.Loaders.Npdm;
-using Ryujinx.HLE.Loaders.Processes.Extensions;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS.SystemState;
+using Hyjinx.HLE.Loaders.Npdm;
+using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Configuration.System;
 using System;
@@ -72,7 +72,7 @@ namespace Ryujinx.UI.App.Common
             return resourceByteArray;
         }
 
-        /// <exception cref="Ryujinx.HLE.Exceptions.InvalidNpdmException">The npdm file doesn't contain valid data.</exception>
+        /// <exception cref="Hyjinx.HLE.Exceptions.InvalidNpdmException">The npdm file doesn't contain valid data.</exception>
         /// <exception cref="NotImplementedException">The FsAccessHeader.ContentOwnerId section is not implemented.</exception>
         /// <exception cref="ArgumentException">An error occured while reading bytes from the stream.</exception>
         /// <exception cref="EndOfStreamException">The end of the stream is reached.</exception>
@@ -104,7 +104,7 @@ namespace Ryujinx.UI.App.Common
         /// <exception cref="InvalidDataException">The NCA header could not be decrypted.</exception>
         /// <exception cref="NotSupportedException">The NCA version is not supported.</exception>
         /// <exception cref="HorizonResultException">An error occured while reading PFS data.</exception>
-        /// <exception cref="Ryujinx.HLE.Exceptions.InvalidNpdmException">The npdm file doesn't contain valid data.</exception>
+        /// <exception cref="Hyjinx.HLE.Exceptions.InvalidNpdmException">The npdm file doesn't contain valid data.</exception>
         /// <exception cref="NotImplementedException">The FsAccessHeader.ContentOwnerId section is not implemented.</exception>
         /// <exception cref="ArgumentException">An error occured while reading bytes from the stream.</exception>
         /// <exception cref="EndOfStreamException">The end of the stream is reached.</exception>

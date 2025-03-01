@@ -1,10 +1,10 @@
 using LibHac.Ncm;
 using LibHac.Tools.FsSystem.NcaUtils;
-using Ryujinx.HLE.FileSystem;
+using Hyjinx.HLE.FileSystem;
 using System.Text;
-using static Ryujinx.HLE.Utilities.StringUtils;
+using static Hyjinx.HLE.Utilities.StringUtils;
 
-namespace Ryujinx.HLE.HOS.Services.Ncm.Lr.LocationResolverManager
+namespace Hyjinx.HLE.HOS.Services.Ncm.Lr.LocationResolverManager
 {
     class ILocationResolver : IpcService
     {

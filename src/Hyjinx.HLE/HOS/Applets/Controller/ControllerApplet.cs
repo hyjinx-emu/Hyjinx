@@ -1,15 +1,15 @@
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Am.AppletAE;
-using Ryujinx.HLE.HOS.Services.Hid;
-using Ryujinx.HLE.HOS.Services.Hid.Types;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE;
+using Hyjinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.HOS.Services.Hid.Types;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static Ryujinx.HLE.HOS.Services.Hid.HidServer.HidUtils;
+using static Hyjinx.HLE.HOS.Services.Hid.HidServer.HidUtils;
 
-namespace Ryujinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets
 {
     internal class ControllerApplet : IApplet
     {

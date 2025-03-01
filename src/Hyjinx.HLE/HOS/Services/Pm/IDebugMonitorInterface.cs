@@ -1,9 +1,9 @@
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Horizon.Common;
 
-namespace Ryujinx.HLE.HOS.Services.Pm
+namespace Hyjinx.HLE.HOS.Services.Pm
 {
     [Service("pm:dmnt")]
     class IDebugMonitorInterface : IpcService

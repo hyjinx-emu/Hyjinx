@@ -1,10 +1,10 @@
-using Ryujinx.HLE.HOS.Diagnostics.Demangler.Ast;
+using Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Ryujinx.HLE.HOS.Diagnostics.Demangler
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler
 {
     class Demangler
     {

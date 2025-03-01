@@ -14,7 +14,7 @@ using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS;
+using Hyjinx.HLE.HOS;
 using System;
 using System.Buffers.Text;
 using System.Collections.Concurrent;
@@ -23,7 +23,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using Path = System.IO.Path;
 
-namespace Ryujinx.HLE.FileSystem
+namespace Hyjinx.HLE.FileSystem
 {
     public class VirtualFileSystem : IDisposable
     {

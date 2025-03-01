@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory
 {
     [Flags]
     enum MemoryState : uint

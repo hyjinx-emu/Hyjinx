@@ -1,8 +1,8 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletAE.Storage
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.Storage
 {
     class StorageHelper
     {

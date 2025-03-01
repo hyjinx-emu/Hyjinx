@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock
 {
     [StructLayout(LayoutKind.Sequential)]
     struct TimeSpanType

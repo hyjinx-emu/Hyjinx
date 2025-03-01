@@ -1,7 +1,7 @@
 using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Configuration.Hid.Controller;
 using Ryujinx.Common.Configuration.Hid.Keyboard;
-using Ryujinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.HOS.Services.Hid;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,8 +9,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using CemuHookClient = Hyjinx.Input.Motion.CemuHook.Client;
 using ControllerType = Ryujinx.Common.Configuration.Hid.ControllerType;
-using PlayerIndex = Ryujinx.HLE.HOS.Services.Hid.PlayerIndex;
-using Switch = Ryujinx.HLE.Switch;
+using PlayerIndex = Hyjinx.HLE.HOS.Services.Hid.PlayerIndex;
+using Switch = Hyjinx.HLE.Switch;
 
 namespace Hyjinx.Input.HLE
 {

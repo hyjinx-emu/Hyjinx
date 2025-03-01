@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Nsd.Manager
+namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd.Manager
 {
     class FqdnResolver
     {

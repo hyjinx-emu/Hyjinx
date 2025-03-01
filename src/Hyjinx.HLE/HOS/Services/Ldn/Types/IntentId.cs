@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x10)]
     struct IntentId

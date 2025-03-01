@@ -15,7 +15,7 @@ namespace Hyjinx.HLE.Generators
 
             generator.AppendLine("#nullable enable");
             generator.AppendLine("using System;");
-            generator.EnterScope($"namespace Ryujinx.HLE.HOS.Services.Sm");
+            generator.EnterScope($"namespace Hyjinx.HLE.HOS.Services.Sm");
             generator.EnterScope($"partial class IUserInterface");
 
             generator.EnterScope($"public IpcService? GetServiceInstance(Type type, ServiceCtx context, object? parameter = null)");
@@ -24,7 +24,7 @@ namespace Hyjinx.HLE.Generators
                 if (className.Modifiers.Any(SyntaxKind.AbstractKeyword) || className.Modifiers.Any(SyntaxKind.PrivateKeyword) || !className.AttributeLists.Any(x => x.Attributes.Any(y => y.ToString().StartsWith("Service"))))
                     continue;
                 var name = GetFullName(className, context).Replace("global::", "");
-                if (!name.StartsWith("Ryujinx.HLE.HOS.Services"))
+                if (!name.StartsWith("Hyjinx.HLE.HOS.Services"))
                     continue;
                 var constructors = className.ChildNodes().Where(x => x.IsKind(SyntaxKind.ConstructorDeclaration)).Select(y => y as ConstructorDeclarationSyntax);
 

@@ -1,10 +1,10 @@
-using Ryujinx.HLE.HOS.Services.Am.AppletAE;
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE;
+using Hyjinx.HLE.UI;
 using Ryujinx.Memory;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets
 {
     interface IApplet
     {

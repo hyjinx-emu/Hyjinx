@@ -3,12 +3,12 @@ using LibHac.Loader;
 using LibHac.Ns;
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.SystemState;
-using Ryujinx.HLE.Loaders.Processes.Extensions;
+using Hyjinx.HLE.HOS.SystemState;
+using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Ryujinx.HLE.Loaders.Processes
+namespace Hyjinx.HLE.Loaders.Processes
 {
     public class ProcessResult
     {

@@ -2,7 +2,7 @@ using Hyjinx.Horizon.Common;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel.Common
+namespace Hyjinx.HLE.HOS.Kernel.Common
 {
     class KAutoObject
     {

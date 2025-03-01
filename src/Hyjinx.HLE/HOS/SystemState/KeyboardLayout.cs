@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.SystemState
+namespace Hyjinx.HLE.HOS.SystemState
 {
     // nn::settings::KeyboardLayout
     public enum KeyboardLayout

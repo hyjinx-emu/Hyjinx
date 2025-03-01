@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Pcv
+namespace Hyjinx.HLE.HOS.Services.Pcv
 {
     [Service("pcv")]
     class IPcvService : IpcService

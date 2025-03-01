@@ -7,7 +7,7 @@ using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.FileSystem;
+using Hyjinx.HLE.FileSystem;
 using Hyjinx.UI.Common.Configuration;
 using SkiaSharp;
 using System;

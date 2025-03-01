@@ -15,7 +15,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Path = System.IO.Path;
 
-namespace Ryujinx.HLE.HOS.Services.Fs.FileSystemProxy
+namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy
 {
     static class FileSystemProxyHelper
     {

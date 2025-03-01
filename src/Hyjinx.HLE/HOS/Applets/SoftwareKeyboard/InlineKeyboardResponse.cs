@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// Possible responses from the software keyboard when running in inline mode.

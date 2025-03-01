@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Pctl.ParentalControlServiceFactory;
+using Hyjinx.HLE.HOS.Services.Pctl.ParentalControlServiceFactory;
 
-namespace Ryujinx.HLE.HOS.Services.Pctl
+namespace Hyjinx.HLE.HOS.Services.Pctl
 {
     [Service("pctl", 0x303)]
     [Service("pctl:a", 0x83BE)]

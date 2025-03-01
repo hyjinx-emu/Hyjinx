@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {
     internal interface ILdnTcpSocket : ILdnSocket
     {

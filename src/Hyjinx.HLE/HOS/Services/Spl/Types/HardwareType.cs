@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Spl.Types
+namespace Hyjinx.HLE.HOS.Services.Spl.Types
 {
     enum HardwareType
     {

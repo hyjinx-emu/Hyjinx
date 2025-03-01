@@ -1,8 +1,8 @@
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy;
 using System.Collections.Concurrent;
 
-namespace Ryujinx.HLE.HOS.SystemState
+namespace Hyjinx.HLE.HOS.SystemState
 {
     class AppletStateMgr
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad
 {
     [Flags]
     enum DebugPadAttribute : uint

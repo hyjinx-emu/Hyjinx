@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Common;
 
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     class KHandleEntry
     {

@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types
 {
     [StructLayout(LayoutKind.Sequential)]
     struct CommandBuffer

@@ -1,10 +1,10 @@
-using Ryujinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Common;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading
 {
     class KSynchronization
     {

@@ -1,8 +1,8 @@
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid
 {
     public class TouchDevice : BaseDevice
     {

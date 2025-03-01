@@ -1,8 +1,8 @@
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices;
 using System;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.Types
 {
     class NvQueryEventNotImplementedException : Exception
     {

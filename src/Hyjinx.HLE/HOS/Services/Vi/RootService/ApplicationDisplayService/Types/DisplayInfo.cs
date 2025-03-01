@@ -1,7 +1,7 @@
 using Ryujinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService.Types
+namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService.Types
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x60)]
     struct DisplayInfo

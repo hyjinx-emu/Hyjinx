@@ -1,6 +1,6 @@
 using LibHac.Ncm;
 
-namespace Ryujinx.HLE.HOS.Services.Arp
+namespace Hyjinx.HLE.HOS.Services.Arp
 {
     class ApplicationLaunchProperty
     {

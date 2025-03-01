@@ -3,7 +3,7 @@ using Ryujinx.Common.Configuration.Hid;
 using Ryujinx.Common.Configuration.Hid.Controller;
 using Ryujinx.Common.Configuration.Hid.Controller.Motion;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.HOS.Services.Hid;
 using System;
 using System.Collections.Concurrent;
 using System.Numerics;

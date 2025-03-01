@@ -1,13 +1,13 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Applets;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services.SurfaceFlinger;
-using Ryujinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService;
-using Ryujinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService.Types;
-using Ryujinx.HLE.HOS.Services.Vi.Types;
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.HOS.Applets;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+using Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService;
+using Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService.Types;
+using Hyjinx.HLE.HOS.Services.Vi.Types;
+using Hyjinx.HLE.UI;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Vi.RootService
+namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 {
     class IApplicationDisplayService : IpcService
     {

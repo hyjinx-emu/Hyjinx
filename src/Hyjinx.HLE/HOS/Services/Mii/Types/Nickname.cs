@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types
 {
     [StructLayout(LayoutKind.Sequential, Pack = 2, Size = SizeConst)]
     struct Nickname : IEquatable<Nickname>

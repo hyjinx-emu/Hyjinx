@@ -2,7 +2,7 @@ using Hyjinx.Cpu;
 using Hyjinx.Horizon.Common;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading
 {
     class KThreadContext : IThreadContext
     {

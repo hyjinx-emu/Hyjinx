@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets
 {
     enum ControllerSupportMode : byte
     {

@@ -1,23 +1,23 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostDbgGpu;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostProfGpu;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
-using Ryujinx.HLE.HOS.Services.Nv.Types;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostDbgGpu;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostProfGpu;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
+using Hyjinx.HLE.HOS.Services.Nv.Types;
 using Ryujinx.Memory;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Ryujinx.HLE.HOS.Services.Nv
+namespace Hyjinx.HLE.HOS.Services.Nv
 {
     [Service("nvdrv")]
     [Service("nvdrv:a")]

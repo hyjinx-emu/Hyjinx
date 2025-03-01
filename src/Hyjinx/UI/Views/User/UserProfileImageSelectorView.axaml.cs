@@ -8,7 +8,7 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.ViewModels;
-using Ryujinx.HLE.FileSystem;
+using Hyjinx.HLE.FileSystem;
 using SkiaSharp;
 using System.Collections.Generic;
 using System.IO;

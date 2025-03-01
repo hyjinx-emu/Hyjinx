@@ -1,9 +1,9 @@
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct GraphicBuffer : IFlattenable

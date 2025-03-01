@@ -1,7 +1,7 @@
 using Gtk;
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.UI.Common.Configuration;
 using Ryujinx.UI.Widgets;
 using SkiaSharp;

@@ -1,11 +1,11 @@
 using Ryujinx.Common;
-using Ryujinx.HLE.HOS.Kernel.Common;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Diagnostics;
 
-namespace Ryujinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory
 {
     class KCodeMemory : KAutoObject
     {

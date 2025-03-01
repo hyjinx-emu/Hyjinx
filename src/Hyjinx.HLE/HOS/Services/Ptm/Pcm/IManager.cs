@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Ptm.Pcm
+namespace Hyjinx.HLE.HOS.Services.Ptm.Pcm
 {
     [Service("pcm")]
     class IManager : IpcService

@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.HOS.Services.Hid;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets
 {
     public struct ControllerAppletUIArgs
     {

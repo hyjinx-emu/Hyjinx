@@ -1,9 +1,9 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.SurfaceFlinger.Types;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     class BufferQueueConsumer
     {

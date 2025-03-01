@@ -2,7 +2,7 @@ using Ryujinx.Common.Utilities;
 using Hyjinx.Cpu;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock
 {
     abstract class SteadyClockCore
     {

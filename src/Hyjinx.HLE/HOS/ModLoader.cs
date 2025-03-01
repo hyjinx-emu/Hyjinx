@@ -8,20 +8,20 @@ using LibHac.Tools.FsSystem.RomFs;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Utilities;
-using Ryujinx.HLE.HOS.Kernel.Process;
-using Ryujinx.HLE.Loaders.Executables;
-using Ryujinx.HLE.Loaders.Mods;
-using Ryujinx.HLE.Loaders.Processes;
+using Hyjinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.Loaders.Executables;
+using Hyjinx.HLE.Loaders.Mods;
+using Hyjinx.HLE.Loaders.Processes;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using LazyFile = Ryujinx.HLE.HOS.Services.Fs.FileSystemProxy.LazyFile;
+using LazyFile = Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy.LazyFile;
 using Path = System.IO.Path;
 
-namespace Ryujinx.HLE.HOS
+namespace Hyjinx.HLE.HOS
 {
     public class ModLoader
     {

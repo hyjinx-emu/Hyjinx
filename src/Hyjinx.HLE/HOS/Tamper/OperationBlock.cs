@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Tamper.Operations;
+using Hyjinx.HLE.HOS.Tamper.Operations;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Tamper
+namespace Hyjinx.HLE.HOS.Tamper
 {
     readonly struct OperationBlock
     {

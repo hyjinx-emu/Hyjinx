@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletAE
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE
 {
     [Service("appletAE")]
     class IAllSystemAppletProxiesService : IpcService

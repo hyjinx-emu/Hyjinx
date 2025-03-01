@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Apm
+namespace Hyjinx.HLE.HOS.Services.Apm
 {
     abstract class ISession : IpcService
     {

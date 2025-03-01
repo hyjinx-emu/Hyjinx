@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Tamper.Operations;
+using Hyjinx.HLE.HOS.Tamper.Operations;
 
-namespace Ryujinx.HLE.HOS.Tamper.Conditions
+namespace Hyjinx.HLE.HOS.Tamper.Conditions
 {
     class CondLT<T> : ICondition where T : unmanaged
     {

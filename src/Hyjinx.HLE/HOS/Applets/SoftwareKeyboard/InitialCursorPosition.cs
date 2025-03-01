@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// Identifies the initial position of the cursor displayed in the area.

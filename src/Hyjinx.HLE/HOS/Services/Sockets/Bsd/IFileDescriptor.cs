@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Sockets.Bsd.Types;
+using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Bsd
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 {
     interface IFileDescriptor : IDisposable
     {

@@ -1,8 +1,8 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Ssl.Types;
+using Hyjinx.HLE.HOS.Services.Ssl.Types;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Ssl.SslService
+namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 {
     class ISslContext : IpcService
     {

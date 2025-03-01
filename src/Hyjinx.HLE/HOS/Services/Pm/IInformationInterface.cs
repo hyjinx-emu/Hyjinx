@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Process;
 
-namespace Ryujinx.HLE.HOS.Services.Pm
+namespace Hyjinx.HLE.HOS.Services.Pm
 {
     [Service("pm:info")]
     class IInformationInterface : IpcService

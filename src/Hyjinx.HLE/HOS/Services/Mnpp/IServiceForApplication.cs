@@ -1,9 +1,9 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
 
-namespace Ryujinx.HLE.HOS.Services.Mnpp
+namespace Hyjinx.HLE.HOS.Services.Mnpp
 {
     [Service("mnpp:app")] // 13.0.0+
     class IServiceForApplication : IpcService

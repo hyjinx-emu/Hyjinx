@@ -1,13 +1,13 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.Gpu.Synchronization;
-using Ryujinx.HLE.HOS.Services.Nv.Types;
+using Hyjinx.HLE.HOS.Services.Nv.Types;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 0x24)]
     struct AndroidFence : IFlattenable

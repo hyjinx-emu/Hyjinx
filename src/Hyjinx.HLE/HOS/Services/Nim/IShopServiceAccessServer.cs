@@ -1,7 +1,7 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAccessServer;
+using Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAccessServer;
 
-namespace Ryujinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface
+namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface
 {
     class IShopServiceAccessServer : IpcService
     {

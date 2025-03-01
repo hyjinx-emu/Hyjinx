@@ -1,9 +1,9 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.SystemState;
+using Hyjinx.HLE.HOS.SystemState;
 using System;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Settings
+namespace Hyjinx.HLE.HOS.Services.Settings
 {
     [Service("set")]
     class ISettingsServer : IpcService

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Nv
+namespace Hyjinx.HLE.HOS.Services.Nv
 {
     [StructLayout(LayoutKind.Sequential)]
     struct NvIoctl

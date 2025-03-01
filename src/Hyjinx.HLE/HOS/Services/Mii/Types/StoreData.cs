@@ -2,7 +2,7 @@ using Ryujinx.Common.Utilities;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = Size)]
     struct StoreData : IStoredData<StoreData>

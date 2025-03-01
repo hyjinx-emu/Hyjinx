@@ -1,10 +1,10 @@
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types;
 using Hyjinx.Horizon.Common;
 using Ryujinx.Memory;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 {
     internal class NvHostGpuDeviceFile : NvHostChannelDeviceFile
     {

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Keyboard
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Keyboard
 {
     enum KeyboardKeyShift
     {

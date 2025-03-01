@@ -5,7 +5,7 @@ using Avalonia.Threading;
 using Hyjinx.Ava.Input;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.UI;
 using System;
 using System.Threading;
 using HidKey = Ryujinx.Common.Configuration.Hid.Key;

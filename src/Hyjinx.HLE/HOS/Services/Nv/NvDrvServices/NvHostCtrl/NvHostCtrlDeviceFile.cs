@@ -1,14 +1,14 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Graphics.Gpu.Synchronization;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types;
-using Ryujinx.HLE.HOS.Services.Nv.Types;
-using Ryujinx.HLE.HOS.Services.Settings;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types;
+using Hyjinx.HLE.HOS.Services.Nv.Types;
+using Hyjinx.HLE.HOS.Services.Settings;
 using Ryujinx.Memory;
 using System;
 using System.Text;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {
     internal class NvHostCtrlDeviceFile : NvDeviceFile
     {

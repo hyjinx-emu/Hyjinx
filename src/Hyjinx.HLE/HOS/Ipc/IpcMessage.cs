@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Ipc
+namespace Hyjinx.HLE.HOS.Ipc
 {
     class IpcMessage
     {

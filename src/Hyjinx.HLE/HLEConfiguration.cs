@@ -3,14 +3,14 @@ using Hyjinx.Audio.Integration;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Configuration.Multiplayer;
 using Hyjinx.Graphics.GAL;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
-using Ryujinx.HLE.HOS.SystemState;
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.SystemState;
+using Hyjinx.HLE.UI;
 using System;
 
-namespace Ryujinx.HLE
+namespace Hyjinx.HLE
 {
     /// <summary>
     /// HLE configuration.

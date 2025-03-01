@@ -1,7 +1,7 @@
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel.SupervisorCall
+namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
 {
     partial class SyscallHandler
     {

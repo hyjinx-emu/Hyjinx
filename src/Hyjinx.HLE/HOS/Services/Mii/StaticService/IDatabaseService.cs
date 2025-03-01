@@ -1,10 +1,10 @@
 using Ryujinx.Common;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services.Mii.Types;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services.Mii.Types;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Mii.StaticService
+namespace Hyjinx.HLE.HOS.Services.Mii.StaticService
 {
     abstract class IDatabaseService : IpcService
     {

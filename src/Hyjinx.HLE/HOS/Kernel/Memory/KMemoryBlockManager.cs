@@ -2,7 +2,7 @@ using Ryujinx.Common.Collections;
 using Hyjinx.Horizon.Common;
 using System.Diagnostics;
 
-namespace Ryujinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory
 {
     class KMemoryBlockManager
     {

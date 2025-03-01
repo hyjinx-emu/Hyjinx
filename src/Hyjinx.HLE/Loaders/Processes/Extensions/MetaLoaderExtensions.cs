@@ -6,7 +6,7 @@ using LibHac.Util;
 using Ryujinx.Common;
 using System;
 
-namespace Ryujinx.HLE.Loaders.Processes.Extensions
+namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {
     public static class MetaLoaderExtensions
     {
@@ -33,7 +33,7 @@ namespace Ryujinx.HLE.Loaders.Processes.Extensions
 
         public static void LoadDefault(this MetaLoader metaLoader)
         {
-            byte[] npdmBuffer = EmbeddedResources.Read("Ryujinx.HLE/Homebrew.npdm");
+            byte[] npdmBuffer = EmbeddedResources.Read("Hyjinx.HLE/Homebrew.npdm");
 
             metaLoader.Load(npdmBuffer).ThrowIfFailure();
         }

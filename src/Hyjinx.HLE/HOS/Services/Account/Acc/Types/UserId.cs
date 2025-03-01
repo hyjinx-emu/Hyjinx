@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
     [StructLayout(LayoutKind.Sequential)]
     public readonly record struct UserId

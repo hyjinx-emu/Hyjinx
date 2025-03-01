@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger.Types
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x1C, Pack = 1)]
     struct BufferInfo

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     readonly struct ProcessCreationInfo
     {

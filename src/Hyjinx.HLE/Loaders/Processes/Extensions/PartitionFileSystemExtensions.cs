@@ -11,13 +11,13 @@ using LibHac.Tools.Ncm;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Utilities;
-using Ryujinx.HLE.FileSystem;
+using Hyjinx.HLE.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using ContentType = LibHac.Ncm.ContentType;
 
-namespace Ryujinx.HLE.Loaders.Processes.Extensions
+namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {
     public static class PartitionFileSystemExtensions
     {

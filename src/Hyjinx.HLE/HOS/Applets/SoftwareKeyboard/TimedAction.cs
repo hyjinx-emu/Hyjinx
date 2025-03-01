@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// A threaded executor of periodic actions that can be cancelled. The total execution time is optional

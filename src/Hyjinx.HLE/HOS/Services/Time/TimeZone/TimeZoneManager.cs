@@ -1,9 +1,9 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Services.Time.TimeZone
+namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
 {
     class TimeZoneManager
     {

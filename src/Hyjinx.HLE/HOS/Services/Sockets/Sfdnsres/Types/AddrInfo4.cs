@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Sfdnsres.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Types
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 0x10)]
     struct AddrInfo4

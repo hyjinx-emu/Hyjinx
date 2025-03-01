@@ -6,13 +6,13 @@ using LibHac.Ns;
 using LibHac.Tools.FsSystem;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.Loaders.Executables;
+using Hyjinx.HLE.Loaders.Executables;
 using Ryujinx.Memory;
 using System;
 using System.Linq;
-using static Ryujinx.HLE.HOS.ModLoader;
+using static Hyjinx.HLE.HOS.ModLoader;
 
-namespace Ryujinx.HLE.Loaders.Processes.Extensions
+namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {
     static class FileSystemExtensions
     {

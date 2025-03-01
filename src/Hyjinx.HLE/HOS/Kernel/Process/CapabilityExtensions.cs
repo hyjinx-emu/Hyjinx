@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     static class CapabilityExtensions
     {

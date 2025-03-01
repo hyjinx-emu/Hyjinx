@@ -10,7 +10,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ryujinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
     public class AccountManager : IEmulatorAccountManager
     {
@@ -39,7 +39,7 @@ namespace Ryujinx.HLE.HOS.Services.Account.Acc
 
             if (!_profiles.TryGetValue(DefaultUserId.ToString(), out _))
             {
-                byte[] defaultUserImage = EmbeddedResources.Read("Ryujinx.HLE/HOS/Services/Account/Acc/DefaultUserImage.jpg");
+                byte[] defaultUserImage = EmbeddedResources.Read("Hyjinx.HLE/HOS/Services/Account/Acc/DefaultUserImage.jpg");
 
                 AddUser("RyuPlayer", defaultUserImage, DefaultUserId);
 

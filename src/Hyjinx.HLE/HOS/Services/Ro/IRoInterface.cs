@@ -1,9 +1,9 @@
 using LibHac.Tools.FsSystem;
 using Ryujinx.Common;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Kernel.Process;
-using Ryujinx.HLE.Loaders.Executables;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.Horizon.Common;
 using Ryujinx.Memory;
 using System;
@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace Ryujinx.HLE.HOS.Services.Ro
+namespace Hyjinx.HLE.HOS.Services.Ro
 {
     [Service("ldr:ro")]
     [Service("ro:1")] // 7.0.0+

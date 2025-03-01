@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets
 {
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     struct CommonArguments

@@ -7,7 +7,7 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
 using System;
 using UserProfile = Hyjinx.Ava.UI.Models.UserProfile;
 

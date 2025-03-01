@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Nfc.Nfp
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp
 {
     public enum ResultCode
     {

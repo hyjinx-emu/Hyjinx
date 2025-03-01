@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Nv
+namespace Hyjinx.HLE.HOS.Services.Nv
 {
     enum NvResult : uint
     {

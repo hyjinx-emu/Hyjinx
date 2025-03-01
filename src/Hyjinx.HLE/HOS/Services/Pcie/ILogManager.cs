@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Pcie
+namespace Hyjinx.HLE.HOS.Services.Pcie
 {
     [Service("pcie:log")]
     class ILogManager : IpcService

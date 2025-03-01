@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types
 {
     [Flags]
     enum SubmitGpfifoFlags : uint

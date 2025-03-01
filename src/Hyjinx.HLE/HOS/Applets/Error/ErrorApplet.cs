@@ -6,8 +6,8 @@ using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Am.AppletAE;
-using Ryujinx.HLE.HOS.SystemState;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE;
+using Hyjinx.HLE.HOS.SystemState;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Ryujinx.HLE.HOS.Applets.Error
+namespace Hyjinx.HLE.HOS.Applets.Error
 {
     internal partial class ErrorApplet : IApplet
     {

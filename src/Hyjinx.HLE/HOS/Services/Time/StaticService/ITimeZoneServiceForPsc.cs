@@ -1,8 +1,8 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
-using Ryujinx.HLE.HOS.Services.Time.TimeZone;
-using Ryujinx.HLE.Utilities;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.Time.TimeZone;
+using Hyjinx.HLE.Utilities;
 using Ryujinx.Memory;
 using System;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Time.StaticService
+namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
     class ITimeZoneServiceForPsc : IpcService
     {

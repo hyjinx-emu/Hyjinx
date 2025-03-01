@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Apm
+namespace Hyjinx.HLE.HOS.Services.Apm
 {
     // NOTE: This service doesn’t exist anymore after firmware 7.0.1. But some outdated homebrew still uses it.
 

@@ -1,9 +1,9 @@
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services.Account.Acc.AsyncContext;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
     class IAsyncContext : IpcService
     {

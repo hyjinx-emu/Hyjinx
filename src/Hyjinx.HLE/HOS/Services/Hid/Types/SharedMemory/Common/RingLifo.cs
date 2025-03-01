@@ -3,7 +3,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
 {
     struct RingLifo<T> where T : unmanaged, ISampledDataStruct
     {

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Ipc
+namespace Hyjinx.HLE.HOS.Ipc
 {
     struct IpcRecvListBuffDesc
     {

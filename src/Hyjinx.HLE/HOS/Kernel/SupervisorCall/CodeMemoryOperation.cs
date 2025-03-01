@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Kernel.SupervisorCall
+namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
 {
     enum CodeMemoryOperation : uint
     {

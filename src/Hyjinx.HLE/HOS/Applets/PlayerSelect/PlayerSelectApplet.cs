@@ -1,10 +1,10 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
-using Ryujinx.HLE.HOS.Services.Am.AppletAE;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE;
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets
 {
     internal class PlayerSelectApplet : IApplet
     {

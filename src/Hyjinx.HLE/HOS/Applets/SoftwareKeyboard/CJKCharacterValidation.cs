@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     public static partial class CJKCharacterValidation
     {

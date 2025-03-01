@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets
 {
 #pragma warning disable CS0649 // Field is never assigned to
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

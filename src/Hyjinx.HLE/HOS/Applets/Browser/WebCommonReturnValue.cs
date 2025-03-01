@@ -1,6 +1,6 @@
 using Ryujinx.Common.Memory;
 
-namespace Ryujinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser
 {
     public struct WebCommonReturnValue
     {

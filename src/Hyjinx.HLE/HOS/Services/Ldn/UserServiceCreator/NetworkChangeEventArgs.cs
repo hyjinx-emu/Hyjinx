@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Ldn.Types;
+using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
 {
     class NetworkChangeEventArgs : EventArgs
     {

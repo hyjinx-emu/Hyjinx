@@ -10,7 +10,7 @@ using Hyjinx.Ava.UI.Models;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Utilities;
-using Ryujinx.HLE.HOS;
+using Hyjinx.HLE.HOS;
 using System;
 using System.IO;
 using System.Linq;

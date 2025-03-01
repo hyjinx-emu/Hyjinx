@@ -1,7 +1,7 @@
 using System;
 using System.Numerics;
 
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     class KContextIdManager
     {

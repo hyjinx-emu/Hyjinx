@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
 
-namespace Ryujinx.HLE.UI.Input
+namespace Hyjinx.HLE.UI.Input
 {
     /// <summary>
     /// Class that converts Hid entries for the Npad into pressed / released events.

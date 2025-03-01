@@ -5,7 +5,7 @@ using Hyjinx.Graphics.Vic;
 using System;
 using GpuContext = Hyjinx.Graphics.Gpu.GpuContext;
 
-namespace Ryujinx.HLE.HOS.Services.Nv
+namespace Hyjinx.HLE.HOS.Services.Nv
 {
     class Host1xContext : IDisposable
     {

@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Common;
 using Hyjinx.Horizon.Common;
 
-namespace Ryujinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading
 {
     class KReadableEvent : KSynchronizationObject
     {

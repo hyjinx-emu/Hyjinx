@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Bluetooth.BluetoothDriver
+namespace Hyjinx.HLE.HOS.Services.Bluetooth.BluetoothDriver
 {
     static class BluetoothEventManager
     {

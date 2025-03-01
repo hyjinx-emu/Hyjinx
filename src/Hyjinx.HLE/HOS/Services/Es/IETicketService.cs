@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Es
+namespace Hyjinx.HLE.HOS.Services.Es
 {
     [Service("es")]
     class IETicketService : IpcService

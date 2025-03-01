@@ -1,8 +1,8 @@
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock
 {
     abstract class SystemClockContextUpdateCallback
     {

@@ -1,10 +1,10 @@
-using Ryujinx.HLE.HOS.Services.Sockets.Bsd.Types;
+using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Bsd
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 {
     class BsdContext
     {

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services
+namespace Hyjinx.HLE.HOS.Services
 {
     class DummyService : IpcService
     {

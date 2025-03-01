@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process
 {
     class ProcessTamperInfo
     {

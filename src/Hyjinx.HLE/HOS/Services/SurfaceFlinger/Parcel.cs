@@ -1,14 +1,14 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Memory;
 using Ryujinx.Common.Utilities;
-using Ryujinx.HLE.HOS.Services.SurfaceFlinger.Types;
+using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     sealed class Parcel : IDisposable
     {

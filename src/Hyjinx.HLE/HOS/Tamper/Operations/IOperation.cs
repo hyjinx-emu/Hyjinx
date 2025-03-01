@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Tamper.Operations
+namespace Hyjinx.HLE.HOS.Tamper.Operations
 {
     interface IOperation
     {

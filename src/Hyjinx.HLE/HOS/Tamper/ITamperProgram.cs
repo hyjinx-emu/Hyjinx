@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.HOS.Services.Hid;
 
-namespace Ryujinx.HLE.HOS.Tamper
+namespace Hyjinx.HLE.HOS.Tamper
 {
     interface ITamperProgram
     {

@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
 
-namespace Ryujinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
+namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
 {
     class ISystemDisplayService : IpcService
     {

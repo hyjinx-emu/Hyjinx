@@ -1,8 +1,8 @@
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services.Bluetooth.BluetoothDriver;
-using Ryujinx.HLE.HOS.Services.Settings;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services.Bluetooth.BluetoothDriver;
+using Hyjinx.HLE.HOS.Services.Settings;
 
-namespace Ryujinx.HLE.HOS.Services.Bluetooth
+namespace Hyjinx.HLE.HOS.Services.Bluetooth
 {
     [Service("bt")]
     class IBluetoothUser : IpcService

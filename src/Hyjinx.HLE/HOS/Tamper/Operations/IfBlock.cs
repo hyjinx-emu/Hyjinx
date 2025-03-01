@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Tamper.Conditions;
+using Hyjinx.HLE.HOS.Tamper.Conditions;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Tamper.Operations
+namespace Hyjinx.HLE.HOS.Tamper.Operations
 {
     class IfBlock : IOperation
     {

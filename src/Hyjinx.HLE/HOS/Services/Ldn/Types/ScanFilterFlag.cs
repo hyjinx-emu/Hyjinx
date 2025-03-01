@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types
 {
     [Flags]
     enum ScanFilterFlag : byte

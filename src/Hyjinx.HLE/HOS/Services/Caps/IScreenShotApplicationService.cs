@@ -1,7 +1,7 @@
 using Ryujinx.Common;
-using Ryujinx.HLE.HOS.Services.Caps.Types;
+using Hyjinx.HLE.HOS.Services.Caps.Types;
 
-namespace Ryujinx.HLE.HOS.Services.Caps
+namespace Hyjinx.HLE.HOS.Services.Caps
 {
     [Service("caps:su")] // 6.0.0+
     class IScreenShotApplicationService : IpcService

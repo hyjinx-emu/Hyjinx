@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types
 {
     [Flags]
     enum AddressSpaceFlags : uint

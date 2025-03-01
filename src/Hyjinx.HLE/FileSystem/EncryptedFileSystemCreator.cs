@@ -4,7 +4,7 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSrv.FsCreator;
 
-namespace Ryujinx.HLE.FileSystem
+namespace Hyjinx.HLE.FileSystem
 {
     public class EncryptedFileSystemCreator : IEncryptedFileSystemCreator
     {

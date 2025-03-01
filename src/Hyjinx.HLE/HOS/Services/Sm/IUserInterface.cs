@@ -1,8 +1,8 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel;
-using Ryujinx.HLE.HOS.Kernel.Ipc;
-using Ryujinx.HLE.HOS.Services.Apm;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel;
+using Hyjinx.HLE.HOS.Kernel.Ipc;
+using Hyjinx.HLE.HOS.Services.Apm;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Sm
+namespace Hyjinx.HLE.HOS.Services.Sm
 {
     partial class IUserInterface : IpcService
     {

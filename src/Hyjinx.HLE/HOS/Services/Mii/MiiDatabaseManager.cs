@@ -4,10 +4,10 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Shim;
 using LibHac.Ncm;
-using Ryujinx.HLE.HOS.Services.Mii.Types;
+using Hyjinx.HLE.HOS.Services.Mii.Types;
 using System.Runtime.CompilerServices;
 
-namespace Ryujinx.HLE.HOS.Services.Mii
+namespace Hyjinx.HLE.HOS.Services.Mii
 {
     class MiiDatabaseManager
     {

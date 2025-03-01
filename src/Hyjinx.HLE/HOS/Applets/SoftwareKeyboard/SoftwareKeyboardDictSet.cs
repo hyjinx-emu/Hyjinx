@@ -1,7 +1,7 @@
 using Ryujinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// A structure with custom dictionary words for the software keyboard.

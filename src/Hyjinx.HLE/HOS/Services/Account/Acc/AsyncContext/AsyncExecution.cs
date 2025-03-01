@@ -1,10 +1,10 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ryujinx.HLE.HOS.Services.Account.Acc.AsyncContext
+namespace Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext
 {
     class AsyncExecution
     {

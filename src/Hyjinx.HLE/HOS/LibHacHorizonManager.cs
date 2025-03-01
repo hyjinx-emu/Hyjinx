@@ -4,11 +4,11 @@ using LibHac.Common;
 using LibHac.FsSrv.Impl;
 using LibHac.Loader;
 using LibHac.Ncm;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS.Services.Arp;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS.Services.Arp;
 using System;
 
-namespace Ryujinx.HLE.HOS
+namespace Hyjinx.HLE.HOS
 {
     public class LibHacHorizonManager
     {

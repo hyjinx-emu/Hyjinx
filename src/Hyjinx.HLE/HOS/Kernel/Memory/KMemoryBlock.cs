@@ -1,7 +1,7 @@
 using Ryujinx.Common.Collections;
 using System;
 
-namespace Ryujinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory
 {
     class KMemoryBlock : IntrusiveRedBlackTreeNode<KMemoryBlock>, IComparable<KMemoryBlock>, IComparable<ulong>
     {

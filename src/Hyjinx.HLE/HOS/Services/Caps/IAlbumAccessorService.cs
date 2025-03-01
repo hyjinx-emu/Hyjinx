@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Caps
+namespace Hyjinx.HLE.HOS.Services.Caps
 {
     [Service("caps:a")]
     class IAlbumAccessorService : IpcService

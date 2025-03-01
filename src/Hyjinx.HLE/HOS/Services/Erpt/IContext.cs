@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Erpt
+namespace Hyjinx.HLE.HOS.Services.Erpt
 {
     [Service("erpt:c")]
     class IContext : IpcService

@@ -1,7 +1,7 @@
 using LibHac.Ncm;
-using Ryujinx.HLE.HOS.Services.Ncm.Lr.LocationResolverManager;
+using Hyjinx.HLE.HOS.Services.Ncm.Lr.LocationResolverManager;
 
-namespace Ryujinx.HLE.HOS.Services.Ncm.Lr
+namespace Hyjinx.HLE.HOS.Services.Ncm.Lr
 {
     [Service("lr")]
     class ILocationResolverManager : IpcService

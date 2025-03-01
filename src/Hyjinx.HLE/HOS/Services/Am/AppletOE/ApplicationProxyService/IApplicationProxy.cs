@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy;
-using Ryujinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy;
+using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy;
 
-namespace Ryujinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService
+namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService
 {
     class IApplicationProxy : IpcService
     {

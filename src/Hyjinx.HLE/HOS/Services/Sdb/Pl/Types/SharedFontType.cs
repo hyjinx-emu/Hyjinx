@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Sdb.Pl.Types
+namespace Hyjinx.HLE.HOS.Services.Sdb.Pl.Types
 {
     public enum SharedFontType
     {

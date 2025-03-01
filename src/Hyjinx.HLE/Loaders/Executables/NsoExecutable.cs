@@ -7,7 +7,7 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Ryujinx.HLE.Loaders.Executables
+namespace Hyjinx.HLE.Loaders.Executables
 {
     partial class NsoExecutable : IExecutable
     {

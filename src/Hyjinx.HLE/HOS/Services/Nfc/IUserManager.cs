@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Nfc.NfcManager;
+using Hyjinx.HLE.HOS.Services.Nfc.NfcManager;
 
-namespace Ryujinx.HLE.HOS.Services.Nfc
+namespace Hyjinx.HLE.HOS.Services.Nfc
 {
     [Service("nfc:user")]
     class IUserManager : IpcService

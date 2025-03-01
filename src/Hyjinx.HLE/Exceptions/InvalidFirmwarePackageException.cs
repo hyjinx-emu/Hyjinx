@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.Exceptions
+namespace Hyjinx.HLE.Exceptions
 {
     class InvalidFirmwarePackageException : Exception
     {

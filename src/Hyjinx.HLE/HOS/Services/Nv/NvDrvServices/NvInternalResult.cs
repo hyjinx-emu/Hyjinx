@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
 {
     enum NvInternalResult
     {

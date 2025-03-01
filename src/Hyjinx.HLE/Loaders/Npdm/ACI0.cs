@@ -1,7 +1,7 @@
-using Ryujinx.HLE.Exceptions;
+using Hyjinx.HLE.Exceptions;
 using System.IO;
 
-namespace Ryujinx.HLE.Loaders.Npdm
+namespace Hyjinx.HLE.Loaders.Npdm
 {
     public class Aci0
     {

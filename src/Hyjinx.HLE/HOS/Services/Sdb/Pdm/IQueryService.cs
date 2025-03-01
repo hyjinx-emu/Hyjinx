@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Sdb.Pdm.QueryService;
+using Hyjinx.HLE.HOS.Services.Sdb.Pdm.QueryService;
 
-namespace Ryujinx.HLE.HOS.Services.Sdb.Pdm
+namespace Hyjinx.HLE.HOS.Services.Sdb.Pdm
 {
     [Service("pdm:qry")]
     class IQueryService : IpcService

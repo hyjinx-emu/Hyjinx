@@ -7,12 +7,12 @@ using LibHac.Ncm;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.SystemState;
+using Hyjinx.HLE.HOS.SystemState;
 using System;
 using System.IO;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Settings
+namespace Hyjinx.HLE.HOS.Services.Settings
 {
     [Service("set:sys")]
     class ISystemSettingsServer : IpcService

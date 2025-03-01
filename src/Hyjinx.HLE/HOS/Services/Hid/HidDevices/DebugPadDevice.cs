@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
 
-namespace Ryujinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid
 {
     public class DebugPadDevice : BaseDevice
     {

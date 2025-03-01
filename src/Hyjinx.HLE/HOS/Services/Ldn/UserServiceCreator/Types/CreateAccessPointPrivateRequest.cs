@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Ldn.Types;
+using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types
 {
     /// <remarks>
     /// Advertise data is appended separately (remaining data in the buffer).

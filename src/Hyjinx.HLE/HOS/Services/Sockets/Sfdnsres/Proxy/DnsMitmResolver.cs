@@ -1,12 +1,12 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Sockets.Nsd;
+using Hyjinx.HLE.HOS.Services.Sockets.Nsd;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Enumeration;
 using System.Net;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
+namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
 {
     class DnsMitmResolver
     {

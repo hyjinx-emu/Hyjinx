@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Tamper.Operations;
+using Hyjinx.HLE.HOS.Tamper.Operations;
 
-namespace Ryujinx.HLE.HOS.Tamper.CodeEmitters
+namespace Hyjinx.HLE.HOS.Tamper.CodeEmitters
 {
     /// <summary>
     /// Code type 4 allows setting a register to a constant value.

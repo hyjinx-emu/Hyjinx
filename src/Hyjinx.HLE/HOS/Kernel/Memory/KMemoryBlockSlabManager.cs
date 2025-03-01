@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory
 {
     class KMemoryBlockSlabManager
     {

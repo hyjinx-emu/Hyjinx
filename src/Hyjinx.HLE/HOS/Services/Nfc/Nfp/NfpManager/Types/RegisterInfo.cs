@@ -1,8 +1,8 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Mii.Types;
+using Hyjinx.HLE.HOS.Services.Mii.Types;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x100)]
     struct RegisterInfo

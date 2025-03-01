@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Ssl.Types
+namespace Hyjinx.HLE.HOS.Services.Ssl.Types
 {
     enum IoMode : uint
     {

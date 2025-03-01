@@ -1,8 +1,8 @@
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Tamper.Operations;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Tamper.Operations;
 using System;
 
-namespace Ryujinx.HLE.HOS.Tamper.CodeEmitters
+namespace Hyjinx.HLE.HOS.Tamper.CodeEmitters
 {
     /// <summary>
     /// Code type 7 allows performing arithmetic on registers. However, it has been deprecated by Code

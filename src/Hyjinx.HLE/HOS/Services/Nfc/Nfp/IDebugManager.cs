@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
+using Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
 
-namespace Ryujinx.HLE.HOS.Services.Nfc.Nfp
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp
 {
     [Service("nfp:dbg")]
     class IAmManager : IpcService

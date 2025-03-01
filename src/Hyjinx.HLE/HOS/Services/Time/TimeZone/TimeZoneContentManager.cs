@@ -8,16 +8,16 @@ using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using TimeZoneRuleBox = Ryujinx.Common.Memory.Box<Ryujinx.HLE.HOS.Services.Time.TimeZone.TimeZoneRule>;
+using TimeZoneRuleBox = Ryujinx.Common.Memory.Box<Hyjinx.HLE.HOS.Services.Time.TimeZone.TimeZoneRule>;
 
-namespace Ryujinx.HLE.HOS.Services.Time.TimeZone
+namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
 {
     public class TimeZoneContentManager
     {

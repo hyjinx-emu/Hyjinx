@@ -1,13 +1,13 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Keyboard;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Mouse;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Keyboard;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Mouse;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory
 {
     /// <summary>
     /// Represent the shared memory shared between applications for input.

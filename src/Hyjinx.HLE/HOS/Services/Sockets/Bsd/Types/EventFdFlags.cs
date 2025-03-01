@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Bsd.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
 {
     [Flags]
     enum EventFdFlags : uint

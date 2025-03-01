@@ -1,10 +1,10 @@
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager;
-using Ryujinx.HLE.HOS.Services.Pcv.Types;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager;
+using Hyjinx.HLE.HOS.Services.Pcv.Types;
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Pcv.Clkrst
+namespace Hyjinx.HLE.HOS.Services.Pcv.Clkrst
 {
     [Service("clkrst")]   // 8.0.0+
     [Service("clkrst:i")] // 8.0.0+

@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen
 {
     [Flags]
     public enum TouchAttribute : uint

@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Kernel.SupervisorCall
+namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     class SvcAttribute : Attribute

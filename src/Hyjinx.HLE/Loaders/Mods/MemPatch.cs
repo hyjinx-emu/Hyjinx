@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ryujinx.HLE.Loaders.Mods
+namespace Hyjinx.HLE.Loaders.Mods
 {
     public class MemPatch
     {

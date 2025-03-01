@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Ryujinx.HLE.Exceptions
+namespace Hyjinx.HLE.Exceptions
 {
     public class InvalidStructLayoutException<T> : Exception
     {

@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Irs.Types
+namespace Hyjinx.HLE.HOS.Services.Hid.Irs.Types
 {
     [StructLayout(LayoutKind.Sequential, Size = 0x8)]
     struct PackedTeraPluginProcessorConfig

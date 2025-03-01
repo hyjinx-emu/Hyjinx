@@ -1,8 +1,8 @@
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS.Kernel.Common;
-using Ryujinx.HLE.HOS.Services.Spl.Types;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Services.Spl.Types;
 
-namespace Ryujinx.HLE.HOS.Services.Spl
+namespace Hyjinx.HLE.HOS.Services.Spl
 {
     [Service("spl:")]
     [Service("spl:es")]

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Hid.HidServer
+namespace Hyjinx.HLE.HOS.Services.Hid.HidServer
 {
     class IActiveApplicationDeviceList : IpcService
     {

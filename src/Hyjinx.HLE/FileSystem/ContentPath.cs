@@ -2,10 +2,10 @@ using LibHac.Fs;
 using LibHac.Ncm;
 using Ryujinx.Common.Configuration;
 using System;
-using static Ryujinx.HLE.FileSystem.VirtualFileSystem;
+using static Hyjinx.HLE.FileSystem.VirtualFileSystem;
 using Path = System.IO.Path;
 
-namespace Ryujinx.HLE.FileSystem
+namespace Hyjinx.HLE.FileSystem
 {
     internal static class ContentPath
     {

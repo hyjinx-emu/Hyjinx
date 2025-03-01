@@ -1,8 +1,8 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Services.Sockets.Nsd.Manager;
-using Ryujinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy;
-using Ryujinx.HLE.HOS.Services.Sockets.Sfdnsres.Types;
+using Hyjinx.HLE.HOS.Services.Sockets.Nsd.Manager;
+using Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy;
+using Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Types;
 using Ryujinx.Memory;
 using System;
 using System.Buffers.Binary;
@@ -13,7 +13,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Sfdnsres
+namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 {
     [Service("sfdnsres")]
     class IResolver : IpcService

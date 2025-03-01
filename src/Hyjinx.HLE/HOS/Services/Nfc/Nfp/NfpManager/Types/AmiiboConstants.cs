@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
 {
     static class AmiiboConstants
     {

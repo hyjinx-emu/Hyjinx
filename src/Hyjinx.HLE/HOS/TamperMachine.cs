@@ -1,14 +1,14 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Kernel;
-using Ryujinx.HLE.HOS.Kernel.Process;
-using Ryujinx.HLE.HOS.Services.Hid;
-using Ryujinx.HLE.HOS.Tamper;
+using Hyjinx.HLE.HOS.Kernel;
+using Hyjinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Services.Hid;
+using Hyjinx.HLE.HOS.Tamper;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS
+namespace Hyjinx.HLE.HOS
 {
     public class TamperMachine
     {

@@ -4,7 +4,7 @@ using LibHac.Fs;
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Services.Fs.FileSystemProxy
+namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy
 {
     class LazyFile : LibHac.Fs.Fsa.IFile
     {

@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
 
-namespace Ryujinx.HLE.HOS.Services.Apm
+namespace Hyjinx.HLE.HOS.Services.Apm
 {
     class SessionServer : ISession
     {

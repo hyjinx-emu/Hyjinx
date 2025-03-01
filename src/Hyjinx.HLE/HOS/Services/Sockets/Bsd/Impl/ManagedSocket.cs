@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Sockets.Bsd.Types;
+using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Bsd.Impl
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 {
     class ManagedSocket : ISocket
     {

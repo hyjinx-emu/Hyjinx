@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
 {
     struct AnalogStickState
     {

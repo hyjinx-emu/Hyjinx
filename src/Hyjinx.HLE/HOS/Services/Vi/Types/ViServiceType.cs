@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Vi.Types
+namespace Hyjinx.HLE.HOS.Services.Vi.Types
 {
     enum ViServiceType
     {

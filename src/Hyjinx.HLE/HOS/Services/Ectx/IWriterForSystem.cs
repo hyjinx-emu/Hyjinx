@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Ectx
+namespace Hyjinx.HLE.HOS.Services.Ectx
 {
     [Service("ectx:w")] // 11.0.0+
     class IWriterForSystem : IpcService

@@ -2,7 +2,7 @@ using LibHac;
 using LibHac.Common;
 using LibHac.Sf;
 
-namespace Ryujinx.HLE.HOS.Services.Fs
+namespace Hyjinx.HLE.HOS.Services.Fs
 {
     class ISaveDataInfoReader : DisposableIpcService
     {

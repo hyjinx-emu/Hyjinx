@@ -1,7 +1,7 @@
 using Ryujinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Applets.Error
+namespace Hyjinx.HLE.HOS.Applets.Error
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct ApplicationErrorArg

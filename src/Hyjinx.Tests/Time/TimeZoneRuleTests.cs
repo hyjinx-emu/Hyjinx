@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Ryujinx.HLE.HOS.Services.Time.TimeZone;
+using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using System.Runtime.CompilerServices;
 
 namespace Hyjinx.Tests.Time

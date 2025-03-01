@@ -1,5 +1,5 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.FileSystem;
+using Hyjinx.HLE.FileSystem;
 using System;
 using System.IO;
 

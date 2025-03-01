@@ -3,7 +3,7 @@ using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Ncm;
 using LibHac.Tools.FsSystem.NcaUtils;
-using Ryujinx.HLE.FileSystem;
+using Hyjinx.HLE.FileSystem;
 using Hyjinx.Horizon;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Fs;
@@ -11,7 +11,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS
+namespace Hyjinx.HLE.HOS
 {
     class HorizonFsClient : IFsClient
     {

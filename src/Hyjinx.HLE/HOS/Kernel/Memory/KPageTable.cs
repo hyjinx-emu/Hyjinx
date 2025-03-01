@@ -6,7 +6,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Ryujinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory
 {
     class KPageTable : KPageTableBase
     {

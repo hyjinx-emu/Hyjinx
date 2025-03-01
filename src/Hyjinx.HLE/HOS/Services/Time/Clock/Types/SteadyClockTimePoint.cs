@@ -2,7 +2,7 @@ using Ryujinx.Common.Utilities;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct SteadyClockTimePoint

@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.SurfaceFlinger.Types;
+using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     class ConsumerBase : IConsumerListener
     {

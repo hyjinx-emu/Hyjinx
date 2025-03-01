@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Services.Settings
+namespace Hyjinx.HLE.HOS.Services.Settings
 {
     static class NxSettings
     {

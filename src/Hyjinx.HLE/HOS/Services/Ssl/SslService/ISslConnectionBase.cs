@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Sockets.Bsd;
+using Hyjinx.HLE.HOS.Services.Sockets.Bsd;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Ssl.SslService
+namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 {
     interface ISslConnectionBase : IDisposable
     {

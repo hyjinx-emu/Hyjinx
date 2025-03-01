@@ -1,7 +1,7 @@
 using Ryujinx.Common.Logging;
 using System.Text;
 
-namespace Ryujinx.HLE.HOS.Services.Ngct
+namespace Hyjinx.HLE.HOS.Services.Ngct
 {
     static class NgctServer
     {

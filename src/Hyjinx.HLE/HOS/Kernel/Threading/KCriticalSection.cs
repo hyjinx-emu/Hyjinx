@@ -1,6 +1,6 @@
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading
 {
     class KCriticalSection
     {

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// Wraps a type in a class so it gets stored in the GC managed heap. This is used as communication mechanism

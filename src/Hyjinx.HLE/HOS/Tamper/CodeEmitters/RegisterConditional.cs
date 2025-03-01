@@ -1,8 +1,8 @@
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Tamper.Conditions;
-using Ryujinx.HLE.HOS.Tamper.Operations;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Tamper.Conditions;
+using Hyjinx.HLE.HOS.Tamper.Operations;
 
-namespace Ryujinx.HLE.HOS.Tamper.CodeEmitters
+namespace Hyjinx.HLE.HOS.Tamper.CodeEmitters
 {
     /// <summary>
     /// Code type 0xC0 performs a comparison of the contents of a register and another value.

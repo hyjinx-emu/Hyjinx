@@ -1,17 +1,17 @@
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
 using Ryujinx.Common.Utilities;
-using Ryujinx.HLE.HOS.Services.Ldn.Types;
-using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy;
-using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Types;
-using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
+using Hyjinx.HLE.HOS.Services.Ldn.Types;
+using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy;
+using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Types;
+using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 {
     internal class LanDiscovery : IDisposable
     {

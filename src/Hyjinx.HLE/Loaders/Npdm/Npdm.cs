@@ -1,8 +1,8 @@
-using Ryujinx.HLE.Exceptions;
+using Hyjinx.HLE.Exceptions;
 using System.IO;
 using System.Text;
 
-namespace Ryujinx.HLE.Loaders.Npdm
+namespace Hyjinx.HLE.Loaders.Npdm
 {
     // https://github.com/SciresM/hactool/blob/master/npdm.c
     // https://github.com/SciresM/hactool/blob/master/npdm.h

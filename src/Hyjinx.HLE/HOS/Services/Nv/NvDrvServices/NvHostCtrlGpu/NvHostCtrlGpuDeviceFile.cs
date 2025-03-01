@@ -1,12 +1,12 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types;
 using Hyjinx.Horizon.Common;
 using Ryujinx.Memory;
 using System;
 using System.Diagnostics;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu
 {
     class NvHostCtrlGpuDeviceFile : NvDeviceFile
     {

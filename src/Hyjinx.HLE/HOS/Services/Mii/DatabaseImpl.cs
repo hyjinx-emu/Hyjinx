@@ -1,9 +1,9 @@
 using LibHac;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Services.Mii.Types;
+using Hyjinx.HLE.HOS.Services.Mii.Types;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Mii
+namespace Hyjinx.HLE.HOS.Services.Mii
 {
     class DatabaseImpl
     {

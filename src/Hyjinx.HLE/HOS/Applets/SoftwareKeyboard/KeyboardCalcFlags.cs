@@ -1,6 +1,6 @@
 using System;
 
-namespace Ryujinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 {
     /// <summary>
     /// Bitmask of commands encoded in the Flags field of the Calc structs.

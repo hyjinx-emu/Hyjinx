@@ -1,14 +1,14 @@
 using Ryujinx.Common.Logging;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.Gpu.Synchronization;
-using Ryujinx.HLE.HOS.Kernel;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Nv.Types;
+using Hyjinx.HLE.HOS.Kernel;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Nv.Types;
 using Hyjinx.Horizon.Common;
 using System;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {
     class NvHostEvent
     {

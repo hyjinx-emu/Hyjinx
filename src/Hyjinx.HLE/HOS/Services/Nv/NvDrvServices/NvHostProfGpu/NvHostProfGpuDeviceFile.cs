@@ -1,6 +1,6 @@
 using Ryujinx.Memory;
 
-namespace Ryujinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostProfGpu
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostProfGpu
 {
     class NvHostProfGpuDeviceFile : NvDeviceFile
     {

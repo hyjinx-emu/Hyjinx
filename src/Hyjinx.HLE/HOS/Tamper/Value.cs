@@ -1,6 +1,6 @@
-using Ryujinx.HLE.HOS.Tamper.Operations;
+using Hyjinx.HLE.HOS.Tamper.Operations;
 
-namespace Ryujinx.HLE.HOS.Tamper
+namespace Hyjinx.HLE.HOS.Tamper
 {
     class Value<TP> : IOperand where TP : unmanaged
     {

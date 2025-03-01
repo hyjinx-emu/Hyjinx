@@ -1,7 +1,7 @@
 using LibHac.Common;
 using LibHac.Ns;
 
-namespace Ryujinx.HLE.HOS.Services.Ns
+namespace Hyjinx.HLE.HOS.Services.Ns
 {
     class IReadOnlyApplicationControlDataInterface : IpcService
     {

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Nifm.StaticService.Types
+namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types
 {
     enum InternetConnectionType : byte
     {

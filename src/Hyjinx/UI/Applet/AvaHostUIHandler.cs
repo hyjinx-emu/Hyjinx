@@ -5,10 +5,10 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
-using Ryujinx.HLE;
-using Ryujinx.HLE.HOS.Applets;
-using Ryujinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
-using Ryujinx.HLE.UI;
+using Hyjinx.HLE;
+using Hyjinx.HLE.HOS.Applets;
+using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
+using Hyjinx.HLE.UI;
 using System;
 using System.Threading;
 

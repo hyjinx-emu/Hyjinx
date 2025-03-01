@@ -2,14 +2,14 @@ using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Memory;
 using Ryujinx.Common.Utilities;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Services.Mii;
-using Ryujinx.HLE.HOS.Services.Mii.Types;
-using Ryujinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
+using Hyjinx.HLE.HOS.Services.Mii;
+using Hyjinx.HLE.HOS.Services.Mii.Types;
+using Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Services.Nfc.Nfp
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp
 {
     static class VirtualAmiibo
     {

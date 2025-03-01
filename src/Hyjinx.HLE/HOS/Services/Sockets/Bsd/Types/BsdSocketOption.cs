@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Ryujinx.HLE.HOS.Services.Sockets.Bsd.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
 {
     [SuppressMessage("Design", "CA1069: Enums values should not be duplicated")]
     enum BsdSocketOption

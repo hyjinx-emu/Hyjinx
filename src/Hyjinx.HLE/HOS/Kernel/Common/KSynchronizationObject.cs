@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Kernel.Threading;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Kernel.Common
+namespace Hyjinx.HLE.HOS.Kernel.Common
 {
     class KSynchronizationObject : KAutoObject
     {

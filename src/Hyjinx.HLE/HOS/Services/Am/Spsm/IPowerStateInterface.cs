@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Am.Spsm
+namespace Hyjinx.HLE.HOS.Services.Am.Spsm
 {
     [Service("spsm")]
     class IPowerStateInterface : IpcService

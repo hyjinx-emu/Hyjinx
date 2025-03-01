@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Nim
+namespace Hyjinx.HLE.HOS.Services.Nim
 {
     [Service("nim")]
     class INetworkInstallManager : IpcService

@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.Nfc.NfcManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.NfcManager
 {
     enum NfcPermissionLevel
     {

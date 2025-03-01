@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 
-namespace Ryujinx.HLE.Loaders.Npdm
+namespace Hyjinx.HLE.Loaders.Npdm
 {
     public class ServiceAccessControl
     {

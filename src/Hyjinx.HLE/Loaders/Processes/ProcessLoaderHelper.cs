@@ -11,13 +11,13 @@ using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS;
-using Ryujinx.HLE.HOS.Kernel;
-using Ryujinx.HLE.HOS.Kernel.Common;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Kernel.Process;
-using Ryujinx.HLE.Loaders.Executables;
-using Ryujinx.HLE.Loaders.Processes.Extensions;
+using Hyjinx.HLE.HOS;
+using Hyjinx.HLE.HOS.Kernel;
+using Hyjinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.Loaders.Executables;
+using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Arp;
 using System;
@@ -25,7 +25,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using ApplicationId = LibHac.Ncm.ApplicationId;
 
-namespace Ryujinx.HLE.Loaders.Processes
+namespace Hyjinx.HLE.Loaders.Processes
 {
     static class ProcessLoaderHelper
     {

@@ -1,6 +1,6 @@
 using Ryujinx.Common.Logging;
 
-namespace Ryujinx.HLE.HOS.Services.Ptm.Psm
+namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 {
     [Service("psm")]
     class IPsmServer : IpcService

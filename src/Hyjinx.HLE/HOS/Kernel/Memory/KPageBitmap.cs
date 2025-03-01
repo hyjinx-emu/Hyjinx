@@ -2,7 +2,7 @@ using Ryujinx.Common;
 using System;
 using System.Numerics;
 
-namespace Ryujinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory
 {
     class KPageBitmap
     {

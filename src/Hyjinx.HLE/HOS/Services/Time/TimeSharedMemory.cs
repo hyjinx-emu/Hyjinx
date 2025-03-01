@@ -1,13 +1,13 @@
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Kernel.Memory;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
-using Ryujinx.HLE.HOS.Services.Time.Clock.Types;
-using Ryujinx.HLE.HOS.Services.Time.Types;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.HOS.Services.Time.Clock.Types;
+using Hyjinx.HLE.HOS.Services.Time.Types;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace Ryujinx.HLE.HOS.Services.Time
+namespace Hyjinx.HLE.HOS.Services.Time
 {
     class TimeSharedMemory
     {

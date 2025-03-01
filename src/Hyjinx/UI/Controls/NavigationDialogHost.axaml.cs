@@ -11,13 +11,13 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Views.User;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UserId = Ryujinx.HLE.HOS.Services.Account.Acc.UserId;
+using UserId = Hyjinx.HLE.HOS.Services.Account.Acc.UserId;
 using UserProfile = Hyjinx.Ava.UI.Models.UserProfile;
 
 namespace Hyjinx.Ava.UI.Controls
@@ -148,7 +148,7 @@ namespace Hyjinx.Ava.UI.Controls
 
             foreach (var account in lostAccounts)
             {
-                ViewModel.LostProfiles.Add(new UserProfile(new Ryujinx.HLE.HOS.Services.Account.Acc.UserProfile(account, "", null), this));
+                ViewModel.LostProfiles.Add(new UserProfile(new Hyjinx.HLE.HOS.Services.Account.Acc.UserProfile(account, "", null), this));
             }
 
             ViewModel.Profiles.Add(new BaseModel());

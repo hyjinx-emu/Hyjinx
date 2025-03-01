@@ -1,14 +1,14 @@
 using Ryujinx.Common;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Services.Time.Clock;
-using Ryujinx.HLE.Utilities;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.Utilities;
 using Hyjinx.Horizon.Common;
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Services.Time
+namespace Hyjinx.HLE.HOS.Services.Time
 {
     [Service("time:m")] // 9.0.0+
     class ITimeServiceManager : IpcService

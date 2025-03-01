@@ -2,7 +2,7 @@ using Ryujinx.Common.Utilities;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Time.TimeZone
+namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
 {
     [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 0x4000, CharSet = CharSet.Ansi)]
     public struct TimeZoneRule

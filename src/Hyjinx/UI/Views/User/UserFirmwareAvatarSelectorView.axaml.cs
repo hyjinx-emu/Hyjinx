@@ -5,7 +5,7 @@ using FluentAvalonia.UI.Navigation;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.ViewModels;
-using Ryujinx.HLE.FileSystem;
+using Hyjinx.HLE.FileSystem;
 using SkiaSharp;
 using System.IO;
 

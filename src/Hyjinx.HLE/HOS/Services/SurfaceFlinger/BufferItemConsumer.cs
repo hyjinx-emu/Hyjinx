@@ -1,7 +1,7 @@
 using Hyjinx.Graphics.Gpu;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     class BufferItemConsumer : ConsumerBase
     {

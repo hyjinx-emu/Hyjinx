@@ -8,16 +8,16 @@ using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.Exceptions;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS.Services.Ssl.Types;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS.Services.Ssl.Types;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Ssl
+namespace Hyjinx.HLE.HOS.Services.Ssl
 {
     class BuiltInCertificateManager
     {

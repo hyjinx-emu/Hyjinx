@@ -1,6 +1,6 @@
 using Ryujinx.Common;
-using Ryujinx.HLE.HOS.Kernel.Common;
-using Ryujinx.HLE.HOS.Kernel.Process;
+using Hyjinx.HLE.HOS.Kernel.Common;
+using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Horizon.Common;
 using Ryujinx.Memory;
 using Ryujinx.Memory.Range;
@@ -9,7 +9,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Ryujinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory
 {
     abstract class KPageTableBase
     {

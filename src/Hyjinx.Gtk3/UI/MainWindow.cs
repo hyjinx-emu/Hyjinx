@@ -18,10 +18,10 @@ using Ryujinx.Common.SystemInterop;
 using Hyjinx.Cpu;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS;
-using Ryujinx.HLE.HOS.Services.Account.Acc;
-using Ryujinx.HLE.HOS.SystemState;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS;
+using Hyjinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Input.GTK3;
 using Hyjinx.Input.HLE;
 using Hyjinx.Input.SDL2;
@@ -58,7 +58,7 @@ namespace Ryujinx.UI
 
         private UserChannelPersistence _userChannelPersistence;
 
-        private HLE.Switch _emulationContext;
+        private Hyjinx.HLE.Switch _emulationContext;
 
         private WindowsMultimediaTimerResolution _windowsMultimediaTimerResolution;
 
@@ -648,12 +648,12 @@ namespace Ryujinx.UI
             }
 
             var memoryConfiguration = ConfigurationState.Instance.System.ExpandRam.Value
-                ? HLE.MemoryConfiguration.MemoryConfiguration8GiB
-                : HLE.MemoryConfiguration.MemoryConfiguration4GiB;
+                ? Hyjinx.HLE.MemoryConfiguration.MemoryConfiguration8GiB
+                : Hyjinx.HLE.MemoryConfiguration.MemoryConfiguration4GiB;
 
             IntegrityCheckLevel fsIntegrityCheckLevel = ConfigurationState.Instance.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None;
 
-            HLE.HLEConfiguration configuration = new(_virtualFileSystem,
+            Hyjinx.HLE.HLEConfiguration configuration = new(_virtualFileSystem,
                 _libHacHorizonManager,
                 _contentManager,
                 _accountManager,
@@ -680,7 +680,7 @@ namespace Ryujinx.UI
                 ConfigurationState.Instance.Multiplayer.LanInterfaceId.Value,
                 ConfigurationState.Instance.Multiplayer.Mode);
 
-            _emulationContext = new HLE.Switch(configuration);
+            _emulationContext = new Hyjinx.HLE.Switch(configuration);
         }
 
         private SurfaceKHR CreateVulkanSurface(Instance instance, Vk vk)

@@ -1,9 +1,9 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Ldn.Types;
-using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
+using Hyjinx.HLE.HOS.Services.Ldn.Types;
+using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
 using System;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
 {
     class AccessPoint : IDisposable
     {

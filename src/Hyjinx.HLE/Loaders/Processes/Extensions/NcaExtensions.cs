@@ -11,16 +11,16 @@ using LibHac.Tools.Ncm;
 using Ryujinx.Common.Configuration;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Utilities;
-using Ryujinx.HLE.FileSystem;
-using Ryujinx.HLE.HOS;
-using Ryujinx.HLE.Utilities;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS;
+using Hyjinx.HLE.Utilities;
 using System.IO;
 using System.Linq;
 using ApplicationId = LibHac.Ncm.ApplicationId;
 using ContentType = LibHac.Ncm.ContentType;
 using Path = System.IO.Path;
 
-namespace Ryujinx.HLE.Loaders.Processes.Extensions
+namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {
     public static class NcaExtensions
     {

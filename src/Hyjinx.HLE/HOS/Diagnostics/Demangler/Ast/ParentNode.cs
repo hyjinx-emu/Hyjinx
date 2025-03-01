@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
 {
     public abstract class ParentNode : BaseNode
     {

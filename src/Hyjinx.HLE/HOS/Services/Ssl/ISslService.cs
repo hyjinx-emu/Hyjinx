@@ -1,12 +1,12 @@
 using Ryujinx.Common.Logging;
-using Ryujinx.HLE.HOS.Services.Ssl.SslService;
-using Ryujinx.HLE.HOS.Services.Ssl.Types;
+using Hyjinx.HLE.HOS.Services.Ssl.SslService;
+using Hyjinx.HLE.HOS.Services.Ssl.Types;
 using Ryujinx.Memory;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Ssl
+namespace Hyjinx.HLE.HOS.Services.Ssl
 {
     [Service("ssl")]
     class ISslService : IpcService

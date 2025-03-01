@@ -2,7 +2,7 @@ using Hyjinx.Horizon.Common;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Ryujinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory
 {
     class KPageList : IEnumerable<KPageNode>
     {

@@ -2,7 +2,7 @@ using Ryujinx.Common;
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser
 {
     class BrowserOutput
     {

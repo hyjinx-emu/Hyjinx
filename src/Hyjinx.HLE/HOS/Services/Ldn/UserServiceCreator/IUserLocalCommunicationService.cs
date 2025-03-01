@@ -5,10 +5,10 @@ using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
 using Ryujinx.Common.Utilities;
 using Hyjinx.Cpu;
-using Ryujinx.HLE.HOS.Ipc;
-using Ryujinx.HLE.HOS.Kernel.Threading;
-using Ryujinx.HLE.HOS.Services.Ldn.Types;
-using Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm;
+using Hyjinx.HLE.HOS.Ipc;
+using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.HLE.HOS.Services.Ldn.Types;
+using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm;
 using Hyjinx.Horizon.Common;
 using Ryujinx.Memory;
 using System;
@@ -17,7 +17,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Ldn.UserServiceCreator
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
 {
     class IUserLocalCommunicationService : IpcService, IDisposable
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ryujinx.HLE.HOS.Services.Nifm.StaticService.GeneralService
+namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.GeneralService
 {
     static class GeneralServiceManager
     {

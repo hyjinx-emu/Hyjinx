@@ -4,7 +4,7 @@ using Ryujinx.Common.Memory;
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Ipc
+namespace Hyjinx.HLE.HOS.Ipc
 {
     class IpcHandleDesc
     {

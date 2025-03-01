@@ -1,8 +1,8 @@
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct TouchScreenState : ISampledDataStruct

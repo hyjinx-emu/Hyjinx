@@ -1,8 +1,8 @@
-using Ryujinx.HLE.Exceptions;
+using Hyjinx.HLE.Exceptions;
 using System;
 using System.IO;
 
-namespace Ryujinx.HLE.Loaders.Npdm
+namespace Hyjinx.HLE.Loaders.Npdm
 {
     class FsAccessHeader
     {

@@ -1,12 +1,12 @@
 using Ryujinx.Common;
 using Ryujinx.Common.Logging;
 using Ryujinx.Common.Memory;
-using Ryujinx.HLE.HOS.Services.Am.AppletAE;
+using Hyjinx.HLE.HOS.Services.Am.AppletAE;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Ryujinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser
 {
     internal class BrowserApplet : IApplet
     {

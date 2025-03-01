@@ -1,4 +1,4 @@
-namespace Ryujinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
     enum ColorSwizzle
     {

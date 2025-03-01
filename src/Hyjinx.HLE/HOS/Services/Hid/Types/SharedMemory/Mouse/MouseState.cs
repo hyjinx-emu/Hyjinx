@@ -1,7 +1,7 @@
-using Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using System.Runtime.InteropServices;
 
-namespace Ryujinx.HLE.HOS.Services.Hid.Types.SharedMemory.Mouse
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Mouse
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     struct MouseState : ISampledDataStruct

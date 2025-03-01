@@ -1,4 +1,4 @@
-using Ryujinx.HLE.Loaders.Processes;
+using Hyjinx.HLE.Loaders.Processes;
 using System;
 
 namespace Hyjinx.UI.Common.Helper
