@@ -94,7 +94,6 @@
     <EmbeddedResource Include="UI\Windows\DlcWindow.glade" />
     <EmbeddedResource Include="UI\Windows\SettingsWindow.glade" />
     <EmbeddedResource Include="UI\Windows\TitleUpdateWindow.glade" />
-    <EmbeddedResource Include="Modules\Updater\UpdateDialog.glade" />
   </ItemGroup>
 
 </Project>

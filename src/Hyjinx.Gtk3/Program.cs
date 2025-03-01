@@ -6,7 +6,6 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Common.SystemInterop;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
-using Hyjinx.Modules;
 using Hyjinx.SDL2.Common;
 using Hyjinx.UI;
 using Hyjinx.UI.App.Common;
@@ -87,9 +86,6 @@ namespace Hyjinx
             // Make process DPI aware for proper window sizing on high-res screens.
             ForceDpiAware.Windows();
             WindowScaleFactor = ForceDpiAware.GetWindowScaleFactor();
-
-            // Delete backup files after updating.
-            Task.Run(Updater.CleanupUpdate);
 
             Console.Title = $"Hyjinx Console {Version}";
 
@@ -349,14 +345,6 @@ namespace Hyjinx
                     Logger.Error?.Print(LogClass.Application, $"Couldn't find any application in '{CommandLineState.LaunchPathArg}'.");
                     UserErrorDialog.CreateUserErrorDialog(UserError.ApplicationNotFound);
                 }
-            }
-
-            if (ConfigurationState.Instance.CheckUpdatesOnStart.Value && Updater.CanUpdate(false))
-            {
-                Updater.BeginParse(mainWindow, false).ContinueWith(task =>
-                {
-                    Logger.Error?.Print(LogClass.Application, $"Updater Error: {task.Exception}");
-                }, TaskContinuationOptions.OnlyOnFaulted);
             }
 
             Application.Run();

@@ -10,7 +10,6 @@ using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Utilities;
-using Hyjinx.Modules;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
@@ -251,14 +250,6 @@ namespace Hyjinx.Ava.UI.Views.Main
 
                     Window.Arrange(new Rect(Window.Position.X, Window.Position.Y, width, height));
                 });
-            }
-        }
-
-        public async void CheckForUpdates(object sender, RoutedEventArgs e)
-        {
-            if (Updater.CanUpdate(true))
-            {
-                await Updater.BeginParse(Window, true);
             }
         }
 

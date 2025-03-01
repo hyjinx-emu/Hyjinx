@@ -544,16 +544,6 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkMenuItem" id="UpdateMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="tooltip-text" translatable="yes">Check for updates to Hyjinx</property>
-                        <property name="label" translatable="yes">Check for Updates</property>
-                        <property name="use-underline">True</property>
-                        <signal name="activate" handler="Update_Pressed" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
                       <object class="GtkSeparatorMenuItem">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>

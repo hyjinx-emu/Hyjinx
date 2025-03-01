@@ -28,7 +28,6 @@ using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.UI;
 using Hyjinx.Input.HLE;
-using Hyjinx.Modules;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
@@ -95,8 +94,7 @@ namespace Hyjinx.Ava.UI.ViewModels
         private float _volume;
         private float _volumeBeforeMute;
         private string _backendText;
-
-        private bool _canUpdate = true;
+        
         private Cursor _cursor;
         private string _title;
         private ApplicationData _currentApplicationData;
@@ -184,16 +182,6 @@ namespace Hyjinx.Ava.UI.ViewModels
 
             _searchTimer.Dispose();
             _searchTimer = null;
-        }
-
-        public bool CanUpdate
-        {
-            get => _canUpdate && EnableNonGameRunningControls && Updater.CanUpdate(false);
-            set
-            {
-                _canUpdate = value;
-                OnPropertyChanged();
-            }
         }
 
         public Cursor Cursor
@@ -1597,8 +1585,6 @@ namespace Hyjinx.Ava.UI.ViewModels
                 return;
             }
 
-            CanUpdate = false;
-
             LoadHeading = application.Name;
 
             if (string.IsNullOrWhiteSpace(application.Name))
@@ -1675,7 +1661,6 @@ namespace Hyjinx.Ava.UI.ViewModels
                 ShowContent = true;
                 ShowLoadProgress = false;
                 IsLoadingIndeterminate = false;
-                CanUpdate = true;
                 Cursor = Cursor.Default;
 
                 SetMainContent(null);

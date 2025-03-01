@@ -25,7 +25,6 @@ using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Input.GTK3;
 using Hyjinx.Input.HLE;
 using Hyjinx.Input.SDL2;
-using Hyjinx.Modules;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Applet;
 using Hyjinx.UI.Common;
@@ -1863,17 +1862,6 @@ namespace Hyjinx.UI
                 _lastScannedAmiiboShowAll = ((AmiiboWindow)sender).LastScannedAmiiboShowAll;
 
                 _emulationContext.System.ScanAmiibo(((AmiiboWindow)sender).DeviceId, ((AmiiboWindow)sender).AmiiboId, ((AmiiboWindow)sender).UseRandomUuid);
-            }
-        }
-
-        private void Update_Pressed(object sender, EventArgs args)
-        {
-            if (Updater.CanUpdate(true))
-            {
-                Updater.BeginParse(this, true).ContinueWith(task =>
-                {
-                    Logger.Error?.Print(LogClass.Application, $"Updater error: {task.Exception}");
-                }, TaskContinuationOptions.OnlyOnFaulted);
             }
         }
 

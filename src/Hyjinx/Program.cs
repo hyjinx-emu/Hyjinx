@@ -8,7 +8,6 @@ using Hyjinx.Common.GraphicsDriver;
 using Hyjinx.Common.Logging;
 using Hyjinx.Common.SystemInterop;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
-using Hyjinx.Modules;
 using Hyjinx.SDL2.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
@@ -85,9 +84,6 @@ namespace Hyjinx.Ava
             {
                 MVKInitialization.InitializeResolver();
             }
-
-            // Delete backup files after updating.
-            Task.Run(Updater.CleanupUpdate);
 
             Console.Title = $"Hyjinx Console {Version}";
 
