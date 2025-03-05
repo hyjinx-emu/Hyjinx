@@ -1,9 +1,5 @@
-using Hyjinx.Common.Utilities;
-using System.Text.Json.Serialization;
-
 namespace Hyjinx.Common.Logging
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<LogClass>))]
     public enum LogClass
     {
         Application,

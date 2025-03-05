@@ -7,10 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
     <PackageReference Include="MsgPack.Cli" />
     <PackageReference Include="System.Management" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Logging.Abstractions\Hyjinx.Logging.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
