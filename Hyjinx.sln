@@ -101,6 +101,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Logging.Abstractions
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Cpu.Abstractions", "src\Hyjinx.Cpu.Abstractions\Hyjinx.Cpu.Abstractions.csproj", "{01B3E63B-FA18-4FFC-8896-C05132E1DABA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Audio.Abstractions", "src\Hyjinx.Audio.Abstractions\Hyjinx.Audio.Abstractions.csproj", "{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -275,6 +277,10 @@ Global
 		{01B3E63B-FA18-4FFC-8896-C05132E1DABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01B3E63B-FA18-4FFC-8896-C05132E1DABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01B3E63B-FA18-4FFC-8896-C05132E1DABA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -310,5 +316,6 @@ Global
 		{6BC3E1B4-0627-467A-B46E-F4B44BF00583} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{C3FA6DC7-C7CA-446C-804D-F98FDBDDE43B} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{01B3E63B-FA18-4FFC-8896-C05132E1DABA} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
+		{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 	EndGlobalSection
 EndGlobal

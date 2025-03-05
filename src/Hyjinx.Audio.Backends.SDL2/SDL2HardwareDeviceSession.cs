@@ -16,7 +16,7 @@ namespace Hyjinx.Audio.Backends.SDL2
     {
         private readonly SDL2HardwareDeviceDriver _driver;
         private readonly ConcurrentQueue<SDL2AudioBuffer> _queuedBuffers;
-        private readonly DynamicRingBuffer _ringBuffer;
+        private readonly IDynamicRingBuffer _ringBuffer;
         private ulong _playedSampleCount;
         private readonly ManualResetEvent _updateRequiredEvent;
         private uint _outputStream;

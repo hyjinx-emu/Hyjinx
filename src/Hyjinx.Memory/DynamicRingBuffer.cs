@@ -1,14 +1,13 @@
 using Hyjinx.Common;
 using Hyjinx.Common.Memory;
 using System;
-using System.Buffers;
 
 namespace Hyjinx.Audio.Backends.Common
 {
     /// <summary>
     /// A ring buffer that grow if data written to it is too big to fit.
     /// </summary>
-    public class DynamicRingBuffer
+    public class DynamicRingBuffer : IDynamicRingBuffer
     {
         private const int RingBufferAlignment = 2048;
 

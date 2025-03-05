@@ -6,7 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hyjinx.Audio\Hyjinx.Audio.csproj" />
+    <ProjectReference Include="..\Hyjinx.Audio.Abstractions\Hyjinx.Audio.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

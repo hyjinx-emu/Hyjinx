@@ -6,9 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Audio.Abstractions\Hyjinx.Audio.Abstractions.csproj" />
     <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.Cpu.Abstractions\Hyjinx.Cpu.Abstractions.csproj" />
     <ProjectReference Include="..\Hyjinx.Memory.Abstractions\Hyjinx.Memory.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Backends\Common\" />
   </ItemGroup>
 
 </Project>
