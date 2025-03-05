@@ -9,7 +9,6 @@ using Hyjinx.Common.Configuration.Hid.Controller.Motion;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Common.GraphicsDriver;
 using Hyjinx.Common.Logging;
-using Hyjinx.Common.Logging.Targets;
 using Hyjinx.Common.SystemInterop;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
@@ -435,25 +434,26 @@ namespace Hyjinx.Headless.SDL2
             if (!option.DisableFileLog)
             {
                 string logDir = AppDataManager.LogsDirPath;
-                FileStream logFile = null;
-
-                if (!string.IsNullOrEmpty(logDir))
-                {
-                    logFile = FileLogTarget.PrepareLogFile(logDir);
-                }
-
-                if (logFile != null)
-                {
-                    Logger.AddTarget(new AsyncLogTargetWrapper(
-                        new FileLogTarget("file", logFile),
-                        1000,
-                        AsyncLogTargetOverflowAction.Block
-                    ));
-                }
-                else
-                {
-                    Logger.Error?.Print(LogClass.Application, "No writable log directory available. Make sure either the Logs directory, Application Data, or the Hyjinx directory is writable.");
-                }
+                // FileStream logFile = null;
+                
+                // TODO: Fix this.
+                // if (!string.IsNullOrEmpty(logDir))
+                // {
+                //     logFile = FileLogTarget.PrepareLogFile(logDir);
+                // }
+                //
+                // if (logFile != null)
+                // {
+                //     Logger.AddTarget(new AsyncLogTargetWrapper(
+                //         new FileLogTarget("file", logFile),
+                //         1000,
+                //         AsyncLogTargetOverflowAction.Block
+                //     ));
+                // }
+                // else
+                // {
+                //     Logger.Error?.Print(LogClass.Application, "No writable log directory available. Make sure either the Logs directory, Application Data, or the Hyjinx directory is writable.");
+                // }
             }
 
             // Setup graphics configuration
@@ -611,8 +611,6 @@ namespace Hyjinx.Headless.SDL2
         private static bool LoadApplication(Options options)
         {
             string path = options.InputPath;
-
-            Logger.RestartTime();
 
             WindowBase window = CreateWindow(options);
             IRenderer renderer = CreateRenderer(options, window);

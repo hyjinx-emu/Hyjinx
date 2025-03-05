@@ -12,16 +12,22 @@ using Hyjinx.SDL2.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Hyjinx.UI.Common.Logging;
 using Hyjinx.UI.Common.SystemInfo;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Hyjinx.Ava
 {
     internal partial class Program
     {
+        /// <summary>
+        /// Monitors the duration of time the application has been active.
+        /// </summary>
+        public static readonly Stopwatch UpTime = Stopwatch.StartNew();
+        
         public static double WindowScaleFactor { get; set; }
         public static double DesktopScaleFactor { get; set; } = 1.0;
         public static string Version { get; private set; }
@@ -46,9 +52,7 @@ namespace Hyjinx.Ava
             PreviewerDetached = true;
 
             Initialize(args);
-
-            LoggerAdapter.Register();
-
+            
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
 
@@ -98,7 +102,8 @@ namespace Hyjinx.Ava
             ConfigurationState.Initialize();
 
             // Initialize the logger system.
-            LoggerModule.Initialize();
+            // LoggerAdapter.Register();
+            LoggerModule.Initialize(UpTime);
 
             // Initialize Discord integration.
             DiscordIntegrationModule.Initialize();
@@ -221,7 +226,7 @@ namespace Hyjinx.Ava
             Logger.Notice.Print(LogClass.Application, $"Hyjinx Version: {Version}");
             SystemInfo.Gather().Print();
 
-            Logger.Notice.Print(LogClass.Application, $"Logs Enabled: {(Logger.GetEnabledLevels().Count == 0 ? "<None>" : string.Join(", ", Logger.GetEnabledLevels()))}");
+            // Logger.Notice.Print(LogClass.Application, $"Logs Enabled: {(Logger.GetEnabledLevels().Count == 0 ? "<None>" : string.Join(", ", Logger.GetEnabledLevels()))}");
 
             if (AppDataManager.Mode == AppDataManager.LaunchMode.Custom)
             {
@@ -253,8 +258,6 @@ namespace Hyjinx.Ava
         public static void Exit()
         {
             DiscordIntegrationModule.Exit();
-
-            Logger.Shutdown();
         }
     }
 }

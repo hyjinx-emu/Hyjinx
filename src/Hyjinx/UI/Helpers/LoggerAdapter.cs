@@ -1,5 +1,6 @@
 using Avalonia.Logging;
 using Avalonia.Utilities;
+using Hyjinx.Common.Logging;
 using System;
 using System.Text;
 
@@ -17,7 +18,7 @@ namespace Hyjinx.Ava.UI.Helpers
             AvaLogger.Sink = new LoggerAdapter();
         }
 
-        private static AppLogger.Log? GetLog(AvaLogLevel level)
+        private static ILog? GetLog(AvaLogLevel level)
         {
             return level switch
             {

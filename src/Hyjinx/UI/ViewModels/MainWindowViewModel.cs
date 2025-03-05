@@ -1556,9 +1556,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 #if RELEASE
             await PerformanceCheck();
 #endif
-
-            Logger.RestartTime();
-
+            
             SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, ConfigurationState.Instance.System.Language, application.Id);
 
             PrepareLoadScreen();
