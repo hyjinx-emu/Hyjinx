@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Input.Abstractions\Hyjinx.Input.Abstractions.csproj" />
     <ProjectReference Include="..\Hyjinx.Logging.Abstractions\Hyjinx.Logging.Abstractions.csproj" />
     <ProjectReference Include="..\Hyjinx.Memory.Abstractions\Hyjinx.Memory.Abstractions.csproj" />
   </ItemGroup>
