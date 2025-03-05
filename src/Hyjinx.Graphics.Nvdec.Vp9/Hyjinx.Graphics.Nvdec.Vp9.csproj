@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Video\Hyjinx.Graphics.Video.csproj" />
+    <ProjectReference Include="..\Hyjinx.Memory\Hyjinx.Memory.csproj" />
   </ItemGroup>
 
 </Project>

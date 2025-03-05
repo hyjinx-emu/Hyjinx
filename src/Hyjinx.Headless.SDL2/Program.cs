@@ -58,8 +58,6 @@ namespace Hyjinx.Headless.SDL2
         private static bool _enableKeyboard;
         private static bool _enableMouse;
 
-        private static readonly InputConfigJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
-
         static void Main(string[] args)
         {
             Version = ReleaseInformation.Version;
@@ -297,7 +295,8 @@ namespace Hyjinx.Headless.SDL2
 
                 try
                 {
-                    config = JsonHelper.DeserializeFromFile(path, _serializerContext.InputConfig);
+                    // config = JsonHelper.DeserializeFromFile(path, _serializerContext.InputConfig);
+                    throw new NotImplementedException();
                 }
                 catch (JsonException)
                 {
