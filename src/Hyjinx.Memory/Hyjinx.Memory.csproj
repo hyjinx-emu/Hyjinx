@@ -10,7 +10,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.Memory.Abstractions\Hyjinx.Memory.Abstractions.csproj" />
   </ItemGroup>
 

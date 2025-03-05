@@ -3,6 +3,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Graphics.Device\Hyjinx.Graphics.Device.csproj" />
+    <ProjectReference Include="..\Hyjinx.Logging.Abstractions\Hyjinx.Logging.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
