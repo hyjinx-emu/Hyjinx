@@ -46,4 +46,8 @@
     <EmbeddedResource Include="HOS\Services\Account\Acc\DefaultUserImage.jpg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\" />
+  </ItemGroup>
+
 </Project>

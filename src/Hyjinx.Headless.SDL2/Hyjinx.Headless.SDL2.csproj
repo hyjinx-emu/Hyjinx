@@ -27,6 +27,7 @@
     <ProjectReference Include="..\ARMeilleure\ARMeilleure.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.OpenGL\Hyjinx.Graphics.OpenGL.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Gpu\Hyjinx.Graphics.Gpu.csproj" />
+    <ProjectReference Include="..\Hyjinx.UI.Common\Hyjinx.UI.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Cpu.Abstractions\Hyjinx.Cpu.Abstractions.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Device\Hyjinx.Graphics.Device.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.GAL\Hyjinx.Graphics.GAL.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Shader\Hyjinx.Graphics.Shader.csproj" />
