@@ -1,3 +1,5 @@
+using System;
+
 namespace Hyjinx.Common.Configuration.Hid
 {
     // This enum was duplicated from Hyjinx.HLE.HOS.Services.Hid.PlayerIndex and should be kept identical
