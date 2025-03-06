@@ -71,8 +71,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spv.Generator", "src\Spv.Ge
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.UI.LocaleGenerator", "src\Hyjinx.UI.LocaleGenerator\Hyjinx.UI.LocaleGenerator.csproj", "{77D01AD9-2C98-478E-AE1D-8F7100738FB4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Horizon.Common", "src\Hyjinx.Horizon.Common\Hyjinx.Horizon.Common.csproj", "{77F96ECE-4952-42DB-A528-DED25572A573}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Horizon", "src\Hyjinx.Horizon\Hyjinx.Horizon.csproj", "{AF34127A-3A92-43E5-8496-14960A50B1F1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.HLE.Kernel.Generators", "src\Hyjinx.HLE.Kernel.Generators\Hyjinx.HLE.Kernel.Generators.csproj", "{7F55A45D-4E1D-4A36-ADD3-87F29A285AA2}"
@@ -247,10 +245,6 @@ Global
 		{77D01AD9-2C98-478E-AE1D-8F7100738FB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77D01AD9-2C98-478E-AE1D-8F7100738FB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77D01AD9-2C98-478E-AE1D-8F7100738FB4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77F96ECE-4952-42DB-A528-DED25572A573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77F96ECE-4952-42DB-A528-DED25572A573}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77F96ECE-4952-42DB-A528-DED25572A573}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77F96ECE-4952-42DB-A528-DED25572A573}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AF34127A-3A92-43E5-8496-14960A50B1F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AF34127A-3A92-43E5-8496-14960A50B1F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF34127A-3A92-43E5-8496-14960A50B1F1}.Release|Any CPU.ActiveCfg = Release|Any CPU

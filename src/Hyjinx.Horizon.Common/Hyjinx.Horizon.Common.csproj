@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../.build/library.props" />
-
-  <ItemGroup>
-    <ProjectReference Include="..\Hyjinx.Memory.Abstractions\Hyjinx.Memory.Abstractions.csproj" />
-  </ItemGroup>
-
-</Project>
