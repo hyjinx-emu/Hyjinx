@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.Common.Utilities
 {
-    public partial class OsUtils
+    internal partial class OsUtils
     {
         [LibraryImport("libc", SetLastError = true)]
         private static partial int setenv([MarshalAs(UnmanagedType.LPStr)] string name, [MarshalAs(UnmanagedType.LPStr)] string value, int overwrite);
