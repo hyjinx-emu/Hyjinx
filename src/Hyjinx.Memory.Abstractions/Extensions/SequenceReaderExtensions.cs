@@ -9,31 +9,6 @@ namespace Hyjinx.Common.Extensions
     public static class SequenceReaderExtensions
     {
         /// <summary>
-        /// Dumps the entire <see cref="SequenceReader{byte}"/> to a file, restoring its previous location afterward.
-        /// Useful for debugging purposes.
-        /// </summary>
-        /// <param name="reader">The <see cref="SequenceReader{Byte}"/> to write to a file</param>
-        /// <param name="fileFullName">The path and name of the file to create and dump to</param>
-        public static void DumpToFile(this ref SequenceReader<byte> reader, string fileFullName)
-        {
-            var initialConsumed = reader.Consumed;
-
-            reader.Rewind(initialConsumed);
-
-            using (var fileStream = System.IO.File.Create(fileFullName, 4096, System.IO.FileOptions.None))
-            {
-                while (reader.End == false)
-                {
-                    var span = reader.CurrentSpan;
-                    fileStream.Write(span);
-                    reader.Advance(span.Length);
-                }
-            }
-
-            reader.SetConsumed(initialConsumed);
-        }
-
-        /// <summary>
         /// Returns a reference to the desired value. This ref should always be used. The argument passed in <paramref name="copyDestinationIfRequiredDoNotUse"/> should never be used, as this is only used for storage if the value
         /// must be copied from multiple <see cref="ReadOnlyMemory{Byte}"/> segments held by the <see cref="SequenceReader{Byte}"/>.
         /// </summary>
