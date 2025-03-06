@@ -3,12 +3,7 @@
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants Condition=" '$(ExtraDefineConstants)' != '' ">$(DefineConstants);$(ExtraDefineConstants)</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Management" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Cpu.Abstractions\Hyjinx.Cpu.Abstractions.csproj" />
