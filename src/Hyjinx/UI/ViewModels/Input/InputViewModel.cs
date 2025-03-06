@@ -51,8 +51,6 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
         private string _profileName;
         private bool _isLoaded;
 
-        private static readonly InputConfigJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
-
         public IGamepadDriver AvaloniaKeyboardDriver { get; }
         public IGamepad SelectedGamepad { get; private set; }
 
@@ -707,7 +705,8 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
 
                 try
                 {
-                    config = JsonHelper.DeserializeFromFile(path, _serializerContext.InputConfig);
+                    // config = JsonHelper.DeserializeFromFile(path, _serializerContext.InputConfig);
+                    throw new NotImplementedException();
                 }
                 catch (JsonException) { }
                 catch (InvalidOperationException)
@@ -773,9 +772,10 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
 
                     config.ControllerType = Controllers[_controller].Type;
 
-                    string jsonString = JsonHelper.Serialize(config, _serializerContext.InputConfig);
+                    // string jsonString = JsonHelper.Serialize(config, _serializerContext.InputConfig);
+                    // await File.WriteAllTextAsync(path, jsonString);
 
-                    await File.WriteAllTextAsync(path, jsonString);
+                    throw new NotImplementedException();
 
                     LoadProfiles();
                 }

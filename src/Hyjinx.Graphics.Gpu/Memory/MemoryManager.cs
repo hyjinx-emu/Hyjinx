@@ -235,7 +235,7 @@ namespace Hyjinx.Graphics.Gpu.Memory
         /// <param name="size">Size in bytes to be range</param>
         /// <param name="tracked">True if write tracking is triggered on the span</param>
         /// <returns>A writable region with the data at the specified memory location</returns>
-        public WritableRegion GetWritableRegion(ulong va, int size, bool tracked = false)
+        public IWritableRegion GetWritableRegion(ulong va, int size, bool tracked = false)
         {
             if (IsContiguous(va, size))
             {

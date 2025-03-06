@@ -489,7 +489,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 
             (ulong receivePosition, ulong receiveLength) = context.Request.GetBufferType0x22();
 
-            WritableRegion receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
+            var receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
 
             LinuxError errno = LinuxError.EBADF;
             ISocket socket = _context.RetrieveSocket(socketFd);
@@ -520,7 +520,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
             (ulong receivePosition, ulong receiveLength) = context.Request.GetBufferType0x22(0);
             (ulong sockAddrOutPosition, ulong sockAddrOutSize) = context.Request.GetBufferType0x22(1);
 
-            WritableRegion receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
+            var receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
 
             LinuxError errno = LinuxError.EBADF;
             ISocket socket = _context.RetrieveSocket(socketFd);
@@ -765,7 +765,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
             BsdSocketOption option = (BsdSocketOption)context.RequestData.ReadInt32();
 
             (ulong bufferPosition, ulong bufferSize) = context.Request.GetBufferType0x22();
-            WritableRegion optionValue = context.Memory.GetWritableRegion(bufferPosition, (int)bufferSize);
+            var optionValue = context.Memory.GetWritableRegion(bufferPosition, (int)bufferSize);
 
             LinuxError errno = LinuxError.EBADF;
             ISocket socket = _context.RetrieveSocket(socketFd);
@@ -971,7 +971,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 
             (ulong receivePosition, ulong receiveLength) = context.Request.GetBufferType0x22();
 
-            WritableRegion receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
+            var receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
 
             LinuxError errno = LinuxError.EBADF;
             IFileDescriptor file = _context.RetrieveFileDescriptor(fd);
@@ -1051,7 +1051,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
             ulong receivePosition = context.Request.ReceiveBuff[0].Position;
             ulong receiveLength = context.Request.ReceiveBuff[0].Size;
 
-            WritableRegion receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
+            var receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
 
             LinuxError errno = LinuxError.EBADF;
             ISocket socket = _context.RetrieveSocket(socketFd);
@@ -1092,7 +1092,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
             ulong receivePosition = context.Request.ReceiveBuff[0].Position;
             ulong receiveLength = context.Request.ReceiveBuff[0].Size;
 
-            WritableRegion receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
+            var receiveRegion = context.Memory.GetWritableRegion(receivePosition, (int)receiveLength);
 
             LinuxError errno = LinuxError.EBADF;
             ISocket socket = _context.RetrieveSocket(socketFd);

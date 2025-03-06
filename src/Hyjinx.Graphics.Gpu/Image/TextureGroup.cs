@@ -509,7 +509,7 @@ namespace Hyjinx.Graphics.Gpu.Image
             int endOffset = Math.Min(offset + _sliceSizes[level], (int)Storage.Size);
             int size = endOffset - offset;
 
-            using WritableRegion region = _physicalMemory.GetWritableRegion(Storage.Range.Slice((ulong)offset, (ulong)size), tracked);
+            using var region = _physicalMemory.GetWritableRegion(Storage.Range.Slice((ulong)offset, (ulong)size), tracked);
 
             if (inBuffer)
             {

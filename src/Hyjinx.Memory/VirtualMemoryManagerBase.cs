@@ -110,7 +110,7 @@ namespace Hyjinx.Memory
             }
         }
 
-        public virtual WritableRegion GetWritableRegion(ulong va, int size, bool tracked = false)
+        public virtual IWritableRegion GetWritableRegion(ulong va, int size, bool tracked = false)
         {
             if (size == 0)
             {

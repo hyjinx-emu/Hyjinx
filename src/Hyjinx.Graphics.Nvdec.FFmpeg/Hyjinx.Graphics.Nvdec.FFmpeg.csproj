@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
+    <ProjectReference Include="..\Hyjinx.Logging.Abstractions\Hyjinx.Logging.Abstractions.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Video\Hyjinx.Graphics.Video.csproj" />
   </ItemGroup>
 

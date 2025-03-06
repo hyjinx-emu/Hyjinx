@@ -1,6 +1,4 @@
-using Hyjinx.Common.Logging;
 using System;
-using System.Threading;
 
 namespace Hyjinx.Graphics.Device
 {

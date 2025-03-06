@@ -632,7 +632,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
             byte[] hostName = Encoding.ASCII.GetBytes(hostEntry.HostName + '\0');
 #pragma warning restore IDE0059
 
-            using WritableRegion region = context.Memory.GetWritableRegion(responseBufferPosition, (int)responseBufferSize);
+            using var region = context.Memory.GetWritableRegion(responseBufferPosition, (int)responseBufferSize);
 
             Span<byte> data = region.Memory.Span;
 

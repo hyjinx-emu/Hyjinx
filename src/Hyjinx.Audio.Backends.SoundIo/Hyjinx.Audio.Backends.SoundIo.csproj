@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hyjinx.Audio\Hyjinx.Audio.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ContentWithTargetPath Include="Native\libsoundio\libs\libsoundio.dll" Condition="'$(RuntimeIdentifier)' != 'linux-x64' AND '$(RuntimeIdentifier)' != 'linux-arm64' AND '$(RuntimeIdentifier)' != 'osx-x64'">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>libsoundio.dll</TargetPath>
@@ -22,6 +18,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>libsoundio.so</TargetPath>
     </ContentWithTargetPath>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Audio.Abstractions\Hyjinx.Audio.Abstractions.csproj" />
+    <ProjectReference Include="..\Hyjinx.Memory\Hyjinx.Memory.csproj" />
   </ItemGroup>
 
 </Project>

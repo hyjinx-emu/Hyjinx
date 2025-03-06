@@ -103,7 +103,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 
             string locationName = StringUtils.ReadInlinedAsciiString(context.RequestData, 0x24);
 
-            using WritableRegion region = context.Memory.GetWritableRegion(bufferPosition, Unsafe.SizeOf<TimeZoneRule>());
+            using var region = context.Memory.GetWritableRegion(bufferPosition, Unsafe.SizeOf<TimeZoneRule>());
 
             ref TimeZoneRule rules = ref MemoryMarshal.Cast<byte, TimeZoneRule>(region.Memory.Span)[0];
 

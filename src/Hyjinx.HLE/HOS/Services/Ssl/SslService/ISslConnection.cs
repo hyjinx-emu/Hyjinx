@@ -206,7 +206,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
             {
                 if (_getServerCertChain)
                 {
-                    using WritableRegion region = context.Memory.GetWritableRegion(context.Request.ReceiveBuff[0].Position, (int)context.Request.ReceiveBuff[0].Size);
+                    using var region = context.Memory.GetWritableRegion(context.Request.ReceiveBuff[0].Position, (int)context.Request.ReceiveBuff[0].Size);
 
                     result = _connection.GetServerCertificate(_hostName, region.Memory.Span, out uint bufferSize, out uint certificateCount);
 
@@ -234,7 +234,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             ResultCode result;
 
-            using WritableRegion region = context.Memory.GetWritableRegion(context.Request.ReceiveBuff[0].Position, (int)context.Request.ReceiveBuff[0].Size);
+            using var region = context.Memory.GetWritableRegion(context.Request.ReceiveBuff[0].Position, (int)context.Request.ReceiveBuff[0].Size);
             // TODO: Better error management.
             result = _connection.Read(out int readCount, region.Memory);
 
@@ -256,7 +256,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
             }
 
             // We don't dispose as this isn't supposed to be modified
-            WritableRegion region = context.Memory.GetWritableRegion(context.Request.SendBuff[0].Position, (int)context.Request.SendBuff[0].Size);
+            var region = context.Memory.GetWritableRegion(context.Request.SendBuff[0].Position, (int)context.Request.SendBuff[0].Size);
 
             // TODO: Better error management.
             ResultCode result = _connection.Write(out int writtenCount, region.Memory);
@@ -294,7 +294,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             ResultCode result;
 
-            using WritableRegion region = context.Memory.GetWritableRegion(context.Request.ReceiveBuff[0].Position, (int)context.Request.ReceiveBuff[0].Size);
+            using var region = context.Memory.GetWritableRegion(context.Request.ReceiveBuff[0].Position, (int)context.Request.ReceiveBuff[0].Size);
 
 
             // TODO: Better error management.

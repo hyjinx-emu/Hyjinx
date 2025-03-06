@@ -20,7 +20,7 @@ namespace Hyjinx.Horizon.Sdk.Sf
             return HorizonStatic.AddressSpace.GetSpan(bufferRange.Address, checked((int)bufferRange.Size));
         }
 
-        public static WritableRegion GetWritableRegion(PointerAndSize bufferRange)
+        public static IWritableRegion GetWritableRegion(PointerAndSize bufferRange)
         {
             return HorizonStatic.AddressSpace.GetWritableRegion(bufferRange.Address, checked((int)bufferRange.Size));
         }

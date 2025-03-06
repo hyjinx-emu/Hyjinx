@@ -68,7 +68,7 @@ namespace Hyjinx.Tests.Memory
             throw new NotImplementedException();
         }
 
-        public WritableRegion GetWritableRegion(ulong va, int size, bool tracked = false)
+        public IWritableRegion GetWritableRegion(ulong va, int size, bool tracked = false)
         {
             throw new NotImplementedException();
         }

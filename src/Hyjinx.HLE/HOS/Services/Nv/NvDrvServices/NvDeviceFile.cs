@@ -57,7 +57,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
 
         private static NvInternalResult PrintResult(MethodInfo info, NvInternalResult result)
         {
-            Logger.Debug?.Print(LogClass.ServiceNv, $"{info.Name} returned result {result}");
+            Logger.Trace?.Print(LogClass.ServiceNv, $"{info.Name} returned result {result}");
 
             return result;
         }

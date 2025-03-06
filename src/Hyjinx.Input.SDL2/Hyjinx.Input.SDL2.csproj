@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Input\Hyjinx.Input.csproj" />
+    <ProjectReference Include="..\Hyjinx.Memory\Hyjinx.Memory.csproj" />
     <ProjectReference Include="..\Hyjinx.SDL2.Common\Hyjinx.SDL2.Common.csproj" />
   </ItemGroup>
 

@@ -3,7 +3,7 @@ using System;
 
 namespace Hyjinx.Memory
 {
-    public sealed class WritableRegion : IDisposable
+    public sealed class WritableRegion : IWritableRegion
     {
         private readonly IWritableBlock _block;
         private readonly ulong _va;

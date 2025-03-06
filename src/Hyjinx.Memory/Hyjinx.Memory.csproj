@@ -6,7 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.Memory.Abstractions\Hyjinx.Memory.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
