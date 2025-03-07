@@ -29,16 +29,15 @@ public sealed class ApplicationConsoleFormatter : ConsoleFormatter
     public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
     {
         textWriter.Write(@$"{upTime.Elapsed:hh\:mm\:ss\.fff}");
-        textWriter.Write($" | {FormatLogLevel(logEntry.LogLevel)}");
-        textWriter.Write($" | {logEntry.EventId}");
+        textWriter.Write($" |{FormatLogLevel(logEntry.LogLevel)}|");
+        textWriter.Write($" {logEntry.EventId}");
         
         scopeProvider?.ForEachScope((o, _) =>
         {
-            textWriter.Write(" | ");
             textWriter.Write(o?.ToString());
         }, logEntry.State);
         
-        textWriter.Write(" | ");
+        textWriter.Write(": ");
         textWriter.WriteLine(logEntry.Formatter(logEntry.State, logEntry.Exception));
     }
     
@@ -46,12 +45,12 @@ public sealed class ApplicationConsoleFormatter : ConsoleFormatter
     {
         return level switch
         {
-            LogLevel.Trace => "TRACE",
-            LogLevel.Debug => "DEBUG",
-            LogLevel.Information => "INFO",
-            LogLevel.Warning => "WARN",
-            LogLevel.Error => "ERROR",
-            LogLevel.Critical => "NOTICE",
+            LogLevel.Trace => "T",
+            LogLevel.Debug => "D",
+            LogLevel.Information => "I",
+            LogLevel.Warning => "W",
+            LogLevel.Error => "E",
+            LogLevel.Critical => "N",
             _ => throw new NotSupportedException($"{level} is not supported.")
         };
     }
