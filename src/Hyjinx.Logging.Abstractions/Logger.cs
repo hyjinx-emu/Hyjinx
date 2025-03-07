@@ -20,7 +20,7 @@ public class Logger : ILog
         ArgumentNullException.ThrowIfNull(factory);
         
         DefaultLogger = factory.CreateLogger("Program");
-        Notice = new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Information);
+        Notice = new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Critical);
     }
 
     public static ILog? Debug { get; private set; }

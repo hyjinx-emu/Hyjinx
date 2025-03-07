@@ -46,11 +46,11 @@ public sealed class ApplicationConsoleFormatter : ConsoleFormatter
         return level switch
         {
             LogLevel.Trace => "TRACE",
+            LogLevel.Debug => "DEBUG",
             LogLevel.Information => "INFO",
             LogLevel.Warning => "WARN",
             LogLevel.Error => "ERROR",
-            LogLevel.Critical => "CRITICAL",
-            LogLevel.Debug => "DEBUG",
+            LogLevel.Critical => "NOTICE",
             _ => throw new NotSupportedException($"{level} is not supported.")
         };
     }
