@@ -10,12 +10,15 @@ namespace Hyjinx.Common.Logging;
 /// <remarks>This class uses <see cref="LogClass"/> to determine the event type for a particular log event.</remarks>
 public class Logger : ILog
 {
-    protected static ILogger DefaultLogger { get; private set; } = null!;
+    /// <summary>
+    /// Gets the default logger.
+    /// </summary>
+    public static ILogger DefaultLogger { get; private set; } = null!;
 
     public static void Initialize(ILoggerFactory factory)
     {
         ArgumentNullException.ThrowIfNull(factory);
-
+        
         DefaultLogger = factory.CreateLogger("Program");
         Notice = new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Information);
     }

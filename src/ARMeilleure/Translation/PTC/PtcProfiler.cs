@@ -2,6 +2,7 @@ using ARMeilleure.State;
 using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.Common.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Concurrent;
@@ -15,12 +16,14 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Timers;
 using static ARMeilleure.Translation.PTC.PtcFormatter;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using Timer = System.Timers.Timer;
 
 namespace ARMeilleure.Translation.PTC
 {
-    class PtcProfiler
+    partial class PtcProfiler
     {
+        private readonly ILogger logger;
         private const string OuterHeaderMagicString = "Pohd\0\0\0\0";
 
         private const uint InternalVersion = 5518; //! Not to be incremented manually for each change to the ARMeilleure project.
@@ -56,6 +59,7 @@ namespace ARMeilleure.Translation.PTC
 
         public PtcProfiler(Ptc ptc)
         {
+            logger = Logger.DefaultLogger;
             _ptc = ptc;
 
             _timer = new Timer(SaveInterval * 1000d);
@@ -227,7 +231,8 @@ namespace ARMeilleure.Translation.PTC
                         ProfiledFuncs = Deserialize(stream, (address, profile) => (address + 0x500000UL, profile));
                         break;
                     default:
-                        Logger.Error?.Print(LogClass.Ptc, $"No migration path for {nameof(outerHeader.InfoFileVersion)} '{outerHeader.InfoFileVersion}'. Discarding cache.");
+                        LogNoMigrationPathFound(outerHeader.InfoFileVersion);
+                        
                         InvalidateCompressedStream(compressedStream);
                         return false;
                 }
@@ -239,10 +244,29 @@ namespace ARMeilleure.Translation.PTC
 
             long fileSize = new FileInfo(fileName).Length;
 
-            Logger.Info?.Print(LogClass.Ptc, $"{(isBackup ? "Loaded Backup Profiling Info" : "Loaded Profiling Info")} (size: {fileSize} bytes, profiled functions: {ProfiledFuncs.Count}).");
+            if (isBackup)
+            {
+                LogLoadedBackupProfilingInfo(fileSize, ProfiledFuncs.Count);
+            }
+            else
+            {
+                LogLoadedProfilingInfo(fileSize, ProfiledFuncs.Count);
+            }
 
             return true;
         }
+
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "Loaded Profiling Info (size: {fileSize} bytes, profiled functions: {functionsCount}).")]
+        protected partial void LogLoadedProfilingInfo(long fileSize, int functionsCount);
+        
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "Loaded Backup Profiling Info (size: {fileSize} bytes, profiled functions: {functionsCount}).")]
+        protected partial void LogLoadedBackupProfilingInfo(long fileSize, int functionsCount);
+
+        [LoggerMessage(LogLevel.Error, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "No migration path for version '{fileInfoVersion}'. Discarding cache.")]
+        protected partial void LogNoMigrationPathFound(uint fileInfoVersion);
 
         private static Dictionary<ulong, FuncProfile> Deserialize(Stream stream, Func<ulong, FuncProfile, (ulong, FuncProfile)> migrateEntryFunc = null)
         {
@@ -350,9 +374,13 @@ namespace ARMeilleure.Translation.PTC
 
             if (fileSize != 0L)
             {
-                Logger.Info?.Print(LogClass.Ptc, $"Saved Profiling Info (size: {fileSize} bytes, profiled functions: {profiledFuncsCount}).");
+                LogSavedProfileInfo(fileSize, profiledFuncsCount);
             }
         }
+
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "Saved Profiling Info (size: {fileSize} bytes, profiled functions: {functionsCount}).")]
+        protected partial void LogSavedProfileInfo(long fileSize, int functionsCount);
 
         private static void Serialize(Stream stream, Dictionary<ulong, FuncProfile> profiledFuncs)
         {

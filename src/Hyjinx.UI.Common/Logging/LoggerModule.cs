@@ -28,7 +28,7 @@ public static class LoggerModule
         var services = new ServiceCollection();
         services.AddLogging(logging =>
         {
-            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
             logging.ClearProviders();
 
             logging.AddConsoleFormatter<ApplicationConsoleFormatter, ApplicationConsoleFormatterOptions>(opts =>

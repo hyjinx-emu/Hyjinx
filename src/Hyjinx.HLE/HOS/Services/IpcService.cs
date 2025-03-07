@@ -1,16 +1,20 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Ipc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services
 {
-    abstract class IpcService
+    abstract partial class IpcService
     {
+        protected readonly ILogger logger;
+        
         public IReadOnlyDictionary<int, MethodInfo> CmifCommands { get; }
         public IReadOnlyDictionary<int, MethodInfo> TipcCommands { get; }
 
@@ -23,6 +27,8 @@ namespace Hyjinx.HLE.HOS.Services
 
         public IpcService(ServerBase server = null)
         {
+            logger = Logger.DefaultLogger;
+            
             CmifCommands = typeof(IpcService).Assembly.GetTypes()
                 .Where(type => type == GetType())
                 .SelectMany(type => type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public))
@@ -121,7 +127,7 @@ namespace Hyjinx.HLE.HOS.Services
 
                 if (serviceExists)
                 {
-                    Logger.Trace?.Print(LogClass.KernelIpc, $"{service.GetType().Name}: {processRequest.Name}");
+                    LogRequestReceived(service.GetType().Name, processRequest!.Name);
 
                     result = (ResultCode)processRequest.Invoke(service, new object[] { context });
                 }
@@ -132,7 +138,7 @@ namespace Hyjinx.HLE.HOS.Services
 
                     serviceName = (service is not DummyService dummyService) ? service.GetType().FullName : dummyService.ServiceName;
 
-                    Logger.Warning?.Print(LogClass.KernelIpc, $"Missing service {serviceName}: {commandId} ignored");
+                    LogMissingService(serviceName!, commandId);
                 }
 
                 if (_isDomain)
@@ -174,8 +180,8 @@ namespace Hyjinx.HLE.HOS.Services
 
                 if (serviceExists)
                 {
-                    Logger.Debug?.Print(LogClass.KernelIpc, $"{GetType().Name}: {processRequest.Name}");
-
+                    LogRequestReceived(GetType().Name, processRequest!.Name);
+                    
                     result = (ResultCode)processRequest.Invoke(this, new object[] { context });
                 }
                 else
@@ -184,8 +190,8 @@ namespace Hyjinx.HLE.HOS.Services
 
 
                     serviceName = (this is not DummyService dummyService) ? GetType().FullName : dummyService.ServiceName;
-
-                    Logger.Warning?.Print(LogClass.KernelIpc, $"Missing service {serviceName}: {commandId} ignored");
+                    
+                    LogMissingService(serviceName!, commandId);
                 }
 
                 context.ResponseData.BaseStream.Seek(0, SeekOrigin.Begin);
@@ -199,6 +205,16 @@ namespace Hyjinx.HLE.HOS.Services
                 throw new ServiceNotImplementedException(this, context, dbgMessage);
             }
         }
+
+        [LoggerMessage(LogLevel.Trace,
+            EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+            Message = "{serviceName}: {requestName}")]
+        protected partial void LogRequestReceived(string serviceName, string requestName);
+
+        [LoggerMessage(LogLevel.Warning, 
+            EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+            Message = "Missing service {serviceName}: {commandId} ignored.")]
+        protected partial void LogMissingService(string serviceName, int commandId);
 
         protected void MakeObject(ServiceCtx context, IpcService obj)
         {
