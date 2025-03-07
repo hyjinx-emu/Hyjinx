@@ -103,7 +103,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Audio.Abstractions",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Input.Abstractions", "src\Hyjinx.Input.Abstractions\Hyjinx.Input.Abstractions.csproj", "{97B67FE1-134D-4436-85BD-5A652751168E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Extensions.Logging.Console", "src\Hyjinx.Extensions.Logging.Console\Hyjinx.Extensions.Logging.Console.csproj", "{8FF33806-F88F-423E-B98E-63B363E0CB5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Extensions.Logging", "src\Hyjinx.Extensions.Logging\Hyjinx.Extensions.Logging.csproj", "{8FF33806-F88F-423E-B98E-63B363E0CB5F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".sln", ".sln", "{EEB9FB42-5EF6-4135-B051-D5DC604AA6F2}"
 	ProjectSection(SolutionItems) = preProject

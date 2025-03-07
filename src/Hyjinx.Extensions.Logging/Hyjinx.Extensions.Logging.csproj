@@ -4,10 +4,9 @@
   <PropertyGroup>
     <EnableDefaultItems>true</EnableDefaultItems>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>$(DefineConstants);NO_SUPPRESS_GC_TRANSITION</DefineConstants>
     <NoWarn>$(NoWarn);SYSLIB1100;SYSLIB1101</NoWarn>
     <IncludePlatformAttributes>true</IncludePlatformAttributes>
-    <PackageDescription>Console logger provider implementation for Microsoft.Extensions.Logging.</PackageDescription>
+    <PackageDescription>Logger provider implementation for Microsoft.Extensions.Logging.</PackageDescription>
   </PropertyGroup>
   
   <ItemGroup>
