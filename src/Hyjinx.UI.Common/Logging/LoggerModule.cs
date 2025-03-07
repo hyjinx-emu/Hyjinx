@@ -1,9 +1,9 @@
 using Hyjinx.Common;
 using Hyjinx.Common.Logging;
+using Hyjinx.Extensions.Logging.Console;
 using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using System;
 using System.Diagnostics;
 using LogLevel = Hyjinx.Common.Logging.LogLevel;
@@ -31,16 +31,14 @@ public static class LoggerModule
             logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
             logging.ClearProviders();
 
-            logging.AddConsoleFormatter<ApplicationConsoleFormatter, ApplicationConsoleFormatterOptions>(opts =>
-            {
-                opts.UpTime = upTime;
-            });
-            
             logging.AddConsole(console =>
             {
-                console.FormatterName = ApplicationConsoleFormatter.FormatterName;
+                console.FormatterName = ConsoleFormatterNames.Simple;
                 console.QueueFullMode = ConsoleLoggerQueueFullMode.DropWrite;
                 console.MaxQueueLength = 10000;
+            }).AddSimpleConsole(opts =>
+            {
+                opts.TimestampFormat = "hh:mm:ss.fff";
             });
         });
 
