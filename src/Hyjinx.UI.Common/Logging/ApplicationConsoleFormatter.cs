@@ -28,6 +28,30 @@ public sealed class ApplicationConsoleFormatter : ConsoleFormatter
     
     public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
     {
-        textWriter.WriteLine($"{upTime.Elapsed} | {logEntry.LogLevel} | {logEntry.EventId} | {logEntry.Formatter(logEntry.State, logEntry.Exception)}");
+        textWriter.Write(@$"{upTime.Elapsed:hh\:mm\:ss\.fff}");
+        textWriter.Write($" | {FormatLogLevel(logEntry.LogLevel)}");
+        
+        scopeProvider?.ForEachScope((o, _) =>
+        {
+            textWriter.Write(" | ");
+            textWriter.Write(o?.ToString());
+        }, logEntry.State);
+        
+        textWriter.Write(" | ");
+        textWriter.WriteLine(logEntry.Formatter(logEntry.State, logEntry.Exception));
+    }
+    
+    private static string FormatLogLevel(LogLevel level)
+    {
+        return level switch
+        {
+            LogLevel.Trace => "TRACE",
+            LogLevel.Information => "INFO",
+            LogLevel.Warning => "WARN",
+            LogLevel.Error => "ERROR",
+            LogLevel.Critical => "CRITICAL",
+            LogLevel.Debug => "DEBUG",
+            _ => throw new NotSupportedException($"{level} is not supported.")
+        };
     }
 }
