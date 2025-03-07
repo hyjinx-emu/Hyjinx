@@ -30,6 +30,7 @@ public sealed class ApplicationConsoleFormatter : ConsoleFormatter
     {
         textWriter.Write(@$"{upTime.Elapsed:hh\:mm\:ss\.fff}");
         textWriter.Write($" | {FormatLogLevel(logEntry.LogLevel)}");
+        textWriter.Write($" | {logEntry.EventId}");
         
         scopeProvider?.ForEachScope((o, _) =>
         {
