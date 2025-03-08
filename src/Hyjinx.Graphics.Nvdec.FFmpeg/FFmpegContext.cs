@@ -1,12 +1,16 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Nvdec.FFmpeg.Native;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Nvdec.FFmpeg
 {
-    unsafe class FFmpegContext : IDisposable
+    unsafe partial class FFmpegContext : IDisposable
     {
+        private static ILogger<FFmpegContext> _logger = Logger.DefaultLoggerFactory.CreateLogger<FFmpegContext>();
+        
         private unsafe delegate int AVCodec_decode(AVCodecContext* avctx, void* outdata, int* got_frame_ptr, AVPacket* avpkt);
 
         private readonly AVCodec_decode _decodeFrame;
@@ -14,37 +18,53 @@ namespace Hyjinx.Graphics.Nvdec.FFmpeg
         private readonly AVCodec* _codec;
         private readonly AVPacket* _packet;
         private readonly AVCodecContext* _context;
-
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.FFmpeg, EventName = nameof(LogClass.FFmpeg),
+            Message = "Codec wasn't found. Make sure you have the {codecId} codec present in your FFmpeg installation.")]
+        private static partial void LogCodecNotFound(ILogger logger, AVCodecID codecId);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.FFmpeg, EventName = nameof(LogClass.FFmpeg),
+            Message = "Codec context couldn't be allocated.")]
+        private static partial void LogCodecContextNotAllocated(ILogger logger);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.FFmpeg, EventName = nameof(LogClass.FFmpeg),
+            Message = "Codec couldn't be opened.")]
+        private static partial void LogCodecNotOpened(ILogger logger);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.FFmpeg, EventName = nameof(LogClass.FFmpeg),
+            Message = "Packet couldn't be allocated.")]
+        private static partial void LogPacketNotAllocated(ILogger logger);
+        
         public FFmpegContext(AVCodecID codecId)
         {
             _codec = FFmpegApi.avcodec_find_decoder(codecId);
             if (_codec == null)
             {
-                Logger.Error?.PrintMsg(LogClass.FFmpeg, $"Codec wasn't found. Make sure you have the {codecId} codec present in your FFmpeg installation.");
-
+                LogCodecNotFound(_logger, codecId);
                 return;
             }
 
             _context = FFmpegApi.avcodec_alloc_context3(_codec);
             if (_context == null)
             {
-                Logger.Error?.PrintMsg(LogClass.FFmpeg, "Codec context couldn't be allocated.");
-
+                LogCodecContextNotAllocated(_logger);
                 return;
             }
 
             if (FFmpegApi.avcodec_open2(_context, _codec, null) != 0)
             {
-                Logger.Error?.PrintMsg(LogClass.FFmpeg, "Codec couldn't be opened.");
-
+                LogCodecNotOpened(_logger);
                 return;
             }
 
             _packet = FFmpegApi.av_packet_alloc();
             if (_packet == null)
             {
-                Logger.Error?.PrintMsg(LogClass.FFmpeg, "Packet couldn't be allocated.");
-
+                LogPacketNotAllocated(_logger);
                 return;
             }
 
@@ -98,20 +118,20 @@ namespace Hyjinx.Graphics.Nvdec.FFmpeg
                 case AVLog.Panic:
                 case AVLog.Fatal:
                 case AVLog.Error:
-                    Logger.Error?.Print(LogClass.FFmpeg, line);
+                    _logger.Log(LogLevel.Error, line);
                     break;
                 case AVLog.Warning:
-                    Logger.Warning?.Print(LogClass.FFmpeg, line);
+                    _logger.Log(LogLevel.Warning, line);
                     break;
                 case AVLog.Info:
-                    Logger.Info?.Print(LogClass.FFmpeg, line);
+                    _logger.Log(LogLevel.Information, line);
                     break;
                 case AVLog.Verbose:
                 case AVLog.Debug:
-                    Logger.Debug?.Print(LogClass.FFmpeg, line);
+                    _logger.Log(LogLevel.Debug, line);
                     break;
                 case AVLog.Trace:
-                    Logger.Trace?.Print(LogClass.FFmpeg, line);
+                    _logger.Log(LogLevel.Trace, line);
                     break;
             }
         }
