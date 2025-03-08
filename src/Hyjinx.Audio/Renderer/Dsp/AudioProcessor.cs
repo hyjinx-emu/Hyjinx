@@ -39,14 +39,14 @@ namespace Hyjinx.Audio.Renderer.Dsp
         private long _lastTime;
         private long _playbackEnds;
         private readonly ManualResetEvent _event;
-        private readonly ILogger _logger;
+        private readonly ILogger<AudioProcessor> _logger;
 
         private ManualResetEvent _pauseEvent;
 
         public AudioProcessor()
         {
             _event = new ManualResetEvent(false);
-            _logger = Logger.DefaultLogger;
+            _logger = Logger.DefaultLoggerFactory.CreateLogger<AudioProcessor>();
         }
 
         private static uint GetHardwareChannelCount(IHardwareDeviceDriver deviceDriver)

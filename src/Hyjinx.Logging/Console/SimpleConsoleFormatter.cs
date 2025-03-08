@@ -42,7 +42,7 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
     internal SimpleConsoleFormatterOptions FormatterOptions { get; set; }
 
     [ThreadStatic]
-    private static StringBuilder t_messageBuilder;
+    private static StringBuilder? t_messageBuilder;
     
     public override void Write<TState>(in ConsoleLogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
     {
@@ -56,15 +56,15 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
             {
                 timestamp = logEntry.UpTime.ToString(timestampFormat);
             }
-        
+            
             if (timestamp != null)
             {
                 t_messageBuilder.Append(timestamp);
             }
 
             var logLevelString = GetLogLevelString(logEntry.LogLevel);
-            t_messageBuilder.Append(' ').Append(logLevelString);
-
+            t_messageBuilder.Append(' ').Append(logLevelString).Append(' ').Append(logEntry.Category);
+            
             if (logEntry.EventId.Name != null)
             {
                 t_messageBuilder.Append(' ').Append(logEntry.EventId.Name);

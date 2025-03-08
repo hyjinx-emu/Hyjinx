@@ -13,7 +13,7 @@ namespace Hyjinx.HLE.HOS.Services
 {
     abstract partial class IpcService
     {
-        protected readonly ILogger logger;
+        protected readonly ILogger<IpcService> _logger;
         
         public IReadOnlyDictionary<int, MethodInfo> CmifCommands { get; }
         public IReadOnlyDictionary<int, MethodInfo> TipcCommands { get; }
@@ -27,7 +27,7 @@ namespace Hyjinx.HLE.HOS.Services
 
         public IpcService(ServerBase server = null)
         {
-            logger = Logger.DefaultLogger;
+            _logger = Logger.DefaultLoggerFactory.CreateLogger<IpcService>();
             
             CmifCommands = typeof(IpcService).Assembly.GetTypes()
                 .Where(type => type == GetType())

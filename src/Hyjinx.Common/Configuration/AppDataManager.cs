@@ -1,12 +1,14 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Common.Utilities;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Runtime.Versioning;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Common.Configuration
 {
-    public static class AppDataManager
+    public partial class AppDataManager
     {
         private const string DefaultBaseDir = "Hyjinx";
         private const string DefaultPortableDir = "portable";
@@ -37,13 +39,16 @@ namespace Hyjinx.Common.Configuration
         public const string DefaultSdcardDir = "sdcard";
         private const string DefaultModsDir = "mods";
 
-        public static string CustomModsPath { get; set; }
-        public static string CustomSdModsPath { get; set; }
-        public static string CustomNandPath { get; set; } // TODO: Actually implement this into VFS
-        public static string CustomSdCardPath { get; set; } // TODO: Actually implement this into VFS
+        public static string? CustomModsPath { get; set; }
+        public static string? CustomSdModsPath { get; set; }
+        public static string? CustomNandPath { get; set; } // TODO: Actually implement this into VFS
+        public static string? CustomSdCardPath { get; set; } // TODO: Actually implement this into VFS
+
+        private static readonly ILogger<AppDataManager> _logger;
 
         static AppDataManager()
         {
+            _logger = Logger.DefaultLoggerFactory.CreateLogger<AppDataManager>();
             KeysDirPathUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".switch");
         }
 
@@ -85,7 +90,7 @@ namespace Hyjinx.Common.Configuration
             {
                 if (!Directory.Exists(baseDirPath))
                 {
-                    Logger.Error?.Print(LogClass.Application, $"Custom Data Directory '{baseDirPath}' does not exist. Falling back to {Mode}...");
+                    LogCustomDataDirectoryDoesNotExist(_logger, baseDirPath, Mode);
                 }
                 else
                 {
@@ -98,11 +103,21 @@ namespace Hyjinx.Common.Configuration
 
             if (IsPathSymlink(BaseDirPath))
             {
-                Logger.Warning?.Print(LogClass.Application, $"Application data directory is a symlink. This may be unintended.");
+                LogApplicationDirectoryIsSymlink(_logger);
             }
 
             SetupBasePaths();
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Custom Data Directory '{baseDirPath}' does not exist. Falling back to {mode}...")]
+        private static partial void LogCustomDataDirectoryDoesNotExist(ILogger logger, string baseDirPath, LaunchMode mode);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Application data directory is a symlink. This may be unintended.")]
+        private static partial void LogApplicationDirectoryIsSymlink(ILogger logger);
 
         public static string GetOrCreateLogsDir()
         {
@@ -111,11 +126,16 @@ namespace Hyjinx.Common.Configuration
                 return LogsDirPath;
             }
 
-            Logger.Notice.Print(LogClass.Application, "Logging directory not found; attempting to create new logging directory.");
+            LogLoggingDirectoryNotFound(_logger);
             LogsDirPath = SetUpLogsDir();
 
             return LogsDirPath;
         }
+
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Logging directory not found; attempting to create new logging directory.")]
+        private static partial void LogLoggingDirectoryNotFound(ILogger logger);
 
         private static string SetUpLogsDir()
         {
@@ -130,8 +150,7 @@ namespace Hyjinx.Common.Configuration
                 }
                 catch
                 {
-                    Logger.Warning?.Print(LogClass.Application, $"Logging directory could not be created '{logDir}'");
-
+                    LogLoggingDirectoryCouldNotBeCreated(_logger, logDir);
                     return null;
                 }
             }
@@ -147,7 +166,7 @@ namespace Hyjinx.Common.Configuration
                     }
                     catch
                     {
-                        Logger.Warning?.Print(LogClass.Application, $"Logging directory could not be created '{logDir}'");
+                        LogLoggingDirectoryCouldNotBeCreated(_logger, logDir);
                         logDir = "";
                     }
 
@@ -162,8 +181,7 @@ namespace Hyjinx.Common.Configuration
                         }
                         catch
                         {
-                            Logger.Warning?.Print(LogClass.Application, $"Logging directory could not be created '{logDir}'");
-
+                            LogLoggingDirectoryCouldNotBeCreated(_logger, logDir);
                             return null;
                         }
                     }
@@ -178,7 +196,7 @@ namespace Hyjinx.Common.Configuration
                     }
                     catch
                     {
-                        Logger.Warning?.Print(LogClass.Application, $"Logging directory could not be created '{logDir}'");
+                        LogLoggingDirectoryCouldNotBeCreated(_logger, logDir);
                         logDir = "";
                     }
 
@@ -193,8 +211,7 @@ namespace Hyjinx.Common.Configuration
                         }
                         catch
                         {
-                            Logger.Warning?.Print(LogClass.Application, $"Logging directory could not be created '{logDir}'");
-
+                            LogLoggingDirectoryCouldNotBeCreated(_logger, logDir);
                             return null;
                         }
                     }
@@ -210,8 +227,7 @@ namespace Hyjinx.Common.Configuration
                     }
                     catch
                     {
-                        Logger.Warning?.Print(LogClass.Application, $"Logging directory could not be created '{logDir}'");
-
+                        LogLoggingDirectoryCouldNotBeCreated(_logger, logDir);
                         return null;
                     }
                 }
@@ -219,6 +235,11 @@ namespace Hyjinx.Common.Configuration
 
             return logDir;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Logging directory could not be created '{logDir}'")]
+        private static partial void LogLoggingDirectoryCouldNotBeCreated(ILogger logger, string logDir);
 
         private static void SetupBasePaths()
         {
@@ -247,8 +268,7 @@ namespace Hyjinx.Common.Configuration
         [SupportedOSPlatform("macos")]
         public static void FixMacOSConfigurationFolders()
         {
-            string oldConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                ".config", DefaultBaseDir);
+            var oldConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", DefaultBaseDir);
             if (Path.Exists(oldConfigPath) && !IsPathSymlink(oldConfigPath) && !Path.Exists(BaseDirPath))
             {
                 FileSystemUtils.MoveDirectory(oldConfigPath, BaseDirPath);
@@ -267,18 +287,18 @@ namespace Hyjinx.Common.Configuration
                 }
                 catch (Exception exception)
                 {
-                    Logger.Error?.Print(LogClass.Application,
-                        $"Critical error copying Hyjinx application data into the temp folder. {exception}");
+                    LogErrorCopyingApplicationDataIntoTemp(_logger, tempPath, exception);
+                    
                     try
                     {
-                        FileSystemInfo resolvedDirectoryInfo =
-                            Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
-                        string resolvedPath = resolvedDirectoryInfo.FullName;
-                        Logger.Error?.Print(LogClass.Application, $"Please manually move your Hyjinx data from {resolvedPath} to {correctApplicationDataDirectoryPath}, and remove the symlink.");
+                        var resolvedDirectoryInfo = Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
+                        string resolvedPath = resolvedDirectoryInfo!.FullName;
+
+                        LogMoveYourDataNotification(_logger, resolvedPath, correctApplicationDataDirectoryPath);
                     }
                     catch (Exception symlinkException)
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Unable to resolve the symlink for Hyjinx application data: {symlinkException}. Follow the symlink at {correctApplicationDataDirectoryPath} and move your data back to the Application Support folder.");
+                        LogErrorResolvingSymlink(_logger, correctApplicationDataDirectoryPath, symlinkException);
                     }
                     return;
                 }
@@ -291,18 +311,18 @@ namespace Hyjinx.Common.Configuration
                 }
                 catch (Exception exception)
                 {
-                    Logger.Error?.Print(LogClass.Application,
-                        $"Critical error deleting the Hyjinx application data folder symlink at {correctApplicationDataDirectoryPath}. {exception}");
+                    LogErrorDeletingSymlink(_logger, correctApplicationDataDirectoryPath, exception);
+                    
                     try
                     {
-                        FileSystemInfo resolvedDirectoryInfo =
-                            Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
-                        string resolvedPath = resolvedDirectoryInfo.FullName;
-                        Logger.Error?.Print(LogClass.Application, $"Please manually move your Hyjinx data from {resolvedPath} to {correctApplicationDataDirectoryPath}, and remove the symlink.");
+                        var resolvedDirectoryInfo = Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
+                        string resolvedPath = resolvedDirectoryInfo!.FullName;
+
+                        LogMoveYourDataNotification(_logger, resolvedPath, correctApplicationDataDirectoryPath);
                     }
                     catch (Exception symlinkException)
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Unable to resolve the symlink for Hyjinx application data: {symlinkException}. Follow the symlink at {correctApplicationDataDirectoryPath} and move your data back to the Application Support folder.");
+                        LogErrorResolvingSymlink(_logger, correctApplicationDataDirectoryPath, symlinkException);
                     }
                     return;
                 }
@@ -314,13 +334,40 @@ namespace Hyjinx.Common.Configuration
                 }
                 catch (Exception exception)
                 {
-                    Logger.Error?.Print(LogClass.Application,
-                        $"Critical error copying Hyjinx application data into the correct location. {exception}. Please manually move your application data from {tempPath} to {correctApplicationDataDirectoryPath}.");
+                    LogErrorCopyingApplicationData(_logger, tempPath, correctApplicationDataDirectoryPath, exception);
                 }
             }
         }
 
-        public static string GetModsPath() => CustomModsPath ?? Directory.CreateDirectory(Path.Combine(BaseDirPath, DefaultModsDir)).FullName;
-        public static string GetSdModsPath() => CustomSdModsPath ?? Directory.CreateDirectory(Path.Combine(BaseDirPath, DefaultSdcardDir, "atmosphere")).FullName;
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "An error while copying your application data into the {tempPath} folder.")]
+        private static partial void LogErrorCopyingApplicationDataIntoTemp(ILogger logger, string tempPath, Exception ex);
+        
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Please manually move your Hyjinx data from {resolvedPath} to {correctApplicationDataDirectoryPath}, and remove the symlink.")]
+        private static partial void LogMoveYourDataNotification(ILogger logger, string resolvedPath, string correctApplicationDataDirectoryPath);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "An error occurred while deleting the Hyjinx application data folder symlink at {correctApplicationDataDirectoryPath}.")]
+        private static partial void LogErrorDeletingSymlink(ILogger logger, string correctApplicationDataDirectoryPath, Exception ex);
+        
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Unable to resolve the symlink for Hyjinx application data: Follow the symlink at {correctApplicationDataDirectoryPath} and move your data back to the Application Support folder.")]
+        private static partial void LogErrorResolvingSymlink(ILogger logger, string correctApplicationDataDirectoryPath, Exception ex);
+        
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "An error occurred copying Hyjinx application data into the correct location. Please manually move your application data from {tempPath} to {correctApplicationDataDirectoryPath}.")]
+        private static partial void LogErrorCopyingApplicationData(ILogger logger, string tempPath, string correctApplicationDataDirectoryPath, Exception ex);
+
+        public static string GetModsPath() => 
+            CustomModsPath ?? Directory.CreateDirectory(Path.Combine(BaseDirPath, DefaultModsDir)).FullName;
+        
+        public static string GetSdModsPath() => 
+            CustomSdModsPath ?? Directory.CreateDirectory(Path.Combine(BaseDirPath, DefaultSdcardDir, "atmosphere")).FullName;
     }
 }

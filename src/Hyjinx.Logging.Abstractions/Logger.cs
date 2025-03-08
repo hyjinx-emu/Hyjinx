@@ -14,12 +14,23 @@ public class Logger : ILog
     /// Gets the default logger.
     /// </summary>
     public static ILogger DefaultLogger { get; private set; } = null!;
+    
+    /// <summary>
+    /// Gets the default logger factory.
+    /// </summary>
+    public static ILoggerFactory DefaultLoggerFactory { get; private set; } = null!;
 
+    /// <summary>
+    /// Initializes the logger.
+    /// </summary>
+    /// <param name="factory">The factory to use while creating new loggers.</param>
     public static void Initialize(ILoggerFactory factory)
     {
         ArgumentNullException.ThrowIfNull(factory);
         
+        DefaultLoggerFactory = factory;
         DefaultLogger = factory.CreateLogger("Program");
+        
         Notice = new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Critical);
     }
 

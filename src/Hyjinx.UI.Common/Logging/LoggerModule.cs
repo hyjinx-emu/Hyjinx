@@ -16,14 +16,14 @@ public static class LoggerModule
     
     public static void Initialize(Stopwatch upTime)
     {
-        ConfigurationState.Instance.Logger.EnableDebug.Event += ReloadEnableDebug;
-        ConfigurationState.Instance.Logger.EnableStub.Event += ReloadEnableStub;
-        ConfigurationState.Instance.Logger.EnableInfo.Event += ReloadEnableInfo;
-        ConfigurationState.Instance.Logger.EnableWarn.Event += ReloadEnableWarning;
-        ConfigurationState.Instance.Logger.EnableError.Event += ReloadEnableError;
-        ConfigurationState.Instance.Logger.EnableTrace.Event += ReloadEnableTrace;
-        ConfigurationState.Instance.Logger.EnableGuest.Event += ReloadEnableGuest;
-        ConfigurationState.Instance.Logger.EnableFsAccessLog.Event += ReloadEnableFsAccessLog;
+        // ConfigurationState.Instance.Logger.EnableDebug.Event += ReloadEnableDebug;
+        // ConfigurationState.Instance.Logger.EnableStub.Event += ReloadEnableStub;
+        // ConfigurationState.Instance.Logger.EnableInfo.Event += ReloadEnableInfo;
+        // ConfigurationState.Instance.Logger.EnableWarn.Event += ReloadEnableWarning;
+        // ConfigurationState.Instance.Logger.EnableError.Event += ReloadEnableError;
+        // ConfigurationState.Instance.Logger.EnableTrace.Event += ReloadEnableTrace;
+        // ConfigurationState.Instance.Logger.EnableGuest.Event += ReloadEnableGuest;
+        // ConfigurationState.Instance.Logger.EnableFsAccessLog.Event += ReloadEnableFsAccessLog;
 
         var services = new ServiceCollection();
         services.AddLogging(logging =>
@@ -46,14 +46,23 @@ public static class LoggerModule
         LoggingServices = services.BuildServiceProvider();
         
         Logger.Initialize(LoggingServices.GetRequiredService<ILoggerFactory>());
-        Logger.SetEnable(LogLevel.Trace, ConfigurationState.Instance.Logger.EnableTrace.Value);
-        Logger.SetEnable(LogLevel.Debug, ConfigurationState.Instance.Logger.EnableDebug.Value);
-        Logger.SetEnable(LogLevel.Info, ConfigurationState.Instance.Logger.EnableInfo.Value);
-        Logger.SetEnable(LogLevel.Warning, ConfigurationState.Instance.Logger.EnableWarn.Value);
-        Logger.SetEnable(LogLevel.Error, ConfigurationState.Instance.Logger.EnableError.Value);
-        Logger.SetEnable(LogLevel.Guest, ConfigurationState.Instance.Logger.EnableGuest.Value);
-        Logger.SetEnable(LogLevel.AccessLog, ConfigurationState.Instance.Logger.EnableFsAccessLog.Value);
-        Logger.SetEnable(LogLevel.Stub, ConfigurationState.Instance.Logger.EnableStub.Value);
+        Logger.SetEnable(LogLevel.Trace, true);
+        Logger.SetEnable(LogLevel.Debug, true);
+        Logger.SetEnable(LogLevel.Info, true);
+        Logger.SetEnable(LogLevel.Warning, true);
+        Logger.SetEnable(LogLevel.Error, true);
+        Logger.SetEnable(LogLevel.Guest, true);
+        Logger.SetEnable(LogLevel.AccessLog, true);
+        Logger.SetEnable(LogLevel.Stub, true);
+        
+        // Logger.SetEnable(LogLevel.Trace, ConfigurationState.Instance.Logger.EnableTrace.Value);
+        // Logger.SetEnable(LogLevel.Debug, ConfigurationState.Instance.Logger.EnableDebug.Value);
+        // Logger.SetEnable(LogLevel.Info, ConfigurationState.Instance.Logger.EnableInfo.Value);
+        // Logger.SetEnable(LogLevel.Warning, ConfigurationState.Instance.Logger.EnableWarn.Value);
+        // Logger.SetEnable(LogLevel.Error, ConfigurationState.Instance.Logger.EnableError.Value);
+        // Logger.SetEnable(LogLevel.Guest, ConfigurationState.Instance.Logger.EnableGuest.Value);
+        // Logger.SetEnable(LogLevel.AccessLog, ConfigurationState.Instance.Logger.EnableFsAccessLog.Value);
+        // Logger.SetEnable(LogLevel.Stub, ConfigurationState.Instance.Logger.EnableStub.Value);
     }
     
     private static void ReloadEnableDebug(object? sender, ReactiveEventArgs<bool> e)

@@ -95,15 +95,15 @@ namespace Hyjinx.Ava
             AppDomain.CurrentDomain.UnhandledException += (sender, e) => ProcessUnhandledException(e.ExceptionObject as Exception, e.IsTerminating);
             AppDomain.CurrentDomain.ProcessExit += (sender, e) => Exit();
 
+            // Initialize the logger system.
+            // LoggerAdapter.Register();
+            LoggerModule.Initialize(UpTime);
+            
             // Setup base data directory.
             AppDataManager.Initialize(CommandLineState.BaseDirPathArg);
 
             // Initialize the configuration.
             ConfigurationState.Initialize();
-
-            // Initialize the logger system.
-            // LoggerAdapter.Register();
-            LoggerModule.Initialize(UpTime);
 
             // Initialize Discord integration.
             DiscordIntegrationModule.Initialize();

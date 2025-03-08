@@ -43,7 +43,7 @@ internal class ConsoleLoggerProcessor : IDisposable
             var droppedCount = Interlocked.Exchange(ref _messagesDropped, 0);
             if (droppedCount > 0)
             {
-                WriteMessageAsync(new LogMessageEntry($"{_messagesDropped} message(s) dropped because of queue size limit. Increase the queue size or decrease logging verbosity to avoid this.", true), CancellationToken.None)
+                WriteMessageAsync(new LogMessageEntry($"{droppedCount} message(s) dropped because of queue size limit. Increase the queue size or decrease logging verbosity to avoid this.{Environment.NewLine}", true), CancellationToken.None)
                     .ConfigureAwait(false).GetAwaiter().GetResult();
             }
         }

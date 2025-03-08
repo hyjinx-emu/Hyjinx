@@ -3,17 +3,20 @@ using Microsoft.IdentityModel.Tokens;
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
 {
-    class ManagerServer
+    partial class ManagerServer
     {
         // TODO: Determine where and how NetworkServiceAccountId is set.
         private const long NetworkServiceAccountId = 0xcafe;
@@ -25,8 +28,11 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
         private byte[] _cachedTokenData;
         private DateTime _cachedTokenExpiry;
 
+        private ILogger<ManagerServer> _logger;
+        
         public ManagerServer(UserId userId)
         {
+            _logger = Logger.DefaultLoggerFactory.CreateLogger<ManagerServer>();
             _userId = userId;
         }
 
@@ -82,6 +88,11 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
             // NOTE: Even if we try to return different error codes here, the guest still needs other calls.
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAcc, EventName = nameof(LogClass.ServiceAcc),
+            Message = "{caller} accessed.")]
+        private partial void LogStubAccessed([CallerMemberName] string caller = null);
 
         public ResultCode GetAccountId(ServiceCtx context)
         {

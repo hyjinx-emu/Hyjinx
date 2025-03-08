@@ -23,7 +23,7 @@ namespace ARMeilleure.Translation.PTC
 {
     partial class PtcProfiler
     {
-        private readonly ILogger logger;
+        private readonly ILogger<PtcProfiler> _logger;
         private const string OuterHeaderMagicString = "Pohd\0\0\0\0";
 
         private const uint InternalVersion = 5518; //! Not to be incremented manually for each change to the ARMeilleure project.
@@ -59,7 +59,7 @@ namespace ARMeilleure.Translation.PTC
 
         public PtcProfiler(Ptc ptc)
         {
-            logger = Logger.DefaultLogger;
+            _logger = Logger.DefaultLoggerFactory.CreateLogger<PtcProfiler>();
             _ptc = ptc;
 
             _timer = new Timer(SaveInterval * 1000d);
