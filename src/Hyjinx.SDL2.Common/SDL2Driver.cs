@@ -1,17 +1,20 @@
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using static SDL2.SDL;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.SDL2.Common
 {
-    public class SDL2Driver : IDisposable
+    public partial class SDL2Driver : IDisposable
     {
         private static SDL2Driver _instance;
+        private readonly ILogger<SDL2Driver> _logger;
 
         public static SDL2Driver Instance
         {
@@ -38,7 +41,10 @@ namespace Hyjinx.SDL2.Common
 
         private readonly object _lock = new();
 
-        private SDL2Driver() { }
+        private SDL2Driver()
+        {
+            _logger = Logger.DefaultLoggerFactory.CreateLogger<SDL2Driver>();
+        }
 
         private const string SDL_HINT_JOYSTICK_HIDAPI_COMBINE_JOY_CONS = "SDL_JOYSTICK_HIDAPI_COMBINE_JOY_CONS";
 
@@ -69,8 +75,7 @@ namespace Hyjinx.SDL2.Common
                 if (SDL_Init(SdlInitFlags) != 0)
                 {
                     string errorMessage = $"SDL2 initialization failed with error \"{SDL_GetError()}\"";
-
-                    Logger.Error?.Print(LogClass.Application, errorMessage);
+                    LogSdlInitializationFailed(SDL_GetError());
 
                     throw new Exception(errorMessage);
                 }
@@ -78,12 +83,12 @@ namespace Hyjinx.SDL2.Common
                 // First ensure that we only enable joystick events (for connected/disconnected).
                 if (SDL_GameControllerEventState(SDL_IGNORE) != SDL_IGNORE)
                 {
-                    Logger.Error?.PrintMsg(LogClass.Application, "Couldn't change the state of game controller events.");
+                    LogUnableToChangeStateOfGameControllerEvents();
                 }
 
                 if (SDL_JoystickEventState(SDL_ENABLE) < 0)
                 {
-                    Logger.Error?.PrintMsg(LogClass.Application, $"Failed to enable joystick event polling: {SDL_GetError()}");
+                    LogFailedToEnableJoystickEventPolling(SDL_GetError());
                 }
 
                 // Disable all joysticks information, we don't need them no need to flood the event queue for that.
@@ -109,6 +114,21 @@ namespace Hyjinx.SDL2.Common
             }
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "SDL2 initialization failed with error: {errorMessage}")]
+        private partial void LogSdlInitializationFailed(string errorMessage);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Couldn't change the state of game controller events.")]
+        private partial void LogUnableToChangeStateOfGameControllerEvents();
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Failed to enable joystick event polling: {errorMessage}")]
+        private partial void LogFailedToEnableJoystickEventPolling(string errorMessage);
+
         public bool RegisterWindow(uint windowId, Action<SDL_Event> windowEventHandler)
         {
             return _registeredWindowHandlers.TryAdd(windowId, windowEventHandler);
@@ -133,13 +153,13 @@ namespace Hyjinx.SDL2.Common
                     return;
                 }
 
-                Logger.Debug?.Print(LogClass.Application, $"Added joystick instance id {instanceId}");
-
+                LogAddedJoystickId(instanceId);
+                
                 OnJoyStickConnected?.Invoke(deviceId, instanceId);
             }
             else if (evnt.type == SDL_EventType.SDL_JOYDEVICEREMOVED)
             {
-                Logger.Debug?.Print(LogClass.Application, $"Removed joystick instance id {evnt.cbutton.which}");
+                LogRemovedJoystickId(evnt.cbutton.which);
 
                 OnJoystickDisconnected?.Invoke(evnt.cbutton.which);
             }
@@ -151,6 +171,16 @@ namespace Hyjinx.SDL2.Common
                 }
             }
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Added joystick instance id {instanceId}")]
+        private partial void LogAddedJoystickId(int instanceId);
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Removed joystick instance id {instanceId}")]
+        private partial void LogRemovedJoystickId(int instanceId);
 
         private void EventWorker()
         {
