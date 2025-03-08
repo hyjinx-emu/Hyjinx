@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Runtime.Versioning;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Hyjinx.Extensions.Logging.Console;
@@ -18,6 +19,7 @@ internal sealed class ConsoleLogger : ILogger
 {
     private readonly string _name;
     private readonly ConsoleLoggerProcessor _queueProcessor;
+    private readonly Stopwatch _upTime;
 
     internal ConsoleLogger(
         string name,
@@ -30,6 +32,7 @@ internal sealed class ConsoleLogger : ILogger
 
         _name = name;
         _queueProcessor = loggerProcessor;
+        _upTime = options.UpTime;
         Formatter = formatter;
         ScopeProvider = scopeProvider;
         Options = options;
@@ -53,7 +56,7 @@ internal sealed class ConsoleLogger : ILogger
         ArgumentNullException.ThrowIfNull(formatter);
         
         t_stringWriter ??= new StringWriter();
-        ConsoleLogEntry<TState> logEntry = new(logLevel, _name, eventId, state, exception, Thread.CurrentThread.Name, formatter);
+        ConsoleLogEntry<TState> logEntry = new(logLevel, _name, eventId, state, exception, Thread.CurrentThread.Name, _upTime.Elapsed, formatter);
         Formatter.Write(in logEntry, ScopeProvider, t_stringWriter);
 
         var sb = t_stringWriter.GetStringBuilder();

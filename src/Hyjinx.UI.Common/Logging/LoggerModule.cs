@@ -35,9 +35,10 @@ public static class LoggerModule
             {
                 console.FormatterName = ConsoleFormatterNames.Simple;
                 console.MaxQueueLength = 10000;
+                console.UpTime = upTime;
             }).AddSimpleConsole(opts =>
             {
-                opts.TimestampFormat = @"hh\:mm\:ss\.ffffff";
+                opts.TimestampFormat = @"hh\:mm\:ss\.ffff";
                 opts.UpTime = upTime;
             });
         });

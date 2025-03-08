@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using System;
+using System.Diagnostics;
 
 namespace Hyjinx.Extensions.Logging.Console;
 
@@ -23,6 +24,11 @@ public class ConsoleLoggerOptions
     /// Gets or sets value indicating the minimum level of messages that get written to <c>Console.Error</c>.
     /// </summary>
     public LogLevel LogToStandardErrorThreshold { get; set; } = LogLevel.None;
+
+    /// <summary>
+    /// Gets or sets the stopwatch indicating the application uptime.
+    /// </summary>
+    public Stopwatch UpTime { get; set; } = null!;
 
     internal const int DefaultMaxQueueLengthValue = 2500;
     private int _maxQueuedMessages = DefaultMaxQueueLengthValue;

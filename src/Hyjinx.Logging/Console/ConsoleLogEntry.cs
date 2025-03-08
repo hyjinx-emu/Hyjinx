@@ -21,13 +21,14 @@ public readonly struct ConsoleLogEntry<TState>
     /// <param name="exception">The log exception.</param>
     /// <param name="threadName">The name of the thread.</param>
     /// <param name="formatter">The formatter.</param>
-    public ConsoleLogEntry(LogLevel logLevel, string category, EventId eventId, TState state, Exception? exception, string? threadName, Func<TState, Exception?, string> formatter)
+    public ConsoleLogEntry(LogLevel logLevel, string category, EventId eventId, TState state, Exception? exception, string? threadName, TimeSpan upTime, Func<TState, Exception?, string> formatter)
     {
         LogLevel = logLevel;
         Category = category;
         EventId = eventId;
         State = state;
         ThreadName = threadName;
+        UpTime = upTime;
         Exception = exception;
         Formatter = formatter;
     }
@@ -61,6 +62,11 @@ public readonly struct ConsoleLogEntry<TState>
     /// Gets the log exception.
     /// </summary>
     public Exception? Exception { get; }
+    
+    /// <summary>
+    /// Gets the duration of time the application has been active.
+    /// </summary>
+    public TimeSpan UpTime { get; }
 
     /// <summary>
     /// Gets the formatter.

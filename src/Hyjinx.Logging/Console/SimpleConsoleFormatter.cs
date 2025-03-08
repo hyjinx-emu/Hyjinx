@@ -7,7 +7,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.Extensions.Options;
-using System.Diagnostics;
 using System.Text;
 
 namespace Hyjinx.Extensions.Logging.Console;
@@ -19,9 +18,7 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
                                                   OperatingSystem.IsIOS(); // returns true on MacCatalyst
 
     private readonly IDisposable? _optionsReloadToken;
-    
     private bool _isColoredWriterEnabled;
-    private Stopwatch? _upTime;
 
     public SimpleConsoleFormatter(IOptionsMonitor<SimpleConsoleFormatterOptions> options)
         : base(ConsoleFormatterNames.Simple)
@@ -34,9 +31,7 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
     private void ReloadLoggerOptions(SimpleConsoleFormatterOptions options)
     {
         FormatterOptions = options;
-        
         _isColoredWriterEnabled = options.ColorBehavior != LoggerColorBehavior.Disabled;
-        _upTime = options.UpTime;
     }
 
     public void Dispose()
@@ -46,53 +41,63 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
 
     internal SimpleConsoleFormatterOptions FormatterOptions { get; set; }
 
+    [ThreadStatic]
+    private static StringBuilder t_messageBuilder;
+    
     public override void Write<TState>(in ConsoleLogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
     {
-        var logLevelString = GetLogLevelString(logEntry.LogLevel);
-        var sb = new StringBuilder();
+        t_messageBuilder ??= new StringBuilder();
+
+        try
+        {
+            string? timestamp = null;
+            string? timestampFormat = FormatterOptions.TimestampFormat;
+            if (timestampFormat != null)
+            {
+                timestamp = logEntry.UpTime.ToString(timestampFormat);
+            }
         
-        string? timestamp = null;
-        string? timestampFormat = FormatterOptions.TimestampFormat;
-        if (timestampFormat != null)
-        {
-            timestamp = _upTime!.Elapsed.ToString(timestampFormat);
+            if (timestamp != null)
+            {
+                t_messageBuilder.Append(timestamp);
+            }
+
+            var logLevelString = GetLogLevelString(logEntry.LogLevel);
+            t_messageBuilder.Append(' ').Append(logLevelString);
+
+            if (logEntry.EventId.Name != null)
+            {
+                t_messageBuilder.Append(' ').Append(logEntry.EventId.Name);
+            }
+
+            if (logEntry.ThreadName != null)
+            {
+                t_messageBuilder.Append(' ').Append(logEntry.ThreadName);
+            }
+
+            var message = logEntry.Formatter(logEntry.State, logEntry.Exception);
+            t_messageBuilder.Append(": ").Append(message);
+
+            if (logEntry.Exception != null)
+            {
+                t_messageBuilder.Append(logEntry.Exception);
+            }
+
+            t_messageBuilder.AppendLine();
+
+            if (_isColoredWriterEnabled)
+            {
+                var logLevelColors = GetLogLevelConsoleColors(logEntry.LogLevel);
+                textWriter.WriteColoredMessage(t_messageBuilder.ToString(), logLevelColors.Background, logLevelColors.Foreground);
+            }
+            else
+            {
+                textWriter.Write(t_messageBuilder.ToString());
+            }
         }
-        
-        if (timestamp != null)
+        finally
         {
-            sb.Append(timestamp);
-        }
-
-        sb.Append(' ').Append(logLevelString);
-
-        if (logEntry.EventId.Name != null)
-        {
-            sb.Append(' ').Append(logEntry.EventId.Name);
-        }
-
-        if (logEntry.ThreadName != null)
-        {
-            sb.Append(' ').Append(logEntry.ThreadName);
-        }
-
-        var message = logEntry.Formatter(logEntry.State, logEntry.Exception);
-        sb.Append(": ").Append(message);
-
-        if (logEntry.Exception != null)
-        {
-            sb.Append(logEntry.Exception);
-        }
-
-        sb.AppendLine();
-
-        if (_isColoredWriterEnabled)
-        {
-            var logLevelColors = GetLogLevelConsoleColors(logEntry.LogLevel);
-            textWriter.WriteColoredMessage(sb.ToString(), logLevelColors.Background, logLevelColors.Foreground);
-        }
-        else
-        {
-            textWriter.Write(sb.ToString());
+            t_messageBuilder.Clear();
         }
     }
     
