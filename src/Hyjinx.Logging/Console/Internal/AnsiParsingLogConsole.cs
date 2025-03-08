@@ -4,6 +4,8 @@
 using System;
 using System.IO;
 using System.Runtime.Versioning;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hyjinx.Extensions.Logging.Console.Internal;
 
@@ -19,12 +21,12 @@ internal sealed class AnsiParsingLogConsole : IConsole
     public AnsiParsingLogConsole(bool stdErr = false)
     {
         _textWriter = stdErr ? System.Console.Error : System.Console.Out;
-        _parser = new AnsiParser(WriteToConsole);
+        _parser = new AnsiParser(WriteToConsoleAsync);
     }
 
-    public void Write(string message)
+    public async Task WriteAsync(string message, CancellationToken cancellationToken)
     {
-        _parser.Parse(message);
+        await _parser.ParseAsync(message, cancellationToken);
     }
 
     private static bool SetColor(ConsoleColor? background, ConsoleColor? foreground)
@@ -58,15 +60,13 @@ internal sealed class AnsiParsingLogConsole : IConsole
         System.Console.ResetColor();
     }
 
-    private void WriteToConsole(string message, int startIndex, int length, ConsoleColor? background, ConsoleColor? foreground)
+    private async Task WriteToConsoleAsync(string message, int startIndex, int length, ConsoleColor? background, ConsoleColor? foreground, CancellationToken cancellationToken)
     {
-        ReadOnlySpan<char> span = message.AsSpan(startIndex, length);
+        var span = message.AsMemory(startIndex, length);
         var colorChanged = SetColor(background, foreground);
-#if NET
-        _textWriter.Write(span);
-#else
-        _textWriter.Write(span.ToString());
-#endif
+
+        await _textWriter.WriteAsync(span, cancellationToken);
+
         if (colorChanged)
         {
             ResetColor();

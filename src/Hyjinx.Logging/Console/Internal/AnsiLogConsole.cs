@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hyjinx.Extensions.Logging.Console.Internal;
 
@@ -17,8 +19,8 @@ internal sealed class AnsiLogConsole : IConsole
         _textWriter = stdErr ? System.Console.Error : System.Console.Out;
     }
 
-    public void Write(string message)
+    public async Task WriteAsync(string message, CancellationToken cancellationToken)
     {
-        _textWriter.Write(message);
+        await _textWriter.WriteAsync(message);
     }
 }

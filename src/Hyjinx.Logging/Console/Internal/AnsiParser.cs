@@ -3,17 +3,19 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hyjinx.Extensions.Logging.Console.Internal;
 
 internal sealed class AnsiParser
 {
-    private readonly Action<string, int, int, ConsoleColor?, ConsoleColor?> _onParseWrite;
-    public AnsiParser(Action<string, int, int, ConsoleColor?, ConsoleColor?> onParseWrite)
+    private readonly Func<string, int, int, ConsoleColor?, ConsoleColor?, CancellationToken, Task> _onParseWriteAsync;
+    public AnsiParser(Func<string, int, int, ConsoleColor?, ConsoleColor?, CancellationToken, Task> onParseWriteAsync)
     {
-        ArgumentNullException.ThrowIfNull(onParseWrite);
+        ArgumentNullException.ThrowIfNull(onParseWriteAsync);
 
-        _onParseWrite = onParseWrite;
+        _onParseWriteAsync = onParseWriteAsync;
     }
 
     /// <summary>
@@ -41,7 +43,7 @@ internal sealed class AnsiParser
     /// 46 Cyan
     /// 47 White
     /// </summary>
-    public void Parse(string message)
+    public Task ParseAsync(string message, CancellationToken cancellationToken)
     {
         int startIndex = -1;
         int length = 0;
@@ -64,7 +66,9 @@ internal sealed class AnsiParser
                         escapeCode = (int)(span[i + 2] - '0');
                         if (startIndex != -1)
                         {
-                            _onParseWrite(message, startIndex, length, background, foreground);
+                            _onParseWriteAsync(message, startIndex, length, background, foreground, cancellationToken)
+                                .ConfigureAwait(false).GetAwaiter().GetResult();
+                            
                             startIndex = -1;
                             length = 0;
                         }
@@ -82,7 +86,9 @@ internal sealed class AnsiParser
                         escapeCode = (int)(span[i + 2] - '0') * 10 + (int)(span[i + 3] - '0');
                         if (startIndex != -1)
                         {
-                            _onParseWrite(message, startIndex, length, background, foreground);
+                            _onParseWriteAsync(message, startIndex, length, background, foreground, cancellationToken)
+                                .ConfigureAwait(false).GetAwaiter().GetResult();
+                            
                             startIndex = -1;
                             length = 0;
                         }
@@ -119,8 +125,11 @@ internal sealed class AnsiParser
         }
         if (startIndex != -1)
         {
-            _onParseWrite(message, startIndex, length, background, foreground);
+            _onParseWriteAsync(message, startIndex, length, background, foreground, cancellationToken)
+                .ConfigureAwait(false).GetAwaiter().GetResult();
         }
+        
+        return Task.CompletedTask;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

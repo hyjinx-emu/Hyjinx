@@ -5,21 +5,22 @@ using System;
 using System.Collections.Concurrent;
 using System.Runtime.Versioning;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hyjinx.Extensions.Logging.Console.Internal;
 
 [UnsupportedOSPlatform("browser")]
 internal class ConsoleLoggerProcessor : IDisposable
 {
-    private readonly ManualResetEvent messagesPending = new(true);
+    private readonly ManualResetEvent _pending = new(true);
 
-    private readonly CancellationTokenSource cancellationSource = new();
+    private readonly CancellationTokenSource _cancellationSource = new();
     private readonly ConcurrentQueue<LogMessageEntry> _messageQueue;
     private readonly int _maxQueuedMessages;
     
     private int _messagesDropped;
-    
-    private readonly Thread _outputThread;
+
+    private readonly Task _outputTask;
 
     public IConsole Console { get; }
     public IConsole ErrorConsole { get; }
@@ -32,13 +33,7 @@ internal class ConsoleLoggerProcessor : IDisposable
         ErrorConsole = errorConsole;
         
         // Start Console message queue processor
-        _outputThread = new Thread(ProcessLogQueue)
-        {
-            IsBackground = true,
-            Name = "Console logger queue processing thread"
-        };
-        
-        _outputThread.Start();
+        _outputTask = Task.Factory.StartNew(ProcessLogQueueAsync, TaskCreationOptions.LongRunning);
     }
 
     public virtual void EnqueueMessage(LogMessageEntry message)
@@ -48,30 +43,33 @@ internal class ConsoleLoggerProcessor : IDisposable
             var droppedCount = Interlocked.Exchange(ref _messagesDropped, 0);
             if (droppedCount > 0)
             {
-                WriteMessage(new LogMessageEntry($"{_messagesDropped} message(s) dropped because of queue size limit. Increase the queue size or decrease logging verbosity to avoid this.", true));
+                WriteMessageAsync(new LogMessageEntry($"{_messagesDropped} message(s) dropped because of queue size limit. Increase the queue size or decrease logging verbosity to avoid this.", true), CancellationToken.None)
+                    .ConfigureAwait(false).GetAwaiter().GetResult();
             }
         }
     }
-    
-    private void WriteMessage(LogMessageEntry entry)
+
+    private async Task WriteMessageAsync(LogMessageEntry entry, CancellationToken cancellationToken)
     {
         var console = entry.LogAsError ? ErrorConsole : Console;
-        console.Write(entry.Message);
+        await console.WriteAsync(entry.Message, cancellationToken);
     }
 
-    private void ProcessLogQueue()
+    private async Task ProcessLogQueueAsync()
     {
-        while (!cancellationSource.IsCancellationRequested)
+        while (!_cancellationSource.IsCancellationRequested)
         {
             if (TryDequeue(out LogMessageEntry message))
             {
-                WriteMessage(message);
+                await WriteMessageAsync(message, _cancellationSource.Token);
             }
             else
             {
                 // The queue has been emptied, let the thread pause.
-                messagesPending.Reset();
-                messagesPending.WaitOne(); // Nothing there, wait till something comes in.
+                _pending.Reset();
+                
+                // Nothing there, wait till something comes in.
+                _pending.WaitOne();
             }
         }
     }
@@ -86,7 +84,7 @@ internal class ConsoleLoggerProcessor : IDisposable
         }
 
         _messageQueue.Enqueue(item);
-        messagesPending.Set(); // Notify the read thread something is there to do.
+        _pending.Set(); // Notify the read thread something is there to do.
         
         return true;
     }
@@ -98,13 +96,10 @@ internal class ConsoleLoggerProcessor : IDisposable
 
     public void Dispose()
     {
-        cancellationSource.Cancel();
-        messagesPending.Set();
-        
-        try
-        {
-            _outputThread.Join(1500); // with timeout in-case Console is locked by user input
-        }
-        catch (ThreadStateException) { }
+        _cancellationSource.Cancel();
+        _pending.Set();
+
+        // with timeout in-case Console is locked by user input
+        Task.WaitAny(_outputTask, Task.Delay(1500));
     }
 }
