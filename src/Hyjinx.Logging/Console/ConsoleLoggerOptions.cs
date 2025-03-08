@@ -23,27 +23,6 @@ public class ConsoleLoggerOptions
     /// Gets or sets value indicating the minimum level of messages that get written to <c>Console.Error</c>.
     /// </summary>
     public LogLevel LogToStandardErrorThreshold { get; set; } = LogLevel.None;
-    
-    private ConsoleLoggerQueueFullMode _queueFullMode = ConsoleLoggerQueueFullMode.Wait;
-    
-    /// <summary>
-    /// Gets or sets the desired console logger behavior when the queue becomes full.
-    /// </summary>
-    /// <value>
-    /// The default value is <see langword="wait" />.
-    /// </value>
-    public ConsoleLoggerQueueFullMode QueueFullMode
-    {
-        get => _queueFullMode;
-        set
-        {
-            if (value != ConsoleLoggerQueueFullMode.Wait && value != ConsoleLoggerQueueFullMode.DropWrite)
-            {
-                throw new ArgumentOutOfRangeException($"{nameof(value)} is not a supported queue mode value.");
-            }
-            _queueFullMode = value;
-        }
-    }
 
     internal const int DefaultMaxQueueLengthValue = 2500;
     private int _maxQueuedMessages = DefaultMaxQueueLengthValue;

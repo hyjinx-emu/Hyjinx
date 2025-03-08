@@ -59,7 +59,6 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
         _messageQueue = new ConsoleLoggerProcessor(
             console,
             errorConsole,
-            options.CurrentValue.QueueFullMode,
             options.CurrentValue.MaxQueueLength);
 
         ReloadLoggerOptions(options.CurrentValue);
@@ -131,9 +130,9 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
                 UpdateFormatterOptions(logFormatter, options);
             }
         }
-
-        _messageQueue.FullMode = options.QueueFullMode;
-        _messageQueue.MaxQueueLength = options.MaxQueueLength;
+        //
+        // _messageQueue.FullMode = options.QueueFullMode;
+        // _messageQueue.MaxQueueLength = options.MaxQueueLength;
 
         foreach (KeyValuePair<string, ConsoleLogger> logger in _loggers)
         {

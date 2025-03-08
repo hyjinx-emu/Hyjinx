@@ -118,7 +118,7 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
             (FormatterOptions.ColorBehavior == LoggerColorBehavior.Default && (!ConsoleUtils.EmitAnsiColorCodes || IsAndroidOrAppleMobile));
         if (disableColors)
         {
-            return new ConsoleColors(null, null);
+            return new ConsoleColors(null);
         }
         
         // We must explicitly set the background color if we are setting the foreground color,
@@ -131,20 +131,14 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
             LogLevel.Warning => new ConsoleColors(ConsoleColor.Yellow),
             LogLevel.Error => new ConsoleColors(ConsoleColor.DarkRed),
             LogLevel.Critical => new ConsoleColors(ConsoleColor.DarkCyan),
-            _ => new ConsoleColors(null, null)
+            _ => new ConsoleColors(null)
         };
     }
 
-    private readonly struct ConsoleColors
+    private readonly struct ConsoleColors(ConsoleColor? foreground, ConsoleColor? background = null)
     {
-        public ConsoleColors(ConsoleColor? foreground, ConsoleColor? background = null)
-        {
-            Foreground = foreground;
-            Background = background;
-        }
+        public ConsoleColor? Foreground { get; } = foreground;
 
-        public ConsoleColor? Foreground { get; }
-
-        public ConsoleColor? Background { get; }
+        public ConsoleColor? Background { get; } = background;
     }
 }

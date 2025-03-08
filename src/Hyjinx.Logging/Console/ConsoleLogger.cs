@@ -3,10 +3,8 @@
 
 using Hyjinx.Extensions.Logging.Console.Internal;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Versioning;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 
@@ -16,7 +14,7 @@ namespace Hyjinx.Extensions.Logging.Console;
 /// A logger that writes messages in the console.
 /// </summary>
 [UnsupportedOSPlatform("browser")]
-internal sealed class ConsoleLogger : ILogger, IBufferedLogger
+internal sealed class ConsoleLogger : ILogger
 {
     private readonly string _name;
     private readonly ConsoleLoggerProcessor _queueProcessor;
@@ -53,7 +51,7 @@ internal sealed class ConsoleLogger : ILogger, IBufferedLogger
         }
 
         ArgumentNullException.ThrowIfNull(formatter);
-
+        
         t_stringWriter ??= new StringWriter();
         ConsoleLogEntry<TState> logEntry = new(logLevel, _name, eventId, state, exception, Thread.CurrentThread.Name, formatter);
         Formatter.Write(in logEntry, ScopeProvider, t_stringWriter);
@@ -70,35 +68,6 @@ internal sealed class ConsoleLogger : ILogger, IBufferedLogger
             sb.Capacity = 1024;
         }
         _queueProcessor.EnqueueMessage(new LogMessageEntry(computedAnsiString, logAsError: logLevel >= Options.LogToStandardErrorThreshold));
-    }
-
-    /// <inheritdoc />
-    public void LogRecords(IEnumerable<BufferedLogRecord> records)
-    {
-        ArgumentNullException.ThrowIfNull(records);
-
-        StringWriter writer = t_stringWriter ??= new StringWriter();
-
-        var sb = writer.GetStringBuilder();
-        foreach (var rec in records)
-        {
-            var logEntry = new ConsoleLogEntry<BufferedLogRecord>(rec.LogLevel, _name, rec.EventId, rec, null, Thread.CurrentThread.Name, static (s, _) => s.FormattedMessage ?? string.Empty);
-            Formatter.Write(in logEntry, null, writer);
-
-            if (sb.Length == 0)
-            {
-                continue;
-            }
-
-            string computedAnsiString = sb.ToString();
-            sb.Clear();
-            _queueProcessor.EnqueueMessage(new LogMessageEntry(computedAnsiString, logAsError: rec.LogLevel >= Options.LogToStandardErrorThreshold));
-        }
-
-        if (sb.Capacity > 1024)
-        {
-            sb.Capacity = 1024;
-        }
     }
 
     /// <inheritdoc />

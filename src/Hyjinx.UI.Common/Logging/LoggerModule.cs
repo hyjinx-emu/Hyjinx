@@ -34,11 +34,10 @@ public static class LoggerModule
             logging.AddConsole(console =>
             {
                 console.FormatterName = ConsoleFormatterNames.Simple;
-                console.QueueFullMode = ConsoleLoggerQueueFullMode.DropWrite;
                 console.MaxQueueLength = 10000;
             }).AddSimpleConsole(opts =>
             {
-                opts.TimestampFormat = @"hh\:mm\:ss\.ffff";
+                opts.TimestampFormat = @"hh\:mm\:ss\.ffffff";
                 opts.UpTime = upTime;
             });
         });
