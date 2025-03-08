@@ -3,12 +3,14 @@ using Hyjinx.Audio.Renderer.Dsp.Command;
 using Hyjinx.Audio.Renderer.Utils;
 using Hyjinx.Common;
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Audio.Renderer.Dsp
 {
-    public class AudioProcessor : IDisposable
+    public partial class AudioProcessor : IDisposable
     {
         private const int MaxBufferedFrames = 5;
         private const int TargetBufferedFrames = 3;
@@ -37,12 +39,14 @@ namespace Hyjinx.Audio.Renderer.Dsp
         private long _lastTime;
         private long _playbackEnds;
         private readonly ManualResetEvent _event;
+        private readonly ILogger _logger;
 
         private ManualResetEvent _pauseEvent;
 
         public AudioProcessor()
         {
             _event = new ManualResetEvent(false);
+            _logger = Logger.DefaultLogger;
         }
 
         private static uint GetHardwareChannelCount(IHardwareDeviceDriver deviceDriver)
@@ -185,7 +189,7 @@ namespace Hyjinx.Audio.Renderer.Dsp
             _mailbox.SendResponse(MailboxMessage.Start);
             _mailbox.SendResponse(MailboxMessage.RenderEnd);
 
-            Logger.Info?.Print(LogClass.AudioRenderer, "Starting audio processor");
+            LogStartingProcessor();
 
             while (true)
             {
@@ -213,21 +217,35 @@ namespace Hyjinx.Audio.Renderer.Dsp
                     }
 
                     long endTicks = PerformanceCounter.ElapsedNanoseconds;
-
                     long elapsedTime = endTicks - startTicks;
 
                     if (Constants.AudioProcessorMaxUpdateTime < elapsedTime)
                     {
-                        Logger.Debug?.Print(LogClass.AudioRenderer, $"DSP too slow (exceeded by {elapsedTime - Constants.AudioProcessorMaxUpdateTime}ns)");
+                        LogDspTooSlow(elapsedTime - Constants.AudioProcessorMaxUpdateTime);
                     }
 
                     _mailbox.SendResponse(MailboxMessage.RenderEnd);
                 }
             }
 
-            Logger.Info?.Print(LogClass.AudioRenderer, "Stopping audio processor");
+            LogStoppingProcessor();
             _mailbox.SendResponse(MailboxMessage.Stop);
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Starting audio processor")]
+        private partial void LogStartingProcessor();
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "DSP too slow (exceeded by {ms}ns)")]
+        private partial void LogDspTooSlow(long ms);
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Stopping audio processor")]
+        private partial void LogStoppingProcessor();
 
         public void Dispose()
         {

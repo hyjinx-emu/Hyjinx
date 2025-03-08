@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <DefineConstants Condition=" '$(ExtraDefineConstants)' != '' ">$(DefineConstants);$(ExtraDefineConstants)</DefineConstants>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <NoWarn>SYSLIB1025</NoWarn>
+  </PropertyGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
