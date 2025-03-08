@@ -28,7 +28,7 @@ public static class LoggerModule
         var services = new ServiceCollection();
         services.AddLogging(logging =>
         {
-            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
+            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
             logging.ClearProviders();
 
             logging.AddConsole(console =>
@@ -38,7 +38,8 @@ public static class LoggerModule
                 console.MaxQueueLength = 10000;
             }).AddSimpleConsole(opts =>
             {
-                opts.TimestampFormat = "hh:mm:ss.fff";
+                opts.TimestampFormat = @"hh\:mm\:ss\.ffff";
+                opts.UpTime = upTime;
             });
         });
 

@@ -6,8 +6,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 using System.Text;
 
 namespace Hyjinx.Extensions.Logging.Console;
@@ -19,6 +19,9 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
                                                   OperatingSystem.IsIOS(); // returns true on MacCatalyst
 
     private readonly IDisposable? _optionsReloadToken;
+    
+    private bool _isColoredWriterEnabled;
+    private Stopwatch? _upTime;
 
     public SimpleConsoleFormatter(IOptionsMonitor<SimpleConsoleFormatterOptions> options)
         : base(ConsoleFormatterNames.Simple)
@@ -31,6 +34,9 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
     private void ReloadLoggerOptions(SimpleConsoleFormatterOptions options)
     {
         FormatterOptions = options;
+        
+        _isColoredWriterEnabled = options.ColorBehavior != LoggerColorBehavior.Disabled;
+        _upTime = options.UpTime;
     }
 
     public void Dispose()
@@ -42,30 +48,14 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
 
     public override void Write<TState>(in ConsoleLogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
     {
-        if (logEntry.State is BufferedLogRecord bufferedRecord)
-        {
-            string message = bufferedRecord.FormattedMessage ?? string.Empty;
-            WriteInternal(null, textWriter, message, bufferedRecord.LogLevel, bufferedRecord.EventId, bufferedRecord.Exception, logEntry.ThreadName, logEntry.Category, bufferedRecord.Timestamp);
-        }
-        else
-        {
-            string message = logEntry.Formatter(logEntry.State, logEntry.Exception);
-            WriteInternal(scopeProvider, textWriter, message, logEntry.LogLevel, logEntry.EventId, logEntry.Exception?.ToString(), logEntry.ThreadName, logEntry.Category, GetCurrentDateTime());
-        }
-    }
-
-    private void WriteInternal(IExternalScopeProvider? scopeProvider, TextWriter textWriter, string message, LogLevel logLevel,
-        EventId eventId, string? exception, string? threadName, string category, DateTimeOffset stamp)
-    {
-        var logLevelColors = GetLogLevelConsoleColors(logLevel);
-        var logLevelString = GetLogLevelString(logLevel);
+        var logLevelString = GetLogLevelString(logEntry.LogLevel);
         var sb = new StringBuilder();
         
         string? timestamp = null;
         string? timestampFormat = FormatterOptions.TimestampFormat;
         if (timestampFormat != null)
         {
-            timestamp = stamp.ToString(timestampFormat);
+            timestamp = _upTime!.Elapsed.ToString(timestampFormat);
         }
         
         if (timestamp != null)
@@ -75,52 +65,37 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
 
         sb.Append(' ').Append(logLevelString);
 
-        if (eventId.Name != null)
+        if (logEntry.EventId.Name != null)
         {
-            sb.Append(' ').Append(eventId.Name);
+            sb.Append(' ').Append(logEntry.EventId.Name);
         }
 
-        if (threadName != null)
+        if (logEntry.ThreadName != null)
         {
-            sb.Append(' ').Append(threadName);
+            sb.Append(' ').Append(logEntry.ThreadName);
         }
 
-        sb.Append(':');
-        AppendScopeInformation(sb, scopeProvider);
-        WriteMessage(sb, message);
+        var message = logEntry.Formatter(logEntry.State, logEntry.Exception);
+        sb.Append(": ").Append(message);
 
-        if (exception != null)
+        if (logEntry.Exception != null)
         {
-            WriteMessage(sb, exception);
+            sb.Append(logEntry.Exception);
         }
 
         sb.AppendLine();
 
-        textWriter.WriteColoredMessage(sb.ToString(), logLevelColors.Background, logLevelColors.Foreground);
-    }
-
-    private static void WriteMessage(StringBuilder textWriter, string message)
-    {
-        if (!string.IsNullOrEmpty(message))
+        if (_isColoredWriterEnabled)
         {
-                textWriter.Append(' ');
-                WriteReplacing(textWriter, Environment.NewLine, " ", message);
+            var logLevelColors = GetLogLevelConsoleColors(logEntry.LogLevel);
+            textWriter.WriteColoredMessage(sb.ToString(), logLevelColors.Background, logLevelColors.Foreground);
         }
-
-        static void WriteReplacing(StringBuilder writer, string oldValue, string newValue, string message)
+        else
         {
-            string newMessage = message.Replace(oldValue, newValue);
-            writer.Append(newMessage);
+            textWriter.Write(sb.ToString());
         }
     }
-
-    private DateTimeOffset GetCurrentDateTime()
-    {
-        return FormatterOptions.TimestampFormat != null
-            ? (FormatterOptions.UseUtcTimestamp ? DateTimeOffset.UtcNow : DateTimeOffset.Now)
-            : DateTimeOffset.MinValue;
-    }
-
+    
     private static string GetLogLevelString(LogLevel logLevel)
     {
         return logLevel switch
@@ -145,6 +120,7 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
         {
             return new ConsoleColors(null, null);
         }
+        
         // We must explicitly set the background color if we are setting the foreground color,
         // since just setting one can look bad on the users console.
         return logLevel switch
@@ -157,18 +133,6 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
             LogLevel.Critical => new ConsoleColors(ConsoleColor.DarkCyan),
             _ => new ConsoleColors(null, null)
         };
-    }
-
-    private void AppendScopeInformation(StringBuilder textWriter, IExternalScopeProvider? scopeProvider)
-    {
-        if (FormatterOptions.IncludeScopes && scopeProvider != null)
-        {
-            scopeProvider.ForEachScope((scope, state) =>
-            {
-                state.Append(" => ");
-                state.Append(scope);
-            }, textWriter);
-        }
     }
 
     private readonly struct ConsoleColors
