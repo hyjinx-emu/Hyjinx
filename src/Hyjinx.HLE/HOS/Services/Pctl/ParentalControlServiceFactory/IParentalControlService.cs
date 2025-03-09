@@ -5,7 +5,7 @@ using static LibHac.Ns.ApplicationControlProperty;
 
 namespace Hyjinx.HLE.HOS.Services.Pctl.ParentalControlServiceFactory
 {
-    class IParentalControlService : IpcService
+    class IParentalControlService : IpcService<IParentalControlService>
     {
         private readonly ulong _pid;
         private readonly int _permissionFlag;

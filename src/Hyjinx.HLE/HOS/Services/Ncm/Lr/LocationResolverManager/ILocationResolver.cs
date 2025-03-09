@@ -6,7 +6,7 @@ using static Hyjinx.HLE.Utilities.StringUtils;
 
 namespace Hyjinx.HLE.HOS.Services.Ncm.Lr.LocationResolverManager
 {
-    class ILocationResolver : IpcService
+    class ILocationResolver : IpcService<ILocationResolver>
     {
         private readonly StorageId _storageId;
 

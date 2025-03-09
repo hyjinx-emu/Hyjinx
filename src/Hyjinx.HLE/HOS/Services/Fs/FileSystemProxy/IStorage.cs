@@ -4,7 +4,7 @@ using LibHac.Sf;
 
 namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy
 {
-    class IStorage : DisposableIpcService
+    class IStorage : DisposableIpcService<IStorage>
     {
         private SharedRef<LibHac.FsSrv.Sf.IStorage> _baseStorage;
 

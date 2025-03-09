@@ -23,7 +23,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
     [Service("nvdrv:a")]
     [Service("nvdrv:s")]
     [Service("nvdrv:t")]
-    class INvDrvServices : IpcService
+    class INvDrvServices : IpcService<INvDrvServices>
     {
         private static readonly List<string> _deviceFileDebugRegistry = new()
         {

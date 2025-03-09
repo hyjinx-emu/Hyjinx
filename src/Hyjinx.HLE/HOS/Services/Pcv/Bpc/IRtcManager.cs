@@ -3,7 +3,7 @@ using System;
 namespace Hyjinx.HLE.HOS.Services.Pcv.Bpc
 {
     [Service("bpc:r")] //  1.0.0 - 8.1.0
-    class IRtcManager : IpcService
+    class IRtcManager : IpcService<IRtcManager>
     {
         public IRtcManager(ServiceCtx context) { }
 

@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
-    class ITimeZoneServiceForPsc : IpcService
+    class ITimeZoneServiceForPsc : IpcService<ITimeZoneServiceForPsc>
     {
         private readonly TimeZoneManager _timeZoneManager;
         private readonly bool _writePermission;

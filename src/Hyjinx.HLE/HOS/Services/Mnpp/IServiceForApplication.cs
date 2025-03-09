@@ -6,7 +6,7 @@ using Hyjinx.HLE.HOS.Services.Account.Acc;
 namespace Hyjinx.HLE.HOS.Services.Mnpp
 {
     [Service("mnpp:app")] // 13.0.0+
-    class IServiceForApplication : IpcService
+    class IServiceForApplication : IpcService<IServiceForApplication>
     {
         public IServiceForApplication(ServiceCtx context) { }
 

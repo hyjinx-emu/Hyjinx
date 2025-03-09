@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Hyjinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager
 {
-    class IClkrstSession : IpcService
+    class IClkrstSession : IpcService<IClkrstSession>
     {
         private readonly DeviceCode _deviceCode;
 #pragma warning disable IDE0052 // Remove unread private member

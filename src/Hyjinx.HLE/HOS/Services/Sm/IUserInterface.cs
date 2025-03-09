@@ -13,7 +13,7 @@ using System.Text;
 
 namespace Hyjinx.HLE.HOS.Services.Sm
 {
-    partial class IUserInterface : IpcService
+    partial class IUserInterface : IpcService<IUserInterface>
     {
         private static readonly Dictionary<string, Type> _services;
 

@@ -15,7 +15,7 @@ using System.Text;
 namespace Hyjinx.HLE.HOS.Services.Settings
 {
     [Service("set:sys")]
-    class ISystemSettingsServer : IpcService
+    class ISystemSettingsServer : IpcService<ISystemSettingsServer>
     {
         public ISystemSettingsServer(ServiceCtx context) { }
 

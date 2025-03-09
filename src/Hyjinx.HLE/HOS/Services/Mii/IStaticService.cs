@@ -6,7 +6,7 @@ namespace Hyjinx.HLE.HOS.Services.Mii
 {
     [Service("mii:e", true)]
     [Service("mii:u", false)]
-    class IStaticService : IpcService
+    class IStaticService : IpcService<IStaticService>
     {
         private readonly DatabaseImpl _databaseImpl;
 

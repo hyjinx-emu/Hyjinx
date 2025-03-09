@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 namespace Hyjinx.HLE.HOS.Services.Hid
 {
     [Service("hid")]
-    class IHidServer : IpcService
+    class IHidServer : IpcService<IHidServer>
     {
         private readonly KEvent _xpadIdEvent;
         private readonly KEvent _palmaOperationCompleteEvent;

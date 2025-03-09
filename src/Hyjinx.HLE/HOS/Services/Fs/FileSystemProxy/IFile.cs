@@ -6,7 +6,7 @@ using Hyjinx.Common;
 
 namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy
 {
-    class IFile : DisposableIpcService
+    class IFile : DisposableIpcService<IFile>
     {
         private SharedRef<LibHac.FsSrv.Sf.IFile> _baseFile;
 

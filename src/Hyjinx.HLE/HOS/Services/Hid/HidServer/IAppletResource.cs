@@ -5,7 +5,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Hid.HidServer
 {
-    class IAppletResource : IpcService
+    class IAppletResource : IpcService<IAppletResource>
     {
         private readonly KSharedMemory _hidSharedMem;
         private int _hidSharedMemHandle;

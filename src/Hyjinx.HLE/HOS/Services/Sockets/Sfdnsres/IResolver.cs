@@ -16,7 +16,7 @@ using System.Text;
 namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 {
     [Service("sfdnsres")]
-    class IResolver : IpcService
+    class IResolver : IpcService<IResolver>
     {
         public IResolver(ServiceCtx context)
         {

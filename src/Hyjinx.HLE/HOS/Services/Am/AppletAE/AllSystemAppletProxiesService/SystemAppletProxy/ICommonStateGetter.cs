@@ -10,7 +10,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class ICommonStateGetter : DisposableIpcService
+    class ICommonStateGetter : DisposableIpcService<ICommonStateGetter>
     {
         private readonly ServiceCtx _context;
 

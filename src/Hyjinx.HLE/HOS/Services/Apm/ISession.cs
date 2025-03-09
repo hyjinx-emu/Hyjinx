@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services.Apm
 {
-    abstract class ISession : IpcService
+    abstract class ISession : IpcService<ISession>
     {
         public ISession(ServiceCtx context) { }
 

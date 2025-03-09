@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Hyjinx.HLE.HOS.Services.Olsc
 {
     [Service("olsc:u")] // 10.0.0+
-    class IOlscServiceForApplication : IpcService
+    class IOlscServiceForApplication : IpcService<IOlscServiceForApplication>
     {
         private bool _initialized;
         private Dictionary<UserId, bool> _saveDataBackupSettingDatabase;

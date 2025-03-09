@@ -11,7 +11,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd
 {
     [Service("nsd:a")] // Max sessions: 5
     [Service("nsd:u")] // Max sessions: 20
-    class IManager : IpcService
+    class IManager : IpcService<IManager>
     {
         public static readonly NsdSettings NsdSettings;
 #pragma warning disable IDE0052 // Remove unread private member

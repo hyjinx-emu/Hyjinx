@@ -5,7 +5,7 @@ using Hyjinx.HLE.HOS.Services.Hid.Types;
 namespace Hyjinx.HLE.HOS.Services.Hid
 {
     [Service("hid:sys")]
-    class IHidSystemServer : IpcService
+    class IHidSystemServer : IpcService<IHidSystemServer>
     {
         public IHidSystemServer(ServiceCtx context) { }
 

@@ -2,7 +2,7 @@ using Hyjinx.Common.Logging;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class IAudioController : IpcService
+    class IAudioController : IpcService<IAudioController>
     {
         public IAudioController() { }
 

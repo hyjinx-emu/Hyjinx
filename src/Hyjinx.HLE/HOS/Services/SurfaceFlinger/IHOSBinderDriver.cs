@@ -7,7 +7,7 @@ using System.Buffers;
 
 namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
-    abstract class IHOSBinderDriver : IpcService
+    abstract class IHOSBinderDriver : IpcService<IHOSBinderDriver>
     {
         public IHOSBinderDriver() { }
 

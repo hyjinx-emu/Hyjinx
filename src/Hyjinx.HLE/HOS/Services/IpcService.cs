@@ -11,9 +11,17 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services
 {
+    abstract class IpcService<T> : IpcService
+        where T : IpcService<T>
+    {
+        protected IpcService(ServerBase? server = null)
+            : base(Logger.DefaultLoggerFactory.CreateLogger<T>(), server)
+        { }
+    }
+    
     abstract partial class IpcService
     {
-        protected readonly ILogger<IpcService> _logger;
+        protected readonly ILogger _logger;
         
         public IReadOnlyDictionary<int, MethodInfo> CmifCommands { get; }
         public IReadOnlyDictionary<int, MethodInfo> TipcCommands { get; }
@@ -25,9 +33,9 @@ namespace Hyjinx.HLE.HOS.Services
         private int _selfId;
         private bool _isDomain;
 
-        public IpcService(ServerBase server = null)
+        protected IpcService(ILogger logger, ServerBase? server = null)
         {
-            _logger = Logger.DefaultLoggerFactory.CreateLogger<IpcService>();
+            _logger = logger;
             
             CmifCommands = typeof(IpcService).Assembly.GetTypes()
                 .Where(type => type == GetType())
@@ -43,7 +51,7 @@ namespace Hyjinx.HLE.HOS.Services
                 .Select(command => (((CommandTipcAttribute)command).Id, methodInfo)))
                 .ToDictionary(command => command.Id, command => command.methodInfo);
 
-            Server = server;
+            Server = server!;
 
             _parent = this;
             _domainObjects = new IdDictionary();

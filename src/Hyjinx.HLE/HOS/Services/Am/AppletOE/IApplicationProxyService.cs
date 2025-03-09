@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService;
 namespace Hyjinx.HLE.HOS.Services.Am
 {
     [Service("appletOE")]
-    class IApplicationProxyService : IpcService
+    class IApplicationProxyService : IpcService<IApplicationProxyService>
     {
         public IApplicationProxyService(ServiceCtx context) { }
 

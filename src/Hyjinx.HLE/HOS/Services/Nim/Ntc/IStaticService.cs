@@ -4,7 +4,7 @@ using Hyjinx.HLE.HOS.Services.Nim.Ntc.StaticService;
 namespace Hyjinx.HLE.HOS.Services.Nim.Ntc
 {
     [Service("ntc")]
-    class IStaticService : IpcService
+    class IStaticService : IpcService<IStaticService>
     {
         public IStaticService(ServiceCtx context) { }
 

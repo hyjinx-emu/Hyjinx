@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Kernel.Process;
 namespace Hyjinx.HLE.HOS.Services.Pm
 {
     [Service("pm:info")]
-    class IInformationInterface : IpcService
+    class IInformationInterface : IpcService<IInformationInterface>
     {
         public IInformationInterface(ServiceCtx context) { }
 

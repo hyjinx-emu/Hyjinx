@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationPro
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService
 {
-    class IApplicationProxy : IpcService
+    class IApplicationProxy : IpcService<IApplicationProxy>
     {
         private readonly ulong _pid;
 

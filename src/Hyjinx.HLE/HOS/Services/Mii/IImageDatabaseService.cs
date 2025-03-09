@@ -3,7 +3,7 @@ using Hyjinx.Common.Logging;
 namespace Hyjinx.HLE.HOS.Services.Mii
 {
     [Service("miiimg")] // 5.0.0+
-    class IImageDatabaseService : IpcService
+    class IImageDatabaseService : IpcService<IImageDatabaseService>
     {
         private uint _imageCount;
         private bool _isDirty;

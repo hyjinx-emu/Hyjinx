@@ -1,7 +1,7 @@
 namespace Hyjinx.HLE.HOS.Services.Pm
 {
     [Service("pm:shell")]
-    class IShellInterface : IpcService
+    class IShellInterface : IpcService<IShellInterface>
     {
         public IShellInterface(ServiceCtx context) { }
 

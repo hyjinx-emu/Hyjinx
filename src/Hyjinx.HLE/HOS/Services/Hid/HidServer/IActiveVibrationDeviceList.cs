@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services.Hid.HidServer
 {
-    class IActiveApplicationDeviceList : IpcService
+    class IActiveApplicationDeviceList : IpcService<IActiveApplicationDeviceList>
     {
         public IActiveApplicationDeviceList() { }
 

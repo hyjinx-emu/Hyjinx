@@ -6,7 +6,7 @@ namespace Hyjinx.HLE.HOS.Services.Pctl
     [Service("pctl:a", 0x83BE)]
     [Service("pctl:r", 0x8040)]
     [Service("pctl:s", 0x838E)]
-    class IParentalControlServiceFactory : IpcService
+    class IParentalControlServiceFactory : IpcService<IParentalControlServiceFactory>
     {
         private readonly int _permissionFlag;
 

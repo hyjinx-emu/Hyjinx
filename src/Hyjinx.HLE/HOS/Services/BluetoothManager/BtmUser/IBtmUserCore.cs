@@ -5,7 +5,7 @@ using Hyjinx.Horizon.Common;
 
 namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser
 {
-    class IBtmUserCore : IpcService
+    class IBtmUserCore : IpcService<IBtmUserCore>
     {
         public KEvent _bleScanEvent;
         public int _bleScanEventHandle;

@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser;
 namespace Hyjinx.HLE.HOS.Services.BluetoothManager
 {
     [Service("btm:u")] // 5.0.0+
-    class IBtmUser : IpcService
+    class IBtmUser : IpcService<IBtmUser>
     {
         public IBtmUser(ServiceCtx context) { }
 

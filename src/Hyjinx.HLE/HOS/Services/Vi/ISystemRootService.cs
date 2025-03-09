@@ -4,7 +4,7 @@ using Hyjinx.HLE.HOS.Services.Vi.Types;
 namespace Hyjinx.HLE.HOS.Services.Vi
 {
     [Service("vi:s")]
-    class ISystemRootService : IpcService
+    class ISystemRootService : IpcService<ISystemRootService>
     {
         // vi:u/m/s aren't on 3 separate threads but we can't put them together with the current ServerBase
         public ISystemRootService(ServiceCtx context) : base(context.Device.System.ViServerS) { }

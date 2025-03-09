@@ -6,7 +6,7 @@ using System.Text;
 namespace Hyjinx.HLE.HOS.Services.Settings
 {
     [Service("set")]
-    class ISettingsServer : IpcService
+    class ISettingsServer : IpcService<ISettingsServer>
     {
         public ISettingsServer(ServiceCtx context) { }
 

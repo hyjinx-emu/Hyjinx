@@ -1,7 +1,7 @@
 namespace Hyjinx.HLE.HOS.Services.Nv
 {
     [Service("nvgem:c")]
-    class INvGemControl : IpcService
+    class INvGemControl : IpcService<INvGemControl>
     {
         public INvGemControl(ServiceCtx context) { }
     }

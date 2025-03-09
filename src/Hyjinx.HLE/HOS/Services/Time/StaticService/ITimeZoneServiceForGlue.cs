@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
-    class ITimeZoneServiceForGlue : IpcService
+    class ITimeZoneServiceForGlue : IpcService<ITimeZoneServiceForGlue>
     {
         private readonly TimeZoneContentManager _timeZoneContentManager;
         private readonly ITimeZoneServiceForPsc _inner;

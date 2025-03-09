@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryA
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class ILibraryAppletCreator : IpcService
+    class ILibraryAppletCreator : IpcService<ILibraryAppletCreator>
     {
         public ILibraryAppletCreator() { }
 

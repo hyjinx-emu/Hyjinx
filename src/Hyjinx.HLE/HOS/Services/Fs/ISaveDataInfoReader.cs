@@ -4,7 +4,7 @@ using LibHac.Sf;
 
 namespace Hyjinx.HLE.HOS.Services.Fs
 {
-    class ISaveDataInfoReader : DisposableIpcService
+    class ISaveDataInfoReader : DisposableIpcService<ISaveDataInfoReader>
     {
         private SharedRef<LibHac.FsSrv.Sf.ISaveDataInfoReader> _baseReader;
 

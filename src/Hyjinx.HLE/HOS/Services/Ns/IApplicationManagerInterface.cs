@@ -4,7 +4,7 @@ using Hyjinx.Common.Utilities;
 namespace Hyjinx.HLE.HOS.Services.Ns
 {
     [Service("ns:am")]
-    class IApplicationManagerInterface : IpcService
+    class IApplicationManagerInterface : IpcService<IApplicationManagerInterface>
     {
         public IApplicationManagerInterface(ServiceCtx context) { }
 

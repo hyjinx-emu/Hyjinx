@@ -1,7 +1,7 @@
 namespace Hyjinx.HLE.HOS.Services.Caps
 {
     [Service("caps:c")]
-    class IAlbumControlService : IpcService
+    class IAlbumControlService : IpcService<IAlbumControlService>
     {
         public IAlbumControlService(ServiceCtx context) { }
 

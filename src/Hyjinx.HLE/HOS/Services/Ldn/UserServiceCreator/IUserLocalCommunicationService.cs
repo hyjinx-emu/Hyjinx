@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
 {
-    class IUserLocalCommunicationService : IpcService, IDisposable
+    class IUserLocalCommunicationService : IpcService<IUserLocalCommunicationService>, IDisposable
     {
         public INetworkClient NetworkClient { get; private set; }
 

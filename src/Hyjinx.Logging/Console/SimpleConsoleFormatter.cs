@@ -65,11 +65,6 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
             var logLevelString = GetLogLevelString(logEntry.LogLevel);
             t_messageBuilder.Append(' ').Append(logLevelString).Append(' ').Append(logEntry.Category);
             
-            if (logEntry.EventId.Name != null)
-            {
-                t_messageBuilder.Append(' ').Append(logEntry.EventId.Name);
-            }
-
             if (logEntry.ThreadName != null)
             {
                 t_messageBuilder.Append(' ').Append(logEntry.ThreadName);

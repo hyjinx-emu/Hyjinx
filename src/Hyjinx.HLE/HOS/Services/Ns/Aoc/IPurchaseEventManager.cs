@@ -6,7 +6,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
 {
-    class IPurchaseEventManager : IpcService
+    class IPurchaseEventManager : IpcService<IPurchaseEventManager>
     {
         private readonly KEvent _purchasedEvent;
 

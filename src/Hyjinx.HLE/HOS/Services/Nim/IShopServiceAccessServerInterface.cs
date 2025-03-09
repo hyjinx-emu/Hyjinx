@@ -6,7 +6,7 @@ using Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface;
 namespace Hyjinx.HLE.HOS.Services.Nim
 {
     [Service("nim:eca")] // 5.0.0+
-    class IShopServiceAccessServerInterface : IpcService
+    class IShopServiceAccessServerInterface : IpcService<IShopServiceAccessServerInterface>
     {
         public IShopServiceAccessServerInterface(ServiceCtx context) { }
 

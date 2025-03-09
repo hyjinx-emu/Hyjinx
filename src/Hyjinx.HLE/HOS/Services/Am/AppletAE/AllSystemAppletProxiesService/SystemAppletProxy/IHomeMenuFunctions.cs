@@ -6,7 +6,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class IHomeMenuFunctions : IpcService
+    class IHomeMenuFunctions : IpcService<IHomeMenuFunctions>
     {
         private readonly KEvent _channelEvent;
         private int _channelEventHandle;

@@ -5,7 +5,7 @@ using Hyjinx.Horizon.Common;
 
 namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 {
-    class IPsmSession : IpcService
+    class IPsmSession : IpcService<IPsmSession>
     {
         private readonly KEvent _stateChangeEvent;
         private int _stateChangeEventHandle;

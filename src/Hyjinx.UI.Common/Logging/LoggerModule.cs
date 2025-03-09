@@ -28,7 +28,7 @@ public static class LoggerModule
         var services = new ServiceCollection();
         services.AddLogging(logging =>
         {
-            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
             logging.ClearProviders();
 
             logging.AddConsole(console =>
@@ -46,14 +46,14 @@ public static class LoggerModule
         LoggingServices = services.BuildServiceProvider();
         
         Logger.Initialize(LoggingServices.GetRequiredService<ILoggerFactory>());
-        Logger.SetEnable(LogLevel.Trace, true);
+        Logger.SetEnable(LogLevel.Trace, false);
         Logger.SetEnable(LogLevel.Debug, true);
         Logger.SetEnable(LogLevel.Info, true);
         Logger.SetEnable(LogLevel.Warning, true);
         Logger.SetEnable(LogLevel.Error, true);
-        Logger.SetEnable(LogLevel.Guest, true);
-        Logger.SetEnable(LogLevel.AccessLog, true);
-        Logger.SetEnable(LogLevel.Stub, true);
+        Logger.SetEnable(LogLevel.Guest, false);
+        Logger.SetEnable(LogLevel.AccessLog, false);
+        Logger.SetEnable(LogLevel.Stub, false);
         
         // Logger.SetEnable(LogLevel.Trace, ConfigurationState.Instance.Logger.EnableTrace.Value);
         // Logger.SetEnable(LogLevel.Debug, ConfigurationState.Instance.Logger.EnableDebug.Value);

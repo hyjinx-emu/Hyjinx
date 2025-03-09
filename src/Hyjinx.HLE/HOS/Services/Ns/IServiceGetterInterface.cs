@@ -5,7 +5,7 @@ namespace Hyjinx.HLE.HOS.Services.Ns
     [Service("ns:rid")]
     [Service("ns:rt")]
     [Service("ns:web")]
-    class IServiceGetterInterface : IpcService
+    class IServiceGetterInterface : IpcService<IServiceGetterInterface>
     {
         public IServiceGetterInterface(ServiceCtx context) { }
 

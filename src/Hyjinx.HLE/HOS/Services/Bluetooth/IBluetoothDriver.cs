@@ -8,7 +8,7 @@ using System;
 namespace Hyjinx.HLE.HOS.Services.Bluetooth
 {
     [Service("btdrv")]
-    class IBluetoothDriver : IpcService
+    class IBluetoothDriver : IpcService<IBluetoothDriver>
     {
 #pragma warning disable CS0414, IDE0052 // Remove unread private member
         private string _unknownLowEnergy;

@@ -8,7 +8,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletCreator
 {
-    class ILibraryAppletAccessor : DisposableIpcService
+    class ILibraryAppletAccessor : DisposableIpcService<ILibraryAppletAccessor>
     {
         private readonly KernelContext _kernelContext;
 

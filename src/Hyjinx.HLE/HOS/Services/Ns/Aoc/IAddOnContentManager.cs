@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
 {
     [Service("aoc:u")]
-    class IAddOnContentManager : IpcService
+    class IAddOnContentManager : IpcService<IAddOnContentManager>
     {
         private readonly KEvent _addOnContentListChangedEvent;
         private int _addOnContentListChangedEventHandle;

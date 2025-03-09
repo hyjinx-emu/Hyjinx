@@ -3,7 +3,7 @@ using Hyjinx.Common.Logging;
 namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 {
     [Service("psm")]
-    class IPsmServer : IpcService
+    class IPsmServer : IpcService<IPsmServer>
     {
         public IPsmServer(ServiceCtx context) { }
 

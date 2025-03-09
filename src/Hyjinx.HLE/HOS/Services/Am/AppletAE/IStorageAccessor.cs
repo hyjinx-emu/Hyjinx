@@ -2,7 +2,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE
 {
-    class IStorageAccessor : IpcService
+    class IStorageAccessor : IpcService<IStorageAccessor>
     {
         private readonly IStorage _storage;
 

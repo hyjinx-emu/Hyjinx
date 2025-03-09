@@ -22,7 +22,7 @@ using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy
 {
-    class IApplicationFunctions : IpcService
+    class IApplicationFunctions : IpcService<IApplicationFunctions>
     {
         private long _defaultSaveDataSize = 200000000;
         private long _defaultJournalSaveDataSize = 200000000;

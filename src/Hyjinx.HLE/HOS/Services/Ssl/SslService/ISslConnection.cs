@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 {
-    class ISslConnection : IpcService, IDisposable
+    class ISslConnection : IpcService<ISslConnection>, IDisposable
     {
         private bool _doNotClockSocket;
         private bool _getServerCertChain;

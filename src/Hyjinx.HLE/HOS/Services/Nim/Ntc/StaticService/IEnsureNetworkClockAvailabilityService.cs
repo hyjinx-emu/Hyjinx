@@ -6,7 +6,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Nim.Ntc.StaticService
 {
-    class IEnsureNetworkClockAvailabilityService : IpcService
+    class IEnsureNetworkClockAvailabilityService : IpcService<IEnsureNetworkClockAvailabilityService>
     {
         private readonly KEvent _finishNotificationEvent;
         private ResultCode _taskResultCode;

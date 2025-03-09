@@ -5,7 +5,7 @@ using Hyjinx.HLE.HOS.Services.Account.Acc.AccountService;
 namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
     [Service("acc:su", AccountServiceFlag.Administrator)] // Max Sessions: 8
-    class IAccountServiceForAdministrator : IpcService
+    class IAccountServiceForAdministrator : IpcService<IAccountServiceForAdministrator>
     {
         private readonly ApplicationServiceServer _applicationServiceServer;
 

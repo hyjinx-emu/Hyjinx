@@ -14,7 +14,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 {
     [Service("bsd:s", true)]
     [Service("bsd:u", false)]
-    class IClient : IpcService
+    class IClient : IpcService<IClient>
     {
         private static readonly List<IPollManager> _pollManagers = new()
         {

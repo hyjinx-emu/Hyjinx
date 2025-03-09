@@ -9,7 +9,7 @@ using System;
 namespace Hyjinx.HLE.HOS.Services.Hid.Irs
 {
     [Service("irs")]
-    class IIrSensorServer : IpcService
+    class IIrSensorServer : IpcService<IIrSensorServer>
     {
         private int _irsensorSharedMemoryHandle = 0;
 

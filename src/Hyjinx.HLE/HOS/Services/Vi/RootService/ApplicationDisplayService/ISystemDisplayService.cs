@@ -2,7 +2,7 @@ using Hyjinx.Common.Logging;
 
 namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
 {
-    class ISystemDisplayService : IpcService
+    class ISystemDisplayService : IpcService<ISystemDisplayService>
     {
 #pragma warning disable IDE0052 // Remove unread private member
         private readonly IApplicationDisplayService _applicationDisplayService;

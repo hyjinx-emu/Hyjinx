@@ -6,7 +6,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
 {
-    class IRequest : IpcService
+    class IRequest : IpcService<IRequest>
     {
         private enum RequestState
         {

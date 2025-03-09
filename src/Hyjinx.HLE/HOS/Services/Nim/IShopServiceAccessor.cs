@@ -7,7 +7,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAccessServer
 {
-    class IShopServiceAccessor : IpcService
+    class IShopServiceAccessor : IpcService<IShopServiceAccessor>
     {
         private readonly KEvent _event;
 

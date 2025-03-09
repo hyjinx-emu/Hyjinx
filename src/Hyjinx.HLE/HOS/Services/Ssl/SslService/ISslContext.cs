@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 {
-    class ISslContext : IpcService
+    class ISslContext : IpcService<ISslContext>
     {
         private uint _connectionCount;
 

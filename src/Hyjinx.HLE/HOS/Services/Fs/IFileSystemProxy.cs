@@ -22,7 +22,7 @@ using IStorage = LibHac.FsSrv.Sf.IStorage;
 namespace Hyjinx.HLE.HOS.Services.Fs
 {
     [Service("fsp-srv")]
-    class IFileSystemProxy : DisposableIpcService
+    class IFileSystemProxy : DisposableIpcService<IFileSystemProxy>
     {
         private SharedRef<LibHac.FsSrv.Sf.IFileSystemProxy> _baseFileSystemProxy;
         private ulong _pid;

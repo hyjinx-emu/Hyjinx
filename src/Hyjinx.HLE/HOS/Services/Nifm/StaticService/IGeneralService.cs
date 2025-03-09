@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
 {
-    class IGeneralService : DisposableIpcService
+    class IGeneralService : DisposableIpcService<IGeneralService>
     {
         private readonly GeneralServiceDetail _generalServiceDetail;
 

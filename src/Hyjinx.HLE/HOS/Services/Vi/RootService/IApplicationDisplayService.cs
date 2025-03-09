@@ -17,7 +17,7 @@ using System.Text;
 
 namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 {
-    class IApplicationDisplayService : IpcService
+    class IApplicationDisplayService : IpcService<IApplicationDisplayService>
     {
         private readonly ViServiceType _serviceType;
 

@@ -5,7 +5,7 @@ using GameCardHandle = System.UInt32;
 
 namespace Hyjinx.HLE.HOS.Services.Fs
 {
-    class IDeviceOperator : DisposableIpcService
+    class IDeviceOperator : DisposableIpcService<IDeviceOperator>
     {
         private SharedRef<LibHac.FsSrv.Sf.IDeviceOperator> _baseOperator;
 

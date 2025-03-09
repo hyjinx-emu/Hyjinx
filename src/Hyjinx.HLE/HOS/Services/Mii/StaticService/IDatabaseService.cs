@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Mii.StaticService
 {
-    abstract class IDatabaseService : IpcService
+    abstract class IDatabaseService : IpcService<IDatabaseService>
     {
         [CommandCmif(0)]
         // IsUpdated(SourceFlag flag) -> bool

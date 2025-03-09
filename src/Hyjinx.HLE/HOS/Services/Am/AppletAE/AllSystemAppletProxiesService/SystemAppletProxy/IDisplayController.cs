@@ -6,7 +6,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class IDisplayController : IpcService
+    class IDisplayController : IpcService<IDisplayController>
     {
         private readonly KTransferMemory _transferMem;
         private bool _lastApplicationCaptureBufferAcquired;

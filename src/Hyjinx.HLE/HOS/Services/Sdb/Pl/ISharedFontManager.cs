@@ -7,7 +7,7 @@ namespace Hyjinx.HLE.HOS.Services.Sdb.Pl
 {
     [Service("pl:u")]
     [Service("pl:s")] // 9.0.0+
-    class ISharedFontManager : IpcService
+    class ISharedFontManager : IpcService<ISharedFontManager>
     {
         private int _fontSharedMemHandle;
 

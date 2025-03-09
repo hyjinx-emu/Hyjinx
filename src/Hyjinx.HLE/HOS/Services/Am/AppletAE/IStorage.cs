@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE
 {
-    class IStorage : IpcService
+    class IStorage : IpcService<IStorage>
     {
         public bool IsReadOnly { get; private set; }
         public byte[] Data { get; private set; }

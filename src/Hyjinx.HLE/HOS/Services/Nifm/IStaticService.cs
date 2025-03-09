@@ -5,7 +5,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm
     [Service("nifm:a")] // Max sessions: 2
     [Service("nifm:s")] // Max sessions: 16
     [Service("nifm:u")] // Max sessions: 5
-    class IStaticService : IpcService
+    class IStaticService : IpcService<IStaticService>
     {
         public IStaticService(ServiceCtx context) { }
 

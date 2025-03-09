@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
 {
-    class IProfile : IpcService
+    class IProfile : IpcService<IProfile>
     {
         private readonly ProfileServer _profileServer;
 

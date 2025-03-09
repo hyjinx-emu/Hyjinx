@@ -11,7 +11,7 @@ using System.IO;
 namespace Hyjinx.HLE.HOS.Services.Time
 {
     [Service("time:m")] // 9.0.0+
-    class ITimeServiceManager : IpcService
+    class ITimeServiceManager : IpcService<ITimeServiceManager>
     {
         private readonly TimeManager _timeManager;
         private int _automaticCorrectionEvent;

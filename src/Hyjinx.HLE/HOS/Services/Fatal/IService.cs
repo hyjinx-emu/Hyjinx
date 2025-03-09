@@ -7,7 +7,7 @@ using System.Text;
 namespace Hyjinx.HLE.HOS.Services.Fatal
 {
     [Service("fatal:u")]
-    class IService : IpcService
+    class IService : IpcService<IService>
     {
         public IService(ServiceCtx context) { }
 

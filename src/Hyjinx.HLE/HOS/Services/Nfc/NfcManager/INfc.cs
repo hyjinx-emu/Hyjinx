@@ -2,7 +2,7 @@ using Hyjinx.Common.Logging;
 
 namespace Hyjinx.HLE.HOS.Services.Nfc.NfcManager
 {
-    class INfc : IpcService
+    class INfc : IpcService<INfc>
     {
         private readonly NfcPermissionLevel _permissionLevel;
         private State _state;

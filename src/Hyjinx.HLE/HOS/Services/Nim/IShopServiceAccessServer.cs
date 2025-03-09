@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAc
 
 namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface
 {
-    class IShopServiceAccessServer : IpcService
+    class IShopServiceAccessServer : IpcService<IShopServiceAccessServer>
     {
         public IShopServiceAccessServer() { }
 

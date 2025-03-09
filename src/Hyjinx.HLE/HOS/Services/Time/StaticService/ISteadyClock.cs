@@ -4,7 +4,7 @@ using Hyjinx.HLE.HOS.Services.Time.Clock;
 
 namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
-    class ISteadyClock : IpcService
+    class ISteadyClock : IpcService<ISteadyClock>
     {
         private readonly SteadyClockCore _steadyClock;
         private readonly bool _writePermission;

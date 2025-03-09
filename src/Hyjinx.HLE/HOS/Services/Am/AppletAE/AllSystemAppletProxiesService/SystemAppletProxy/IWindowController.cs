@@ -2,7 +2,7 @@ using Hyjinx.Common.Logging;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class IWindowController : IpcService
+    class IWindowController : IpcService<IWindowController>
     {
         private readonly ulong _pid;
 
