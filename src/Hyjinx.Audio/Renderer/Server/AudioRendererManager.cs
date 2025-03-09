@@ -4,6 +4,7 @@ using Hyjinx.Audio.Renderer.Parameter;
 using Hyjinx.Common.Logging;
 using Hyjinx.Cpu;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -14,12 +15,13 @@ namespace Hyjinx.Audio.Renderer.Server
     /// <summary>
     /// The audio renderer manager.
     /// </summary>
-    public class AudioRendererManager : IDisposable
+    public partial class AudioRendererManager : IDisposable
     {
         /// <summary>
         /// Lock used for session allocation.
         /// </summary>
         private readonly object _sessionLock = new();
+        private readonly ILogger<AudioRendererManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<AudioRendererManager>();
 
         /// <summary>
         /// Lock used to control the <see cref="AudioProcessor"/> running state.
@@ -130,14 +132,18 @@ namespace Hyjinx.Audio.Renderer.Server
                 int sessionId = _sessionIds[index];
 
                 _sessionIds[index] = -1;
-
                 _activeSessionCount++;
 
-                Logger.Info?.Print(LogClass.AudioRenderer, $"Registered new renderer ({sessionId})");
+                LogRegisteredRenderer(sessionId);
 
                 return sessionId;
             }
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Registered new renderer ({sessionId})")]
+        private partial void LogRegisteredRenderer(int sessionId);
 
         /// <summary>
         /// Release a given <paramref name="sessionId"/>.
@@ -150,12 +156,16 @@ namespace Hyjinx.Audio.Renderer.Server
                 Debug.Assert(_activeSessionCount > 0);
 
                 int newIndex = --_activeSessionCount;
-
                 _sessionIds[newIndex] = sessionId;
             }
 
-            Logger.Info?.Print(LogClass.AudioRenderer, $"Unregistered renderer ({sessionId})");
+            LogUnregisteredRenderer(sessionId);
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Unregistered renderer ({sessionId})")]
+        private partial void LogUnregisteredRenderer(int sessionId);
 
         /// <summary>
         /// Check if there is any audio renderer active.
@@ -202,8 +212,13 @@ namespace Hyjinx.Audio.Renderer.Server
             _workerThread.Join();
             Processor.Stop();
 
-            Logger.Info?.Print(LogClass.AudioRenderer, "Stopped audio renderer");
+            LogStoppedRenderer();
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Stopped audio renderer")]
+        private partial void LogStoppedRenderer();
 
         /// <summary>
         /// Stop sending commands to the <see cref="AudioProcessor"/> without stopping the worker thread.
@@ -232,7 +247,7 @@ namespace Hyjinx.Audio.Renderer.Server
         /// </summary>
         private void SendCommands()
         {
-            Logger.Info?.Print(LogClass.AudioRenderer, "Starting audio renderer");
+            LogStartingRenderer();
             Processor.Wait();
 
             while (_isRunning)
@@ -249,6 +264,11 @@ namespace Hyjinx.Audio.Renderer.Server
                 Processor.Wait();
             }
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Starting audio renderer")]
+        private partial void LogStartingRenderer();
 
         /// <summary>
         /// Register a new <see cref="AudioRenderSystem"/>.

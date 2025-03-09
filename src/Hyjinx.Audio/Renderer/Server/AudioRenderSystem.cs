@@ -16,17 +16,22 @@ using Hyjinx.Audio.Renderer.Utils;
 using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.Threading;
 using CpuAddress = System.UInt64;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Audio.Renderer.Server
 {
-    public class AudioRenderSystem : IDisposable
+    public partial class AudioRenderSystem : IDisposable
     {
         private readonly object _lock = new();
+
+        private readonly ILogger<AudioRenderSystem> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<AudioRenderSystem>();
 
         private AudioRendererRenderingDevice _renderingDevice;
         private AudioRendererExecutionMode _executionMode;
@@ -371,10 +376,10 @@ namespace Hyjinx.Audio.Renderer.Server
 
             return ResultCode.Success;
         }
-
+        
         public void Start()
         {
-            Logger.Info?.Print(LogClass.AudioRenderer, $"Starting renderer id {_sessionId}");
+            LogStartingRenderer(_sessionId);
 
             lock (_lock)
             {
@@ -383,17 +388,32 @@ namespace Hyjinx.Audio.Renderer.Server
             }
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Starting renderer id {sessionId}")]
+        private partial void LogStartingRenderer(int sessionId);
+        
         public void Stop()
         {
-            Logger.Info?.Print(LogClass.AudioRenderer, $"Stopping renderer id {_sessionId}");
+            LogStoppingRenderer(_sessionId);
 
             lock (_lock)
             {
                 _isActive = false;
             }
 
-            Logger.Info?.Print(LogClass.AudioRenderer, $"Stopped renderer id {_sessionId}");
+            LogStoppedRenderer(_sessionId);
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Stopping renderer id {sessionId}")]
+        private partial void LogStoppingRenderer(int sessionId);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Stopped renderer id {sessionId}")]
+        private partial void LogStoppedRenderer(int sessionId);
 
         public void Disable()
         {
@@ -568,7 +588,7 @@ namespace Hyjinx.Audio.Renderer.Server
                 voiceDropped++;
                 voice.VoiceDropFlag = true;
 
-                Logger.Warning?.Print(LogClass.AudioRenderer, $"Dropping voice {voice.NodeId}");
+                LogDroppingVoice(voice.NodeId);
 
                 for (; i < commandBuffer.CommandList.Commands.Count; i++)
                 {
@@ -598,6 +618,11 @@ namespace Hyjinx.Audio.Renderer.Server
 
             return voiceDropped;
         }
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Dropping voice {voiceId}")]
+        private partial void LogDroppingVoice(int voiceId);
 
         private void GenerateCommandList(out CommandList commandList)
         {

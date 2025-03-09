@@ -1,6 +1,7 @@
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Logging;
 using Hyjinx.Common.Utilities;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;
 using System;
@@ -8,8 +9,9 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    class VulkanDebugMessenger : IDisposable
+    partial class VulkanDebugMessenger : IDisposable
     {
+        private static readonly ILogger<VulkanDebugMessenger> _logger = Logger.DefaultLoggerFactory.CreateLogger<VulkanDebugMessenger>();
         private readonly Vk _api;
         private readonly Instance _instance;
         private readonly GraphicsDebugLevel _logLevel;
@@ -29,9 +31,14 @@ namespace Hyjinx.Graphics.Vulkan
 
             if (result != Result.Success)
             {
-                Logger.Error?.Print(LogClass.Gpu, $"Vulkan debug messenger initialization failed with error {result}");
+                LogDebugInitializationFailed(result);
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Vulkan debug messenger initialization failed with error {result}")]
+        private partial void LogDebugInitializationFailed(Result result);
 
         private Result TryInitialize(out DebugUtilsMessengerEXT? debugUtilsMessengerHandle)
         {
@@ -99,19 +106,19 @@ namespace Hyjinx.Graphics.Vulkan
 
             if (messageSeverity.HasFlag(DebugUtilsMessageSeverityFlagsEXT.ErrorBitExt))
             {
-                Logger.Error?.Print(LogClass.Gpu, msg);
+                _logger.LogError(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), msg);
             }
             else if (messageSeverity.HasFlag(DebugUtilsMessageSeverityFlagsEXT.WarningBitExt))
             {
-                Logger.Warning?.Print(LogClass.Gpu, msg);
+                _logger.LogWarning(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), msg);
             }
             else if (messageSeverity.HasFlag(DebugUtilsMessageSeverityFlagsEXT.InfoBitExt))
             {
-                Logger.Info?.Print(LogClass.Gpu, msg);
+                _logger.LogInformation(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), msg);
             }
             else // if (messageSeverity.HasFlag(DebugUtilsMessageSeverityFlagsEXT.VerboseBitExt))
             {
-                Logger.Debug?.Print(LogClass.Gpu, msg);
+                _logger.LogDebug(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), msg);
             }
 
             return 0;

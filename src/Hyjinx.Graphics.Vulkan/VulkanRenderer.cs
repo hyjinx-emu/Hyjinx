@@ -5,6 +5,7 @@ using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Shader.Translation;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Graphics.Vulkan.Queries;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;
 using Silk.NET.Vulkan.Extensions.KHR;
@@ -17,8 +18,9 @@ using SamplerCreateInfo = Hyjinx.Graphics.GAL.SamplerCreateInfo;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    public sealed class VulkanRenderer : IRenderer
+    public sealed partial class VulkanRenderer : IRenderer
     {
+        private static readonly ILogger<VulkanRenderer> _logger = Logger.DefaultLoggerFactory.CreateLogger<VulkanRenderer>();
         private VulkanInstance _instance;
         private SurfaceKHR _surface;
         private VulkanPhysicalDevice _physicalDevice;
@@ -821,11 +823,15 @@ namespace Hyjinx.Graphics.Vulkan
             }
             catch (Exception ex)
             {
-                Logger.Error?.PrintMsg(LogClass.Gpu, $"Error querying Vulkan devices: {ex.Message}");
-
+                LogErrorQueryingVulkanDevices(_logger, ex);
                 return Array.Empty<DeviceInfo>();
             }
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Error querying Vulkan devices")]
+        private static partial void LogErrorQueryingVulkanDevices(ILogger logger, Exception exception);
 
         public static DeviceInfo[] GetPhysicalDevices(Vk api)
         {
@@ -883,10 +889,20 @@ namespace Hyjinx.Graphics.Vulkan
 
         private void PrintGpuInformation()
         {
-            Logger.Notice.Print(LogClass.Gpu, $"{GpuVendor} {GpuRenderer} ({GpuVersion})");
-            Logger.Notice.Print(LogClass.Gpu, $"GPU Memory: {GetTotalGPUMemory() / (1024 * 1024)} MiB");
+            LogGpuVendorInformation(GpuVendor, GpuRenderer, GpuVersion);
+            LogGpuMemoryAvailable(GetTotalGPUMemory() / (1024 * 1024));
         }
 
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "{vendor} {renderer} ({version})")]
+        private partial void LogGpuVendorInformation(string vendor, string renderer, string version);
+        
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "GPU Memory: {available} MiB")]
+        private partial void LogGpuMemoryAvailable(ulong available);
+        
         public void Initialize(GraphicsDebugLevel logLevel)
         {
             SetupContext(logLevel);
