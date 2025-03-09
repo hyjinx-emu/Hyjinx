@@ -1,8 +1,9 @@
-#nullable enable
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Common.Utilities
 {
@@ -14,8 +15,11 @@ namespace Hyjinx.Common.Utilities
     /// Get rid of this converter if dotnet supports similar functionality out of the box.
     /// </remarks>
     /// <typeparam name="TEnum">Type of enum to serialize</typeparam>
-    public sealed class TypedStringEnumConverter<TEnum> : JsonConverter<TEnum> where TEnum : struct, Enum
+    public sealed partial class TypedStringEnumConverter<TEnum> : JsonConverter<TEnum> where TEnum : struct, Enum
     {
+        private static readonly ILogger<TypedStringEnumConverter<TEnum>> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<TypedStringEnumConverter<TEnum>>();
+        
         public override TEnum Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var enumValue = reader.GetString();
@@ -25,9 +29,14 @@ namespace Hyjinx.Common.Utilities
                 return value;
             }
 
-            Logger.Warning?.Print(LogClass.Configuration, $"Failed to parse enum value \"{enumValue}\" for {typeof(TEnum)}, using default \"{default(TEnum)}\"");
+            LogFailedToParseEnumValue(enumValue!);
             return default;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Configuration, EventName = nameof(LogClass.Configuration),
+            Message = "Failed to parse enum value '{enumValue}', using default value instead.")]
+        private partial void LogFailedToParseEnumValue(string enumValue);
 
         public override void Write(Utf8JsonWriter writer, TEnum value, JsonSerializerOptions options)
         {

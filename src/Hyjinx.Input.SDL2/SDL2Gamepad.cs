@@ -2,17 +2,20 @@ using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Logging;
 using Hyjinx.Input;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using static SDL2.SDL;
-
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using StickInputId = Hyjinx.Input.StickInputId;
 
 namespace Hyjinx.Input.SDL2
 {
-    class SDL2Gamepad : IGamepad
+    partial class SDL2Gamepad : IGamepad
     {
+        private readonly ILogger<SDL2Gamepad> _logger = Logger.DefaultLoggerFactory.CreateLogger<SDL2Gamepad>();
+        
         private bool HasConfiguration => _configuration != null;
 
         private record struct ButtonMappingEntry(GamepadButtonInputId To, GamepadButtonInputId From);
@@ -90,15 +93,20 @@ namespace Hyjinx.Input.SDL2
             {
                 if (SDL_GameControllerSetSensorEnabled(_gamepadHandle, SDL_SensorType.SDL_SENSOR_ACCEL, SDL_bool.SDL_TRUE) != 0)
                 {
-                    Logger.Error?.Print(LogClass.Hid, $"Could not enable data reporting for SensorType {SDL_SensorType.SDL_SENSOR_ACCEL}.");
+                    LogCannotEnableReportingForSensorType(SDL_SensorType.SDL_SENSOR_ACCEL);
                 }
 
                 if (SDL_GameControllerSetSensorEnabled(_gamepadHandle, SDL_SensorType.SDL_SENSOR_GYRO, SDL_bool.SDL_TRUE) != 0)
                 {
-                    Logger.Error?.Print(LogClass.Hid, $"Could not enable data reporting for SensorType {SDL_SensorType.SDL_SENSOR_GYRO}.");
+                    LogCannotEnableReportingForSensorType(SDL_SensorType.SDL_SENSOR_GYRO);
                 }
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Could not enable data reporting for sensor type '{sensorType}'.")]
+        private partial void LogCannotEnableReportingForSensorType(SDL_SensorType sensorType);
 
         private GamepadFeaturesFlag GetFeaturesFlag()
         {
@@ -156,22 +164,32 @@ namespace Hyjinx.Input.SDL2
                 {
                     if (SDL_GameControllerRumble(_gamepadHandle, lowFrequencyRaw, highFrequencyRaw, SDL_HAPTIC_INFINITY) != 0)
                     {
-                        Logger.Error?.Print(LogClass.Hid, "Rumble is not supported on this game controller.");
+                        LogRumbleIsNotSupported();
                     }
                 }
                 else if (durationMs > SDL_HAPTIC_INFINITY)
                 {
-                    Logger.Error?.Print(LogClass.Hid, $"Unsupported rumble duration {durationMs}");
+                    LogUnsupportedRumbleDuration(durationMs);
                 }
                 else
                 {
                     if (SDL_GameControllerRumble(_gamepadHandle, lowFrequencyRaw, highFrequencyRaw, durationMs) != 0)
                     {
-                        Logger.Error?.Print(LogClass.Hid, "Rumble is not supported on this game controller.");
+                        LogRumbleIsNotSupported();
                     }
                 }
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Rumble is not supported on this game controller.")]
+        private partial void LogRumbleIsNotSupported();
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Unsupported rumble duration {durationMs}.")]
+        private partial void LogUnsupportedRumbleDuration(uint durationMs);
 
         public Vector3 GetMotionData(MotionInputId inputId)
         {

@@ -2,17 +2,22 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Common.Memory;
 using Hyjinx.Graphics.Texture;
 using Hyjinx.Graphics.Vic.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 using static Hyjinx.Graphics.Vic.Image.SurfaceCommon;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Vic.Image
 {
-    static class SurfaceReader
+    partial class SurfaceReader
     {
+        private static readonly ILogger<SurfaceReader> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<SurfaceReader>();
+        
         public static Surface Read(
             ResourceManager rm,
             ref SlotConfig config,
@@ -25,13 +30,18 @@ namespace Hyjinx.Graphics.Vic.Image
                     return ReadNv12(rm, ref config, ref surfaceConfig, ref offsets);
             }
 
-            Logger.Error?.Print(LogClass.Vic, $"Unsupported pixel format \"{surfaceConfig.SlotPixelFormat}\".");
+            LogUnsupportedPixelFormat(_logger, surfaceConfig.SlotPixelFormat);
 
             int lw = surfaceConfig.SlotLumaWidth + 1;
             int lh = surfaceConfig.SlotLumaHeight + 1;
 
             return new Surface(rm.SurfacePool, lw, lh);
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Vic, EventName = nameof(LogClass.Vic),
+            Message = "Unsupported pixel format '{format}'.")]
+        private static partial void LogUnsupportedPixelFormat(ILogger logger, PixelFormat format);
 
         private unsafe static Surface ReadNv12(
             ResourceManager rm,
@@ -399,7 +409,7 @@ namespace Hyjinx.Graphics.Vic.Image
                         }
                         break;
                     default:
-                        Logger.Error?.Print(LogClass.Vic, $"Unsupported deinterlace mode \"{config.DeinterlaceMode}\".");
+                        LogUnsupportedDeinterlaceMode(_logger, config.DeinterlaceMode);
                         break;
                 }
 
@@ -409,6 +419,12 @@ namespace Hyjinx.Graphics.Vic.Image
 
             return buffer;
         }
+        
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Vic, EventName = nameof(LogClass.Vic),
+            Message = "Unsupported deinterlace mode '{mode}'.")]
+        private static partial void LogUnsupportedDeinterlaceMode(ILogger logger, DeinterlaceMode mode);
 
         private static uint GetOffset(ref PlaneOffsets offsets, int plane)
         {

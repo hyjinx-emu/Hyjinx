@@ -6,6 +6,7 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Common.Memory;
 using Hyjinx.Input.HLE;
 using Hyjinx.Input.Motion.CemuHook.Protocol;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,16 +15,19 @@ using System.Net;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Threading.Tasks;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Input.Motion.CemuHook
 {
-    public class Client : IDisposable
+    public partial class Client : IDisposable
     {
         public const uint Magic = 0x43555344; // DSUC
         public const ushort Version = 1001;
 
         private bool _active;
 
+        private readonly ILogger<Client> _logger = Logger.DefaultLoggerFactory.CreateLogger<Client>();
+        
         private readonly Dictionary<int, IPEndPoint> _hosts;
         private readonly Dictionary<int, Dictionary<int, MotionInput>> _motionData;
         private readonly Dictionary<int, UdpClient> _clients;
@@ -56,7 +60,7 @@ namespace Hyjinx.Input.Motion.CemuHook
                     }
                     catch (SocketException socketException)
                     {
-                        Logger.Warning?.PrintMsg(LogClass.Hid, $"Unable to dispose motion client. Error: {socketException.ErrorCode}");
+                        LogUnableToDisposeMotionClient(socketException.ErrorCode, socketException);
                     }
                 }
 
@@ -65,6 +69,11 @@ namespace Hyjinx.Input.Motion.CemuHook
                 _motionData.Clear();
             }
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Unable to dispose motion client. Error Code: {errorCode}")]
+        private partial void LogUnableToDisposeMotionClient(int errorCode, SocketException socketException);
 
         public void RegisterClient(int player, string host, int port)
         {
@@ -102,8 +111,8 @@ namespace Hyjinx.Input.Motion.CemuHook
                 {
                     if (!_clientErrorStatus[player])
                     {
-                        Logger.Warning?.PrintMsg(LogClass.Hid, $"Unable to connect to motion source at {host}:{port}. Error: {formatException.Message}");
-
+                        LogUnableToConnectToMotionSource(host, port, formatException);
+                        
                         _clientErrorStatus[player] = true;
                     }
                 }
@@ -111,7 +120,7 @@ namespace Hyjinx.Input.Motion.CemuHook
                 {
                     if (!_clientErrorStatus[player])
                     {
-                        Logger.Warning?.PrintMsg(LogClass.Hid, $"Unable to connect to motion source at {host}:{port}. Error: {socketException.ErrorCode}");
+                        LogUnableToConnectToMotionSource(host, port, socketException);
 
                         _clientErrorStatus[player] = true;
                     }
@@ -124,7 +133,7 @@ namespace Hyjinx.Input.Motion.CemuHook
                 }
                 catch (Exception exception)
                 {
-                    Logger.Warning?.PrintMsg(LogClass.Hid, $"Unable to register motion client. Error: {exception.Message}");
+                    LogUnableToRegisterMotionClient(exception);
 
                     _clientErrorStatus[player] = true;
 
@@ -136,6 +145,16 @@ namespace Hyjinx.Input.Motion.CemuHook
                 }
             }
         }
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Unable to connect to motion source at {host}:{port}.")]
+        private partial void LogUnableToConnectToMotionSource(string host, int port, Exception exception);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Unable to register motion client.")]
+        private partial void LogUnableToRegisterMotionClient(Exception exception);
 
         public bool TryGetData(int player, int slot, out MotionInput input)
         {
@@ -176,7 +195,7 @@ namespace Hyjinx.Input.Motion.CemuHook
                     {
                         if (!_clientErrorStatus[clientId])
                         {
-                            Logger.Warning?.PrintMsg(LogClass.Hid, $"Unable to send data request to motion source at {client.Client.RemoteEndPoint}. Error: {socketException.ErrorCode}");
+                            LogUnableToSendRequestToMotionSource(client!.Client.RemoteEndPoint!, socketException.ErrorCode, socketException);
                         }
 
                         _clientErrorStatus[clientId] = true;
@@ -200,6 +219,11 @@ namespace Hyjinx.Input.Motion.CemuHook
                 }
             }
         }
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Unable to send request to motion source at {remoteEndpoint}. Error Code: {errorCode}")]
+        private partial void LogUnableToSendRequestToMotionSource(EndPoint remoteEndpoint, int errorCode, Exception exception);
 
         private byte[] Receive(int clientId, int timeout = 0)
         {
@@ -264,7 +288,7 @@ namespace Hyjinx.Input.Motion.CemuHook
                     {
                         if (!_clientErrorStatus[clientId])
                         {
-                            Logger.Warning?.PrintMsg(LogClass.Hid, $"Unable to receive data from motion source at {endPoint}. Error: {socketException.ErrorCode}");
+                            LogUnableToReceiveFromMotionSource(endPoint, socketException.ErrorCode, socketException);
                         }
 
                         _clientErrorStatus[clientId] = true;
@@ -288,6 +312,11 @@ namespace Hyjinx.Input.Motion.CemuHook
                 }
             }
         }
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Unable to receive data from motion source at {remoteEndpoint}. Error Code: {errorCode}")]
+        private partial void LogUnableToReceiveFromMotionSource(EndPoint remoteEndpoint, int errorCode, Exception exception);
 
         public void HandleResponse(byte[] data, int clientId)
         {
