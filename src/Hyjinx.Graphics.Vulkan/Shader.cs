@@ -1,6 +1,7 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Shader;
+using Microsoft.Extensions.Logging;
 using shaderc;
 using Silk.NET.Vulkan;
 using System;
@@ -9,14 +10,15 @@ using System.Threading.Tasks;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    class Shader : IDisposable
+    partial class Shader : IDisposable
     {
         // The shaderc.net dependency's Options constructor and dispose are not thread safe.
         // Take this lock when using them.
         private static readonly object _shaderOptionsLock = new();
 
         private static readonly IntPtr _ptrMainEntryPointName = Marshal.StringToHGlobalAnsi("main");
-
+        private static readonly ILogger<Shader> _logger = Logger.DefaultLoggerFactory.CreateLogger<Shader>();
+        
         private readonly Vk _api;
         private readonly Device _device;
         private readonly ShaderStageFlags _stage;
@@ -95,8 +97,7 @@ namespace Hyjinx.Graphics.Vulkan
 
             if (scr.Status != Status.Success)
             {
-                Logger.Error?.Print(LogClass.Gpu, $"Shader compilation error: {scr.Status} {scr.ErrorMessage}");
-
+                LogShaderCompilationError(_logger, scr.Status, scr.ErrorMessage);
                 return null;
             }
 
@@ -108,6 +109,11 @@ namespace Hyjinx.Graphics.Vulkan
 
             return code;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Shader compilation error: {status} {errorMessage}")]
+        private static partial void LogShaderCompilationError(ILogger logger, Status status, string errorMessage);
 
         private static ShaderKind GetShaderCShaderStage(ShaderStage stage)
         {
@@ -127,10 +133,15 @@ namespace Hyjinx.Graphics.Vulkan
                     return ShaderKind.GlslComputeShader;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(ShaderStage)} enum value: {stage}.");
+            LogInvalidEnumValue(_logger, nameof(ShaderStage), stage);
 
             return ShaderKind.GlslVertexShader;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Invalid {enumType} enum value: {stage}")]
+        private static partial void LogInvalidEnumValue(ILogger logger, string enumType, ShaderStage stage);
 
         public unsafe PipelineShaderStageCreateInfo GetInfo()
         {

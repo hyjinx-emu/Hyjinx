@@ -1,11 +1,12 @@
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    internal class AutoFlushCounter
+    internal partial class AutoFlushCounter
     {
         // How often to flush on framebuffer change.
         private readonly static long _framebufferFlushTimer = Stopwatch.Frequency / 1000; // (1ms)
@@ -26,6 +27,7 @@ namespace Hyjinx.Graphics.Vulkan
         private const int MinConsecutiveQueryForFlush = 10;
         private const int InitialQueryCountForFlush = 32;
 
+        private readonly ILogger<AutoFlushCounter> _logger = Logger.DefaultLoggerFactory.CreateLogger<AutoFlushCounter>();
         private readonly VulkanRenderer _gd;
 
         private long _lastFlush;
@@ -172,8 +174,13 @@ namespace Hyjinx.Graphics.Vulkan
             if (_fastFlushMode ? averageWait < _fastFlushExitThreshold : averageWait > _fastFlushEnterThreshold)
             {
                 _fastFlushMode = !_fastFlushMode;
-                Logger.Debug?.PrintMsg(LogClass.Gpu, $"Switched fast flush mode: ({_fastFlushMode})");
+                LogSwitchedFastFlushMode(_fastFlushMode);
             }
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Switched fast flush mode: ({mode})")]
+        private partial void LogSwitchedFastFlushMode(bool mode);
     }
 }

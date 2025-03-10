@@ -1,6 +1,7 @@
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;
 using Silk.NET.Vulkan.Extensions.KHR;
@@ -11,8 +12,9 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    public unsafe static class VulkanInitialization
+    public unsafe static partial class VulkanInitialization
     {
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(VulkanInitialization));
         private const uint InvalidIndex = uint.MaxValue;
         private static readonly uint _minimalVulkanVersion = Vk.Version11.Value;
         private static readonly uint _minimalInstanceVulkanVersion = Vk.Version12.Value;
@@ -51,7 +53,7 @@ namespace Hyjinx.Graphics.Vulkan
         private static readonly string[] _requiredExtensions = {
             KhrSwapchain.ExtensionName,
         };
-
+        
         internal static VulkanInstance CreateInstance(Vk api, GraphicsDebugLevel logLevel, string[] requiredExtensions)
         {
             var enabledLayers = new List<string>();
@@ -67,7 +69,7 @@ namespace Hyjinx.Graphics.Vulkan
                 }
                 else
                 {
-                    Logger.Warning?.Print(LogClass.Gpu, $"Missing layer {layerName}");
+                    LogMissingLayer(_logger, layerName);
                 }
             }
 
@@ -136,6 +138,11 @@ namespace Hyjinx.Graphics.Vulkan
             return instance;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Missing layer {layerName}")]
+        private static partial void LogMissingLayer(ILogger logger, string layerName);
+        
         internal static VulkanPhysicalDevice FindSuitablePhysicalDevice(Vk api, VulkanInstance instance, SurfaceKHR surface, string preferredGpuId)
         {
             instance.EnumeratePhysicalDevices(out var physicalDevices).ThrowOnError();

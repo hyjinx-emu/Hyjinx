@@ -17,6 +17,7 @@ using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using System;
 using System.Buffers;
 using System.Diagnostics;
@@ -105,6 +106,11 @@ namespace Hyjinx.Audio.Renderer.Server
             _voiceDropParameter = 1.0f;
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Initializing with REV{revision}")]
+        private partial void LogInitializingWithRevision(int revision);
+        
         public ResultCode Initialize(
             ref AudioRendererConfiguration parameter,
             uint processHandle,
@@ -127,7 +133,7 @@ namespace Hyjinx.Audio.Renderer.Server
 
             Debug.Assert(parameter.RenderingDevice == AudioRendererRenderingDevice.Dsp && parameter.ExecutionMode == AudioRendererExecutionMode.Auto);
 
-            Logger.Info?.Print(LogClass.AudioRenderer, $"Initializing with REV{BehaviourContext.GetRevisionNumber(parameter.Revision)}");
+            LogInitializingWithRevision(BehaviourContext.GetRevisionNumber(parameter.Revision));
 
             _behaviourContext.SetUserRevision(parameter.Revision);
 

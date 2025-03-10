@@ -4,6 +4,7 @@ using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader;
 using Hyjinx.Graphics.Shader;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -13,11 +14,14 @@ namespace Hyjinx.Graphics.Gpu.Image
     /// <summary>
     /// Texture bindings manager.
     /// </summary>
-    class TextureBindingsManager
+    partial class TextureBindingsManager
     {
         private const int InitialTextureStateSize = 32;
         private const int InitialImageStateSize = 8;
 
+        private readonly ILogger<TextureBindingsManager> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<TextureBindingsManager>();
+        
         private readonly GpuContext _context;
 
         private readonly bool _isCompute;
@@ -414,7 +418,7 @@ namespace Hyjinx.Graphics.Gpu.Image
                 cachedSamplerBufferIndex = samplerBufferIndex;
             }
         }
-
+        
         /// <summary>
         /// Ensures that the texture bindings are visible to the host GPU.
         /// Note: this actually performs the binding using the host graphics API.
@@ -442,7 +446,7 @@ namespace Hyjinx.Graphics.Gpu.Image
 
             if (texturePool == null)
             {
-                Logger.Error?.Print(LogClass.Gpu, $"Shader stage \"{stage}\" uses textures, but texture pool was not set.");
+                LogTexturePoolWasNotSet(stage);
                 return true;
             }
 
@@ -556,6 +560,11 @@ namespace Hyjinx.Graphics.Gpu.Image
 
             return specStateMatches;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Shader stage '{stage}' uses textures, but texture pool was not set.")]
+        private partial void LogTexturePoolWasNotSet(ShaderStage stage);
 
         /// <summary>
         /// Ensures that the image bindings are visible to the host GPU.
@@ -577,7 +586,7 @@ namespace Hyjinx.Graphics.Gpu.Image
 
             if (pool == null)
             {
-                Logger.Error?.Print(LogClass.Gpu, $"Shader stage \"{stage}\" uses images, but texture pool was not set.");
+                LogTexturePoolForImagesWasNotSet(stage);
                 return true;
             }
 
@@ -691,6 +700,11 @@ namespace Hyjinx.Graphics.Gpu.Image
 
             return specStateMatches;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Shader stage '{stage}' uses images, but texture pool was not set.")]
+        private partial void LogTexturePoolForImagesWasNotSet(ShaderStage stage);
 
         /// <summary>
         /// Gets the texture descriptor for a given texture handle.

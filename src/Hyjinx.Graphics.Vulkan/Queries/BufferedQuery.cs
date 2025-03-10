@@ -1,5 +1,6 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using System;
 using System.Runtime.InteropServices;
@@ -7,13 +8,14 @@ using System.Threading;
 
 namespace Hyjinx.Graphics.Vulkan.Queries
 {
-    class BufferedQuery : IDisposable
+    partial class BufferedQuery : IDisposable
     {
         private const int MaxQueryRetries = 5000;
         private const long DefaultValue = unchecked((long)0xFFFFFFFEFFFFFFFE);
         private const long DefaultValueInt = 0xFFFFFFFE;
         private const ulong HighMask = 0xFFFFFFFF00000000;
 
+        private readonly ILogger<BufferedQuery> _logger = Logger.DefaultLoggerFactory.CreateLogger<BufferedQuery>();
         private readonly Vk _api;
         private readonly Device _device;
         private readonly PipelineFull _pipeline;
@@ -164,12 +166,17 @@ namespace Hyjinx.Graphics.Vulkan.Queries
 
                 if (iterations >= MaxQueryRetries)
                 {
-                    Logger.Error?.Print(LogClass.Gpu, $"Error: Query result {_type} timed out. Took more than {MaxQueryRetries} tries.");
+                    LogQueryResultTimedOut(_type, MaxQueryRetries);
                 }
             }
 
             return data;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Query result {type} timed out. Took more than {maxRetries} tries.")]
+        private partial void LogQueryResultTimedOut(CounterType type, int maxRetries);
 
         public void PoolReset(CommandBuffer cmd, int resetSequence)
         {

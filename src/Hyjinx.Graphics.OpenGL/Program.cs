@@ -3,12 +3,13 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Shader.Translation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers.Binary;
 
 namespace Hyjinx.Graphics.OpenGL
 {
-    class Program : IProgram
+    partial class Program : IProgram
     {
         private const int MaxShaderLogLength = 2048;
 
@@ -27,6 +28,7 @@ namespace Hyjinx.Graphics.OpenGL
             }
         }
 
+        private readonly ILogger<Program> _logger = Logger.DefaultLoggerFactory.CreateLogger<Program>();
         private ProgramLinkStatus _status = ProgramLinkStatus.Incomplete;
         private int[] _shaderHandles;
 
@@ -125,7 +127,7 @@ namespace Hyjinx.Graphics.OpenGL
                     log = log[..MaxShaderLogLength] + "...";
                 }
 
-                Logger.Warning?.Print(LogClass.Gpu, $"Shader linking failed: \n{log}");
+                LogShaderLinkingFailed(log);
             }
             else
             {
@@ -134,6 +136,11 @@ namespace Hyjinx.Graphics.OpenGL
 
             return _status;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Shader linking failed {message}")]
+        private partial void LogShaderLinkingFailed(string message);
 
         public byte[] GetBinary()
         {

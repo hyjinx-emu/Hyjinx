@@ -1,5 +1,6 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using System;
 using Format = Hyjinx.Graphics.GAL.Format;
@@ -7,8 +8,11 @@ using VkFormat = Silk.NET.Vulkan.Format;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    class FormatCapabilities
+    partial class FormatCapabilities
     {
+        private readonly ILogger<FormatCapabilities> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<FormatCapabilities>();
+        
         private static readonly Format[] _scaledFormats = {
             Format.R8Uscaled,
             Format.R8Sscaled,
@@ -183,12 +187,17 @@ namespace Hyjinx.Graphics.Vulkan
                 }
                 else
                 {
-                    Logger.Error?.Print(LogClass.Gpu, $"Format {srcFormat} is not supported by the host.");
+                    LogFormatNotSupportedByHost(srcFormat);
                 }
             }
 
             return format;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Format {format} is not supported by the host.")]
+        private partial void LogFormatNotSupportedByHost(Format format);
 
         public VkFormat ConvertToVertexVkFormat(Format srcFormat)
         {
@@ -210,7 +219,7 @@ namespace Hyjinx.Graphics.Vulkan
                         format = VkFormat.R16G16B16A16Uint;
                         break;
                     default:
-                        Logger.Error?.Print(LogClass.Gpu, $"Format {srcFormat} is not supported by the host.");
+                        LogFormatNotSupportedByHost(srcFormat);
                         break;
                 }
             }

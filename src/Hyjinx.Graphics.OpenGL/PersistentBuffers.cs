@@ -2,6 +2,7 @@ using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL.Image;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -49,8 +50,11 @@ namespace Hyjinx.Graphics.OpenGL
         }
     }
 
-    class PersistentBuffer : IDisposable
+    partial class PersistentBuffer : IDisposable
     {
+        private static readonly ILogger<PersistentBuffers> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<PersistentBuffers>();
+        
         private IntPtr _bufferMap;
         private int _copyBufferHandle;
         private int _copyBufferSize;
@@ -100,11 +104,16 @@ namespace Hyjinx.Graphics.OpenGL
 
             if (syncResult == WaitSyncStatus.TimeoutExpired)
             {
-                Logger.Error?.PrintMsg(LogClass.Gpu, $"Failed to sync persistent buffer state within 1000ms. Continuing...");
+                LogBufferStateSyncTookTooLong(_logger);
             }
 
             GL.DeleteSync(sync);
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Failed to sync persistent buffer state within 1000ms. Continuing...")]
+        private static partial void LogBufferStateSyncTookTooLong(ILogger logger);
 
         public unsafe ReadOnlySpan<byte> GetTextureData(TextureView view, int size)
         {

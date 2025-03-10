@@ -3,6 +3,7 @@ using Hyjinx.Audio.Renderer.Server;
 using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Runtime.CompilerServices;
 
 namespace Hyjinx.Audio.Renderer.Dsp.Command
 {
-    public class CommandList : IDisposable
+    public partial class CommandList : IDisposable
     {
         public ulong StartTime { get; private set; }
         public ulong EndTime { get; private set; }
@@ -26,6 +27,7 @@ namespace Hyjinx.Audio.Renderer.Dsp.Command
 
         public IHardwareDevice OutputDevice { get; private set; }
 
+        private readonly ILogger<CommandList> _logger = Logger.DefaultLoggerFactory.CreateLogger<CommandList>();
         private readonly int _sampleCount;
         private readonly int _buffersEntryCount;
         private readonly MemoryHandle _buffersMemoryHandle;
@@ -138,7 +140,7 @@ namespace Hyjinx.Audio.Renderer.Dsp.Command
 
                         if (effectiveElapsedTime > command.EstimatedProcessingTime)
                         {
-                            Logger.Warning?.Print(LogClass.AudioRenderer, $"Command {command.GetType().Name} took {effectiveElapsedTime}ns (expected {command.EstimatedProcessingTime}ns)");
+                            LogCommandTookTooLong(command.GetType().Name, effectiveElapsedTime, command.EstimatedProcessingTime);
                         }
                     }
                 }
@@ -146,6 +148,11 @@ namespace Hyjinx.Audio.Renderer.Dsp.Command
 
             EndTime = (ulong)PerformanceCounter.ElapsedNanoseconds;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Command {commandTypeName} took {elapsed}ns (expected {estimated}ns)")]
+        private partial void LogCommandTookTooLong(string commandTypeName, ulong elapsed, uint estimated);
 
         public void Dispose()
         {

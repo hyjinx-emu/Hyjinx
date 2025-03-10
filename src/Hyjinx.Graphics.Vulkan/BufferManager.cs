@@ -1,5 +1,6 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using System;
 using System.Runtime.CompilerServices;
@@ -39,7 +40,7 @@ namespace Hyjinx.Graphics.Vulkan
         }
     }
 
-    class BufferManager : IDisposable
+    partial class BufferManager : IDisposable
     {
         public const MemoryPropertyFlags DefaultBufferMemoryFlags =
             MemoryPropertyFlags.HostVisibleBit |
@@ -75,6 +76,7 @@ namespace Hyjinx.Graphics.Vulkan
             BufferUsageFlags.TransferSrcBit |
             BufferUsageFlags.TransferDstBit;
 
+        private readonly ILogger<ScopedTemporaryBuffer> _logger = Logger.DefaultLoggerFactory.CreateLogger<ScopedTemporaryBuffer>();
         private readonly Device _device;
 
         private readonly IdList<BufferHolder> _buffers;
@@ -407,10 +409,15 @@ namespace Hyjinx.Graphics.Vulkan
                 return holder;
             }
 
-            Logger.Error?.Print(LogClass.Gpu, $"Failed to create buffer with size 0x{size:X} and type \"{baseType}\".");
+            LogFailedToCreateBuffer(size, baseType);
 
             return null;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Failed to create buffer with size 0x{size:X} and type '{baseType}'.")]
+        private partial void LogFailedToCreateBuffer(int size, BufferAllocationType baseType);
 
         public Auto<DisposableBufferView> CreateView(BufferHandle handle, VkFormat format, int offset, int size, Action invalidateView)
         {

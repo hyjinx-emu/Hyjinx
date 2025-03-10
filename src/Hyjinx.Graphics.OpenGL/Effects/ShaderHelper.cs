@@ -1,10 +1,13 @@
 using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.Graphics.OpenGL.Effects
 {
-    internal static class ShaderHelper
+    internal partial class ShaderHelper
     {
+        private static readonly ILogger<ShaderHelper> _logger = new LoggerFactory().CreateLogger<ShaderHelper>();
+        
         public static int CompileProgram(string shaderCode, ShaderType shaderType)
         {
             return CompileProgram(new string[] { shaderCode }, shaderType);
@@ -20,7 +23,8 @@ namespace Hyjinx.Graphics.OpenGL.Effects
             if (isCompiled == 0)
             {
                 string log = GL.GetShaderInfoLog(shader);
-                Logger.Error?.Print(LogClass.Gpu, $"Failed to compile effect shader:\n\n{log}\n");
+
+                LogFailedToCompileShader(_logger, log);
                 GL.DeleteShader(shader);
                 return 0;
             }
@@ -34,5 +38,10 @@ namespace Hyjinx.Graphics.OpenGL.Effects
 
             return program;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Failed to compile effect shader: {errorMessage}")]
+        private static partial void LogFailedToCompileShader(ILogger logger, string errorMessage);
     }
 }

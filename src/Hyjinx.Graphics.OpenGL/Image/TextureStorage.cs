@@ -1,16 +1,20 @@
 using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.Graphics.OpenGL.Image
 {
-    class TextureStorage : ITextureInfo
+    partial class TextureStorage : ITextureInfo
     {
         public ITextureInfo Storage => this;
         public int Handle { get; private set; }
 
         public TextureCreateInfo Info { get; }
 
+        private readonly ILogger<TextureStorage> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<TextureStorage>();
+        
         private readonly OpenGLRenderer _renderer;
 
         private int _viewsCount;
@@ -139,10 +143,15 @@ namespace Hyjinx.Graphics.OpenGL.Image
                     break;
 
                 default:
-                    Logger.Debug?.Print(LogClass.Gpu, $"Invalid or unsupported texture target: {target}.");
+                    LogInvalidOrUnsupportedTextureTarget(target);
                     break;
             }
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Invalid or unsupported texture target: {target}.")]
+        private partial void LogInvalidOrUnsupportedTextureTarget(TextureTarget target);
 
         public ITexture CreateDefaultView()
         {

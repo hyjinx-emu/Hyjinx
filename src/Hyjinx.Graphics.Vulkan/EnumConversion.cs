@@ -1,6 +1,7 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Shader;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using System;
 using BlendFactor = Silk.NET.Vulkan.BlendFactor;
@@ -14,8 +15,10 @@ using StencilOp = Silk.NET.Vulkan.StencilOp;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    static class EnumConversion
+    static partial class EnumConversion
     {
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(EnumConversion));
+        
         public static ShaderStageFlags Convert(this ShaderStage stage)
         {
             return stage switch
@@ -444,9 +447,13 @@ namespace Hyjinx.Graphics.Vulkan
 
         private static T2 LogInvalidAndReturn<T1, T2>(T1 value, string name, T2 defaultValue = default)
         {
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {name} enum value: {value}.");
-
+            LogInvalidEnumValue(_logger, name, value);
             return defaultValue;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Invalid {name} enum value: {value}.")]
+        private static partial void LogInvalidEnumValue(ILogger logger, string name, object? value);
     }
 }

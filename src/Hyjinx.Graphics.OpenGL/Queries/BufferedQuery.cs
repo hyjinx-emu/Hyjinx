@@ -1,12 +1,13 @@
 using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Hyjinx.Graphics.OpenGL.Queries
 {
-    class BufferedQuery : IDisposable
+    partial class BufferedQuery : IDisposable
     {
         private const int MaxQueryRetries = 5000;
         private const long DefaultValue = -1;
@@ -14,6 +15,7 @@ namespace Hyjinx.Graphics.OpenGL.Queries
 
         public int Query { get; }
 
+        private readonly ILogger<BufferedQuery> _logger = Logger.DefaultLoggerFactory.CreateLogger<BufferedQuery>();
         private readonly int _buffer;
         private readonly IntPtr _bufferMap;
         private readonly QueryTarget _type;
@@ -102,12 +104,17 @@ namespace Hyjinx.Graphics.OpenGL.Queries
 
                 if (iterations >= MaxQueryRetries)
                 {
-                    Logger.Error?.Print(LogClass.Gpu, $"Error: Query result timed out. Took more than {MaxQueryRetries} tries.");
+                    LogQueryTimedOut(MaxQueryRetries);
                 }
             }
 
             return data;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Query result timed out. Took more than {maxRetries} tries.")]
+        private partial void LogQueryTimedOut(int maxRetries);
 
         public void Dispose()
         {
