@@ -1,5 +1,6 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Device;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -8,13 +9,14 @@ namespace Hyjinx.Graphics.Gpu.Engine.MME
     /// <summary>
     /// Macro code interpreter.
     /// </summary>
-    class MacroInterpreter : IMacroEE
+    partial class MacroInterpreter : IMacroEE
     {
         /// <summary>
         /// Arguments FIFO.
         /// </summary>
         public Queue<FifoWord> Fifo { get; }
 
+        private readonly ILogger<MacroInterpreter> _logger = Logger.DefaultLoggerFactory.CreateLogger<MacroInterpreter>();
         private readonly int[] _gprs;
 
         private int _methAddr;
@@ -371,13 +373,18 @@ namespace Hyjinx.Graphics.Gpu.Engine.MME
         {
             if (!Fifo.TryDequeue(out var value))
             {
-                Logger.Warning?.Print(LogClass.Gpu, "Macro attempted to fetch an inexistent argument.");
+                LogMacroAttemptedNonExistentArgument();
 
                 return 0;
             }
 
             return value.Word;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Macro attempted to fetch a non-existent argument.")]
+        private partial void LogMacroAttemptedNonExistentArgument();
 
         /// <summary>
         /// Reads data from a GPU register.

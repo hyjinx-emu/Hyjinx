@@ -2,14 +2,17 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.Graphics.Gpu.Engine.Threed
 {
     /// <summary>
     /// Helper methods used for conditional rendering.
     /// </summary>
-    static class ConditionalRendering
+    static partial class ConditionalRendering
     {
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(ConditionalRendering));
+        
         /// <summary>
         /// Checks if draws and clears should be performed, according
         /// to currently set conditional rendering conditions.
@@ -35,10 +38,15 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed
                     return CounterCompare(context, memoryManager, address.Pack(), false);
             }
 
-            Logger.Warning?.Print(LogClass.Gpu, $"Invalid conditional render condition \"{condition}\".");
+            LogInvalidRenderCondition(_logger, condition);
 
             return ConditionalRenderEnabled.True;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Invalid conditional render condition '{condition}'.")]
+        private static partial void LogInvalidRenderCondition(ILogger logger, Condition condition);
 
         /// <summary>
         /// Checks if the counter value at a given GPU memory address is non-zero.

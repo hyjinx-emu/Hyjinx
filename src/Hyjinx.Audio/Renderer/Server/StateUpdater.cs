@@ -11,6 +11,7 @@ using Hyjinx.Audio.Renderer.Server.Voice;
 using Hyjinx.Audio.Renderer.Utils;
 using Hyjinx.Common.Extensions;
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.Diagnostics;
@@ -23,6 +24,7 @@ namespace Hyjinx.Audio.Renderer.Server
     {
         private SequenceReader<byte> _inputReader;
 
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(StateUpdater));
         private readonly ReadOnlyMemory<byte> _outputOrigin;
 
         private Memory<byte> _output;
@@ -580,14 +582,18 @@ namespace Hyjinx.Audio.Renderer.Server
 
             if (consumedInputSize != _inputHeader.TotalSize)
             {
-                Logger.Error?.Print(LogClass.AudioRenderer, $"Consumed input size mismatch (got {consumedInputSize} expected {_inputHeader.TotalSize})");
+                _logger.LogError(new EventId((int)LogClass.AudioRenderer, nameof(LogClass.AudioRenderer)),
+                    "Consumed input size mismatch (got {actual} expected {expected})", consumedInputSize,
+                    _inputHeader.TotalSize);
 
                 return ResultCode.InvalidUpdateInfo;
             }
 
             if (consumedOutputSize != OutputHeader.TotalSize)
             {
-                Logger.Error?.Print(LogClass.AudioRenderer, $"Consumed output size mismatch (got {consumedOutputSize} expected {OutputHeader.TotalSize})");
+                _logger.LogError(new EventId((int)LogClass.AudioRenderer, nameof(LogClass.AudioRenderer)),
+                    "Consumed output size mismatch (got {actual} expected {expected})", consumedOutputSize,
+                    OutputHeader.TotalSize);
 
                 return ResultCode.InvalidUpdateInfo;
             }

@@ -2,14 +2,17 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Shader;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.Graphics.Gpu.Engine
 {
     /// <summary>
     /// Shader texture properties conversion methods.
     /// </summary>
-    static class ShaderTexture
+    static partial class ShaderTexture
     {
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(ShaderTexture));
+        
         /// <summary>
         /// Gets a texture target from a sampler type.
         /// </summary>
@@ -52,11 +55,16 @@ namespace Hyjinx.Graphics.Gpu.Engine
                     return Target.CubemapArray;
             }
 
-            Logger.Warning?.Print(LogClass.Gpu, $"Invalid sampler type \"{type}\".");
+            LogInvalidSamplerType(_logger, type);
 
             return Target.Texture2D;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Invalid sampler type '{type}'.")]
+        private static partial void LogInvalidSamplerType(ILogger logger, SamplerType type);
+        
         /// <summary>
         /// Gets a texture format from a shader image format.
         /// </summary>

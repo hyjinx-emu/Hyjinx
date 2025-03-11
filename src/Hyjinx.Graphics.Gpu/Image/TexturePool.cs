@@ -3,6 +3,7 @@ using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Texture;
 using Hyjinx.Memory.Range;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Hyjinx.Graphics.Gpu.Image
     /// <summary>
     /// Texture pool.
     /// </summary>
-    class TexturePool : Pool<Texture, TextureDescriptor>, IPool<TexturePool>
+    partial class TexturePool : Pool<Texture, TextureDescriptor>, IPool<TexturePool>
     {
         /// <summary>
         /// A request to dereference a texture from a pool.
@@ -71,6 +72,7 @@ namespace Hyjinx.Graphics.Gpu.Image
             }
         }
 
+        private static readonly ILogger<TexturePool> _logger = Logger.DefaultLoggerFactory.CreateLogger<TexturePool>();
         private readonly GpuChannel _channel;
         private readonly ConcurrentQueue<DereferenceRequest> _dereferenceQueue = new();
         private TextureDescriptor _defaultDescriptor;
@@ -576,7 +578,7 @@ namespace Hyjinx.Graphics.Gpu.Image
             {
                 if (gpuVa != 0 && format != 0)
                 {
-                    Logger.Error?.Print(LogClass.Gpu, $"Invalid texture format 0x{format:X} (sRGB: {srgb}).");
+                    LogInvalidTextureFormat(_logger, format, srgb);
                 }
 
                 formatInfo = FormatInfo.Default;
@@ -686,6 +688,13 @@ namespace Hyjinx.Graphics.Gpu.Image
                 swizzleA);
         }
 
+        // Logger.Error?.Print(LogClass.Gpu, $"Invalid texture format 0x{format:X} (sRGB: {srgb}).");
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Invalid texture format 0x{format:X} (sRGB: {srgb}).")]
+        private static partial void LogInvalidTextureFormat(ILogger logger, uint format, bool srgb);
+        
         /// <summary>
         /// Clamps the amount of mipmap levels to the maximum allowed for the given texture dimensions.
         /// </summary>

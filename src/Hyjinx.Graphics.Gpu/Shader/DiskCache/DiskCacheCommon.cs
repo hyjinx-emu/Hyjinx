@@ -1,4 +1,6 @@
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 
 namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
@@ -6,8 +8,10 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
     /// <summary>
     /// Common disk cache utility methods.
     /// </summary>
-    static class DiskCacheCommon
+    static partial class DiskCacheCommon
     {
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(DiskCacheCommon));
+        
         /// <summary>
         /// Opens a file for read or write.
         /// </summary>
@@ -39,11 +43,16 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
             }
             catch (IOException ioException)
             {
-                Logger.Error?.Print(LogClass.Gpu, $"Could not access file \"{fullPath}\". {ioException.Message}");
+                LogCouldNotAccessFile(_logger, fullPath, ioException);
 
                 throw new DiskCacheLoadException(DiskCacheLoadResult.NoAccess);
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Could not access file '{path}'")]
+        private static partial void LogCouldNotAccessFile(ILogger logger, string path, Exception exception);
 
         /// <summary>
         /// Gets the compression algorithm that should be used when writing the disk cache.

@@ -1,5 +1,6 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Device;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
@@ -8,13 +9,14 @@ namespace Hyjinx.Graphics.Gpu.Synchronization
     /// <summary>
     /// GPU synchronization manager.
     /// </summary>
-    public class SynchronizationManager : ISynchronizationManager
+    public partial class SynchronizationManager : ISynchronizationManager
     {
         /// <summary>
         /// The maximum number of syncpoints supported by the GM20B.
         /// </summary>
         public const int MaxHardwareSyncpoints = 192;
 
+        private readonly ILogger<SynchronizationManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<SynchronizationManager>();
         /// <summary>
         /// Array containing all hardware syncpoints.
         /// </summary>
@@ -98,12 +100,17 @@ namespace Hyjinx.Graphics.Gpu.Synchronization
 
             if (!signaled && info != null)
             {
-                Logger.Error?.Print(LogClass.Gpu, $"Wait on syncpoint {id} for threshold {threshold} took more than {timeout.TotalMilliseconds}ms, resuming execution...");
+                LogWaitOnSyncPointExceededTimeout(id, threshold, timeout.TotalMilliseconds);
 
                 _syncpoints[id].UnregisterCallback(info);
             }
 
             return !signaled;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Wait on syncpoint {id} for threshold {threshold} took more than {timeout}ms, resuming execution...")]
+        private partial void LogWaitOnSyncPointExceededTimeout(uint id, uint threshold, double timeout);
     }
 }

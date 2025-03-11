@@ -8,6 +8,7 @@ using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader.DiskCache;
 using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Shader.Translation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,7 +19,7 @@ namespace Hyjinx.Graphics.Gpu.Shader
     /// <summary>
     /// Memory cache of shader code.
     /// </summary>
-    class ShaderCache : IDisposable
+    partial class ShaderCache : IDisposable
     {
         /// <summary>
         /// Default flags used on the shader translation process.
@@ -51,6 +52,7 @@ namespace Hyjinx.Graphics.Gpu.Shader
             }
         }
 
+        private readonly ILogger<ShaderCache> _logger = Logger.DefaultLoggerFactory.CreateLogger<ShaderCache>();
         private readonly GpuContext _context;
 
         private readonly ShaderDumper _dumper;
@@ -169,10 +171,15 @@ namespace Hyjinx.Graphics.Gpu.Shader
                 int errorCount = loader.ErrorCount;
                 if (errorCount != 0)
                 {
-                    Logger.Warning?.Print(LogClass.Gpu, $"Failed to load {errorCount} shaders from the disk cache.");
+                    LogFailedToLoadShadersFromCache(errorCount);
                 }
             }
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Failed to load {count} shaders from the disk cache.")]
+        private partial void LogFailedToLoadShadersFromCache(int count);
 
         /// <summary>
         /// Shader cache state update handler.
