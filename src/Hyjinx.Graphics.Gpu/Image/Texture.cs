@@ -4,7 +4,6 @@ using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Texture;
 using Hyjinx.Graphics.Texture.Astc;
-using Hyjinx.Memory;
 using Hyjinx.Memory.Range;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Gpu.Image
 {

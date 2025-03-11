@@ -2,6 +2,7 @@ using Hyjinx.Common.Logging;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
 {

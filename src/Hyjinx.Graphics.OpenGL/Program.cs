@@ -6,6 +6,7 @@ using Hyjinx.Graphics.Shader.Translation;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers.Binary;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.OpenGL
 {

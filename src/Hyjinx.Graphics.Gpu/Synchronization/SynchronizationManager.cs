@@ -3,6 +3,7 @@ using Hyjinx.Graphics.Device;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Gpu.Synchronization
 {
