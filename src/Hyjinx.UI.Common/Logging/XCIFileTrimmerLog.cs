@@ -1,9 +1,12 @@
 using Hyjinx.Common.Utilities;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.Common.Logging
 {
     public class XCIFileTrimmerLog : XCIFileTrimmer.ILog
     {
+        private readonly ILogger<XCIFileTrimmerLog> _logger = Logger.DefaultLoggerFactory.CreateLogger<XCIFileTrimmerLog>();
+        
         public virtual void Progress(long current, long total, string text, bool complete)
         {
         }
@@ -13,16 +16,16 @@ namespace Hyjinx.Common.Logging
             switch (logType)
             {
                 case XCIFileTrimmer.LogType.Info:
-                    Logger.Notice.Print(LogClass.XCIFileTrimmer, text);
+                    _logger.LogCritical(new EventId((int)LogClass.XCIFileTrimmer, nameof(LogClass.XCIFileTrimmer)), text);
                     break;
                 case XCIFileTrimmer.LogType.Warn:
-                    Logger.Warning?.Print(LogClass.XCIFileTrimmer, text);
+                    _logger.LogWarning(new EventId((int)LogClass.XCIFileTrimmer, nameof(LogClass.XCIFileTrimmer)), text);
                     break;
                 case XCIFileTrimmer.LogType.Error:
-                    Logger.Error?.Print(LogClass.XCIFileTrimmer, text);
+                    _logger.LogError(new EventId((int)LogClass.XCIFileTrimmer, nameof(LogClass.XCIFileTrimmer)), text);
                     break;
                 case XCIFileTrimmer.LogType.Progress:
-                    Logger.Info?.Print(LogClass.XCIFileTrimmer, text);
+                    _logger.LogInformation(new EventId((int)LogClass.XCIFileTrimmer, nameof(LogClass.XCIFileTrimmer)), text);
                     break;
             }
         }

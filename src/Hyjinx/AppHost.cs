@@ -39,6 +39,7 @@ using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using SkiaSharp;
 using SPB.Graphics.Vulkan;
@@ -386,7 +387,8 @@ namespace Hyjinx.Ava
 
                         SaveBitmapAsPng(bitmapToSave, path);
 
-                        Logger.Notice.Print(LogClass.Application, $"Screenshot saved to {path}", "Screenshot");
+                        Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Screenshot saved to {path}", path);
                     }
                 });
             }
@@ -661,7 +663,8 @@ namespace Hyjinx.Ava
                 }
             }
 
-            Logger.Notice.Print(LogClass.Application, $"Using Firmware Version: {firmwareVersion?.VersionString}");
+            Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                "Using Firmware Version: {VersionString}", firmwareVersion?.VersionString);
 
             if (_isFirmwareTitle)
             {

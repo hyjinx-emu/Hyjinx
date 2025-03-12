@@ -14,6 +14,7 @@ using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Hyjinx.UI.Common.Logging;
 using Hyjinx.UI.Common.SystemInfo;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -34,10 +35,10 @@ namespace Hyjinx.Ava
         public static string ConfigurationPath { get; private set; }
         public static bool PreviewerDetached { get; private set; }
         public static bool UseHardwareAcceleration { get; private set; }
-
+        
         [LibraryImport("user32.dll", SetLastError = true)]
         public static partial int MessageBoxA(IntPtr hWnd, [MarshalAs(UnmanagedType.LPStr)] string text, [MarshalAs(UnmanagedType.LPStr)] string caption, uint type);
-
+        
         private const uint MbIconwarning = 0x30;
 
         public static void Main(string[] args)
@@ -160,14 +161,17 @@ namespace Hyjinx.Ava
             {
                 // No configuration, we load the default values and save it to disk
                 ConfigurationPath = appDataConfigurationPath;
-                Logger.Notice.Print(LogClass.Application, $"No configuration file found. Saving default configuration to: {ConfigurationPath}");
+                
+                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "No configuration file found. Saving default configuration to: {ConfigurationPath}", ConfigurationPath);
 
                 ConfigurationState.Instance.LoadDefault();
                 ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationPath);
             }
             else
             {
-                Logger.Notice.Print(LogClass.Application, $"Loading configuration from: {ConfigurationPath}");
+                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Loading configuration from: {ConfigurationPath}", ConfigurationPath);
 
                 if (ConfigurationFileFormat.TryLoad(ConfigurationPath, out ConfigurationFileFormat configurationFileFormat))
                 {
@@ -223,18 +227,21 @@ namespace Hyjinx.Ava
 
         private static void PrintSystemInfo()
         {
-            Logger.Notice.Print(LogClass.Application, $"Hyjinx Version: {Version}");
+            Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                "Hyjinx Version: {Version}", Version);
             SystemInfo.Gather().Print();
 
             // Logger.Notice.Print(LogClass.Application, $"Logs Enabled: {(Logger.GetEnabledLevels().Count == 0 ? "<None>" : string.Join(", ", Logger.GetEnabledLevels()))}");
 
             if (AppDataManager.Mode == AppDataManager.LaunchMode.Custom)
             {
-                Logger.Notice.Print(LogClass.Application, $"Launch Mode: Custom Path {AppDataManager.BaseDirPath}");
+                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                "Launch Mode: Custom Path {BaseDirPath}", AppDataManager.BaseDirPath);
             }
             else
             {
-                Logger.Notice.Print(LogClass.Application, $"Launch Mode: {AppDataManager.Mode}");
+                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                 "Launch Mode: {Mode}", AppDataManager.Mode);
             }
         }
 
@@ -246,7 +253,7 @@ namespace Hyjinx.Ava
 
             if (Logger.Error == null)
             {
-                Logger.Notice.PrintMsg(LogClass.Application, message);
+                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), message);
             }
 
             if (isTerminating)

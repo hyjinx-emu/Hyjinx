@@ -30,8 +30,6 @@ public class Logger : ILog
         
         DefaultLoggerFactory = factory;
         DefaultLogger = factory.CreateLogger("Program");
-        
-        Notice = new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Critical);
     }
 
     public static ILog? Debug { get; private set; }
@@ -42,7 +40,7 @@ public class Logger : ILog
     public static ILog? AccessLog { get; private set; }
     public static ILog? Stub { get; private set; }
     public static ILog? Trace { get; private set; }
-    public static ILog Notice { get; private set; } = null!;
+    // public static ILog Notice { get; private set; } = null!;
 
     private readonly ILogger logger;
     private readonly Microsoft.Extensions.Logging.LogLevel logLevel;

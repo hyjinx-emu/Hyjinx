@@ -9,6 +9,7 @@ using Hyjinx.Graphics.Vulkan;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -1576,8 +1577,8 @@ namespace Hyjinx.UI.Common.Configuration
             if (configurationFileUpdated)
             {
                 ToFileFormat().SaveConfig(configurationFilePath);
-
-                Hyjinx.Common.Logging.Logger.Notice.Print(LogClass.Application, $"Configuration file updated to version {ConfigurationFileFormat.CurrentVersion}");
+                
+                Hyjinx.Common.Logging.Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Configuration file updated to version {Version}", ConfigurationFileFormat.CurrentVersion);
             }
         }
 

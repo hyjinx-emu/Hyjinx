@@ -1,5 +1,6 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
@@ -25,9 +26,11 @@ namespace Hyjinx.UI.Common.SystemInfo
 
         public void Print()
         {
-            Logger.Notice.Print(LogClass.Application, $"Operating System: {OsDescription}");
-            Logger.Notice.Print(LogClass.Application, $"CPU: {CpuName}");
-            Logger.Notice.Print(LogClass.Application, $"RAM: Total {ToGBString(RamTotal)} ; Available {ToGBString(RamAvailable)}");
+            var logger = Logger.DefaultLogger;
+            
+            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Operating System: {OsDescription}", OsDescription);
+            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "CPU: {CpuName}", CpuName);
+            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "RAM: {Total} / {Available}", ToGBString(RamTotal), ToGBString(RamAvailable));
         }
 
         public static SystemInfo Gather()

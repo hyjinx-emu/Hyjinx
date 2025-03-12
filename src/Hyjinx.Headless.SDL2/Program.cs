@@ -29,6 +29,7 @@ using Hyjinx.Input;
 using Hyjinx.Input.HLE;
 using Hyjinx.Input.SDL2;
 using Hyjinx.SDL2.Common;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ using System.Threading;
 using ConfigGamepadInputId = Hyjinx.Common.Configuration.Hid.Controller.GamepadInputId;
 using ConfigStickInputId = Hyjinx.Common.Configuration.Hid.Controller.StickInputId;
 using Key = Hyjinx.Common.Configuration.Hid.Key;
+using LogLevel = Hyjinx.Common.Logging.LogLevel;
 
 namespace Hyjinx.Headless.SDL2
 {
@@ -629,7 +631,8 @@ namespace Hyjinx.Headless.SDL2
 
             SystemVersion firmwareVersion = _contentManager.GetCurrentFirmwareVersion();
 
-            Logger.Notice.Print(LogClass.Application, $"Using Firmware Version: {firmwareVersion?.VersionString}");
+            Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+             "Using Firmware Version: {VersionString}", firmwareVersion?.VersionString);
 
             if (Directory.Exists(path))
             {
