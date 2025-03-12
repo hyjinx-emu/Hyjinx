@@ -3,13 +3,18 @@ using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.OsTypes;
 using Hyjinx.Horizon.Sdk.Sf.Cmif;
 using Hyjinx.Horizon.Sdk.Sm;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Horizon.Sdk.Sf.Hipc
 {
-    class ServerSessionManager
+    partial class ServerSessionManager
     {
+        private readonly ILogger<ServerSessionManager> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<ServerSessionManager>();
+        
         public Result AcceptSession(int portHandle, ServiceObjectHolder obj)
         {
             return AcceptSession(out _, portHandle, obj);
@@ -175,12 +180,17 @@ namespace Hyjinx.Horizon.Sdk.Sf.Hipc
                 return result;
             }
 
-            Logger.Warning?.Print(LogClass.KernelIpc, $"Request processing returned error {result}");
+            LogProcessingError(result);
 
             CloseSessionImpl(session);
 
             return Result.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+            Message = "Request processing returned error {result}")]
+        private partial void LogProcessingError(Result result);
 
         private Result ProcessRequestImpl(ServerSession session, Span<byte> inMessage, Span<byte> outMessage)
         {

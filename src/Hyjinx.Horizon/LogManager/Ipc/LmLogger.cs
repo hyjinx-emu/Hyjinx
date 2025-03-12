@@ -18,7 +18,7 @@ namespace Hyjinx.Horizon.LogManager.Ipc
     {
         private const int MessageLengthLimit = 5000;
 
-        private readonly ILogger<LmLogger> _logger = Logger.DefaultLoggerFactory.CreateLogger<LmLogger>();
+        private static readonly ILogger<LmLogger> _logger = Logger.DefaultLoggerFactory.CreateLogger<LmLogger>();
         private readonly LogService _log;
         private readonly ulong _pid;
 
@@ -70,8 +70,7 @@ namespace Hyjinx.Horizon.LogManager.Ipc
             uint expectedMessageSize = (uint)Unsafe.SizeOf<LogPacketHeader>() + header.PayloadSize;
             if (expectedMessageSize != (uint)message.Length)
             {
-                Logger.Warning?.Print(LogClass.ServiceLm, $"Invalid message size (expected 0x{expectedMessageSize:X} but got 0x{message.Length:X}).");
-
+                LogInvalidMessageSize(_logger, expectedMessageSize, message.Length);
                 return false;
             }
 
@@ -80,6 +79,11 @@ namespace Hyjinx.Horizon.LogManager.Ipc
             return true;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceLm, EventName = nameof(LogClass.ServiceLm),
+            Message = "Invalid message size (expected 0x{expected:X} but got 0x{actual:X}.")]
+        private static partial void LogInvalidMessageSize(ILogger logger, uint expected, int actual);
+        
         private bool LogImpl(ReadOnlySpan<byte> message)
         {
             SpanReader reader = new(message);

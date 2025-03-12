@@ -1,24 +1,48 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Horizon.Sdk.Sf.Cmif
 {
-    abstract class ServiceDispatchTableBase
+    abstract partial class ServiceDispatchTableBase
     {
         private const uint MaxCmifVersion = 1;
 
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger<ServiceDispatchTableBase>();
+        
         public abstract Result ProcessMessage(ref ServiceDispatchContext context, ReadOnlySpan<byte> inRawData);
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+            Message = "Request message size 0x{length:X} is invalid.")]
+        private static partial void LogRequestSizeInvalid(ILogger logger, int length);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+            Message = "Request message header magic value 0x{magic:X} is invalid.")]
+        private static partial void LogRequestMagicInvalid(ILogger logger, uint magic);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+            Message = "Missing service {objectName} (command ID: {commandId}) ignored")]
+        private static partial void LogServiceNotFound(ILogger logger, string objectName, uint commandId);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+            Message = "{commandHandler} returned error {result}")]
+        private static partial void LogCommandHandlerError(ILogger logger, string commandHandler, Result result);
+        
         protected static Result ProcessMessageImpl(ref ServiceDispatchContext context, ReadOnlySpan<byte> inRawData, IReadOnlyDictionary<int, CommandHandler> entries, string objectName)
         {
             if (inRawData.Length < Unsafe.SizeOf<CmifInHeader>())
             {
-                Logger.Warning?.Print(LogClass.KernelIpc, $"Request message size 0x{inRawData.Length:X} is invalid");
+                LogRequestSizeInvalid(_logger, inRawData.Length);
 
                 return SfResult.InvalidHeaderSize;
             }
@@ -27,7 +51,7 @@ namespace Hyjinx.Horizon.Sdk.Sf.Cmif
 
             if (inHeader.Magic != CmifMessage.CmifInHeaderMagic || inHeader.Version > MaxCmifVersion)
             {
-                Logger.Warning?.Print(LogClass.KernelIpc, $"Request message header magic value 0x{inHeader.Magic:X} is invalid");
+                LogRequestMagicInvalid(_logger, inHeader.Magic);
 
                 return SfResult.InvalidInHeader;
             }
@@ -46,7 +70,7 @@ namespace Hyjinx.Horizon.Sdk.Sf.Cmif
                     CommandHandler.GetCmifOutHeaderPointer(ref outHeader, ref outRawData);
                     outHeader[0] = new CmifOutHeader { Magic = CmifMessage.CmifOutHeaderMagic, Result = Result.Success };
 
-                    Logger.Warning?.Print(LogClass.Service, $"Missing service {objectName} (command ID: {commandId}) ignored");
+                    LogServiceNotFound(_logger, objectName, commandId);
 
                     return Result.Success;
                 }
@@ -65,7 +89,7 @@ namespace Hyjinx.Horizon.Sdk.Sf.Cmif
             if (commandResult.Module == SfResult.ModuleId ||
                 commandResult.Module == HipcResult.ModuleId)
             {
-                Logger.Warning?.Print(LogClass.KernelIpc, $"{commandHandler.MethodName} returned error {commandResult}");
+                LogCommandHandlerError(_logger, commandHandler.MethodName, commandResult);
             }
 
             if (SfResult.RequestContextChanged(commandResult))
