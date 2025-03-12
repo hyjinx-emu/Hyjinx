@@ -4,15 +4,18 @@ using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Settings;
 using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
 using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
-    class BufferQueueProducer : IGraphicBufferProducer
+    partial class BufferQueueProducer : IGraphicBufferProducer
     {
         public BufferQueueCore Core { get; }
 
+        private readonly ILogger<BufferQueueProducer> _logger = Logger.DefaultLoggerFactory.CreateLogger<BufferQueueProducer>();
         private readonly ITickSource _tickSource;
 
 #pragma warning disable IDE0052 // Remove unread private member
@@ -108,7 +111,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 }
                 else if (preallocatedBufferCount < bufferCount)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, "Not enough buffers. Try with more pre-allocated buffers");
+                    LogNotEnoughBuffers();
 
                     return Status.Success;
                 }
@@ -126,6 +129,16 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
             return Status.Success;
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Not enough buffers. Try with more pre-allocated buffers.")]
+        private partial void LogNotEnoughBuffers();
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "No available buffer slots.")]
+        private partial void LogNoAvailableBufferSlots();
+        
         public override Status DequeueBuffer(out int slot,
                                              out AndroidFence fence,
                                              bool async,
@@ -169,7 +182,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 {
                     fence = AndroidFence.NoFence;
 
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, "No available buffer slots");
+                    LogNoAvailableBufferSlots();
 
                     return Status.Busy;
                 }
@@ -199,11 +212,9 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                     }
                     else
                     {
-                        Logger.Error?.Print(LogClass.SurfaceFlinger,
-                                            $"Preallocated buffer mismatch - slot {slot}\n" +
-                                            $"available: Width = {graphicBuffer.Width} Height = {graphicBuffer.Height} Format = {graphicBuffer.Format} Usage = {graphicBuffer.Usage:x} " +
-                                            $"requested: Width = {width} Height = {height} Format = {format} Usage = {usage:x}");
-
+                        LogPreallocatedBufferMismatch(slot, graphicBuffer.Width, graphicBuffer.Height,
+                            graphicBuffer.Format, graphicBuffer.Usage, width, height, format, usage);
+                        
                         slot = BufferSlotArray.InvalidBufferSlot;
                         fence = AndroidFence.NoFence;
 
@@ -232,6 +243,14 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
             return returnFlags;
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Preallocated buffer mismatch - slot {slot}\n" +
+                      "available: Width = {graphicBufferWidth} Height = {graphicBufferHeight} Format = {graphicBufferFormat} Usage = {graphicBufferUsage:x} " +
+                      "requested: Width = {width} Height = {height} Format = {format} Usage = {usage:x}")]
+        private partial void LogPreallocatedBufferMismatch(int slot, int graphicBufferWidth, int graphicBufferHeight, 
+            PixelFormat graphicBufferFormat, int graphicBufferUsage, uint width, uint height, PixelFormat format, uint usage);
+
         public override Status DetachBuffer(int slot)
         {
             lock (Core.Lock)
@@ -248,7 +267,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
                 if (!Core.Slots[slot].RequestBufferCalled)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, $"Slot {slot} was detached without requesting a buffer");
+                    LogSlotDetachedWithoutBuffer(slot);
 
                     return Status.BadValue;
                 }
@@ -259,6 +278,11 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return Status.Success;
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Slot {slot} was detached without requesting a buffer.")]
+        private partial void LogSlotDetachedWithoutBuffer(int slot);
 
         public override Status DetachNextBuffer(out AndroidStrongPointer<GraphicBuffer> graphicBuffer, out AndroidFence fence)
         {
@@ -319,7 +343,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
                 if (slot == BufferSlotArray.InvalidBufferSlot)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, "No available buffer slots");
+                    LogNoAvailableBufferSlots();
 
                     return Status.Busy;
                 }
@@ -335,6 +359,11 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return returnFlags;
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Slot {slot} was queued without requesting a buffer.")]
+        private partial void LogSlotDequeuedWithoutBuffer(int slot);
 
         public override Status QueueBuffer(int slot, ref QueueBufferInput input, out QueueBufferOutput output)
         {
@@ -378,7 +407,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
                 if (!Core.Slots[slot].RequestBufferCalled)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, $"Slot {slot} was queued without requesting a buffer");
+                    LogSlotDequeuedWithoutBuffer(slot);
 
                     return Status.BadValue;
                 }
@@ -810,7 +839,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
                     if (newUndequeuedCount < minUndequeuedCount)
                     {
-                        Logger.Error?.Print(LogClass.SurfaceFlinger, $"Min undequeued buffer count ({minUndequeuedCount}) exceeded (dequeued = {dequeuedCount} undequeued = {newUndequeuedCount})");
+                        LogPendingBufferCountExceeded(minUndequeuedCount, dequeuedCount, newUndequeuedCount);
 
                         return Status.InvalidOperation;
                     }
@@ -840,6 +869,11 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             return Status.Success;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Min pending buffer count ({minPendingCount}) exceeded (dequeued = {dequeuedCount} undequeued = {newUndequeuedCount}).")]
+        private partial void LogPendingBufferCountExceeded(int minPendingCount, int dequeuedCount, int newUndequeuedCount);
 
         protected override KReadableEvent GetWaitBufferFreeEvent()
         {
