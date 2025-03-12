@@ -125,7 +125,7 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
         // since just setting one can look bad on the users console.
         return logLevel switch
         {
-            LogLevel.Trace => new ConsoleColors(ConsoleColor.Gray),
+            LogLevel.Trace => new ConsoleColors(ConsoleColor.DarkGray),
             LogLevel.Debug => new ConsoleColors(ConsoleColor.Gray),
             LogLevel.Information => new ConsoleColors(ConsoleColor.White),
             LogLevel.Warning => new ConsoleColors(ConsoleColor.Yellow),
