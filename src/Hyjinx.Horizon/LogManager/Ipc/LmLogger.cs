@@ -5,10 +5,12 @@ using Hyjinx.Horizon.LogManager.Types;
 using Hyjinx.Horizon.Sdk.Lm;
 using Hyjinx.Horizon.Sdk.Sf;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Horizon.LogManager.Ipc
 {
@@ -16,6 +18,7 @@ namespace Hyjinx.Horizon.LogManager.Ipc
     {
         private const int MessageLengthLimit = 5000;
 
+        private readonly ILogger<LmLogger> _logger = Logger.DefaultLoggerFactory.CreateLogger<LmLogger>();
         private readonly LogService _log;
         private readonly ulong _pid;
 
@@ -39,13 +42,18 @@ namespace Hyjinx.Horizon.LogManager.Ipc
 
             if (LogImpl(message))
             {
-                Logger.Guest?.Print(LogClass.ServiceLm, _logPacket.ToString());
-
+                LogPacketDetails(_logPacket);
+                
                 _logPacket = new LogPacket();
             }
 
             return Result.Success;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceLm, EventName = nameof(LogClass.ServiceLm),
+            Message = "{packet}")]
+        private partial void LogPacketDetails(LogPacket packet);
 
         [CmifCommand(1)] // 3.0.0+
         public Result SetDestination(LogDestination destination)
