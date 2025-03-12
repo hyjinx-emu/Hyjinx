@@ -51,8 +51,6 @@ public static class LoggerModule
         Logger.SetEnable(LogLevel.Info, true);
         Logger.SetEnable(LogLevel.Warning, true);
         Logger.SetEnable(LogLevel.Error, true);
-        Logger.SetEnable(LogLevel.Guest, false);
-        Logger.SetEnable(LogLevel.AccessLog, false);
         Logger.SetEnable(LogLevel.Stub, false);
         
         // Logger.SetEnable(LogLevel.Trace, ConfigurationState.Instance.Logger.EnableTrace.Value);
@@ -93,15 +91,5 @@ public static class LoggerModule
     private static void ReloadEnableTrace(object? sender, ReactiveEventArgs<bool> e)
     {
         Logger.SetEnable(LogLevel.Trace, e.NewValue);
-    }
-
-    private static void ReloadEnableGuest(object? sender, ReactiveEventArgs<bool> e)
-    {
-        Logger.SetEnable(LogLevel.Guest, e.NewValue);
-    }
-
-    private static void ReloadEnableFsAccessLog(object? sender, ReactiveEventArgs<bool> e)
-    {
-        Logger.SetEnable(LogLevel.AccessLog, e.NewValue);
     }
 }

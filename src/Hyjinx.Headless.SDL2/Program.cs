@@ -429,8 +429,6 @@ namespace Hyjinx.Headless.SDL2
             Logger.SetEnable(LogLevel.Warning, !option.LoggingDisableWarning);
             Logger.SetEnable(LogLevel.Error, option.LoggingEnableError);
             Logger.SetEnable(LogLevel.Trace, option.LoggingEnableTrace);
-            Logger.SetEnable(LogLevel.Guest, !option.LoggingDisableGuest);
-            Logger.SetEnable(LogLevel.AccessLog, option.LoggingEnableFsAccessLog);
 
             if (!option.DisableFileLog)
             {

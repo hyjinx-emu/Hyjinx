@@ -7,8 +7,5 @@ public enum LogLevel
     Info,
     Warning,
     Error,
-    Guest,
-    AccessLog,
-    Notice,
     Trace,
 }
