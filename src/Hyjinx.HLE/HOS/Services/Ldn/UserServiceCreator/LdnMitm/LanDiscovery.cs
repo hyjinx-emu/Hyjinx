@@ -349,13 +349,17 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             }
             catch (Exception ex)
             {
-                Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"Failed to create LdnProxyUdpServer: {ex}");
-
+                LogFailedToCreateProxyServer(ex);
                 return false;
             }
 
             return true;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Failed to create LdnProxyUdpServer.")]
+        private partial void LogFailedToCreateProxyServer(Exception ex);
 
         public NetworkInfo[] Scan(ushort channel, ScanFilter filter)
         {
