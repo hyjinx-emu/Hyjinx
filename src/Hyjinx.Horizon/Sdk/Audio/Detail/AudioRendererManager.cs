@@ -67,7 +67,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
             {
                 workBufferSize = (long)Hyjinx.Audio.Renderer.Server.AudioRendererManager.GetWorkBufferSize(ref parameter.Configuration);
 
-                Logger.Debug?.Print(LogClass.ServiceAudio, $"WorkBufferSize is 0x{workBufferSize:x16}.");
+                LogBufferSize(workBufferSize);
 
                 return Result.Success;
             }
@@ -80,6 +80,11 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
                 return AudioResult.UnsupportedRevision;
             }
         }
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAudio, EventName = nameof(LogClass.ServiceAudio),
+            Message = "WorkBufferSize is 0x{size:x16}.")]
+        private partial void LogBufferSize(long size);
 
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceAudio, EventName = nameof(LogClass.ServiceAudio),

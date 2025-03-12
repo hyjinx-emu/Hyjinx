@@ -82,7 +82,7 @@ namespace Hyjinx.Horizon.Sdk.Sf.Cmif
                 return SfResult.UnknownCommandId;
             }
 
-            Logger.Trace?.Print(LogClass.KernelIpc, $"{objectName}.{commandHandler.MethodName} called");
+            LogMethodCalled(_logger, objectName, commandHandler.MethodName);
 
             Result commandResult = commandHandler.Invoke(ref outHeader, ref context, inMessageRawData);
 
@@ -108,6 +108,11 @@ namespace Hyjinx.Horizon.Sdk.Sf.Cmif
 
             return Result.Success;
         }
+
+        [LoggerMessage(LogLevel.Trace,
+            EventId= (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+            Message = "{objectName}.{methodName} called")]
+        private static partial void LogMethodCalled(ILogger logger, string objectName, string methodName);
 
         private static void PrepareForStubReply(scoped ref ServiceDispatchContext context, out Span<byte> outRawData)
         {
