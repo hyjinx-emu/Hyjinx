@@ -37,7 +37,7 @@ public class Logger : ILog
     public static ILog? Warning { get; private set; }
     public static ILog? Error { get; private set; }
     // public static ILog? Guest { get; private set; }
-    public static ILog? AccessLog { get; private set; }
+    // public static ILog? AccessLog { get; private set; }
     public static ILog? Stub { get; private set; }
     public static ILog? Trace { get; private set; }
     // public static ILog Notice { get; private set; } = null!;
@@ -75,9 +75,9 @@ public class Logger : ILog
             //     Guest = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Debug) : null;
             //     break;
             
-            case LogLevel.AccessLog:
-                AccessLog = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Debug) : null;
-                break;
+            // case LogLevel.AccessLog:
+            //     AccessLog = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Debug) : null;
+            //     break;
             
             case LogLevel.Stub:
                 Stub = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Debug) : null;

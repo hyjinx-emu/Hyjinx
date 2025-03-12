@@ -12,17 +12,20 @@ using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy;
+using LibHac.Os;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using static Hyjinx.HLE.Utilities.StringUtils;
 using GameCardHandle = System.UInt32;
 using IFileSystem = LibHac.FsSrv.Sf.IFileSystem;
 using IStorage = LibHac.FsSrv.Sf.IStorage;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Fs
 {
     [Service("fsp-srv")]
-    class IFileSystemProxy : DisposableIpcService<IFileSystemProxy>
+    partial class IFileSystemProxy : DisposableIpcService<IFileSystemProxy>
     {
         private SharedRef<LibHac.FsSrv.Sf.IFileSystemProxy> _baseFileSystemProxy;
         private ulong _pid;
@@ -1290,13 +1293,18 @@ namespace Hyjinx.HLE.HOS.Services.Fs
         // OutputAccessLogToSdCard(buffer<bytes, 5> log_text)
         public ResultCode OutputAccessLogToSdCard(ServiceCtx context)
         {
-            string message = ReadUtf8StringSend(context);
-
             // FS ends each line with a newline. Remove it because Hyjinx logging adds its own newline
-            Logger.AccessLog?.PrintMsg(LogClass.ServiceFs, message.TrimEnd('\n'));
+            string message = ReadUtf8StringSend(context).TrimEnd('\n');
 
+            Log(message);
+            
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceFs, EventName = nameof(LogClass.ServiceFs),
+            Message = "Access: {message}")]
+        private partial void Log(string message);
 
         [CommandCmif(1007)]
         public ResultCode RegisterUpdatePartition(ServiceCtx context)
