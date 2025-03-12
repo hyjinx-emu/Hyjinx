@@ -6,17 +6,20 @@ using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Processes
 {
-    public class ProcessResult
+    public partial class ProcessResult
     {
         public static ProcessResult Failed => new(null, new BlitStruct<ApplicationControlProperty>(1), false, false, null, 0, 0, 0, TitleLanguage.AmericanEnglish);
 
+        private readonly ILogger<ProcessResult> _logger = Logger.DefaultLoggerFactory.CreateLogger<ProcessResult>();
         private readonly byte _mainThreadPriority;
         private readonly uint _mainThreadStackSize;
-
+        
         public readonly IDiskCacheLoadState DiskCacheLoadState;
 
         public readonly MetaLoader MetaLoader;
@@ -79,7 +82,7 @@ namespace Hyjinx.HLE.Loaders.Processes
             Result result = device.System.KernelContext.Processes[ProcessId].Start(_mainThreadPriority, _mainThreadStackSize);
             if (result != Result.Success)
             {
-                Logger.Error?.Print(LogClass.Loader, $"Process start returned error \"{result}\".");
+                LogProcessStartFailure(result);
 
                 return false;
             }
@@ -91,5 +94,10 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             return true;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Process start returned error {result}.")]
+        private partial void LogProcessStartFailure(Result result);
     }
 }

@@ -4,16 +4,19 @@ using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
 using Hyjinx.HLE.HOS.Services.Settings;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 using System.Threading;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {
-    internal class NvHostCtrlDeviceFile : NvDeviceFile
+    internal partial class NvHostCtrlDeviceFile : NvDeviceFile
     {
         public const int EventsCount = 64;
 
+        private readonly ILogger<NvHostCtrlDeviceFile> _logger = Logger.DefaultLoggerFactory.CreateLogger<NvHostCtrlDeviceFile>();
         private readonly bool _isProductionMode;
         private readonly Switch _device;
         private readonly NvHostEvent[] _events;
@@ -159,6 +162,11 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
             return SyncptReadMinOrMax(ref arguments, max: true);
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "{domain}!{parameter} String value size is too big!")]
+        private partial void LogStringSizeTooBig(string domain, string parameter);
+        
         private NvInternalResult GetConfig(GetConfigurationArguments arguments)
         {
             if (!_isProductionMode && NxSettings.Settings.TryGetValue($"{arguments.Domain}!{arguments.Parameter}".ToLower(), out object nvSetting))
@@ -169,7 +177,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
                 {
                     if (stringValue.Length > 0x100)
                     {
-                        Logger.Error?.Print(LogClass.ServiceNv, $"{arguments.Domain}!{arguments.Parameter} String value size is too big!");
+                        LogStringSizeTooBig(arguments.Domain, arguments.Parameter);
                     }
                     else
                     {
@@ -422,20 +430,15 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
                         }
                         else
                         {
-                            Logger.Error?.Print(LogClass.ServiceNv, $"Invalid Event at index {eventIndex} (isWaitEventAsyncCmd: {isWaitEventAsyncCmd}, isWaitEventCmd: {isWaitEventCmd})");
-
-                            if (hostEvent != null)
-                            {
-                                Logger.Error?.Print(LogClass.ServiceNv, hostEvent.DumpState(_device.Gpu));
-                            }
-
+                            LogInvalidEventAtIndex(eventIndex, isWaitEventAsyncCmd, isWaitEventCmd);
+                            
                             result = NvInternalResult.InvalidInput;
                         }
                     }
                 }
                 else
                 {
-                    Logger.Error?.Print(LogClass.ServiceNv, $"Invalid Event at index {eventIndex} (isWaitEventAsyncCmd: {isWaitEventAsyncCmd}, isWaitEventCmd: {isWaitEventCmd})");
+                    LogInvalidEventAtIndex(eventIndex, isWaitEventAsyncCmd, isWaitEventCmd);
 
                     result = NvInternalResult.InvalidInput;
                 }
@@ -443,6 +446,11 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 
             return result;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Invalid event at index {eventIndex} (isWaitEventAsyncCmd: {isWaitEventAsyncCmd}, isWaitEventCmd: {isWaitEventCmd}")]
+        private partial void LogInvalidEventAtIndex(uint eventIndex, bool isWaitEventAsyncCmd, bool isWaitEventCmd);
 
         private NvHostEvent GetFreeEventLocked(uint id, out uint eventIndex)
         {
