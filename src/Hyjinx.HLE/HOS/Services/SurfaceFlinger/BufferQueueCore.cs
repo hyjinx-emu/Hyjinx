@@ -1,13 +1,15 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
-    class BufferQueueCore
+    partial class BufferQueueCore
     {
         public BufferSlotArray Slots;
         public int OverrideMaxBufferCount;
@@ -34,6 +36,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
         public bool EnableExternalEvent;
         public int MaxBufferCountCached;
 
+        private readonly ILogger<BufferQueueCore> _logger = Logger.DefaultLoggerFactory.CreateLogger<BufferQueueCore>();
         public readonly object Lock = new();
 
         private readonly KEvent _waitBufferFreeEvent;
@@ -318,24 +321,33 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
         {
             if (Slots[slot].BufferState != BufferState.Acquired)
             {
-                Logger.Error?.Print(LogClass.SurfaceFlinger, $"Slot {slot} is not owned by the consumer (state = {Slots[slot].BufferState})");
-
+                LogSlotNotOwnedByConsumer(slot, Slots[slot].BufferState);
                 return false;
             }
 
             return true;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Slot {slot} is not owned by the consumer (state = {state})")]
+        private partial void LogSlotNotOwnedByConsumer(int slot, BufferState state);
 
         public bool IsOwnedByProducerLocked(int slot)
         {
             if (Slots[slot].BufferState != BufferState.Dequeued)
             {
-                Logger.Error?.Print(LogClass.SurfaceFlinger, $"Slot {slot} is not owned by the producer (state = {Slots[slot].BufferState})");
-
+                LogSlotNotOwnedByProducer(slot, Slots[slot].BufferState);
                 return false;
             }
 
             return true;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Slot {slot} is not owned by the producer (state = {state})")]
+        private partial void LogSlotNotOwnedByProducer(int slot, BufferState state);
+
     }
 }
