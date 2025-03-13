@@ -1,11 +1,13 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Kernel.Threading;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
-    class HOSBinderDriverServer : IHOSBinderDriver
+    partial class HOSBinderDriverServer : IHOSBinderDriver
     {
         private static readonly Dictionary<int, IBinder> _registeredBinderObjects = new();
 
@@ -68,13 +70,18 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             if (binder == null)
             {
-                Logger.Error?.Print(LogClass.SurfaceFlinger, $"Invalid binder id {binderId}");
+                LogInvalidBinderId(binderId);
 
                 return ResultCode.Success;
             }
 
             return binder.AdjustRefcount(addVal, type);
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Invalid binder id {binderId}.")]
+        private partial void LogInvalidBinderId(int binderId);
 
         protected override void GetNativeHandle(int binderId, uint typeId, out KReadableEvent readableEvent)
         {
@@ -84,7 +91,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
             {
                 readableEvent = null;
 
-                Logger.Error?.Print(LogClass.SurfaceFlinger, $"Invalid binder id {binderId}");
+                LogInvalidBinderId(binderId);
 
                 return;
             }
@@ -98,7 +105,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             if (binder == null)
             {
-                Logger.Error?.Print(LogClass.SurfaceFlinger, $"Invalid binder id {binderId}");
+                LogInvalidBinderId(binderId);
 
                 return ResultCode.Success;
             }

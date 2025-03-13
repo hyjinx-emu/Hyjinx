@@ -11,20 +11,25 @@ using Hyjinx.Cpu;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using TimeZoneRuleBox = Hyjinx.Common.Memory.Box<Hyjinx.HLE.HOS.Services.Time.TimeZone.TimeZoneRule>;
 
 namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
 {
-    public class TimeZoneContentManager
+    public partial class TimeZoneContentManager
     {
         private const long TimeZoneBinaryTitleId = 0x010000000000080E;
 
-        private const string TimeZoneSystemTitleMissingErrorMessage = "TimeZoneBinary system title not found! TimeZone conversions will not work, provide the system archive to fix this error. (See https://github.com/ryujinx-mirror/Hyjinx/wiki/Hyjinx-Setup-&-Configuration-Guide#initial-setup-continued---installation-of-firmware for more information)";
+        private const string TimeZoneSystemTitleMissingErrorMessage =
+            "TimeZoneBinary system title not found! TimeZone conversions will not work, provide the system archive " +
+            "to fix this error. (See https://github.com/ryujinx-mirror/Hyjinx/wiki/Hyjinx-Setup-&-Configuration-Guide#initial-setup-continued---installation-of-firmware for more information)";
 
+        private readonly ILogger<TimeZoneContentManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<TimeZoneContentManager>();
         private VirtualFileSystem _virtualFileSystem;
         private IntegrityCheckLevel _fsIntegrityCheckLevel;
         private ContentManager _contentManager;
@@ -113,10 +118,15 @@ namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
             else
             {
                 LocationNameCache = new[] { "UTC" };
-
-                Logger.Error?.Print(LogClass.ServiceTime, TimeZoneSystemTitleMissingErrorMessage);
+                
+                LogTimeZoneTitleMissing();
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceTime, EventName = nameof(LogClass.ServiceTime),
+            Message = TimeZoneSystemTitleMissingErrorMessage)]
+        private partial void LogTimeZoneTitleMissing();
 
         public IEnumerable<(int Offset, string Location, string Abbr)> ParseTzOffsets()
         {
@@ -143,7 +153,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
 
                     if (romfs.OpenFile(ref tzif.Ref, $"/zoneinfo/{locName}".ToU8Span(), OpenMode.Read).IsFailure())
                     {
-                        Logger.Error?.Print(LogClass.ServiceTime, $"Error opening /zoneinfo/{locName}");
+                        LogErrorOpeningZoneInfo(locName);
                         continue;
                     }
 
@@ -172,7 +182,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
                     }
                     else
                     {
-                        Logger.Error?.Print(LogClass.ServiceTime, $"Couldn't find UTC offset for zone {locName}");
+                        LogCannotFindUtcOffsetForZone(locName);
                         continue;
                     }
 
@@ -188,6 +198,16 @@ namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
             return outList;
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceTime, EventName = nameof(LogClass.ServiceTime),
+            Message = "Error opening /zoneinfo/{locName}")]
+        private partial void LogErrorOpeningZoneInfo(string locName);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceTime, EventName = nameof(LogClass.ServiceTime),
+            Message = "Couldn't find UTC offset for zone {locName}")]
+        private partial void LogCannotFindUtcOffsetForZone(string locName);
+        
         private bool IsLocationNameValid(string locationName)
         {
             foreach (string cachedLocationName in LocationNameCache)

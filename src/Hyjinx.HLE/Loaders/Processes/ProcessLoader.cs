@@ -9,17 +9,20 @@ using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
 using Path = System.IO.Path;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Processes
 {
-    public class ProcessLoader
+    public partial class ProcessLoader
     {
         private readonly Switch _device;
 
+        private readonly ILogger<ProcessLoader> _logger = Logger.DefaultLoggerFactory.CreateLogger<ProcessLoader>();
         private readonly ConcurrentDictionary<ulong, ProcessResult> _processesByPid;
 
         private ulong _latestPid;
@@ -31,7 +34,7 @@ namespace Hyjinx.HLE.Loaders.Processes
             _device = device;
             _processesByPid = new ConcurrentDictionary<ulong, ProcessResult>();
         }
-
+        
         public bool LoadXci(string path, ulong applicationId)
         {
             FileStream stream = new(path, FileMode.Open, FileAccess.Read);
@@ -39,8 +42,7 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             if (!xci.HasPartition(XciPartitionType.Secure))
             {
-                Logger.Error?.Print(LogClass.Loader, "Unable to load XCI: Could not find XCI Secure partition");
-
+                LogCannotFindSecurePartition();
                 return false;
             }
 
@@ -48,8 +50,7 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             if (!success)
             {
-                Logger.Error?.Print(LogClass.Loader, errorMessage, nameof(PartitionFileSystemExtensions.TryLoad));
-
+                LogTryLoadFailed(errorMessage);
                 return false;
             }
 
@@ -65,6 +66,16 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             return false;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Unable to load XCI: Could not find XCI Secure partition")]
+        private partial void LogCannotFindSecurePartition();
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = nameof(PartitionFileSystemExtensions.TryLoad) + ": {message}")]
+        private partial void LogTryLoadFailed(string message);
 
         public bool LoadNsp(string path, ulong applicationId)
         {
@@ -92,7 +103,7 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             if (!success)
             {
-                Logger.Error?.Print(LogClass.Loader, errorMessage, nameof(PartitionFileSystemExtensions.TryLoad));
+                LogTryLoadFailed(errorMessage);
             }
 
             return false;

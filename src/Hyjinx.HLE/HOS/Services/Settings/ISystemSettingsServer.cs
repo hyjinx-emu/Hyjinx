@@ -8,14 +8,16 @@ using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.SystemState;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Settings
 {
     [Service("set:sys")]
-    class ISystemSettingsServer : IpcService<ISystemSettingsServer>
+    partial class ISystemSettingsServer : IpcService<ISystemSettingsServer>
     {
         public ISystemSettingsServer(ServiceCtx context) { }
 
@@ -188,7 +190,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
                 {
                     if ((ulong)(stringValue.Length + 1) > replySize)
                     {
-                        Logger.Error?.Print(LogClass.ServiceSet, $"{askedSetting} String value size is too big!");
+                        LogSettingTooLarge(askedSetting);
                     }
                     else
                     {
@@ -215,12 +217,22 @@ namespace Hyjinx.HLE.HOS.Services.Settings
             }
             else
             {
-                Logger.Error?.Print(LogClass.ServiceSet, $"{askedSetting} not found!");
+                LogSettingNotFound(askedSetting);
             }
-
+            
             return ResultCode.Success;
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
+            Message = "{setting} String value size is too big!")]
+        private partial void LogSettingTooLarge(string setting);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
+            Message = "{setting} not found!")]
+        private partial void LogSettingNotFound(string setting);
+        
         [CommandCmif(60)]
         // IsUserSystemClockAutomaticCorrectionEnabled() -> bool
         public ResultCode IsUserSystemClockAutomaticCorrectionEnabled(ServiceCtx context)

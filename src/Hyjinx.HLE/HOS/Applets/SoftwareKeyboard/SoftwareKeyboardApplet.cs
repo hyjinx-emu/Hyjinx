@@ -7,6 +7,7 @@ using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
 using Hyjinx.HLE.UI;
 using Hyjinx.HLE.UI.Input;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -14,10 +15,11 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Applets
 {
-    internal class SoftwareKeyboardApplet : IApplet
+    internal partial class SoftwareKeyboardApplet : IApplet
     {
         private const string DefaultInputText = "Hyjinx";
 
@@ -62,6 +64,7 @@ namespace Hyjinx.HLE.HOS.Applets
         private bool _canAcceptController = false;
         private KeyboardInputMode _inputMode = KeyboardInputMode.ControllerAndKeyboard;
 
+        private readonly ILogger<SoftwareKeyboardApplet> _logger = Logger.DefaultLoggerFactory.CreateLogger<SoftwareKeyboardApplet>();
         private readonly object _lock = new();
 
         public event EventHandler AppletStateChanged;
@@ -94,7 +97,7 @@ namespace Hyjinx.HLE.HOS.Applets
 
                     if (_device.UIHandler == null)
                     {
-                        Logger.Error?.Print(LogClass.ServiceAm, "GUI Handler is not set, software keyboard applet will not work properly");
+                        LogGuiHandlerIsNotSet();
                     }
                     else
                     {
@@ -118,7 +121,7 @@ namespace Hyjinx.HLE.HOS.Applets
 
                     if (keyboardConfig.Length < Marshal.SizeOf<SoftwareKeyboardConfig>())
                     {
-                        Logger.Error?.Print(LogClass.ServiceAm, $"SoftwareKeyboardConfig size mismatch. Expected {Marshal.SizeOf<SoftwareKeyboardConfig>():x}. Got {keyboardConfig.Length:x}");
+                        LogSoftwareKeyboardConfigSizeMismatch(Marshal.SizeOf<SoftwareKeyboardConfig>(), keyboardConfig.Length);
                     }
                     else
                     {
@@ -127,7 +130,7 @@ namespace Hyjinx.HLE.HOS.Applets
 
                     if (!_normalSession.TryPop(out _transferMemory))
                     {
-                        Logger.Error?.Print(LogClass.ServiceAm, "SwKbd Transfer Memory is null");
+                        LogSwKbdTransferMemoryIsNull();
                     }
 
                     if (_keyboardForegroundConfig.UseUtf8)
@@ -143,7 +146,22 @@ namespace Hyjinx.HLE.HOS.Applets
                 }
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "GUI Handler is not set, software keyboard applet will not work properly.")]
+        private partial void LogGuiHandlerIsNotSet();
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "SwKbd Transfer Memory is null.")]
+        private partial void LogSwKbdTransferMemoryIsNull();
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "SoftwareKeyboardConfig size mismatch. Expected {expected:X}, got {actual:X}.")]
+        private partial void LogSoftwareKeyboardConfigSizeMismatch(int expected, int actual);
+        
         public ResultCode GetResult()
         {
             return ResultCode.Success;
@@ -417,7 +435,7 @@ namespace Hyjinx.HLE.HOS.Applets
                     }
                     else
                     {
-                        Logger.Error?.Print(LogClass.ServiceAm, $"Received invalid Software Keyboard Calc of {remaining} bytes");
+                        LogInvalidSoftwareKeyboardCalc(remaining);
 
                         newCalc = new SoftwareKeyboardCalcEx();
                     }
@@ -488,6 +506,11 @@ namespace Hyjinx.HLE.HOS.Applets
                     break;
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Received invalid Software Keyboard Calc of {remaining} bytes.")]
+        private partial void LogInvalidSoftwareKeyboardCalc(long remaining);
 
         private void ActivateFrontend()
         {
