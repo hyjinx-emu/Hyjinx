@@ -1,14 +1,16 @@
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.UI.Common.SystemInfo
 {
     [SupportedOSPlatform("linux")]
-    class LinuxSystemInfo : SystemInfo
+    partial class LinuxSystemInfo : SystemInfo
     {
         internal LinuxSystemInfo()
         {
@@ -45,11 +47,16 @@ namespace Hyjinx.UI.Common.SystemInfo
             RamAvailable = availableKiB * 1024;
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "File '{file}' not found.")]
+        private static partial void LogFileNotFound(ILogger logger, string file);
+        
         private static void ParseKeyValues(string filePath, Dictionary<string, string> itemDict)
         {
             if (!File.Exists(filePath))
             {
-                Logger.Error?.Print(LogClass.Application, $"File \"{filePath}\" not found");
+                LogFileNotFound(_logger, filePath);
 
                 return;
             }

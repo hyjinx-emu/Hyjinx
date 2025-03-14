@@ -5,11 +5,15 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.UI.Common.SystemInfo
 {
-    public class SystemInfo
+    public partial class SystemInfo
     {
+        protected static readonly ILogger<SystemInfo> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<SystemInfo>();
+        
         public string OsDescription { get; protected set; }
         public string CpuName { get; protected set; }
         public ulong RamTotal { get; protected set; }
@@ -48,10 +52,15 @@ namespace Hyjinx.UI.Common.SystemInfo
                 return new MacOSSystemInfo();
             }
 
-            Logger.Error?.Print(LogClass.Application, "SystemInfo unsupported on this platform");
+            LogSystemInfoNotSupported(_logger);
 
             return new SystemInfo();
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "SystemInfo unsupported on this platform")]
+        private static partial void LogSystemInfoNotSupported(ILogger logger);
 
         // x86 exposes a 48 byte ASCII "CPU brand" string via CPUID leaves 0x80000002-0x80000004.
         internal static string GetCpuidCpuName()
