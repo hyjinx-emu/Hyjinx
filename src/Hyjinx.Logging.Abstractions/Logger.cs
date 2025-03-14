@@ -35,7 +35,7 @@ public class Logger : ILog
     public static ILog? Debug { get; private set; }
     public static ILog? Info { get; private set; }
     public static ILog? Warning { get; private set; }
-    public static ILog? Error { get; private set; }
+    // public static ILog? Error { get; private set; }
     // public static ILog? Guest { get; private set; }
     // public static ILog? AccessLog { get; private set; }
     public static ILog? Stub { get; private set; }
@@ -67,9 +67,9 @@ public class Logger : ILog
                 Warning = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Warning) : null;
                 break;
             
-            case LogLevel.Error:
-                Error = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Error) : null;
-                break;
+            // case LogLevel.Error:
+            //     Error = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Error) : null;
+            //     break;
             
             // case LogLevel.Guest:
             //     Guest = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Debug) : null;
@@ -86,9 +86,6 @@ public class Logger : ILog
             case LogLevel.Trace:
                 Trace = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Trace) : null;
                 break;
-            
-            default:
-                throw new NotSupportedException("Unknown log level");
         }
     }
 

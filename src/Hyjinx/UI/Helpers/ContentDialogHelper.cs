@@ -9,6 +9,7 @@ using FluentAvalonia.UI.Controls;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,9 @@ namespace Hyjinx.Ava.UI.Helpers
 {
     public static class ContentDialogHelper
     {
+        private static readonly ILogger _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger(typeof(ContentDialogHelper));
+        
         private static bool _isChoiceDialogOpen;
         private static ContentDialogOverlayWindow _contentDialogOverlayWindow;
 
@@ -256,7 +260,7 @@ namespace Hyjinx.Ava.UI.Helpers
 
         internal static async Task CreateErrorDialog(string errorMessage, string secondaryErrorMessage = "")
         {
-            Logger.Error?.Print(LogClass.Application, errorMessage);
+            _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), errorMessage);
 
             await ShowTextDialog(
                 LocaleManager.Instance[LocaleKeys.DialogErrorTitle],

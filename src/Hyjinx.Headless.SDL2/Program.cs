@@ -131,7 +131,8 @@ namespace Hyjinx.Headless.SDL2
 
                 if (gamepad == null)
                 {
-                    Logger.Error?.Print(LogClass.Application, $"{index} gamepad not found (\"{inputId}\")");
+                    Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                        "{index} gamepad not found ('{inputId}')", index, inputId);
 
                     return null;
                 }
@@ -290,7 +291,8 @@ namespace Hyjinx.Headless.SDL2
 
                 if (!File.Exists(path))
                 {
-                    Logger.Error?.Print(LogClass.Application, $"Input profile \"{inputProfileName}\" not found for \"{inputId}\"");
+                    Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                        "Input profile '{inputProfileName}' not found for '{inputId}'", inputProfileName, inputId);
 
                     return null;
                 }
@@ -302,7 +304,8 @@ namespace Hyjinx.Headless.SDL2
                 }
                 catch (JsonException)
                 {
-                    Logger.Error?.Print(LogClass.Application, $"Input profile \"{inputProfileName}\" parsing failed for \"{inputId}\"");
+                    Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                        "Input profile '{inputProfileName}' parsing failed for '{inputId}'", inputProfileName, inputId);
 
                     return null;
                 }
@@ -388,7 +391,8 @@ namespace Hyjinx.Headless.SDL2
 
             if (option.InputPath == null)
             {
-                Logger.Error?.Print(LogClass.Application, "Please provide a file to load");
+                Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                    "Please provide a file to load");
 
                 return;
             }
@@ -712,7 +716,8 @@ namespace Hyjinx.Headless.SDL2
                         }
                         catch (ArgumentOutOfRangeException)
                         {
-                            Logger.Error?.Print(LogClass.Application, "The specified file is not supported by Hyjinx.");
+                            Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                                "The specified file is not supported by Hyjinx.");
 
                             _emulationContext.Dispose();
 

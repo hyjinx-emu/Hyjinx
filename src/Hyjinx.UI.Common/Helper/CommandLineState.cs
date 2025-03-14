@@ -8,9 +8,6 @@ namespace Hyjinx.UI.Common.Helper
 {
     public static partial class CommandLineState
     {
-        private static readonly ILogger _logger =
-            Logger.DefaultLoggerFactory.CreateLogger(typeof(CommandLineState));
-        
         public static string[] Arguments { get; private set; }
 
         public static bool? OverrideDockedMode { get; private set; }
@@ -26,6 +23,8 @@ namespace Hyjinx.UI.Common.Helper
 
         public static void ParseArguments(string[] args)
         {
+            // TODO: Viper - The logging during startup needs to be corrected.
+            // var _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(CommandLineState));
             List<string> arguments = new();
 
             // Parse Arguments.
@@ -39,7 +38,7 @@ namespace Hyjinx.UI.Common.Helper
                     case "--root-data-dir":
                         if (i + 1 >= args.Length)
                         {
-                            LogInvalidOption(_logger, arg);
+                            // LogInvalidOption(_logger, arg);
                             continue;
                         }
 
@@ -52,7 +51,7 @@ namespace Hyjinx.UI.Common.Helper
                     case "--profile":
                         if (i + 1 >= args.Length)
                         {
-                            LogInvalidOption(_logger, arg);
+                            // LogInvalidOption(_logger, arg);
                             continue;
                         }
 
@@ -71,7 +70,7 @@ namespace Hyjinx.UI.Common.Helper
                     case "--graphics-backend":
                         if (i + 1 >= args.Length)
                         {
-                            LogInvalidOption(_logger, arg);
+                            // LogInvalidOption(_logger, arg);
                             continue;
                         }
 
@@ -90,7 +89,7 @@ namespace Hyjinx.UI.Common.Helper
                     case "--hide-cursor":
                         if (i + 1 >= args.Length)
                         {
-                            LogInvalidOption(_logger, arg);
+                            // LogInvalidOption(_logger, arg);
                             continue;
                         }
 
@@ -103,7 +102,7 @@ namespace Hyjinx.UI.Common.Helper
                     case "--config":
                         if (i + 1 >= args.Length)
                         {
-                            LogInvalidOption(_logger, arg);
+                            // LogInvalidOption(_logger, arg);
                             continue;
                         }
 
@@ -111,7 +110,7 @@ namespace Hyjinx.UI.Common.Helper
 
                         if (Path.GetExtension(configFile).ToLower() != ".json")
                         {
-                            LogInvalidOption(_logger, arg);
+                            // LogInvalidOption(_logger, arg);
                             continue;
                         }
 

@@ -4,6 +4,7 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.OpenGL;
 using Hyjinx.Input.HLE;
+using Microsoft.Extensions.Logging;
 using System;
 using static SDL2.SDL;
 
@@ -11,6 +12,9 @@ namespace Hyjinx.Headless.SDL2.OpenGL
 {
     class OpenGLWindow : WindowBase
     {
+        private static readonly ILogger<OpenGLWindow> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<OpenGLWindow>();
+        
         private static void CheckResult(int result)
         {
             if (result < 0)
@@ -89,8 +93,7 @@ namespace Hyjinx.Headless.SDL2.OpenGL
                 if (res != 0)
                 {
                     string errorMessage = $"SDL_GL_CreateContext failed with error \"{SDL_GetError()}\"";
-
-                    Logger.Error?.Print(LogClass.Application, errorMessage);
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), errorMessage);
 
                     throw new Exception(errorMessage);
                 }
@@ -135,8 +138,7 @@ namespace Hyjinx.Headless.SDL2.OpenGL
             if (context == IntPtr.Zero)
             {
                 string errorMessage = $"SDL_GL_CreateContext failed with error \"{SDL_GetError()}\"";
-
-                Logger.Error?.Print(LogClass.Application, errorMessage);
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), errorMessage);
 
                 throw new Exception(errorMessage);
             }

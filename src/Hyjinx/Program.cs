@@ -247,14 +247,7 @@ namespace Hyjinx.Ava
 
         private static void ProcessUnhandledException(Exception ex, bool isTerminating)
         {
-            string message = $"Unhandled exception caught: {ex}";
-
-            Logger.Error?.PrintMsg(LogClass.Application, message);
-
-            if (Logger.Error == null)
-            {
-                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), message);
-            }
+            Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An unhandled exception was caught.");
 
             if (isTerminating)
             {

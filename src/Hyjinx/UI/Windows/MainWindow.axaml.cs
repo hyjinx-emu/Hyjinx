@@ -23,6 +23,7 @@ using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Versioning;
@@ -34,10 +35,13 @@ namespace Hyjinx.Ava.UI.Windows
     public partial class MainWindow : StyleableWindow
     {
         internal static MainWindowViewModel MainWindowViewModel { get; private set; }
-
+        
+        private static readonly ILogger<MainWindow> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<MainWindow>();
+        
         private bool _isLoading;
         private bool _applicationsLoadedOnce;
-
+        
         private UserChannelPersistence _userChannelPersistence;
         private static bool _deferLoad;
         private static string _launchPath;
@@ -283,7 +287,8 @@ namespace Hyjinx.Ava.UI.Windows
                     }
                     else
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Unable to change vm.max_map_count. Process exited with code: {rc}");
+                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Unable to change vm.max_map_count. Process exited with code: {rc}", rc);
                     }
                     break;
                 case UserResult.No:
@@ -294,7 +299,8 @@ namespace Hyjinx.Ava.UI.Windows
                     }
                     else
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Unable to write new value for vm.max_map_count to config. Process exited with code: {rc}");
+                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Unable to write new value for vm.max_map_count to config. Process exited with code: {rc}", rc);
                     }
                     break;
             }
@@ -336,7 +342,9 @@ namespace Hyjinx.Ava.UI.Windows
                             }
                             else
                             {
-                                Logger.Error?.Print(LogClass.Application, $"Couldn't find requested application id '{_launchApplicationId}' in '{_launchPath}'.");
+                                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                                    "Couldn't find requested application id '{launchApplicationId}' in '{launchPath}'.", _launchApplicationId, _launchPath);
+                                
                                 await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
                             }
                         }
@@ -348,7 +356,9 @@ namespace Hyjinx.Ava.UI.Windows
                     }
                     else
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Couldn't find any application in '{_launchPath}'.");
+                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Couldn't find any application in '{launchPath}'.", _launchPath);
+                        
                         await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
                     }
                 }

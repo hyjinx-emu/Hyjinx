@@ -19,6 +19,7 @@ using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.HLE.Utilities;
 using Hyjinx.UI.App.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,6 +31,9 @@ namespace Hyjinx.Ava.UI.ViewModels
 {
     public class DownloadableContentManagerViewModel : BaseModel
     {
+        private readonly ILogger<DownloadableContentManagerViewModel> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<DownloadableContentManagerViewModel>();
+        
         private readonly List<DownloadableContentContainer> _downloadableContentContainerList;
         private readonly string _downloadableContentJsonPath;
 
@@ -118,7 +122,9 @@ namespace Hyjinx.Ava.UI.ViewModels
             }
             catch
             {
-                Logger.Error?.Print(LogClass.Configuration, "Downloadable Content JSON failed to deserialize.");
+                _logger.LogError(new EventId((int)LogClass.Configuration, nameof(LogClass.Configuration)),
+                    "Downloadable Content JSON failed to deserialize.");
+                
                 _downloadableContentContainerList = new List<DownloadableContentContainer>();
             }
 

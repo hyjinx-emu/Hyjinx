@@ -10,6 +10,7 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Logging;
 using Hyjinx.Common.Utilities;
 using Hyjinx.UI.Common.Models.Amiibo;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,6 +28,9 @@ namespace Hyjinx.Ava.UI.ViewModels
         private const string DefaultJson = "{ \"amiibo\": [] }";
         private const float AmiiboImageSize = 350f;
 
+        private static readonly ILogger<AmiiboWindowViewModel> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<AmiiboWindowViewModel>();
+        
         private readonly string _amiiboJsonPath;
         private readonly byte[] _amiiboLogoBytes;
         private readonly HttpClient _httpClient;
@@ -206,7 +210,9 @@ namespace Hyjinx.Ava.UI.ViewModels
             }
             catch (JsonException exception)
             {
-                Logger.Error?.Print(LogClass.Application, $"Unable to deserialize amiibo data: {exception}");
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    exception, "Unable to deserialize amiibo data.");
+
                 amiiboJson = JsonHelper.Deserialize(DefaultJson, _serializerContext.AmiiboJson);
 
                 return false;
@@ -242,7 +248,8 @@ namespace Hyjinx.Ava.UI.ViewModels
             {
                 if (!(localIsValid || remoteIsValid))
                 {
-                    Logger.Error?.Print(LogClass.Application, $"Couldn't get valid amiibo data: {exception}");
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        exception, "Couldn't get valid amiibo data.");
 
                     // Neither local or remote files are valid JSON, close window.
                     ShowInfoDialog();
@@ -422,7 +429,8 @@ namespace Hyjinx.Ava.UI.ViewModels
             }
             catch (HttpRequestException exception)
             {
-                Logger.Error?.Print(LogClass.Application, $"Unable to check for amiibo data updates: {exception}");
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    exception, "Unable to check for amiibo data updates.");
             }
 
             return false;
@@ -450,12 +458,14 @@ namespace Hyjinx.Ava.UI.ViewModels
 
                     return amiiboJsonString;
                 }
-
-                Logger.Error?.Print(LogClass.Application, $"Failed to download amiibo data. Response status code: {response.StatusCode}");
+                
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Failed to download amiibo data. Response status code: {statusCode}.", response.StatusCode);
             }
             catch (HttpRequestException exception)
             {
-                Logger.Error?.Print(LogClass.Application, $"Failed to request amiibo data: {exception}");
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    exception, "Failed to request amiibo data.");
             }
 
             await ContentDialogHelper.CreateInfoDialog(LocaleManager.Instance[LocaleKeys.DialogAmiiboApiTitle],
@@ -493,7 +503,8 @@ namespace Hyjinx.Ava.UI.ViewModels
             }
             else
             {
-                Logger.Error?.Print(LogClass.Application, $"Failed to get amiibo preview. Response status code: {response.StatusCode}");
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Failed to get amiibo preview. Response status code: {statusCode}", response.StatusCode);
             }
         }
 

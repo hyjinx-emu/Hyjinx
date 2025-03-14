@@ -11,6 +11,7 @@ using Hyjinx.HLE.UI;
 using Hyjinx.Input;
 using Hyjinx.Input.HLE;
 using Hyjinx.SDL2.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -26,6 +27,8 @@ namespace Hyjinx.Headless.SDL2
 {
     abstract partial class WindowBase : IHostUIHandler, IDisposable
     {
+        private ILogger<WindowBase> _logger = Logger.DefaultLoggerFactory.CreateLogger<WindowBase>();
+        
         protected const int DefaultWidth = 1280;
         protected const int DefaultHeight = 720;
         private const int TargetFps = 60;
@@ -160,8 +163,7 @@ namespace Hyjinx.Headless.SDL2
             if (WindowHandle == IntPtr.Zero)
             {
                 string errorMessage = $"SDL_CreateWindow failed with error \"{SDL_GetError()}\"";
-
-                Logger.Error?.Print(LogClass.Application, errorMessage);
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), errorMessage);
 
                 throw new Exception(errorMessage);
             }

@@ -32,6 +32,7 @@ using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,9 @@ namespace Hyjinx.Ava.UI.ViewModels
     public class MainWindowViewModel : BaseModel
     {
         private const int HotKeyPressDelayMs = 500;
+        
+        private readonly ILogger<MainWindowViewModel> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<MainWindowViewModel>();
 
         private ObservableCollection<ApplicationData> _applications;
         private string _aspectStatusText;
@@ -1112,7 +1116,7 @@ namespace Hyjinx.Ava.UI.ViewModels
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
-                    Logger.Error?.Print(LogClass.Application, ex.ToString());
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An exception occurred.");
 
                     await UserErrorDialog.ShowUserErrorDialog(UserError.NoKeys);
                 }

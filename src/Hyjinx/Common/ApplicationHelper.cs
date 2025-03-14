@@ -21,6 +21,7 @@ using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.IO;
@@ -28,11 +29,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using ApplicationId = LibHac.Ncm.ApplicationId;
 using Path = System.IO.Path;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Ava.Common
 {
     internal static class ApplicationHelper
     {
+        private static readonly ILogger _logger =
+            Logger.DefaultLoggerFactory.CreateLogger(typeof(ApplicationHelper));
+        
         private static HorizonClient _horizonClient;
         private static AccountManager _accountManager;
         private static VirtualFileSystem _virtualFileSystem;
@@ -215,7 +220,8 @@ namespace Hyjinx.Ava.Common
 
                 if (mainNca == null)
                 {
-                    Logger.Error?.Print(LogClass.Application, "Extraction failure. The main NCA was not present in the selected file");
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Extraction failure. The main NCA was not present in the selected file");
 
                     Dispatcher.UIThread.InvokeAsync(async () =>
                     {
@@ -267,7 +273,8 @@ namespace Hyjinx.Ava.Common
                     {
                         if (resultCode.Value.IsFailure())
                         {
-                            Logger.Error?.Print(LogClass.Application, $"LibHac returned error code: {resultCode.Value.ErrorCode}");
+                            _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                                "LibHac returned error code: {errorCode}", resultCode.Value.ErrorCode);
 
                             Dispatcher.UIThread.InvokeAsync(async () =>
                             {
@@ -292,7 +299,7 @@ namespace Hyjinx.Ava.Common
                 }
                 catch (ArgumentException ex)
                 {
-                    Logger.Error?.Print(LogClass.Application, $"{ex.Message}");
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An unexpected error occurred.");
 
                     Dispatcher.UIThread.InvokeAsync(async () =>
                     {

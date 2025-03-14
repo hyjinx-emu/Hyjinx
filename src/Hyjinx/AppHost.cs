@@ -68,7 +68,7 @@ namespace Hyjinx.Ava
         private const float MaxResolutionScale = 4.0f; // Max resolution hotkeys can scale to before wrapping.
         private const int TargetFps = 60;
         private const float VolumeDelta = 0.05f;
-
+        
         private static readonly Cursor _invisibleCursor = new(StandardCursorType.None);
         private readonly IntPtr _invisibleCursorWin;
         private readonly IntPtr _defaultCursorWin;
@@ -77,6 +77,9 @@ namespace Hyjinx.Ava
         private readonly Stopwatch _chrono;
         private long _ticks;
 
+        private readonly ILogger<AppHost> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<AppHost>();
+        
         private readonly AccountManager _accountManager;
         private readonly UserChannelPersistence _userChannelPersistence;
         private readonly InputManager _inputManager;
@@ -362,7 +365,8 @@ namespace Hyjinx.Ava
                         }
                         catch (Exception ex)
                         {
-                            Logger.Error?.Print(LogClass.Application, $"Failed to create directory at path {directory}. Error : {ex.GetType().Name}", "Screenshot");
+                            _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex,
+                                "Failed to create directory at path {path}", directory);
 
                             return;
                         }
@@ -394,7 +398,9 @@ namespace Hyjinx.Ava
             }
             else
             {
-                Logger.Error?.Print(LogClass.Application, $"Screenshot is empty. Size : {e.Data.Length} bytes. Resolution : {e.Width}x{e.Height}", "Screenshot");
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Screenshot is empty. Size: {length} bytes. Resolution: {width}x{height}", e.Data.Length, e.Width,
+                    e.Height);
             }
         }
 
@@ -768,7 +774,8 @@ namespace Hyjinx.Ava
                             }
                             catch (ArgumentOutOfRangeException)
                             {
-                                Logger.Error?.Print(LogClass.Application, "The specified file is not supported by Hyjinx.");
+                                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                                    "The specified file is not supported.");
 
                                 Device.Dispose();
 
