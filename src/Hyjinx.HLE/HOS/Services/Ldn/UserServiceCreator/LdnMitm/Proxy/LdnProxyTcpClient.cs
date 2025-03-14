@@ -1,13 +1,18 @@
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {
-    internal class LdnProxyTcpClient : NetCoreServer.TcpClient, ILdnTcpSocket
+    internal partial class LdnProxyTcpClient : NetCoreServer.TcpClient, ILdnTcpSocket
     {
+        private readonly ILogger<LdnProxyTcpClient> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpClient>();
+        
         private readonly LanProtocol _protocol;
         private byte[] _buffer;
         private int _bufferEnd;
@@ -64,8 +69,13 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
         protected override void OnError(SocketError error)
         {
-            Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTCPClient caught an error with code {error}");
+            LogErrorOccurred(nameof(LdnProxyTcpClient), error);
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "{client} caught an error with code {error}")]
+        private partial void LogErrorOccurred(string client, SocketError error);
 
         protected override void Dispose(bool disposingManagedResources)
         {

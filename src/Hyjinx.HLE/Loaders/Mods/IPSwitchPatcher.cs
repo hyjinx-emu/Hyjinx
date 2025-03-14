@@ -1,11 +1,13 @@
 using Hyjinx.Common.Logging;
+using LibHac.Diag;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Text;
 
 namespace Hyjinx.HLE.Loaders.Mods
 {
-    class IPSwitchPatcher
+    partial class IPSwitchPatcher
     {
         const string BidHeader = "@nsobid-";
 
@@ -17,6 +19,7 @@ namespace Hyjinx.HLE.Loaders.Mods
             Comment,
         }
 
+        private readonly ILogger<IPSwitchPatcher> _logger = Logger.DefaultLoggerFactory.CreateLogger<IPSwitchPatcher>();
         private readonly StreamReader _reader;
         public string BuildId { get; }
 
@@ -25,7 +28,9 @@ namespace Hyjinx.HLE.Loaders.Mods
             string header = reader.ReadLine();
             if (header == null || !header.StartsWith(BidHeader))
             {
-                Logger.Error?.Print(LogClass.ModLoader, "IPSwitch:    Malformed PCHTXT file. Skipping...");
+                _logger.LogError(
+                    new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                    "IPSwitch:    Malformed PCHTXT file. Skipping...");
 
                 return;
             }

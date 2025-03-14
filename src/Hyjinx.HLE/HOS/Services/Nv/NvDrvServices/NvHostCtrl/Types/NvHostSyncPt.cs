@@ -1,15 +1,18 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Gpu.Synchronization;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {
-    class NvHostSyncpt
+    partial class NvHostSyncpt
     {
         public const int VBlank0SyncpointId = 26;
         public const int VBlank1SyncpointId = 27;
 
+        private readonly ILogger<NvHostSyncpt> _logger = Logger.DefaultLoggerFactory.CreateLogger<NvHostSyncpt>();
         private readonly int[] _counterMin;
         private readonly int[] _counterMax;
         private readonly bool[] _clientManaged;
@@ -57,10 +60,15 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
                 }
             }
 
-            Logger.Error?.Print(LogClass.ServiceNv, "Cannot allocate a new syncpoint!");
+            LogCannotAllocateSyncPoint();
 
             return 0;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Cannot allocate a new syncpoint!")]
+        private partial void LogCannotAllocateSyncPoint();
 
         public void ReleaseSyncpoint(uint id)
         {

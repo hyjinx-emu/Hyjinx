@@ -14,18 +14,27 @@ using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.Utilities;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Linq;
 using ApplicationId = LibHac.Ncm.ApplicationId;
 using ContentType = LibHac.Ncm.ContentType;
 using Path = System.IO.Path;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {
-    public static class NcaExtensions
+    public static partial class NcaExtensions
     {
         private static readonly TitleUpdateMetadataJsonSerializerContext _applicationSerializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(NcaExtensions));
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "No ExeFS found in NCA")]
+        private static partial void LogExeFsNotFound(ILogger logger);
+        
         public static ProcessResult Load(this Nca nca, Switch device, Nca patchNca, Nca controlNca)
         {
             // Extract RomFs and ExeFs from NCA.
@@ -34,7 +43,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
 
             if (exeFs == null)
             {
-                Logger.Error?.Print(LogClass.Loader, "No ExeFS found in NCA");
+                LogExeFsNotFound(_logger);
 
                 return ProcessResult.Failed;
             }

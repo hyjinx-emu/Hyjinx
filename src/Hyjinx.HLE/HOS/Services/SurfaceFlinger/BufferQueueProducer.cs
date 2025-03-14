@@ -15,7 +15,6 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
     {
         public BufferQueueCore Core { get; }
 
-        private readonly ILogger<BufferQueueProducer> _logger = Logger.DefaultLoggerFactory.CreateLogger<BufferQueueProducer>();
         private readonly ITickSource _tickSource;
 
 #pragma warning disable IDE0052 // Remove unread private member

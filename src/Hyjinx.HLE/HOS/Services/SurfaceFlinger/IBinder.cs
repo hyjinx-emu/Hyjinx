@@ -1,5 +1,6 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Kernel.Threading;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -22,7 +23,10 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             if (!InterfaceToken.Equals(inputInterfaceToken))
             {
-                Logger.Error?.Print(LogClass.SurfaceFlinger, $"Invalid interface token {inputInterfaceToken} (expected: {InterfaceToken}");
+                Logger.DefaultLogger.LogError(
+                    new EventId((int)LogClass.SurfaceFlinger, nameof(LogClass.SurfaceFlinger)),
+                    "Invalid interface token {inputInterfaceToken} (expected: {InterfaceToken})", inputInterfaceToken,
+                    InterfaceToken);
 
                 return ResultCode.Success;
             }

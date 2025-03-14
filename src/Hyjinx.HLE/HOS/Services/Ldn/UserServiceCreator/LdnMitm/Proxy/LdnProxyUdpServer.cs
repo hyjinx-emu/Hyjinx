@@ -1,19 +1,24 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {
-    internal class LdnProxyUdpServer : NetCoreServer.UdpServer, ILdnSocket
+    internal partial class LdnProxyUdpServer : NetCoreServer.UdpServer, ILdnSocket
     {
         private const long ScanFrequency = 1000;
 
+        private readonly ILogger<LdnProxyUdpServer> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<LdnProxyUdpServer>();
+        
         private readonly LanProtocol _protocol;
         private byte[] _buffer;
         private int _bufferEnd;
@@ -59,8 +64,13 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
         protected override void OnError(SocketError error)
         {
-            Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyUdpServer caught an error with code {error}");
+            LogErrorOccurred(nameof(LdnProxyUdpServer), error);
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "{client} caught an error with code {error}")]
+        private partial void LogErrorOccurred(string client, SocketError error);
 
         protected override void Dispose(bool disposingManagedResources)
         {

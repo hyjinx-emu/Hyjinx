@@ -9,15 +9,17 @@ using Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService.Types;
 using Hyjinx.HLE.HOS.Services.Vi.Types;
 using Hyjinx.HLE.UI;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 {
-    class IApplicationDisplayService : IpcService<IApplicationDisplayService>
+    partial class IApplicationDisplayService : IpcService<IApplicationDisplayService>
     {
         private readonly ViServiceType _serviceType;
 
@@ -25,7 +27,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
         {
             public int RetrievedEventsCount;
         }
-
+        
         private readonly List<DisplayInfo> _displayInfo;
         private readonly Dictionary<ulong, DisplayState> _openDisplays;
 
@@ -396,8 +398,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 
             if (appletObject == null)
             {
-                Logger.Error?.Print(LogClass.ServiceVi, $"Indirect layer handle {layerHandle} does not match any applet");
-
+                LogLayerHandleDoesNotMatch(layerHandle);
                 return ResultCode.Success;
             }
 
@@ -417,6 +418,11 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceVi, EventName = nameof(LogClass.ServiceVi),
+            Message = "Indirect layer handle {layerHandle} does not match any applet")]
+        private partial void LogLayerHandleDoesNotMatch(long layerHandle);
 
         [CommandCmif(2460)]
         // GetIndirectLayerImageRequiredMemoryInfo(u64 width, u64 height) -> (u64 size, u64 alignment)

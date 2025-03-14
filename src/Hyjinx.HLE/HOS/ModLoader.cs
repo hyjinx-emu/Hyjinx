@@ -12,6 +12,7 @@ using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.HLE.Loaders.Mods;
 using Hyjinx.HLE.Loaders.Processes;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -20,10 +21,11 @@ using System.IO;
 using System.Linq;
 using LazyFile = Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy.LazyFile;
 using Path = System.IO.Path;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS
 {
-    public class ModLoader
+    public partial class ModLoader
     {
         private const string RomfsDir = "romfs";
         private const string ExefsDir = "exefs";
@@ -38,7 +40,7 @@ namespace Hyjinx.HLE.HOS
         private const string AmsNsoPatchDir = "exefs_patches";
         private const string AmsNroPatchDir = "nro_patches";
         private const string AmsKipPatchDir = "kip_patches";
-
+        
         private static readonly ModMetadataJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
         public readonly struct Mod<T> where T : FileSystemInfo
@@ -113,6 +115,7 @@ namespace Hyjinx.HLE.HOS
             }
         }
 
+        private readonly ILogger<ModLoader> _logger = Logger.DefaultLoggerFactory.CreateLogger<ModLoader>();
         private readonly Dictionary<ulong, ModCache> _appMods; // key is ApplicationId
         private PatchCache _patches;
 
@@ -699,12 +702,16 @@ namespace Hyjinx.HLE.HOS
             return ApplyProgramPatches(nsoMods, 0x100, programs);
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "Unable to install cheat because the associated process is invalid.")]
+        private partial void LogAssociatedProcessIsInvalid();
+        
         internal void LoadCheats(ulong applicationId, ProcessTamperInfo tamperInfo, TamperMachine tamperMachine)
         {
             if (tamperInfo?.BuildIds == null || tamperInfo.CodeAddresses == null)
             {
-                Logger.Error?.Print(LogClass.ModLoader, "Unable to install cheat because the associated process is invalid");
-
+                LogAssociatedProcessIsInvalid();
                 return;
             }
 

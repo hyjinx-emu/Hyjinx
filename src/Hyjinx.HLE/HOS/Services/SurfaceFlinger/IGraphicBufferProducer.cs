@@ -1,14 +1,19 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
-    abstract class IGraphicBufferProducer : IBinder
+    abstract partial class IGraphicBufferProducer : IBinder
     {
+        protected readonly ILogger<IGraphicBufferProducer> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<IGraphicBufferProducer>();
+        
         public string InterfaceToken => "android.gui.IGraphicBufferProducer";
 
         enum TransactionCode : uint
@@ -269,9 +274,14 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             if (status != Status.Success)
             {
-                Logger.Error?.Print(LogClass.SurfaceFlinger, $"Error returned by transaction {(TransactionCode)code}: {status}");
+                LogErrorReturned((TransactionCode)code, status);
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Error returned by transaction {code}: {status}")]
+        private partial void LogErrorReturned(TransactionCode code, Status status);
 
         protected abstract KReadableEvent GetWaitBufferFreeEvent();
 

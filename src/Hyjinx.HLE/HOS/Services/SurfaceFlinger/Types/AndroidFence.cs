@@ -2,6 +2,7 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.Gpu.Synchronization;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -15,7 +16,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
         public int FenceCount;
 
         private byte _fenceStorageStart;
-
+        
         private Span<byte> Storage => MemoryMarshal.CreateSpan(ref _fenceStorageStart, Unsafe.SizeOf<NvFence>() * 4);
 
         public Span<NvFence> NvFences => MemoryMarshal.Cast<byte, NvFence>(Storage);
@@ -46,7 +47,9 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             if (hasTimeout)
             {
-                Logger.Error?.Print(LogClass.SurfaceFlinger, "Android fence didn't signal in 3000 ms");
+                Logger.DefaultLogger.LogError(new EventId((int)LogClass.SurfaceFlinger, nameof(LogClass.SurfaceFlinger)),
+                    "Android fence didn't signal in 3000 ms");
+                
                 Wait(gpuContext, Timeout.InfiniteTimeSpan);
             }
 

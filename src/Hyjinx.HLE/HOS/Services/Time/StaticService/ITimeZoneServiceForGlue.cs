@@ -2,15 +2,16 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.HLE.Utilities;
-using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
-    class ITimeZoneServiceForGlue : IpcService<ITimeZoneServiceForGlue>
+    partial class ITimeZoneServiceForGlue : IpcService<ITimeZoneServiceForGlue>
     {
         private readonly TimeZoneContentManager _timeZoneContentManager;
         private readonly ITimeZoneServiceForPsc _inner;
@@ -96,7 +97,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
             if (bufferSize != 0x4000)
             {
                 // TODO: find error code here
-                Logger.Error?.Print(LogClass.ServiceTime, $"TimeZoneRule buffer size is 0x{bufferSize:x} (expected 0x4000)");
+                LogBufferSizeMismatch(bufferSize);
 
                 throw new InvalidOperationException();
             }
@@ -110,6 +111,11 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
             return _timeZoneContentManager.LoadTimeZoneRule(ref rules, locationName);
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceTime, EventName = nameof(LogClass.ServiceTime),
+            Message = "TimeZoneRule buffer size is 0x{bufferSize:x} (expected 0x4000)")]
+        private partial void LogBufferSizeMismatch(ulong bufferSize);
+        
         [CommandCmif(100)]
         // ToCalendarTime(nn::time::PosixTime time, buffer<nn::time::TimeZoneRule, 0x15> rules) -> (nn::time::CalendarTime, nn::time::sf::CalendarAdditionalInfo)
         public ResultCode ToCalendarTime(ServiceCtx context)

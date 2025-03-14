@@ -1,8 +1,10 @@
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Apm
 {
-    class SessionServer : ISession
+    partial class SessionServer : ISession
     {
         private readonly ServiceCtx _context;
 
@@ -27,12 +29,17 @@ namespace Hyjinx.HLE.HOS.Services.Apm
                     _context.Device.System.PerformanceState.BoostPerformanceConfiguration = performanceConfiguration;
                     break;
                 default:
-                    Logger.Error?.Print(LogClass.ServiceApm, $"PerformanceMode isn't supported: {performanceMode}");
+                    LogPerformanceModeNotSupported(performanceMode);
                     break;
             }
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceApm, EventName = nameof(LogClass.ServiceApm),
+            Message = "Performance mode isn't supported: {mode}")]
+        private partial void LogPerformanceModeNotSupported(PerformanceMode mode);
 
         protected override ResultCode GetPerformanceConfiguration(PerformanceMode performanceMode, out PerformanceConfiguration performanceConfiguration)
         {

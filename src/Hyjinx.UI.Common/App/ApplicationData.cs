@@ -11,13 +11,15 @@ using Hyjinx.Common.Logging;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Text.Json.Serialization;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.UI.App.Common
 {
-    public class ApplicationData
+    public partial class ApplicationData
     {
         public bool Favorite { get; set; }
         public byte[] Icon { get; set; }
@@ -31,6 +33,10 @@ namespace Hyjinx.UI.App.Common
         public long FileSize { get; set; }
         public string Path { get; set; }
         public BlitStruct<ApplicationControlProperty> ControlHolder { get; set; }
+        
+        [JsonIgnore] 
+        private static readonly ILogger<ApplicationData> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<ApplicationData>();
 
         public string TimePlayedString => ValueFormatUtils.FormatTimeSpan(TimePlayed);
 
@@ -44,6 +50,11 @@ namespace Hyjinx.UI.App.Common
 
         [JsonIgnore] public string IdBaseString => IdBase.ToString("x16");
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "File '{file}' does not exist.")]
+        private static partial void LogFileDoesNotExist(ILogger logger, string file);
+        
         public static string GetBuildId(VirtualFileSystem virtualFileSystem, IntegrityCheckLevel checkLevel, string titleFilePath)
         {
             using FileStream file = new(titleFilePath, FileMode.Open, FileAccess.Read);
@@ -53,7 +64,7 @@ namespace Hyjinx.UI.App.Common
 
             if (!System.IO.Path.Exists(titleFilePath))
             {
-                Logger.Error?.Print(LogClass.Application, $"File \"{titleFilePath}\" does not exist.");
+                LogFileDoesNotExist(_logger, titleFilePath);
                 return string.Empty;
             }
 
@@ -108,7 +119,7 @@ namespace Hyjinx.UI.App.Common
 
             if (mainNca == null)
             {
-                Logger.Error?.Print(LogClass.Application, "Extraction failure. The main NCA was not present in the selected file");
+                LogExtractionFailure(_logger);
 
                 return string.Empty;
             }
@@ -139,7 +150,7 @@ namespace Hyjinx.UI.App.Common
 
             if (codeFs == null)
             {
-                Logger.Error?.Print(LogClass.Loader, "No ExeFS found in NCA");
+                LogExeFsNotFound(_logger);
 
                 return string.Empty;
             }
@@ -148,8 +159,7 @@ namespace Hyjinx.UI.App.Common
 
             if (!codeFs.FileExists($"/{MainExeFs}"))
             {
-                Logger.Error?.Print(LogClass.Loader, "No main binary ExeFS found in ExeFS");
-
+                LogMainExeFsBinaryNotFound(_logger);
                 return string.Empty;
             }
 
@@ -162,5 +172,20 @@ namespace Hyjinx.UI.App.Common
 
             return BitConverter.ToString(reader.Header.ModuleId.ItemsRo.ToArray()).Replace("-", "").ToUpper()[..16];
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Extraction failure. The main NCA was not present in the selected file.")]
+        private static partial void LogExtractionFailure(ILogger logger);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "No ExeFS found in NCA.")]
+        private static partial void LogExeFsNotFound(ILogger logger);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "No main binary ExeFS found in ExeFS.")]
+        private static partial void LogMainExeFsBinaryNotFound(ILogger logger);
     }
 }

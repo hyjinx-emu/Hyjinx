@@ -2,19 +2,20 @@ using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
-using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 {
     [Service("bsd:s", true)]
     [Service("bsd:u", false)]
-    class IClient : IpcService<IClient>
+    partial class IClient : IpcService<IClient>
     {
         private static readonly List<IPollManager> _pollManagers = new()
         {
@@ -382,7 +383,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
             {
                 if (!discoveredEvents.Contains(evnt))
                 {
-                    Logger.Error?.Print(LogClass.ServiceBsd, $"Poll operation is not supported for {evnt.FileDescriptor.GetType().Name}!");
+                    LogPollOperationNotSupportedForEvent(evnt.FileDescriptor);
 
                     return WriteBsdResult(context, -1, LinuxError.EBADF);
                 }
@@ -468,7 +469,12 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 
             return WriteBsdResult(context, updateCount, errno);
         }
-
+            
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Poll operation is not supported for {descriptor}")]
+        private partial void LogPollOperationNotSupportedForEvent(IFileDescriptor descriptor);
+        
         [CommandCmif(7)]
         // Sysctl(buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (i32 ret, u32 bsd_errno, u32, buffer<unknown, 0x22, 0>)
         public ResultCode Sysctl(ServiceCtx context)
