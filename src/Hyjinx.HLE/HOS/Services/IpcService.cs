@@ -11,32 +11,62 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services
 {
-    abstract class IpcService<T> : IpcService
+    /// <summary>
+    /// A service which handles inter-process communication capabilities.
+    /// </summary>
+    internal interface IpcService
+    {
+        IReadOnlyDictionary<int, MethodInfo> CmifCommands { get; }
+        
+        IReadOnlyDictionary<int, MethodInfo> TipcCommands { get; }
+        
+        ServerBase Server { get; }
+        
+        IpcService Parent { get; set; }
+        
+        bool IsDomain { get; }
+        
+        int ConvertToDomain();
+        
+        void ConvertToSession();
+        
+        void CallCmifMethod(ServiceCtx context);
+        
+        void CallTipcMethod(ServiceCtx context);
+        
+        bool TrySetServer(ServerBase newServer);
+        
+        void SetParent(IpcService parent);
+        
+        void DestroyAtExit();
+        
+        int Add(IpcService obj);
+        
+        IpcService GetObject(int id);
+    }
+
+    /// <summary>
+    /// An abstract <see cref="IpcService"/> which contains base capabilities for all IPC services.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="IpcService{T}"/> being implemented.</typeparam>
+    internal abstract partial class IpcService<T> : IpcService
         where T : IpcService<T>
     {
-        protected IpcService(ServerBase? server = null)
-            : base(Logger.DefaultLoggerFactory.CreateLogger<T>(), server)
-        { }
-    }
-    
-    abstract partial class IpcService
-    {
-        protected readonly ILogger _logger;
+        protected static readonly ILogger<T> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<T>();
         
         public IReadOnlyDictionary<int, MethodInfo> CmifCommands { get; }
         public IReadOnlyDictionary<int, MethodInfo> TipcCommands { get; }
 
         public ServerBase Server { get; private set; }
 
-        private IpcService _parent;
+        public IpcService Parent { get; set; }
         private readonly IdDictionary _domainObjects;
         private int _selfId;
-        private bool _isDomain;
+        public bool IsDomain { get; private set; }
 
-        protected IpcService(ILogger logger, ServerBase? server = null)
+        protected IpcService(ServerBase? server = null)
         {
-            _logger = logger;
-            
             CmifCommands = typeof(IpcService).Assembly.GetTypes()
                 .Where(type => type == GetType())
                 .SelectMany(type => type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public))
@@ -53,7 +83,7 @@ namespace Hyjinx.HLE.HOS.Services
 
             Server = server!;
 
-            _parent = this;
+            Parent = this;
             _domainObjects = new IdDictionary();
             _selfId = -1;
         }
@@ -65,21 +95,21 @@ namespace Hyjinx.HLE.HOS.Services
                 _selfId = _domainObjects.Add(this);
             }
 
-            _isDomain = true;
+            IsDomain = true;
 
             return _selfId;
         }
 
         public void ConvertToSession()
         {
-            _isDomain = false;
+            IsDomain = false;
         }
 
         public void CallCmifMethod(ServiceCtx context)
         {
             IpcService service = this;
 
-            if (_isDomain)
+            if (IsDomain)
             {
                 int domainWord0 = context.RequestData.ReadInt32();
                 int domainObjId = context.RequestData.ReadInt32();
@@ -131,7 +161,7 @@ namespace Hyjinx.HLE.HOS.Services
             {
                 ResultCode result = ResultCode.Success;
 
-                context.ResponseData.BaseStream.Seek(_isDomain ? 0x20 : 0x10, SeekOrigin.Begin);
+                context.ResponseData.BaseStream.Seek(IsDomain ? 0x20 : 0x10, SeekOrigin.Begin);
 
                 if (serviceExists)
                 {
@@ -149,7 +179,7 @@ namespace Hyjinx.HLE.HOS.Services
                     LogMissingService(serviceName!, commandId);
                 }
 
-                if (_isDomain)
+                if (IsDomain)
                 {
                     foreach (int id in context.Response.ObjectIds)
                     {
@@ -161,7 +191,7 @@ namespace Hyjinx.HLE.HOS.Services
                     context.ResponseData.Write(context.Response.ObjectIds.Count);
                 }
 
-                context.ResponseData.BaseStream.Seek(_isDomain ? 0x10 : 0, SeekOrigin.Begin);
+                context.ResponseData.BaseStream.Seek(IsDomain ? 0x10 : 0, SeekOrigin.Begin);
 
                 context.ResponseData.Write(IpcMagic.Sfco);
                 context.ResponseData.Write((long)result);
@@ -226,13 +256,13 @@ namespace Hyjinx.HLE.HOS.Services
 
         protected void MakeObject(ServiceCtx context, IpcService obj)
         {
-            obj.TrySetServer(_parent.Server);
+            obj.TrySetServer(Parent.Server);
 
-            if (_parent._isDomain)
+            if (Parent.IsDomain)
             {
-                obj._parent = _parent;
+                obj.Parent = Parent;
 
-                context.Response.ObjectIds.Add(_parent.Add(obj));
+                context.Response.ObjectIds.Add(Parent.Add(obj));
             }
             else
             {
@@ -244,11 +274,11 @@ namespace Hyjinx.HLE.HOS.Services
             }
         }
 
-        protected T GetObject<T>(ServiceCtx context, int index) where T : IpcService
+        protected T GetObject<T>(ServiceCtx context, int index) where T : class, IpcService
         {
             int objId = context.Request.ObjectIds[index];
 
-            IpcService obj = _parent.GetObject(objId);
+            IpcService obj = Parent.GetObject(objId);
 
             return obj is T t ? t : null;
         }
@@ -265,7 +295,7 @@ namespace Hyjinx.HLE.HOS.Services
             return false;
         }
 
-        private int Add(IpcService obj)
+        public int Add(IpcService obj)
         {
             return _domainObjects.Add(obj);
         }
@@ -282,14 +312,14 @@ namespace Hyjinx.HLE.HOS.Services
             return obj != null;
         }
 
-        private IpcService GetObject(int id)
+        public IpcService GetObject(int id)
         {
             return _domainObjects.GetData<IpcService>(id);
         }
 
         public void SetParent(IpcService parent)
         {
-            _parent = parent._parent;
+            Parent = parent.Parent;
         }
 
         public virtual void DestroyAtExit()
