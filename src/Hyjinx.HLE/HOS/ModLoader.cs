@@ -115,7 +115,7 @@ namespace Hyjinx.HLE.HOS
             }
         }
 
-        private readonly ILogger<ModLoader> _logger = Logger.DefaultLoggerFactory.CreateLogger<ModLoader>();
+        private static readonly ILogger<ModLoader> _logger = Logger.DefaultLoggerFactory.CreateLogger<ModLoader>();
         private readonly Dictionary<ulong, ModCache> _appMods; // key is ApplicationId
         private PatchCache _patches;
 
@@ -201,7 +201,8 @@ namespace Hyjinx.HLE.HOS
 
                 if (types.Length > 0)
                 {
-                    Logger.Info?.Print(LogClass.ModLoader, $"Found {(mod.Enabled ? "enabled" : "disabled")} mod '{mod.Name}' [{types}]");
+                    _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)), 
+                        "Found Enabled? {enabled} mod '{name}' [{types}]", mod.Enabled, mod.Name, types);
                 }
             }
         }
@@ -213,7 +214,9 @@ namespace Hyjinx.HLE.HOS
 
             if (applicationModsPath == null)
             {
-                Logger.Info?.Print(LogClass.ModLoader, $"Creating mods directory for Application {applicationId.ToUpper()}");
+                _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                "Creating mods directory for Application {applicationId}", applicationId.ToUpper());
+                
                 applicationModsPath = contentsDir.CreateSubdirectory(applicationId);
             }
 
@@ -254,7 +257,9 @@ namespace Hyjinx.HLE.HOS
             foreach (var modDir in patchDir.EnumerateDirectories())
             {
                 patches.Add(new Mod<DirectoryInfo>(modDir.Name, modDir, true));
-                Logger.Info?.Print(LogClass.ModLoader, $"Found {type} patch '{modDir.Name}'");
+                
+                _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)), 
+                    "Found {type} patch '{modDir}'", type, modDir.Name);
             }
         }
 
@@ -308,7 +313,9 @@ namespace Hyjinx.HLE.HOS
                 return;
             }
 
-            Logger.Info?.Print(LogClass.ModLoader, $"Searching mods for {((applicationId & 0x1000) != 0 ? "DLC" : "Application")} {applicationId:X16} in \"{contentsDir.FullName}\"");
+            _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                "Searching mods for {applicationType} {applicationId:X16} in '{contentsDir}'",
+                ((applicationId & 0x1000) != 0 ? "DLC" : "Application"), applicationId, contentsDir.FullName);
 
             var applicationDir = FindApplicationDir(contentsDir, $"{applicationId:x16}");
 
@@ -484,7 +491,8 @@ namespace Hyjinx.HLE.HOS
             var builder = new RomFsBuilder();
             int count = 0;
 
-            Logger.Info?.Print(LogClass.ModLoader, $"Applying RomFS mods for Application {applicationId:X16}");
+            _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                "Applying RomFS mods for Application {applicationId:X16}", applicationId);
 
             // Prioritize loose files first
             foreach (var mod in mods.RomfsDirs)
@@ -509,7 +517,9 @@ namespace Hyjinx.HLE.HOS
                     continue;
                 }
 
-                Logger.Info?.Print(LogClass.ModLoader, $"Found 'romfs.bin' for Application {applicationId:X16}");
+                _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                    "Found 'romfs.bin' for Application {applicationId:X16}", applicationId);
+                
                 using (IFileSystem fs = new RomFsFileSystem(mod.Path.OpenRead().AsStorage()))
                 {
                     AddFiles(fs, mod.Name, mod.Path.FullName, fileSet, builder);
@@ -519,12 +529,14 @@ namespace Hyjinx.HLE.HOS
 
             if (fileSet.Count == 0)
             {
-                Logger.Info?.Print(LogClass.ModLoader, "No files found. Using base RomFS");
+                _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                    "No files found. Using base RomFS");
 
                 return baseStorage;
             }
 
-            Logger.Info?.Print(LogClass.ModLoader, $"Replaced {fileSet.Count} file(s) over {count} mod(s). Processing base storage...");
+            _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                "Replaced {fileSet} file(s) over {count} mod(s). Processing base storage...", fileSet.Count, count);
 
             // And finally, the base romfs
             var baseRom = new RomFsFileSystem(baseStorage);
@@ -538,9 +550,9 @@ namespace Hyjinx.HLE.HOS
                 builder.AddFile(entry.FullPath, file.Release());
             }
 
-            Logger.Info?.Print(LogClass.ModLoader, "Building new RomFS...");
+            _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)), "Building new RomFS...");
             IStorage newStorage = builder.Build();
-            Logger.Info?.Print(LogClass.ModLoader, "Using modded RomFS");
+            _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)), "Using modded RomFS");
 
             return newStorage;
         }
@@ -577,7 +589,8 @@ namespace Hyjinx.HLE.HOS
                 Logger.Warning?.Print(LogClass.ModLoader, "Multiple ExeFS partition replacements detected");
             }
 
-            Logger.Info?.Print(LogClass.ModLoader, "Using replacement ExeFS partition");
+            _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                "Using replacement ExeFS partition");
 
             var pfs = new PartitionFileSystem();
             pfs.Initialize(mods.ExefsContainers[0].Path.OpenRead().AsStorage()).ThrowIfFailure();
@@ -639,7 +652,9 @@ namespace Hyjinx.HLE.HOS
                         modLoadResult.Replaces[1 << i] = true;
 
                         nsos[i] = new NsoExecutable(nsoFile.OpenRead().AsStorage(), nsoName);
-                        Logger.Info?.Print(LogClass.ModLoader, $"NSO '{nsoName}' replaced");
+                        
+                        _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                            "NSO '{nsoName}' replaced", nsoName);
                     }
 
                     modLoadResult.Stubs[1 << i] |= File.Exists(Path.Combine(mod.Path.FullName, nsoName + StubExtension));
@@ -658,7 +673,7 @@ namespace Hyjinx.HLE.HOS
                     modLoadResult.Npdm = new MetaLoader();
                     modLoadResult.Npdm.Load(File.ReadAllBytes(npdmFile.FullName));
 
-                    Logger.Info?.Print(LogClass.ModLoader, "main.npdm replaced");
+                    _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)), "main.npdm replaced");
                 }
             }
 
@@ -666,7 +681,8 @@ namespace Hyjinx.HLE.HOS
             {
                 if (modLoadResult.Stubs[1 << i] && !modLoadResult.Replaces[1 << i]) // Prioritizes replacements over stubs
                 {
-                    Logger.Info?.Print(LogClass.ModLoader, $"    NSO '{nsos[i].Name}' stubbed");
+                    _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                                    "NSO '{name}' stubbed", nsos[i].Name);
                     nsos[i] = null;
                 }
             }
@@ -715,7 +731,9 @@ namespace Hyjinx.HLE.HOS
                 return;
             }
 
-            Logger.Info?.Print(LogClass.ModLoader, $"Build ids found for application {applicationId:X16}:\n    {String.Join("\n    ", tamperInfo.BuildIds)}");
+            _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                "Build ids found for application {applicationId:X16}:\n    {buildIds}", applicationId,
+                string.Join("\n    ", tamperInfo.BuildIds));
 
             if (!_appMods.TryGetValue(applicationId, out ModCache mods) || mods.Cheats.Count == 0)
             {
@@ -737,7 +755,8 @@ namespace Hyjinx.HLE.HOS
                     continue;
                 }
 
-                Logger.Info?.Print(LogClass.ModLoader, $"Installing cheat '{cheat.Name}'");
+                _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                    "Installing cheat '{name}'", cheat.Name);
 
                 tamperMachine.InstallAtmosphereCheat(cheat.Name, cheatId, cheat.Instructions, tamperInfo, exeAddress);
             }
@@ -798,7 +817,8 @@ namespace Hyjinx.HLE.HOS
                             continue;
                         }
 
-                        Logger.Info?.Print(LogClass.ModLoader, $"Matching IPS patch '{patchFile.Name}' in '{mod.Name}' bid={buildId}");
+                        _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                            "Matching IPS patch '{patchFile}' in '{mod}' bid={buildId}", patchFile.Name, mod.Name, buildId);
 
                         using var fs = patchFile.OpenRead();
                         using var reader = new BinaryReader(fs);
@@ -819,7 +839,8 @@ namespace Hyjinx.HLE.HOS
                             continue;
                         }
 
-                        Logger.Info?.Print(LogClass.ModLoader, $"Matching IPSwitch patch '{patchFile.Name}' in '{mod.Name}' bid={patcher.BuildId}");
+                        _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                            "Matching IPSwitch patch '{patchFile}' in '{mod}' bid={buildId}", patchFile.Name, mod.Name, patcher.BuildId);
 
                         patcher.AddPatches(patches[index]);
                     }

@@ -103,10 +103,15 @@ namespace Hyjinx.HLE.Loaders.Processes
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Error calling {methodName}. Result {result}")]
         private static partial void LogErrorCallingMethod(ILogger logger, string methodName, LibHac.Result result);
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Ensuring required savedata exists.")]
+        private static partial void LogEnsuringRequiredDataExists(ILogger logger);
         
         public static LibHac.Result EnsureSaveData(Switch device, ApplicationId applicationId, BlitStruct<ApplicationControlProperty> applicationControlProperty)
         {
-            Logger.Info?.Print(LogClass.Application, "Ensuring required savedata exists.");
+            LogEnsuringRequiredDataExists(_logger);
 
             ref ApplicationControlProperty control = ref applicationControlProperty.Value;
 
@@ -417,7 +422,7 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             for (int index = 0; index < executables.Length; index++)
             {
-                Logger.Info?.Print(LogClass.Loader, $"Loading image {index} at 0x{nsoBase[index]:x16}...");
+                LogLoadingImage(_logger, index, nsoBase[index]);
 
                 result = LoadIntoMemory(process, executables[index], nsoBase[index]);
                 if (result != Result.Success)
@@ -476,6 +481,11 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             return processResult;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Loading image {index} at 0x{location:X16}...")]
+        private static partial void LogLoadingImage(ILogger logger, int index, ulong location);
         
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
