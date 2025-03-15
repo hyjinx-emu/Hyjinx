@@ -22,7 +22,8 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
             OptionSendBufferSize = LanProtocol.TcpTxBufferSize;
             OptionReceiveBufferSize = LanProtocol.TcpRxBufferSize;
 
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTCPServer created a server for this address: {address}:{port}");
+            _logger.LogInformation(new EventId((int)LogClass.ServiceLdn, nameof(LogClass.ServiceLdn)),
+                "LdnProxyTCPServer created a server for this address: {address}:{port}", address, port);
         }
 
         protected override TcpSession CreateSession()

@@ -1,5 +1,6 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Sockets.Nsd;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +13,9 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
     {
         private const string HostsFilePath = "/atmosphere/hosts/default.txt";
 
+        private static readonly ILogger<DnsMitmResolver> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<DnsMitmResolver>();
+        
         private static DnsMitmResolver _instance;
         public static DnsMitmResolver Instance => _instance ??= new DnsMitmResolver();
 
@@ -88,7 +92,8 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
                 // NOTE: MatchesSimpleExpression also allows "?" as a wildcard
                 if (FileSystemName.MatchesSimpleExpression(hostEntry.Key, host))
                 {
-                    Logger.Info?.PrintMsg(LogClass.ServiceBsd, $"Redirecting '{host}' to: {hostEntry.Value}");
+                    _logger.LogInformation(new EventId((int)LogClass.ServiceBsd, nameof(LogClass.ServiceBsd)),
+                        "Redirecting '{host}' to: {address}", host, hostEntry.Value);
 
                     return new IPHostEntry
                     {

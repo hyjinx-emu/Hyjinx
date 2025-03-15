@@ -4,6 +4,7 @@ using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletCreator
@@ -44,7 +45,8 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Libr
             _normalSession.DataAvailable += OnNormalOutData;
             _interactiveSession.DataAvailable += OnInteractiveOutData;
 
-            Logger.Info?.Print(LogClass.ServiceAm, $"Applet '{appletId}' created.");
+            _logger.LogInformation(new EventId((int)LogClass.ServiceAm, nameof(LogClass.ServiceAm)),
+                "Applet {appletId} created.", appletId);
         }
 
         private void OnAppletStateChanged(object sender, EventArgs e)

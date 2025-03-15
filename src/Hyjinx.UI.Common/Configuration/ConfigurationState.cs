@@ -19,6 +19,9 @@ namespace Hyjinx.UI.Common.Configuration
 {
     public class ConfigurationState
     {
+        private static readonly ILogger<ConfigurationState> _logger =
+            Hyjinx.Common.Logging.Logger.DefaultLoggerFactory.CreateLogger<ConfigurationState>();
+        
         /// <summary>
         /// UI configuration section
         /// </summary>
@@ -1597,8 +1600,9 @@ namespace Hyjinx.UI.Common.Configuration
         private static void LogValueChange<T>(ReactiveEventArgs<T> eventArgs, string valueName)
         {
             string message = string.Create(CultureInfo.InvariantCulture, $"{valueName} set to: {eventArgs.NewValue}");
-
-            Hyjinx.Common.Logging.Logger.Info?.Print(LogClass.Configuration, message);
+            
+            _logger.LogInformation(new EventId((int)LogClass.Configuration, nameof(LogClass.Configuration)),
+                message);
         }
 
         public static void Initialize()

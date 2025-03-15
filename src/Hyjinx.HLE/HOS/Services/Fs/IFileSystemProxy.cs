@@ -810,7 +810,8 @@ namespace Hyjinx.HLE.HOS.Services.Fs
             // This is because AOC can be distributed over multiple containers in the emulator.
             if (context.Device.System.ContentManager.GetAocDataStorage(titleId, out LibHac.Fs.IStorage aocStorage, context.Device.Configuration.FsIntegrityCheckLevel))
             {
-                Logger.Info?.Print(LogClass.Loader, $"Opened AddOnContent Data TitleID={titleId:X16}");
+                _logger.LogInformation(new EventId((int)LogClass.Loader, nameof(LogClass.Loader)),
+                    "Opened AddOnContent Data TitleID={titleId:X16}", titleId);
 
                 var storage = context.Device.FileSystem.ModLoader.ApplyRomFsMods(titleId, aocStorage);
                 using var sharedStorage = new SharedRef<LibHac.Fs.IStorage>(storage);

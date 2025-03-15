@@ -1,9 +1,9 @@
 using Hyjinx.Common.Logging;
-using LibHac.Diag;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Mods
 {
@@ -19,7 +19,9 @@ namespace Hyjinx.HLE.Loaders.Mods
             Comment,
         }
 
-        private readonly ILogger<IPSwitchPatcher> _logger = Logger.DefaultLoggerFactory.CreateLogger<IPSwitchPatcher>();
+        private readonly static ILogger<IPSwitchPatcher> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<IPSwitchPatcher>();
+        
         private readonly StreamReader _reader;
         public string BuildId { get; }
 
@@ -151,6 +153,16 @@ namespace Hyjinx.HLE.Loaders.Mods
             }
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "IPSwitch: {message}")]
+        private static partial void LogIPSwitch(ILogger logger, string message);
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "IPSwitch: Parse error at line {lineNumber} for bid={buildId}")]
+        private static partial void LogParseError(ILogger logger, int lineNumber, string buildId);
+        
         private MemPatch Parse()
         {
             if (_reader == null)
@@ -167,9 +179,9 @@ namespace Hyjinx.HLE.Loaders.Mods
             string line;
             int lineNum = 0;
 
-            static void Print(string s) => Logger.Info?.Print(LogClass.ModLoader, $"IPSwitch:    {s}");
+            static void Print(string s) => LogIPSwitch(_logger, s);
 
-            void ParseWarn() => Logger.Warning?.Print(LogClass.ModLoader, $"IPSwitch:    Parse error at line {lineNum} for bid={BuildId}");
+            void ParseWarn() => LogParseError(_logger, lineNum, BuildId); 
 
             while ((line = _reader.ReadLine()) != null)
             {

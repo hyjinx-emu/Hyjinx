@@ -24,7 +24,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
         private const int FailureTimeout = 4000;
 
-        private readonly ILogger<LanDiscovery> _logger = Logger.DefaultLoggerFactory.CreateLogger<LanDiscovery>();
+        private static readonly ILogger<LanDiscovery> _logger = Logger.DefaultLoggerFactory.CreateLogger<LanDiscovery>();
         private readonly LdnMitmClient _parent;
         private readonly LanProtocol _protocol;
         private bool _initialized;
@@ -95,7 +95,8 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
         public LanDiscovery(LdnMitmClient parent, IPAddress ipAddress, IPAddress ipv4Mask)
         {
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"Initialize LanDiscovery using IP: {ipAddress}");
+            _logger.LogInformation(new EventId((int)LogClass.ServiceLdn, nameof(LogClass.ServiceLdn)),
+                "Initialize LanDiscovery using IP: {ipAddress}", ipAddress);
 
             _parent = parent;
             LocalAddr = ipAddress;

@@ -8,14 +8,19 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using static Hyjinx.HLE.HOS.ModLoader;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {
-    static class FileSystemExtensions
+    static partial class FileSystemExtensions
     {
+        private static readonly ILogger _logger =
+            Logger.DefaultLoggerFactory.CreateLogger(typeof(FileSystemExtensions));
+        
         public static MetaLoader GetNpdm(this IFileSystem fileSystem)
         {
             MetaLoader metaLoader = new();
@@ -34,6 +39,11 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
             return metaLoader;
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Loading {name}...")]
+        private static partial void LogLoadingFile(ILogger logger, string name);
+        
         public static ProcessResult Load(this IFileSystem exeFs, Switch device, BlitStruct<ApplicationControlProperty> nacpData, MetaLoader metaLoader, byte programIndex, bool isHomebrew = false)
         {
             ulong programId = metaLoader.GetProgramId();
@@ -58,7 +68,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
                     continue; // File doesn't exist, skip.
                 }
 
-                Logger.Info?.Print(LogClass.Loader, $"Loading {name}...");
+                LogLoadingFile(_logger, name);
 
                 using var nsoFile = new UniqueRef<IFile>();
 
