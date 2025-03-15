@@ -283,7 +283,8 @@ namespace Hyjinx.Ava.UI.Windows
                     rc = LinuxHelper.RunPkExec($"echo {LinuxHelper.RecommendedVmMaxMapCount} > {LinuxHelper.VmMaxMapCountPath}");
                     if (rc == 0)
                     {
-                        Logger.Info?.Print(LogClass.Application, $"vm.max_map_count set to {LinuxHelper.VmMaxMapCount} until the next restart.");
+                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "vm.max_map_count set to {vmMaxMapCount} until the next restart.", LinuxHelper.VmMaxMapCount);
                     }
                     else
                     {
@@ -295,7 +296,8 @@ namespace Hyjinx.Ava.UI.Windows
                     rc = LinuxHelper.RunPkExec($"echo \"vm.max_map_count = {LinuxHelper.RecommendedVmMaxMapCount}\" > {LinuxHelper.SysCtlConfigPath} && sysctl -p {LinuxHelper.SysCtlConfigPath}");
                     if (rc == 0)
                     {
-                        Logger.Info?.Print(LogClass.Application, $"vm.max_map_count set to {LinuxHelper.VmMaxMapCount}. Written to config: {LinuxHelper.SysCtlConfigPath}");
+                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "vm.max_map_count set to {vmMaxMapCount}. Written to config: {sysCtlConfigPath}", LinuxHelper.VmMaxMapCount, LinuxHelper.SysCtlConfigPath);
                     }
                     else
                     {

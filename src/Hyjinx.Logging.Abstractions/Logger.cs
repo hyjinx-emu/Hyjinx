@@ -33,7 +33,7 @@ public class Logger : ILog
     }
 
     public static ILog? Debug { get; private set; }
-    public static ILog? Info { get; private set; }
+    // public static ILog? Info { get; private set; }
     public static ILog? Warning { get; private set; }
     // public static ILog? Error { get; private set; }
     // public static ILog? Guest { get; private set; }
@@ -59,9 +59,9 @@ public class Logger : ILog
                 Debug = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Debug) : null; 
                 break;
             
-            case LogLevel.Info:
-                Info = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Information) : null;
-                break;
+            // case LogLevel.Info:
+            //     Info = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Information) : null;
+            //     break;
             
             case LogLevel.Warning:
                 Warning = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Warning) : null;

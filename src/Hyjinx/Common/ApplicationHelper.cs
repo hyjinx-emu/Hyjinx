@@ -58,7 +58,8 @@ namespace Hyjinx.Ava.Common
             {
                 ref ApplicationControlProperty control = ref controlHolder.Value;
 
-                Logger.Info?.Print(LogClass.Application, $"Creating save directory for Title: {titleName} [{titleId:x16}]");
+                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Creating save directory for Title: {titleName} [{titleId:x16}]", titleName, titleId);
 
                 if (controlHolder.ByteSpan.IsZeros())
                 {

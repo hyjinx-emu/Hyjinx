@@ -63,7 +63,7 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
             }
 
             var logLevelString = GetLogLevelString(logEntry.LogLevel);
-            t_messageBuilder.Append(' ').Append(logLevelString).Append(' ').Append(logEntry.Category);
+            t_messageBuilder.Append(' ').Append(logLevelString).Append(' ').Append(logEntry.Category.Substring(logEntry.Category.LastIndexOf('.') + 1));
             
             if (logEntry.ThreadName != null)
             {

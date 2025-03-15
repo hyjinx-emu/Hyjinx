@@ -6,6 +6,7 @@ using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Logging;
 using Hyjinx.UI.Common.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hyjinx.Ava.UI.Views.Main
@@ -35,7 +36,8 @@ namespace Hyjinx.Ava.UI.Views.Main
         {
             Window.ViewModel.AppHost.ToggleVSync();
 
-            Logger.Info?.Print(LogClass.Application, $"VSync toggled to: {Window.ViewModel.AppHost.Device.EnableDeviceVsync}");
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                "VSync toggled to: {enableDeviceVsync}", Window.ViewModel.AppHost.Device.EnableDeviceVsync);
         }
 
         private void DockedStatus_PointerReleased(object sender, PointerReleasedEventArgs e)

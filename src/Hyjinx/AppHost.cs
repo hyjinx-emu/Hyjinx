@@ -674,7 +674,7 @@ namespace Hyjinx.Ava
 
             if (_isFirmwareTitle)
             {
-                Logger.Info?.Print(LogClass.Application, "Loading as Firmware Title (NCA).");
+                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as Firmware Title (NCA).");
 
                 if (!Device.LoadNca(ApplicationPath))
                 {
@@ -694,7 +694,7 @@ namespace Hyjinx.Ava
 
                 if (romFsFiles.Length > 0)
                 {
-                    Logger.Info?.Print(LogClass.Application, "Loading as cart with RomFS.");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as cart with RomFS.");
 
                     if (!Device.LoadCart(ApplicationPath, romFsFiles[0]))
                     {
@@ -705,7 +705,7 @@ namespace Hyjinx.Ava
                 }
                 else
                 {
-                    Logger.Info?.Print(LogClass.Application, "Loading as cart WITHOUT RomFS.");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as cart WITHOUT RomFS.");
 
                     if (!Device.LoadCart(ApplicationPath))
                     {
@@ -721,7 +721,7 @@ namespace Hyjinx.Ava
                 {
                     case ".xci":
                         {
-                            Logger.Info?.Print(LogClass.Application, "Loading as XCI.");
+                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as XCI.");
 
                             if (!Device.LoadXci(ApplicationPath, ApplicationId))
                             {
@@ -734,7 +734,7 @@ namespace Hyjinx.Ava
                         }
                     case ".nca":
                         {
-                            Logger.Info?.Print(LogClass.Application, "Loading as NCA.");
+                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),"Loading as NCA.");
 
                             if (!Device.LoadNca(ApplicationPath))
                             {
@@ -748,7 +748,7 @@ namespace Hyjinx.Ava
                     case ".nsp":
                     case ".pfs0":
                         {
-                            Logger.Info?.Print(LogClass.Application, "Loading as NSP.");
+                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NSP.");
 
                             if (!Device.LoadNsp(ApplicationPath, ApplicationId))
                             {
@@ -761,7 +761,7 @@ namespace Hyjinx.Ava
                         }
                     default:
                         {
-                            Logger.Info?.Print(LogClass.Application, "Loading as homebrew.");
+                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as homebrew.");
 
                             try
                             {
@@ -811,7 +811,8 @@ namespace Hyjinx.Ava
 
             _viewModel.IsPaused = false;
             _viewModel.Title = TitleHelper.ActiveApplicationTitle(Device?.Processes.ActiveApplication, Program.Version);
-            Logger.Info?.Print(LogClass.Emulation, "Emulation was resumed");
+            
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Emulation was resumed");
         }
 
         internal void Pause()
@@ -820,7 +821,8 @@ namespace Hyjinx.Ava
 
             _viewModel.IsPaused = true;
             _viewModel.Title = TitleHelper.ActiveApplicationTitle(Device?.Processes.ActiveApplication, Program.Version, LocaleManager.Instance[LocaleKeys.Paused]);
-            Logger.Info?.Print(LogClass.Emulation, "Emulation was paused");
+            
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Emulation was paused");
         }
 
         private void InitializeSwitchInstance()
@@ -852,7 +854,8 @@ namespace Hyjinx.Ava
                 renderer = new ThreadedRenderer(renderer);
             }
 
-            Logger.Info?.PrintMsg(LogClass.Gpu, $"Backend Threading ({threadingMode}): {isGALThreaded}");
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)),
+            "Backend Threading ({threadingMode}): {isGALThreaded}", threadingMode, isGALThreaded);
 
             // Initialize Configuration.
             var memoryConfiguration = ConfigurationState.Instance.System.ExpandRam.Value ? MemoryConfiguration.MemoryConfiguration8GiB : MemoryConfiguration.MemoryConfiguration4GiB;

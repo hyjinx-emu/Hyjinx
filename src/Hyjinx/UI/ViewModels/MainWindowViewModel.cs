@@ -1058,7 +1058,8 @@ namespace Hyjinx.Ava.UI.ViewModels
 
                 if (result == UserResult.Yes)
                 {
-                    Logger.Info?.Print(LogClass.Application, $"Installing firmware {firmwareVersion.VersionString}");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Installing firmware {firmwareVersion}", firmwareVersion.VersionString);
 
                     Thread thread = new(() =>
                     {
@@ -1079,7 +1080,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
                                 await ContentDialogHelper.CreateInfoDialog(dialogTitle, message, LocaleManager.Instance[LocaleKeys.InputDialogOk], "", LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
 
-                                Logger.Info?.Print(LogClass.Application, message);
+                                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), message);
 
                                 // Purge Applet Cache.
 

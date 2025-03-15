@@ -11,6 +11,7 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Logging;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
@@ -219,7 +220,9 @@ namespace Hyjinx.Ava.UI.ViewModels
                 }
             }
 
-            Logger.Info?.Print(LogClass.Application, $"Deleting mod at \"{pathToDelete}\"");
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                "Deleting mod at '{pathToDelete}'", pathToDelete);
+            
             Directory.Delete(pathToDelete, true);
 
             Mods.Remove(model);

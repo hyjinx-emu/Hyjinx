@@ -105,14 +105,16 @@ namespace Hyjinx.Headless.SDL2
             {
                 if (index == PlayerIndex.Player1)
                 {
-                    Logger.Info?.Print(LogClass.Application, $"{index} not configured, defaulting to default keyboard.");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "{index} not configured, defaulting to default keyboard.", index);
 
                     // Default to keyboard
                     inputId = "0";
                 }
                 else
                 {
-                    Logger.Info?.Print(LogClass.Application, $"{index} not configured");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                        "{index} not configured", index);
 
                     return null;
                 }
@@ -316,7 +318,8 @@ namespace Hyjinx.Headless.SDL2
 
             string inputTypeName = isKeyboard ? "Keyboard" : "Gamepad";
 
-            Logger.Info?.Print(LogClass.Application, $"{config.PlayerIndex} configured with {inputTypeName} \"{config.Id}\"");
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                "{playerIndex} configured with {inputTypeName} \"{configId}\"", config.PlayerIndex, inputTypeName, config.Id);
 
             // If both stick ranges are 0 (usually indicative of an outdated profile load) then both sticks will be set to 1.0.
             if (config is StandardControllerInputConfig controllerConfig)
@@ -325,8 +328,9 @@ namespace Hyjinx.Headless.SDL2
                 {
                     controllerConfig.RangeLeft = 1.0f;
                     controllerConfig.RangeRight = 1.0f;
-
-                    Logger.Info?.Print(LogClass.Application, $"{config.PlayerIndex} stick range reset. Save the profile now to update your configuration");
+                    
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "{playerIndex} stick range reset. Save the profile now to update your configuration", config.PlayerIndex);
                 }
             }
 
@@ -366,13 +370,15 @@ namespace Hyjinx.Headless.SDL2
 
             if (option.ListInputIds)
             {
-                Logger.Info?.Print(LogClass.Application, "Input Ids:");
+                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                    "Input Ids:");
 
                 foreach (string id in _inputManager.KeyboardDriver.GamepadsIds)
                 {
                     gamepad = _inputManager.KeyboardDriver.GetGamepad(id);
 
-                    Logger.Info?.Print(LogClass.Application, $"- {id} (\"{gamepad.Name}\")");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                        "- {id} (\"{gamepad}\")", id, gamepad.Name);
 
                     gamepad.Dispose();
                 }
@@ -381,7 +387,8 @@ namespace Hyjinx.Headless.SDL2
                 {
                     gamepad = _inputManager.GamepadDriver.GetGamepad(id);
 
-                    Logger.Info?.Print(LogClass.Application, $"- {id} (\"{gamepad.Name}\")");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "- {id} (\"{gamepad}\")", id, gamepad.Name);
 
                     gamepad.Dispose();
                 }
@@ -505,7 +512,7 @@ namespace Hyjinx.Headless.SDL2
                 _ => throw new ArgumentException($"Unknown Progress Handler type {typeof(T)}"),
             };
 
-            Logger.Info?.Print(LogClass.Application, label);
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), label);
         }
 
         private static WindowBase CreateWindow(Options options)
@@ -647,7 +654,8 @@ namespace Hyjinx.Headless.SDL2
 
                 if (romFsFiles.Length > 0)
                 {
-                    Logger.Info?.Print(LogClass.Application, "Loading as cart with RomFS.");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Loading as cart with RomFS.");
 
                     if (!_emulationContext.LoadCart(path, romFsFiles[0]))
                     {
@@ -658,7 +666,8 @@ namespace Hyjinx.Headless.SDL2
                 }
                 else
                 {
-                    Logger.Info?.Print(LogClass.Application, "Loading as cart WITHOUT RomFS.");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Loading as cart WITHOUT RomFS.");
 
                     if (!_emulationContext.LoadCart(path))
                     {
@@ -673,7 +682,7 @@ namespace Hyjinx.Headless.SDL2
                 switch (Path.GetExtension(path).ToLowerInvariant())
                 {
                     case ".xci":
-                        Logger.Info?.Print(LogClass.Application, "Loading as XCI.");
+                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as XCI.");
 
                         if (!_emulationContext.LoadXci(path))
                         {
@@ -683,7 +692,7 @@ namespace Hyjinx.Headless.SDL2
                         }
                         break;
                     case ".nca":
-                        Logger.Info?.Print(LogClass.Application, "Loading as NCA.");
+                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NCA.");
 
                         if (!_emulationContext.LoadNca(path))
                         {
@@ -694,7 +703,7 @@ namespace Hyjinx.Headless.SDL2
                         break;
                     case ".nsp":
                     case ".pfs0":
-                        Logger.Info?.Print(LogClass.Application, "Loading as NSP.");
+                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NSP.");
 
                         if (!_emulationContext.LoadNsp(path))
                         {
@@ -704,7 +713,7 @@ namespace Hyjinx.Headless.SDL2
                         }
                         break;
                     default:
-                        Logger.Info?.Print(LogClass.Application, "Loading as Homebrew.");
+                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as Homebrew.");
                         try
                         {
                             if (!_emulationContext.LoadProgram(path))
