@@ -59,7 +59,7 @@ namespace Hyjinx.HLE.HOS.Services.Caps
             //       The list contents needs to be determined.
             //       Service populate the buffer with a ApplicationAlbumFileEntry related to the pid.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceCaps, new { contentType, startTime, endTime, appletResourceUserId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceCaps, new { contentType, startTime, endTime, appletResourceUserId });
 
             context.ResponseData.Write(count);
 

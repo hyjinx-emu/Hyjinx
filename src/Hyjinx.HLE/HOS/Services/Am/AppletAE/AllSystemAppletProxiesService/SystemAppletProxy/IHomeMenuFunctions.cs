@@ -21,7 +21,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         // RequestToGetForeground()
         public ResultCode RequestToGetForeground(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -40,7 +40,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
 
             context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_channelEventHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }

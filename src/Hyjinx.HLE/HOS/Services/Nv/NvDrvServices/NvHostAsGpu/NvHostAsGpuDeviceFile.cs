@@ -354,7 +354,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
 
         private NvInternalResult InitializeEx(ref InitializeExArguments arguments)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }

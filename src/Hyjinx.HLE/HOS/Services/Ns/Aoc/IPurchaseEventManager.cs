@@ -29,7 +29,7 @@ namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
             //       Then it seems to use the buffer content and compare it with a stored linked instrusive list.
             //       Since we don't support purchase from eShop, we can stub it.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNs);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNs);
 
             return ResultCode.Success;
         }

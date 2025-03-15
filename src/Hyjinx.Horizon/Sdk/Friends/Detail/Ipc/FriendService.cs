@@ -35,7 +35,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(1)]
         public Result Cancel()
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend);
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend);
 
             return Result.Success;
         }
@@ -52,7 +52,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, offset, filter, pidPlaceholder, pid });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, offset, filter, pidPlaceholder, pid });
 
             if (userId.IsNull)
             {
@@ -74,7 +74,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, offset, filter, pidPlaceholder, pid });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, offset, filter, pidPlaceholder, pid });
 
             if (userId.IsNull)
             {
@@ -94,7 +94,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             string friendIdList = string.Join(", ", friendIds.ToArray());
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendIdList, pidPlaceholder, pid });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendIdList, pidPlaceholder, pid });
 
             return Result.Success;
         }
@@ -108,7 +108,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             size = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -118,7 +118,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             listAvailable = true;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -126,7 +126,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(10121)]
         public Result EnsureFriendListAvailable(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -140,7 +140,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             ulong pidPlaceholder,
             [ClientProcessId] ulong pid)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, arg3, pidPlaceholder, pid });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, arg3, pidPlaceholder, pid });
 
             return Result.Success;
         }
@@ -156,7 +156,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             ulong pidPlaceholder,
             [ClientProcessId] ulong pid)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, key, nickname, arg4, arg5, pidPlaceholder, pid });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, key, nickname, arg4, arg5, pidPlaceholder, pid });
 
             return Result.Success;
         }
@@ -170,7 +170,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, offset });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, offset });
 
             return Result.Success;
         }
@@ -180,7 +180,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             listAvailable = true;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -188,7 +188,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(10421)]
         public Result EnsureBlockedUserListAvailable(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -201,7 +201,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             string friendIdList = string.Join(", ", friendIds.ToArray());
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendIdList });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendIdList });
 
             return Result.Success;
         }
@@ -209,7 +209,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(10600)]
         public Result DeclareOpenOnlinePlaySession(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             if (userId.IsNull)
             {
@@ -224,7 +224,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(10601)]
         public Result DeclareCloseOnlinePlaySession(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             if (userId.IsNull)
             {
@@ -243,7 +243,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             ulong pidPlaceholder,
             [ClientProcessId] ulong pid)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, userPresence, pidPlaceholder, pid });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, userPresence, pidPlaceholder, pid });
 
             return Result.Success;
         }
@@ -307,7 +307,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             registrationKey = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { friendId, arg2 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { friendId, arg2 });
 
             return Result.Success;
         }
@@ -321,7 +321,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             ulong pidPlaceholder,
             [ClientProcessId] ulong pid)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, registrationKey, arg2, arg3, pidPlaceholder, pid });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, registrationKey, arg2, arg3, pidPlaceholder, pid });
 
             return Result.Success;
         }
@@ -331,7 +331,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             imageUrl = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { url, arg2 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { url, arg2 });
 
             return Result.Success;
         }
@@ -341,7 +341,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, filter, pidPlaceholder, pid });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, filter, pidPlaceholder, pid });
 
             return Result.Success;
         }
@@ -351,7 +351,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -364,7 +364,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             detailedInfo = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -372,7 +372,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(20103)]
         public Result SyncFriendList(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -380,7 +380,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(20104)]
         public Result RequestSyncFriendList(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -393,7 +393,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             friendSetting = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -404,7 +404,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             count = 0;
             count2 = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -419,7 +419,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3, arg4 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3, arg4 });
 
             return Result.Success;
         }
@@ -433,7 +433,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3 });
 
             return Result.Success;
         }
@@ -449,7 +449,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             networkIdInfo = default;
             arg1 = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg4 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg4 });
 
             return Result.Success;
         }
@@ -459,7 +459,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             accountLinkage = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -473,7 +473,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             accountProfile = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg3 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg3 });
 
             return Result.Success;
         }
@@ -487,7 +487,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3 });
 
             return Result.Success;
         }
@@ -501,7 +501,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3 });
 
             return Result.Success;
         }
@@ -509,7 +509,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(20401)]
         public Result SyncBlockedUserList(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -522,7 +522,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             string friendIdList = string.Join(", ", friendIds.ToArray());
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendIdList });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendIdList });
 
             return Result.Success;
         }
@@ -532,7 +532,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             relationship = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -542,7 +542,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             userPresenceView = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -552,7 +552,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg3 });
 
             return Result.Success;
         }
@@ -562,7 +562,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             statistics = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -572,7 +572,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             userSetting = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -580,7 +580,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(20801)]
         public Result SyncUserSetting(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -588,7 +588,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(20900)]
         public Result RequestListSummaryOverlayNotification()
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend);
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend);
 
             return Result.Success;
         }
@@ -601,7 +601,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             catalog = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { catalogId, language });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { catalogId, language });
 
             return Result.Success;
         }
@@ -614,7 +614,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -627,7 +627,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             invicationGroup = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, groupId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, groupId });
 
             return Result.Success;
         }
@@ -637,7 +637,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             count = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -645,7 +645,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30100)]
         public Result DropFriendNewlyFlags(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -653,7 +653,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30101)]
         public Result DeleteFriend(Uid userId, NetworkServiceAccountId friendId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -661,7 +661,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30110)]
         public Result DropFriendNewlyFlag(Uid userId, NetworkServiceAccountId friendId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -669,7 +669,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30120)]
         public Result ChangeFriendFavoriteFlag(Uid userId, NetworkServiceAccountId friendId, bool favoriteFlag)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, favoriteFlag });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, favoriteFlag });
 
             return Result.Success;
         }
@@ -677,7 +677,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30121)]
         public Result ChangeFriendOnlineNotificationFlag(Uid userId, NetworkServiceAccountId friendId, bool onlineNotificationFlag)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, onlineNotificationFlag });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, onlineNotificationFlag });
 
             return Result.Success;
         }
@@ -685,7 +685,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30200)]
         public Result SendFriendRequest(Uid userId, NetworkServiceAccountId friendId, int arg2)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2 });
 
             return Result.Success;
         }
@@ -699,7 +699,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             [Buffer(HipcBufferFlags.In | HipcBufferFlags.Pointer, 0x48)] in InAppScreenName arg4,
             [Buffer(HipcBufferFlags.In | HipcBufferFlags.Pointer, 0x48)] in InAppScreenName arg5)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, applicationInfo, arg4, arg5 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, applicationInfo, arg4, arg5 });
 
             return Result.Success;
         }
@@ -707,7 +707,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30202)]
         public Result CancelFriendRequest(Uid userId, RequestId requestId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, requestId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, requestId });
 
             return Result.Success;
         }
@@ -715,7 +715,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30203)]
         public Result AcceptFriendRequest(Uid userId, RequestId requestId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, requestId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, requestId });
 
             return Result.Success;
         }
@@ -723,7 +723,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30204)]
         public Result RejectFriendRequest(Uid userId, RequestId requestId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, requestId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, requestId });
 
             return Result.Success;
         }
@@ -731,7 +731,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30205)]
         public Result ReadFriendRequest(Uid userId, RequestId requestId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, requestId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, requestId });
 
             return Result.Success;
         }
@@ -741,7 +741,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             registrationKey = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -753,7 +753,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             Nickname nickname,
             [Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias)] ReadOnlySpan<byte> arg3)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, registrationKey, nickname });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, registrationKey, nickname });
 
             return Result.Success;
         }
@@ -761,7 +761,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30212)]
         public Result CancelFacedFriendRequest(Uid userId, NetworkServiceAccountId friendId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -775,7 +775,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             size = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -790,7 +790,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
 
             string pathString = Encoding.UTF8.GetString(path);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { pathString });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { pathString });
 
             return Result.Success;
         }
@@ -804,7 +804,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             [Buffer(HipcBufferFlags.In | HipcBufferFlags.Pointer, 0x48)] in InAppScreenName arg4,
             [Buffer(HipcBufferFlags.In | HipcBufferFlags.Pointer, 0x48)] in InAppScreenName arg5)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, catalogId, arg4, arg5 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, catalogId, arg4, arg5 });
 
             return Result.Success;
         }
@@ -812,7 +812,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30216)]
         public Result ResendFacedFriendRequest(Uid userId, NetworkServiceAccountId friendId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -827,7 +827,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             MiiName arg5,
             MiiImageUrlParam arg6)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, arg3, arg4, arg5, arg6 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, arg3, arg4, arg5, arg6 });
 
             return Result.Success;
         }
@@ -837,7 +837,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             url = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg2 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg2 });
 
             return Result.Success;
         }
@@ -845,7 +845,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30301)]
         public Result UnlinkSnsAccount(Uid userId, int arg1)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg1 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, arg1 });
 
             return Result.Success;
         }
@@ -853,7 +853,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30400)]
         public Result BlockUser(Uid userId, NetworkServiceAccountId friendId, int arg2)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2 });
 
             return Result.Success;
         }
@@ -866,7 +866,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
             ApplicationInfo applicationInfo,
             [Buffer(HipcBufferFlags.In | HipcBufferFlags.Pointer, 0x48)] in InAppScreenName arg4)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, applicationInfo, arg4 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId, arg2, applicationInfo, arg4 });
 
             return Result.Success;
         }
@@ -874,7 +874,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30402)]
         public Result UnblockUser(Uid userId, NetworkServiceAccountId friendId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendId });
 
             return Result.Success;
         }
@@ -887,7 +887,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             profileExtra = default;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendCode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendCode });
 
             return Result.Success;
         }
@@ -895,7 +895,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30700)]
         public Result DeletePlayHistory(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -903,7 +903,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30810)]
         public Result ChangePresencePermission(Uid userId, int permission)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, permission });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, permission });
 
             return Result.Success;
         }
@@ -911,7 +911,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30811)]
         public Result ChangeFriendRequestReception(Uid userId, bool reception)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, reception });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, reception });
 
             return Result.Success;
         }
@@ -919,7 +919,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30812)]
         public Result ChangePlayLogPermission(Uid userId, int permission)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, permission });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, permission });
 
             return Result.Success;
         }
@@ -927,7 +927,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30820)]
         public Result IssueFriendCode(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -935,7 +935,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30830)]
         public Result ClearPlayLog(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -951,7 +951,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             string friendIdList = string.Join(", ", friendIds.ToArray());
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendIdList, description, applicationInfo, arg5 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, friendIdList, description, applicationInfo, arg5 });
 
             return Result.Success;
         }
@@ -961,7 +961,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         {
             string invitationIdList = string.Join(", ", invitationIds.ToArray());
 
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, invitationIdList });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId, invitationIdList });
 
             return Result.Success;
         }
@@ -969,7 +969,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(30911)]
         public Result ReadAllFriendInvitations(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -977,7 +977,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(40100)]
         public Result DeleteFriendListCache(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -985,7 +985,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(40400)]
         public Result DeleteBlockedUserListCache(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }
@@ -993,7 +993,7 @@ namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
         [CmifCommand(49900)]
         public Result DeleteNetworkServiceAccountCache(Uid userId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceFriend, new { userId });
 
             return Result.Success;
         }

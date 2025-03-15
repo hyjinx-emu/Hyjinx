@@ -39,7 +39,7 @@ namespace Hyjinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager
 
             _clockRate = context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServicePcv, new { _clockRate });
+            // Logger.Stub?.PrintStub(LogClass.ServicePcv, new { _clockRate });
 
             return ResultCode.Success;
         }
@@ -55,7 +55,7 @@ namespace Hyjinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager
 
             context.ResponseData.Write(_clockRate);
 
-            Logger.Stub?.PrintStub(LogClass.ServicePcv, new { _clockRate });
+            // Logger.Stub?.PrintStub(LogClass.ServicePcv, new { _clockRate });
 
             return ResultCode.Success;
         }

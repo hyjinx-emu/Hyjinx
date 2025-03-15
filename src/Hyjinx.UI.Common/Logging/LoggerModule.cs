@@ -51,7 +51,7 @@ public static class LoggerModule
         // Logger.SetEnable(LogLevel.Info, true);
         Logger.SetEnable(LogLevel.Warning, true);
         // Logger.SetEnable(LogLevel.Error, true);
-        Logger.SetEnable(LogLevel.Stub, false);
+        // Logger.SetEnable(LogLevel.Stub, false);
         
         // Logger.SetEnable(LogLevel.Trace, ConfigurationState.Instance.Logger.EnableTrace.Value);
         // Logger.SetEnable(LogLevel.Debug, ConfigurationState.Instance.Logger.EnableDebug.Value);
@@ -68,10 +68,10 @@ public static class LoggerModule
         Logger.SetEnable(LogLevel.Debug, e.NewValue);
     }
 
-    private static void ReloadEnableStub(object? sender, ReactiveEventArgs<bool> e)
-    {
-        Logger.SetEnable(LogLevel.Stub, e.NewValue);
-    }
+    // private static void ReloadEnableStub(object? sender, ReactiveEventArgs<bool> e)
+    // {
+    //     Logger.SetEnable(LogLevel.Stub, e.NewValue);
+    // }
 
     // private static void ReloadEnableInfo(object? sender, ReactiveEventArgs<bool> e)
     // {

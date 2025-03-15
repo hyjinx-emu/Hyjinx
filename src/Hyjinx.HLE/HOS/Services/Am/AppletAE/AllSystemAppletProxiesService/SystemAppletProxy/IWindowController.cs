@@ -19,7 +19,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
 
             context.ResponseData.Write(appletResourceUserId);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { appletResourceUserId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { appletResourceUserId });
 
             return ResultCode.Success;
         }
@@ -28,7 +28,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         // AcquireForegroundRights()
         public ResultCode AcquireForegroundRights(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }

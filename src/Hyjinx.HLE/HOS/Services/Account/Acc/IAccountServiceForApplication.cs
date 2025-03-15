@@ -100,7 +100,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
             // TODO: Determine where ApplicationLaunchProperty is used.
             ApplicationLaunchProperty applicationLaunchProperty = ApplicationLaunchProperty.GetByPid(context);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { applicationLaunchProperty.TitleId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { applicationLaunchProperty.TitleId });
 
             return ResultCode.Success;
         }
@@ -192,7 +192,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
 
             context.ResponseData.Write((byte)context.Device.Processes.ActiveApplication.ApplicationControlProperties.UserAccountSwitchLock);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             return ResultCode.Success;
         }

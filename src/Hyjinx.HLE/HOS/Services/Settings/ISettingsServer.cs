@@ -106,7 +106,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
         {
             context.ResponseData.Write(false);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSet);
+            // Logger.Stub?.PrintStub(LogClass.ServiceSet);
 
             return ResultCode.Success;
         }

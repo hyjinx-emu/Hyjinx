@@ -26,7 +26,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
 
             MakeObject(context, new ISslContext(context.Request.HandleDesc.PId, sslVersion));
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { sslVersion });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { sslVersion });
 
             return ResultCode.Success;
         }
@@ -119,7 +119,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
             // 1 = 3.0.0+, 2 = 5.0.0+, 3 = 6.0.0+
             uint interfaceVersion = context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { interfaceVersion });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { interfaceVersion });
 
             return ResultCode.Success;
         }

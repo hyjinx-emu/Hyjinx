@@ -240,7 +240,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
             // NOTE: When set to true, is automatically synced with the internet.
             context.ResponseData.Write(true);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSet);
+            // Logger.Stub?.PrintStub(LogClass.ServiceSet);
 
             return ResultCode.Success;
         }
@@ -251,7 +251,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
         {
             context.ResponseData.Write(false);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSet);
+            // Logger.Stub?.PrintStub(LogClass.ServiceSet);
 
             return ResultCode.Success;
         }

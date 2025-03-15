@@ -23,7 +23,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
 
             // NOTE: This seems to initialize the shared memory for irs service.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId });
 
             return ResultCode.Success;
         }
@@ -36,7 +36,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
 
             // NOTE: This seems to deinitialize the shared memory for irs service.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId });
 
             return ResultCode.Success;
         }
@@ -70,7 +70,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
 
             CheckCameraHandle(irCameraHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType });
 
             return ResultCode.Success;
         }
@@ -85,7 +85,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
 
             CheckCameraHandle(irCameraHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType, packedMomentProcessorConfig.ExposureTime });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType, packedMomentProcessorConfig.ExposureTime });
 
             return ResultCode.Success;
         }
@@ -100,7 +100,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
 
             CheckCameraHandle(irCameraHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType, packedClusteringProcessorConfig.ExposureTime });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType, packedClusteringProcessorConfig.ExposureTime });
 
             return ResultCode.Success;
         }
@@ -117,7 +117,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
 
             // TODO: Handle the Transfer Memory.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType, packedImageTransferProcessorConfig.ExposureTime });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType, packedImageTransferProcessorConfig.ExposureTime });
 
             return ResultCode.Success;
         }
@@ -139,7 +139,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
 
             CheckCameraHandle(irCameraHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType });
 
             // TODO: Uses the buffer to copy the JoyCon IR data (by using a JoyCon driver) and update the following struct.
             context.ResponseData.WriteStruct(new ImageTransferProcessorState()
@@ -161,7 +161,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
 
             CheckCameraHandle(irCameraHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType, packedTeraPluginProcessorConfig.RequiredMcuVersion });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle.PlayerNumber, irCameraHandle.DeviceType, packedTeraPluginProcessorConfig.RequiredMcuVersion });
 
             return ResultCode.Success;
         }
@@ -198,7 +198,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
             short packedMcuVersionMinor = context.RequestData.ReadInt16();
             long appletResourceUserId = context.RequestData.ReadInt64();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle, packedMcuVersionMajor, packedMcuVersionMinor });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle, packedMcuVersionMajor, packedMcuVersionMinor });
 
             return ResultCode.Success;
         }
@@ -210,7 +210,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
             int irCameraHandle = context.RequestData.ReadInt32();
             long appletResourceUserId = context.RequestData.ReadInt64();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, irCameraHandle });
 
             return ResultCode.Success;
         }
@@ -222,7 +222,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid.Irs
             long appletResourceUserId = context.RequestData.ReadInt64();
             long packedFunctionLevel = context.RequestData.ReadInt64();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, packedFunctionLevel });
+            // Logger.Stub?.PrintStub(LogClass.ServiceIrs, new { appletResourceUserId, packedFunctionLevel });
 
             return ResultCode.Success;
         }

@@ -351,10 +351,10 @@ namespace Hyjinx.HLE.HOS.Applets
             switch (request)
             {
                 case InlineKeyboardRequest.UseChangedStringV2:
-                    Logger.Stub?.Print(LogClass.ServiceAm, "Inline keyboard request UseChangedStringV2");
+                    // Logger.Stub?.Print(LogClass.ServiceAm, "Inline keyboard request UseChangedStringV2");
                     break;
                 case InlineKeyboardRequest.UseMovedCursorV2:
-                    Logger.Stub?.Print(LogClass.ServiceAm, "Inline keyboard request UseMovedCursorV2");
+                    // Logger.Stub?.Print(LogClass.ServiceAm, "Inline keyboard request UseMovedCursorV2");
                     break;
                 case InlineKeyboardRequest.SetUserWordInfo:
                     // Read the user word info data.

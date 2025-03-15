@@ -15,7 +15,7 @@ namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 
             context.ResponseData.Write(chargePercentage);
 
-            Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargePercentage });
+            // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargePercentage });
 
             return ResultCode.Success;
         }
@@ -28,7 +28,7 @@ namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 
             context.ResponseData.Write((int)chargerType);
 
-            Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargerType });
+            // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargerType });
 
             return ResultCode.Success;
         }

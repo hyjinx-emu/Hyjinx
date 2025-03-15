@@ -23,7 +23,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
         {
             state = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio);
 
             return Result.Success;
         }
@@ -31,7 +31,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
         [CmifCommand(1)]
         public Result Start()
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio);
 
             return Result.Success;
         }
@@ -39,7 +39,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
         [CmifCommand(2)]
         public Result Stop()
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio);
 
             return Result.Success;
         }
@@ -47,7 +47,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
         [CmifCommand(3)]
         public Result AppendFinalOutputRecorderBuffer([Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias)] ReadOnlySpan<byte> buffer, ulong bufferClientPtr)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio, new { bufferClientPtr });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio, new { bufferClientPtr });
 
             return Result.Success;
         }
@@ -57,7 +57,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
         {
             eventHandle = Os.GetReadableHandleOfSystemEvent(ref _event);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio);
 
             return Result.Success;
         }
@@ -68,7 +68,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
             count = 0;
             released = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio);
 
             return Result.Success;
         }
@@ -78,7 +78,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
         {
             contains = false;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio, new { bufferPointer });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio, new { bufferPointer });
 
             return Result.Success;
         }
@@ -88,7 +88,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
         {
             released = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio, new { bufferPointer });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio, new { bufferPointer });
 
             return Result.Success;
         }
@@ -110,7 +110,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
         {
             pending = false;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio);
 
             return Result.Success;
         }
@@ -118,7 +118,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
         [CmifCommand(11)] // 9.0.0+
         public Result AttachWorkBuffer(FinalOutputRecorderParameterInternal parameter)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio, new { parameter });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio, new { parameter });
 
             return Result.Success;
         }

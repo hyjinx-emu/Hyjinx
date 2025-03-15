@@ -23,7 +23,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid
             context.ResponseData.BaseStream.Position += 7; // Padding
             context.ResponseData.WriteStruct(new BusHandle());
 
-            Logger.Stub?.PrintStub(LogClass.ServiceHid, new { npadIdType, busType, appletResourceUserId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceHid, new { npadIdType, busType, appletResourceUserId });
 
             return ResultCode.Success;
         }

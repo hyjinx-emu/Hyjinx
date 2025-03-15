@@ -34,7 +34,7 @@ namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServi
 
             context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_eventHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNim);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNim);
 
             return ResultCode.Success;
         }

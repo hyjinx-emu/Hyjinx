@@ -36,7 +36,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             context.ResponseData.Write(_connectionCount);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _connectionCount });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _connectionCount });
 
             return ResultCode.Success;
         }
@@ -54,7 +54,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             context.ResponseData.Write(_serverCertificateId++);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { certificateFormat });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { certificateFormat });
 
             return ResultCode.Success;
         }
@@ -79,7 +79,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             context.ResponseData.Write(_clientCertificateId++);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { asciiPassword });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { asciiPassword });
 
             return ResultCode.Success;
         }

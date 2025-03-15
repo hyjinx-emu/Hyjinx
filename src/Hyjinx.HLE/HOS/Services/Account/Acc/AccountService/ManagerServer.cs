@@ -83,7 +83,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
             // NOTE: This opens the file at "su/baas/USERID_IN_UUID_STRING.dat" where USERID_IN_UUID_STRING is formatted as "%08x-%04x-%04x-%02x%02x-%08x%04x".
             //       Then it searches the Availability of Online Services related to the UserId in this file and returns it.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             // NOTE: Even if we try to return different error codes here, the guest still needs other calls.
             return ResultCode.Success;
@@ -100,7 +100,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
             //       as "%08x-%04x-%04x-%02x%02x-%08x%04x") in the account:/ savedata.
             //       Then it searches the NetworkServiceAccountId related to the UserId in this file and returns it.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { NetworkServiceAccountId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { NetworkServiceAccountId });
 
             context.ResponseData.Write(NetworkServiceAccountId);
 
@@ -129,7 +129,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
             //       in "su/cache/USERID_IN_UUID_STRING.dat" (where USERID_IN_UUID_STRING is formatted as "%08x-%04x-%04x-%02x%02x-%08x%04x") in the "account:/" savedata.
             //       Since we don't support online services, we can stub it.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             // TODO: Use a real function instead, with the CancellationToken.
             await Task.CompletedTask;
@@ -146,7 +146,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
             //       in the "account:/" savedata and writes some data in the buffer.
             //       Since we don't support online services, we can stub it.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             /*
             if (internal_object != null)
@@ -174,7 +174,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
 
         public ResultCode GetNintendoAccountUserResourceCacheForApplication(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { NetworkServiceAccountId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { NetworkServiceAccountId });
 
             context.ResponseData.Write(NetworkServiceAccountId);
 
@@ -195,7 +195,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
             KEvent asyncEvent = new(context.Device.System.KernelContext);
             AsyncExecution asyncExecution = new(asyncEvent);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             // NOTE: This is an extension of the data retrieved from the id token cache.
             asyncExecution.Initialize(1000, EnsureIdTokenCacheAsyncImpl);

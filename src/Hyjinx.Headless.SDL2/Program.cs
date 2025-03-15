@@ -435,7 +435,7 @@ namespace Hyjinx.Headless.SDL2
 
             // Setup logging level
             Logger.SetEnable(LogLevel.Debug, option.LoggingEnableDebug);
-            Logger.SetEnable(LogLevel.Stub, !option.LoggingDisableStub);
+            // Logger.SetEnable(LogLevel.Stub, !option.LoggingDisableStub);
             // Logger.SetEnable(LogLevel.Info, !option.LoggingDisableInfo);
             Logger.SetEnable(LogLevel.Warning, !option.LoggingDisableWarning);
             // Logger.SetEnable(LogLevel.Error, option.LoggingEnableError);

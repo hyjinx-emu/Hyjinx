@@ -15,7 +15,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid
         {
             ulong commonPolicy = context.RequestData.ReadUInt64();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceHid, new { commonPolicy });
+            // Logger.Stub?.PrintStub(LogClass.ServiceHid, new { commonPolicy });
 
             return ResultCode.Success;
         }

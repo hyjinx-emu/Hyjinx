@@ -68,7 +68,7 @@ namespace Hyjinx.HLE.HOS.Services.Pctl.ParentalControlServiceFactory
                     {
                         // TODO: Service store TitleId and FreeCommunicationEnabled in another object.
                         //       When it's done it signal an event in this object.
-                        Logger.Stub?.PrintStub(LogClass.ServicePctl);
+                        // Logger.Stub?.PrintStub(LogClass.ServicePctl);
                     }
                 }
 
@@ -92,7 +92,7 @@ namespace Hyjinx.HLE.HOS.Services.Pctl.ParentalControlServiceFactory
 
             _freeCommunicationEnabled = true;
 
-            Logger.Stub?.PrintStub(LogClass.ServicePctl);
+            // Logger.Stub?.PrintStub(LogClass.ServicePctl);
 
             return ResultCode.Success;
         }
@@ -125,7 +125,7 @@ namespace Hyjinx.HLE.HOS.Services.Pctl.ParentalControlServiceFactory
                 return ResultCode.FreeCommunicationDisabled;
             }
 
-            Logger.Stub?.PrintStub(LogClass.ServicePctl);
+            // Logger.Stub?.PrintStub(LogClass.ServicePctl);
 
             return ResultCode.Success;
         }

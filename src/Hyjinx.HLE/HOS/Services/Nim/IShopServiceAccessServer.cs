@@ -13,7 +13,7 @@ namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface
         {
             MakeObject(context, new IShopServiceAccessor(context.Device.System));
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNim);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNim);
 
             return ResultCode.Success;
         }

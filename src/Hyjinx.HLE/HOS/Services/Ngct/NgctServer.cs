@@ -39,7 +39,7 @@ namespace Hyjinx.HLE.HOS.Services.Ngct
                 }
             }
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNgct, new { isMatch, text });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNgct, new { isMatch, text });
 
             context.ResponseData.Write(isMatch);
 
@@ -84,7 +84,7 @@ namespace Hyjinx.HLE.HOS.Services.Ngct
                 }
             }
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNgct, new { text, textFiltered });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNgct, new { text, textFiltered });
 
             return ResultCode.Success;
         }

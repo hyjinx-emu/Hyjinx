@@ -154,7 +154,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
             // bsd_error
             context.ResponseData.Write(0);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBsd);
+            // Logger.Stub?.PrintStub(LogClass.ServiceBsd);
 
             // Close transfer memory immediately as we don't use it.
             context.Device.System.KernelContext.Syscall.CloseHandle(context.Request.HandleDesc.ToCopy[0]);
@@ -168,7 +168,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
         {
             ulong unknown0 = context.RequestData.ReadUInt64();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBsd, new { unknown0 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceBsd, new { unknown0 });
 
             return ResultCode.Success;
         }
@@ -203,7 +203,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 
             WriteBsdResult(context, -1, LinuxError.EOPNOTSUPP);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBsd, new { path, flags });
+            // Logger.Stub?.PrintStub(LogClass.ServiceBsd, new { path, flags });
 
             return ResultCode.Success;
         }
@@ -481,7 +481,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
         {
             WriteBsdResult(context, -1, LinuxError.EOPNOTSUPP);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBsd);
+            // Logger.Stub?.PrintStub(LogClass.ServiceBsd);
 
             return ResultCode.Success;
         }

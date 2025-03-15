@@ -24,7 +24,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
             bool unknown1 = context.RequestData.ReadBoolean();
             int unknown2 = context.RequestData.ReadInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { unknown1, unknown2 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { unknown1, unknown2 });
 
             return ResultCode.Success;
         }

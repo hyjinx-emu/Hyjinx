@@ -150,7 +150,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd
                 }
             */
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNsd, new { disabled });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNsd, new { disabled });
 
             return ResultCode.Success;
         }
@@ -281,7 +281,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd
 
             // TODO: Read the savedata 0x80000000000000B0 (nsdsave:/file) and write it inside the buffer.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNsd);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNsd);
 
             return ResultCode.Success;
         }
@@ -310,7 +310,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd
 
             // TODO: Write the buffer inside the savedata 0x80000000000000B0 (nsdsave:/file).
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNsd);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNsd);
 
             return ResultCode.Success;
         }
@@ -339,7 +339,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd
 
             // TODO: Delete the savedata 0x80000000000000B0.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNsd);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNsd);
 
             return ResultCode.Success;
         }
@@ -354,7 +354,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd
 
             context.ResponseData.Write(disabled);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNsd, new { disabled });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNsd, new { disabled });
 
             return ResultCode.Success;
         }

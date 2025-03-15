@@ -24,7 +24,7 @@ namespace Hyjinx.HLE.HOS.Services.Olsc
 
             _initialized = true;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceOlsc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceOlsc);
 
             return ResultCode.Success;
         }
@@ -56,7 +56,7 @@ namespace Hyjinx.HLE.HOS.Services.Olsc
 
             // NOTE: Since we will not support online savedata backup, it's fine to stub it for now.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceOlsc, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceOlsc, new { userId });
 
             return ResultCode.Success;
         }
@@ -82,7 +82,7 @@ namespace Hyjinx.HLE.HOS.Services.Olsc
 
             // NOTE: Since we will not support online savedata backup, it's fine to stub it for now.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceOlsc, new { userId, saveDataBackupSettingEnabled });
+            // Logger.Stub?.PrintStub(LogClass.ServiceOlsc, new { userId, saveDataBackupSettingEnabled });
 
             return ResultCode.Success;
         }

@@ -57,7 +57,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
             // Doesn't occur in our case.
             // return ResultCode.ObjectIsNull;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNifm, new { version });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNifm, new { version });
 
             return ResultCode.Success;
         }

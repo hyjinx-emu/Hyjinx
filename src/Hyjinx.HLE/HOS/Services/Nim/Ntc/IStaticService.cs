@@ -16,7 +16,7 @@ namespace Hyjinx.HLE.HOS.Services.Nim.Ntc
 
             MakeObject(context, new IEnsureNetworkClockAvailabilityService(context));
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNtc, new { unknown });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNtc, new { unknown });
 
             return ResultCode.Success;
         }

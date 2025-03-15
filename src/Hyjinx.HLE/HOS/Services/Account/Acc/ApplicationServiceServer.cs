@@ -137,7 +137,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
                 // NOTE: This checks something related to baas (online), and then return an invalid UserId if the check in baas returns an error code.
                 //       In our case, we can just log it for now.
 
-                Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { isNetworkServiceAccountRequired });
+                // Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { isNetworkServiceAccountRequired });
             }
 
             // NOTE: As we returned an invalid UserId if there is more than one user earlier, now we can return only the first one.
@@ -162,7 +162,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
 
         private async Task CheckNetworkServiceAvailabilityAsyncImpl(CancellationToken token)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             // TODO: Use a real function instead, with the CancellationToken.
             await Task.CompletedTask;
@@ -197,7 +197,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
             // NOTE: Account service call nn::fs::WriteSaveDataThumbnailFile().
             // TODO: Store thumbnailBuffer somewhere, in save data 0x8000000000000010 ?
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             return ResultCode.Success;
         }
@@ -222,7 +222,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
             // NOTE: Account service call nn::fs::WriteSaveDataThumbnailFileHeader();
             // TODO: Clear the Thumbnail somewhere, in save data 0x8000000000000010 ?
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             return ResultCode.Success;
         }

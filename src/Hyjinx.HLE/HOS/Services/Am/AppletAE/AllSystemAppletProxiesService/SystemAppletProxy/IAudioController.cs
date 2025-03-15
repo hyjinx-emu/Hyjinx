@@ -15,7 +15,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
             float libraryAppletVolume = context.RequestData.ReadSingle();
 #pragma warning restore IDE0059
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -26,7 +26,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             context.ResponseData.Write(1f);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -37,7 +37,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             context.ResponseData.Write(1f);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -51,7 +51,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
             long unknown1 = context.RequestData.ReadInt64();
 #pragma warning restore IDE0059
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -64,7 +64,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
             float unknown0 = context.RequestData.ReadSingle();
 #pragma warning restore IDE0059
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }

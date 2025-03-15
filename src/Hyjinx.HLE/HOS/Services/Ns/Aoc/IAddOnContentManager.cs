@@ -196,7 +196,7 @@ namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
             // NOTE: Service call arp:r GetApplicationLaunchProperty to get TitleId using the PId.
             //       Then it does some internal checks and returns InvalidBufferSize if they fail.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNs);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNs);
 
             return ResultCode.Success;
         }
@@ -334,7 +334,7 @@ namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
             // TODO: Service calls ns:am RegisterContentsExternalKey?, GetOwnedApplicationContentMetaStatus? etc...
             //       Ideally, this should probably initialize the AocData values for the specified index
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNs, new { index });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNs, new { index });
 
             return ResultCode.Success;
         }

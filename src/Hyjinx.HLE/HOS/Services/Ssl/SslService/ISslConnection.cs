@@ -113,7 +113,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             _verifyOption = (VerifyOption)context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _verifyOption });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _verifyOption });
 
             return ResultCode.Success;
         }
@@ -131,7 +131,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             _connection.Socket.Blocking = _ioMode == IoMode.Blocking;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _ioMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _ioMode });
 
             return ResultCode.Success;
         }
@@ -170,7 +170,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             context.ResponseData.Write((uint)_verifyOption);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _verifyOption });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _verifyOption });
 
             return ResultCode.Success;
         }
@@ -181,7 +181,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             context.ResponseData.Write((uint)_ioMode);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _ioMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _ioMode });
 
             return ResultCode.Success;
         }
@@ -342,7 +342,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             SessionCacheMode sessionCacheMode = (SessionCacheMode)context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { sessionCacheMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { sessionCacheMode });
 
             _sessionCacheMode = sessionCacheMode;
 
@@ -355,7 +355,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             context.ResponseData.Write((uint)_sessionCacheMode);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _sessionCacheMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _sessionCacheMode });
 
             return ResultCode.Success;
         }
@@ -388,7 +388,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
             bool value = context.RequestData.ReadUInt32() != 0;
             OptionType option = (OptionType)context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { option, value });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { option, value });
 
             return SetOption(option, value);
         }
@@ -399,7 +399,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             OptionType option = (OptionType)context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { option });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { option });
 
             ResultCode result = GetOption(option, out bool value);
 
@@ -436,7 +436,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             context.Memory.Read(inputDataPosition, _nextAplnProto);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { inputDataSize });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { inputDataSize });
 
             return ResultCode.Success;
         }
@@ -452,7 +452,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             context.ResponseData.Write(_nextAplnProto.Length);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { outputDataSize });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { outputDataSize });
 
             return ResultCode.Success;
         }

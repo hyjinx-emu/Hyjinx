@@ -34,7 +34,7 @@ namespace Hyjinx.HLE.HOS.Services.Nim.Ntc.StaticService
             // NOTE: Since we don't support the Nintendo NTP server, we can signal the event now to confirm the update task is done.
             _finishNotificationEvent.ReadableEvent.Signal();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNtc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNtc);
 
             return ResultCode.Success;
         }
@@ -69,7 +69,7 @@ namespace Hyjinx.HLE.HOS.Services.Nim.Ntc.StaticService
 
             _taskResultCode = (ResultCode)Time.ResultCode.NetworkTimeTaskCanceled;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNtc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNtc);
 
             return ResultCode.Success;
         }
