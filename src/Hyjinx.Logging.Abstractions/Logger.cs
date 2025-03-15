@@ -43,9 +43,9 @@ public class Logger : ILog
     // public static ILog Notice { get; private set; } = null!;
 
     private readonly ILogger logger;
-    private readonly Microsoft.Extensions.Logging.LogLevel logLevel;
+    private readonly LogLevel logLevel;
 
-    private Logger(ILogger logger, Microsoft.Extensions.Logging.LogLevel logLevel)
+    private Logger(ILogger logger, LogLevel logLevel)
     {
         this.logger = logger;
         this.logLevel = logLevel;
@@ -56,7 +56,7 @@ public class Logger : ILog
         switch (logLevel)
         {
             case LogLevel.Debug: 
-                Debug = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Debug) : null; 
+                Debug = enabled ? new Logger(DefaultLogger, LogLevel.Debug) : null; 
                 break;
             
             // case LogLevel.Info:
@@ -64,7 +64,7 @@ public class Logger : ILog
             //     break;
             
             case LogLevel.Warning:
-                Warning = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Warning) : null;
+                Warning = enabled ? new Logger(DefaultLogger, LogLevel.Warning) : null;
                 break;
             
             // case LogLevel.Error:
@@ -84,7 +84,7 @@ public class Logger : ILog
             //     break;
             
             case LogLevel.Trace:
-                Trace = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Trace) : null;
+                Trace = enabled ? new Logger(DefaultLogger, LogLevel.Trace) : null;
                 break;
         }
     }
