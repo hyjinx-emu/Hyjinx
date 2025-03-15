@@ -137,11 +137,13 @@ namespace Hyjinx.HLE.Kernel.Generators
             generator.AppendLine($"using {NamespaceKernel}.Process;");
             generator.AppendLine($"using {NamespaceKernel}.Threading;");
             generator.AppendLine($"using {NamespaceHorizonCommon};");
+            generator.AppendLine($"using Microsoft.Extensions.Logging;");
             generator.AppendLine("using System;");
             generator.AppendLine();
             generator.EnterScope($"namespace {ClassNamespace}");
             generator.EnterScope($"static class {ClassName}");
-
+            generator.AppendLine($"private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof({ClassName}));");
+            generator.AppendLine();
             GenerateResultCheckHelper(generator);
             generator.AppendLine();
 
@@ -460,7 +462,8 @@ namespace Hyjinx.HLE.Kernel.Generators
 
         private static void GenerateLogPrint(CodeGenerator generator, string logLevel, string logClass, string log)
         {
-            generator.AppendLine($"Logger.{logLevel}?.PrintMsg(LogClass.{logClass}, $\"{log}\");");
+            generator.AppendLine($"if (_logger.IsEnabled(LogLevel.{logLevel})) _logger.Log{logLevel}(new EventId((int)LogClass.{logClass}, nameof(LogClass.{logClass})), $\"{log}\");");
+            // generator.AppendLine($"Logger.{logLevel}?.PrintMsg(LogClass.{logClass}, $\"{log}\");");
         }
 
         private static void GenerateDispatch(CodeGenerator generator, List<SyscallIdAndName> syscalls, string suffix)

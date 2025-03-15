@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
 {
-    class NvHostAsGpuDeviceFile : NvDeviceFile
+    class NvHostAsGpuDeviceFile : NvDeviceFile<NvHostAsGpuDeviceFile>
     {
         private const uint SmallPageSize = 0x1000;
         private const uint BigPageSize = 0x10000;

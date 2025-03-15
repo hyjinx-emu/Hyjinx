@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 {
-    class NvHostChannelDeviceFile : NvDeviceFile
+    class NvHostChannelDeviceFile : NvDeviceFile<NvHostChannelDeviceFile>
     {
         private static readonly ConcurrentDictionary<ulong, Host1xContext> _host1xContextRegistry = new();
 

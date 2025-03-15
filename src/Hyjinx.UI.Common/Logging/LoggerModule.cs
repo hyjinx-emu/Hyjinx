@@ -27,7 +27,7 @@ public static class LoggerModule
         var services = new ServiceCollection();
         services.AddLogging(logging =>
         {
-            logging.SetMinimumLevel(LogLevel.Debug);
+            logging.SetMinimumLevel(LogLevel.Information);
             logging.ClearProviders();
 
             logging.AddConsole(console =>
@@ -45,7 +45,7 @@ public static class LoggerModule
         LoggingServices = services.BuildServiceProvider();
         
         Logger.Initialize(LoggingServices.GetRequiredService<ILoggerFactory>());
-        Logger.SetEnable(LogLevel.Trace, false);
+        // Logger.SetEnable(LogLevel.Trace, false);
         Logger.SetEnable(LogLevel.Debug, true);
         // Logger.SetEnable(LogLevel.Info, true);
         Logger.SetEnable(LogLevel.Warning, true);

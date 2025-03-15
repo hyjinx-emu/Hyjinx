@@ -7,12 +7,11 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
 {
-    internal partial class NvMapDeviceFile : NvDeviceFile
+    internal partial class NvMapDeviceFile : NvDeviceFile<NvMapDeviceFile>
     {
         private const int FlagNotFreedYet = 1;
 
         private static readonly NvMapIdDictionary _maps = new();
-        private static readonly ILogger<NvMapDeviceFile> _logger = Logger.DefaultLoggerFactory.CreateLogger<NvMapDeviceFile>();
 
         public NvMapDeviceFile(ServiceCtx context, IVirtualMemoryManager memory, ulong owner) : base(context, owner)
         {

@@ -39,7 +39,7 @@ public class Logger : ILog
     // public static ILog? Guest { get; private set; }
     // public static ILog? AccessLog { get; private set; }
     // public static ILog? Stub { get; private set; }
-    public static ILog? Trace { get; private set; }
+    // public static ILog? Trace { get; private set; }
     // public static ILog Notice { get; private set; } = null!;
 
     private readonly ILogger logger;
@@ -83,9 +83,9 @@ public class Logger : ILog
             //     Stub = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Debug) : null;
             //     break;
             
-            case LogLevel.Trace:
-                Trace = enabled ? new Logger(DefaultLogger, LogLevel.Trace) : null;
-                break;
+            // case LogLevel.Trace:
+            //     Trace = enabled ? new Logger(DefaultLogger, LogLevel.Trace) : null;
+            //     break;
         }
     }
 

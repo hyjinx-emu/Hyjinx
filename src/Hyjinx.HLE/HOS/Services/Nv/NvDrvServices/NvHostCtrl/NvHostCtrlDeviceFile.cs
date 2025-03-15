@@ -11,11 +11,10 @@ using System.Threading;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {
-    internal partial class NvHostCtrlDeviceFile : NvDeviceFile
+    internal partial class NvHostCtrlDeviceFile : NvDeviceFile<NvHostCtrlDeviceFile>
     {
         public const int EventsCount = 64;
 
-        private readonly ILogger<NvHostCtrlDeviceFile> _logger = Logger.DefaultLoggerFactory.CreateLogger<NvHostCtrlDeviceFile>();
         private readonly bool _isProductionMode;
         private readonly Switch _device;
         private readonly NvHostEvent[] _events;

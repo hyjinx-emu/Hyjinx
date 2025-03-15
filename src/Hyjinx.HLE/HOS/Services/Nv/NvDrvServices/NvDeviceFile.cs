@@ -1,4 +1,5 @@
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -14,17 +15,10 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
 
         public string Path;
 
-        public NvDeviceFile(ServiceCtx context, ulong owner)
+        protected NvDeviceFile(ServiceCtx context, ulong owner)
         {
             Context = context;
             Owner = owner;
-        }
-
-        public virtual NvInternalResult QueryEvent(out int eventHandle, uint eventId)
-        {
-            eventHandle = 0;
-
-            return NvInternalResult.NotImplemented;
         }
 
         public virtual NvInternalResult MapSharedMemory(int sharedMemoryHandle, uint argument)
@@ -34,7 +28,14 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
 
             return NvInternalResult.NotImplemented;
         }
+        
+        public virtual NvInternalResult QueryEvent(out int eventHandle, uint eventId)
+        {
+            eventHandle = 0;
 
+            return NvInternalResult.NotImplemented;
+        }
+        
         public virtual NvInternalResult Ioctl(NvIoctl command, Span<byte> arguments)
         {
             return NvInternalResult.NotImplemented;
@@ -49,6 +50,18 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
         {
             return NvInternalResult.NotImplemented;
         }
+        
+        public abstract void Close();
+    }
+    
+    abstract partial class NvDeviceFile<T> : NvDeviceFile where T: NvDeviceFile<T>
+    {
+        protected static readonly ILogger<NvDeviceFile> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<NvDeviceFile>();
+        
+        protected NvDeviceFile(ServiceCtx context, ulong owner)
+          : base(context, owner)
+        { }
 
         protected delegate NvInternalResult IoctlProcessor<T>(ref T arguments);
         protected delegate NvInternalResult IoctlProcessorSpan<T>(Span<T> arguments);
@@ -57,10 +70,15 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
 
         private static NvInternalResult PrintResult(MethodInfo info, NvInternalResult result)
         {
-            Logger.Trace?.Print(LogClass.ServiceNv, $"{info.Name} returned result {result}");
+            LogResult(_logger, info.Name, result);
 
             return result;
         }
+        
+        [LoggerMessage(LogLevel.Trace,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "{name} returned result {result}")]
+        private static partial void LogResult(ILogger logger, string name, NvInternalResult result);
 
         protected static NvInternalResult CallIoctlMethod<T>(IoctlProcessor<T> callback, Span<byte> arguments) where T : struct
         {
@@ -88,7 +106,5 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
 
             return PrintResult(callback.Method, callback(ref MemoryMarshal.Cast<byte, T>(arguments)[0], MemoryMarshal.Cast<byte, T1>(inlineBuffer)));
         }
-
-        public abstract void Close();
     }
 }

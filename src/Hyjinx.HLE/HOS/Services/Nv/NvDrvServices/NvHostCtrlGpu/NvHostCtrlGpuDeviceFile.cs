@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu
 {
-    class NvHostCtrlGpuDeviceFile : NvDeviceFile
+    class NvHostCtrlGpuDeviceFile : NvDeviceFile<NvHostCtrlGpuDeviceFile>
     {
         private static readonly Stopwatch _pTimer = new();
         private static readonly double _ticksToNs = (1.0 / Stopwatch.Frequency) * 1_000_000_000;
