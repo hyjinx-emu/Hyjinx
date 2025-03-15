@@ -119,7 +119,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
         {
             lock (_lock)
             {
-                Logger.Info?.Print(LogClass.SurfaceFlinger, $"Creating layer {layerId}");
+                LogCreatingLayer(layerId);
 
                 BufferQueueCore core = BufferQueue.CreateBufferQueue(_device, pid, out BufferQueueProducer producer, out BufferQueueConsumer consumer);
 
@@ -139,6 +139,11 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 });
             }
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Creating layer {layerId}")]
+        private partial void LogCreatingLayer(long layerId);
 
         public Vi.ResultCode OpenLayer(ulong pid, long layerId, out IBinder producer)
         {

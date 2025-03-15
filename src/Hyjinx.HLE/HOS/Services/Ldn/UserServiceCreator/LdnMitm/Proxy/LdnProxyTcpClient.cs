@@ -29,8 +29,13 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
         protected override void OnConnected()
         {
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTCPClient connected!");
+            LogClientConnected();
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPClient connected!")]
+        private partial void LogClientConnected();
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
@@ -56,7 +61,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
             if (IsConnecting && !IsConnected)
             {
-                Logger.Info?.PrintMsg(LogClass.ServiceLdn, "LdnProxyTCPClient needs to connect before sending packets. Waiting...");
+                LogConnectBeforeSendingPackets();
 
                 while (IsConnecting && !IsConnected)
                 {
@@ -66,6 +71,11 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
             return SendAsync(data);
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPClient needs to connect before sending packets. Waiting...")]
+        private partial void LogConnectBeforeSendingPackets();
 
         protected override void OnError(SocketError error)
         {

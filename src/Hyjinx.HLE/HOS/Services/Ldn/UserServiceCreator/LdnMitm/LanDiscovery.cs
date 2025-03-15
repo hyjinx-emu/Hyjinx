@@ -569,7 +569,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             IPAddress address = NetworkHelpers.ConvertUint(networkInfo.Ldn.Nodes[0].Ipv4Address);
 
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"Connecting to host: {address}");
+            LogConnectingToHost(_logger, address);
 
             if (!InitTcp(false, address))
             {
@@ -593,6 +593,11 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             return _apConnected.WaitOne(FailureTimeout) ? NetworkError.None : NetworkError.ConnectTimeout;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Connecting to host: {address}")]
+        private static partial void LogConnectingToHost(ILogger logger, IPAddress address);
 
         public void Dispose()
         {

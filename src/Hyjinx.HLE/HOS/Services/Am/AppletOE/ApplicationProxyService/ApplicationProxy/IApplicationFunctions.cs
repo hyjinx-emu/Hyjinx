@@ -14,15 +14,17 @@ using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationPro
 using Hyjinx.HLE.HOS.Services.Sdb.Pdm.QueryService;
 using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Numerics;
 using System.Threading;
 using AccountUid = Hyjinx.HLE.HOS.Services.Account.Acc.UserId;
 using ApplicationId = LibHac.Ncm.ApplicationId;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy
 {
-    class IApplicationFunctions : IpcService<IApplicationFunctions>
+    partial class IApplicationFunctions : IpcService<IApplicationFunctions>
     {
         private long _defaultSaveDataSize = 200000000;
         private long _defaultJournalSaveDataSize = 200000000;
@@ -155,7 +157,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
                 SystemLanguage newLanguage = Enum.Parse<SystemLanguage>(Enum.GetName(typeof(TitleLanguage), firstSupported));
                 desiredLanguageCode = SystemStateMgr.GetLanguageCode((int)newLanguage);
 
-                Logger.Info?.Print(LogClass.ServiceAm, $"Application doesn't support configured language. Using {newLanguage}");
+                LogLanguageNotSupported(newLanguage);
             }
 
             context.ResponseData.Write(desiredLanguageCode);
@@ -163,16 +165,26 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
             return ResultCode.Success;
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Application doesn't support configured language. Using {language}")]
+        private partial void LogLanguageNotSupported(SystemLanguage language);
+
         [CommandCmif(22)]
         // SetTerminateResult(u32)
         public ResultCode SetTerminateResult(ServiceCtx context)
         {
             LibHac.Result result = new(context.RequestData.ReadUInt32());
 
-            Logger.Info?.Print(LogClass.ServiceAm, $"Result = 0x{result.Value:x8} ({result.ToStringWithName()}).");
+            LogTerminationResult(result.Value, result.ToStringWithName());
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Result = 0x{value:X8} ({name}).")]
+        private partial void LogTerminationResult(uint value, string name);
 
         [CommandCmif(23)]
         // GetDisplayVersion() -> nn::oe::DisplayVersion

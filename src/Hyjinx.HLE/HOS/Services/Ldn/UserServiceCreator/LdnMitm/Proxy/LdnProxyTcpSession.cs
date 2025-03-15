@@ -40,15 +40,25 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
         protected override void OnConnected()
         {
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, "LdnProxyTCPSession connected!");
+            LogSessionConnected();
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPSession connected!")]
+        private partial void LogSessionConnected();
 
         protected override void OnDisconnected()
         {
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, "LdnProxyTCPSession disconnected!");
+            LogSessionDisconnected();
 
             _protocol.InvokeDisconnectStation(this);
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPSession disconnected!")]
+        private partial void LogSessionDisconnected();
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {

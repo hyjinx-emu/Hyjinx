@@ -3,12 +3,14 @@ using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd;
 using Hyjinx.HLE.HOS.Services.Ssl.Types;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 {
-    class ISslConnection : IpcService<ISslConnection>, IDisposable
+    internal partial class ISslConnection : IpcService<ISslConnection>, IDisposable
     {
         private bool _doNotClockSocket;
         private bool _getServerCertChain;
@@ -95,10 +97,15 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             _hostName = Encoding.ASCII.GetString(hostNameData).Trim('\0');
 
-            Logger.Info?.Print(LogClass.ServiceSsl, _hostName);
+            LogHostName(_hostName);
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
+            Message = "Setting host name to: {hostName}")]
+        private partial void LogHostName(string hostName);
 
         [CommandCmif(2)]
         // SetVerifyOption(nn::ssl::sf::VerifyOption)
@@ -152,8 +159,8 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             context.ResponseData.Write((uint)_hostName.Length);
 
-            Logger.Info?.Print(LogClass.ServiceSsl, _hostName);
-
+            LogHostName(_hostName);
+            
             return ResultCode.Success;
         }
 

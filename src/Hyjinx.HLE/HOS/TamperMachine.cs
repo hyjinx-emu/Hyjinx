@@ -3,24 +3,28 @@ using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.HOS.Services.Hid;
 using Hyjinx.HLE.HOS.Tamper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS
 {
-    public class TamperMachine
+    public partial class TamperMachine
     {
         // Atmosphere specifies a delay of 83 milliseconds between the execution of the last
         // cheat and the re-execution of the first one.
         private const int TamperMachineSleepMs = 1000 / 12;
 
+        private static readonly ILogger<TamperMachine> _logger = Logger.DefaultLoggerFactory.CreateLogger<TamperMachine>();
+        
         private Thread _tamperThread = null;
         private readonly ConcurrentQueue<ITamperProgram> _programs = new();
         private long _pressedKeys = 0;
         private readonly Dictionary<string, ITamperProgram> _programDictionary = new();
-
+        
         private void Activate()
         {
             if (_tamperThread == null || !_tamperThread.IsAlive)
@@ -89,9 +93,14 @@ namespace Hyjinx.HLE.HOS
             return process.State != ProcessState.Crashed && process.State != ProcessState.Exiting && process.State != ProcessState.Exited;
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "TamperMachine thread running")]
+        private partial void LogThreadStarted();
+        
         private void TamperRunner()
         {
-            Logger.Info?.Print(LogClass.TamperMachine, "TamperMachine thread running");
+            LogThreadStarted();
 
             int sleepCounter = 0;
 
@@ -111,13 +120,17 @@ namespace Hyjinx.HLE.HOS
                 if (!AdvanceTamperingsQueue())
                 {
                     // No more work to be done.
-
-                    Logger.Info?.Print(LogClass.TamperMachine, "TamperMachine thread exiting");
+                    LogThreadExiting();
 
                     return;
                 }
             }
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "TamperMachine thread exiting")]
+        private partial void LogThreadExiting();
 
         private bool AdvanceTamperingsQueue()
         {

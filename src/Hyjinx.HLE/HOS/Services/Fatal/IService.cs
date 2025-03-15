@@ -1,13 +1,15 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Fatal.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Fatal
 {
     [Service("fatal:u")]
-    class IService : IpcService<IService>
+    partial class IService : IpcService<IService>
     {
         public IService(ServiceCtx context) { }
 
@@ -137,11 +139,16 @@ namespace Hyjinx.HLE.HOS.Services.Fatal
                 }
             }
 
-            Logger.Info?.Print(LogClass.ServiceFatal, errorReport.ToString());
+            LogErrorReport(errorReport.ToString());
 
             context.Device.System.KernelContext.Syscall.Break((ulong)resultCode);
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceFatal, EventName = nameof(LogClass.ServiceFatal),
+            Message = "{message}")]
+        private partial void LogErrorReport(string message);
     }
 }
