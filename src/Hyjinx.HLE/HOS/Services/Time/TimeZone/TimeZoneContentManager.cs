@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using TimeZoneRuleBox = Hyjinx.Common.Memory.Box<Hyjinx.HLE.HOS.Services.Time.TimeZone.TimeZoneRule>;
 
 namespace Hyjinx.HLE.HOS.Services.Time.TimeZone

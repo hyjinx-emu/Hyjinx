@@ -29,7 +29,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ApplicationId = LibHac.Ncm.ApplicationId;
 using Path = System.IO.Path;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Ava.Common
 {

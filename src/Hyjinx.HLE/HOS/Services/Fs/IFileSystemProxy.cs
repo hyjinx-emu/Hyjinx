@@ -20,7 +20,6 @@ using static Hyjinx.HLE.Utilities.StringUtils;
 using GameCardHandle = System.UInt32;
 using IFileSystem = LibHac.FsSrv.Sf.IFileSystem;
 using IStorage = LibHac.FsSrv.Sf.IStorage;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Fs
 {

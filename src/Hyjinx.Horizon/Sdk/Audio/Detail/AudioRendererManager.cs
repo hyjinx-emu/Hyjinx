@@ -5,7 +5,6 @@ using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Applet;
 using Hyjinx.Horizon.Sdk.Sf;
 using Microsoft.Extensions.Logging;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Horizon.Sdk.Audio.Detail
 {

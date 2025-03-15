@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Audio.Backends.CompatLayer
 {

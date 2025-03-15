@@ -9,7 +9,6 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 using static Hyjinx.Graphics.Vic.Image.SurfaceCommon;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Vic.Image
 {

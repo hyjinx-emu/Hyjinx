@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Vulkan
 {

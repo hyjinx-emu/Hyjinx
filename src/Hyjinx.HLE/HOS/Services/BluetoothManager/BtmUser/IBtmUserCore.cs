@@ -3,7 +3,6 @@ using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
 using Microsoft.Extensions.Logging;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser
 {

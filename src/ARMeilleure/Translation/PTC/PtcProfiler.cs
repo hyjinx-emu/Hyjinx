@@ -16,7 +16,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Timers;
 using static ARMeilleure.Translation.PTC.PtcFormatter;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using Timer = System.Timers.Timer;
 
 namespace ARMeilleure.Translation.PTC

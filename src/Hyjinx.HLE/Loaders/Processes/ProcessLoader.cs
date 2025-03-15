@@ -14,7 +14,6 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using Path = System.IO.Path;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Processes
 {

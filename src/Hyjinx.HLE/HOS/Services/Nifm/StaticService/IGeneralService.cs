@@ -8,7 +8,6 @@ using System;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
 {

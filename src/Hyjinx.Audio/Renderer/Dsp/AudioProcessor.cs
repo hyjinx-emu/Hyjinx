@@ -6,7 +6,6 @@ using Hyjinx.Common.Logging;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Audio.Renderer.Dsp
 {

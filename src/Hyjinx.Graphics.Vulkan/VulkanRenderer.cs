@@ -15,7 +15,6 @@ using System.Runtime.InteropServices;
 using Format = Hyjinx.Graphics.GAL.Format;
 using PrimitiveTopology = Hyjinx.Graphics.GAL.PrimitiveTopology;
 using SamplerCreateInfo = Hyjinx.Graphics.GAL.SamplerCreateInfo;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Vulkan
 {

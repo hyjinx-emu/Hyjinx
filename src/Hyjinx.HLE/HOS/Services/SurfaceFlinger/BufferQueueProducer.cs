@@ -7,7 +7,6 @@ using Hyjinx.HLE.HOS.Services.Time.Clock;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {

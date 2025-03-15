@@ -8,7 +8,6 @@ using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.Horizon.Common;
 using Microsoft.Extensions.Logging;
 using System;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Processes
 {

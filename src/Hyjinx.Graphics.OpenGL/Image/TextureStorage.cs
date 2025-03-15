@@ -2,7 +2,6 @@ using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.GAL;
 using Microsoft.Extensions.Logging;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.OpenGL.Image
 {

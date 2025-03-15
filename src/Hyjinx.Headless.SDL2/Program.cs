@@ -39,7 +39,6 @@ using System.Threading;
 using ConfigGamepadInputId = Hyjinx.Common.Configuration.Hid.Controller.GamepadInputId;
 using ConfigStickInputId = Hyjinx.Common.Configuration.Hid.Controller.StickInputId;
 using Key = Hyjinx.Common.Configuration.Hid.Key;
-using LogLevel = Hyjinx.Common.Logging.LogLevel;
 
 namespace Hyjinx.Headless.SDL2
 {

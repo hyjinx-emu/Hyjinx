@@ -9,7 +9,6 @@ using Hyjinx.Graphics.Texture;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Gpu.Engine.Threed
 {

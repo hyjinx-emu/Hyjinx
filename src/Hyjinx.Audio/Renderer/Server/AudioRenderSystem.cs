@@ -23,7 +23,6 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Threading;
 using CpuAddress = System.UInt64;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Audio.Renderer.Server
 {

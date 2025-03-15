@@ -20,7 +20,6 @@ using System.Numerics;
 using System.Threading;
 using AccountUid = Hyjinx.HLE.HOS.Services.Account.Acc.UserId;
 using ApplicationId = LibHac.Ncm.ApplicationId;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy
 {

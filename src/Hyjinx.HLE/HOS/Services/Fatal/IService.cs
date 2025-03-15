@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Fatal
 {

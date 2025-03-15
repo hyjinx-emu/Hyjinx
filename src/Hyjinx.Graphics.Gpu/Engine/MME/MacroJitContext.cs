@@ -2,7 +2,6 @@ using Hyjinx.Common.Logging;
 using Hyjinx.Graphics.Device;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Gpu.Engine.MME
 {

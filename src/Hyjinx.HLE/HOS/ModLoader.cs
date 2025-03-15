@@ -21,7 +21,6 @@ using System.IO;
 using System.Linq;
 using LazyFile = Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy.LazyFile;
 using Path = System.IO.Path;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS
 {

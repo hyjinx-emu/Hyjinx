@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using static Hyjinx.HLE.HOS.ModLoader;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {

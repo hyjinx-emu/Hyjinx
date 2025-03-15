@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Nvdec
 {

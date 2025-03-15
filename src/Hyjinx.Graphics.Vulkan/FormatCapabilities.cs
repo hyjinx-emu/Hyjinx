@@ -5,7 +5,6 @@ using Silk.NET.Vulkan;
 using System;
 using Format = Hyjinx.Graphics.GAL.Format;
 using VkFormat = Silk.NET.Vulkan.Format;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Vulkan
 {

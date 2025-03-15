@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Gpu.Shader
 {

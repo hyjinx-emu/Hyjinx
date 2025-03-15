@@ -4,7 +4,6 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {

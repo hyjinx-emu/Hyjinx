@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Kernel.Threading
 {

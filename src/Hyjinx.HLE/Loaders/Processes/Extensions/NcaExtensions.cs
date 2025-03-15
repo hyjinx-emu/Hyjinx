@@ -20,7 +20,6 @@ using System.Linq;
 using ApplicationId = LibHac.Ncm.ApplicationId;
 using ContentType = LibHac.Ncm.ContentType;
 using Path = System.IO.Path;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {

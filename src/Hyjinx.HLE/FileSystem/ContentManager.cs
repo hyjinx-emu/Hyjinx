@@ -23,7 +23,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using Path = System.IO.Path;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.FileSystem
 {

@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
-using LogLevel = Hyjinx.Common.Logging.LogLevel;
 
 namespace Hyjinx.UI.Common.Logging;
 

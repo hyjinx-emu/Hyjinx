@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using static Hyjinx.Graphics.Gpu.Shader.ShaderCache;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
 {

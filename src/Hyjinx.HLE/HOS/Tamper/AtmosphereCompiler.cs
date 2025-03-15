@@ -5,7 +5,6 @@ using Hyjinx.HLE.HOS.Tamper.Operations;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Tamper
 {

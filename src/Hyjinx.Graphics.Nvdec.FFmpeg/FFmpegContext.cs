@@ -3,7 +3,6 @@ using Hyjinx.Graphics.Nvdec.FFmpeg.Native;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Nvdec.FFmpeg
 {

@@ -10,7 +10,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;
 using static SDL2.SDL;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Audio.Backends.SDL2
 {

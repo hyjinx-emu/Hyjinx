@@ -4,7 +4,6 @@ using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Memory;
 using Microsoft.Extensions.Logging;
 using System;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
 {

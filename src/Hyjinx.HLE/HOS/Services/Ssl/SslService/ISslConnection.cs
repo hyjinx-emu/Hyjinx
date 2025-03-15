@@ -6,7 +6,6 @@ using Hyjinx.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 {

@@ -4,7 +4,6 @@ using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Shader.Translation;
 using Microsoft.Extensions.Logging;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Gpu.Shader
 {

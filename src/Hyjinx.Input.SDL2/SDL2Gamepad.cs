@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using static SDL2.SDL;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using StickInputId = Hyjinx.Input.StickInputId;
 
 namespace Hyjinx.Input.SDL2

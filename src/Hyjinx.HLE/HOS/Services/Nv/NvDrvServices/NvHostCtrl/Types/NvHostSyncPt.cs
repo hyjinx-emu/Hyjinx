@@ -3,7 +3,6 @@ using Hyjinx.Graphics.Gpu.Synchronization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {

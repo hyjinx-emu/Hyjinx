@@ -19,7 +19,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using static ARMeilleure.Translation.PTC.PtcFormatter;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace ARMeilleure.Translation.PTC
 {

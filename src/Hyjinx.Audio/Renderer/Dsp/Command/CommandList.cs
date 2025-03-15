@@ -8,7 +8,6 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Audio.Renderer.Dsp.Command
 {

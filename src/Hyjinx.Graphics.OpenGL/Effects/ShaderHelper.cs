@@ -1,7 +1,6 @@
 using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Logging;
 using Microsoft.Extensions.Logging;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.OpenGL.Effects
 {

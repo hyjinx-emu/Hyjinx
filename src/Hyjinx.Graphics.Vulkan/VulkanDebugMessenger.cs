@@ -6,7 +6,6 @@ using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;
 using System;
 using System.Runtime.InteropServices;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Vulkan
 {

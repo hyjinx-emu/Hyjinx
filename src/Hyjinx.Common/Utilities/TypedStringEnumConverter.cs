@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Common.Utilities
 {

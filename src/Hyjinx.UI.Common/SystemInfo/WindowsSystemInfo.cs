@@ -4,7 +4,6 @@ using System;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.UI.Common.SystemInfo
 {

@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 using System.Threading;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {

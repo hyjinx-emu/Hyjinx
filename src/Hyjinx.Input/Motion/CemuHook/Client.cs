@@ -15,7 +15,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Threading.Tasks;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Input.Motion.CemuHook
 {

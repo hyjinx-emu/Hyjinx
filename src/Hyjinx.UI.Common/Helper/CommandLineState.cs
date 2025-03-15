@@ -2,7 +2,6 @@ using Hyjinx.Common.Logging;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.IO;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.UI.Common.Helper
 {

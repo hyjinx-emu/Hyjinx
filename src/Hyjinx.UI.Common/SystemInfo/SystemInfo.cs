@@ -5,7 +5,6 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.UI.Common.SystemInfo
 {

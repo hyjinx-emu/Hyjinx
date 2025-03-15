@@ -12,7 +12,6 @@ using FrontFace = Silk.NET.Vulkan.FrontFace;
 using IndexType = Silk.NET.Vulkan.IndexType;
 using PrimitiveTopology = Silk.NET.Vulkan.PrimitiveTopology;
 using StencilOp = Silk.NET.Vulkan.StencilOp;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Graphics.Vulkan
 {

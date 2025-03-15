@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 {

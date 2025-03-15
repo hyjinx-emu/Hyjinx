@@ -3,7 +3,6 @@ using Hyjinx.HLE.HOS.Kernel.Threading;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {

@@ -15,7 +15,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Text.Json.Serialization;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.UI.App.Common
 {

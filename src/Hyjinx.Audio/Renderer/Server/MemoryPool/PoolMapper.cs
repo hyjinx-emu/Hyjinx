@@ -8,7 +8,6 @@ using static Hyjinx.Audio.Renderer.Common.BehaviourParameter;
 
 using CpuAddress = System.UInt64;
 using DspAddress = System.UInt64;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.Audio.Renderer.Server.MemoryPool
 {

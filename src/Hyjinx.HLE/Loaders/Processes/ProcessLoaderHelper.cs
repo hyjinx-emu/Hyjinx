@@ -25,7 +25,6 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using ApplicationId = LibHac.Ncm.ApplicationId;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Hyjinx.HLE.Loaders.Processes
 {
