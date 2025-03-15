@@ -48,9 +48,9 @@ public static class LoggerModule
         Logger.Initialize(LoggingServices.GetRequiredService<ILoggerFactory>());
         Logger.SetEnable(LogLevel.Trace, false);
         Logger.SetEnable(LogLevel.Debug, true);
-        Logger.SetEnable(LogLevel.Info, true);
+        // Logger.SetEnable(LogLevel.Info, true);
         Logger.SetEnable(LogLevel.Warning, true);
-        Logger.SetEnable(LogLevel.Error, true);
+        // Logger.SetEnable(LogLevel.Error, true);
         Logger.SetEnable(LogLevel.Stub, false);
         
         // Logger.SetEnable(LogLevel.Trace, ConfigurationState.Instance.Logger.EnableTrace.Value);
@@ -73,20 +73,20 @@ public static class LoggerModule
         Logger.SetEnable(LogLevel.Stub, e.NewValue);
     }
 
-    private static void ReloadEnableInfo(object? sender, ReactiveEventArgs<bool> e)
-    {
-        Logger.SetEnable(LogLevel.Info, e.NewValue);
-    }
+    // private static void ReloadEnableInfo(object? sender, ReactiveEventArgs<bool> e)
+    // {
+    //     Logger.SetEnable(LogLevel.Info, e.NewValue);
+    // }
 
     private static void ReloadEnableWarning(object? sender, ReactiveEventArgs<bool> e)
     {
         Logger.SetEnable(LogLevel.Warning, e.NewValue);
     }
 
-    private static void ReloadEnableError(object? sender, ReactiveEventArgs<bool> e)
-    {
-        Logger.SetEnable(LogLevel.Error, e.NewValue);
-    }
+    // private static void ReloadEnableError(object? sender, ReactiveEventArgs<bool> e)
+    // {
+    //     Logger.SetEnable(LogLevel.Error, e.NewValue);
+    // }
 
     private static void ReloadEnableTrace(object? sender, ReactiveEventArgs<bool> e)
     {
