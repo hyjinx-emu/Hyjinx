@@ -12,6 +12,7 @@ on:
       - '.github/workflows/*.yml'
 
 permissions:
+  contents: read
   pull-requests: write
   checks: write
 
