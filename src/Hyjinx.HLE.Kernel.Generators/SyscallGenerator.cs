@@ -33,6 +33,7 @@ namespace Hyjinx.HLE.Kernel.Generators
         private const string TypeKernelResultName = "KernelResult";
         private const string TypeResult = NamespaceHorizonCommon + "." + TypeResultName;
         private const string TypeExecutionContext = "IExecutionContext";
+        private const bool IsLoggingEnabled = false;
 
         private static readonly string[] _expectedResults = new string[]
         {
@@ -137,13 +138,23 @@ namespace Hyjinx.HLE.Kernel.Generators
             generator.AppendLine($"using {NamespaceKernel}.Process;");
             generator.AppendLine($"using {NamespaceKernel}.Threading;");
             generator.AppendLine($"using {NamespaceHorizonCommon};");
-            generator.AppendLine($"using Microsoft.Extensions.Logging;");
+
+            if (IsLoggingEnabled)
+            {
+                generator.AppendLine($"using Microsoft.Extensions.Logging;");
+            }
+
             generator.AppendLine("using System;");
             generator.AppendLine();
             generator.EnterScope($"namespace {ClassNamespace}");
             generator.EnterScope($"static class {ClassName}");
-            generator.AppendLine($"private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof({ClassName}));");
-            generator.AppendLine();
+
+            if (IsLoggingEnabled)
+            {
+                generator.AppendLine($"private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof({ClassName}));");
+                generator.AppendLine();
+            }
+            
             GenerateResultCheckHelper(generator);
             generator.AppendLine();
 
@@ -261,7 +272,10 @@ namespace Hyjinx.HLE.Kernel.Generators
                 args[index++] = argName;
             }
 
-            GenerateLogPrintBeforeCall(generator, method.Identifier.Text, logInArgs);
+            if (IsLoggingEnabled)
+            {
+                GenerateLogPrintBeforeCall(generator, method.Identifier.Text, logInArgs);
+            }
 
             string argsList = string.Join(", ", args);
             int returnRegisterIndex = 0;
@@ -309,7 +323,10 @@ namespace Hyjinx.HLE.Kernel.Generators
                 generator.AppendLine($"context.SetX({returnRegisterIndex++}, 0);");
             }
 
-            GenerateLogPrintAfterCall(generator, method.Identifier.Text, logOutArgs, result, canonicalReturnTypeName);
+            if (IsLoggingEnabled)
+            {
+                GenerateLogPrintAfterCall(generator, method.Identifier.Text, logOutArgs, result, canonicalReturnTypeName);
+            }
 
             generator.LeaveScope();
             generator.AppendLine();
@@ -351,7 +368,10 @@ namespace Hyjinx.HLE.Kernel.Generators
                 args[index++] = argName;
             }
 
-            GenerateLogPrintBeforeCall(generator, method.Identifier.Text, logInArgs);
+            if (IsLoggingEnabled)
+            {
+                GenerateLogPrintBeforeCall(generator, method.Identifier.Text, logInArgs);
+            }
 
             string argsList = string.Join(", ", args);
             int returnRegisterIndex = 0;
@@ -389,7 +409,10 @@ namespace Hyjinx.HLE.Kernel.Generators
                 generator.AppendLine($"context.SetX({returnRegisterIndex++}, 0);");
             }
 
-            GenerateLogPrintAfterCall(generator, method.Identifier.Text, logOutArgs, result, canonicalReturnTypeName);
+            if (IsLoggingEnabled)
+            {
+                GenerateLogPrintAfterCall(generator, method.Identifier.Text, logOutArgs, result, canonicalReturnTypeName);
+            }
 
             generator.LeaveScope();
             generator.AppendLine();
