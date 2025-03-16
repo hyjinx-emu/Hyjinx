@@ -212,7 +212,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
 
                 context.Memory.Write(replyPos, settingBuffer);
 
-                Logger.Debug?.Print(LogClass.ServiceSet, $"{askedSetting} set value: {nxSetting} as {nxSetting.GetType()}");
+                LogValueSet(askedSetting, nxSetting, nxSetting.GetType());
             }
             else
             {
@@ -221,6 +221,11 @@ namespace Hyjinx.HLE.HOS.Services.Settings
             
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
+            Message = "{askedSetting} set value: {nxSetting} as {nxSettingType}")]
+        private partial void LogValueSet(string askedSetting, object nxSetting, Type nxSettingType);
 
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),

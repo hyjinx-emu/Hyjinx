@@ -131,6 +131,11 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             Message = "LanDiscovery Initialize: InitUdp failed.")]
         private partial void LogInitUdpFailed();
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Host IP: {hostAddress}")]
+        private partial void LogHostAddress(IPAddress hostAddress);
+
         protected void OnSyncNetwork(NetworkInfo info)
         {
             bool updated = false;
@@ -142,7 +147,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                     NetworkInfo = info;
                     updated = true;
 
-                    Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"Host IP: {NetworkHelpers.ConvertUint(info.Ldn.Nodes[0].Ipv4Address)}");
+                    LogHostAddress(NetworkHelpers.ConvertUint(info.Ldn.Nodes[0].Ipv4Address));
                 }
             }
 
@@ -263,9 +268,15 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             return macAddress;
         }
 
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LanDiscovery InitTcp: IP: {address}, listening: {listening}")]
+        private partial void LogLanDiscoveryInit(IPAddress address, bool listening);
+        
         public bool InitTcp(bool listening, IPAddress address = null, int port = DefaultPort)
         {
-            Logger.Debug?.PrintMsg(LogClass.ServiceLdn, $"LanDiscovery InitTcp: IP: {address}, listening: {listening}");
+            LogLanDiscoveryInit(address, listening);
 
             if (_tcp != null)
             {

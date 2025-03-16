@@ -1,10 +1,14 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Tamper.Operations;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.HLE.HOS.Tamper
 {
-    class Register : IOperand
+    partial class Register : IOperand
     {
+        private static readonly ILogger<Register> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<Register>();
+        
         private ulong _register = 0;
         private readonly string _alias;
 
@@ -20,9 +24,14 @@ namespace Hyjinx.HLE.HOS.Tamper
 
         public void Set<T>(T value) where T : unmanaged
         {
-            Logger.Debug?.Print(LogClass.TamperMachine, $"{_alias}: {value}");
+            LogValueSet(_alias, value);
 
             _register = (ulong)(dynamic)value;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "{alias}: {value}")]
+        private partial void LogValueSet(string alias, object value);
     }
 }

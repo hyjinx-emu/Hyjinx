@@ -125,9 +125,10 @@ namespace Hyjinx.UI.Common.Helper
                     {
                         return true;
                     }
-                    Logger.Debug?.Print(LogClass.Application, $"Removing type association {ext}");
+                    
+                    _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Removing type association {ext}", ext);
                     Registry.CurrentUser.DeleteSubKeyTree(keyString);
-                    Logger.Debug?.Print(LogClass.Application, $"Removed type association {ext}");
+                    _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Removed type association {ext}", ext);
                 }
                 else
                 {
@@ -138,10 +139,10 @@ namespace Hyjinx.UI.Common.Helper
                         return false;
                     }
 
-                    Logger.Debug?.Print(LogClass.Application, $"Adding type association {ext}");
+                    _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Adding type association {ext}", ext);
                     using var openCmd = key.CreateSubKey(@"shell\open\command");
                     openCmd.SetValue("", $"\"{Environment.ProcessPath}\" \"%1\"");
-                    Logger.Debug?.Print(LogClass.Application, $"Added type association {ext}");
+                    _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Added type association {ext}", ext);
 
                 }
 

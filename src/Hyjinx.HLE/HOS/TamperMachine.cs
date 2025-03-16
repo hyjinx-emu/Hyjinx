@@ -131,6 +131,11 @@ namespace Hyjinx.HLE.HOS
             Message = "TamperMachine thread exiting")]
         private partial void LogThreadExiting();
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Running tampering program {name}")]
+        private partial void LogRunningTamperingProgram(string name);
+
         private bool AdvanceTamperingsQueue()
         {
             if (!_programs.TryDequeue(out ITamperProgram program))
@@ -151,7 +156,7 @@ namespace Hyjinx.HLE.HOS
             // Re-enqueue the tampering program because the process is still valid.
             _programs.Enqueue(program);
 
-            Logger.Debug?.Print(LogClass.TamperMachine, $"Running tampering program {program.Name}");
+            LogRunningTamperingProgram(program.Name);
 
             try
             {
@@ -164,21 +169,26 @@ namespace Hyjinx.HLE.HOS
                 {
                     program.TampersCodeMemory = true;
 
-                    Logger.Warning?.Print(LogClass.TamperMachine, $"Tampering program {program.Name} modifies code memory so it may not work properly");
+                    LogTamperingProgramModifiesMemory(program.Name);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Debug?.Print(LogClass.TamperMachine, $"The tampering program {program.Name} crashed, this can happen while the game is starting");
-
-                if (!string.IsNullOrEmpty(ex.Message))
-                {
-                    Logger.Debug?.Print(LogClass.TamperMachine, ex.Message);
-                }
+                LogTamperingProgramCrashedDuringStartup(program.Name, ex);
             }
 
             return true;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Tampering program {name} modifies code memory so it may not work properly.")]
+        private partial void LogTamperingProgramModifiesMemory(string name);
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "The tampering program {name} crashed, this can happen while the game is starting.")]
+        private partial void LogTamperingProgramCrashedDuringStartup(string name, Exception exception);
 
         public void UpdateInput(List<GamepadInput> gamepadInputs)
         {

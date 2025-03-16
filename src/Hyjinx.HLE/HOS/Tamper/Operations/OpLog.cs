@@ -1,9 +1,12 @@
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.HLE.HOS.Tamper.Operations
 {
     class OpLog<T> : IOperation where T : unmanaged
     {
+        private static readonly ILogger<OpLog<T>> _logger = Logger.DefaultLoggerFactory.CreateLogger<OpLog<T>>();
+        
         readonly int _logId;
         readonly IOperand _source;
 
@@ -15,7 +18,8 @@ namespace Hyjinx.HLE.HOS.Tamper.Operations
 
         public void Execute()
         {
-            Logger.Debug?.Print(LogClass.TamperMachine, $"Tamper debug log id={_logId} value={(dynamic)_source.Get<T>():X}");
+            _logger.LogDebug(new EventId((int)LogClass.TamperMachine, nameof(LogClass.TamperMachine)),
+                "Tamper debug log id={id} value={value:X}", _logId, _source.Get<T>());
         }
     }
 }

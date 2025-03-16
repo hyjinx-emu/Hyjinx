@@ -63,7 +63,7 @@ namespace Hyjinx.HLE.HOS.Applets
         private bool _canAcceptController = false;
         private KeyboardInputMode _inputMode = KeyboardInputMode.ControllerAndKeyboard;
 
-        private readonly ILogger<SoftwareKeyboardApplet> _logger = Logger.DefaultLoggerFactory.CreateLogger<SoftwareKeyboardApplet>();
+        private static readonly ILogger<SoftwareKeyboardApplet> _logger = Logger.DefaultLoggerFactory.CreateLogger<SoftwareKeyboardApplet>();
         private readonly object _lock = new();
 
         public event EventHandler AppletStateChanged;
@@ -331,6 +331,11 @@ namespace Hyjinx.HLE.HOS.Applets
                 throw new InvalidOperationException("Software Keyboard is in an invalid state.");
             }
         }
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Keyboard received command {request} in state {state}")]
+        private partial void LogKeyboardReceivedCommand(InlineKeyboardRequest request, InlineKeyboardState state);
 
         private void OnBackgroundInteractiveData(byte[] data)
         {
@@ -345,7 +350,7 @@ namespace Hyjinx.HLE.HOS.Applets
 
             long remaining;
 
-            Logger.Debug?.Print(LogClass.ServiceAm, $"Keyboard received command {request} in state {_backgroundState}");
+            LogKeyboardReceivedCommand(request, _backgroundState);
 
             switch (request)
             {
@@ -455,7 +460,7 @@ namespace Hyjinx.HLE.HOS.Applets
                         _cursorBegin = newCalc.CursorPos;
                         updateText = true;
 
-                        Logger.Debug?.Print(LogClass.ServiceAm, $"Cursor position set to {_cursorBegin}");
+                        LogCursorPositionChanged(_cursorBegin);
                     }
 
                     if ((newCalc.Flags & KeyboardCalcFlags.SetInputText) != 0)
@@ -463,14 +468,14 @@ namespace Hyjinx.HLE.HOS.Applets
                         _textValue = newCalc.InputText;
                         updateText = true;
 
-                        Logger.Debug?.Print(LogClass.ServiceAm, $"Input text set to {_textValue}");
-                    }
+                        LogInputTextChanged(_textValue!);
+                    } 
 
                     if ((newCalc.Flags & KeyboardCalcFlags.SetUtf8Mode) != 0)
                     {
                         _encoding = newCalc.UseUtf8 ? Encoding.UTF8 : Encoding.Default;
 
-                        Logger.Debug?.Print(LogClass.ServiceAm, $"Encoding set to {_encoding}");
+                        LogEncodingChanged(_encoding);
                     }
 
                     if (updateText)
@@ -506,6 +511,26 @@ namespace Hyjinx.HLE.HOS.Applets
             }
         }
         
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Cursor position set to {pos}")]
+        private partial void LogCursorPositionChanged(int pos);
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Input text set to '{text}'.")]
+        private partial void LogInputTextChanged(string text);
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Encoding set to {encoding}.")]
+        private partial void LogEncodingChanged(Encoding encoding);
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Activating software keyboard frontend.")]
+        private partial void LogActivatingSoftwareKeyboard();
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Received invalid Software Keyboard Calc of {remaining} bytes.")]
@@ -513,7 +538,7 @@ namespace Hyjinx.HLE.HOS.Applets
 
         private void ActivateFrontend()
         {
-            Logger.Debug?.Print(LogClass.ServiceAm, "Activating software keyboard frontend");
+            LogActivatingSoftwareKeyboard();
 
             _inputMode = KeyboardInputMode.ControllerAndKeyboard;
 
@@ -530,9 +555,14 @@ namespace Hyjinx.HLE.HOS.Applets
             _keyboardRenderer.UpdateTextState(null, null, null, null, true);
         }
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Deactivating software keyboard frontend.")]
+        private partial void LogDeactivatingSoftwareKeyboard();
+        
         private void DeactivateFrontend()
         {
-            Logger.Debug?.Print(LogClass.ServiceAm, "Deactivating software keyboard frontend");
+            LogDeactivatingSoftwareKeyboard();
 
             _inputMode = KeyboardInputMode.ControllerAndKeyboard;
             _canAcceptController = false;
@@ -541,9 +571,14 @@ namespace Hyjinx.HLE.HOS.Applets
             _dynamicTextInputHandler.SetText(_textValue, _cursorBegin);
         }
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Destroying software keyboard frontend.")]
+        private partial void LogDestroyingSoftwareKeyboard();
+        
         private void DestroyFrontend()
         {
-            Logger.Debug?.Print(LogClass.ServiceAm, "Destroying software keyboard frontend");
+            LogDestroyingSoftwareKeyboard();
 
             _keyboardRenderer?.Dispose();
             _keyboardRenderer = null;
@@ -666,6 +701,11 @@ namespace Hyjinx.HLE.HOS.Applets
             }
         }
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Updating keyboard text to {text} and cursor position to {pos}")]
+        private partial void LogSettingKeyboardAndCursor(string text, int pos);
+        
         private void PushUpdatedState(string text, int cursorBegin, KeyboardResult result)
         {
             _lastResult = result;
@@ -683,7 +723,7 @@ namespace Hyjinx.HLE.HOS.Applets
 
             if (accept == false && cancel == false)
             {
-                Logger.Debug?.Print(LogClass.ServiceAm, $"Updating keyboard text to {text} and cursor position to {cursorBegin}");
+                LogSettingKeyboardAndCursor(text, _cursorBegin);
 
                 PushChangedString(text, (uint)cursorBegin, _backgroundState);
             }
@@ -697,20 +737,20 @@ namespace Hyjinx.HLE.HOS.Applets
 
                 if (accept)
                 {
-                    Logger.Debug?.Print(LogClass.ServiceAm, $"Sending keyboard OK with text {text}");
+                    LogSendingKeyboardOk(text);
 
                     DecidedEnter(text, _backgroundState);
                 }
                 else if (cancel)
                 {
-                    Logger.Debug?.Print(LogClass.ServiceAm, "Sending keyboard Cancel");
+                    LogSendingKeyboardCancel();
 
                     DecidedCancel(_backgroundState);
                 }
 
                 _interactiveSession.Push(InlineResponses.Default(_backgroundState));
 
-                Logger.Debug?.Print(LogClass.ServiceAm, $"Resetting state of the keyboard to {_backgroundState}");
+                LogResettingKeyboardState(_backgroundState);
 
                 // Set the state of the applet to 'Initialized' as it is the only known state so far
                 // that does not soft-lock the keyboard after use.
@@ -720,6 +760,21 @@ namespace Hyjinx.HLE.HOS.Applets
                 _interactiveSession.Push(InlineResponses.Default(_backgroundState));
             }
         }
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Sending keyboard OK with text '{text}'.")]
+        private partial void LogSendingKeyboardOk(string text);
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Sending keyboard cancel.")]
+        private partial void LogSendingKeyboardCancel();
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Resetting state of the keyboard to '{state}'.")]
+        private partial void LogResettingKeyboardState(InlineKeyboardState state);
 
         private void PushChangedString(string text, uint cursor, InlineKeyboardState state)
         {

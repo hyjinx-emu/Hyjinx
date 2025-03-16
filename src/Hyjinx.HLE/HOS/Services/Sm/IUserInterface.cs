@@ -4,6 +4,7 @@ using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Ipc;
 using Hyjinx.HLE.HOS.Services.Apm;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -173,6 +174,11 @@ namespace Hyjinx.HLE.HOS.Services.Sm
             return RegisterService(context, name, isLight, maxSessions);
         }
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceSm, EventName = nameof(LogClass.ServiceSm),
+            Message = "Register '{name}'.")]
+        private partial void LogRegisteredService(string name);
+
         private ResultCode RegisterService(ServiceCtx context, string name, bool isLight, int maxSessions)
         {
             if (string.IsNullOrEmpty(name))
@@ -180,7 +186,7 @@ namespace Hyjinx.HLE.HOS.Services.Sm
                 return ResultCode.InvalidName;
             }
 
-            Logger.Debug?.Print(LogClass.ServiceSm, $"Register \"{name}\".");
+            LogRegisteredService(name);
 
             KPort port = new(context.Device.System.KernelContext, maxSessions, isLight, null);
 

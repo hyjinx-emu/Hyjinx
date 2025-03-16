@@ -17,7 +17,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
         {
             Core = core;
         }
-
+        
         public Status AcquireBuffer(out BufferItem bufferItem, ulong expectedPresent)
         {
             lock (Core.Lock)
@@ -35,9 +35,9 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 if (numAcquiredBuffers > Core.MaxAcquiredBufferCount)
                 {
                     bufferItem = null;
-
-                    Logger.Debug?.Print(LogClass.SurfaceFlinger, $"Max acquired buffer count reached: {numAcquiredBuffers} (max: {Core.MaxAcquiredBufferCount})");
-
+                    
+                    LogMaxBufferCountReached(numAcquiredBuffers, Core.MaxAcquiredBufferCount);
+                    
                     return Status.InvalidOperation;
                 }
 

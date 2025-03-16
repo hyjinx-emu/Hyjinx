@@ -10,7 +10,7 @@ namespace Hyjinx.HLE.HOS.Tamper
 {
     partial class AtmosphereCompiler
     {
-        private readonly ILogger<AtmosphereCompiler> _logger = Logger.DefaultLoggerFactory.CreateLogger<AtmosphereCompiler>();
+        private static readonly ILogger<AtmosphereCompiler> _logger = Logger.DefaultLoggerFactory.CreateLogger<AtmosphereCompiler>();
         private readonly ulong _exeAddress;
         private readonly ulong _heapAddress;
         private readonly ulong _aliasAddress;
@@ -26,6 +26,11 @@ namespace Hyjinx.HLE.HOS.Tamper
             _process = process;
         }
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Compiling Atmosphere cheat {name}...\n{addresses}")]
+        private partial void LogCompilingCheat(string name, string addresses);
+
         public ITamperProgram Compile(string name, IEnumerable<string> rawInstructions)
         {
             string[] addresses = {
@@ -35,7 +40,7 @@ namespace Hyjinx.HLE.HOS.Tamper
                 $"    Aslr address      : 0x{_aslrAddress:X16}",
             };
 
-            Logger.Debug?.Print(LogClass.TamperMachine, $"Compiling Atmosphere cheat {name}...\n{string.Join('\n', addresses)}");
+            LogCompilingCheat(name, string.Join('\n', addresses));
 
             try
             {
@@ -61,6 +66,11 @@ namespace Hyjinx.HLE.HOS.Tamper
             Message = "There was a problem while compiling the Atmosphere cheat")]
         private partial void LogErrorWhileCompilingAtmosphereCheat();
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Compiling instruction {rawInstruction}")]
+        private partial void LogCompilingInstruction(string rawInstruction);
+        
         private ITamperProgram CompileImpl(string name, IEnumerable<string> rawInstructions)
         {
             CompilationContext context = new(_exeAddress, _heapAddress, _aliasAddress, _aslrAddress, _process);
@@ -70,7 +80,7 @@ namespace Hyjinx.HLE.HOS.Tamper
 
             foreach (string rawInstruction in rawInstructions)
             {
-                Logger.Debug?.Print(LogClass.TamperMachine, $"Compiling instruction {rawInstruction}");
+                LogCompilingInstruction(rawInstruction);
 
                 byte[] instruction = InstructionHelper.ParseRawInstruction(rawInstruction);
                 CodeType codeType = InstructionHelper.GetCodeType(instruction);

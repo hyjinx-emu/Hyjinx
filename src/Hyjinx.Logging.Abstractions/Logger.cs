@@ -32,7 +32,7 @@ public class Logger : ILog
         DefaultLogger = factory.CreateLogger("Program");
     }
 
-    public static ILog? Debug { get; private set; }
+    // public static ILog? Debug { get; private set; }
     // public static ILog? Info { get; private set; }
     public static ILog? Warning { get; private set; }
     // public static ILog? Error { get; private set; }
@@ -55,9 +55,9 @@ public class Logger : ILog
     {
         switch (logLevel)
         {
-            case LogLevel.Debug: 
-                Debug = enabled ? new Logger(DefaultLogger, LogLevel.Debug) : null; 
-                break;
+            // case LogLevel.Debug: 
+            //     Debug = enabled ? new Logger(DefaultLogger, LogLevel.Debug) : null; 
+            //     break;
             
             // case LogLevel.Info:
             //     Info = enabled ? new Logger(DefaultLogger, Microsoft.Extensions.Logging.LogLevel.Information) : null;

@@ -195,17 +195,22 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
                     throw new NotImplementedException(nvSetting.GetType().Name);
                 }
 
-                Logger.Debug?.Print(LogClass.ServiceNv, $"Got setting {arguments.Domain}!{arguments.Parameter}");
+                LogGotSetting(arguments.Domain, arguments.Parameter);
 
                 arguments.Configuration = settingBuffer;
 
                 return NvInternalResult.Success;
             }
-
+            
             // NOTE: This actually return NotAvailableInProduction but this is directly translated as a InvalidInput before returning the ioctl.
             //return NvInternalResult.NotAvailableInProduction;
             return NvInternalResult.InvalidInput;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Got setting {domain}!{parameter}")]
+        private partial void LogGotSetting(string domain, string parameter);
 
         private NvInternalResult EventWait(ref EventWaitArguments arguments)
         {
