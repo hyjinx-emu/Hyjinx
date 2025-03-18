@@ -6,6 +6,7 @@ using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -13,7 +14,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 {
-    class NvHostChannelDeviceFile : NvDeviceFile<NvHostChannelDeviceFile>
+    partial class NvHostChannelDeviceFile : NvDeviceFile<NvHostChannelDeviceFile>
     {
         private static readonly ConcurrentDictionary<ulong, Host1xContext> _host1xContextRegistry = new();
 
@@ -229,6 +230,11 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
             return NvInternalResult.Success;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Invalid handle 0x{handle:X8}!")]
+        private partial void LogInvalidHandle(int handle);
+
         private NvInternalResult MapCommandBuffer(Span<byte> arguments)
         {
             int headerSize = Unsafe.SizeOf<MapCommandBufferArguments>();
@@ -241,7 +247,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
                 if (map == null)
                 {
-                    Logger.Warning?.Print(LogClass.ServiceNv, $"Invalid handle 0x{commandBufferEntry.MapHandle:x8}!");
+                    LogInvalidHandle(commandBufferEntry.MapHandle);
 
                     return NvInternalResult.InvalidInput;
                 }
@@ -283,7 +289,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
                 if (map == null)
                 {
-                    Logger.Warning?.Print(LogClass.ServiceNv, $"Invalid handle 0x{commandBufferEntry.MapHandle:x8}!");
+                    LogInvalidHandle(commandBufferEntry.MapHandle);
 
                     return NvInternalResult.InvalidInput;
                 }

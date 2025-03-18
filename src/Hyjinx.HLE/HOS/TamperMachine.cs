@@ -58,12 +58,17 @@ namespace Hyjinx.HLE.HOS
             Activate();
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Refusing to tamper kernel process {pid}.")]
+        private static partial void LogRefusingToTamperKernel(ILogger logger, ulong pid);
+
         private static bool CanInstallOnPid(ulong pid)
         {
             // Do not allow tampering of kernel processes.
             if (pid < KernelConstants.InitialProcessId)
             {
-                Logger.Warning?.Print(LogClass.TamperMachine, $"Refusing to tamper kernel process {pid}");
+                LogRefusingToTamperKernel(_logger, pid);
 
                 return false;
             }

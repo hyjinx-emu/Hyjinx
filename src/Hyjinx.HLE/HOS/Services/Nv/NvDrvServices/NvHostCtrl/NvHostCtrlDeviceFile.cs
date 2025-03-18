@@ -502,9 +502,14 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
             return null;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Closing channel.")]
+        private partial void LogClosingChannel();
+        
         public override void Close()
         {
-            Logger.Warning?.Print(LogClass.ServiceNv, "Closing channel");
+            LogClosingChannel();
 
             lock (_events)
             {

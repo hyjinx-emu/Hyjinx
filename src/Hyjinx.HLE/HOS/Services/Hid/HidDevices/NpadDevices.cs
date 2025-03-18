@@ -214,10 +214,15 @@ namespace Hyjinx.HLE.HOS.Services.Hid
 
             if (_activeCount == 0 && PerformanceCounter.ElapsedMilliseconds > _lastNotifyTimestamp + NoMatchNotifyFrequencyMs)
             {
-                Logger.Warning?.Print(LogClass.Hid, $"No matching controllers found. Application requests '{SupportedStyleSets}' on '{string.Join(", ", GetSupportedPlayers())}'");
+                LogNoMatchingControllersFound(SupportedStyleSets, string.Join(", ", GetSupportedPlayers()));
                 _lastNotifyTimestamp = PerformanceCounter.ElapsedMilliseconds;
             }
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "No matching controllers found. Application requests '{supported}' on '{selected}'")]
+        private partial void LogNoMatchingControllersFound(ControllerType supported, string selected);
 
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),

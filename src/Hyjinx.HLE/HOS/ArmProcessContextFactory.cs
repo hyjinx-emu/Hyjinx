@@ -8,13 +8,17 @@ using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS
 {
-    class ArmProcessContextFactory : IProcessContextFactory
+    partial class ArmProcessContextFactory : IProcessContextFactory
     {
+        private static readonly ILogger<ArmProcessContextFactory> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<ArmProcessContextFactory>();
+        
         private readonly ITickSource _tickSource;
         private readonly GpuContext _gpu;
         private readonly string _titleIdText;
@@ -43,6 +47,21 @@ namespace Hyjinx.HLE.HOS
             _codeSize = codeSize;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Cpu, EventName = nameof(LogClass.Cpu),
+            Message = "Host system doesn't support views, falling back to software page table.")]
+        private partial void LogHostSystemUnsupportedViews();
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Cpu, EventName = nameof(LogClass.Cpu),
+            Message = "Address space creation failed, falling back to software page table.")]
+        private partial void LogAddressSpaceCreationFailed();
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Emulation, EventName = nameof(LogClass.Emulation),
+            Message = "Allocated address space (0x{size:X}) is smaller than guest application requirements (0x{expected:X})")]
+        private partial void LogAllocatedSpaceSmallerThanExpected(ulong size, ulong expected);
+        
         public IProcessContext Create(KernelContext context, ulong pid, ulong addressSpaceSize, InvalidAccessHandler invalidAccessHandler, bool for64Bit)
         {
             IArmProcessContext processContext;
@@ -61,7 +80,7 @@ namespace Hyjinx.HLE.HOS
 
                 if (!MemoryBlock.SupportsFlags(MemoryAllocationFlags.ViewCompatible))
                 {
-                    Logger.Warning?.Print(LogClass.Cpu, "Host system doesn't support views, falling back to software page table");
+                    LogHostSystemUnsupportedViews();
 
                     mode = MemoryManagerMode.SoftwarePageTable;
                 }
@@ -77,7 +96,7 @@ namespace Hyjinx.HLE.HOS
                 {
                     if (!AddressSpace.TryCreate(context.Memory, addressSpaceSize, out addressSpace))
                     {
-                        Logger.Warning?.Print(LogClass.Cpu, "Address space creation failed, falling back to software page table");
+                        LogAddressSpaceCreationFailed();
 
                         mode = MemoryManagerMode.SoftwarePageTable;
                     }
@@ -101,7 +120,7 @@ namespace Hyjinx.HLE.HOS
                         {
                             if (addressSpaceSize != addressSpace.AddressSpaceSize)
                             {
-                                Logger.Warning?.Print(LogClass.Emulation, $"Allocated address space (0x{addressSpace.AddressSpaceSize:X}) is smaller than guest application requirements (0x{addressSpaceSize:X})");
+                                LogAllocatedSpaceSmallerThanExpected(addressSpace.AddressSpaceSize, addressSpaceSize);
                             }
 
                             var memoryManagerHostMapped = new MemoryManagerHostMapped(addressSpace, mode == MemoryManagerMode.HostMappedUnsafe, invalidAccessHandler);
