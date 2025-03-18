@@ -13,6 +13,7 @@ using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostProfGpu;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -23,7 +24,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
     [Service("nvdrv:a")]
     [Service("nvdrv:s")]
     [Service("nvdrv:t")]
-    class INvDrvServices : IpcService<INvDrvServices>
+    partial class INvDrvServices : IpcService<INvDrvServices>
     {
         private static readonly List<string> _deviceFileDebugRegistry = new()
         {
@@ -84,11 +85,21 @@ namespace Hyjinx.HLE.HOS.Services.Nv
                 return NvResult.Success;
             }
 
-            Logger.Warning?.Print(LogClass.ServiceNv, $"Cannot find file device \"{path}\"!");
+            LogCannotFindFileDevice(path);
 
             return NvResult.FileOperationFailed;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Cannot find file device '{path}'!")]
+        private partial void LogCannotFindFileDevice(string path);
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Ioctl size inconsistency found!")]
+        private partial void LogIoctlSizeInconsistencyFound();
+        
         private NvResult GetIoctlArgument(ServiceCtx context, NvIoctl ioctlCommand, out Span<byte> arguments)
         {
             (ulong inputDataPosition, ulong inputDataSize) = context.Request.GetBufferType0x21(0);
@@ -106,7 +117,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
             {
                 arguments = null;
 
-                Logger.Warning?.Print(LogClass.ServiceNv, "Ioctl size inconsistency found!");
+                LogIoctlSizeInconsistencyFound();
 
                 return NvResult.InvalidSize;
             }
@@ -117,7 +128,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
                 {
                     arguments = null;
 
-                    Logger.Warning?.Print(LogClass.ServiceNv, "Ioctl size inconsistency found!");
+                    LogIoctlSizeInconsistencyFound();
 
                     return NvResult.InvalidSize;
                 }
@@ -163,7 +174,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
 
             if (deviceFile == null)
             {
-                Logger.Warning?.Print(LogClass.ServiceNv, $"Invalid file descriptor {fd}");
+                LogInvalidFileDescriptor(fd);
 
                 return NvResult.NotImplemented;
             }
@@ -176,11 +187,21 @@ namespace Hyjinx.HLE.HOS.Services.Nv
             return NvResult.Success;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Invalid file descriptor {descriptor}")]
+        private partial void LogInvalidFileDescriptor(int descriptor);
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "INvDrvService is not initialized!")]
+        private partial void LogServiceIsNotInitialized();
+        
         private NvResult EnsureInitialized()
         {
             if (_owner == 0)
             {
-                Logger.Warning?.Print(LogClass.ServiceNv, "INvDrvServices is not initialized!");
+                LogServiceIsNotInitialized();
 
                 return NvResult.NotInitialized;
             }

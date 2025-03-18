@@ -187,12 +187,17 @@ namespace Hyjinx.HLE.FileSystem
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Duplicate AddOnContent detected. TitleId {titleId:X16}")]
+        private partial void LogDuplicateContentDetected(ulong titleId);
+
         public void AddAocItem(ulong titleId, string containerPath, string ncaPath, bool mergedToContainer = false)
         {
             // TODO: Check Aoc version.
             if (!AocData.TryAdd(titleId, new AocItem(containerPath, ncaPath)))
             {
-                Logger.Warning?.Print(LogClass.Application, $"Duplicate AddOnContent detected. TitleId {titleId:X16}");
+                LogDuplicateContentDetected(titleId);
             }
             else
             {

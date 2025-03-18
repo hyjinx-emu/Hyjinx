@@ -262,6 +262,11 @@ namespace Hyjinx.HLE.HOS
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "Failed to deserialize mod data for {applicationId:X16} at {path}")]
+        private static partial void LogFailedToDeserializeMod(ILogger logger, ulong applicationId, string path);
+        
         private static void QueryApplicationDir(ModCache mods, DirectoryInfo applicationDir, ulong applicationId)
         {
             if (!applicationDir.Exists)
@@ -280,7 +285,7 @@ namespace Hyjinx.HLE.HOS
                 }
                 catch
                 {
-                    Logger.Warning?.Print(LogClass.ModLoader, $"Failed to deserialize mod data for {applicationId:X16} at {modJsonPath}");
+                    LogFailedToDeserializeMod(_logger, applicationId, modJsonPath);
                 }
             }
 
@@ -367,6 +372,11 @@ namespace Hyjinx.HLE.HOS
             return numMods;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "Ignoring cheat '{filename} because it is malformed.")]
+        private static partial void LogIgnoringMalformedCheat(ILogger logger, string filename);
+        
         private static IEnumerable<Cheat> GetCheatsInFile(FileInfo cheatFile)
         {
             string cheatName = DefaultCheatName;
@@ -384,8 +394,7 @@ namespace Hyjinx.HLE.HOS
                     if (!line.EndsWith(']') || line.Length < 3)
                     {
                         // Skip the entire file if there's any error while parsing the cheat file.
-
-                        Logger.Warning?.Print(LogClass.ModLoader, $"Ignoring cheat '{cheatFile.FullName}' because it is malformed");
+                        LogIgnoringMalformedCheat(_logger, cheatFile.FullName);
 
                         return Array.Empty<Cheat>();
                     }
@@ -451,7 +460,7 @@ namespace Hyjinx.HLE.HOS
                 var searchDir = new DirectoryInfo(path);
                 if (!searchDir.Exists)
                 {
-                    Logger.Warning?.Print(LogClass.ModLoader, $"Mod Search Dir '{searchDir.FullName}' doesn't exist");
+                    LogModSearchDirDoesNotExist(_logger, searchDir.FullName);
                     return;
                 }
 
@@ -466,6 +475,11 @@ namespace Hyjinx.HLE.HOS
 
             patches.Initialized = true;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "Mod Search Dir '{searchDir}' does not exist.")]
+        private static partial void LogModSearchDirDoesNotExist(ILogger logger, string searchDir);
 
         public void CollectMods(IEnumerable<ulong> applications, params string[] searchDirPaths)
         {
@@ -571,11 +585,16 @@ namespace Hyjinx.HLE.HOS
                 }
                 else
                 {
-                    Logger.Warning?.Print(LogClass.ModLoader, $"    Skipped duplicate file '{entry.FullPath}' from '{modName}'", "ApplyRomFsMods");
+                    LogSkippedDuplicateFileFromMod(_logger, entry.FullPath, modName);
                 }
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "Skipped duplicate file '{path}' from '{modName}'.")]
+        private static partial void LogSkippedDuplicateFileFromMod(ILogger logger, string path, string modName);
+        
         internal bool ReplaceExefsPartition(ulong applicationId, ref IFileSystem exefs)
         {
             if (!_appMods.TryGetValue(applicationId, out ModCache mods) || mods.ExefsContainers.Count == 0)
@@ -585,11 +604,10 @@ namespace Hyjinx.HLE.HOS
 
             if (mods.ExefsContainers.Count > 1)
             {
-                Logger.Warning?.Print(LogClass.ModLoader, "Multiple ExeFS partition replacements detected");
+                LogMultipleExeFsPartitionReplacementsDetected();
             }
 
-            _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
-                "Using replacement ExeFS partition");
+            LogUsingReplacementExeFsPartition();
 
             var pfs = new PartitionFileSystem();
             pfs.Initialize(mods.ExefsContainers[0].Path.OpenRead().AsStorage()).ThrowIfFailure();
@@ -598,6 +616,16 @@ namespace Hyjinx.HLE.HOS
             return true;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "Multiple ExeFS partition replacements detected.")]
+        private partial void LogMultipleExeFsPartitionReplacementsDetected();
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "Using replacement ExeFS partition.")]
+        private partial void LogUsingReplacementExeFsPartition();
+        
         public struct ModLoadResult
         {
             public BitVector32 Stubs;
@@ -643,8 +671,7 @@ namespace Hyjinx.HLE.HOS
                     {
                         if (modLoadResult.Replaces[1 << i])
                         {
-                            Logger.Warning?.Print(LogClass.ModLoader, $"Multiple replacements to '{nsoName}'");
-
+                            LogMultipleReplacementsDetected(_logger, nsoName);
                             continue;
                         }
 
@@ -664,7 +691,7 @@ namespace Hyjinx.HLE.HOS
                 {
                     if (modLoadResult.Npdm != null)
                     {
-                        Logger.Warning?.Print(LogClass.ModLoader, "Multiple replacements to 'main.npdm'");
+                        LogMultipleReplacementsDetected(_logger, "main.ndpm");
 
                         continue;
                     }
@@ -688,7 +715,14 @@ namespace Hyjinx.HLE.HOS
 
             return modLoadResult;
         }
+        
+        // Logger.Warning?.Print(LogClass.ModLoader, $"Multiple replacements to '{nsoName}'");
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "Multiple replacements to '{name}'.")]
+        private static partial void LogMultipleReplacementsDetected(ILogger logger, string name);
+        
         internal void ApplyNroPatches(NroExecutable nro)
         {
             var nroPatches = _patches.NroPatches;
@@ -749,7 +783,7 @@ namespace Hyjinx.HLE.HOS
 
                 if (!processExes.TryGetValue(cheatId, out ulong exeAddress))
                 {
-                    Logger.Warning?.Print(LogClass.ModLoader, $"Skipping cheat '{cheat.Name}' because no executable matches its BuildId {cheatId} (check if the game title and version are correct)");
+                    LogSkippingCheatDueToNoMatch(cheat.Name, cheatId);
 
                     continue;
                 }
@@ -763,6 +797,12 @@ namespace Hyjinx.HLE.HOS
             EnableCheats(applicationId, tamperMachine);
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message =
+                "Skipping cheat '{name}' because no executable matches its build id {cheatId}. Check if the game title and version are correct.")]
+        private partial void LogSkippingCheatDueToNoMatch(string name, string cheatId);
+        
         internal static void EnableCheats(ulong applicationId, TamperMachine tamperMachine)
         {
             var contentDirectory = FindApplicationDir(new DirectoryInfo(Path.Combine(GetModsBasePath(), AmsContentsDir)), $"{applicationId:x16}");

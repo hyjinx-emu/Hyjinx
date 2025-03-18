@@ -4,13 +4,14 @@ using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
 {
-    class NvHostAsGpuDeviceFile : NvDeviceFile<NvHostAsGpuDeviceFile>
+    partial class NvHostAsGpuDeviceFile : NvDeviceFile<NvHostAsGpuDeviceFile>
     {
         private const uint SmallPageSize = 0x1000;
         private const uint BigPageSize = 0x10000;
@@ -157,7 +158,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
                 {
                     arguments.Offset = 0;
 
-                    Logger.Warning?.Print(LogClass.ServiceNv, $"Failed to allocate size {size:x16}!");
+                    LogFailedToAllocate(size);
 
                     result = NvInternalResult.OutOfMemory;
                 }
@@ -170,6 +171,11 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
             return result;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Failed to allocate size {size:X16}!")]
+        private partial void LogFailedToAllocate(ulong size);
+        
         private NvInternalResult FreeSpace(ref FreeSpaceArguments arguments)
         {
             ulong size = (ulong)arguments.Pages * (ulong)arguments.PageSize;
@@ -185,15 +191,19 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
                 }
                 else
                 {
-                    Logger.Warning?.Print(LogClass.ServiceNv,
-                        $"Failed to free offset 0x{arguments.Offset:x16} size 0x{size:x16}!");
+                    LogFailedToFreeOffset(arguments.Offset, size);
 
                     result = NvInternalResult.InvalidInput;
                 }
             }
-
+            
             return result;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Failed to free offset 0x{offset:X16} size 0x{size:X16}!")]
+        private partial void LogFailedToFreeOffset(ulong offset, ulong size);
 
         private NvInternalResult UnmapBuffer(ref UnmapBufferArguments arguments)
         {
@@ -209,17 +219,40 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
                 }
                 else
                 {
-                    Logger.Warning?.Print(LogClass.ServiceNv, $"Invalid buffer offset {arguments.Offset:x16}!");
+                    LogInvalidBufferOffset(arguments.Offset);
                 }
             }
 
             return NvInternalResult.Success;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Invalid buffer offset {offset:X16}!")]
+        private partial void LogInvalidBufferOffset(ulong offset);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Address 0x{offset:X16} not mapped!")]
+        private partial void LogAddressOffsetNotMapped(ulong offset);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Invalid NvMap handle 0x{handle:X8}!")]
+        private partial void LogInvalidNvMapHandle(int handle);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Failed to map fixed buffer with offset 0x{offset:X16}, size 0x{size:X16} and alignment 0x{alignment:X16}!")]
+        private partial void LogFailedToMapFixedBuffer(ulong offset, ulong size, ulong alignment);
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Failed to map size 0x{size:X16}!")]
+        private partial void LogFailedToMapSize(ulong size);
+        
         private NvInternalResult MapBufferEx(ref MapBufferExArguments arguments)
         {
-            const string MapErrorMsg = "Failed to map fixed buffer with offset 0x{0:x16}, size 0x{1:x16} and alignment 0x{2:x16}!";
-
             ulong physicalAddress;
 
             if ((arguments.Flags & AddressSpaceFlags.RemapSubRange) != 0)
@@ -237,7 +270,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
                     }
                     else
                     {
-                        Logger.Warning?.Print(LogClass.ServiceNv, $"Address 0x{arguments.Offset:x16} not mapped!");
+                        LogAddressOffsetNotMapped(arguments.Offset);
 
                         return NvInternalResult.InvalidInput;
                     }
@@ -248,7 +281,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
 
             if (map == null)
             {
-                Logger.Warning?.Print(LogClass.ServiceNv, $"Invalid NvMap handle 0x{arguments.NvMapHandle:x8}!");
+                LogInvalidNvMapHandle(arguments.NvMapHandle);
 
                 return NvInternalResult.InvalidInput;
             }
@@ -285,9 +318,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
                     }
                     else
                     {
-                        string message = string.Format(MapErrorMsg, arguments.Offset, size, pageSize);
-
-                        Logger.Warning?.Print(LogClass.ServiceNv, message);
+                        LogFailedToMapFixedBuffer(arguments.Offset, size, pageSize);
 
                         result = NvInternalResult.InvalidInput;
                     }
@@ -308,7 +339,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
                 {
                     arguments.Offset = 0;
 
-                    Logger.Warning?.Print(LogClass.ServiceNv, $"Failed to map size 0x{size:x16}!");
+                    LogFailedToMapSize(size);
 
                     result = NvInternalResult.InvalidInput;
                 }
@@ -383,7 +414,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
 
                     if (map == null)
                     {
-                        Logger.Warning?.Print(LogClass.ServiceNv, $"Invalid NvMap handle 0x{nvmapHandle:x8}!");
+                        LogInvalidNvMapHandle(nvmapHandle);
 
                         return NvInternalResult.InvalidInput;
                     }

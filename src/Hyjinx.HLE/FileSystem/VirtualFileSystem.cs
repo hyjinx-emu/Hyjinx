@@ -363,7 +363,7 @@ namespace Hyjinx.HLE.FileSystem
 
                         if (rc.IsFailure())
                         {
-                            Logger.Warning?.Print(LogClass.Application, $"Error {rc.ToStringWithName()} when creating save data 0x{info[i].SaveDataId:x} in the {spaceId} save data space");
+                            LogErrorWhenCreatingSaveData(_logger, rc.ToStringWithName(), info[i].SaveDataId, spaceId);
 
                             // Don't bother fixing the extra data if we couldn't create the directory
                             continue;
@@ -386,7 +386,14 @@ namespace Hyjinx.HLE.FileSystem
                 }
             }
         }
+        
+        // Logger.Warning?.Print(LogClass.Application, $"Error {rc.ToStringWithName()} when creating save data 0x{info[i].SaveDataId:x} in the {spaceId} save data space");
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Error {error} when creating save data 0x{id:X} in the {spaceId} save data space.")]
+        private static partial void LogErrorWhenCreatingSaveData(ILogger logger, string error, ulong id, SaveDataSpaceId spaceId);
+        
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Recreated directory for save data 0x{saveDataId:x} in the {spaceId} save data space")]
@@ -521,8 +528,7 @@ namespace Hyjinx.HLE.FileSystem
 
                 if (rc.IsFailure())
                 {
-                    Logger.Warning?.Print(LogClass.Application,
-                        $"Error {rc.ToStringWithName()} when fixing extra data for system save data 0x{fixInfo.StaticSaveDataId:x}");
+                    LogErrorWhenFixingExtraData(_logger, rc.ToStringWithName(), fixInfo.StaticSaveDataId);
                 }
                 else if (wasFixNeeded)
                 {
@@ -532,6 +538,11 @@ namespace Hyjinx.HLE.FileSystem
 
             return Result.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Error {error} when fixing extra data for system save data 0x{saveDataId:X}")]
+        private static partial void LogErrorWhenFixingExtraData(ILogger logger, string error, ulong saveDataId);
         
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),

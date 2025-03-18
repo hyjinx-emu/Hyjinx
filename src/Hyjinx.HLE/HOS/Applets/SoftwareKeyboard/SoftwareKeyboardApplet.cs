@@ -96,7 +96,7 @@ namespace Hyjinx.HLE.HOS.Applets
 
                     if (_device.UIHandler == null)
                     {
-                        LogGuiHandlerIsNotSet();
+                        LogGuiHandlerIsNotSetAppletWillNotWork();
                     }
                     else
                     {
@@ -149,7 +149,7 @@ namespace Hyjinx.HLE.HOS.Applets
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "GUI Handler is not set, software keyboard applet will not work properly.")]
-        private partial void LogGuiHandlerIsNotSet();
+        private partial void LogGuiHandlerIsNotSetAppletWillNotWork();
 
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
@@ -197,6 +197,11 @@ namespace Hyjinx.HLE.HOS.Applets
             return _keyboardRenderer?.DrawTo(destination, position) ?? false;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "GUI Handler is not set, falling back to default!")]
+        private partial void LogGuiHandlerIsNotSetFallingBackToDefault();
+        
         private void ExecuteForegroundKeyboard()
         {
             string initialText = null;
@@ -218,7 +223,7 @@ namespace Hyjinx.HLE.HOS.Applets
 
             if (_device.UIHandler == null)
             {
-                Logger.Warning?.Print(LogClass.Application, "GUI Handler is not set. Falling back to default");
+                LogGuiHandlerIsNotSetFallingBackToDefault();
 
                 _textValue = DefaultInputText;
                 _lastResult = KeyboardResult.Accept;
@@ -365,7 +370,7 @@ namespace Hyjinx.HLE.HOS.Applets
                     remaining = stream.Length - stream.Position;
                     if (remaining < sizeof(int))
                     {
-                        Logger.Warning?.Print(LogClass.ServiceAm, $"Received invalid Software Keyboard User Word Info of {remaining} bytes");
+                        LogInvalidKeyboardUserWordInfo(remaining);
                     }
                     else
                     {
@@ -375,11 +380,11 @@ namespace Hyjinx.HLE.HOS.Applets
 
                         if (wordsCount > MaxUserWords)
                         {
-                            Logger.Warning?.Print(LogClass.ServiceAm, $"Received {wordsCount} User Words but the maximum is {MaxUserWords}");
+                            LogExceededMaximumWords(wordsCount, MaxUserWords);
                         }
                         else if (wordsCount * wordSize != remaining)
                         {
-                            Logger.Warning?.Print(LogClass.ServiceAm, $"Received invalid Software Keyboard User Word Info data of {remaining} bytes for {wordsCount} words");
+                            LogInvalidKeyboardUserWordInfo(remaining, wordsCount);
                         }
                         else
                         {
@@ -398,7 +403,7 @@ namespace Hyjinx.HLE.HOS.Applets
                     remaining = stream.Length - stream.Position;
                     if (remaining != Unsafe.SizeOf<SoftwareKeyboardCustomizeDic>())
                     {
-                        Logger.Warning?.Print(LogClass.ServiceAm, $"Received invalid Software Keyboard Customize Dic of {remaining} bytes");
+                        LogInvalidKeyboardCustomizeDic(remaining);
                     }
                     else
                     {
@@ -410,7 +415,7 @@ namespace Hyjinx.HLE.HOS.Applets
                     remaining = stream.Length - stream.Position;
                     if (remaining != Unsafe.SizeOf<SoftwareKeyboardDictSet>())
                     {
-                        Logger.Warning?.Print(LogClass.ServiceAm, $"Received invalid Software Keyboard DictSet of {remaining} bytes");
+                        LogInvalidKeyboardDictSet(remaining);
                     }
                     else
                     {
@@ -505,11 +510,42 @@ namespace Hyjinx.HLE.HOS.Applets
                     break;
                 default:
                     // We shouldn't be able to get here through standard swkbd execution.
-                    Logger.Warning?.Print(LogClass.ServiceAm, $"Invalid Software Keyboard request {request} during state {_backgroundState}");
+                    LogInvalidKeyboardRequest(request, _backgroundState);
+                    
                     _interactiveSession.Push(InlineResponses.Default(_backgroundState));
                     break;
             }
         }
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Received invalid software keyboard user word info of {remaining} bytes")]
+        private partial void LogInvalidKeyboardUserWordInfo(long remaining);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Received {wordsCount} user words but the maximum is {maxUserWords}")]
+        private partial void LogExceededMaximumWords(int wordsCount, int maxUserWords);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Received invalid software keyboard user word info data of {remaining} bytes for {wordsCount} words.")]
+        private partial void LogInvalidKeyboardUserWordInfo(long remaining, int wordsCount);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Received invalid software customize dic of {remaining} bytes")]
+        private partial void LogInvalidKeyboardCustomizeDic(long remaining);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Received invalid software keyboard DictSet of {remaining} bytes")]
+        private partial void LogInvalidKeyboardDictSet(long remaining);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Invalid software keyboard request {request} during state {state}")]
+        private partial void LogInvalidKeyboardRequest(InlineKeyboardRequest request, InlineKeyboardState state);
         
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
