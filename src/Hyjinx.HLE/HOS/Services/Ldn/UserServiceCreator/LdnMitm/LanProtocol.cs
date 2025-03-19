@@ -84,8 +84,6 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             Message = "Decode error, unhandled type {type}.")]
         private partial void LogDecodeErrorUnhandledType(LanPacketType type);
         
-        // Logger.Warning?.PrintMsg(LogClass.ServiceLdn, $"Invalid magic number in received packet. [magic: {header.Magic}] [EP: {endPoint}]");
-
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Invalid magic number received in packet. [magic: {magic}] [EP: {endpoint}]")]

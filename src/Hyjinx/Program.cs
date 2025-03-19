@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Threading;
+using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
@@ -96,8 +97,8 @@ namespace Hyjinx.Ava
             AppDomain.CurrentDomain.ProcessExit += (sender, e) => Exit();
 
             // Initialize the logger system.
-            // LoggerAdapter.Register();
             LoggerModule.Initialize(UpTime);
+            LoggerAdapter.Register();
             
             // Setup base data directory.
             AppDataManager.Initialize(CommandLineState.BaseDirPathArg);
@@ -230,9 +231,7 @@ namespace Hyjinx.Ava
             Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
                 "Hyjinx Version: {Version}", Version);
             SystemInfo.Gather().Print();
-
-            // Logger.Notice.Print(LogClass.Application, $"Logs Enabled: {(Logger.GetEnabledLevels().Count == 0 ? "<None>" : string.Join(", ", Logger.GetEnabledLevels()))}");
-
+            
             if (AppDataManager.Mode == AppDataManager.LaunchMode.Custom)
             {
                 Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
