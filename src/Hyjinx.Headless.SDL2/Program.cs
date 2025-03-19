@@ -8,7 +8,7 @@ using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Controller.Motion;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Common.GraphicsDriver;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.SystemInterop;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;

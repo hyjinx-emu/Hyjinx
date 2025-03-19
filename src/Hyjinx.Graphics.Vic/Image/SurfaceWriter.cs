@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Texture;
 using Hyjinx.Graphics.Vic.Types;
 using Microsoft.Extensions.Logging;

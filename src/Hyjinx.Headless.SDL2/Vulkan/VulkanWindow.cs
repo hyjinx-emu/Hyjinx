@@ -1,5 +1,5 @@
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Input.HLE;
 using Hyjinx.SDL2.Common;
 using Microsoft.Extensions.Logging;

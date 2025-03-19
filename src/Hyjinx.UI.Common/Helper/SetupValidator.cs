@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.FileSystem;
 using LibHac.Diag;
 using Microsoft.Extensions.Logging;

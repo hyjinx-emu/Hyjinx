@@ -2,7 +2,7 @@ using Hyjinx.Common;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Controller.Motion;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.Input.HLE;
 using Hyjinx.Input.Motion.CemuHook.Protocol;

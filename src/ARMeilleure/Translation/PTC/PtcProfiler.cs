@@ -1,6 +1,6 @@
 using ARMeilleure.State;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Microsoft.Extensions.Logging;
 using System;

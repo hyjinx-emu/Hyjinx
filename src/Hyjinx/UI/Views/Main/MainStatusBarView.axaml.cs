@@ -4,7 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using System;

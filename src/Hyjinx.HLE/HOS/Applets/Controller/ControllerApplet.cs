@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Services.Am.AppletAE;
 using Hyjinx.HLE.HOS.Services.Hid;

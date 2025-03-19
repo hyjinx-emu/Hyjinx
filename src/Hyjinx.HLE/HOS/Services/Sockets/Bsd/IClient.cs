@@ -1,5 +1,5 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
 using Microsoft.Extensions.Logging;

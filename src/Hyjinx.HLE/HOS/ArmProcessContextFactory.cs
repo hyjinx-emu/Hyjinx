@@ -1,5 +1,5 @@
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.Cpu.AppleHv;
 using Hyjinx.Cpu.Jit;

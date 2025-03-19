@@ -1,5 +1,5 @@
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Account.Acc.Types;
 using Microsoft.Extensions.Logging;

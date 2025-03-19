@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Hyjinx.Common.Logging;
+namespace Hyjinx.Logging.Abstractions;
 
 /// <summary>
 /// A mechanism for logging operations within the emulator.

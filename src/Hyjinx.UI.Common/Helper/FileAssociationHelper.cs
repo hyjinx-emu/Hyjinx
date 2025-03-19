@@ -1,6 +1,6 @@
 using Microsoft.Win32;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;

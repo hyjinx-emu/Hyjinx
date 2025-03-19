@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Hid.HidServer;
 using Hyjinx.HLE.HOS.Services.Hid.Types;
 

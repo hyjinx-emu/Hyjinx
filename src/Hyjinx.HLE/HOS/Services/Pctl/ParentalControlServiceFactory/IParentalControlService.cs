@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Arp;
 using System;
 using static LibHac.Ns.ApplicationControlProperty;

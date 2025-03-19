@@ -14,7 +14,7 @@ using Hyjinx.Audio.Renderer.Server.Upsampler;
 using Hyjinx.Audio.Renderer.Server.Voice;
 using Hyjinx.Audio.Renderer.Utils;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;

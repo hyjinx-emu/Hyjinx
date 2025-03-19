@@ -1,5 +1,5 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Nifm.StaticService.GeneralService;
 using Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types;

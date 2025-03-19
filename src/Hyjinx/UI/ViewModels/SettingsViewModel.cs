@@ -12,7 +12,7 @@ using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Configuration.Multiplayer;
 using Hyjinx.Common.GraphicsDriver;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;

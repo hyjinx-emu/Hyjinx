@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Device;
 using Hyjinx.Graphics.Nvdec.Image;
 using Microsoft.Extensions.Logging;

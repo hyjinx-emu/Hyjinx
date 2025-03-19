@@ -1,6 +1,6 @@
 using MsgPack;
 using MsgPack.Serialization;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Prepo.Types;

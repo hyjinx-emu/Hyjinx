@@ -1,5 +1,5 @@
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;

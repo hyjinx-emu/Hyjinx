@@ -1,5 +1,5 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Memory;
 using Microsoft.Extensions.Logging;

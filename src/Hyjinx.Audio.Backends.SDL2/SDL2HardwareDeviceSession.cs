@@ -1,6 +1,6 @@
 using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.Memory;
 using Microsoft.Extensions.Logging;

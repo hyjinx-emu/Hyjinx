@@ -3,7 +3,7 @@ using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Shim;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Sdk.Account;
 using Microsoft.Extensions.Logging;
 using System;

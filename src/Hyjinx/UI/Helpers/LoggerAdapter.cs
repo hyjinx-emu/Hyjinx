@@ -3,8 +3,8 @@ using Microsoft.Extensions.Logging;
 
 using AvaLogger = Avalonia.Logging.Logger;
 using AvaLogLevel = Avalonia.Logging.LogEventLevel;
-using AppLogClass = Hyjinx.Common.Logging.LogClass;
-using AppLogger = Hyjinx.Common.Logging.Logger;
+using AppLogClass = Hyjinx.Logging.Abstractions.LogClass;
+using AppLogger = Hyjinx.Logging.Abstractions.Logger;
 
 namespace Hyjinx.Ava.UI.Helpers
 {

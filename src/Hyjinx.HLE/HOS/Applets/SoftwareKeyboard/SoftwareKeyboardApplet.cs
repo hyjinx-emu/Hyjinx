@@ -1,6 +1,6 @@
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration.Hid;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
 using Hyjinx.HLE.HOS.Services.Am.AppletAE;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;

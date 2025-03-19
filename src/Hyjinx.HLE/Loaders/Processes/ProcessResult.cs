@@ -1,7 +1,7 @@
 using LibHac.Common;
 using LibHac.Loader;
 using LibHac.Ns;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.HLE.Loaders.Processes.Extensions;

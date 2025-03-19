@@ -2,7 +2,7 @@ using LibHac;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using Path = LibHac.FsSrv.Sf.Path;
 

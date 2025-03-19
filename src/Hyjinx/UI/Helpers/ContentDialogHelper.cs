@@ -8,7 +8,7 @@ using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Windows;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;

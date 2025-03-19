@@ -131,7 +131,7 @@ namespace Hyjinx.HLE.Kernel.Generators
 
             CodeGenerator generator = new CodeGenerator();
 
-            generator.AppendLine("using Hyjinx.Common.Logging;");
+            generator.AppendLine("using Hyjinx.Logging.Abstractions;");
             generator.AppendLine("using Hyjinx.Cpu;");
             generator.AppendLine($"using {NamespaceKernel}.Common;");
             generator.AppendLine($"using {NamespaceKernel}.Memory;");

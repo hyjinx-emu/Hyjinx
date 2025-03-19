@@ -1,7 +1,7 @@
 using Hyjinx.Common.Utilities;
 using Microsoft.Extensions.Logging;
 
-namespace Hyjinx.Common.Logging
+namespace Hyjinx.Logging.Abstractions
 {
     public class XCIFileTrimmerLog : XCIFileTrimmer.ILog
     {

@@ -4,7 +4,7 @@ using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Common.Configuration.Multiplayer;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
@@ -20,7 +20,7 @@ namespace Hyjinx.UI.Common.Configuration
     public partial class ConfigurationState
     {
         private static readonly ILogger<ConfigurationState> _logger =
-            Hyjinx.Common.Logging.Logger.DefaultLoggerFactory.CreateLogger<ConfigurationState>();
+            Hyjinx.Logging.Abstractions.Logger.DefaultLoggerFactory.CreateLogger<ConfigurationState>();
         
         /// <summary>
         /// UI configuration section
@@ -1584,7 +1584,7 @@ namespace Hyjinx.UI.Common.Configuration
             {
                 ToFileFormat().SaveConfig(configurationFilePath);
                 
-                Hyjinx.Common.Logging.Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Configuration file updated to version {Version}", ConfigurationFileFormat.CurrentVersion);
+                Hyjinx.Logging.Abstractions.Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Configuration file updated to version {Version}", ConfigurationFileFormat.CurrentVersion);
             }
         }
 

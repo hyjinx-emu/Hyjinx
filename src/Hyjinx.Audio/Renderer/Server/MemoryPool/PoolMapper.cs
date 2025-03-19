@@ -1,7 +1,7 @@
 using Hyjinx.Audio.Renderer.Common;
 using Hyjinx.Audio.Renderer.Parameter;
 using Hyjinx.Audio.Renderer.Utils;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using static Hyjinx.Audio.Renderer.Common.BehaviourParameter;

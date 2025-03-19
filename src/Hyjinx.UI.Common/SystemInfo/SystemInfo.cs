@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Helper;
 using Microsoft.Extensions.Logging;
 using System;

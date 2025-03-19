@@ -10,7 +10,7 @@ using LibHac.Spl;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy;
 using LibHac.Os;
 using Microsoft.Extensions.Logging;

@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;

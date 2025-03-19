@@ -2,7 +2,7 @@ using Hyjinx.Audio.Integration;
 using Hyjinx.Audio.Renderer.Dsp.Command;
 using Hyjinx.Audio.Renderer.Utils;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;

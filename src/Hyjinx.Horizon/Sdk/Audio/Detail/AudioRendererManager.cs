@@ -1,6 +1,6 @@
 using Hyjinx.Audio.Renderer.Device;
 using Hyjinx.Audio.Renderer.Server;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Applet;
 using Hyjinx.Horizon.Sdk.Sf;

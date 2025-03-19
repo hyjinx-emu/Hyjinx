@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd;
 using Hyjinx.HLE.HOS.Services.Ssl.Types;

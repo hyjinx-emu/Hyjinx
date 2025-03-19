@@ -6,7 +6,7 @@ using LibHac.Loader;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.RomFs;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.Loaders.Executables;

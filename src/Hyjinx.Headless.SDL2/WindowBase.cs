@@ -1,6 +1,6 @@
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Configuration.Hid;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
