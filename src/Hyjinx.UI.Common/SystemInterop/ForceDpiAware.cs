@@ -1,4 +1,5 @@
 using Hyjinx.Common.Logging;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -30,6 +31,9 @@ namespace Hyjinx.Common.SystemInterop
 
         private const double StandardDpiScale = 96.0;
         private const double MaxScaleFactor = 1.25;
+
+        private static readonly ILogger _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger(typeof(ForceDpiAware));
 
         /// <summary>
         /// Marks the application as DPI-Aware when running on the Windows operating system.
@@ -70,21 +74,36 @@ namespace Hyjinx.Common.SystemInterop
                     else if (xdgSessionType == "wayland")
                     {
                         // TODO
-                        Logger.Warning?.Print(LogClass.Application, "Couldn't determine monitor DPI: Wayland not yet supported");
+                        LogWaylandNotYetSupported(_logger);
                     }
                     else
                     {
-                        Logger.Warning?.Print(LogClass.Application, $"Couldn't determine monitor DPI: Unrecognised XDG_SESSION_TYPE: {xdgSessionType}");
+                        LogUnrecognizedSessionType(_logger, xdgSessionType);
                     }
                 }
             }
             catch (Exception e)
             {
-                Logger.Warning?.Print(LogClass.Application, $"Couldn't determine monitor DPI: {e.Message}");
+                LogUnableToDetermineDpi(_logger, e);
             }
 
             return userDpiScale;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Couldn't determine monitor DPI. Wayland not yet supported.")]
+        private static partial void LogWaylandNotYetSupported(ILogger logger);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Couldn't determine monitor DPI. Unrecognized session type '{sessionType}'.")]
+        private static partial void LogUnrecognizedSessionType(ILogger logger, string sessionType);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Couldn't determine monitor DPI.")]
+        private static partial void LogUnableToDetermineDpi(ILogger logger, Exception exception);
 
         public static double GetWindowScaleFactor()
         {

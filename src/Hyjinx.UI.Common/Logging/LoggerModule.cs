@@ -1,7 +1,5 @@
-using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.Extensions.Logging.Console;
-using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -46,9 +44,9 @@ public static class LoggerModule
         
         Logger.Initialize(LoggingServices.GetRequiredService<ILoggerFactory>());
         // Logger.SetEnable(LogLevel.Trace, false);
-        Logger.SetEnable(LogLevel.Debug, true);
+        // Logger.SetEnable(LogLevel.Debug, true);
         // Logger.SetEnable(LogLevel.Info, true);
-        Logger.SetEnable(LogLevel.Warning, true);
+        // Logger.SetEnable(LogLevel.Warning, true);
         // Logger.SetEnable(LogLevel.Error, true);
         // Logger.SetEnable(LogLevel.Stub, false);
         
@@ -62,10 +60,10 @@ public static class LoggerModule
         // Logger.SetEnable(LogLevel.Stub, ConfigurationState.Instance.Logger.EnableStub.Value);
     }
     
-    private static void ReloadEnableDebug(object? sender, ReactiveEventArgs<bool> e)
-    {
-        Logger.SetEnable(LogLevel.Debug, e.NewValue);
-    }
+    // private static void ReloadEnableDebug(object? sender, ReactiveEventArgs<bool> e)
+    // {
+    //     Logger.SetEnable(LogLevel.Debug, e.NewValue);
+    // }
 
     // private static void ReloadEnableStub(object? sender, ReactiveEventArgs<bool> e)
     // {
@@ -77,18 +75,18 @@ public static class LoggerModule
     //     Logger.SetEnable(LogLevel.Info, e.NewValue);
     // }
 
-    private static void ReloadEnableWarning(object? sender, ReactiveEventArgs<bool> e)
-    {
-        Logger.SetEnable(LogLevel.Warning, e.NewValue);
-    }
+    // private static void ReloadEnableWarning(object? sender, ReactiveEventArgs<bool> e)
+    // {
+    //     Logger.SetEnable(LogLevel.Warning, e.NewValue);
+    // }
 
     // private static void ReloadEnableError(object? sender, ReactiveEventArgs<bool> e)
     // {
     //     Logger.SetEnable(LogLevel.Error, e.NewValue);
     // }
 
-    private static void ReloadEnableTrace(object? sender, ReactiveEventArgs<bool> e)
-    {
-        Logger.SetEnable(LogLevel.Trace, e.NewValue);
-    }
+    // private static void ReloadEnableTrace(object? sender, ReactiveEventArgs<bool> e)
+    // {
+    //     Logger.SetEnable(LogLevel.Trace, e.NewValue);
+    // }
 }
