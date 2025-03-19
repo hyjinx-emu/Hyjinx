@@ -387,7 +387,8 @@ namespace Hyjinx.Ava.UI.Helpers
                 {
                     result = ContentDialogResult.None;
 
-                    Logger.Warning?.Print(LogClass.UI, "Content dialog overlay failed to populate. Default value has been returned.");
+                    _logger.LogWarning(new EventId((int)LogClass.UI, nameof(LogClass.UI)),
+                        "Content dialog overlay failed to populate. Default value has been returned.");
                 }
 
                 return result;

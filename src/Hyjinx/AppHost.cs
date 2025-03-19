@@ -40,6 +40,7 @@ using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Microsoft.Extensions.Logging;
+using SDL2;
 using Silk.NET.Vulkan;
 using SkiaSharp;
 using SPB.Graphics.Vulkan;
@@ -77,7 +78,7 @@ namespace Hyjinx.Ava
         private readonly Stopwatch _chrono;
         private long _ticks;
 
-        private readonly ILogger<AppHost> _logger = 
+        private static readonly ILogger<AppHost> _logger = 
             Logger.DefaultLoggerFactory.CreateLogger<AppHost>();
         
         private readonly AccountManager _accountManager;
@@ -788,7 +789,8 @@ namespace Hyjinx.Ava
             }
             else
             {
-                Logger.Warning?.Print(LogClass.Application, "Please specify a valid XCI/NCA/NSP/PFS0/NRO file.");
+                _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Please specify a valid XCI/NCA/NSP/PFS0/NRO file.");
 
                 Device.Dispose();
 
@@ -918,8 +920,9 @@ namespace Hyjinx.Ava
                 {
                     return new T();
                 }
-
-                Logger.Warning?.Print(LogClass.Audio, $"{backend} is not supported, falling back to {nextBackend}.");
+                
+                _logger.LogWarning(new EventId((int)LogClass.Audio, nameof(LogClass.Audio)), 
+                    "{backend} is not supported, falling back to {nextBackend}.", backend, nextBackend);
 
                 return null;
             }

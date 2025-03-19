@@ -10,7 +10,7 @@ using static SDL2.SDL;
 
 namespace Hyjinx.Headless.SDL2.OpenGL
 {
-    class OpenGLWindow : WindowBase
+    internal partial class OpenGLWindow : WindowBase
     {
         private static readonly ILogger<OpenGLWindow> _logger = 
             Logger.DefaultLoggerFactory.CreateLogger<OpenGLWindow>();
@@ -165,7 +165,7 @@ namespace Hyjinx.Headless.SDL2.OpenGL
                 // NOTE: grabbing the main display's dimensions directly as OpenGL doesn't scale along like the VulkanWindow.
                 if (SDL_GetDisplayBounds(DisplayId, out SDL_Rect displayBounds) < 0)
                 {
-                    Logger.Warning?.Print(LogClass.Application, $"Could not retrieve display bounds: {SDL_GetError()}");
+                    LogUnableToRetrieveDisplayBounds(SDL_GetError());
 
                     // Fallback to defaults
                     displayBounds.w = DefaultWidth;
@@ -181,6 +181,11 @@ namespace Hyjinx.Headless.SDL2.OpenGL
                 MouseDriver.SetClientSize(DefaultWidth, DefaultHeight);
             }
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Could not retrieve display bounds: {message}")]
+        private partial void LogUnableToRetrieveDisplayBounds(string message);
 
         protected override void InitializeRenderer() { }
 

@@ -179,7 +179,8 @@ namespace Hyjinx.Ava
                 }
                 else
                 {
-                    Logger.Warning?.PrintMsg(LogClass.Application, $"Failed to load config! Loading the default config instead.\nFailed config location: {ConfigurationPath}");
+                    Logger.DefaultLogger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Failed to load config! Loading the default config instead.\nFailed config location: {path}", ConfigurationPath);
 
                     ConfigurationState.Instance.LoadDefault();
                 }

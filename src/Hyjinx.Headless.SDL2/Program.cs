@@ -361,7 +361,8 @@ namespace Hyjinx.Headless.SDL2
                 if (option.GraphicsBackend == GraphicsBackend.OpenGl)
                 {
                     option.GraphicsBackend = GraphicsBackend.Vulkan;
-                    Logger.Warning?.Print(LogClass.Application, "OpenGL is not supported on macOS, switching to Vulkan!");
+                    Logger.DefaultLogger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "OpenGL is not supported on macOS, switching to Vulkan!");
                 }
             }
 
@@ -433,10 +434,10 @@ namespace Hyjinx.Headless.SDL2
             }
 
             // Setup logging level
-            Logger.SetEnable(LogLevel.Debug, option.LoggingEnableDebug);
+            // Logger.SetEnable(LogLevel.Debug, option.LoggingEnableDebug);
             // Logger.SetEnable(LogLevel.Stub, !option.LoggingDisableStub);
             // Logger.SetEnable(LogLevel.Info, !option.LoggingDisableInfo);
-            Logger.SetEnable(LogLevel.Warning, !option.LoggingDisableWarning);
+            // Logger.SetEnable(LogLevel.Warning, !option.LoggingDisableWarning);
             // Logger.SetEnable(LogLevel.Error, option.LoggingEnableError);
             // Logger.SetEnable(LogLevel.Trace, option.LoggingEnableTrace);
 
@@ -736,7 +737,9 @@ namespace Hyjinx.Headless.SDL2
             }
             else
             {
-                Logger.Warning?.Print(LogClass.Application, $"Couldn't load '{options.InputPath}'. Please specify a valid XCI/NCA/NSP/PFS0/NRO file.");
+                Logger.DefaultLogger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Couldn't load '{inputPath}'. Please specify a valid XCI/NCA/NSP/PFS0/NRO file.",
+                    options.InputPath);
 
                 _emulationContext.Dispose();
 

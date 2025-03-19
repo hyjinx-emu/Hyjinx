@@ -312,7 +312,8 @@ namespace Hyjinx.Ava.UI.Windows
         {
             if (OperatingSystem.IsLinux() && LinuxHelper.VmMaxMapCount < LinuxHelper.RecommendedVmMaxMapCount)
             {
-                Logger.Warning?.Print(LogClass.Application, $"The value of vm.max_map_count is lower than {LinuxHelper.RecommendedVmMaxMapCount}. ({LinuxHelper.VmMaxMapCount})");
+                _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                "The value of vm.max_map_count is lower than {recommended}. ({vmMaxMapCount})", LinuxHelper.RecommendedVmMaxMapCount, LinuxHelper.VmMaxMapCount);
 
                 if (LinuxHelper.PkExecPath is not null)
                 {
@@ -438,7 +439,9 @@ namespace Hyjinx.Ava.UI.Windows
                 }
             }
 
-            Logger.Warning?.Print(LogClass.Application, "Failed to find valid start-up coordinates. Defaulting to primary monitor center.");
+            _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+            "Failed to find valid start-up coordinates. Defaulting to primary monitor center.");
+            
             return false;
         }
 

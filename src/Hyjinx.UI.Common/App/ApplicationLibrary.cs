@@ -18,6 +18,7 @@ using Hyjinx.HLE.Loaders.Npdm;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Configuration.System;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,7 +33,7 @@ using TimeSpan = System.TimeSpan;
 
 namespace Hyjinx.UI.App.Common
 {
-    public class ApplicationLibrary
+    public partial class ApplicationLibrary
     {
         public Language DesiredLanguage { get; set; }
         public event EventHandler<ApplicationAddedEventArgs> ApplicationAdded;
@@ -43,13 +44,16 @@ namespace Hyjinx.UI.App.Common
         private readonly byte[] _ncaIcon;
         private readonly byte[] _nroIcon;
         private readonly byte[] _nsoIcon;
-
+        
         private readonly VirtualFileSystem _virtualFileSystem;
         private readonly IntegrityCheckLevel _checkLevel;
         private CancellationTokenSource _cancellationToken;
 
         private static readonly ApplicationJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
+        private static readonly ILogger<ApplicationLibrary> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<ApplicationLibrary>();
+        
         public ApplicationLibrary(VirtualFileSystem virtualFileSystem, IntegrityCheckLevel checkLevel)
         {
             _virtualFileSystem = virtualFileSystem;
@@ -141,8 +145,7 @@ namespace Hyjinx.UI.App.Common
                     }
                     catch (Exception exception)
                     {
-                        Logger.Warning?.Print(LogClass.Application, $"Encountered an error while trying to load applications from file '{filePath}': {exception}");
-
+                        LogErrorWhileTryingToLoadApplicationsFromFile(filePath, exception);
                         return null;
                     }
                 }
@@ -161,7 +164,7 @@ namespace Hyjinx.UI.App.Common
                     case 1:
                         return applications[0];
                     case >= 1:
-                        Logger.Warning?.Print(LogClass.Application, $"File '{filePath}' contains more applications than expected: {applications.Count}");
+                        LogFoundMoreApplicationsThanExpected(filePath, applications.Count);
                         return applications[0];
                     default:
                         return null;
@@ -175,7 +178,17 @@ namespace Hyjinx.UI.App.Common
 
             return null;
         }
-
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Encountered an error while trying to load applications from file '{filePath}'.")]
+        private partial void LogErrorWhileTryingToLoadApplicationsFromFile(string filePath, Exception exception);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "File '{filePath}' contains more applications than expected: {expected}")]
+        private partial void LogFoundMoreApplicationsThanExpected(string filePath, int expected);
+        
         /// <exception cref="MissingKeyException">The configured key set is missing a key.</exception>
         /// <exception cref="InvalidDataException">The NCA header could not be decrypted.</exception>
         /// <exception cref="NotSupportedException">The NCA version is not supported.</exception>
@@ -263,6 +276,11 @@ namespace Hyjinx.UI.App.Common
             return applications;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "File not found: {fileName}")]
+        private partial void LogFileNotFound(string fileName);
+        
         public bool TryGetApplicationsFromFile(string applicationPath, out List<ApplicationData> applications)
         {
             applications = [];
@@ -274,8 +292,7 @@ namespace Hyjinx.UI.App.Common
             }
             catch (FileNotFoundException)
             {
-                Logger.Warning?.Print(LogClass.Application, $"The file was not found: '{applicationPath}'");
-
+                LogFileNotFound(applicationPath);
                 return false;
             }
 
@@ -407,26 +424,22 @@ namespace Hyjinx.UI.App.Common
             }
             catch (MissingKeyException exception)
             {
-                Logger.Warning?.Print(LogClass.Application, $"Your key set is missing a key with the name: {exception.Name}");
-
+                LogKeySetMissingKeyName(exception.Name);
                 return false;
             }
             catch (InvalidDataException)
             {
-                Logger.Warning?.Print(LogClass.Application, $"The header key is incorrect or missing and therefore the NCA header content type check has failed. Errored File: {applicationPath}");
-
+                LogHeaderKeyIsMissingOrInvalid(applicationPath);
                 return false;
             }
             catch (IOException exception)
             {
-                Logger.Warning?.Print(LogClass.Application, exception.Message);
-
+                LogErrorOccurredWhileLoadingFile(applicationPath, exception);
                 return false;
             }
             catch (Exception exception)
             {
-                Logger.Warning?.Print(LogClass.Application, $"The file encountered was not of a valid type. File: '{applicationPath}' Error: {exception}");
-
+                LogFileNotValid(applicationPath, exception);
                 return false;
             }
 
@@ -473,7 +486,32 @@ namespace Hyjinx.UI.App.Common
 
             return true;
         }
+            
+        [LoggerMessage(LogLevel.Warning, 
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Your key set is missing a key with the name: {name}")]
+        private partial void LogKeySetMissingKeyName(string name);
 
+        [LoggerMessage(LogLevel.Warning, 
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "The file '{filePath}' was not of a valid type.")]
+        private partial void LogFileNotValid(string filePath, Exception exception);
+
+        [LoggerMessage(LogLevel.Warning, 
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "An unexpected error occurred while attempting to load '{filePath}'.")]
+        private partial void LogErrorOccurredWhileLoadingFile(string filePath, Exception exception);
+        
+        [LoggerMessage(LogLevel.Warning, 
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "The header key is incorrect or missing and therefore the NCA header content type check has failed. File: '{filePath}'")]
+        private partial void LogHeaderKeyIsMissingOrInvalid(string filePath);
+            
+        [LoggerMessage(LogLevel.Warning, 
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Failed to get access to directory: '{appDir}'")]
+        private partial void LogDirectoryAccessDenied(string appDir);
+        
         public void CancelLoading()
         {
             _cancellationToken?.Cancel();
@@ -487,6 +525,21 @@ namespace Hyjinx.UI.App.Common
             controlFile.Get.Read(out _, 0, outProperty, ReadOption.None).ThrowIfFailure();
         }
 
+        [LoggerMessage(LogLevel.Warning, 
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "The specified game directory '{appDir}' does not exist.")]
+        private partial void LogGameDirectoryDoesNotExist(string appDir);
+        
+        [LoggerMessage(LogLevel.Warning, 
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Failed to resolve the full path to file: '{app}'")]
+        private partial void LogFailedToResolveFullPathToFile(string app, Exception exception);
+        
+        [LoggerMessage(LogLevel.Warning, 
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Failed to parse metadata json for {titleId}. Loading defaults.")]
+        private static partial void LogFailedToParseMetadata(ILogger logger, string titleId);
+        
         public void LoadApplications(List<string> appDirs)
         {
             int numApplicationsFound = 0;
@@ -508,8 +561,7 @@ namespace Hyjinx.UI.App.Common
 
                     if (!Directory.Exists(appDir))
                     {
-                        Logger.Warning?.Print(LogClass.Application, $"The specified game directory \"{appDir}\" does not exist.");
-
+                        LogGameDirectoryDoesNotExist(appDir);
                         continue;
                     }
 
@@ -550,13 +602,13 @@ namespace Hyjinx.UI.App.Common
                             }
                             catch (IOException exception)
                             {
-                                Logger.Warning?.Print(LogClass.Application, $"Failed to resolve the full path to file: \"{app}\" Error: {exception}");
+                                LogFailedToResolveFullPathToFile(app, exception);
                             }
                         }
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Logger.Warning?.Print(LogClass.Application, $"Failed to get access to directory: \"{appDir}\"");
+                        LogDirectoryAccessDenied(appDir);
                     }
                 }
 
@@ -642,7 +694,7 @@ namespace Hyjinx.UI.App.Common
             }
             catch (JsonException)
             {
-                Logger.Warning?.Print(LogClass.Application, $"Failed to parse metadata json for {titleId}. Loading defaults.");
+                LogFailedToParseMetadata(_logger, titleId);
 
                 appMetadata = new ApplicationMetadata();
             }
@@ -782,7 +834,7 @@ namespace Hyjinx.UI.App.Common
                         }
                         catch (Exception exception)
                         {
-                            Logger.Warning?.Print(LogClass.Application, $"The file encountered was not of a valid type. File: '{applicationPath}' Error: {exception}");
+                            LogFileNotValid(applicationPath, exception);
                         }
                     }
                     else if (extension == ".nro")
@@ -824,9 +876,9 @@ namespace Hyjinx.UI.App.Common
                                 applicationIcon = _nroIcon;
                             }
                         }
-                        catch
+                        catch (Exception exception)
                         {
-                            Logger.Warning?.Print(LogClass.Application, $"The file encountered was not of a valid type. Errored File: {applicationPath}");
+                            LogFileNotValid(applicationPath, exception);
                         }
                     }
                     else if (extension == ".nca")
@@ -840,13 +892,18 @@ namespace Hyjinx.UI.App.Common
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                Logger.Warning?.Print(LogClass.Application, $"Could not retrieve a valid icon for the app. Default icon will be used. Errored File: {applicationPath}");
+                LogUnableToGetIconForApp(applicationPath, exception);
             }
 
             return applicationIcon ?? _ncaIcon;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Could not retrieve a valid icon for the app from file '{applicationFile}'. Default icon will be used.")]
+        private partial void LogUnableToGetIconForApp(string applicationFile, Exception exception);
 
         private void GetApplicationInformation(ref ApplicationControlProperty controlData, ref ApplicationData data)
         {
@@ -927,11 +984,11 @@ namespace Hyjinx.UI.App.Common
             }
             catch (InvalidDataException)
             {
-                Logger.Warning?.Print(LogClass.Application, $"The header key is incorrect or missing and therefore the NCA header content type check has failed. Errored File: {updatePath}");
+                LogHeaderKeyIsMissingOrInvalid(updatePath!);
             }
             catch (MissingKeyException exception)
             {
-                Logger.Warning?.Print(LogClass.Application, $"Your key set is missing a key with the name: {exception.Name}. Errored File: {updatePath}");
+                LogKeySetMissingKeyName(exception.Name);
             }
 
             return false;
