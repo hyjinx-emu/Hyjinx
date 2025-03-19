@@ -24,7 +24,6 @@
   
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" />
-    <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="securifybv.ShellLink" />
     <PackageReference Include="System.Management" />
   </ItemGroup>
