@@ -14,7 +14,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 {
     [Service("bsd:s", true)]
     [Service("bsd:u", false)]
-    partial class IClient : IpcService<IClient>
+    internal partial class IClient : IpcService<IClient>
     {
         private static readonly List<IPollManager> _pollManagers = new()
         {
@@ -837,13 +837,18 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
                     default:
                         errno = LinuxError.EOPNOTSUPP;
 
-                        Logger.Warning?.Print(LogClass.ServiceBsd, $"Unsupported Ioctl Cmd: {cmd}");
+                        LogUnsupportedCommand(cmd);
                         break;
                 }
             }
 
             return WriteBsdResult(context, 0, errno);
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Unsupported Ioctl command: {cmd}")]
+        private partial void LogUnsupportedCommand(BsdIoctl cmd);
 
         [CommandCmif(20)]
         // Fcntl(u32 socket, u32 cmd, u32 arg) -> (i32 ret, u32 bsd_errno)

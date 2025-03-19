@@ -106,7 +106,7 @@ namespace Hyjinx.HLE.HOS.Services.Sm
                 {
                     if (context.Device.Configuration.IgnoreMissingServices)
                     {
-                        Logger.Warning?.Print(LogClass.Service, $"Missing service {name} ignored");
+                        LogMissingServiceIgnored(name);
                     }
                     else
                     {
@@ -121,12 +121,17 @@ namespace Hyjinx.HLE.HOS.Services.Sm
 
                 session.ServerSession.DecrementReferenceCount();
                 session.ClientSession.DecrementReferenceCount();
-
+                
                 context.Response.HandleDesc = IpcHandleDesc.MakeMove(handle);
             }
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Service, EventName = nameof(LogClass.Service),
+            Message = "Missing service '{name}' ignored.")]
+        private partial void LogMissingServiceIgnored(string name);
 
         [CommandCmif(2)]
         // RegisterService(ServiceName name, u8 isLight, u32 maxHandles) -> handle<move, port>

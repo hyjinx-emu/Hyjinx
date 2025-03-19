@@ -58,10 +58,15 @@ namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
                 return locationName;
             }
 
-            Logger.Warning?.Print(LogClass.ServiceTime, $"Invalid device TimeZone {locationName}, switching back to UTC");
+            LogInvalidDeviceTimeZone(locationName);
 
             return "UTC";
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceTime, EventName = nameof(LogClass.ServiceTime),
+            Message = "Invalid device TimeZone {location}, switching back to UTC.")]
+        private partial void LogInvalidDeviceTimeZone(string location);
 
         internal void Initialize(TimeManager timeManager, Switch device)
         {

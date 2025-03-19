@@ -274,13 +274,18 @@ namespace Hyjinx.HLE.HOS.Services.Settings
 
             if (deviceNickNameBufferSize != 0x80)
             {
-                Logger.Warning?.Print(LogClass.ServiceSet, "Wrong buffer size");
+                LogWrongBufferSize();
             }
 
             context.Memory.Write(deviceNickNameBufferPosition, Encoding.ASCII.GetBytes(context.Device.System.State.DeviceNickName + '\0'));
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
+            Message = "Wrong buffer size")]
+        private partial void LogWrongBufferSize();
 
         [CommandCmif(78)]
         // SetDeviceNickName(buffer<nn::settings::system::DeviceNickName, 0x15>)

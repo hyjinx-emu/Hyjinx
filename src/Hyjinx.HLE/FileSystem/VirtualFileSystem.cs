@@ -387,8 +387,6 @@ namespace Hyjinx.HLE.FileSystem
             }
         }
         
-        // Logger.Warning?.Print(LogClass.Application, $"Error {rc.ToStringWithName()} when creating save data 0x{info[i].SaveDataId:x} in the {spaceId} save data space");
-
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Error {error} when creating save data 0x{id:X} in the {spaceId} save data space.")]

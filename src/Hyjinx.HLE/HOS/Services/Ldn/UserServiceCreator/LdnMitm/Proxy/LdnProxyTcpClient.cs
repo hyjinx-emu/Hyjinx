@@ -51,11 +51,16 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTcpClient is sending a packet but endpoint is not null.")]
+        private partial void LogLdnProxyTcpClientSendingPacketToEndpoint();
+        
         public bool SendPacketAsync(EndPoint endPoint, byte[] data)
         {
             if (endPoint != null)
             {
-                Logger.Warning?.PrintMsg(LogClass.ServiceLdn, "LdnProxyTcpClient is sending a packet but endpoint is not null.");
+                LogLdnProxyTcpClientSendingPacketToEndpoint();
             }
 
             if (IsConnecting && !IsConnected)

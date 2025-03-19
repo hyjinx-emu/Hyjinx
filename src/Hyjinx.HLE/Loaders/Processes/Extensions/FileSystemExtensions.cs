@@ -26,7 +26,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
 
             if (fileSystem == null || !fileSystem.FileExists(ProcessConst.MainNpdmPath))
             {
-                Logger.Warning?.Print(LogClass.Loader, "NPDM file not found, using default values!");
+                LogNpdmFileNotFound(_logger);
 
                 metaLoader.LoadDefault();
             }
@@ -38,6 +38,16 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
             return metaLoader;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "NPDM file  not found, using default values!")]
+        private static partial void LogNpdmFileNotFound(ILogger logger);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "Detected unsupported ExeFS modifications, PTC disabled.")]
+        private static partial void LogUnsupportedExeFsModificationsDetected(ILogger logger);
+        
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
             Message = "Loading {name}...")]
@@ -95,7 +105,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
             bool enablePtc = device.System.EnablePtc && !modLoadResult.Modified;
             if (!enablePtc)
             {
-                Logger.Warning?.Print(LogClass.Ptc, "Detected unsupported ExeFs modifications. PTC disabled.");
+                LogUnsupportedExeFsModificationsDetected(_logger);
             }
 
             string programName = "";

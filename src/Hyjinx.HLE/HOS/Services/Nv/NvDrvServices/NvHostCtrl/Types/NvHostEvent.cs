@@ -5,17 +5,21 @@ using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {
-    class NvHostEvent
+    partial class NvHostEvent
     {
         public NvFence Fence;
         public NvHostEventState State;
         public KEvent Event;
         public int EventHandle;
+
+        private static readonly ILogger<NvHostEvent> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<NvHostEvent>();
 
         private readonly uint _eventId;
 #pragma warning disable IDE0052 // Remove unread private member
@@ -25,7 +29,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 
         private NvFence _previousFailingFence;
         private uint _failingCount;
-
+        
         public readonly object Lock = new();
 
         /// <summary>
@@ -126,6 +130,11 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "GPU processing thread is too slow, waiting on CPU...")]
+        private partial void LogGpuProcessingThreadTooSlow();
+
         public bool Wait(GpuContext gpuContext, NvFence fence)
         {
             lock (Lock)
@@ -138,7 +147,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
                 //       This allows to keep GPU and CPU in sync when we are slow.
                 if (_failingCount == FailingCountMax)
                 {
-                    Logger.Warning?.Print(LogClass.ServiceNv, "GPU processing thread is too slow, waiting on CPU...");
+                    LogGpuProcessingThreadTooSlow();
 
                     Fence.Wait(gpuContext, Timeout.InfiniteTimeSpan);
 

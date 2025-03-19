@@ -422,13 +422,18 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                     }
                     else
                     {
-                        Logger.Warning?.PrintMsg(LogClass.ServiceLdn, "LanDiscovery Scan: Got empty Username. There might be a timing issue somewhere...");
+                        LogScanGotEmptyUsername();
                     }
                 }
             }
 
             return outNetworkInfo.ToArray();
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LanDiscovery Scan: Got empty Username. There might be a timing issue somewhere...")]
+        private partial void LogScanGotEmptyUsername();
 
         protected void ResetStations()
         {

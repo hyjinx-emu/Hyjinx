@@ -1,11 +1,12 @@
 using Hyjinx.Common;
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Account.Acc.AccountService;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
     [Service("acc:su", AccountServiceFlag.Administrator)] // Max Sessions: 8
-    class IAccountServiceForAdministrator : IpcService<IAccountServiceForAdministrator>
+    internal partial class IAccountServiceForAdministrator : IpcService<IAccountServiceForAdministrator>
     {
         private readonly ApplicationServiceServer _applicationServiceServer;
 
@@ -113,7 +114,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
 
             if (!context.Device.System.AccountManager.TryGetUser(userId, out UserProfile userProfile))
             {
-                Logger.Warning?.Print(LogClass.ServiceAcc, $"User 0x{userId} not found!");
+                LogUserNotFound(userId);
 
                 return ResultCode.UserNotFound;
             }
@@ -125,5 +126,10 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
 
             return ResultCode.Success;
         }
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAcc, EventName = nameof(LogClass.ServiceAcc),
+            Message = "User 0x{userId} not found!")]
+        private partial void LogUserNotFound(UserId userId);
     }
 }

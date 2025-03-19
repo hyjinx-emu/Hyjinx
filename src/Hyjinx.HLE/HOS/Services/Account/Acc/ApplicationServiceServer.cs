@@ -4,14 +4,18 @@ using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Account.Acc.AccountService;
 using Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
-    class ApplicationServiceServer
+    internal partial class ApplicationServiceServer
     {
+        private static readonly ILogger<ApplicationServiceServer> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<ApplicationServiceServer>();
+
         readonly AccountServiceFlag _serviceFlag;
 
         public ApplicationServiceServer(AccountServiceFlag serviceFlag)
@@ -100,7 +104,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
 
             if (!context.Device.System.AccountManager.TryGetUser(userId, out UserProfile userProfile))
             {
-                Logger.Warning?.Print(LogClass.ServiceAcc, $"User 0x{userId} not found!");
+                LogUserNotFound(userId);
 
                 return ResultCode.UserNotFound;
             }
@@ -112,6 +116,11 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAcc, EventName = nameof(LogClass.ServiceAcc),
+            Message = "User 0x{userId} not found!")]
+        private partial void LogUserNotFound(UserId userId);
 
         public ResultCode IsUserRegistrationRequestPermitted(ServiceCtx context)
         {

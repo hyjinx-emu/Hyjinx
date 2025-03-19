@@ -477,12 +477,17 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
                     break;
 
                 default:
-                    Logger.Warning?.Print(LogClass.ServiceSsl, $"Unsupported option {option}");
+                    LogUnsupportedOption(option);
                     return ResultCode.InvalidOption;
             }
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
+            Message = "Unsupported option {option}")]
+        private partial void LogUnsupportedOption(OptionType option);
 
         private ResultCode GetOption(OptionType option, out bool value)
         {
@@ -505,7 +510,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
                     break;
 
                 default:
-                    Logger.Warning?.Print(LogClass.ServiceSsl, $"Unsupported option {option}");
+                    LogUnsupportedOption(option);
 
                     value = false;
                     return ResultCode.InvalidOption;

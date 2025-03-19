@@ -84,6 +84,13 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             Message = "Decode error, unhandled type {type}.")]
         private partial void LogDecodeErrorUnhandledType(LanPacketType type);
         
+        // Logger.Warning?.PrintMsg(LogClass.ServiceLdn, $"Invalid magic number in received packet. [magic: {header.Magic}] [EP: {endPoint}]");
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Invalid magic number received in packet. [magic: {magic}] [EP: {endpoint}]")]
+        private partial void LogInvalidMagicNumberReceived(uint magic, EndPoint endpoint);
+        
         public void Read(scoped ref byte[] buffer, scoped ref int bufferEnd, byte[] data, int offset, int size, EndPoint endPoint = null)
         {
             if (endPoint != null && _discovery.LocalAddr.Equals(((IPEndPoint)endPoint).Address))
@@ -110,8 +117,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                     if (header.Magic != LanMagic)
                     {
                         bufferEnd = 0;
-
-                        Logger.Warning?.PrintMsg(LogClass.ServiceLdn, $"Invalid magic number in received packet. [magic: {header.Magic}] [EP: {endPoint}]");
+                        LogInvalidMagicNumberReceived(header.Magic, endPoint!);
 
                         return;
                     }

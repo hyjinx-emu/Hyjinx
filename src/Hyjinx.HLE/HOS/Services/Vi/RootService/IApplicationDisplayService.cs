@@ -407,7 +407,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 
             if (!applet.DrawTo(surfaceInfo, context.Memory, layerBuffPosition))
             {
-                Logger.Warning?.Print(LogClass.ServiceVi, $"Applet did not draw on indirect layer handle {layerHandle}");
+                LogAppletDidNotDrawAsExpected(layerHandle);
 
                 return ResultCode.Success;
             }
@@ -417,6 +417,11 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceVi, EventName = nameof(LogClass.ServiceVi),
+            Message = "Applet did not draw on indirect layer handle {handle}.")]
+        private partial void LogAppletDidNotDrawAsExpected(long handle);
 
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceVi, EventName = nameof(LogClass.ServiceVi),

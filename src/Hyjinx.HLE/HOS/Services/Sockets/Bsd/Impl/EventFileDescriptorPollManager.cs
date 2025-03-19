@@ -1,12 +1,16 @@
 using Hyjinx.Common.Logging;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 {
-    class EventFileDescriptorPollManager : IPollManager
+    partial class EventFileDescriptorPollManager : IPollManager
     {
+        private static readonly ILogger<EventFileDescriptorPollManager> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<EventFileDescriptorPollManager>();
+
         private static EventFileDescriptorPollManager _instance;
 
         public static EventFileDescriptorPollManager Instance
@@ -23,7 +27,14 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
         {
             return evnt.FileDescriptor is EventFileDescriptor;
         }
+        
+        // Logger.Warning?.Print(LogClass.ServiceBsd, $"Unsupported Poll input event type: {evnt.Data.InputEvents}");
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Unsupported Poll input event type: {events}")]
+        private partial void LogUnsupportedPollInputEventType(PollEventTypeMask events);
+        
         public LinuxError Poll(List<PollEvent> events, int timeoutMilliseconds, out int updatedCount)
         {
             updatedCount = 0;
@@ -54,7 +65,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 
                 if (!isValidEvent)
                 {
-                    Logger.Warning?.Print(LogClass.ServiceBsd, $"Unsupported Poll input event type: {evnt.Data.InputEvents}");
+                    LogUnsupportedPollInputEventType(evnt.Data.InputEvents);
 
                     return LinuxError.EINVAL;
                 }

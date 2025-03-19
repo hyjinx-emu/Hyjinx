@@ -124,7 +124,7 @@ namespace Hyjinx.HLE.Loaders.Processes
                 control.UserAccountSaveDataJournalSize = 0x4000;
                 control.SaveDataOwnerId = applicationId.Value;
 
-                Logger.Warning?.Print(LogClass.Application, "No control file was found for this game. Using a dummy one instead. This may cause inaccuracies in some games.");
+                LogNoControlFileFoundForGame(_logger);
             }
 
             LibHac.Result resultCode = device.System.LibHacHorizonManager.HyjinxClient.Fs.EnsureApplicationCacheStorage(out _, out _, applicationId, in control);
@@ -145,7 +145,12 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             return resultCode;
         }
-
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "No control file was found for this game. Using a dummy one instead. This may cause inaccuracies in some games.")]
+        private static partial void LogNoControlFileFoundForGame(ILogger logger);
+        
         public static bool LoadKip(KernelContext context, KipExecutable kip)
         {
             uint endOffset = kip.DataOffset + (uint)kip.Data.Length;

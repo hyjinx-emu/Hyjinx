@@ -716,8 +716,6 @@ namespace Hyjinx.HLE.HOS
             return modLoadResult;
         }
         
-        // Logger.Warning?.Print(LogClass.ModLoader, $"Multiple replacements to '{nsoName}'");
-
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
             Message = "Multiple replacements to '{name}'.")]

@@ -142,7 +142,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
 
             if (firstSupported > (int)TitleLanguage.BrazilianPortuguese)
             {
-                Logger.Warning?.Print(LogClass.ServiceAm, "Application has zero supported languages");
+                LogNoSupportedLanguagesFound();
 
                 context.ResponseData.Write(desiredLanguageCode);
 
@@ -163,6 +163,11 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Application has zero supported languages.")]
+        private partial void LogNoSupportedLanguagesFound();
 
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
