@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Microsoft.Extensions.Options;
 
-namespace Hyjinx.Extensions.Logging.Console.Internal;
+namespace Hyjinx.Logging.Console.Internal;
 
 /// <summary>
 /// A provider of <see cref="ConsoleLogger"/> instances.

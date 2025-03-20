@@ -4,7 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 
-namespace Hyjinx.Extensions.Logging.Console;
+namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// Options for the built-in console log formatter.

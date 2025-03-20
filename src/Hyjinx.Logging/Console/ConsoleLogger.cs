@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Hyjinx.Extensions.Logging.Console.Internal;
+using Hyjinx.Logging.Console.Internal;
 using System;
 using System.IO;
 using System.Runtime.Versioning;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Hyjinx.Extensions.Logging.Console;
+namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// A logger that writes messages in the console.

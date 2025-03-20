@@ -1,13 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Hyjinx.Extensions.Logging.Console.Internal;
+using Hyjinx.Logging.Console.Internal;
 using System.Runtime.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace Hyjinx.Extensions.Logging.Console;
+namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// Configures a ConsoleFormatterOptions object from an IConfiguration.

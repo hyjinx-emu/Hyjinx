@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Extensions.Logging.Console.Internal;
+namespace Hyjinx.Logging.Console.Internal;
 
 /// <summary>
 /// For consoles which understand the ANSI escape code sequences to represent color

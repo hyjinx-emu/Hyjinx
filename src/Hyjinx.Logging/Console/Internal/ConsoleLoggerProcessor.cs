@@ -7,7 +7,7 @@ using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Extensions.Logging.Console.Internal;
+namespace Hyjinx.Logging.Console.Internal;
 
 [UnsupportedOSPlatform("browser")]
 internal class ConsoleLoggerProcessor : IDisposable

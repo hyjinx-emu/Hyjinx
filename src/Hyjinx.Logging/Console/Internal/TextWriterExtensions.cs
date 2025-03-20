@@ -4,7 +4,7 @@
 using System;
 using System.IO;
 
-namespace Hyjinx.Extensions.Logging.Console.Internal;
+namespace Hyjinx.Logging.Console.Internal;
 
 internal static class TextWriterExtensions
 {

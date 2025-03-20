@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Extensions.Logging.Console.Internal;
+namespace Hyjinx.Logging.Console.Internal;
 
 internal sealed class AnsiParser
 {

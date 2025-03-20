@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.Extensions.Logging;
+namespace Hyjinx.Logging.Console.Internal;
 
 /// <summary>
 /// An empty scope without any logic

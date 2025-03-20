@@ -4,7 +4,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Hyjinx.Extensions.Logging.Console;
+namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// Holds the information for a single log entry.

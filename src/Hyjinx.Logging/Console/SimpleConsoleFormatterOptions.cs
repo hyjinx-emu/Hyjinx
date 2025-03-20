@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace Hyjinx.Extensions.Logging.Console;
+namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// Options for the built-in default console log formatter.

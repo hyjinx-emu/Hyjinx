@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
 
-namespace Hyjinx.Extensions.Logging.Console.Internal;
+namespace Hyjinx.Logging.Console.Internal;
 
 internal sealed class FormatterOptionsMonitor<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOptions> :
     IOptionsMonitor<TOptions>

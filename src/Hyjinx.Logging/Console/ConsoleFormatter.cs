@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
 
-namespace Hyjinx.Extensions.Logging.Console;
+namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// Allows custom log messages formatting.

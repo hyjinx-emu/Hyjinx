@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 
-namespace Hyjinx.Extensions.Logging.Console;
+namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// Options for a <see cref="ConsoleLogger"/>.

@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Hyjinx.Extensions.Logging.Console.Internal;
+using Hyjinx.Logging.Console.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -9,7 +9,7 @@ using System.IO;
 using Microsoft.Extensions.Options;
 using System.Text;
 
-namespace Hyjinx.Extensions.Logging.Console;
+namespace Hyjinx.Logging.Console;
 
 public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
 {
