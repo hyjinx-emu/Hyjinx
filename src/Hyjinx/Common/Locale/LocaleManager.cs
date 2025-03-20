@@ -150,7 +150,7 @@ namespace Hyjinx.Ava.Common.Locale
         private static Dictionary<LocaleKeys, string> LoadJsonLanguage(string languageCode)
         {
             var localeStrings = new Dictionary<LocaleKeys, string>();
-            string languageJson = EmbeddedResources.ReadAllText($"Hyjinx/Assets/Locales/{languageCode}.json");
+            string languageJson = EmbeddedResources.ReadAllText($"Hyjinx/Ava/Assets/Locales/{languageCode}.json");
 
             if (languageJson == null)
             {
