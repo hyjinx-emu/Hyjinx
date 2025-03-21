@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Logging.Console.Internal;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -94,7 +95,7 @@ public static class ConsoleLoggerExtensions
     [RequiresUnreferencedCode(TrimmingRequiresUnreferencedCodeMessage)]
     public static ILoggingBuilder AddConsoleFormatter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TFormatter, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(this ILoggingBuilder builder)
         where TOptions : ConsoleFormatterOptions
-        where TFormatter : ConsoleFormatter
+        where TFormatter : Formatter
     {
         return AddConsoleFormatter<TFormatter, TOptions, ConsoleLoggerFormatterConfigureOptions<TFormatter, TOptions>>(builder);
     }
@@ -108,7 +109,7 @@ public static class ConsoleLoggerExtensions
     [RequiresUnreferencedCode(TrimmingRequiresUnreferencedCodeMessage)]
     public static ILoggingBuilder AddConsoleFormatter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TFormatter, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(this ILoggingBuilder builder, Action<TOptions> configure)
         where TOptions : ConsoleFormatterOptions
-        where TFormatter : ConsoleFormatter
+        where TFormatter : Formatter
     {
         ArgumentNullException.ThrowIfNull(configure);
 
@@ -119,12 +120,12 @@ public static class ConsoleLoggerExtensions
 
     private static ILoggingBuilder AddConsoleFormatter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TFormatter, TOptions, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TConfigureOptions>(this ILoggingBuilder builder)
         where TOptions : ConsoleFormatterOptions
-        where TFormatter : ConsoleFormatter
+        where TFormatter : Formatter
         where TConfigureOptions : class, IConfigureOptions<TOptions>
     {
         builder.AddConfiguration();
 
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ConsoleFormatter, TFormatter>());
+        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<Formatter, TFormatter>());
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<TOptions>, TConfigureOptions>());
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IOptionsChangeTokenSource<TOptions>, ConsoleLoggerFormatterOptionsChangeTokenSource<TFormatter, TOptions>>());
 
@@ -140,7 +141,7 @@ public static class ConsoleLoggerExtensions
 [UnsupportedOSPlatform("browser")]
 internal sealed class ConsoleLoggerFormatterConfigureOptions<TFormatter, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions> : ConfigureFromConfigurationOptions<TOptions>
     where TOptions : ConsoleFormatterOptions
-    where TFormatter : ConsoleFormatter
+    where TFormatter : Formatter
 {
     [RequiresDynamicCode(ConsoleLoggerExtensions.RequiresDynamicCodeMessage)]
     [RequiresUnreferencedCode(ConsoleLoggerExtensions.TrimmingRequiresUnreferencedCodeMessage)]
@@ -153,7 +154,7 @@ internal sealed class ConsoleLoggerFormatterConfigureOptions<TFormatter, [Dynami
 [UnsupportedOSPlatform("browser")]
 internal sealed class ConsoleLoggerFormatterOptionsChangeTokenSource<TFormatter, TOptions> : ConfigurationChangeTokenSource<TOptions>
     where TOptions : ConsoleFormatterOptions
-    where TFormatter : ConsoleFormatter
+    where TFormatter : Formatter
 {
     public ConsoleLoggerFormatterOptionsChangeTokenSource(ILoggerProviderConfiguration<ConsoleLoggerProvider> providerConfiguration)
         : base(providerConfiguration.GetFormatterOptionsSection())

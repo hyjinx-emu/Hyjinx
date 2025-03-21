@@ -4,12 +4,12 @@
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace Hyjinx.Logging.Console;
+namespace Hyjinx.Logging.Abstractions;
 
 /// <summary>
 /// Holds the information for a single log entry.
 /// </summary>
-public readonly struct ConsoleLogEntry<TState>
+public readonly struct LogEntry<TState>
 {
     /// <summary>
     /// Initializes an instance of the LogEntry struct.
@@ -21,7 +21,7 @@ public readonly struct ConsoleLogEntry<TState>
     /// <param name="exception">The log exception.</param>
     /// <param name="threadName">The name of the thread.</param>
     /// <param name="formatter">The formatter.</param>
-    public ConsoleLogEntry(LogLevel logLevel, string category, EventId eventId, TState state, Exception? exception, string? threadName, TimeSpan upTime, Func<TState, Exception?, string> formatter)
+    public LogEntry(LogLevel logLevel, string category, EventId eventId, TState state, Exception? exception, string? threadName, TimeSpan upTime, Func<TState, Exception?, string> formatter)
     {
         LogLevel = logLevel;
         Category = category;

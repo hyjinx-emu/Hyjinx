@@ -1,22 +1,23 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Hyjinx.Logging.Console;
 using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
 
-namespace Hyjinx.Logging.Console;
+namespace Hyjinx.Logging.Abstractions;
 
 /// <summary>
 /// Allows custom log messages formatting.
 /// </summary>
-public abstract class ConsoleFormatter
+public abstract class Formatter
 {
     /// <summary>
-    /// Initializes a new instance of <see cref="ConsoleFormatter"/>.
+    /// Initializes a new instance of <see cref="Formatter"/>.
     /// </summary>
     /// <param name="name"></param>
-    protected ConsoleFormatter(string name)
+    protected Formatter(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
 
@@ -38,5 +39,5 @@ public abstract class ConsoleFormatter
     /// <param name="scopeProvider">The provider of scope data.</param>
     /// <param name="textWriter">The string writer embedding ansi code for colors.</param>
     /// <typeparam name="TState">The type of the object to be written.</typeparam>
-    public abstract void Write<TState>(in ConsoleLogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter);
+    public abstract void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter);
 }

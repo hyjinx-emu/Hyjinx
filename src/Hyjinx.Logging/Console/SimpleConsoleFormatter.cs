@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Logging.Console.Internal;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,7 +12,7 @@ using System.Text;
 
 namespace Hyjinx.Logging.Console;
 
-public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
+public sealed class SimpleConsoleFormatter : Formatter, IDisposable
 {
     private static bool IsAndroidOrAppleMobile => OperatingSystem.IsAndroid() ||
                                                   OperatingSystem.IsTvOS() ||
@@ -44,7 +45,7 @@ public sealed class SimpleConsoleFormatter : ConsoleFormatter, IDisposable
     [ThreadStatic]
     private static StringBuilder? t_messageBuilder;
     
-    public override void Write<TState>(in ConsoleLogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
+    public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
     {
         t_messageBuilder ??= new StringBuilder();
 

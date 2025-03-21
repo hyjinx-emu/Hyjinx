@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Logging.Console.Internal;
 using System;
 using System.IO;
@@ -24,7 +25,7 @@ internal sealed class ConsoleLogger : ILogger
     internal ConsoleLogger(
         string name,
         LoggerProcessor loggerProcessor,
-        ConsoleFormatter formatter,
+        Formatter formatter,
         IExternalScopeProvider? scopeProvider,
         ConsoleLoggerOptions options)
     {
@@ -38,7 +39,7 @@ internal sealed class ConsoleLogger : ILogger
         Options = options;
     }
 
-    internal ConsoleFormatter Formatter { get; set; }
+    internal Formatter Formatter { get; set; }
     internal IExternalScopeProvider? ScopeProvider { get; set; }
     internal ConsoleLoggerOptions Options { get; set; }
 
@@ -56,7 +57,7 @@ internal sealed class ConsoleLogger : ILogger
         ArgumentNullException.ThrowIfNull(formatter);
         
         t_stringWriter ??= new StringWriter();
-        ConsoleLogEntry<TState> logEntry = new(logLevel, _name, eventId, state, exception, Thread.CurrentThread.Name, _upTime.Elapsed, formatter);
+        LogEntry<TState> logEntry = new(logLevel, _name, eventId, state, exception, Thread.CurrentThread.Name, _upTime.Elapsed, formatter);
         Formatter.Write(in logEntry, ScopeProvider, t_stringWriter);
 
         var sb = t_stringWriter.GetStringBuilder();

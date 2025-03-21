@@ -22,7 +22,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
 {
     private readonly IOptionsMonitor<ConsoleLoggerOptions> _options;
     private readonly ConcurrentDictionary<string, ConsoleLogger> _loggers;
-    private ConcurrentDictionary<string, ConsoleFormatter> _formatters;
+    private ConcurrentDictionary<string, Formatter> _formatters;
     private readonly LoggerProcessor _messageQueue;
 
     private readonly IDisposable? _optionsReloadToken;
@@ -33,14 +33,14 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     /// </summary>
     /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
     public ConsoleLoggerProvider(IOptionsMonitor<ConsoleLoggerOptions> options)
-        : this(options, Array.Empty<ConsoleFormatter>()) { }
+        : this(options, Array.Empty<Formatter>()) { }
 
     /// <summary>
     /// Creates an instance of <see cref="ConsoleLoggerProvider"/>.
     /// </summary>
     /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
     /// <param name="formatters">Log formatters added for <see cref="ConsoleLogger"/> instances.</param>
-    public ConsoleLoggerProvider(IOptionsMonitor<ConsoleLoggerOptions> options, IEnumerable<ConsoleFormatter>? formatters)
+    public ConsoleLoggerProvider(IOptionsMonitor<ConsoleLoggerOptions> options, IEnumerable<Formatter>? formatters)
     {
         _options = options;
         _loggers = new ConcurrentDictionary<string, ConsoleLogger>();
@@ -98,9 +98,9 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     }
 
     [MemberNotNull(nameof(_formatters))]
-    private void SetFormatters(IEnumerable<ConsoleFormatter>? formatters = null)
+    private void SetFormatters(IEnumerable<Formatter>? formatters = null)
     {
-        var cd = new ConcurrentDictionary<string, ConsoleFormatter>(StringComparer.OrdinalIgnoreCase);
+        var cd = new ConcurrentDictionary<string, Formatter>(StringComparer.OrdinalIgnoreCase);
 
         bool added = false;
         if (formatters != null)
@@ -123,7 +123,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     // warning:  ReloadLoggerOptions can be called before the ctor completed,... before registering all of the state used in this method need to be initialized
     private void ReloadLoggerOptions(ConsoleLoggerOptions options)
     {
-        if (options.FormatterName == null || !_formatters.TryGetValue(options.FormatterName, out ConsoleFormatter? logFormatter))
+        if (options.FormatterName == null || !_formatters.TryGetValue(options.FormatterName, out Formatter? logFormatter))
         {
             logFormatter = _formatters[ConsoleFormatterNames.Simple];
             if (options.FormatterName == null)
@@ -145,7 +145,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     /// <inheritdoc />
     public ILogger CreateLogger(string name)
     {
-        if (_options.CurrentValue.FormatterName == null || !_formatters.TryGetValue(_options.CurrentValue.FormatterName, out ConsoleFormatter? logFormatter))
+        if (_options.CurrentValue.FormatterName == null || !_formatters.TryGetValue(_options.CurrentValue.FormatterName, out Formatter? logFormatter))
         {
             logFormatter = _formatters[ConsoleFormatterNames.Simple];
 
@@ -160,7 +160,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
             _loggers.GetOrAdd(name, new ConsoleLogger(name, _messageQueue, logFormatter, _scopeProvider, _options.CurrentValue));
     }
     
-    private static void UpdateFormatterOptions(ConsoleFormatter formatter, ConsoleLoggerOptions deprecatedFromOptions)
+    private static void UpdateFormatterOptions(Formatter formatter, ConsoleLoggerOptions deprecatedFromOptions)
     {
         if (formatter is SimpleConsoleFormatter defaultFormatter)
         {
