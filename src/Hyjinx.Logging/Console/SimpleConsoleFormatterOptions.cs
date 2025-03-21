@@ -4,7 +4,7 @@
 namespace Hyjinx.Logging.Console;
 
 /// <summary>
-/// Options for the built-in default console log formatter.
+/// Options for the built-in simple console log formatter.
 /// </summary>
 public class SimpleConsoleFormatterOptions : FormatterOptions
 {

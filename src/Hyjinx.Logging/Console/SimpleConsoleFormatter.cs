@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Hyjinx.Logging.Console;
 
-public sealed class SimpleConsoleFormatter : Formatter<SimpleConsoleFormatterOptions>
+internal sealed class SimpleConsoleFormatter : Formatter<SimpleConsoleFormatterOptions>
 {
     private static bool IsAndroidOrAppleMobile => OperatingSystem.IsAndroid() ||
                                                   OperatingSystem.IsTvOS() ||
@@ -17,7 +17,7 @@ public sealed class SimpleConsoleFormatter : Formatter<SimpleConsoleFormatterOpt
 
     private bool _isColoredWriterEnabled;
 
-    public SimpleConsoleFormatter(IOptionsMonitor<SimpleConsoleFormatterOptions> options)
+    internal SimpleConsoleFormatter(IOptionsMonitor<SimpleConsoleFormatterOptions> options)
         : base(ConsoleFormatterNames.Simple, options)
     {
         _isColoredWriterEnabled = options.CurrentValue.ColorBehavior != LoggerColorBehavior.Disabled;
