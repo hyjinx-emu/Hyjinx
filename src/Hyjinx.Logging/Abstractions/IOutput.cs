@@ -4,7 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Logging.Console.Internal;
+namespace Hyjinx.Logging.Abstractions;
 
 internal interface IOutput
 {
