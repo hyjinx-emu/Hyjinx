@@ -27,7 +27,7 @@ internal sealed class ConsoleLogger : ILogger
         LoggerProcessor loggerProcessor,
         Formatter formatter,
         IExternalScopeProvider? scopeProvider,
-        ConsoleLoggerOptions options)
+        LoggerOptions options)
     {
         ArgumentNullException.ThrowIfNull(name);
 
@@ -41,7 +41,7 @@ internal sealed class ConsoleLogger : ILogger
 
     internal Formatter Formatter { get; set; }
     internal IExternalScopeProvider? ScopeProvider { get; set; }
-    internal ConsoleLoggerOptions Options { get; set; }
+    internal LoggerOptions Options { get; set; }
 
     [ThreadStatic]
     private static StringWriter? t_stringWriter;

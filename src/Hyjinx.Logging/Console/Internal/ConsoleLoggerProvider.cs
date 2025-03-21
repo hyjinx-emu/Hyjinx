@@ -20,7 +20,7 @@ namespace Hyjinx.Logging.Console.Internal;
 [ProviderAlias("Console")]
 public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
 {
-    private readonly IOptionsMonitor<ConsoleLoggerOptions> _options;
+    private readonly IOptionsMonitor<LoggerOptions> _options;
     private readonly ConcurrentDictionary<string, ConsoleLogger> _loggers;
     private ConcurrentDictionary<string, Formatter> _formatters;
     private readonly LoggerProcessor _messageQueue;
@@ -32,7 +32,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     /// Creates an instance of <see cref="ConsoleLoggerProvider"/>.
     /// </summary>
     /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
-    public ConsoleLoggerProvider(IOptionsMonitor<ConsoleLoggerOptions> options)
+    public ConsoleLoggerProvider(IOptionsMonitor<LoggerOptions> options)
         : this(options, Array.Empty<Formatter>()) { }
 
     /// <summary>
@@ -40,7 +40,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     /// </summary>
     /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
     /// <param name="formatters">Log formatters added for <see cref="ConsoleLogger"/> instances.</param>
-    public ConsoleLoggerProvider(IOptionsMonitor<ConsoleLoggerOptions> options, IEnumerable<Formatter>? formatters)
+    public ConsoleLoggerProvider(IOptionsMonitor<LoggerOptions> options, IEnumerable<Formatter>? formatters)
     {
         _options = options;
         _loggers = new ConcurrentDictionary<string, ConsoleLogger>();
@@ -121,7 +121,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     }
 
     // warning:  ReloadLoggerOptions can be called before the ctor completed,... before registering all of the state used in this method need to be initialized
-    private void ReloadLoggerOptions(ConsoleLoggerOptions options)
+    private void ReloadLoggerOptions(LoggerOptions options)
     {
         if (options.FormatterName == null || !_formatters.TryGetValue(options.FormatterName, out Formatter? logFormatter))
         {
@@ -160,7 +160,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
             _loggers.GetOrAdd(name, new ConsoleLogger(name, _messageQueue, logFormatter, _scopeProvider, _options.CurrentValue));
     }
     
-    private static void UpdateFormatterOptions(Formatter formatter, ConsoleLoggerOptions deprecatedFromOptions)
+    private static void UpdateFormatterOptions(Formatter formatter, LoggerOptions deprecatedFromOptions)
     {
         if (formatter is SimpleConsoleFormatter defaultFormatter)
         {

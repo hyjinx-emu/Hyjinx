@@ -5,23 +5,20 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 
-namespace Hyjinx.Logging.Console;
+namespace Hyjinx.Logging;
 
 /// <summary>
-/// Options for a <see cref="ConsoleLogger"/>.
+/// Options for an <see cref="ILogger"/>.
 /// </summary>
-public class ConsoleLoggerOptions
+public class LoggerOptions
 {
     /// <summary>
     /// Gets or sets the name of the log message formatter to use.
     /// </summary>
-    /// <value>
-    /// The default value is <see langword="simple" />.
-    /// </value>
     public string? FormatterName { get; set; }
 
     /// <summary>
-    /// Gets or sets value indicating the minimum level of messages that get written to <c>Console.Error</c>.
+    /// Gets or sets value indicating the minimum level of messages that get written to the error output.
     /// </summary>
     public LogLevel LogToStandardErrorThreshold { get; set; } = LogLevel.None;
 

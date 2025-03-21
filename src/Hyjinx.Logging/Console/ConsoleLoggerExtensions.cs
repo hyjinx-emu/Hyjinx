@@ -35,8 +35,8 @@ public static class ConsoleLoggerExtensions
         builder.AddConsoleFormatter<SimpleConsoleFormatter, SimpleConsoleFormatterOptions, ConsoleFormatterConfigureOptions>();
 
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, ConsoleLoggerProvider>());
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<ConsoleLoggerOptions>, ConsoleLoggerConfigureOptions>());
-        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IOptionsChangeTokenSource<ConsoleLoggerOptions>, LoggerProviderOptionsChangeTokenSource<ConsoleLoggerOptions, ConsoleLoggerProvider>>());
+        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<LoggerOptions>, ConsoleLoggerConfigureOptions>());
+        builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IOptionsChangeTokenSource<LoggerOptions>, LoggerProviderOptionsChangeTokenSource<LoggerOptions, ConsoleLoggerProvider>>());
 
         return builder;
     }
@@ -46,7 +46,7 @@ public static class ConsoleLoggerExtensions
     /// </summary>
     /// <param name="builder">The <see cref="ILoggingBuilder"/> to use.</param>
     /// <param name="configure">A delegate to configure the <see cref="ConsoleLogger"/>.</param>
-    public static ILoggingBuilder AddConsole(this ILoggingBuilder builder, Action<ConsoleLoggerOptions> configure)
+    public static ILoggingBuilder AddConsole(this ILoggingBuilder builder, Action<LoggerOptions> configure)
     {
         ArgumentNullException.ThrowIfNull(configure);
 
@@ -85,7 +85,7 @@ public static class ConsoleLoggerExtensions
     }
 
     private static ILoggingBuilder AddFormatterWithName(this ILoggingBuilder builder, string name) =>
-        builder.AddConsole((ConsoleLoggerOptions options) => options.FormatterName = name);
+        builder.AddConsole((LoggerOptions options) => options.FormatterName = name);
 
     /// <summary>
     /// Adds a custom console logger formatter 'TFormatter' to be configured with options 'TOptions'.

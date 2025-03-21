@@ -10,13 +10,13 @@ using Microsoft.Extensions.Options;
 namespace Hyjinx.Logging.Console;
 
 /// <summary>
-/// Configures a ConsoleLoggerOptions object from an IConfiguration.
+/// Configures a LoggerOptions object from an IConfiguration.
 /// </summary>
 /// <remarks>
 /// Doesn't use ConfigurationBinder in order to allow ConfigurationBinder, and all its dependencies,
 /// to be trimmed. This improves app size and startup.
 /// </remarks>
-internal sealed class ConsoleLoggerConfigureOptions : IConfigureOptions<ConsoleLoggerOptions>
+internal sealed class ConsoleLoggerConfigureOptions : IConfigureOptions<LoggerOptions>
 {
     private readonly IConfiguration _configuration;
 
@@ -26,5 +26,5 @@ internal sealed class ConsoleLoggerConfigureOptions : IConfigureOptions<ConsoleL
         _configuration = providerConfiguration.Configuration;
     }
 
-    public void Configure(ConsoleLoggerOptions options) => _configuration.Bind(options);
+    public void Configure(LoggerOptions options) => _configuration.Bind(options);
 }
