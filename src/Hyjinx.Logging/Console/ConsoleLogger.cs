@@ -18,12 +18,12 @@ namespace Hyjinx.Logging.Console;
 internal sealed class ConsoleLogger : ILogger
 {
     private readonly string _name;
-    private readonly ConsoleLoggerProcessor _queueProcessor;
+    private readonly LoggerProcessor _queueProcessor;
     private readonly Stopwatch _upTime;
 
     internal ConsoleLogger(
         string name,
-        ConsoleLoggerProcessor loggerProcessor,
+        LoggerProcessor loggerProcessor,
         ConsoleFormatter formatter,
         IExternalScopeProvider? scopeProvider,
         ConsoleLoggerOptions options)

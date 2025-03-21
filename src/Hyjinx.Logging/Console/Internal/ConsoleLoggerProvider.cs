@@ -23,7 +23,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     private readonly IOptionsMonitor<ConsoleLoggerOptions> _options;
     private readonly ConcurrentDictionary<string, ConsoleLogger> _loggers;
     private ConcurrentDictionary<string, ConsoleFormatter> _formatters;
-    private readonly ConsoleLoggerProcessor _messageQueue;
+    private readonly LoggerProcessor _messageQueue;
 
     private readonly IDisposable? _optionsReloadToken;
     private IExternalScopeProvider _scopeProvider = NullExternalScopeProvider.Instance;
@@ -57,7 +57,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
             console = new AnsiParsingLogConsole();
             errorConsole = new AnsiParsingLogConsole(stdErr: true);
         }
-        _messageQueue = new ConsoleLoggerProcessor(
+        _messageQueue = new LoggerProcessor(
             console,
             errorConsole,
             options.CurrentValue.MaxQueueLength);

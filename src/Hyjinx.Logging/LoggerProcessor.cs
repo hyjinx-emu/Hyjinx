@@ -8,10 +8,10 @@ using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Logging.Console.Internal;
+namespace Hyjinx.Logging;
 
 [UnsupportedOSPlatform("browser")]
-internal class ConsoleLoggerProcessor : IDisposable
+internal class LoggerProcessor : IDisposable
 {
     private readonly ManualResetEvent _pending = new(true);
 
@@ -26,7 +26,7 @@ internal class ConsoleLoggerProcessor : IDisposable
     public IOutput Console { get; }
     public IOutput ErrorConsole { get; }
 
-    public ConsoleLoggerProcessor(IOutput console, IOutput errorConsole, int maxQueueLength)
+    public LoggerProcessor(IOutput console, IOutput errorConsole, int maxQueueLength)
     {
         _messageQueue = new ConcurrentQueue<LogMessageEntry>();
         _maxQueuedMessages = maxQueueLength;
