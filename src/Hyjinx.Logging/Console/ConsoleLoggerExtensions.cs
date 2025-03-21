@@ -83,7 +83,7 @@ public static class ConsoleLoggerExtensions
     }
 
     private static ILoggingBuilder AddFormatterWithName(this ILoggingBuilder builder, string name) =>
-        builder.AddConsole((ConsoleLoggerOptions options) => options.FormatterName = name);
+        builder.AddConsole(options => options.FormatterName = name);
 
     /// <summary>
     /// Adds a custom console logger formatter 'TFormatter' to be configured with options 'TOptions'.
