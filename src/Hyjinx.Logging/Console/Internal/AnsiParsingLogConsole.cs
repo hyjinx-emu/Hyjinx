@@ -13,7 +13,7 @@ namespace Hyjinx.Logging.Console.Internal;
 [UnsupportedOSPlatform("browser")]
 [UnsupportedOSPlatform("ios")]
 [UnsupportedOSPlatform("tvos")]
-internal sealed class AnsiParsingLogConsole : IConsole
+internal sealed class AnsiParsingLogConsole : IOutput
 {
     private readonly TextWriter _textWriter;
     private readonly AnsiParser _parser;

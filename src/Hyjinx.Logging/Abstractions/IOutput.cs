@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hyjinx.Logging.Console.Internal;
 
-internal interface IConsole
+internal interface IOutput
 {
     Task WriteAsync(string message, CancellationToken cancellationToken);
 }

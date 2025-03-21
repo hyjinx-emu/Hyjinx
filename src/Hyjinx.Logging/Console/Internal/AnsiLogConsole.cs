@@ -10,7 +10,7 @@ namespace Hyjinx.Logging.Console.Internal;
 /// <summary>
 /// For consoles which understand the ANSI escape code sequences to represent color
 /// </summary>
-internal sealed class AnsiLogConsole : IConsole
+internal sealed class AnsiLogConsole : IOutput
 {
     private readonly TextWriter _textWriter;
 

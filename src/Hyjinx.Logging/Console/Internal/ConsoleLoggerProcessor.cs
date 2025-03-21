@@ -22,10 +22,10 @@ internal class ConsoleLoggerProcessor : IDisposable
 
     private readonly Task _outputTask;
 
-    public IConsole Console { get; }
-    public IConsole ErrorConsole { get; }
+    public IOutput Console { get; }
+    public IOutput ErrorConsole { get; }
 
-    public ConsoleLoggerProcessor(IConsole console, IConsole errorConsole, int maxQueueLength)
+    public ConsoleLoggerProcessor(IOutput console, IOutput errorConsole, int maxQueueLength)
     {
         _messageQueue = new ConcurrentQueue<LogMessageEntry>();
         _maxQueuedMessages = maxQueueLength;

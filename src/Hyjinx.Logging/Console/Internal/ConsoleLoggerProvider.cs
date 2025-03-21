@@ -44,8 +44,8 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
         _options = options;
         _loggers = new ConcurrentDictionary<string, ConsoleLogger>();
         SetFormatters(formatters);
-        IConsole? console;
-        IConsole? errorConsole;
+        IOutput? console;
+        IOutput? errorConsole;
         if (DoesConsoleSupportAnsi())
         {
             console = new AnsiLogConsole();
@@ -130,7 +130,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
                 UpdateFormatterOptions(logFormatter, options);
             }
         }
-        //
+        
         // _messageQueue.FullMode = options.QueueFullMode;
         // _messageQueue.MaxQueueLength = options.MaxQueueLength;
 
