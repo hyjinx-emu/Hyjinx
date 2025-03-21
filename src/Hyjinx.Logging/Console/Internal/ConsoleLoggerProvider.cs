@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -22,7 +21,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
 {
     private readonly IOptionsMonitor<LoggerOptions> _options;
     private readonly ConcurrentDictionary<string, ConsoleLogger> _loggers;
-    private ConcurrentDictionary<string, Formatter> _formatters;
+    private ConcurrentDictionary<string, IFormatter> _formatters;
     private readonly LoggerProcessor _messageQueue;
 
     private readonly IDisposable? _optionsReloadToken;
@@ -33,14 +32,14 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     /// </summary>
     /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
     public ConsoleLoggerProvider(IOptionsMonitor<LoggerOptions> options)
-        : this(options, Array.Empty<Formatter>()) { }
+        : this(options, Array.Empty<IFormatter>()) { }
 
     /// <summary>
     /// Creates an instance of <see cref="ConsoleLoggerProvider"/>.
     /// </summary>
     /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
     /// <param name="formatters">Log formatters added for <see cref="ConsoleLogger"/> instances.</param>
-    public ConsoleLoggerProvider(IOptionsMonitor<LoggerOptions> options, IEnumerable<Formatter>? formatters)
+    public ConsoleLoggerProvider(IOptionsMonitor<LoggerOptions> options, IEnumerable<IFormatter>? formatters)
     {
         _options = options;
         _loggers = new ConcurrentDictionary<string, ConsoleLogger>();
@@ -98,9 +97,9 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     }
 
     [MemberNotNull(nameof(_formatters))]
-    private void SetFormatters(IEnumerable<Formatter>? formatters = null)
+    private void SetFormatters(IEnumerable<IFormatter>? formatters = null)
     {
-        var cd = new ConcurrentDictionary<string, Formatter>(StringComparer.OrdinalIgnoreCase);
+        var cd = new ConcurrentDictionary<string, IFormatter>(StringComparer.OrdinalIgnoreCase);
 
         bool added = false;
         if (formatters != null)
@@ -123,7 +122,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     // warning:  ReloadLoggerOptions can be called before the ctor completed,... before registering all of the state used in this method need to be initialized
     private void ReloadLoggerOptions(LoggerOptions options)
     {
-        if (options.FormatterName == null || !_formatters.TryGetValue(options.FormatterName, out Formatter? logFormatter))
+        if (options.FormatterName == null || !_formatters.TryGetValue(options.FormatterName, out IFormatter? logFormatter))
         {
             logFormatter = _formatters[ConsoleFormatterNames.Simple];
             if (options.FormatterName == null)
@@ -145,7 +144,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     /// <inheritdoc />
     public ILogger CreateLogger(string name)
     {
-        if (_options.CurrentValue.FormatterName == null || !_formatters.TryGetValue(_options.CurrentValue.FormatterName, out Formatter? logFormatter))
+        if (_options.CurrentValue.FormatterName == null || !_formatters.TryGetValue(_options.CurrentValue.FormatterName, out IFormatter? logFormatter))
         {
             logFormatter = _formatters[ConsoleFormatterNames.Simple];
 
@@ -160,7 +159,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
             _loggers.GetOrAdd(name, new ConsoleLogger(name, _messageQueue, logFormatter, _scopeProvider, _options.CurrentValue));
     }
     
-    private static void UpdateFormatterOptions(Formatter formatter, LoggerOptions deprecatedFromOptions)
+    private static void UpdateFormatterOptions(IFormatter formatter, LoggerOptions deprecatedFromOptions)
     {
         if (formatter is SimpleConsoleFormatter defaultFormatter)
         {

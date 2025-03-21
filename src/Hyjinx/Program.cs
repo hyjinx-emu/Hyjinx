@@ -98,7 +98,9 @@ namespace Hyjinx.Ava
 
             // Initialize the logger system.
             LoggerModule.Initialize(UpTime);
-            LoggerAdapter.Register();
+            
+            // TODO: Viper - Fix this so it's configuration driven (it's too noisy).
+            // LoggerAdapter.Register();
             
             // Setup base data directory.
             AppDataManager.Initialize(CommandLineState.BaseDirPathArg);

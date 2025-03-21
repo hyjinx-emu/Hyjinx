@@ -4,110 +4,36 @@
 using Hyjinx.Logging.Console.Internal;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.Extensions.Options;
-using System.Text;
 
 namespace Hyjinx.Logging.Console;
 
-public sealed class SimpleConsoleFormatter : Formatter, IDisposable
+public sealed class SimpleConsoleFormatter : Formatter<SimpleConsoleFormatterOptions>
 {
     private static bool IsAndroidOrAppleMobile => OperatingSystem.IsAndroid() ||
                                                   OperatingSystem.IsTvOS() ||
                                                   OperatingSystem.IsIOS(); // returns true on MacCatalyst
 
-    private readonly IDisposable? _optionsReloadToken;
     private bool _isColoredWriterEnabled;
 
     public SimpleConsoleFormatter(IOptionsMonitor<SimpleConsoleFormatterOptions> options)
-        : base(ConsoleFormatterNames.Simple)
+        : base(ConsoleFormatterNames.Simple, options)
     {
-        ReloadLoggerOptions(options.CurrentValue);
-        _optionsReloadToken = options.OnChange(ReloadLoggerOptions);
-    }
-
-    [MemberNotNull(nameof(FormatterOptions))]
-    private void ReloadLoggerOptions(SimpleConsoleFormatterOptions options)
-    {
-        FormatterOptions = options;
-        _isColoredWriterEnabled = options.ColorBehavior != LoggerColorBehavior.Disabled;
-    }
-
-    public void Dispose()
-    {
-        _optionsReloadToken?.Dispose();
-    }
-
-    internal SimpleConsoleFormatterOptions FormatterOptions { get; set; }
-
-    [ThreadStatic]
-    private static StringBuilder? t_messageBuilder;
-    
-    public override void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
-    {
-        t_messageBuilder ??= new StringBuilder();
-
-        try
-        {
-            string? timestamp = null;
-            string? timestampFormat = FormatterOptions.TimestampFormat;
-            if (timestampFormat != null)
-            {
-                timestamp = logEntry.UpTime.ToString(timestampFormat);
-            }
-            
-            if (timestamp != null)
-            {
-                t_messageBuilder.Append(timestamp);
-            }
-
-            var logLevelString = GetLogLevelString(logEntry.LogLevel);
-            t_messageBuilder.Append(' ').Append(logLevelString).Append(' ').Append(logEntry.Category.Substring(logEntry.Category.LastIndexOf('.') + 1));
-            
-            if (logEntry.ThreadName != null)
-            {
-                t_messageBuilder.Append(' ').Append(logEntry.ThreadName);
-            }
-
-            var message = logEntry.Formatter(logEntry.State, logEntry.Exception);
-            t_messageBuilder.Append(": ").Append(message);
-
-            if (logEntry.Exception != null)
-            {
-                t_messageBuilder.Append(logEntry.Exception);
-            }
-
-            t_messageBuilder.AppendLine();
-
-            if (_isColoredWriterEnabled)
-            {
-                var logLevelColors = GetLogLevelConsoleColors(logEntry.LogLevel);
-                textWriter.WriteColoredMessage(t_messageBuilder.ToString(), logLevelColors.Background, logLevelColors.Foreground);
-            }
-            else
-            {
-                textWriter.Write(t_messageBuilder.ToString());
-            }
-        }
-        finally
-        {
-            t_messageBuilder.Clear();
-        }
+        _isColoredWriterEnabled = options.CurrentValue.ColorBehavior != LoggerColorBehavior.Disabled;
     }
     
-    private static string GetLogLevelString(LogLevel logLevel)
+    protected override void WriteCore(string message, LogLevel level, TextWriter textWriter)
     {
-        return logLevel switch
+        if (_isColoredWriterEnabled)
         {
-            LogLevel.Trace => "|T|",
-            LogLevel.Debug => "|D|",
-            LogLevel.Information => "|I|",
-            LogLevel.Warning => "|W|",
-            LogLevel.Error => "|E|",
-            LogLevel.Critical => "|N|",
-            _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
-        };
+            var logLevelColors = GetLogLevelConsoleColors(level);
+            textWriter.WriteColoredMessage(message, logLevelColors.Background, logLevelColors.Foreground);
+        }
+        else
+        {
+            textWriter.Write(message);
+        }
     }
 
     private ConsoleColors GetLogLevelConsoleColors(LogLevel logLevel)

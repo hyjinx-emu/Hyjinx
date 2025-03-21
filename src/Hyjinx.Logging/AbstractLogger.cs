@@ -21,7 +21,7 @@ internal abstract class AbstractLogger : ILogger
     internal AbstractLogger(
         string name,
         LoggerProcessor loggerProcessor,
-        Formatter formatter,
+        IFormatter formatter,
         IExternalScopeProvider? scopeProvider,
         LoggerOptions options)
     {
@@ -35,7 +35,7 @@ internal abstract class AbstractLogger : ILogger
         Options = options;
     }
 
-    internal Formatter Formatter { get; set; }
+    internal IFormatter Formatter { get; set; }
     internal IExternalScopeProvider? ScopeProvider { get; set; }
     internal LoggerOptions Options { get; set; }
 

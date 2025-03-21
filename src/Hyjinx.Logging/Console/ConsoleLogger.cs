@@ -10,6 +10,6 @@ namespace Hyjinx.Logging.Console;
 /// </summary>
 internal sealed class ConsoleLogger : AbstractLogger
 {
-    internal ConsoleLogger(string name, LoggerProcessor loggerProcessor, Formatter formatter, IExternalScopeProvider? scopeProvider, LoggerOptions options) 
+    internal ConsoleLogger(string name, LoggerProcessor loggerProcessor, IFormatter formatter, IExternalScopeProvider? scopeProvider, LoggerOptions options) 
         : base(name, loggerProcessor, formatter, scopeProvider, options) { }
 }
