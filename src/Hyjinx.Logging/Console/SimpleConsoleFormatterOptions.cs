@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Hyjinx.Logging.Abstractions;
 using System.Diagnostics;
 
 namespace Hyjinx.Logging.Console;
@@ -8,7 +9,7 @@ namespace Hyjinx.Logging.Console;
 /// <summary>
 /// Options for the built-in default console log formatter.
 /// </summary>
-public class SimpleConsoleFormatterOptions : ConsoleFormatterOptions
+public class SimpleConsoleFormatterOptions : FormatterOptions
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SimpleConsoleFormatterOptions"/> class.

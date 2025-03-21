@@ -4,17 +4,17 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 
-namespace Hyjinx.Logging.Console;
+namespace Hyjinx.Logging.Abstractions;
 
 /// <summary>
 /// Options for the built-in console log formatter.
 /// </summary>
-public class ConsoleFormatterOptions
+public class FormatterOptions
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConsoleFormatterOptions"/> class.
+    /// Initializes a new instance of the <see cref="FormatterOptions"/> class.
     /// </summary>
-    public ConsoleFormatterOptions() { }
+    public FormatterOptions() { }
 
     /// <summary>
     /// Gets or sets a value that indicates whether scopes are included.

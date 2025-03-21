@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Logging.Console.Internal;
 using System.Runtime.Versioning;
 using Microsoft.Extensions.Configuration;
@@ -10,13 +11,13 @@ using Microsoft.Extensions.Options;
 namespace Hyjinx.Logging.Console;
 
 /// <summary>
-/// Configures a ConsoleFormatterOptions object from an IConfiguration.
+/// Configures a FormatterOptions object from an IConfiguration.
 /// </summary>
 /// <remarks>
 /// Doesn't use ConfigurationBinder in order to allow ConfigurationBinder, and all its dependencies,
 /// to be trimmed. This improves app size and startup.
 /// </remarks>
-internal sealed class ConsoleFormatterConfigureOptions : IConfigureOptions<ConsoleFormatterOptions>
+internal sealed class ConsoleFormatterConfigureOptions : IConfigureOptions<FormatterOptions>
 {
     private readonly IConfiguration _configuration;
 
@@ -26,5 +27,5 @@ internal sealed class ConsoleFormatterConfigureOptions : IConfigureOptions<Conso
         _configuration = providerConfiguration.GetFormatterOptionsSection();
     }
 
-    public void Configure(ConsoleFormatterOptions options) => options.Configure(_configuration);
+    public void Configure(FormatterOptions options) => options.Configure(_configuration);
 }

@@ -74,7 +74,7 @@ public static class ConsoleLoggerExtensions
     }
 
     internal static ILoggingBuilder AddConsoleWithFormatter<TOptions>(this ILoggingBuilder builder, string name, Action<TOptions> configure)
-        where TOptions : ConsoleFormatterOptions
+        where TOptions : FormatterOptions
     {
         ArgumentNullException.ThrowIfNull(configure);
 
@@ -94,7 +94,7 @@ public static class ConsoleLoggerExtensions
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     [RequiresUnreferencedCode(TrimmingRequiresUnreferencedCodeMessage)]
     public static ILoggingBuilder AddConsoleFormatter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TFormatter, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(this ILoggingBuilder builder)
-        where TOptions : ConsoleFormatterOptions
+        where TOptions : FormatterOptions
         where TFormatter : Formatter
     {
         return AddConsoleFormatter<TFormatter, TOptions, ConsoleLoggerFormatterConfigureOptions<TFormatter, TOptions>>(builder);
@@ -108,7 +108,7 @@ public static class ConsoleLoggerExtensions
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     [RequiresUnreferencedCode(TrimmingRequiresUnreferencedCodeMessage)]
     public static ILoggingBuilder AddConsoleFormatter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TFormatter, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions>(this ILoggingBuilder builder, Action<TOptions> configure)
-        where TOptions : ConsoleFormatterOptions
+        where TOptions : FormatterOptions
         where TFormatter : Formatter
     {
         ArgumentNullException.ThrowIfNull(configure);
@@ -119,7 +119,7 @@ public static class ConsoleLoggerExtensions
     }
 
     private static ILoggingBuilder AddConsoleFormatter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TFormatter, TOptions, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TConfigureOptions>(this ILoggingBuilder builder)
-        where TOptions : ConsoleFormatterOptions
+        where TOptions : FormatterOptions
         where TFormatter : Formatter
         where TConfigureOptions : class, IConfigureOptions<TOptions>
     {
@@ -140,7 +140,7 @@ public static class ConsoleLoggerExtensions
 
 [UnsupportedOSPlatform("browser")]
 internal sealed class ConsoleLoggerFormatterConfigureOptions<TFormatter, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions> : ConfigureFromConfigurationOptions<TOptions>
-    where TOptions : ConsoleFormatterOptions
+    where TOptions : FormatterOptions
     where TFormatter : Formatter
 {
     [RequiresDynamicCode(ConsoleLoggerExtensions.RequiresDynamicCodeMessage)]
@@ -153,7 +153,7 @@ internal sealed class ConsoleLoggerFormatterConfigureOptions<TFormatter, [Dynami
 
 [UnsupportedOSPlatform("browser")]
 internal sealed class ConsoleLoggerFormatterOptionsChangeTokenSource<TFormatter, TOptions> : ConfigurationChangeTokenSource<TOptions>
-    where TOptions : ConsoleFormatterOptions
+    where TOptions : FormatterOptions
     where TFormatter : Formatter
 {
     public ConsoleLoggerFormatterOptionsChangeTokenSource(ILoggerProviderConfiguration<ConsoleLoggerProvider> providerConfiguration)
