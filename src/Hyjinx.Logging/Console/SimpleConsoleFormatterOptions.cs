@@ -20,9 +20,4 @@ public class SimpleConsoleFormatterOptions : FormatterOptions
     /// Gets or sets the behavior that describes when to use color when logging messages.
     /// </summary>
     public LoggerColorBehavior ColorBehavior { get; set; }
-    
-    /// <summary>
-    /// Gets or sets the stopwatch used for tracking application uptime.
-    /// </summary>
-    public Stopwatch UpTime { get; set; }
 }
