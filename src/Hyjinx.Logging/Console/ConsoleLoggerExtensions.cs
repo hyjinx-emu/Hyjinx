@@ -30,7 +30,7 @@ public static class ConsoleLoggerExtensions
     {
         builder.AddConfiguration();
         
-        builder.AddConsoleFormatter<SimpleConsoleFormatter, SimpleConsoleFormatterOptions, ConsoleFormatterConfigureOptions>();
+        builder.AddConsoleFormatter<SimpleConsoleFormatter, SimpleConsoleFormatterOptions, SimpleConsoleFormatterConfigureOptions>();
 
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, ConsoleLoggerProvider>());
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<ConsoleLoggerOptions>, ConsoleLoggerConfigureOptions>());
