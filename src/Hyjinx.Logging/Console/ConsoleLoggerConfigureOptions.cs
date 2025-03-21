@@ -16,7 +16,7 @@ namespace Hyjinx.Logging.Console;
 /// Doesn't use ConfigurationBinder in order to allow ConfigurationBinder, and all its dependencies,
 /// to be trimmed. This improves app size and startup.
 /// </remarks>
-internal sealed class ConsoleLoggerConfigureOptions : IConfigureOptions<LoggerOptions>
+internal sealed class ConsoleLoggerConfigureOptions : IConfigureOptions<ConsoleLoggerOptions>
 {
     private readonly IConfiguration _configuration;
 
@@ -26,5 +26,5 @@ internal sealed class ConsoleLoggerConfigureOptions : IConfigureOptions<LoggerOp
         _configuration = providerConfiguration.Configuration;
     }
 
-    public void Configure(LoggerOptions options) => _configuration.Bind(options);
+    public void Configure(ConsoleLoggerOptions options) => _configuration.Bind(options);
 }

@@ -8,8 +8,8 @@ namespace Hyjinx.Logging.Console;
 /// <summary>
 /// A logger that writes messages in the console.
 /// </summary>
-internal sealed class ConsoleLogger : AbstractLogger
+internal sealed class ConsoleLogger : AbstractLogger<ConsoleLoggerOptions>
 {
-    internal ConsoleLogger(string name, LoggerProcessor loggerProcessor, IFormatter formatter, IExternalScopeProvider? scopeProvider, LoggerOptions options) 
+    internal ConsoleLogger(string name, LoggerProcessor loggerProcessor, IFormatter formatter, IExternalScopeProvider? scopeProvider, ConsoleLoggerOptions options) 
         : base(name, loggerProcessor, formatter, scopeProvider, options) { }
 }

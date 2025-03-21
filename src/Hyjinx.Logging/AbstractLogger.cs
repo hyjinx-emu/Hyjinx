@@ -12,7 +12,8 @@ namespace Hyjinx.Logging;
 /// <summary>
 /// A logger that formats and writes messages.
 /// </summary>
-internal abstract class AbstractLogger : ILogger
+internal abstract class AbstractLogger<TOptions> : ILogger
+    where TOptions : LoggerOptions
 {
     private readonly string _name;
     private readonly LoggerProcessor _queueProcessor;
@@ -23,7 +24,7 @@ internal abstract class AbstractLogger : ILogger
         LoggerProcessor loggerProcessor,
         IFormatter formatter,
         IExternalScopeProvider? scopeProvider,
-        LoggerOptions options)
+        TOptions options)
     {
         ArgumentNullException.ThrowIfNull(name);
 
@@ -37,7 +38,7 @@ internal abstract class AbstractLogger : ILogger
 
     internal IFormatter Formatter { get; set; }
     internal IExternalScopeProvider? ScopeProvider { get; set; }
-    internal LoggerOptions Options { get; set; }
+    internal TOptions Options { get; set; }
 
     [ThreadStatic]
     private static StringWriter? t_stringWriter;

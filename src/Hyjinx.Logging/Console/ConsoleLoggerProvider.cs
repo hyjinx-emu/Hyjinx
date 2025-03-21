@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Hyjinx.Logging.Console.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -10,7 +11,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Microsoft.Extensions.Options;
 
-namespace Hyjinx.Logging.Console.Internal;
+namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// A provider of <see cref="ConsoleLogger"/> instances.
@@ -19,7 +20,7 @@ namespace Hyjinx.Logging.Console.Internal;
 [ProviderAlias("Console")]
 public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
 {
-    private readonly IOptionsMonitor<LoggerOptions> _options;
+    private readonly IOptionsMonitor<ConsoleLoggerOptions> _options;
     private readonly ConcurrentDictionary<string, ConsoleLogger> _loggers;
     private ConcurrentDictionary<string, IFormatter> _formatters;
     private readonly LoggerProcessor _messageQueue;
@@ -31,7 +32,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     /// Creates an instance of <see cref="ConsoleLoggerProvider"/>.
     /// </summary>
     /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
-    public ConsoleLoggerProvider(IOptionsMonitor<LoggerOptions> options)
+    public ConsoleLoggerProvider(IOptionsMonitor<ConsoleLoggerOptions> options)
         : this(options, Array.Empty<IFormatter>()) { }
 
     /// <summary>
@@ -39,7 +40,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     /// </summary>
     /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
     /// <param name="formatters">Log formatters added for <see cref="ConsoleLogger"/> instances.</param>
-    public ConsoleLoggerProvider(IOptionsMonitor<LoggerOptions> options, IEnumerable<IFormatter>? formatters)
+    public ConsoleLoggerProvider(IOptionsMonitor<ConsoleLoggerOptions> options, IEnumerable<IFormatter>? formatters)
     {
         _options = options;
         _loggers = new ConcurrentDictionary<string, ConsoleLogger>();
@@ -120,7 +121,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     }
 
     // warning:  ReloadLoggerOptions can be called before the ctor completed,... before registering all of the state used in this method need to be initialized
-    private void ReloadLoggerOptions(LoggerOptions options)
+    private void ReloadLoggerOptions(ConsoleLoggerOptions options)
     {
         if (options.FormatterName == null || !_formatters.TryGetValue(options.FormatterName, out IFormatter? logFormatter))
         {
