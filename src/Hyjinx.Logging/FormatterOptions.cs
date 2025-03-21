@@ -41,11 +41,6 @@ public class FormatterOptions
     /// The default is <see langword="false" />.
     /// </value>
     public bool UseUtcTimestamp { get; set; }
-    
-    /// <summary>
-    /// Gets or sets the stopwatch used for tracking application uptime.
-    /// </summary>
-    public Stopwatch UpTime { get; set; }
 
     internal virtual void Configure(IConfiguration configuration) => configuration.Bind(this);
 }
