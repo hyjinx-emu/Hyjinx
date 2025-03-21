@@ -3,14 +3,14 @@
 
 using System;
 
-namespace Hyjinx.Logging.Console.Internal;
+namespace Hyjinx.Logging;
 
 /// <summary>
 /// An empty scope without any logic
 /// </summary>
 internal sealed class NullScope : IDisposable
 {
-    public static NullScope Instance { get; } = new NullScope();
+    public static NullScope Instance { get; } = new();
 
     private NullScope()
     {
