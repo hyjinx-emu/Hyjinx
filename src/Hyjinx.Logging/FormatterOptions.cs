@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 
-namespace Hyjinx.Logging.Abstractions;
+namespace Hyjinx.Logging;
 
 /// <summary>
 /// Options for the built-in console log formatter.
