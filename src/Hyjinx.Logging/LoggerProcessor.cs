@@ -3,14 +3,12 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Hyjinx.Logging;
 
-[UnsupportedOSPlatform("browser")]
-internal class LoggerProcessor : IDisposable
+internal sealed class LoggerProcessor : IDisposable
 {
     private readonly ManualResetEvent _pending = new(true);
 
@@ -22,21 +20,21 @@ internal class LoggerProcessor : IDisposable
 
     private readonly Task _outputTask;
 
-    public IOutput Console { get; }
-    public IOutput ErrorConsole { get; }
+    public IOutput Output { get; }
+    public IOutput ErrorOutput { get; }
 
-    public LoggerProcessor(IOutput console, IOutput errorConsole, int maxQueueLength)
+    public LoggerProcessor(IOutput output, IOutput errorOutput, int maxQueueLength)
     {
         _messageQueue = new ConcurrentQueue<LogMessageEntry>();
         _maxQueuedMessages = maxQueueLength;
-        Console = console;
-        ErrorConsole = errorConsole;
+        Output = output;
+        ErrorOutput = errorOutput;
         
-        // Start Console message queue processor
+        // Start message queue processor
         _outputTask = Task.Factory.StartNew(ProcessLogQueueAsync, TaskCreationOptions.LongRunning);
     }
 
-    public virtual void EnqueueMessage(LogMessageEntry message)
+    public void EnqueueMessage(LogMessageEntry message)
     {
         if (!TryEnqueue(message))
         {
@@ -51,8 +49,8 @@ internal class LoggerProcessor : IDisposable
 
     private async Task WriteMessageAsync(LogMessageEntry entry, CancellationToken cancellationToken)
     {
-        var console = entry.LogAsError ? ErrorConsole : Console;
-        await console.WriteAsync(entry.Message, cancellationToken);
+        var destination = entry.LogAsError ? ErrorOutput : Output;
+        await destination.WriteAsync(entry.Message, cancellationToken);
     }
 
     private async Task ProcessLogQueueAsync()

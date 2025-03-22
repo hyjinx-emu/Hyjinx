@@ -4,4 +4,6 @@
 /// Options for a <see cref="FileLoggerProvider"/>.
 /// </summary>
 public class FileLoggerOptions : LoggerOptions
-{ }
+{
+    public string? FileName { get; set; }
+}

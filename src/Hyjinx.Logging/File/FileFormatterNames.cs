@@ -8,5 +8,5 @@ public static class FileFormatterNames
     /// <summary>
     /// Reserved name for simple file formatter.
     /// </summary>
-    public const string Simple = "simple";
+    public const string Simple = "simple-file";
 }

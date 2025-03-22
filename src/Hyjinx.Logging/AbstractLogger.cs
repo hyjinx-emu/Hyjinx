@@ -19,12 +19,8 @@ internal abstract class AbstractLogger<TOptions> : ILogger
     private readonly LoggerProcessor _queueProcessor;
     private readonly Stopwatch _upTime;
 
-    internal AbstractLogger(
-        string name,
-        LoggerProcessor loggerProcessor,
-        IFormatter formatter,
-        IExternalScopeProvider? scopeProvider,
-        TOptions options)
+    internal AbstractLogger(string name, LoggerProcessor loggerProcessor, IFormatter formatter,
+        IExternalScopeProvider? scopeProvider, TOptions options)
     {
         ArgumentNullException.ThrowIfNull(name);
 

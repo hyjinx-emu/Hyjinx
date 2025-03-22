@@ -35,6 +35,7 @@ public static class LoggerModule
             
             logging.AddFile(console =>
             {
+                console.FileName = "./Logs/app.log";
                 console.FormatterName = FileFormatterNames.Simple;
                 console.MaxQueueLength = DefaultMaxQueueLength;
                 console.UpTime = upTime;
@@ -45,7 +46,8 @@ public static class LoggerModule
         });
 
         LoggingServices = services.BuildServiceProvider();
+        var factory = LoggingServices.GetRequiredService<ILoggerFactory>();
         
-        Logger.Initialize(LoggingServices.GetRequiredService<ILoggerFactory>());
+        Logger.Initialize(factory);
     }
 }

@@ -118,7 +118,6 @@ public static class FileLoggerExtensions
     }
 }
 
-[UnsupportedOSPlatform("browser")]
 internal sealed class FileLoggerFormatterConfigureOptions<TFormatter, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions> : ConfigureFromConfigurationOptions<TOptions>
     where TOptions : FormatterOptions
     where TFormatter : IFormatter
@@ -131,7 +130,6 @@ internal sealed class FileLoggerFormatterConfigureOptions<TFormatter, [Dynamical
     }
 }
 
-[UnsupportedOSPlatform("browser")]
 internal sealed class FileLoggerFormatterOptionsChangeTokenSource<TFormatter, TOptions> : ConfigurationChangeTokenSource<TOptions>
     where TOptions : FormatterOptions
     where TFormatter : IFormatter

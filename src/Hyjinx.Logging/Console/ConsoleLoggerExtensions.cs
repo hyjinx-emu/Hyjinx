@@ -136,26 +136,20 @@ public static class ConsoleLoggerExtensions
     }
 }
 
-[UnsupportedOSPlatform("browser")]
 internal sealed class ConsoleLoggerFormatterConfigureOptions<TFormatter, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TOptions> : ConfigureFromConfigurationOptions<TOptions>
     where TOptions : FormatterOptions
     where TFormatter : IFormatter
 {
     [RequiresDynamicCode(ConsoleLoggerExtensions.RequiresDynamicCodeMessage)]
     [RequiresUnreferencedCode(ConsoleLoggerExtensions.TrimmingRequiresUnreferencedCodeMessage)]
-    public ConsoleLoggerFormatterConfigureOptions(ILoggerProviderConfiguration<ConsoleLoggerProvider> providerConfiguration) :
-        base(providerConfiguration.GetFormatterOptionsSection())
-    {
-    }
+    public  ConsoleLoggerFormatterConfigureOptions(ILoggerProviderConfiguration<ConsoleLoggerProvider> providerConfiguration) :
+        base(providerConfiguration.GetFormatterOptionsSection()) { }
 }
 
-[UnsupportedOSPlatform("browser")]
 internal sealed class ConsoleLoggerFormatterOptionsChangeTokenSource<TFormatter, TOptions> : ConfigurationChangeTokenSource<TOptions>
     where TOptions : FormatterOptions
     where TFormatter : IFormatter
 {
     public ConsoleLoggerFormatterOptionsChangeTokenSource(ILoggerProviderConfiguration<ConsoleLoggerProvider> providerConfiguration)
-        : base(providerConfiguration.GetFormatterOptionsSection())
-    {
-    }
+        : base(providerConfiguration.GetFormatterOptionsSection()) { }
 }

@@ -11,5 +11,5 @@ public static class ConsoleFormatterNames
     /// <summary>
     /// Reserved name for simple console formatter.
     /// </summary>
-    public const string Simple = "simple";
+    public const string Simple = "simple-console";
 }

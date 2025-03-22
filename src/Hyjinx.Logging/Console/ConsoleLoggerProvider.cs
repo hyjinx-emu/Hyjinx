@@ -3,37 +3,24 @@
 
 using Hyjinx.Logging.Console.Internal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using Microsoft.Extensions.Options;
 
 namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// A provider of <see cref="ConsoleLogger"/> instances.
 /// </summary>
-[UnsupportedOSPlatform("browser")]
 [ProviderAlias("Console")]
-public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
+internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLoggerOptions, ConsoleLogger>
 {
-    private readonly IOptionsMonitor<ConsoleLoggerOptions> _options;
-    private readonly ConcurrentDictionary<string, ConsoleLogger> _loggers;
     private ConcurrentDictionary<string, IFormatter> _formatters;
     private readonly LoggerProcessor _messageQueue;
-
-    private readonly IDisposable? _optionsReloadToken;
-    private IExternalScopeProvider _scopeProvider = NullExternalScopeProvider.Instance;
-
-    /// <summary>
-    /// Creates an instance of <see cref="ConsoleLoggerProvider"/>.
-    /// </summary>
-    /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
-    public ConsoleLoggerProvider(IOptionsMonitor<ConsoleLoggerOptions> options)
-        : this(options, Array.Empty<IFormatter>()) { }
 
     /// <summary>
     /// Creates an instance of <see cref="ConsoleLoggerProvider"/>.
@@ -41,10 +28,10 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     /// <param name="options">The options to create <see cref="ConsoleLogger"/> instances with.</param>
     /// <param name="formatters">Log formatters added for <see cref="ConsoleLogger"/> instances.</param>
     public ConsoleLoggerProvider(IOptionsMonitor<ConsoleLoggerOptions> options, IEnumerable<IFormatter>? formatters)
+        : base(options)
     {
-        _options = options;
-        _loggers = new ConcurrentDictionary<string, ConsoleLogger>();
         SetFormatters(formatters);
+        
         IOutput? console;
         IOutput? errorConsole;
         if (DoesConsoleSupportAnsi())
@@ -57,13 +44,13 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
             console = new AnsiParsingLogConsole();
             errorConsole = new AnsiParsingLogConsole(stdErr: true);
         }
+        
         _messageQueue = new LoggerProcessor(
             console,
             errorConsole,
             options.CurrentValue.MaxQueueLength);
-
+    
         ReloadLoggerOptions(options.CurrentValue);
-        _optionsReloadToken = _options.OnChange(ReloadLoggerOptions);
     }
 
     [UnsupportedOSPlatformGuard("windows")]
@@ -101,7 +88,7 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
     private void SetFormatters(IEnumerable<IFormatter>? formatters = null)
     {
         var cd = new ConcurrentDictionary<string, IFormatter>(StringComparer.OrdinalIgnoreCase);
-
+    
         bool added = false;
         if (formatters != null)
         {
@@ -111,56 +98,52 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
                 added = true;
             }
         }
-
+    
         if (!added)
         {
-            cd.TryAdd(ConsoleFormatterNames.Simple, new SimpleConsoleFormatter(new FormatterOptionsMonitor<SimpleConsoleFormatterOptions>(new SimpleConsoleFormatterOptions())));
+            cd.TryAdd(ConsoleFormatterNames.Simple, new SimpleConsoleFormatter(new FormatterOptionsMonitor<SimpleConsoleFormatterOptions>(
+                new SimpleConsoleFormatterOptions())));
         }
-
+    
         _formatters = cd;
     }
 
     // warning:  ReloadLoggerOptions can be called before the ctor completed,... before registering all of the state used in this method need to be initialized
-    private void ReloadLoggerOptions(ConsoleLoggerOptions options)
+    protected override void ReloadLoggerOptions(ConsoleLoggerOptions options)
     {
         if (options.FormatterName == null || !_formatters.TryGetValue(options.FormatterName, out IFormatter? logFormatter))
         {
             logFormatter = _formatters[ConsoleFormatterNames.Simple];
-            if (options.FormatterName == null)
-            {
-                UpdateFormatterOptions(logFormatter, options);
-            }
         }
         
         // _messageQueue.FullMode = options.QueueFullMode;
         // _messageQueue.MaxQueueLength = options.MaxQueueLength;
-
+    
         foreach (KeyValuePair<string, ConsoleLogger> logger in _loggers)
         {
             logger.Value.Options = options;
             logger.Value.Formatter = logFormatter;
         }
     }
-
-    /// <inheritdoc />
-    public ILogger CreateLogger(string name)
+    
+    public override ILogger CreateLogger(string name)
     {
         if (_options.CurrentValue.FormatterName == null || !_formatters.TryGetValue(_options.CurrentValue.FormatterName, out IFormatter? logFormatter))
         {
             logFormatter = _formatters[ConsoleFormatterNames.Simple];
-
+    
             if (_options.CurrentValue.FormatterName == null)
             {
-                UpdateFormatterOptions(logFormatter, _options.CurrentValue);
+                UpdateFormatterOptions(logFormatter);
             }
         }
-
+    
         return _loggers.TryGetValue(name, out ConsoleLogger? logger) ?
             logger :
             _loggers.GetOrAdd(name, new ConsoleLogger(name, _messageQueue, logFormatter, _scopeProvider, _options.CurrentValue));
     }
     
-    private static void UpdateFormatterOptions(IFormatter formatter, LoggerOptions deprecatedFromOptions)
+    private static void UpdateFormatterOptions(IFormatter formatter)
     {
         if (formatter is SimpleConsoleFormatter defaultFormatter)
         {
@@ -173,21 +156,13 @@ public class ConsoleLoggerProvider : ILoggerProvider, ISupportExternalScope
         }
     }
 
-    /// <inheritdoc />
-    public void Dispose()
+    protected override void Dispose(bool disposing)
     {
-        _optionsReloadToken?.Dispose();
-        _messageQueue.Dispose();
-    }
-
-    /// <inheritdoc />
-    public void SetScopeProvider(IExternalScopeProvider scopeProvider)
-    {
-        _scopeProvider = scopeProvider;
-
-        foreach (KeyValuePair<string, ConsoleLogger> logger in _loggers)
+        if (disposing)
         {
-            logger.Value.ScopeProvider = _scopeProvider;
+            _messageQueue.Dispose();
         }
+        
+        base.Dispose(disposing);
     }
 }
