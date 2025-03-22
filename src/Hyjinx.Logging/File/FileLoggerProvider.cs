@@ -29,7 +29,10 @@ internal sealed class FileLoggerProvider : AbstractLoggerProvider<FileLoggerOpti
     {
         SetFormatters(formatters);
 
-        var file = new FileOutput(new StreamWriter(options.CurrentValue.FileName!, Encoding.UTF8,
+        var fileName = Path.Combine(options.CurrentValue.OutputDirectory!, 
+            $"app-{DateTime.Now:yyyyMMdd_HHmmss}.log");
+        
+        var file = new FileOutput(new StreamWriter(fileName, Encoding.UTF8,
             new FileStreamOptions
             {
                 Mode = FileMode.Append,

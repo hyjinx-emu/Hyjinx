@@ -5,5 +5,5 @@
 /// </summary>
 public class FileLoggerOptions : LoggerOptions
 {
-    public string? FileName { get; set; }
+    public string? OutputDirectory { get; set; }
 }

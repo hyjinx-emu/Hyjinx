@@ -35,7 +35,7 @@ public static class LoggerModule
             
             logging.AddFile(console =>
             {
-                console.FileName = "./Logs/app.log";
+                console.OutputDirectory = "./Logs";
                 console.FormatterName = FileFormatterNames.Simple;
                 console.MaxQueueLength = DefaultMaxQueueLength;
                 console.UpTime = upTime;
