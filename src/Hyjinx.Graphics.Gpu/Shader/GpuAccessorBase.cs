@@ -1,16 +1,18 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Shader.Translation;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.Graphics.Gpu.Shader
 {
     /// <summary>
     /// GPU accessor.
     /// </summary>
-    class GpuAccessorBase
+    partial class GpuAccessorBase
     {
+        private readonly ILogger<GpuAccessorBase> _logger = Logger.DefaultLoggerFactory.CreateLogger<GpuAccessorBase>(); 
         private readonly GpuContext _context;
         private readonly ResourceCounts _resourceCounts;
         private readonly int _stageIndex;
@@ -151,11 +153,16 @@ namespace Hyjinx.Graphics.Gpu.Shader
         {
             if ((uint)index >= maxPerStage)
             {
-                Logger.Error?.Print(LogClass.Gpu, $"{resourceName} index {index} exceeds per stage limit of {maxPerStage}.");
+                LogResourceIndexExceedsStageLimit(resourceName, index, maxPerStage);
             }
 
             return GetStageIndex(_stageIndex) * (int)maxPerStage + index;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "{resourceName} index {index} exceeds per stage limit of {maxPerStage}.")]
+        private partial void LogResourceIndexExceedsStageLimit(string resourceName, int index, uint maxPerStage);
 
         public static int GetStageIndex(int stageIndex)
         {

@@ -1,4 +1,5 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -28,6 +29,7 @@ namespace Hyjinx.Common.SystemInterop
         [LibraryImport("winmm.dll", EntryPoint = "timeEndPeriod")]
         private static partial uint TimeEndPeriod(uint uMilliseconds);
 
+        private readonly ILogger<WindowsMultimediaTimerResolution> _logger = Logger.DefaultLoggerFactory.CreateLogger<WindowsMultimediaTimerResolution>();
         private uint _targetResolutionInMilliseconds;
         private bool _isActive;
 
@@ -51,7 +53,7 @@ namespace Hyjinx.Common.SystemInterop
 
             if (result != 0)
             {
-                Logger.Notice.Print(LogClass.Application, $"timeGetDevCaps failed with result: {result}");
+                LogTimeGetDevCapsFailed(result);
             }
             else
             {
@@ -59,12 +61,22 @@ namespace Hyjinx.Common.SystemInterop
 
                 if (supportedTargetResolutionInMilliseconds != _targetResolutionInMilliseconds)
                 {
-                    Logger.Notice.Print(LogClass.Application, $"Target resolution isn't supported by OS, using closest resolution: {supportedTargetResolutionInMilliseconds}ms");
+                    LogResolutionNotSupported(supportedTargetResolutionInMilliseconds);
 
                     _targetResolutionInMilliseconds = supportedTargetResolutionInMilliseconds;
                 }
             }
         }
+
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "timeGetDevCaps failed with result: {result}")]
+        private partial void LogTimeGetDevCapsFailed(uint result);
+        
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Target resolution isn't supported by OS, using closest resolution: {supportedTargetResolutionInMilliseconds}ms")]
+        private partial void LogResolutionNotSupported(uint supportedTargetResolutionInMilliseconds);
 
         private void Activate()
         {
@@ -72,13 +84,18 @@ namespace Hyjinx.Common.SystemInterop
 
             if (result != 0)
             {
-                Logger.Notice.Print(LogClass.Application, $"timeBeginPeriod failed with result: {result}");
+                LogTimeBeginPeriodFailed(result);
             }
             else
             {
                 _isActive = true;
             }
         }
+        
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "timeBeginPeriod failed with result: {result}")]
+        private partial void LogTimeBeginPeriodFailed(uint result);
 
         private void Disable()
         {
@@ -88,7 +105,7 @@ namespace Hyjinx.Common.SystemInterop
 
                 if (result != 0)
                 {
-                    Logger.Notice.Print(LogClass.Application, $"timeEndPeriod failed with result: {result}");
+                    LogTimeEndPeriodFailed(result);
                 }
                 else
                 {
@@ -96,6 +113,11 @@ namespace Hyjinx.Common.SystemInterop
                 }
             }
         }
+        
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "timeEndPeriod failed with result: {result}")]
+        private partial void LogTimeEndPeriodFailed(uint result);
 
         public void Dispose()
         {

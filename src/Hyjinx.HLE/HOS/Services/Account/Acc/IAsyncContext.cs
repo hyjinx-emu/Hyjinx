@@ -5,7 +5,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
-    class IAsyncContext : IpcService
+    class IAsyncContext : IpcService<IAsyncContext>
     {
         protected AsyncExecution AsyncExecution;
 

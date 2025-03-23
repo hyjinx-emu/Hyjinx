@@ -4,7 +4,7 @@ using Hyjinx.HLE.HOS.Services.Ncm.Lr.LocationResolverManager;
 namespace Hyjinx.HLE.HOS.Services.Ncm.Lr
 {
     [Service("lr")]
-    class ILocationResolverManager : IpcService
+    class ILocationResolverManager : IpcService<ILocationResolverManager>
     {
         public ILocationResolverManager(ServiceCtx context) { }
 

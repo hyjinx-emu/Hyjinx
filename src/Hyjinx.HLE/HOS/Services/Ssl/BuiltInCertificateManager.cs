@@ -7,10 +7,11 @@ using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Ssl.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Ssl
 {
-    class BuiltInCertificateManager
+    partial class BuiltInCertificateManager
     {
         private const long CertStoreTitleId = 0x0100000000000800;
 
@@ -43,6 +44,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
         private bool _initialized;
         private Dictionary<CaCertificateId, CertStoreEntry> _certificates;
 
+        private readonly ILogger<BuiltInCertificateManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<BuiltInCertificateManager>();
         private readonly object _lock = new();
 
         private struct CertStoreFileHeader
@@ -142,8 +144,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
 
                         if (result.IsFailure())
                         {
-                            Logger.Error?.Print(LogClass.ServiceSsl, CertStoreTitleMissingErrorMessage);
-
+                            LogCertStoreTitleMissing();
                             return;
                         }
                     }
@@ -160,7 +161,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
 
                     if (!header.IsValid())
                     {
-                        Logger.Error?.Print(LogClass.ServiceSsl, "Invalid CertStore data found, skipping!");
+                        LogInvalidCertStoreDataFound();
 
                         return;
                     }
@@ -178,6 +179,16 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
             }
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
+            Message = "Invalid CertStore data found, skipping!")]
+        private partial void LogInvalidCertStoreDataFound();
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
+            Message = CertStoreTitleMissingErrorMessage)]
+        private partial void LogCertStoreTitleMissing();
+        
         public bool TryGetCertificates(
             ReadOnlySpan<CaCertificateId> ids,
             out CertStoreEntry[] entries,

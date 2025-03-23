@@ -4,11 +4,12 @@ using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Common.Configuration.Multiplayer;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,8 +17,11 @@ using System.Text.Json.Nodes;
 
 namespace Hyjinx.UI.Common.Configuration
 {
-    public class ConfigurationState
+    public partial class ConfigurationState
     {
+        private static readonly ILogger<ConfigurationState> _logger =
+            Hyjinx.Logging.Abstractions.Logger.DefaultLoggerFactory.CreateLogger<ConfigurationState>();
+        
         /// <summary>
         /// UI configuration section
         /// </summary>
@@ -925,65 +929,69 @@ namespace Hyjinx.UI.Common.Configuration
             };
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Unsupported configuration version {version}, loading defaults.")]
+        private partial void LogUnsupportedConfigurationVersion(int version);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Outdated configuration version {version}, loading defaults.")]
+        private partial void LogOutdatedConfigurationVersion(int version);
+
         public void Load(ConfigurationFileFormat configurationFileFormat, string configurationFilePath)
         {
             bool configurationFileUpdated = false;
 
             if (configurationFileFormat.Version < 0 || configurationFileFormat.Version > ConfigurationFileFormat.CurrentVersion)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Unsupported configuration version {configurationFileFormat.Version}, loading default.");
-
+                LogUnsupportedConfigurationVersion(configurationFileFormat.Version);
                 LoadDefault();
             }
 
             if (configurationFileFormat.Version < 2)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 2.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.SystemRegion = Region.USA;
-
                 configurationFileUpdated = true;
             }
 
             if (configurationFileFormat.Version < 3)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 3.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.SystemTimeZone = "UTC";
-
                 configurationFileUpdated = true;
             }
 
             if (configurationFileFormat.Version < 4)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 4.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.MaxAnisotropy = -1;
-
                 configurationFileUpdated = true;
             }
 
             if (configurationFileFormat.Version < 5)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 5.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.SystemTimeOffset = 0;
-
                 configurationFileUpdated = true;
             }
 
             if (configurationFileFormat.Version < 8)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 8.");
-
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
+                
                 configurationFileFormat.EnablePtc = true;
-
                 configurationFileUpdated = true;
             }
 
             if (configurationFileFormat.Version < 9)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 9.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.ColumnSort = new ColumnSort
                 {
@@ -1001,16 +1009,15 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 10)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 10.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.AudioBackend = AudioBackend.OpenAl;
-
                 configurationFileUpdated = true;
             }
 
             if (configurationFileFormat.Version < 11)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 11.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.ResScale = 1;
                 configurationFileFormat.ResScaleCustom = 1.0f;
@@ -1020,8 +1027,8 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 12)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 12.");
-
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
+                
                 configurationFileFormat.LoggingGraphicsDebugLevel = GraphicsDebugLevel.None;
 
                 configurationFileUpdated = true;
@@ -1031,7 +1038,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 14)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 14.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.CheckUpdatesOnStart = true;
 
@@ -1040,7 +1047,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 16)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 16.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.EnableShaderCache = true;
 
@@ -1049,7 +1056,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 17)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 17.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.StartFullscreen = false;
 
@@ -1058,7 +1065,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 18)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 18.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.AspectRatio = AspectRatio.Fixed16x9;
 
@@ -1069,7 +1076,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 20)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 20.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.ShowConfirmExit = true;
 
@@ -1078,7 +1085,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 21)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 21.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 // Initialize network config.
 
@@ -1090,7 +1097,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 22)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 22.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.HideCursor = HideCursorMode.Never;
 
@@ -1099,7 +1106,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 24)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 24.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.InputConfig = new List<InputConfig>
                 {
@@ -1158,14 +1165,14 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 25)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 25.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileUpdated = true;
             }
 
             if (configurationFileFormat.Version < 26)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 26.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.MemoryManagerMode = MemoryManagerMode.HostMappedUnsafe;
 
@@ -1174,7 +1181,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 27)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 27.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.EnableMouse = false;
 
@@ -1183,7 +1190,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 28)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 28.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.Hotkeys = new KeyboardHotkeys
                 {
@@ -1196,7 +1203,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 29)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 29.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.Hotkeys = new KeyboardHotkeys
                 {
@@ -1210,7 +1217,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 30)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 30.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 foreach (InputConfig config in configurationFileFormat.InputConfig)
                 {
@@ -1230,7 +1237,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 31)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 31.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.BackendThreading = BackendThreading.Auto;
 
@@ -1239,7 +1246,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 32)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 32.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.Hotkeys = new KeyboardHotkeys
                 {
@@ -1254,7 +1261,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 33)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 33.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.Hotkeys = new KeyboardHotkeys
                 {
@@ -1272,7 +1279,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 34)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 34.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.EnableInternetAccess = false;
 
@@ -1281,7 +1288,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 35)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 35.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 foreach (InputConfig config in configurationFileFormat.InputConfig)
                 {
@@ -1297,7 +1304,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 36)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 36.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.LoggingEnableTrace = false;
 
@@ -1306,7 +1313,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 37)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 37.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.ShowConsole = true;
 
@@ -1315,7 +1322,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 38)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 38.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.BaseStyle = "Dark";
                 configurationFileFormat.GameListViewMode = 0;
@@ -1328,7 +1335,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 39)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 39.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.Hotkeys = new KeyboardHotkeys
                 {
@@ -1346,7 +1353,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 40)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 40.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.GraphicsBackend = GraphicsBackend.OpenGl;
 
@@ -1355,7 +1362,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 41)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 41.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.Hotkeys = new KeyboardHotkeys
                 {
@@ -1373,21 +1380,21 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 42)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 42.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.EnableMacroHLE = true;
             }
 
             if (configurationFileFormat.Version < 43)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 43.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.UseHypervisor = true;
             }
 
             if (configurationFileFormat.Version < 44)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 44.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.AntiAliasing = AntiAliasing.None;
                 configurationFileFormat.ScalingFilter = ScalingFilter.Bilinear;
@@ -1398,7 +1405,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 45)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 45.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.ShownFileTypes = new ShownFileTypes
                 {
@@ -1415,7 +1422,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 46)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 46.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.MultiplayerLanInterfaceId = "0";
 
@@ -1424,7 +1431,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 47)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 47.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.WindowStartup = new WindowStartup
                 {
@@ -1440,7 +1447,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 48)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 48.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.EnableColorSpacePassthrough = false;
 
@@ -1449,7 +1456,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 49)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 49.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 if (OperatingSystem.IsMacOS())
                 {
@@ -1461,7 +1468,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 50)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 50.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.EnableHardwareAcceleration = true;
 
@@ -1470,7 +1477,7 @@ namespace Hyjinx.UI.Common.Configuration
 
             if (configurationFileFormat.Version < 51)
             {
-                Hyjinx.Common.Logging.Logger.Warning?.Print(LogClass.Application, $"Outdated configuration version {configurationFileFormat.Version}, migrating to version 51.");
+                LogOutdatedConfigurationVersion(configurationFileFormat.Version);
 
                 configurationFileFormat.RememberWindowState = true;
 
@@ -1576,8 +1583,8 @@ namespace Hyjinx.UI.Common.Configuration
             if (configurationFileUpdated)
             {
                 ToFileFormat().SaveConfig(configurationFilePath);
-
-                Hyjinx.Common.Logging.Logger.Notice.Print(LogClass.Application, $"Configuration file updated to version {ConfigurationFileFormat.CurrentVersion}");
+                
+                Hyjinx.Logging.Abstractions.Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Configuration file updated to version {Version}", ConfigurationFileFormat.CurrentVersion);
             }
         }
 
@@ -1596,8 +1603,9 @@ namespace Hyjinx.UI.Common.Configuration
         private static void LogValueChange<T>(ReactiveEventArgs<T> eventArgs, string valueName)
         {
             string message = string.Create(CultureInfo.InvariantCulture, $"{valueName} set to: {eventArgs.NewValue}");
-
-            Hyjinx.Common.Logging.Logger.Info?.Print(LogClass.Configuration, message);
+            
+            _logger.LogInformation(new EventId((int)LogClass.Configuration, nameof(LogClass.Configuration)),
+                message);
         }
 
         public static void Initialize()

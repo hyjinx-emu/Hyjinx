@@ -1,19 +1,23 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
 using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
-    class BufferQueueConsumer
+    partial class BufferQueueConsumer
     {
         public BufferQueueCore Core { get; }
+
+        private readonly ILogger<BufferQueueConsumer> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<BufferQueueConsumer>();
 
         public BufferQueueConsumer(BufferQueueCore core)
         {
             Core = core;
         }
-
+        
         public Status AcquireBuffer(out BufferItem bufferItem, ulong expectedPresent)
         {
             lock (Core.Lock)
@@ -31,9 +35,9 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 if (numAcquiredBuffers > Core.MaxAcquiredBufferCount)
                 {
                     bufferItem = null;
-
-                    Logger.Debug?.Print(LogClass.SurfaceFlinger, $"Max acquired buffer count reached: {numAcquiredBuffers} (max: {Core.MaxAcquiredBufferCount})");
-
+                    
+                    LogMaxBufferCountReached(numAcquiredBuffers, Core.MaxAcquiredBufferCount);
+                    
                     return Status.InvalidOperation;
                 }
 
@@ -102,8 +106,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
                 if (!Core.Slots[slot].RequestBufferCalled)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, $"Slot {slot} was detached without requesting a buffer");
-
+                    LogInvalidCertStoreDataFound(slot);
                     return Status.BadValue;
                 }
 
@@ -113,6 +116,11 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return Status.Success;
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
+            Message = "Slot {slot} was detached without requesting a buffer")]
+        private partial void LogInvalidCertStoreDataFound(int slot);
 
         public Status AttachBuffer(out int slot, ref AndroidStrongPointer<GraphicBuffer> graphicBuffer)
         {
@@ -141,7 +149,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 {
                     slot = BufferSlotArray.InvalidBufferSlot;
 
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, $"Max acquired buffer count reached: {numAcquiredBuffers} (max: {Core.MaxAcquiredBufferCount})");
+                    LogMaxBufferCountReached(numAcquiredBuffers, Core.MaxAcquiredBufferCount);
 
                     return Status.InvalidOperation;
                 }
@@ -169,6 +177,11 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             return Status.Success;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
+            Message = "Max acquired buffer count reached: {numAcquiredBuffers} (max: {maxAcquiredBufferCount})")]
+        private partial void LogMaxBufferCountReached(int numAcquiredBuffers, int maxAcquiredBufferCount);
 
         public Status ReleaseBuffer(int slot, ulong frameNumber, ref AndroidFence fence)
         {

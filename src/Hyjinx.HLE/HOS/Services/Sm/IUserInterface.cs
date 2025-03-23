@@ -1,9 +1,10 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Ipc;
 using Hyjinx.HLE.HOS.Services.Apm;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,7 @@ using System.Text;
 
 namespace Hyjinx.HLE.HOS.Services.Sm
 {
-    partial class IUserInterface : IpcService
+    partial class IUserInterface : IpcService<IUserInterface>
     {
         private static readonly Dictionary<string, Type> _services;
 
@@ -105,7 +106,7 @@ namespace Hyjinx.HLE.HOS.Services.Sm
                 {
                     if (context.Device.Configuration.IgnoreMissingServices)
                     {
-                        Logger.Warning?.Print(LogClass.Service, $"Missing service {name} ignored");
+                        LogMissingServiceIgnored(name);
                     }
                     else
                     {
@@ -120,12 +121,17 @@ namespace Hyjinx.HLE.HOS.Services.Sm
 
                 session.ServerSession.DecrementReferenceCount();
                 session.ClientSession.DecrementReferenceCount();
-
+                
                 context.Response.HandleDesc = IpcHandleDesc.MakeMove(handle);
             }
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Service, EventName = nameof(LogClass.Service),
+            Message = "Missing service '{name}' ignored.")]
+        private partial void LogMissingServiceIgnored(string name);
 
         [CommandCmif(2)]
         // RegisterService(ServiceName name, u8 isLight, u32 maxHandles) -> handle<move, port>
@@ -173,6 +179,11 @@ namespace Hyjinx.HLE.HOS.Services.Sm
             return RegisterService(context, name, isLight, maxSessions);
         }
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceSm, EventName = nameof(LogClass.ServiceSm),
+            Message = "Register '{name}'.")]
+        private partial void LogRegisteredService(string name);
+
         private ResultCode RegisterService(ServiceCtx context, string name, bool isLight, int maxSessions)
         {
             if (string.IsNullOrEmpty(name))
@@ -180,7 +191,7 @@ namespace Hyjinx.HLE.HOS.Services.Sm
                 return ResultCode.InvalidName;
             }
 
-            Logger.Debug?.Print(LogClass.ServiceSm, $"Register \"{name}\".");
+            LogRegisteredService(name);
 
             KPort port = new(context.Device.System.KernelContext, maxSessions, isLight, null);
 

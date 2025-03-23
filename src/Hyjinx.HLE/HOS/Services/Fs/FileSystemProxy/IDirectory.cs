@@ -4,7 +4,7 @@ using LibHac.Sf;
 
 namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy
 {
-    class IDirectory : DisposableIpcService
+    class IDirectory : DisposableIpcService<IDirectory>
     {
         private SharedRef<LibHac.FsSrv.Sf.IDirectory> _baseDirectory;
 

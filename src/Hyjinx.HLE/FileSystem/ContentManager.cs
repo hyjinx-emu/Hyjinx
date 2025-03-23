@@ -8,13 +8,14 @@ using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Tools.Ncm;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Services.Ssl;
 using Hyjinx.HLE.HOS.Services.Time;
 using Hyjinx.HLE.Utilities;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,11 +26,12 @@ using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem
 {
-    public class ContentManager
+    public partial class ContentManager
     {
         private const ulong SystemVersionTitleId = 0x0100000000000809;
         private const ulong SystemUpdateTitleId = 0x0100000000000816;
 
+        private static readonly ILogger<ContentManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<ContentManager>();
         private Dictionary<StorageId, LinkedList<LocationEntry>> _locationEntries;
 
         private readonly Dictionary<string, ulong> _sharedFontTitleDictionary;
@@ -185,16 +187,21 @@ namespace Hyjinx.HLE.FileSystem
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Duplicate AddOnContent detected. TitleId {titleId:X16}")]
+        private partial void LogDuplicateContentDetected(ulong titleId);
+
         public void AddAocItem(ulong titleId, string containerPath, string ncaPath, bool mergedToContainer = false)
         {
             // TODO: Check Aoc version.
             if (!AocData.TryAdd(titleId, new AocItem(containerPath, ncaPath)))
             {
-                Logger.Warning?.Print(LogClass.Application, $"Duplicate AddOnContent detected. TitleId {titleId:X16}");
+                LogDuplicateContentDetected(titleId);
             }
             else
             {
-                Logger.Info?.Print(LogClass.Application, $"Found AddOnContent with TitleId {titleId:X16}");
+                LogFoundAddOnContent(titleId);
 
                 if (!mergedToContainer)
                 {
@@ -202,6 +209,11 @@ namespace Hyjinx.HLE.FileSystem
                 }
             }
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Found AddOnContent with TitleId {titleId:X16}")]
+        private partial void LogFoundAddOnContent(ulong titleId);
 
         public void ClearAocData() => AocData.Clear();
 

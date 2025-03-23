@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAp
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService
 {
-    class ILibraryAppletProxy : IpcService
+    class ILibraryAppletProxy : IpcService<ILibraryAppletProxy>
     {
         private readonly ulong _pid;
 

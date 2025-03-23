@@ -2,12 +2,13 @@ using LibHac;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using Path = LibHac.FsSrv.Sf.Path;
 
 namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy
 {
-    class IFileSystem : DisposableIpcService
+    partial class IFileSystem : DisposableIpcService<IFileSystem>
     {
         private SharedRef<LibHac.FsSrv.Sf.IFileSystem> _fileSystem;
 
@@ -153,11 +154,16 @@ namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy
             ResultCode resultCode = (ResultCode)_fileSystem.Get.Commit().Value;
             if (resultCode == ResultCode.PathAlreadyInUse)
             {
-                Logger.Warning?.Print(LogClass.ServiceFs, "The file system is already in use by another process.");
+                LogFileSystemAlreadyInUse();
             }
 
             return resultCode;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceFs, EventName = nameof(LogClass.ServiceFs),
+            Message = "The file system is already in use by another process.")]
+        private partial void LogFileSystemAlreadyInUse();
 
         [CommandCmif(11)]
         // GetFreeSpaceSize(buffer<bytes<0x301>, 0x19, 0x301> path) -> u64 totalFreeSpace

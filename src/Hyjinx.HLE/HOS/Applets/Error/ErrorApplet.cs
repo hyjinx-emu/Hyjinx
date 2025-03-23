@@ -5,9 +5,10 @@ using LibHac.FsSystem;
 using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Am.AppletAE;
 using Hyjinx.HLE.HOS.SystemState;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +23,9 @@ namespace Hyjinx.HLE.HOS.Applets.Error
     {
         private const long ErrorMessageBinaryTitleId = 0x0100000000000801;
 
+        private static readonly ILogger<ErrorApplet> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<ErrorApplet>();
+        
         private readonly Horizon _horizon;
         private AppletSession _normalSession;
         private CommonArguments _commonArguments;
@@ -43,7 +47,7 @@ namespace Hyjinx.HLE.HOS.Applets.Error
             _normalSession = normalSession;
             _commonArguments = IApplet.ReadStruct<CommonArguments>(_normalSession.Pop());
 
-            Logger.Info?.PrintMsg(LogClass.ServiceAm, $"ErrorApplet version: 0x{_commonArguments.AppletVersion:x8}");
+            LogErrorAppletVersion(_commonArguments.AppletVersion);
 
             _errorStorage = _normalSession.Pop();
             _errorCommonHeader = IApplet.ReadStruct<ErrorCommonHeader>(_errorStorage);
@@ -71,6 +75,11 @@ namespace Hyjinx.HLE.HOS.Applets.Error
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "ErrorApplet version: 0x{version:x8}")]
+        private partial void LogErrorAppletVersion(uint version);
 
         private static (uint module, uint description) HexToResultCode(uint resultCode)
         {

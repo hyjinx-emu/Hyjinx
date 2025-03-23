@@ -1,7 +1,8 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Shader.Translation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,10 +12,11 @@ using static Hyjinx.Graphics.Gpu.Shader.ShaderCache;
 
 namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
 {
-    class ParallelDiskCacheLoader
+    partial class ParallelDiskCacheLoader
     {
         private const int ThreadCount = 8;
 
+        private readonly ILogger<ParallelDiskCacheLoader> _logger = Logger.DefaultLoggerFactory.CreateLogger<ParallelDiskCacheLoader>();
         private readonly GpuContext _context;
         private readonly ShaderCacheHashTable _graphicsCache;
         private readonly ComputeShaderCacheHashTable _computeCache;
@@ -222,7 +224,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
             _programList = new SortedList<int, (CachedShaderProgram, byte[])>();
             _backendParallelCompileThreads = Math.Min(Environment.ProcessorCount, 8); // Must be kept in sync with the backend code.
         }
-
+        
         /// <summary>
         /// Loads all shaders from the cache.
         /// </summary>
@@ -244,8 +246,8 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
             _totalCount = programCount;
 
             _stateChangeCallback(ShaderCacheState.Start, 0, programCount);
-
-            Logger.Info?.Print(LogClass.Gpu, $"Loading {programCount} shaders from the cache...");
+            
+            LogLoadingShadersFromCache(programCount);
 
             for (int index = 0; index < ThreadCount; index++)
             {
@@ -258,7 +260,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
             }
             catch (DiskCacheLoadException diskCacheLoadException)
             {
-                Logger.Warning?.Print(LogClass.Gpu, $"Error loading the shader cache. {diskCacheLoadException.Message}");
+                LogErrorLoadingShaderCache(diskCacheLoadException);
 
                 // If we can't even access the file, then we also can't rebuild.
                 if (diskCacheLoadException.Result != DiskCacheLoadResult.NoAccess)
@@ -268,12 +270,12 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
             }
             catch (InvalidDataException invalidDataException)
             {
-                Logger.Warning?.Print(LogClass.Gpu, $"Error decompressing the shader cache file. {invalidDataException.Message}");
+                LogErrorDecompressingShaderCache(invalidDataException);
                 _needsHostRegen = true;
             }
             catch (IOException ioException)
             {
-                Logger.Warning?.Print(LogClass.Gpu, $"Error reading the shader cache file. {ioException.Message}");
+                LogErrorReadingShaderCache(ioException);
                 _needsHostRegen = true;
             }
 
@@ -300,7 +302,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
                     {
                         _stateChangeCallback(ShaderCacheState.Packaging, 0, _programList.Count);
 
-                        Logger.Info?.Print(LogClass.Gpu, $"Rebuilding {_programList.Count} shaders...");
+                        LogRebuildingShaders(_programList.Count);
 
                         using var streams = _hostStorage.GetOutputStreams(_context);
 
@@ -319,30 +321,71 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
                             _stateChangeCallback(ShaderCacheState.Packaging, ++packagedShaders, _programList.Count);
                         }
 
-                        Logger.Info?.Print(LogClass.Gpu, $"Rebuilt {_programList.Count} shaders successfully.");
+                        LogRebuiltShadersSuccessful(_programList.Count);
                     }
                     else
                     {
                         _hostStorage.ClearGuestCache();
 
-                        Logger.Info?.Print(LogClass.Gpu, "Shader cache deleted due to corruption.");
+                        LogShaderCacheDeleted();
                     }
                 }
-                catch (DiskCacheLoadException diskCacheLoadException)
+                catch (Exception ex) when (ex is IOException or DiskCacheLoadException) 
                 {
-                    Logger.Warning?.Print(LogClass.Gpu, $"Error deleting the shader cache. {diskCacheLoadException.Message}");
-                }
-                catch (IOException ioException)
-                {
-                    Logger.Warning?.Print(LogClass.Gpu, $"Error deleting the shader cache file. {ioException.Message}");
+                    LogErrorDeletingShaderCache(ex);
                 }
             }
 
-            Logger.Info?.Print(LogClass.Gpu, "Shader cache loaded.");
+            LogShaderCacheLoaded();
 
             _stateChangeCallback(ShaderCacheState.Loaded, programCount, programCount);
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Loading {programCount} shaders from the cache...")]
+        private partial void LogLoadingShadersFromCache(int programCount);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Error loading the shader cache.")]
+        private partial void LogErrorLoadingShaderCache(Exception exception);
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Error decompressing the shader cache file.")]
+        private partial void LogErrorDecompressingShaderCache(Exception exception);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Error reading the shader cache file.")]
+        private partial void LogErrorReadingShaderCache(Exception exception);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Rebuilding {count} shaders...")]
+        private partial void LogRebuildingShaders(int count);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Rebuilt {count} shaders successfully.")]
+        private partial void LogRebuiltShadersSuccessful(int count);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Shader cache deleted due to corruption.")]
+        private partial void LogShaderCacheDeleted();
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Error deleting the shader cache.")]
+        private partial void LogErrorDeletingShaderCache(Exception exception);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Shader cache loaded.")]
+        private partial void LogShaderCacheLoaded();
+        
         /// <summary>
         /// Enqueues a host program for compilation.
         /// </summary>
@@ -573,12 +616,17 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
             }
             catch (Exception exception)
             {
-                Logger.Error?.Print(LogClass.Gpu, $"Error translating guest shader. {exception.Message}");
+                LogErrorTranslatingGuestShader(exception);
 
                 ErrorCount++;
                 SignalCompiled();
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Error translating guest shader.")]
+        private partial void LogErrorTranslatingGuestShader(Exception exception);
 
         /// <summary>
         /// Recompiles a graphics program from guest code.

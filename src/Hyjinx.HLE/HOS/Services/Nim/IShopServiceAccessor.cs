@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAccessServer.ShopServiceAccessor;
@@ -7,7 +7,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAccessServer
 {
-    class IShopServiceAccessor : IpcService
+    class IShopServiceAccessor : IpcService<IShopServiceAccessor>
     {
         private readonly KEvent _event;
 
@@ -34,7 +34,7 @@ namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServi
 
             context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_eventHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNim);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNim);
 
             return ResultCode.Success;
         }

@@ -1,8 +1,9 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.HOS.Services.Hid;
 using Hyjinx.HLE.HOS.Tamper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,17 +11,19 @@ using System.Threading;
 
 namespace Hyjinx.HLE.HOS
 {
-    public class TamperMachine
+    public partial class TamperMachine
     {
         // Atmosphere specifies a delay of 83 milliseconds between the execution of the last
         // cheat and the re-execution of the first one.
         private const int TamperMachineSleepMs = 1000 / 12;
 
+        private static readonly ILogger<TamperMachine> _logger = Logger.DefaultLoggerFactory.CreateLogger<TamperMachine>();
+        
         private Thread _tamperThread = null;
         private readonly ConcurrentQueue<ITamperProgram> _programs = new();
         private long _pressedKeys = 0;
         private readonly Dictionary<string, ITamperProgram> _programDictionary = new();
-
+        
         private void Activate()
         {
             if (_tamperThread == null || !_tamperThread.IsAlive)
@@ -55,12 +58,17 @@ namespace Hyjinx.HLE.HOS
             Activate();
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Refusing to tamper kernel process {pid}.")]
+        private static partial void LogRefusingToTamperKernel(ILogger logger, ulong pid);
+
         private static bool CanInstallOnPid(ulong pid)
         {
             // Do not allow tampering of kernel processes.
             if (pid < KernelConstants.InitialProcessId)
             {
-                Logger.Warning?.Print(LogClass.TamperMachine, $"Refusing to tamper kernel process {pid}");
+                LogRefusingToTamperKernel(_logger, pid);
 
                 return false;
             }
@@ -89,9 +97,14 @@ namespace Hyjinx.HLE.HOS
             return process.State != ProcessState.Crashed && process.State != ProcessState.Exiting && process.State != ProcessState.Exited;
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "TamperMachine thread running")]
+        private partial void LogThreadStarted();
+        
         private void TamperRunner()
         {
-            Logger.Info?.Print(LogClass.TamperMachine, "TamperMachine thread running");
+            LogThreadStarted();
 
             int sleepCounter = 0;
 
@@ -111,13 +124,22 @@ namespace Hyjinx.HLE.HOS
                 if (!AdvanceTamperingsQueue())
                 {
                     // No more work to be done.
-
-                    Logger.Info?.Print(LogClass.TamperMachine, "TamperMachine thread exiting");
+                    LogThreadExiting();
 
                     return;
                 }
             }
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "TamperMachine thread exiting")]
+        private partial void LogThreadExiting();
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Running tampering program {name}")]
+        private partial void LogRunningTamperingProgram(string name);
 
         private bool AdvanceTamperingsQueue()
         {
@@ -139,7 +161,7 @@ namespace Hyjinx.HLE.HOS
             // Re-enqueue the tampering program because the process is still valid.
             _programs.Enqueue(program);
 
-            Logger.Debug?.Print(LogClass.TamperMachine, $"Running tampering program {program.Name}");
+            LogRunningTamperingProgram(program.Name);
 
             try
             {
@@ -152,21 +174,26 @@ namespace Hyjinx.HLE.HOS
                 {
                     program.TampersCodeMemory = true;
 
-                    Logger.Warning?.Print(LogClass.TamperMachine, $"Tampering program {program.Name} modifies code memory so it may not work properly");
+                    LogTamperingProgramModifiesMemory(program.Name);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Debug?.Print(LogClass.TamperMachine, $"The tampering program {program.Name} crashed, this can happen while the game is starting");
-
-                if (!string.IsNullOrEmpty(ex.Message))
-                {
-                    Logger.Debug?.Print(LogClass.TamperMachine, ex.Message);
-                }
+                LogTamperingProgramCrashedDuringStartup(program.Name, ex);
             }
 
             return true;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Tampering program {name} modifies code memory so it may not work properly.")]
+        private partial void LogTamperingProgramModifiesMemory(string name);
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "The tampering program {name} crashed, this can happen while the game is starting.")]
+        private partial void LogTamperingProgramCrashedDuringStartup(string name, Exception exception);
 
         public void UpdateInput(List<GamepadInput> gamepadInputs)
         {

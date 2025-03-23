@@ -1,9 +1,10 @@
 using Hyjinx.Audio.Renderer.Device;
 using Hyjinx.Audio.Renderer.Server;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Applet;
 using Hyjinx.Horizon.Sdk.Sf;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.Horizon.Sdk.Audio.Detail
 {
@@ -11,6 +12,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
     {
         private const uint InitialRevision = ('R' << 0) | ('E' << 8) | ('V' << 16) | ('1' << 24);
 
+        private readonly ILogger<AudioRendererManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<AudioRendererManager>();
         private readonly Hyjinx.Audio.Renderer.Server.AudioRendererManager _impl;
         private readonly VirtualDeviceSessionRegistry _registry;
 
@@ -64,7 +66,7 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
             {
                 workBufferSize = (long)Hyjinx.Audio.Renderer.Server.AudioRendererManager.GetWorkBufferSize(ref parameter.Configuration);
 
-                Logger.Debug?.Print(LogClass.ServiceAudio, $"WorkBufferSize is 0x{workBufferSize:x16}.");
+                LogBufferSize(workBufferSize);
 
                 return Result.Success;
             }
@@ -72,11 +74,21 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
             {
                 workBufferSize = 0;
 
-                Logger.Warning?.Print(LogClass.ServiceAudio, $"Library Revision REV{BehaviourContext.GetRevisionNumber(parameter.Configuration.Revision)} is not supported!");
-
+                LogLibraryVersionNotSupported(BehaviourContext.GetRevisionNumber(parameter.Configuration.Revision));
+                
                 return AudioResult.UnsupportedRevision;
             }
         }
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceAudio, EventName = nameof(LogClass.ServiceAudio),
+            Message = "WorkBufferSize is 0x{size:x16}.")]
+        private partial void LogBufferSize(long size);
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAudio, EventName = nameof(LogClass.ServiceAudio),
+            Message = "Library Revision REV{version} is not supported!")]
+        private partial void LogLibraryVersionNotSupported(int version);
 
         [CmifCommand(2)]
         public Result GetAudioDeviceService(out IAudioDevice audioDevice, AppletResourceUserId appletResourceId)

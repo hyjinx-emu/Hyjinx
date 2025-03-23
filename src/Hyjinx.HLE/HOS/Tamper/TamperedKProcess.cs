@@ -1,12 +1,16 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Kernel.Process;
+using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
 namespace Hyjinx.HLE.HOS.Tamper
 {
-    class TamperedKProcess : ITamperedProcess
+    partial class TamperedKProcess : ITamperedProcess
     {
+        private static readonly ILogger<TamperedKProcess> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<TamperedKProcess>();
+        
         private readonly KProcess _process;
 
         public ProcessState State => _process.State;
@@ -57,12 +61,22 @@ namespace Hyjinx.HLE.HOS.Tamper
 
         public void PauseProcess()
         {
-            Logger.Warning?.Print(LogClass.TamperMachine, "Process pausing is not supported!");
+            LogPausingNotSupported();
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Process pausing is not supported!")]
+        private partial void LogPausingNotSupported();
 
         public void ResumeProcess()
         {
-            Logger.Warning?.Print(LogClass.TamperMachine, "Process resuming is not supported!");
+            LogResumingNotSupported();
         }
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Process resuming is not supported!")]
+        private partial void LogResumingNotSupported();
     }
 }

@@ -12,12 +12,13 @@ using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Configuration.Multiplayer;
 using Hyjinx.Common.GraphicsDriver;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Configuration.System;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -557,7 +558,8 @@ namespace Hyjinx.Ava.UI.ViewModels
             {
                 config.System.AudioBackend.Value = audioBackend;
 
-                Logger.Info?.Print(LogClass.Application, $"AudioBackend toggled to: {audioBackend}");
+                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "AudioBackend toggled to: {audioBackend}", audioBackend);
             }
 
             config.System.AudioVolume.Value = Volume / 100;

@@ -1,4 +1,5 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,7 +7,7 @@ using System.Linq;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    class SyncManager
+    partial class SyncManager
     {
         private class SyncHandle
         {
@@ -23,6 +24,7 @@ namespace Hyjinx.Graphics.Vulkan
 
         private ulong _firstHandle;
 
+        private readonly ILogger<SyncManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<SyncManager>();
         private readonly VulkanRenderer _gd;
         private readonly Device _device;
         private readonly List<SyncHandle> _handles;
@@ -154,7 +156,7 @@ namespace Hyjinx.Graphics.Vulkan
 
                     if (!signaled)
                     {
-                        Logger.Error?.PrintMsg(LogClass.Gpu, $"VK Sync Object {result.ID} failed to signal within 1000ms. Continuing...");
+                        LogSyncFailed(result.ID);
                     }
                     else
                     {
@@ -164,6 +166,11 @@ namespace Hyjinx.Graphics.Vulkan
                 }
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "VK Sync Object {id} failed to signal within 1000ms. Continuing...")]
+        private partial void LogSyncFailed(ulong id);
 
         public void Cleanup()
         {

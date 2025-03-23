@@ -1,9 +1,9 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 
 namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 {
     [Service("psm")]
-    class IPsmServer : IpcService
+    class IPsmServer : IpcService<IPsmServer>
     {
         public IPsmServer(ServiceCtx context) { }
 
@@ -15,7 +15,7 @@ namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 
             context.ResponseData.Write(chargePercentage);
 
-            Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargePercentage });
+            // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargePercentage });
 
             return ResultCode.Success;
         }
@@ -28,7 +28,7 @@ namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 
             context.ResponseData.Write((int)chargerType);
 
-            Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargerType });
+            // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargerType });
 
             return ResultCode.Success;
         }

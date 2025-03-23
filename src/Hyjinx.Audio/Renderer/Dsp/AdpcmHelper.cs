@@ -1,13 +1,17 @@
 using Hyjinx.Audio.Renderer.Dsp.State;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Hyjinx.Audio.Renderer.Dsp
 {
-    public static class AdpcmHelper
+    public partial class AdpcmHelper
     {
+        private static readonly ILogger<AdpcmHelper> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<AdpcmHelper>();
+        
         private const int FixedPointPrecision = 11;
         private const int SamplesPerFrame = 14;
         private const int NibblesPerFrame = SamplesPerFrame + 2;
@@ -83,13 +87,17 @@ namespace Hyjinx.Audio.Renderer.Dsp
         {
             if ((uint)index > (uint)coefficients.Length)
             {
-                Logger.Error?.Print(LogClass.AudioRenderer, $"Out of bound read for coefficient at index {index}");
-
+                LogOutOfBoundsRead(_logger, index);
                 return 0;
             }
 
             return coefficients[index];
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Out of bound read for coefficient at index {index}")]
+        private static partial void LogOutOfBoundsRead(ILogger logger, int index);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Decode(Span<short> output, ReadOnlySpan<byte> input, int startSampleOffset, int endSampleOffset, int offset, int count, ReadOnlySpan<short> coefficients, ref AdpcmLoopContext loopContext)

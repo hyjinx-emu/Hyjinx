@@ -1,9 +1,10 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 {
-    internal class LanProtocol
+    internal partial class LanProtocol
     {
         private const uint LanMagic = 0x11451400;
 
@@ -22,6 +23,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
         public const int TxBufferSizeMax = 0x2000;
         public const int RxBufferSizeMax = 0x2000;
 
+        private readonly ILogger<LanProtocol> _logger = Logger.DefaultLoggerFactory.CreateLogger<LanProtocol>();
         private readonly int _headerSize = Marshal.SizeOf<LanPacketHeader>();
 
         private readonly LanDiscovery _discovery;
@@ -72,11 +74,21 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                     Connect?.Invoke(MemoryMarshal.Cast<byte, NodeInfo>(data)[0], endPoint);
                     break;
                 default:
-                    Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"Decode error: Unhandled type {header.Type}");
+                    LogDecodeErrorUnhandledType(header.Type);
                     break;
             }
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Decode error, unhandled type {type}.")]
+        private partial void LogDecodeErrorUnhandledType(LanPacketType type);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Invalid magic number received in packet. [magic: {magic}] [EP: {endpoint}]")]
+        private partial void LogInvalidMagicNumberReceived(uint magic, EndPoint endpoint);
+        
         public void Read(scoped ref byte[] buffer, scoped ref int bufferEnd, byte[] data, int offset, int size, EndPoint endPoint = null)
         {
             if (endPoint != null && _discovery.LocalAddr.Equals(((IPEndPoint)endPoint).Address))
@@ -103,8 +115,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                     if (header.Magic != LanMagic)
                     {
                         bufferEnd = 0;
-
-                        Logger.Warning?.PrintMsg(LogClass.ServiceLdn, $"Invalid magic number in received packet. [magic: {header.Magic}] [EP: {endPoint}]");
+                        LogInvalidMagicNumberReceived(header.Magic, endPoint!);
 
                         return;
                     }
@@ -113,8 +124,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                     if (totalSize > BufferSize)
                     {
                         bufferEnd = 0;
-
-                        Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"Max packet size {BufferSize} exceeded.");
+                        LogMaxPacketSizeExceeded(BufferSize);
 
                         return;
                     }
@@ -135,15 +145,14 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                         {
                             if (Decompress(ldnData, out byte[] decompressedLdnData) != 0)
                             {
-                                Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"Decompress error:\n {header}, {_headerSize}\n {ldnData}, {ldnData.Length}");
+                                LogDecompressError(header, _headerSize, ldnData.Length, ldnData);
 
                                 return;
                             }
 
                             if (decompressedLdnData.Length != header.DecompressLength)
                             {
-                                Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"Decompress error: length does not match. ({decompressedLdnData.Length} != {header.DecompressLength})");
-                                Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"Decompress error data: '{string.Join("", decompressedLdnData.Select(x => (int)x).ToArray())}'");
+                                LogDecompressErrorLengthDoesNotMatch(header, header.DecompressLength, decompressedLdnData.Length);
 
                                 return;
                             }
@@ -159,6 +168,21 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             }
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Max packet size {size} exceeded.")]
+        private partial void LogMaxPacketSizeExceeded(int size);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Decompress error ({header}, {headerSize}, {length}) {data}")]
+        private partial void LogDecompressError(LanPacketHeader header, int headerSize, int length, byte[] data);
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Decompress error {header} length does not match Expected: {expected}, Actual: {actual}.")]
+        private partial void LogDecompressErrorLengthDoesNotMatch(LanPacketHeader header, int expected, int actual);
+        
         public int SendBroadcast(ILdnSocket s, LanPacketType type, int port)
         {
             return SendPacket(s, type, Array.Empty<byte>(), new IPEndPoint(_discovery.LocalBroadcastAddr, port));
@@ -213,7 +237,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                 {
                     buf = new byte[data.Length + _headerSize];
 
-                    Logger.Error?.PrintMsg(LogClass.ServiceLdn, "Compressing packet data failed.");
+                    LogCompressingPacketFailed();
 
                     SpanHelpers.AsSpan<LanPacketHeader, byte>(ref header).ToArray().CopyTo(buf, 0);
                     data.CopyTo(buf, _headerSize);
@@ -227,6 +251,11 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             return buf;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Compressing packet data failed.")]
+        private partial void LogCompressingPacketFailed();
 
         private int Compress(byte[] input, out byte[] output)
         {

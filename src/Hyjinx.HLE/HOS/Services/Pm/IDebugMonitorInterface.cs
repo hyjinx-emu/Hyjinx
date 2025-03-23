@@ -6,7 +6,7 @@ using Hyjinx.Horizon.Common;
 namespace Hyjinx.HLE.HOS.Services.Pm
 {
     [Service("pm:dmnt")]
-    class IDebugMonitorInterface : IpcService
+    class IDebugMonitorInterface : IpcService<IDebugMonitorInterface>
     {
         public IDebugMonitorInterface(ServiceCtx context) { }
 

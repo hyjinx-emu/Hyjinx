@@ -8,7 +8,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
-    class ISystemClock : IpcService
+    class ISystemClock : IpcService<ISystemClock>
     {
         private readonly SystemClockCore _clockCore;
         private readonly bool _writePermission;

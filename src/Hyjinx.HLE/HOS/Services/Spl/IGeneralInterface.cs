@@ -10,7 +10,7 @@ namespace Hyjinx.HLE.HOS.Services.Spl
     [Service("spl:manu")]
     [Service("spl:mig")]
     [Service("spl:ssl")]
-    class IGeneralInterface : IpcService
+    class IGeneralInterface : IpcService<IGeneralInterface>
     {
         public IGeneralInterface(ServiceCtx context) { }
 

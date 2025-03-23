@@ -1,10 +1,10 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Pcv.Types;
 using System.Linq;
 
 namespace Hyjinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager
 {
-    class IClkrstSession : IpcService
+    class IClkrstSession : IpcService<IClkrstSession>
     {
         private readonly DeviceCode _deviceCode;
 #pragma warning disable IDE0052 // Remove unread private member
@@ -39,7 +39,7 @@ namespace Hyjinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager
 
             _clockRate = context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServicePcv, new { _clockRate });
+            // Logger.Stub?.PrintStub(LogClass.ServicePcv, new { _clockRate });
 
             return ResultCode.Success;
         }
@@ -55,7 +55,7 @@ namespace Hyjinx.HLE.HOS.Services.Pcv.Clkrst.ClkrstManager
 
             context.ResponseData.Write(_clockRate);
 
-            Logger.Stub?.PrintStub(LogClass.ServicePcv, new { _clockRate });
+            // Logger.Stub?.PrintStub(LogClass.ServicePcv, new { _clockRate });
 
             return ResultCode.Success;
         }

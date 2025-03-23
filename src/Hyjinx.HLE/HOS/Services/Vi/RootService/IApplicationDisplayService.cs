@@ -1,5 +1,5 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Applets;
 using Hyjinx.HLE.HOS.Ipc;
@@ -9,6 +9,7 @@ using Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService.Types;
 using Hyjinx.HLE.HOS.Services.Vi.Types;
 using Hyjinx.HLE.UI;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +18,7 @@ using System.Text;
 
 namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 {
-    class IApplicationDisplayService : IpcService
+    partial class IApplicationDisplayService : IpcService<IApplicationDisplayService>
     {
         private readonly ViServiceType _serviceType;
 
@@ -25,7 +26,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
         {
             public int RetrievedEventsCount;
         }
-
+        
         private readonly List<DisplayInfo> _displayInfo;
         private readonly Dictionary<ulong, DisplayState> _openDisplays;
 
@@ -396,8 +397,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 
             if (appletObject == null)
             {
-                Logger.Error?.Print(LogClass.ServiceVi, $"Indirect layer handle {layerHandle} does not match any applet");
-
+                LogLayerHandleDoesNotMatch(layerHandle);
                 return ResultCode.Success;
             }
 
@@ -407,7 +407,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 
             if (!applet.DrawTo(surfaceInfo, context.Memory, layerBuffPosition))
             {
-                Logger.Warning?.Print(LogClass.ServiceVi, $"Applet did not draw on indirect layer handle {layerHandle}");
+                LogAppletDidNotDrawAsExpected(layerHandle);
 
                 return ResultCode.Success;
             }
@@ -417,6 +417,16 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceVi, EventName = nameof(LogClass.ServiceVi),
+            Message = "Applet did not draw on indirect layer handle {handle}.")]
+        private partial void LogAppletDidNotDrawAsExpected(long handle);
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceVi, EventName = nameof(LogClass.ServiceVi),
+            Message = "Indirect layer handle {layerHandle} does not match any applet")]
+        private partial void LogLayerHandleDoesNotMatch(long layerHandle);
 
         [CommandCmif(2460)]
         // GetIndirectLayerImageRequiredMemoryInfo(u64 width, u64 height) -> (u64 size, u64 alignment)

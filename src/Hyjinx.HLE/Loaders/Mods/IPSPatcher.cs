@@ -1,11 +1,15 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 
 namespace Hyjinx.HLE.Loaders.Mods
 {
-    class IpsPatcher
+    internal partial class IpsPatcher
     {
+        private static readonly ILogger<IpsPatcher> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<IpsPatcher>();
+        
         readonly MemPatch _patches;
 
         public IpsPatcher(BinaryReader reader)
@@ -13,7 +17,8 @@ namespace Hyjinx.HLE.Loaders.Mods
             _patches = ParseIps(reader);
             if (_patches != null)
             {
-                Logger.Info?.Print(LogClass.ModLoader, "IPS patch loaded successfully");
+                _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
+                    "IPS patch loaded successfully.");
             }
         }
 

@@ -9,11 +9,13 @@ using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Tools.Ncm;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.Utilities;
+using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Linq;
 using ApplicationId = LibHac.Ncm.ApplicationId;
@@ -22,10 +24,17 @@ using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {
-    public static class NcaExtensions
+    public static partial class NcaExtensions
     {
         private static readonly TitleUpdateMetadataJsonSerializerContext _applicationSerializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(NcaExtensions));
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "No ExeFS found in NCA")]
+        private static partial void LogExeFsNotFound(ILogger logger);
+        
         public static ProcessResult Load(this Nca nca, Switch device, Nca patchNca, Nca controlNca)
         {
             // Extract RomFs and ExeFs from NCA.
@@ -34,7 +43,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
 
             if (exeFs == null)
             {
-                Logger.Error?.Print(LogClass.Loader, "No ExeFS found in NCA");
+                LogExeFsNotFound(_logger);
 
                 return ProcessResult.Failed;
             }
@@ -75,7 +84,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
             // Load RomFS.
             if (romFs == null)
             {
-                Logger.Warning?.Print(LogClass.Loader, "No RomFS found in NCA");
+                LogNoRomFsFoundInNca(_logger);
             }
             else
             {
@@ -94,6 +103,11 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
 
             return processResult;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "No RomFS found in NCA")]
+        private static partial void LogNoRomFsFoundInNca(ILogger logger);
 
         public static ulong GetProgramIdBase(this Nca nca)
         {
@@ -248,11 +262,16 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
             {
                 if (!ResultFs.PathNotFound.Includes(ex.ResultValue))
                 {
-                    Logger.Warning?.Print(LogClass.Application, $"Failed get CNMT for '{cnmtNca.Header.TitleId:x16}' from NCA: {ex.Message}");
+                    LogFailedToGetCnmtInNca(_logger, cnmtNca.Header.TitleId, ex);
                 }
             }
 
             return null;
         }
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Failed get CNMT for '{titleId:x16}' from NCA.")]
+        private static partial void LogFailedToGetCnmtInNca(ILogger logger, ulong titleId, Exception exception);
     }
 }

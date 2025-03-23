@@ -1,12 +1,12 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 
 namespace Hyjinx.HLE.HOS.Services.Mnpp
 {
     [Service("mnpp:app")] // 13.0.0+
-    class IServiceForApplication : IpcService
+    class IServiceForApplication : IpcService<IServiceForApplication>
     {
         public IServiceForApplication(ServiceCtx context) { }
 
@@ -22,7 +22,7 @@ namespace Hyjinx.HLE.HOS.Services.Mnpp
             //       If the result == 1 (China) it calls arp:r GetApplicationInstanceId and GetApplicationLaunchProperty to get the title id and store it internally.
             //       If not, it does nothing.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceMnpp, new { pid });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMnpp, new { pid });
 
             return ResultCode.Success;
         }
@@ -50,12 +50,12 @@ namespace Hyjinx.HLE.HOS.Services.Mnpp
 
                 // TODO: The service stores the titleId internally and seems proceed to some telemetry for China, which is not needed here.
 
-                Logger.Stub?.PrintStub(LogClass.ServiceMnpp, new { userId, titleId });
+                // Logger.Stub?.PrintStub(LogClass.ServiceMnpp, new { userId, titleId });
 
                 return ResultCode.Success;
             }
 
-            Logger.Stub?.PrintStub(LogClass.ServiceMnpp, new { userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMnpp, new { userId });
 
             return ResultCode.InvalidBufferSize;
         }

@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class IDebugFunctions : IpcService
+    class IDebugFunctions : IpcService<IDebugFunctions>
     {
         public IDebugFunctions() { }
     }

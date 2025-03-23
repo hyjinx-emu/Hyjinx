@@ -5,24 +5,28 @@ using LibHac.Loader;
 using LibHac.Ns;
 using LibHac.Tools.FsSystem;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using static Hyjinx.HLE.HOS.ModLoader;
 
 namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {
-    static class FileSystemExtensions
+    static partial class FileSystemExtensions
     {
+        private static readonly ILogger _logger =
+            Logger.DefaultLoggerFactory.CreateLogger(typeof(FileSystemExtensions));
+        
         public static MetaLoader GetNpdm(this IFileSystem fileSystem)
         {
             MetaLoader metaLoader = new();
 
             if (fileSystem == null || !fileSystem.FileExists(ProcessConst.MainNpdmPath))
             {
-                Logger.Warning?.Print(LogClass.Loader, "NPDM file not found, using default values!");
+                LogNpdmFileNotFound(_logger);
 
                 metaLoader.LoadDefault();
             }
@@ -34,6 +38,21 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
             return metaLoader;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "NPDM file  not found, using default values!")]
+        private static partial void LogNpdmFileNotFound(ILogger logger);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "Detected unsupported ExeFS modifications, PTC disabled.")]
+        private static partial void LogUnsupportedExeFsModificationsDetected(ILogger logger);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Loading {name}...")]
+        private static partial void LogLoadingFile(ILogger logger, string name);
+        
         public static ProcessResult Load(this IFileSystem exeFs, Switch device, BlitStruct<ApplicationControlProperty> nacpData, MetaLoader metaLoader, byte programIndex, bool isHomebrew = false)
         {
             ulong programId = metaLoader.GetProgramId();
@@ -58,7 +77,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
                     continue; // File doesn't exist, skip.
                 }
 
-                Logger.Info?.Print(LogClass.Loader, $"Loading {name}...");
+                LogLoadingFile(_logger, name);
 
                 using var nsoFile = new UniqueRef<IFile>();
 
@@ -86,7 +105,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
             bool enablePtc = device.System.EnablePtc && !modLoadResult.Modified;
             if (!enablePtc)
             {
-                Logger.Warning?.Print(LogClass.Ptc, "Detected unsupported ExeFs modifications. PTC disabled.");
+                LogUnsupportedExeFsModificationsDetected(_logger);
             }
 
             string programName = "";

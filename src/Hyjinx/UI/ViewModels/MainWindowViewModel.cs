@@ -19,7 +19,7 @@ using Hyjinx.Ava.UI.Renderer;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
 using Hyjinx.HLE;
@@ -32,6 +32,8 @@ using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Hyjinx.UI.Common.Utilities;
+using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -49,6 +51,9 @@ namespace Hyjinx.Ava.UI.ViewModels
     public class MainWindowViewModel : BaseModel
     {
         private const int HotKeyPressDelayMs = 500;
+        
+        private readonly ILogger<MainWindowViewModel> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<MainWindowViewModel>();
 
         private ObservableCollection<ApplicationData> _applications;
         private string _aspectStatusText;
@@ -357,7 +362,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
         public bool OpenDeviceSaveDirectoryEnabled => !SelectedApplication.ControlHolder.ByteSpan.IsZeros() && SelectedApplication.ControlHolder.Value.DeviceSaveDataSize > 0;
 
-        public bool TrimXCIEnabled => Hyjinx.Common.Utilities.XCIFileTrimmer.CanTrim(SelectedApplication.Path, new Common.XCIFileTrimmerLog(this));
+        public bool TrimXCIEnabled => XCIFileTrimmer.CanTrim(SelectedApplication.Path, new XCIFileTrimmerLog(this));
 
         public bool OpenBcatSaveDirectoryEnabled => !SelectedApplication.ControlHolder.ByteSpan.IsZeros() && SelectedApplication.ControlHolder.Value.BcatDeliveryCacheStorageSize > 0;
 
@@ -1054,7 +1059,8 @@ namespace Hyjinx.Ava.UI.ViewModels
 
                 if (result == UserResult.Yes)
                 {
-                    Logger.Info?.Print(LogClass.Application, $"Installing firmware {firmwareVersion.VersionString}");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Installing firmware {firmwareVersion}", firmwareVersion.VersionString);
 
                     Thread thread = new(() =>
                     {
@@ -1075,7 +1081,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
                                 await ContentDialogHelper.CreateInfoDialog(dialogTitle, message, LocaleManager.Instance[LocaleKeys.InputDialogOk], "", LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
 
-                                Logger.Info?.Print(LogClass.Application, message);
+                                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), message);
 
                                 // Purge Applet Cache.
 
@@ -1112,7 +1118,7 @@ namespace Hyjinx.Ava.UI.ViewModels
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
-                    Logger.Error?.Print(LogClass.Application, ex.ToString());
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An exception occurred.");
 
                     await UserErrorDialog.ShowUserErrorDialog(UserError.NoKeys);
                 }
@@ -1758,31 +1764,31 @@ namespace Hyjinx.Ava.UI.ViewModels
             }
         }
 
-        public async void ProcessTrimResult(String filename, Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome operationOutcome)
+        public async void ProcessTrimResult(String filename, XCIFileTrimmer.OperationOutcome operationOutcome)
         {
             string notifyUser = null;
 
             switch (operationOutcome)
             {
-                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.NoTrimNecessary:
+                case XCIFileTrimmer.OperationOutcome.NoTrimNecessary:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileNoTrimNecessary];
                     break;
-                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.ReadOnlyFileCannotFix:
+                case XCIFileTrimmer.OperationOutcome.ReadOnlyFileCannotFix:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileReadOnlyFileCannotFix];
                     break;
-                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FreeSpaceCheckFailed:
+                case XCIFileTrimmer.OperationOutcome.FreeSpaceCheckFailed:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileFreeSpaceCheckFailed];
                     break;
-                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.InvalidXCIFile:
+                case XCIFileTrimmer.OperationOutcome.InvalidXCIFile:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileInvalidXCIFile];
                     break;
-                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileIOWriteError:
+                case XCIFileTrimmer.OperationOutcome.FileIOWriteError:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileFileIOWriteError];
                     break;
-                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.FileSizeChanged:
+                case XCIFileTrimmer.OperationOutcome.FileSizeChanged:
                     notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileFileSizeChanged];
                     break;
-                case Hyjinx.Common.Utilities.XCIFileTrimmer.OperationOutcome.Successful:
+                case XCIFileTrimmer.OperationOutcome.Successful:
                     if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                     {
                         if (desktop.MainWindow is MainWindow mainWindow)

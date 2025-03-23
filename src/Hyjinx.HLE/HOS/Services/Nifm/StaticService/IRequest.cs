@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
@@ -6,7 +6,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
 {
-    class IRequest : IpcService
+    class IRequest : IpcService<IRequest>
     {
         private enum RequestState
         {
@@ -43,7 +43,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
 
             context.ResponseData.Write((int)requestState);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNifm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNifm);
 
             return ResultCode.Success;
         }
@@ -52,7 +52,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
         // GetResult()
         public ResultCode GetResult(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNifm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNifm);
 
             return GetResultImpl();
         }
@@ -91,7 +91,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
         // Cancel()
         public ResultCode Cancel(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNifm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNifm);
 
             return ResultCode.Success;
         }
@@ -100,7 +100,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
         // Submit()
         public ResultCode Submit(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNifm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNifm);
 
             return ResultCode.Success;
         }
@@ -109,7 +109,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
         // SetConnectionConfirmationOption(i8)
         public ResultCode SetConnectionConfirmationOption(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNifm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNifm);
 
             return ResultCode.Success;
         }
@@ -122,7 +122,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
             uint themeColor = context.RequestData.ReadUInt32();
 #pragma warning restore IDE0059
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNifm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNifm);
 
             ResultCode result = GetResultImpl();
 

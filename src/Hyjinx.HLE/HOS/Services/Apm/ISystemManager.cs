@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services.Apm
 {
-    abstract class ISystemManager : IpcService
+    abstract class ISystemManager : IpcService<ISystemManager>
     {
         public ISystemManager(ServiceCtx context) { }
 

@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types;
@@ -6,6 +6,7 @@ using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -13,7 +14,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 {
-    class NvHostChannelDeviceFile : NvDeviceFile
+    partial class NvHostChannelDeviceFile : NvDeviceFile<NvHostChannelDeviceFile>
     {
         private static readonly ConcurrentDictionary<ulong, Host1xContext> _host1xContextRegistry = new();
 
@@ -215,7 +216,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
         {
             arguments.Value = 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
@@ -224,10 +225,15 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
         {
             _submitTimeout = submitTimeout;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Invalid handle 0x{handle:X8}!")]
+        private partial void LogInvalidHandle(int handle);
 
         private NvInternalResult MapCommandBuffer(Span<byte> arguments)
         {
@@ -241,7 +247,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
                 if (map == null)
                 {
-                    Logger.Warning?.Print(LogClass.ServiceNv, $"Invalid handle 0x{commandBufferEntry.MapHandle:x8}!");
+                    LogInvalidHandle(commandBufferEntry.MapHandle);
 
                     return NvInternalResult.InvalidInput;
                 }
@@ -283,7 +289,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
                 if (map == null)
                 {
-                    Logger.Warning?.Print(LogClass.ServiceNv, $"Invalid handle 0x{commandBufferEntry.MapHandle:x8}!");
+                    LogInvalidHandle(commandBufferEntry.MapHandle);
 
                     return NvInternalResult.InvalidInput;
                 }
@@ -308,7 +314,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
         private NvInternalResult SetNvMapFd(ref int nvMapFd)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
@@ -317,7 +323,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
         {
             _timeout = timeout;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
@@ -333,21 +339,21 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
         private NvInternalResult AllocObjCtx(ref AllocObjCtxArguments arguments)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
 
         private NvInternalResult ZcullBind(ref ZcullBindArguments arguments)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
 
         private NvInternalResult SetErrorNotifier(ref SetErrorNotifierArguments arguments)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
@@ -369,7 +375,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
                     return NvInternalResult.InvalidInput;
             }
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             // TODO: disable and preempt channel when GPU scheduler will be implemented.
 
@@ -382,7 +388,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
             arguments.Fence = _channelSyncpoint;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
@@ -393,7 +399,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
             arguments.Fence = _channelSyncpoint;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
@@ -407,7 +413,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
             _timeslice = timeslice; // in micro-seconds
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             // TODO: disable and preempt channel when GPU scheduler will be implemented.
 
@@ -416,7 +422,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
 
         private NvInternalResult SetUserData(ref ulong userData)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }

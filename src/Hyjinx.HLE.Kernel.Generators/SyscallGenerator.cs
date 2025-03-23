@@ -33,6 +33,7 @@ namespace Hyjinx.HLE.Kernel.Generators
         private const string TypeKernelResultName = "KernelResult";
         private const string TypeResult = NamespaceHorizonCommon + "." + TypeResultName;
         private const string TypeExecutionContext = "IExecutionContext";
+        private const bool IsLoggingEnabled = false;
 
         private static readonly string[] _expectedResults = new string[]
         {
@@ -130,18 +131,30 @@ namespace Hyjinx.HLE.Kernel.Generators
 
             CodeGenerator generator = new CodeGenerator();
 
-            generator.AppendLine("using Hyjinx.Common.Logging;");
+            generator.AppendLine("using Hyjinx.Logging.Abstractions;");
             generator.AppendLine("using Hyjinx.Cpu;");
             generator.AppendLine($"using {NamespaceKernel}.Common;");
             generator.AppendLine($"using {NamespaceKernel}.Memory;");
             generator.AppendLine($"using {NamespaceKernel}.Process;");
             generator.AppendLine($"using {NamespaceKernel}.Threading;");
             generator.AppendLine($"using {NamespaceHorizonCommon};");
+
+            if (IsLoggingEnabled)
+            {
+                generator.AppendLine($"using Microsoft.Extensions.Logging;");
+            }
+
             generator.AppendLine("using System;");
             generator.AppendLine();
             generator.EnterScope($"namespace {ClassNamespace}");
             generator.EnterScope($"static class {ClassName}");
 
+            if (IsLoggingEnabled)
+            {
+                generator.AppendLine($"private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof({ClassName}));");
+                generator.AppendLine();
+            }
+            
             GenerateResultCheckHelper(generator);
             generator.AppendLine();
 
@@ -259,7 +272,10 @@ namespace Hyjinx.HLE.Kernel.Generators
                 args[index++] = argName;
             }
 
-            GenerateLogPrintBeforeCall(generator, method.Identifier.Text, logInArgs);
+            if (IsLoggingEnabled)
+            {
+                GenerateLogPrintBeforeCall(generator, method.Identifier.Text, logInArgs);
+            }
 
             string argsList = string.Join(", ", args);
             int returnRegisterIndex = 0;
@@ -307,7 +323,10 @@ namespace Hyjinx.HLE.Kernel.Generators
                 generator.AppendLine($"context.SetX({returnRegisterIndex++}, 0);");
             }
 
-            GenerateLogPrintAfterCall(generator, method.Identifier.Text, logOutArgs, result, canonicalReturnTypeName);
+            if (IsLoggingEnabled)
+            {
+                GenerateLogPrintAfterCall(generator, method.Identifier.Text, logOutArgs, result, canonicalReturnTypeName);
+            }
 
             generator.LeaveScope();
             generator.AppendLine();
@@ -349,7 +368,10 @@ namespace Hyjinx.HLE.Kernel.Generators
                 args[index++] = argName;
             }
 
-            GenerateLogPrintBeforeCall(generator, method.Identifier.Text, logInArgs);
+            if (IsLoggingEnabled)
+            {
+                GenerateLogPrintBeforeCall(generator, method.Identifier.Text, logInArgs);
+            }
 
             string argsList = string.Join(", ", args);
             int returnRegisterIndex = 0;
@@ -387,7 +409,10 @@ namespace Hyjinx.HLE.Kernel.Generators
                 generator.AppendLine($"context.SetX({returnRegisterIndex++}, 0);");
             }
 
-            GenerateLogPrintAfterCall(generator, method.Identifier.Text, logOutArgs, result, canonicalReturnTypeName);
+            if (IsLoggingEnabled)
+            {
+                GenerateLogPrintAfterCall(generator, method.Identifier.Text, logOutArgs, result, canonicalReturnTypeName);
+            }
 
             generator.LeaveScope();
             generator.AppendLine();
@@ -460,7 +485,8 @@ namespace Hyjinx.HLE.Kernel.Generators
 
         private static void GenerateLogPrint(CodeGenerator generator, string logLevel, string logClass, string log)
         {
-            generator.AppendLine($"Logger.{logLevel}?.PrintMsg(LogClass.{logClass}, $\"{log}\");");
+            generator.AppendLine($"if (_logger.IsEnabled(LogLevel.{logLevel})) _logger.Log{logLevel}(new EventId((int)LogClass.{logClass}, nameof(LogClass.{logClass})), $\"{log}\");");
+            // generator.AppendLine($"Logger.{logLevel}?.PrintMsg(LogClass.{logClass}, $\"{log}\");");
         }
 
         private static void GenerateDispatch(CodeGenerator generator, List<SyscallIdAndName> syscalls, string suffix)

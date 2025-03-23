@@ -1,8 +1,8 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
-using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -14,7 +14,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 {
     [Service("bsd:s", true)]
     [Service("bsd:u", false)]
-    class IClient : IpcService
+    internal partial class IClient : IpcService<IClient>
     {
         private static readonly List<IPollManager> _pollManagers = new()
         {
@@ -153,7 +153,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
             // bsd_error
             context.ResponseData.Write(0);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBsd);
+            // Logger.Stub?.PrintStub(LogClass.ServiceBsd);
 
             // Close transfer memory immediately as we don't use it.
             context.Device.System.KernelContext.Syscall.CloseHandle(context.Request.HandleDesc.ToCopy[0]);
@@ -167,7 +167,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
         {
             ulong unknown0 = context.RequestData.ReadUInt64();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBsd, new { unknown0 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceBsd, new { unknown0 });
 
             return ResultCode.Success;
         }
@@ -202,7 +202,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 
             WriteBsdResult(context, -1, LinuxError.EOPNOTSUPP);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBsd, new { path, flags });
+            // Logger.Stub?.PrintStub(LogClass.ServiceBsd, new { path, flags });
 
             return ResultCode.Success;
         }
@@ -382,7 +382,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
             {
                 if (!discoveredEvents.Contains(evnt))
                 {
-                    Logger.Error?.Print(LogClass.ServiceBsd, $"Poll operation is not supported for {evnt.FileDescriptor.GetType().Name}!");
+                    LogPollOperationNotSupportedForEvent(evnt.FileDescriptor);
 
                     return WriteBsdResult(context, -1, LinuxError.EBADF);
                 }
@@ -468,14 +468,19 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 
             return WriteBsdResult(context, updateCount, errno);
         }
-
+            
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Poll operation is not supported for {descriptor}")]
+        private partial void LogPollOperationNotSupportedForEvent(IFileDescriptor descriptor);
+        
         [CommandCmif(7)]
         // Sysctl(buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (i32 ret, u32 bsd_errno, u32, buffer<unknown, 0x22, 0>)
         public ResultCode Sysctl(ServiceCtx context)
         {
             WriteBsdResult(context, -1, LinuxError.EOPNOTSUPP);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBsd);
+            // Logger.Stub?.PrintStub(LogClass.ServiceBsd);
 
             return ResultCode.Success;
         }
@@ -832,13 +837,18 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
                     default:
                         errno = LinuxError.EOPNOTSUPP;
 
-                        Logger.Warning?.Print(LogClass.ServiceBsd, $"Unsupported Ioctl Cmd: {cmd}");
+                        LogUnsupportedCommand(cmd);
                         break;
                 }
             }
 
             return WriteBsdResult(context, 0, errno);
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Unsupported Ioctl command: {cmd}")]
+        private partial void LogUnsupportedCommand(BsdIoctl cmd);
 
         [CommandCmif(20)]
         // Fcntl(u32 socket, u32 cmd, u32 arg) -> (i32 ret, u32 bsd_errno)

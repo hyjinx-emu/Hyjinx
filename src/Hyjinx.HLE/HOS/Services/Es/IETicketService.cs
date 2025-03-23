@@ -1,7 +1,7 @@
 namespace Hyjinx.HLE.HOS.Services.Es
 {
     [Service("es")]
-    class IETicketService : IpcService
+    class IETicketService : IpcService<IETicketService>
     {
         public IETicketService(ServiceCtx context) { }
     }

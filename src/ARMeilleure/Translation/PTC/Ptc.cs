@@ -5,8 +5,9 @@ using ARMeilleure.Common;
 using ARMeilleure.Memory;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
@@ -24,8 +25,10 @@ namespace ARMeilleure.Translation.PTC
     using Arm64HardwareCapabilities = CodeGen.Arm64.HardwareCapabilities;
     using X86HardwareCapabilities = CodeGen.X86.HardwareCapabilities;
 
-    class Ptc : IPtcLoadState
+    partial class Ptc : IPtcLoadState
     {
+        private readonly ILogger<Ptc> _logger;
+        
         private const string OuterHeaderMagicString = "PTCohd\0\0";
         private const string InnerHeaderMagicString = "PTCihd\0\0";
 
@@ -78,6 +81,7 @@ namespace ARMeilleure.Translation.PTC
 
         public Ptc()
         {
+            _logger = Logger.DefaultLoggerFactory.CreateLogger<Ptc>();
             Profiler = new PtcProfiler(this);
 
             InitializeCarriers();
@@ -107,7 +111,7 @@ namespace ARMeilleure.Translation.PTC
             Profiler.Wait();
             Profiler.ClearEntries();
 
-            Logger.Info?.Print(LogClass.Ptc, $"Initializing Profiled Persistent Translation Cache (enabled: {enabled}).");
+            LogInitializingTranslationCache(enabled);
 
             if (!enabled || string.IsNullOrEmpty(titleIdText) || titleIdText == TitleIdTextDefault)
             {
@@ -382,10 +386,29 @@ namespace ARMeilleure.Translation.PTC
 
             long fileSize = new FileInfo(fileName).Length;
 
-            Logger.Info?.Print(LogClass.Ptc, $"{(isBackup ? "Loaded Backup Translation Cache" : "Loaded Translation Cache")} (size: {fileSize} bytes, translated functions: {GetEntriesCount()}).");
-
+            if (isBackup)
+            {
+                LogLoadedBackupTranslationCache(fileSize, GetEntriesCount());
+            }
+            else
+            {
+                LogLoadedTranslationCache(fileSize, GetEntriesCount());
+            }
+            
             return true;
         }
+        
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "Initializing Profiled Persistent Translation Cache (enabled: {enabled}).")]
+        protected partial void LogInitializingTranslationCache(bool enabled);
+
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc), 
+            Message = "Loaded Translation Cache (size: {fileSize} bytes, translated functions {entriesCount}).")]
+        protected partial void LogLoadedTranslationCache(long fileSize, int entriesCount);
+        
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc), 
+            Message = "Loaded Backup Translation Cache (size: {fileSize} bytes, translated functions {entriesCount}).")]
+        protected partial void LogLoadedBackupTranslationCache(long fileSize, int entriesCount);
 
         private static void InvalidateCompressedStream(FileStream compressedStream)
         {
@@ -523,9 +546,13 @@ namespace ARMeilleure.Translation.PTC
 
             if (fileSize != 0L)
             {
-                Logger.Info?.Print(LogClass.Ptc, $"Saved Translation Cache (size: {fileSize} bytes, translated functions: {translatedFuncsCount}).");
+                LogSavedTranslationCache(fileSize, translatedFuncsCount);
             }
         }
+
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "Saved Translation Cache (size: {fileSize} bytes, translated functions: {translatedFuncsCount}).")]
+        protected partial void LogSavedTranslationCache(long fileSize, int translatedFuncsCount);
 
         public void LoadTranslations(Translator translator)
         {
@@ -572,7 +599,7 @@ namespace ARMeilleure.Translation.PTC
 
                         if (isEntryChanged)
                         {
-                            Logger.Info?.Print(LogClass.Ptc, $"Invalidated translated function (address: 0x{infoEntry.Address:X16})");
+                            LogInvalidatedTranslatedFunction(infoEntry.Address.ToString("X16"));
                         }
 
                         continue;
@@ -608,8 +635,16 @@ namespace ARMeilleure.Translation.PTC
                 throw new Exception("The length of a memory stream has changed, or its position has not reached or has exceeded its end.");
             }
 
-            Logger.Info?.Print(LogClass.Ptc, $"{translator.Functions.Count} translated functions loaded");
+            LogTranslatedFunctionsLoaded(translator.Functions.Count);
         }
+
+        [LoggerMessage(LogLevel.Warning, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "Invalidated translated function (address: 0x{address})")]
+        protected partial void LogInvalidatedTranslatedFunction(string address);
+
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "{functionsCount} translated functions loaded")]
+        protected partial void LogTranslatedFunctionsLoaded(int functionsCount);
 
         private int GetEntriesCount()
         {
@@ -803,7 +838,7 @@ namespace ARMeilleure.Translation.PTC
                 degreeOfParallelism--;
             }
 
-            Logger.Info?.Print(LogClass.Ptc, $"{_translateCount} of {_translateTotalCount} functions translated | Thread count: {degreeOfParallelism}");
+            LogNumberOfFunctionsTranslated(_translateCount, _translateTotalCount, degreeOfParallelism);
 
             PtcStateChanged?.Invoke(PtcLoadingState.Start, _translateCount, _translateTotalCount);
 
@@ -875,7 +910,7 @@ namespace ARMeilleure.Translation.PTC
 
             PtcStateChanged?.Invoke(PtcLoadingState.Loaded, _translateCount, _translateTotalCount);
 
-            Logger.Info?.Print(LogClass.Ptc, $"{_translateCount} of {_translateTotalCount} functions translated | Thread count: {degreeOfParallelism} in {sw.Elapsed.TotalSeconds} s");
+            LogNumberOfFunctionsTranslated(_translateCount, _translateTotalCount, degreeOfParallelism, (int)sw.Elapsed.TotalSeconds);
 
             Thread preSaveThread = new(PreSave)
             {
@@ -884,6 +919,16 @@ namespace ARMeilleure.Translation.PTC
             preSaveThread.Start();
         }
 
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "{translatedCount} of {totalCount} functions translated | Thread count: {degreesOfParallelism}")]
+        protected partial void LogNumberOfFunctionsTranslated(int translatedCount, int totalCount,
+            int degreesOfParallelism);
+
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
+            Message = "{translatedCount} of {totalCount} functions translated | Thread count: {degreesOfParallelism} in {numberOfSeconds} s")]
+        protected partial void LogNumberOfFunctionsTranslated(int translatedCount, int totalCount,
+            int degreesOfParallelism, int numberOfSeconds);
+        
         private void ReportProgress(object state)
         {
             const int RefreshRate = 50; // ms.

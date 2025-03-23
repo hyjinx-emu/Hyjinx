@@ -1,10 +1,11 @@
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.PreciseSleep;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,12 +14,13 @@ using System.Threading;
 
 namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 {
-    class SurfaceFlinger : IConsumerListener, IDisposable
+    partial class SurfaceFlinger : IConsumerListener, IDisposable
     {
         private const int TargetFps = 60;
 
         private readonly Switch _device;
 
+        private readonly ILogger<SurfaceFlinger> _logger = Logger.DefaultLoggerFactory.CreateLogger<SurfaceFlinger>();
         private readonly Dictionary<long, Layer> _layers;
 
         private bool _isRunning;
@@ -116,7 +118,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
         {
             lock (_lock)
             {
-                Logger.Info?.Print(LogClass.SurfaceFlinger, $"Creating layer {layerId}");
+                LogCreatingLayer(layerId);
 
                 BufferQueueCore core = BufferQueue.CreateBufferQueue(_device, pid, out BufferQueueProducer producer, out BufferQueueConsumer consumer);
 
@@ -136,6 +138,11 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 });
             }
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Creating layer {layerId}")]
+        private partial void LogCreatingLayer(long layerId);
 
         public Vi.ResultCode OpenLayer(ulong pid, long layerId, out IBinder producer)
         {
@@ -162,8 +169,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
                 if (layer == null)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, $"Failed to close layer {layerId}");
-
+                    LogFailedToCloseLayer(layerId);
                     return Vi.ResultCode.InvalidValue;
                 }
 
@@ -172,6 +178,11 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return Vi.ResultCode.Success;
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Failed to close layer {layerId}.")]
+        private partial void LogFailedToCloseLayer(long layerId);
 
         public Vi.ResultCode DestroyManagedLayer(long layerId)
         {
@@ -181,14 +192,14 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
                 if (layer == null)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, $"Failed to destroy managed layer {layerId} (not found)");
+                    LogFailedToDestroyManagedLayerNotFound(layerId);
 
                     return Vi.ResultCode.InvalidValue;
                 }
 
                 if (layer.State != LayerState.ManagedClosed && layer.State != LayerState.ManagedOpened)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, $"Failed to destroy managed layer {layerId} (permission denied)");
+                    LogFailedToDestroyManagedLayerPermissionDenied(layerId);
 
                     return Vi.ResultCode.PermissionDenied;
                 }
@@ -203,6 +214,16 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return Vi.ResultCode.Success;
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Failed to destroy managed layer {layerId} (not found).")]
+        private partial void LogFailedToDestroyManagedLayerNotFound(long layerId);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Failed to destroy managed layer {layerId} (permission denied).")]
+        private partial void LogFailedToDestroyManagedLayerPermissionDenied(long layerId);
 
         public Vi.ResultCode DestroyStrayLayer(long layerId)
         {
@@ -212,15 +233,15 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
                 if (layer == null)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, $"Failed to destroy stray layer {layerId} (not found)");
-
+                    LogFailedToDestroyStrayLayerNotFound(layerId);
+                    
                     return Vi.ResultCode.InvalidValue;
                 }
 
                 if (layer.State != LayerState.Stray)
                 {
-                    Logger.Error?.Print(LogClass.SurfaceFlinger, $"Failed to destroy stray layer {layerId} (permission denied)");
-
+                    LogFailedToDestroyStrayLayerPermissionDenied(layerId);
+                    
                     return Vi.ResultCode.PermissionDenied;
                 }
 
@@ -234,6 +255,16 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return Vi.ResultCode.Success;
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Failed to destroy stray layer {layerId} (not found).")]
+        private partial void LogFailedToDestroyStrayLayerNotFound(long layerId);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
+            Message = "Failed to destroy stray layer {layerId} (permission denied).")]
+        private partial void LogFailedToDestroyStrayLayerPermissionDenied(long layerId);
 
         private void CloseLayer(long layerId, Layer layer)
         {

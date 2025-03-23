@@ -4,7 +4,7 @@ using Hyjinx.HLE.HOS.Services.Vi.Types;
 namespace Hyjinx.HLE.HOS.Services.Vi
 {
     [Service("vi:u")]
-    class IApplicationRootService : IpcService
+    class IApplicationRootService : IpcService<IApplicationRootService>
     {
         public IApplicationRootService(ServiceCtx context) : base(context.Device.System.ViServer) { }
 

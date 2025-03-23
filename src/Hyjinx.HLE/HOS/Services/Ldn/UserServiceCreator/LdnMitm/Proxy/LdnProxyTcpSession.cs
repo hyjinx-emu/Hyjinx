@@ -1,17 +1,22 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
+using LibHac.Os;
+using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Sockets;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {
-    internal class LdnProxyTcpSession : NetCoreServer.TcpSession
+    internal partial class LdnProxyTcpSession : NetCoreServer.TcpSession
     {
         private readonly LanProtocol _protocol;
 
         internal int NodeId;
         internal NodeInfo NodeInfo;
 
+        private readonly ILogger<LdnProxyTcpSession> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpSession>();
+        
         private byte[] _buffer;
         private int _bufferEnd;
 
@@ -34,15 +39,25 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
         protected override void OnConnected()
         {
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, "LdnProxyTCPSession connected!");
+            LogSessionConnected();
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPSession connected!")]
+        private partial void LogSessionConnected();
 
         protected override void OnDisconnected()
         {
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, "LdnProxyTCPSession disconnected!");
+            LogSessionDisconnected();
 
             _protocol.InvokeDisconnectStation(this);
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPSession disconnected!")]
+        private partial void LogSessionDisconnected();
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
@@ -51,10 +66,15 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
         protected override void OnError(SocketError error)
         {
-            Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTCPSession caught an error with code {error}");
+            LogError(error);
 
             Dispose();
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPSession caught an error with code {error}")]
+        private partial void LogError(SocketError error);
 
         protected override void Dispose(bool disposingManagedResources)
         {
@@ -74,10 +94,14 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
             }
             catch (System.ObjectDisposedException)
             {
-                Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTCPSession was disposed. [IP: {NodeInfo.Ipv4Address}]");
-
+                LogSessionDisposed(NodeInfo.Ipv4Address);
                 _protocol.InvokeDisconnectStation(this);
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPSession was disposed. [IP: {ipv4Address}]")]
+        private partial void LogSessionDisposed(uint ipv4Address);
     }
 }

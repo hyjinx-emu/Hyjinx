@@ -1,7 +1,8 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Shader.Translation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 
@@ -10,8 +11,9 @@ namespace Hyjinx.Graphics.Gpu.Shader
     /// <summary>
     /// Represents a GPU state and memory accessor.
     /// </summary>
-    class GpuAccessor : GpuAccessorBase, IGpuAccessor
+    partial class GpuAccessor : GpuAccessorBase, IGpuAccessor
     {
+        private readonly ILogger<GpuAccessor> _logger = Logger.DefaultLoggerFactory.CreateLogger<GpuAccessor>();
         private readonly GpuChannel _channel;
         private readonly GpuAccessorState _state;
         private readonly int _stageIndex;
@@ -75,8 +77,13 @@ namespace Hyjinx.Graphics.Gpu.Shader
         /// <inheritdoc/>
         public void Log(string message)
         {
-            Logger.Warning?.Print(LogClass.Gpu, $"Shader translator: {message}");
+            LogShaderTranslatorMessage(message);
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Shader translator: {message}")]
+        private partial void LogShaderTranslatorMessage(string message);
 
         /// <inheritdoc/>
         public ReadOnlySpan<ulong> GetCode(ulong address, int minimumSize)

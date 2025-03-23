@@ -1,17 +1,19 @@
 using OpenTK.Graphics.OpenGL;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL.Image;
 using Hyjinx.Graphics.OpenGL.Queries;
 using Hyjinx.Graphics.Shader;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hyjinx.Graphics.OpenGL
 {
-    class Pipeline : IPipeline, IDisposable
+    partial class Pipeline : IPipeline, IDisposable
     {
         private const int SavedImages = 2;
 
+        private readonly ILogger<Pipeline> _logger = Logger.DefaultLoggerFactory.CreateLogger<Pipeline>();
         private readonly DrawTextureEmulation _drawTexture;
 
         internal ulong DrawCount { get; private set; }
@@ -209,7 +211,7 @@ namespace Hyjinx.Graphics.OpenGL
         {
             if (!_program.IsLinked)
             {
-                Logger.Debug?.Print(LogClass.Gpu, "Dispatch error, shader not linked.");
+                LogDispatchError();
                 return;
             }
 
@@ -218,11 +220,16 @@ namespace Hyjinx.Graphics.OpenGL
             GL.DispatchCompute(groupsX, groupsY, groupsZ);
         }
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Dispatch error, shader not linked.")]
+        private partial void LogDispatchError();
+
         public void Draw(int vertexCount, int instanceCount, int firstVertex, int firstInstance)
         {
             if (!_program.IsLinked)
             {
-                Logger.Debug?.Print(LogClass.Gpu, "Draw error, shader not linked.");
+                LogDrawError();
                 return;
             }
 
@@ -243,6 +250,11 @@ namespace Hyjinx.Graphics.OpenGL
 
             PostDraw();
         }
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Draw error, shader not linked.")]
+        private partial void LogDrawError();
 
         private static void DrawQuadsImpl(
             int vertexCount,
@@ -340,7 +352,7 @@ namespace Hyjinx.Graphics.OpenGL
         {
             if (!_program.IsLinked)
             {
-                Logger.Debug?.Print(LogClass.Gpu, "Draw error, shader not linked.");
+                LogDrawError();
                 return;
             }
 
@@ -579,7 +591,7 @@ namespace Hyjinx.Graphics.OpenGL
         {
             if (!_program.IsLinked)
             {
-                Logger.Debug?.Print(LogClass.Gpu, "Draw error, shader not linked.");
+                LogDrawError();
                 return;
             }
 
@@ -600,7 +612,7 @@ namespace Hyjinx.Graphics.OpenGL
         {
             if (!_program.IsLinked)
             {
-                Logger.Debug?.Print(LogClass.Gpu, "Draw error, shader not linked.");
+                LogDrawError();
                 return;
             }
 
@@ -628,7 +640,7 @@ namespace Hyjinx.Graphics.OpenGL
         {
             if (!_program.IsLinked)
             {
-                Logger.Debug?.Print(LogClass.Gpu, "Draw error, shader not linked.");
+                LogDrawError();
                 return;
             }
 
@@ -645,7 +657,7 @@ namespace Hyjinx.Graphics.OpenGL
         {
             if (!_program.IsLinked)
             {
-                Logger.Debug?.Print(LogClass.Gpu, "Draw error, shader not linked.");
+                LogDrawError();
                 return;
             }
 

@@ -1,15 +1,17 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Nifm.StaticService.GeneralService;
 using Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 
 namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
 {
-    class IGeneralService : DisposableIpcService
+    partial class IGeneralService : DisposableIpcService<IGeneralService>
     {
         private readonly GeneralServiceDetail _generalServiceDetail;
 
@@ -54,7 +56,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
             // Doesn't occur in our case.
             // return ResultCode.ObjectIsNull;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNifm, new { version });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNifm, new { version });
 
             return ResultCode.Success;
         }
@@ -72,7 +74,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
                 return ResultCode.NoInternetConnection;
             }
 
-            Logger.Info?.Print(LogClass.ServiceNifm, $"Console's local IP is \"{unicastAddress.Address}\".");
+            LogConsoleLocalIpAddress(unicastAddress.Address);
 
             context.Response.PtrBuff[0] = context.Response.PtrBuff[0].WithSize((uint)Unsafe.SizeOf<NetworkProfileData>());
 
@@ -91,6 +93,11 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
             return ResultCode.Success;
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceNifm, EventName = nameof(LogClass.ServiceNifm),
+            Message = "Console's local IP is {localAddress}")]
+        private partial void LogConsoleLocalIpAddress(IPAddress localAddress);
+
         [CommandCmif(12)]
         // GetCurrentIpAddress() -> nn::nifm::IpV4Address
         public ResultCode GetCurrentIpAddress(ServiceCtx context)
@@ -104,7 +111,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
 
             context.ResponseData.WriteStruct(new IpV4Address(unicastAddress.Address));
 
-            Logger.Info?.Print(LogClass.ServiceNifm, $"Console's local IP is \"{unicastAddress.Address}\".");
+            LogConsoleLocalIpAddress(unicastAddress.Address);
 
             return ResultCode.Success;
         }
@@ -120,7 +127,7 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
                 return ResultCode.NoInternetConnection;
             }
 
-            Logger.Info?.Print(LogClass.ServiceNifm, $"Console's local IP is \"{unicastAddress.Address}\".");
+            LogConsoleLocalIpAddress(unicastAddress.Address);
 
             context.ResponseData.WriteStruct(new IpAddressSetting(interfaceProperties, unicastAddress));
             context.ResponseData.WriteStruct(new DnsSetting(interfaceProperties));
@@ -186,11 +193,16 @@ namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService
 
         private void LocalInterfaceCacheHandler(object sender, EventArgs e)
         {
-            Logger.Info?.Print(LogClass.ServiceNifm, "NetworkAddress changed, invalidating cached data.");
+            LogNetworkAddressChanged();
 
             _targetPropertiesCache = null;
             _targetAddressInfoCache = null;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceNifm, EventName = nameof(LogClass.ServiceNifm),
+            Message = "Network address changed, invalidating cached data.")]
+        private partial void LogNetworkAddressChanged();
 
         protected override void Dispose(bool isDisposing)
         {

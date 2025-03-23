@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.Utilities;
 using System.Text;
@@ -30,7 +30,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
             // 0x10 bytes - Some ID related to the Mii? All zeros when a character icon is used.
             // 0x60 bytes - Usually zeros?
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             return GetBase(context);
         }
@@ -83,7 +83,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
 
             // TODO: Read the nn::account::profile::ProfileBase and store everything in the savedata.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { userDataSize });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { userDataSize });
 
             return ResultCode.Success;
         }
@@ -106,7 +106,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
 
             // TODO: Read the nn::account::profile::ProfileBase and store everything in the savedata.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { userDataSize, profileImageSize });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { userDataSize, profileImageSize });
 
             return ResultCode.Success;
         }

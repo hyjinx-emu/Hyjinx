@@ -9,16 +9,20 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 
 namespace Hyjinx.Ava
 {
-    public class App : Application
+    public partial class App : Application
     {
+        private static readonly ILogger<App> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<App>();
+        
         public override void Initialize()
         {
             Name = $"Hyjinx {Program.Version}";
@@ -113,11 +117,15 @@ namespace Hyjinx.Ava
             }
             catch (Exception)
             {
-                Logger.Warning?.Print(LogClass.Application, "Failed to Apply Theme. A restart is needed to apply the selected theme");
-
+                LogFailedToApplyTheme();
                 ShowRestartDialog();
             }
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Failed to Apply Theme. A restart is needed to apply the selected theme.")]
+        private partial void LogFailedToApplyTheme();
 
         /// <summary>
         /// Converts a PlatformThemeVariant value to the corresponding ThemeVariant value.

@@ -1,5 +1,5 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Kernel.Common;
@@ -7,6 +7,7 @@ using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ using System.Threading;
 
 namespace Hyjinx.HLE.HOS.Kernel.Process
 {
-    class KProcess : KSynchronizationObject
+    partial class KProcess : KSynchronizationObject
     {
         public const uint KernelVersionMajor = 10;
         public const uint KernelVersionMinor = 4;
@@ -26,7 +27,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Process
             (KernelVersionRevision << 0);
 
         public KPageTableBase MemoryManager { get; private set; }
-
+        
         private readonly SortedDictionary<ulong, KTlsPageInfo> _fullTlsPages;
         private readonly SortedDictionary<ulong, KTlsPageInfo> _freeTlsPages;
 
@@ -76,6 +77,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Process
 
         public ulong UserExceptionContextAddress { get; private set; }
 
+        private readonly ILogger<KProcess> _logger = Logger.DefaultLoggerFactory.CreateLogger<KProcess>();
         private readonly LinkedList<KThread> _threads;
 
         public bool IsPaused { get; private set; }
@@ -1071,10 +1073,15 @@ namespace Hyjinx.HLE.HOS.Kernel.Process
             KernelStatic.GetCurrentThread()?.PrintGuestStackTrace();
             KernelStatic.GetCurrentThread()?.PrintGuestRegisterPrintout();
 
-            Logger.Error?.Print(LogClass.Cpu, $"Invalid memory access at virtual address 0x{va:X16}.");
+            LogInvalidMemoryAddress(va);
 
             return false;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Cpu, EventName = nameof(LogClass.Cpu),
+            Message = "Invalid memory address at virtual address block 0x{address:X16}.")]
+        private partial void LogInvalidMemoryAddress(ulong address);
 
         private void UndefinedInstructionHandler(IExecutionContext context, ulong address, int opCode)
         {

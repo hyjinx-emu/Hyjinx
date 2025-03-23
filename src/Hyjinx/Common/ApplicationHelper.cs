@@ -15,12 +15,13 @@ using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Helpers;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.IO;
@@ -31,8 +32,11 @@ using Path = System.IO.Path;
 
 namespace Hyjinx.Ava.Common
 {
-    internal static class ApplicationHelper
+    internal static partial class ApplicationHelper
     {
+        private static readonly ILogger _logger =
+            Logger.DefaultLoggerFactory.CreateLogger(typeof(ApplicationHelper));
+        
         private static HorizonClient _horizonClient;
         private static AccountManager _accountManager;
         private static VirtualFileSystem _virtualFileSystem;
@@ -43,7 +47,12 @@ namespace Hyjinx.Ava.Common
             _horizonClient = horizonClient;
             _accountManager = accountManager;
         }
-
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "No control file was found for this game. Using a dummy one instead. This may cause inaccuracies in some games.")]
+        private static partial void LogNoControlFileFound(ILogger logger);
+        
         private static bool TryFindSaveData(string titleName, ulong titleId, BlitStruct<ApplicationControlProperty> controlHolder, in SaveDataFilter filter, out ulong saveDataId)
         {
             saveDataId = default;
@@ -53,7 +62,8 @@ namespace Hyjinx.Ava.Common
             {
                 ref ApplicationControlProperty control = ref controlHolder.Value;
 
-                Logger.Info?.Print(LogClass.Application, $"Creating save directory for Title: {titleName} [{titleId:x16}]");
+                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Creating save directory for Title: {titleName} [{titleId:x16}]", titleName, titleId);
 
                 if (controlHolder.ByteSpan.IsZeros())
                 {
@@ -65,7 +75,7 @@ namespace Hyjinx.Ava.Common
                     control.UserAccountSaveDataSize = 0x4000;
                     control.UserAccountSaveDataJournalSize = 0x4000;
 
-                    Logger.Warning?.Print(LogClass.Application, "No control file was found for this game. Using a dummy one instead. This may cause inaccuracies in some games.");
+                    LogNoControlFileFound(_logger);
                 }
 
                 Uid user = new((ulong)_accountManager.LastOpenedUser.UserId.High, (ulong)_accountManager.LastOpenedUser.UserId.Low);
@@ -215,7 +225,8 @@ namespace Hyjinx.Ava.Common
 
                 if (mainNca == null)
                 {
-                    Logger.Error?.Print(LogClass.Application, "Extraction failure. The main NCA was not present in the selected file");
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Extraction failure. The main NCA was not present in the selected file");
 
                     Dispatcher.UIThread.InvokeAsync(async () =>
                     {
@@ -267,7 +278,8 @@ namespace Hyjinx.Ava.Common
                     {
                         if (resultCode.Value.IsFailure())
                         {
-                            Logger.Error?.Print(LogClass.Application, $"LibHac returned error code: {resultCode.Value.ErrorCode}");
+                            _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                                "LibHac returned error code: {errorCode}", resultCode.Value.ErrorCode);
 
                             Dispatcher.UIThread.InvokeAsync(async () =>
                             {
@@ -292,7 +304,7 @@ namespace Hyjinx.Ava.Common
                 }
                 catch (ArgumentException ex)
                 {
-                    Logger.Error?.Print(LogClass.Application, $"{ex.Message}");
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An unexpected error occurred.");
 
                     Dispatcher.UIThread.InvokeAsync(async () =>
                     {

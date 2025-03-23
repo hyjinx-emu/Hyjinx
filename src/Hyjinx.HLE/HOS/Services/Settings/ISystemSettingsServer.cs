@@ -6,8 +6,9 @@ using LibHac.FsSystem;
 using LibHac.Ncm;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.SystemState;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Text;
@@ -15,7 +16,7 @@ using System.Text;
 namespace Hyjinx.HLE.HOS.Services.Settings
 {
     [Service("set:sys")]
-    class ISystemSettingsServer : IpcService
+    partial class ISystemSettingsServer : IpcService<ISystemSettingsServer>
     {
         public ISystemSettingsServer(ServiceCtx context) { }
 
@@ -188,7 +189,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
                 {
                     if ((ulong)(stringValue.Length + 1) > replySize)
                     {
-                        Logger.Error?.Print(LogClass.ServiceSet, $"{askedSetting} String value size is too big!");
+                        LogSettingTooLarge(askedSetting);
                     }
                     else
                     {
@@ -211,16 +212,31 @@ namespace Hyjinx.HLE.HOS.Services.Settings
 
                 context.Memory.Write(replyPos, settingBuffer);
 
-                Logger.Debug?.Print(LogClass.ServiceSet, $"{askedSetting} set value: {nxSetting} as {nxSetting.GetType()}");
+                LogValueSet(askedSetting, nxSetting, nxSetting.GetType());
             }
             else
             {
-                Logger.Error?.Print(LogClass.ServiceSet, $"{askedSetting} not found!");
+                LogSettingNotFound(askedSetting);
             }
-
+            
             return ResultCode.Success;
         }
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
+            Message = "{askedSetting} set value: {nxSetting} as {nxSettingType}")]
+        private partial void LogValueSet(string askedSetting, object nxSetting, Type nxSettingType);
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
+            Message = "{setting} String value size is too big!")]
+        private partial void LogSettingTooLarge(string setting);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
+            Message = "{setting} not found!")]
+        private partial void LogSettingNotFound(string setting);
+        
         [CommandCmif(60)]
         // IsUserSystemClockAutomaticCorrectionEnabled() -> bool
         public ResultCode IsUserSystemClockAutomaticCorrectionEnabled(ServiceCtx context)
@@ -228,7 +244,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
             // NOTE: When set to true, is automatically synced with the internet.
             context.ResponseData.Write(true);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSet);
+            // Logger.Stub?.PrintStub(LogClass.ServiceSet);
 
             return ResultCode.Success;
         }
@@ -239,7 +255,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
         {
             context.ResponseData.Write(false);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSet);
+            // Logger.Stub?.PrintStub(LogClass.ServiceSet);
 
             return ResultCode.Success;
         }
@@ -258,13 +274,18 @@ namespace Hyjinx.HLE.HOS.Services.Settings
 
             if (deviceNickNameBufferSize != 0x80)
             {
-                Logger.Warning?.Print(LogClass.ServiceSet, "Wrong buffer size");
+                LogWrongBufferSize();
             }
 
             context.Memory.Write(deviceNickNameBufferPosition, Encoding.ASCII.GetBytes(context.Device.System.State.DeviceNickName + '\0'));
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
+            Message = "Wrong buffer size")]
+        private partial void LogWrongBufferSize();
 
         [CommandCmif(78)]
         // SetDeviceNickName(buffer<nn::settings::system::DeviceNickName, 0x15>)

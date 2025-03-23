@@ -1,14 +1,16 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Tamper.CodeEmitters;
 using Hyjinx.HLE.HOS.Tamper.Operations;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
 namespace Hyjinx.HLE.HOS.Tamper
 {
-    class AtmosphereCompiler
+    partial class AtmosphereCompiler
     {
+        private static readonly ILogger<AtmosphereCompiler> _logger = Logger.DefaultLoggerFactory.CreateLogger<AtmosphereCompiler>();
         private readonly ulong _exeAddress;
         private readonly ulong _heapAddress;
         private readonly ulong _aliasAddress;
@@ -24,6 +26,11 @@ namespace Hyjinx.HLE.HOS.Tamper
             _process = process;
         }
 
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Compiling Atmosphere cheat {name}...\n{addresses}")]
+        private partial void LogCompilingCheat(string name, string addresses);
+
         public ITamperProgram Compile(string name, IEnumerable<string> rawInstructions)
         {
             string[] addresses = {
@@ -33,7 +40,7 @@ namespace Hyjinx.HLE.HOS.Tamper
                 $"    Aslr address      : 0x{_aslrAddress:X16}",
             };
 
-            Logger.Debug?.Print(LogClass.TamperMachine, $"Compiling Atmosphere cheat {name}...\n{string.Join('\n', addresses)}");
+            LogCompilingCheat(name, string.Join('\n', addresses));
 
             try
             {
@@ -42,18 +49,28 @@ namespace Hyjinx.HLE.HOS.Tamper
             catch (TamperCompilationException ex)
             {
                 // Just print the message without the stack trace.
-                Logger.Error?.Print(LogClass.TamperMachine, ex.Message);
+                _logger.LogError(new EventId((int)LogClass.TamperMachine, nameof(LogClass.TamperMachine)), ex.Message);
             }
             catch (Exception ex)
             {
-                Logger.Error?.Print(LogClass.TamperMachine, ex.ToString());
+                _logger.LogError(new EventId((int)LogClass.TamperMachine, nameof(LogClass.TamperMachine)), ex, ex.Message);
             }
 
-            Logger.Error?.Print(LogClass.TamperMachine, "There was a problem while compiling the Atmosphere cheat");
+            LogErrorWhileCompilingAtmosphereCheat();
 
             return null;
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "There was a problem while compiling the Atmosphere cheat")]
+        private partial void LogErrorWhileCompilingAtmosphereCheat();
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
+            Message = "Compiling instruction {rawInstruction}")]
+        private partial void LogCompilingInstruction(string rawInstruction);
+        
         private ITamperProgram CompileImpl(string name, IEnumerable<string> rawInstructions)
         {
             CompilationContext context = new(_exeAddress, _heapAddress, _aliasAddress, _aslrAddress, _process);
@@ -63,7 +80,7 @@ namespace Hyjinx.HLE.HOS.Tamper
 
             foreach (string rawInstruction in rawInstructions)
             {
-                Logger.Debug?.Print(LogClass.TamperMachine, $"Compiling instruction {rawInstruction}");
+                LogCompilingInstruction(rawInstruction);
 
                 byte[] instruction = InstructionHelper.ParseRawInstruction(rawInstruction);
                 CodeType codeType = InstructionHelper.GetCodeType(instruction);

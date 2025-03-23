@@ -10,8 +10,10 @@ using LibHac.Spl;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy;
+using LibHac.Os;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using static Hyjinx.HLE.Utilities.StringUtils;
@@ -22,7 +24,7 @@ using IStorage = LibHac.FsSrv.Sf.IStorage;
 namespace Hyjinx.HLE.HOS.Services.Fs
 {
     [Service("fsp-srv")]
-    class IFileSystemProxy : DisposableIpcService
+    partial class IFileSystemProxy : DisposableIpcService<IFileSystemProxy>
     {
         private SharedRef<LibHac.FsSrv.Sf.IFileSystemProxy> _baseFileSystemProxy;
         private ulong _pid;
@@ -807,7 +809,8 @@ namespace Hyjinx.HLE.HOS.Services.Fs
             // This is because AOC can be distributed over multiple containers in the emulator.
             if (context.Device.System.ContentManager.GetAocDataStorage(titleId, out LibHac.Fs.IStorage aocStorage, context.Device.Configuration.FsIntegrityCheckLevel))
             {
-                Logger.Info?.Print(LogClass.Loader, $"Opened AddOnContent Data TitleID={titleId:X16}");
+                _logger.LogInformation(new EventId((int)LogClass.Loader, nameof(LogClass.Loader)),
+                    "Opened AddOnContent Data TitleID={titleId:X16}", titleId);
 
                 var storage = context.Device.FileSystem.ModLoader.ApplyRomFsMods(titleId, aocStorage);
                 using var sharedStorage = new SharedRef<LibHac.Fs.IStorage>(storage);
@@ -1290,13 +1293,18 @@ namespace Hyjinx.HLE.HOS.Services.Fs
         // OutputAccessLogToSdCard(buffer<bytes, 5> log_text)
         public ResultCode OutputAccessLogToSdCard(ServiceCtx context)
         {
-            string message = ReadUtf8StringSend(context);
-
             // FS ends each line with a newline. Remove it because Hyjinx logging adds its own newline
-            Logger.AccessLog?.PrintMsg(LogClass.ServiceFs, message.TrimEnd('\n'));
+            string message = ReadUtf8StringSend(context).TrimEnd('\n');
 
+            Log(message);
+            
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceFs, EventName = nameof(LogClass.ServiceFs),
+            Message = "Access: {message}")]
+        private partial void Log(string message);
 
         [CommandCmif(1007)]
         public ResultCode RegisterUpdatePartition(ServiceCtx context)

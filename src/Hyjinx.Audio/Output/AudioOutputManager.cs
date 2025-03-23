@@ -1,7 +1,8 @@
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -12,9 +13,10 @@ namespace Hyjinx.Audio.Output
     /// <summary>
     /// The audio output manager.
     /// </summary>
-    public class AudioOutputManager : IDisposable
+    public partial class AudioOutputManager : IDisposable
     {
         private readonly object _lock = new();
+        private readonly ILogger<AudioOutputManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<AudioOutputManager>();
 
         /// <summary>
         /// Lock used for session allocation.
@@ -92,14 +94,18 @@ namespace Hyjinx.Audio.Output
                 int sessionId = _sessionIds[index];
 
                 _sessionIds[index] = -1;
-
                 _activeSessionCount++;
 
-                Logger.Info?.Print(LogClass.AudioRenderer, $"Registered new output ({sessionId})");
+                LogRegisteredOutput(sessionId);
 
                 return sessionId;
             }
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Registered new output ({sessionId})")]
+        private partial void LogRegisteredOutput(int sessionId);
 
         /// <summary>
         /// Release a given <paramref name="sessionId"/>.
@@ -112,13 +118,17 @@ namespace Hyjinx.Audio.Output
                 Debug.Assert(_activeSessionCount > 0);
 
                 int newIndex = --_activeSessionCount;
-
                 _sessionIds[newIndex] = sessionId;
             }
 
-            Logger.Info?.Print(LogClass.AudioRenderer, $"Unregistered output ({sessionId})");
+            LogUnregisteredOutput(sessionId);
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Unregistered output ({sessionId})")]
+        private partial void LogUnregisteredOutput(int sessionId);
+        
         /// <summary>
         /// Used to update audio output system.
         /// </summary>

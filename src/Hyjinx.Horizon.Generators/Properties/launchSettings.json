@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Hyjinx.HLE.Kernel.Generators": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "../Hyjinx.Horizon/Hyjinx.Horizon.csproj"
+    }
+  }
+}

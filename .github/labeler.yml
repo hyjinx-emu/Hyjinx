@@ -1,34 +1,34 @@
 audio:
 - changed-files:
-  - any-glob-to-any-file: 'src/Ryujinx.Audio*/**'
+  - any-glob-to-any-file: 'src/Hyjinx.Audio*/**'
 
 cpu:
 - changed-files:
-  - any-glob-to-any-file: ['src/ARMeilleure/**', 'src/Ryujinx.Cpu/**', 'src/Ryujinx.Memory/**']
+  - any-glob-to-any-file: ['src/ARMeilleure/**', 'src/Hyjinx.Cpu/**', 'src/Hyjinx.Memory/**']
 
 gpu:
 - changed-files:
-  - any-glob-to-any-file: ['src/Ryujinx.Graphics.*/**', 'src/Spv.Generator/**', 'src/Ryujinx.ShaderTools/**']
+  - any-glob-to-any-file: ['src/Hyjinx.Graphics.*/**', 'src/Spv.Generator/**', 'src/Hyjinx.ShaderTools/**']
 
 'graphics-backend:opengl':
 - changed-files:
-  - any-glob-to-any-file: 'src/Ryujinx.Graphics.OpenGL/**'
+  - any-glob-to-any-file: 'src/Hyjinx.Graphics.OpenGL/**'
 
 'graphics-backend:vulkan':
 - changed-files:
-  - any-glob-to-any-file: ['src/Ryujinx.Graphics.Vulkan/**', 'src/Spv.Generator/**']
+  - any-glob-to-any-file: ['src/Hyjinx.Graphics.Vulkan/**', 'src/Spv.Generator/**']
 
 gui:
 - changed-files:
-  - any-glob-to-any-file: ['src/Ryujinx/**', 'src/Ryujinx.UI.Common/**', 'src/Ryujinx.UI.LocaleGenerator/**', 'src/Ryujinx.Gtk3/**']
+  - any-glob-to-any-file: ['src/Hyjinx/**', 'src/Hyjinx.UI.Common/**', 'src/Hyjinx.UI.LocaleGenerator/**', 'src/Hyjinx.Gtk3/**']
 
 horizon:
 - changed-files:
-  - any-glob-to-any-file: ['src/Ryujinx.HLE/**', 'src/Ryujinx.Horizon/**']
+  - any-glob-to-any-file: ['src/Hyjinx.HLE/**', 'src/Hyjinx.Horizon/**']
 
 kernel:
 - changed-files:
-  - any-glob-to-any-file: 'src/Ryujinx.HLE/HOS/Kernel/**'
+  - any-glob-to-any-file: 'src/Hyjinx.HLE/HOS/Kernel/**'
 
 infra:
 - changed-files:

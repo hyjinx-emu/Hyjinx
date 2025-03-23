@@ -1,16 +1,17 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Gpu.Synchronization;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types;
 using Hyjinx.HLE.HOS.Services.Nv.Types;
 using Hyjinx.HLE.HOS.Services.Settings;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 using System.Threading;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 {
-    internal class NvHostCtrlDeviceFile : NvDeviceFile
+    internal partial class NvHostCtrlDeviceFile : NvDeviceFile<NvHostCtrlDeviceFile>
     {
         public const int EventsCount = 64;
 
@@ -159,6 +160,11 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
             return SyncptReadMinOrMax(ref arguments, max: true);
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "{domain}!{parameter} String value size is too big!")]
+        private partial void LogStringSizeTooBig(string domain, string parameter);
+        
         private NvInternalResult GetConfig(GetConfigurationArguments arguments)
         {
             if (!_isProductionMode && NxSettings.Settings.TryGetValue($"{arguments.Domain}!{arguments.Parameter}".ToLower(), out object nvSetting))
@@ -169,7 +175,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
                 {
                     if (stringValue.Length > 0x100)
                     {
-                        Logger.Error?.Print(LogClass.ServiceNv, $"{arguments.Domain}!{arguments.Parameter} String value size is too big!");
+                        LogStringSizeTooBig(arguments.Domain, arguments.Parameter);
                     }
                     else
                     {
@@ -189,17 +195,22 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
                     throw new NotImplementedException(nvSetting.GetType().Name);
                 }
 
-                Logger.Debug?.Print(LogClass.ServiceNv, $"Got setting {arguments.Domain}!{arguments.Parameter}");
+                LogGotSetting(arguments.Domain, arguments.Parameter);
 
                 arguments.Configuration = settingBuffer;
 
                 return NvInternalResult.Success;
             }
-
+            
             // NOTE: This actually return NotAvailableInProduction but this is directly translated as a InvalidInput before returning the ioctl.
             //return NvInternalResult.NotAvailableInProduction;
             return NvInternalResult.InvalidInput;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Got setting {domain}!{parameter}")]
+        private partial void LogGotSetting(string domain, string parameter);
 
         private NvInternalResult EventWait(ref EventWaitArguments arguments)
         {
@@ -422,20 +433,15 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
                         }
                         else
                         {
-                            Logger.Error?.Print(LogClass.ServiceNv, $"Invalid Event at index {eventIndex} (isWaitEventAsyncCmd: {isWaitEventAsyncCmd}, isWaitEventCmd: {isWaitEventCmd})");
-
-                            if (hostEvent != null)
-                            {
-                                Logger.Error?.Print(LogClass.ServiceNv, hostEvent.DumpState(_device.Gpu));
-                            }
-
+                            LogInvalidEventAtIndex(eventIndex, isWaitEventAsyncCmd, isWaitEventCmd);
+                            
                             result = NvInternalResult.InvalidInput;
                         }
                     }
                 }
                 else
                 {
-                    Logger.Error?.Print(LogClass.ServiceNv, $"Invalid Event at index {eventIndex} (isWaitEventAsyncCmd: {isWaitEventAsyncCmd}, isWaitEventCmd: {isWaitEventCmd})");
+                    LogInvalidEventAtIndex(eventIndex, isWaitEventAsyncCmd, isWaitEventCmd);
 
                     result = NvInternalResult.InvalidInput;
                 }
@@ -443,6 +449,11 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 
             return result;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Invalid event at index {eventIndex} (isWaitEventAsyncCmd: {isWaitEventAsyncCmd}, isWaitEventCmd: {isWaitEventCmd}")]
+        private partial void LogInvalidEventAtIndex(uint eventIndex, bool isWaitEventAsyncCmd, bool isWaitEventCmd);
 
         private NvHostEvent GetFreeEventLocked(uint id, out uint eventIndex)
         {
@@ -491,9 +502,14 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
             return null;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+            Message = "Closing channel.")]
+        private partial void LogClosingChannel();
+        
         public override void Close()
         {
-            Logger.Warning?.Print(LogClass.ServiceNv, "Closing channel");
+            LogClosingChannel();
 
             lock (_events)
             {

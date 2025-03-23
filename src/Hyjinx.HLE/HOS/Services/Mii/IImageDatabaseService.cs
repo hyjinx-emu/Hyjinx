@@ -1,9 +1,9 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 
 namespace Hyjinx.HLE.HOS.Services.Mii
 {
     [Service("miiimg")] // 5.0.0+
-    class IImageDatabaseService : IpcService
+    class IImageDatabaseService : IpcService<IImageDatabaseService>
     {
         private uint _imageCount;
         private bool _isDirty;
@@ -22,7 +22,7 @@ namespace Hyjinx.HLE.HOS.Services.Mii
 
             context.ResponseData.Write(_isDirty);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceMii, new { useHardcodedData });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMii, new { useHardcodedData });
 
             return ResultCode.Success;
         }
@@ -33,7 +33,7 @@ namespace Hyjinx.HLE.HOS.Services.Mii
         {
             context.ResponseData.Write(_imageCount);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceMii);
+            // Logger.Stub?.PrintStub(LogClass.ServiceMii);
 
             return ResultCode.Success;
         }

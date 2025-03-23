@@ -1,8 +1,8 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 
 namespace Hyjinx.HLE.HOS.Services.Nfc.NfcManager
 {
-    class INfc : IpcService
+    class INfc : IpcService<INfc>
     {
         private readonly NfcPermissionLevel _permissionLevel;
         private State _state;
@@ -20,7 +20,7 @@ namespace Hyjinx.HLE.HOS.Services.Nfc.NfcManager
         {
             _state = State.Initialized;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNfc, new { _permissionLevel });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNfc, new { _permissionLevel });
 
             return ResultCode.Success;
         }
@@ -32,7 +32,7 @@ namespace Hyjinx.HLE.HOS.Services.Nfc.NfcManager
         {
             _state = State.NonInitialized;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNfc, new { _permissionLevel });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNfc, new { _permissionLevel });
 
             return ResultCode.Success;
         }
@@ -55,7 +55,7 @@ namespace Hyjinx.HLE.HOS.Services.Nfc.NfcManager
             // NOTE: Write false value here could make nfp service not called.
             context.ResponseData.Write(true);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNfc, new { _permissionLevel });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNfc, new { _permissionLevel });
 
             return ResultCode.Success;
         }

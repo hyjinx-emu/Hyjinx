@@ -20,7 +20,7 @@ using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Configuration.Multiplayer;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.SystemInterop;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Graphics.GAL;
@@ -39,6 +39,8 @@ using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
+using SDL2;
 using Silk.NET.Vulkan;
 using SkiaSharp;
 using SPB.Graphics.Vulkan;
@@ -67,7 +69,7 @@ namespace Hyjinx.Ava
         private const float MaxResolutionScale = 4.0f; // Max resolution hotkeys can scale to before wrapping.
         private const int TargetFps = 60;
         private const float VolumeDelta = 0.05f;
-
+        
         private static readonly Cursor _invisibleCursor = new(StandardCursorType.None);
         private readonly IntPtr _invisibleCursorWin;
         private readonly IntPtr _defaultCursorWin;
@@ -76,6 +78,9 @@ namespace Hyjinx.Ava
         private readonly Stopwatch _chrono;
         private long _ticks;
 
+        private static readonly ILogger<AppHost> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<AppHost>();
+        
         private readonly AccountManager _accountManager;
         private readonly UserChannelPersistence _userChannelPersistence;
         private readonly InputManager _inputManager;
@@ -361,7 +366,8 @@ namespace Hyjinx.Ava
                         }
                         catch (Exception ex)
                         {
-                            Logger.Error?.Print(LogClass.Application, $"Failed to create directory at path {directory}. Error : {ex.GetType().Name}", "Screenshot");
+                            _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex,
+                                "Failed to create directory at path {path}", directory);
 
                             return;
                         }
@@ -386,13 +392,16 @@ namespace Hyjinx.Ava
 
                         SaveBitmapAsPng(bitmapToSave, path);
 
-                        Logger.Notice.Print(LogClass.Application, $"Screenshot saved to {path}", "Screenshot");
+                        Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Screenshot saved to {path}", path);
                     }
                 });
             }
             else
             {
-                Logger.Error?.Print(LogClass.Application, $"Screenshot is empty. Size : {e.Data.Length} bytes. Resolution : {e.Width}x{e.Height}", "Screenshot");
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Screenshot is empty. Size: {length} bytes. Resolution: {width}x{height}", e.Data.Length, e.Width,
+                    e.Height);
             }
         }
 
@@ -661,11 +670,12 @@ namespace Hyjinx.Ava
                 }
             }
 
-            Logger.Notice.Print(LogClass.Application, $"Using Firmware Version: {firmwareVersion?.VersionString}");
+            Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                "Using Firmware Version: {VersionString}", firmwareVersion?.VersionString);
 
             if (_isFirmwareTitle)
             {
-                Logger.Info?.Print(LogClass.Application, "Loading as Firmware Title (NCA).");
+                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as Firmware Title (NCA).");
 
                 if (!Device.LoadNca(ApplicationPath))
                 {
@@ -685,7 +695,7 @@ namespace Hyjinx.Ava
 
                 if (romFsFiles.Length > 0)
                 {
-                    Logger.Info?.Print(LogClass.Application, "Loading as cart with RomFS.");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as cart with RomFS.");
 
                     if (!Device.LoadCart(ApplicationPath, romFsFiles[0]))
                     {
@@ -696,7 +706,7 @@ namespace Hyjinx.Ava
                 }
                 else
                 {
-                    Logger.Info?.Print(LogClass.Application, "Loading as cart WITHOUT RomFS.");
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as cart WITHOUT RomFS.");
 
                     if (!Device.LoadCart(ApplicationPath))
                     {
@@ -712,7 +722,7 @@ namespace Hyjinx.Ava
                 {
                     case ".xci":
                         {
-                            Logger.Info?.Print(LogClass.Application, "Loading as XCI.");
+                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as XCI.");
 
                             if (!Device.LoadXci(ApplicationPath, ApplicationId))
                             {
@@ -725,7 +735,7 @@ namespace Hyjinx.Ava
                         }
                     case ".nca":
                         {
-                            Logger.Info?.Print(LogClass.Application, "Loading as NCA.");
+                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),"Loading as NCA.");
 
                             if (!Device.LoadNca(ApplicationPath))
                             {
@@ -739,7 +749,7 @@ namespace Hyjinx.Ava
                     case ".nsp":
                     case ".pfs0":
                         {
-                            Logger.Info?.Print(LogClass.Application, "Loading as NSP.");
+                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NSP.");
 
                             if (!Device.LoadNsp(ApplicationPath, ApplicationId))
                             {
@@ -752,7 +762,7 @@ namespace Hyjinx.Ava
                         }
                     default:
                         {
-                            Logger.Info?.Print(LogClass.Application, "Loading as homebrew.");
+                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as homebrew.");
 
                             try
                             {
@@ -765,7 +775,8 @@ namespace Hyjinx.Ava
                             }
                             catch (ArgumentOutOfRangeException)
                             {
-                                Logger.Error?.Print(LogClass.Application, "The specified file is not supported by Hyjinx.");
+                                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                                    "The specified file is not supported.");
 
                                 Device.Dispose();
 
@@ -778,7 +789,8 @@ namespace Hyjinx.Ava
             }
             else
             {
-                Logger.Warning?.Print(LogClass.Application, "Please specify a valid XCI/NCA/NSP/PFS0/NRO file.");
+                _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Please specify a valid XCI/NCA/NSP/PFS0/NRO file.");
 
                 Device.Dispose();
 
@@ -801,7 +813,8 @@ namespace Hyjinx.Ava
 
             _viewModel.IsPaused = false;
             _viewModel.Title = TitleHelper.ActiveApplicationTitle(Device?.Processes.ActiveApplication, Program.Version);
-            Logger.Info?.Print(LogClass.Emulation, "Emulation was resumed");
+            
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Emulation was resumed");
         }
 
         internal void Pause()
@@ -810,7 +823,8 @@ namespace Hyjinx.Ava
 
             _viewModel.IsPaused = true;
             _viewModel.Title = TitleHelper.ActiveApplicationTitle(Device?.Processes.ActiveApplication, Program.Version, LocaleManager.Instance[LocaleKeys.Paused]);
-            Logger.Info?.Print(LogClass.Emulation, "Emulation was paused");
+            
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Emulation was paused");
         }
 
         private void InitializeSwitchInstance()
@@ -842,7 +856,8 @@ namespace Hyjinx.Ava
                 renderer = new ThreadedRenderer(renderer);
             }
 
-            Logger.Info?.PrintMsg(LogClass.Gpu, $"Backend Threading ({threadingMode}): {isGALThreaded}");
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)),
+            "Backend Threading ({threadingMode}): {isGALThreaded}", threadingMode, isGALThreaded);
 
             // Initialize Configuration.
             var memoryConfiguration = ConfigurationState.Instance.System.ExpandRam.Value ? MemoryConfiguration.MemoryConfiguration8GiB : MemoryConfiguration.MemoryConfiguration4GiB;
@@ -905,8 +920,9 @@ namespace Hyjinx.Ava
                 {
                     return new T();
                 }
-
-                Logger.Warning?.Print(LogClass.Audio, $"{backend} is not supported, falling back to {nextBackend}.");
+                
+                _logger.LogWarning(new EventId((int)LogClass.Audio, nameof(LogClass.Audio)), 
+                    "{backend} is not supported, falling back to {nextBackend}.", backend, nextBackend);
 
                 return null;
             }

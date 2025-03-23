@@ -1,4 +1,5 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Management;
 using System.Runtime.InteropServices;
@@ -9,6 +10,8 @@ namespace Hyjinx.UI.Common.SystemInfo
     [SupportedOSPlatform("windows")]
     partial class WindowsSystemInfo : SystemInfo
     {
+        private static readonly ILogger<WindowsSystemInfo> _logger = Logger.DefaultLoggerFactory.CreateLogger<WindowsSystemInfo>();
+        
         internal WindowsSystemInfo()
         {
             CpuName = $"{GetCpuidCpuName() ?? GetCpuNameWMI()} ; {LogicalCoreCount} logical"; // WMI is very slow
@@ -22,11 +25,16 @@ namespace Hyjinx.UI.Common.SystemInfo
             {
                 return (memStatus.TotalPhys, memStatus.AvailPhys); // Bytes
             }
-
-            Logger.Error?.Print(LogClass.Application, $"GlobalMemoryStatusEx failed. Error {Marshal.GetLastWin32Error():X}");
+            
+            LogFailedDueToError(_logger, nameof(GlobalMemoryStatusEx), Marshal.GetLastWin32Error());
 
             return (0, 0);
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "{methodName} failed. Error {errorCode:X}")]
+        private static partial void LogFailedDueToError(ILogger logger, string methodName, int errorCode);
 
         private static string GetCpuNameWMI()
         {
@@ -74,14 +82,20 @@ namespace Hyjinx.UI.Common.SystemInfo
             }
             catch (PlatformNotSupportedException ex)
             {
-                Logger.Error?.Print(LogClass.Application, $"WMI isn't available : {ex.Message}");
+                LogWmiNotAvailable(_logger, ex.Message, ex);
             }
             catch (COMException ex)
             {
-                Logger.Error?.Print(LogClass.Application, $"WMI isn't available : {ex.Message}");
+                LogWmiNotAvailable(_logger, ex.Message, ex);
             }
 
             return null;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "WMI is not available: {message}")]
+        private static partial void LogWmiNotAvailable(ILogger logger, string message, Exception ex);
+
     }
 }

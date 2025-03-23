@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Bcat.Ipc.Types;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Bcat;
@@ -28,7 +28,7 @@ namespace Hyjinx.Horizon.Bcat.Ipc
 
             handle = _handle;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBcat);
+            // Logger.Stub?.PrintStub(LogClass.ServiceBcat);
 
             return Result.Success;
         }
@@ -42,7 +42,7 @@ namespace Hyjinx.Horizon.Bcat.Ipc
                 Result = 0,
             };
 
-            Logger.Stub?.PrintStub(LogClass.ServiceBcat);
+            // Logger.Stub?.PrintStub(LogClass.ServiceBcat);
 
             return Result.Success;
         }

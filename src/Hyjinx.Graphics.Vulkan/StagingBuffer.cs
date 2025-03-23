@@ -1,6 +1,7 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,13 +22,14 @@ namespace Hyjinx.Graphics.Vulkan
         }
     }
 
-    class StagingBuffer : IDisposable
+    partial class StagingBuffer : IDisposable
     {
         private const int BufferSize = 32 * 1024 * 1024;
 
         private int _freeOffset;
         private int _freeSize;
 
+        private readonly ILogger<StagingBuffer> _logger = Logger.DefaultLoggerFactory.CreateLogger<StagingBuffer>();
         private readonly VulkanRenderer _gd;
         private readonly BufferHolder _buffer;
         private readonly int _resourceAlignment;
@@ -220,13 +222,18 @@ namespace Hyjinx.Graphics.Vulkan
 
                 if (GetContiguousFreeSize(alignment) < size)
                 {
-                    Logger.Debug?.PrintMsg(LogClass.Gpu, $"Staging buffer out of space to reserve data of size {size}.");
+                    LogStagingBufferOutOfSpace(size);
                     return null;
                 }
             }
 
             return ReserveDataImpl(cbs, size, alignment);
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Staging buffer out of space to reserve data of size {size}.")]
+        private partial void LogStagingBufferOutOfSpace(int size);
 
         /// <summary>
         /// Reserve a range on the staging buffer for the current command buffer and upload data to it.

@@ -1,7 +1,8 @@
 using Hyjinx.Audio.Renderer.Common;
 using Hyjinx.Audio.Renderer.Parameter;
 using Hyjinx.Audio.Renderer.Utils;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using static Hyjinx.Audio.Renderer.Common.BehaviourParameter;
 
@@ -13,8 +14,9 @@ namespace Hyjinx.Audio.Renderer.Server.MemoryPool
     /// <summary>
     /// Memory pool mapping helper.
     /// </summary>
-    public class PoolMapper
+    public partial class PoolMapper
     {
+        private readonly ILogger<PoolMapper> _logger = Logger.DefaultLoggerFactory.CreateLogger<PoolMapper>();
         const uint CurrentProcessPseudoHandle = 0xFFFF8001;
 
         /// <summary>
@@ -280,7 +282,7 @@ namespace Hyjinx.Audio.Renderer.Server.MemoryPool
                 {
                     memoryPool.SetCpuAddress(0, 0);
 
-                    Logger.Error?.Print(LogClass.AudioRenderer, $"Map of memory pool (address: 0x{inParameter.CpuAddress:x}, size 0x{inParameter.Size:x}) failed!");
+                    LogMapFailed(inParameter.CpuAddress, inParameter.Size);
                     return UpdateResult.MapError;
                 }
 
@@ -295,7 +297,7 @@ namespace Hyjinx.Audio.Renderer.Server.MemoryPool
 
                 if (!Unmap(ref memoryPool))
                 {
-                    Logger.Error?.Print(LogClass.AudioRenderer, $"Unmap of memory pool (address: 0x{memoryPool.CpuAddress:x}, size 0x{memoryPool.Size:x}) failed!");
+                    LogUnmapFailed(memoryPool.CpuAddress, memoryPool.Size);
                     return UpdateResult.UnmapError;
                 }
 
@@ -306,6 +308,16 @@ namespace Hyjinx.Audio.Renderer.Server.MemoryPool
 
             return UpdateResult.Success;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Map of memory pool (address: 0x{cpuAddress:x}, size 0x{size:x}) failed!")]
+        private partial void LogMapFailed(ulong cpuAddress, ulong size);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Unmap of memory pool (address: 0x{cpuAddress:x}, size 0x{size:x}) failed!")]
+        private partial void LogUnmapFailed(ulong cpuAddress, ulong size);
 
         /// <summary>
         /// Map the <see cref="AddressInfo"/> to the <see cref="Dsp.AudioProcessor"/>.

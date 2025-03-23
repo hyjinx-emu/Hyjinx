@@ -12,7 +12,7 @@ using Hyjinx.Ava.Input;
 using Hyjinx.Ava.UI.Applet;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
@@ -23,6 +23,7 @@ using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Versioning;
@@ -34,10 +35,13 @@ namespace Hyjinx.Ava.UI.Windows
     public partial class MainWindow : StyleableWindow
     {
         internal static MainWindowViewModel MainWindowViewModel { get; private set; }
-
+        
+        private static readonly ILogger<MainWindow> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<MainWindow>();
+        
         private bool _isLoading;
         private bool _applicationsLoadedOnce;
-
+        
         private UserChannelPersistence _userChannelPersistence;
         private static bool _deferLoad;
         private static string _launchPath;
@@ -279,22 +283,26 @@ namespace Hyjinx.Ava.UI.Windows
                     rc = LinuxHelper.RunPkExec($"echo {LinuxHelper.RecommendedVmMaxMapCount} > {LinuxHelper.VmMaxMapCountPath}");
                     if (rc == 0)
                     {
-                        Logger.Info?.Print(LogClass.Application, $"vm.max_map_count set to {LinuxHelper.VmMaxMapCount} until the next restart.");
+                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "vm.max_map_count set to {vmMaxMapCount} until the next restart.", LinuxHelper.VmMaxMapCount);
                     }
                     else
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Unable to change vm.max_map_count. Process exited with code: {rc}");
+                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Unable to change vm.max_map_count. Process exited with code: {rc}", rc);
                     }
                     break;
                 case UserResult.No:
                     rc = LinuxHelper.RunPkExec($"echo \"vm.max_map_count = {LinuxHelper.RecommendedVmMaxMapCount}\" > {LinuxHelper.SysCtlConfigPath} && sysctl -p {LinuxHelper.SysCtlConfigPath}");
                     if (rc == 0)
                     {
-                        Logger.Info?.Print(LogClass.Application, $"vm.max_map_count set to {LinuxHelper.VmMaxMapCount}. Written to config: {LinuxHelper.SysCtlConfigPath}");
+                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "vm.max_map_count set to {vmMaxMapCount}. Written to config: {sysCtlConfigPath}", LinuxHelper.VmMaxMapCount, LinuxHelper.SysCtlConfigPath);
                     }
                     else
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Unable to write new value for vm.max_map_count to config. Process exited with code: {rc}");
+                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Unable to write new value for vm.max_map_count to config. Process exited with code: {rc}", rc);
                     }
                     break;
             }
@@ -304,7 +312,8 @@ namespace Hyjinx.Ava.UI.Windows
         {
             if (OperatingSystem.IsLinux() && LinuxHelper.VmMaxMapCount < LinuxHelper.RecommendedVmMaxMapCount)
             {
-                Logger.Warning?.Print(LogClass.Application, $"The value of vm.max_map_count is lower than {LinuxHelper.RecommendedVmMaxMapCount}. ({LinuxHelper.VmMaxMapCount})");
+                _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                "The value of vm.max_map_count is lower than {recommended}. ({vmMaxMapCount})", LinuxHelper.RecommendedVmMaxMapCount, LinuxHelper.VmMaxMapCount);
 
                 if (LinuxHelper.PkExecPath is not null)
                 {
@@ -336,7 +345,9 @@ namespace Hyjinx.Ava.UI.Windows
                             }
                             else
                             {
-                                Logger.Error?.Print(LogClass.Application, $"Couldn't find requested application id '{_launchApplicationId}' in '{_launchPath}'.");
+                                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                                    "Couldn't find requested application id '{launchApplicationId}' in '{launchPath}'.", _launchApplicationId, _launchPath);
+                                
                                 await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
                             }
                         }
@@ -348,7 +359,9 @@ namespace Hyjinx.Ava.UI.Windows
                     }
                     else
                     {
-                        Logger.Error?.Print(LogClass.Application, $"Couldn't find any application in '{_launchPath}'.");
+                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Couldn't find any application in '{launchPath}'.", _launchPath);
+                        
                         await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
                     }
                 }
@@ -426,7 +439,9 @@ namespace Hyjinx.Ava.UI.Windows
                 }
             }
 
-            Logger.Warning?.Print(LogClass.Application, "Failed to find valid start-up coordinates. Defaulting to primary monitor center.");
+            _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+            "Failed to find valid start-up coordinates. Defaulting to primary monitor center.");
+            
             return false;
         }
 

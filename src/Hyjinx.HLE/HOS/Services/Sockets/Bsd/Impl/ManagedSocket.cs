@@ -1,5 +1,6 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 {
-    class ManagedSocket : ISocket
+    partial class ManagedSocket : ISocket
     {
         public int Refcount { get; set; }
 
@@ -28,6 +29,9 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
         public IPEndPoint LocalEndPoint => Socket.LocalEndPoint as IPEndPoint;
 
         public Socket Socket { get; }
+
+        private static readonly ILogger<ManagedSocket> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<ManagedSocket>();
 
         public ManagedSocket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
         {
@@ -79,11 +83,16 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 
             if (bsdSocketFlags != BsdSocketFlags.None)
             {
-                Logger.Warning?.Print(LogClass.ServiceBsd, $"Unsupported socket flags: {bsdSocketFlags}");
+                LogUnsupportedSocketFlags(_logger, bsdSocketFlags);
             }
 
             return socketFlags;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Unsupported socket flags: {flags}")]
+        private static partial void LogUnsupportedSocketFlags(ILogger logger, BsdSocketFlags flags);
 
         public LinuxError Accept(out ISocket newSocket)
         {
@@ -303,14 +312,13 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 
                 if (result != LinuxError.SUCCESS)
                 {
-                    Logger.Warning?.Print(LogClass.ServiceBsd, $"Invalid GetSockOpt Option: {option} Level: {level}");
-
+                    LogInvalidGetSockOpt(option, level);
                     return result;
                 }
 
                 if (!WinSockHelper.TryConvertSocketOption(option, level, out SocketOptionName optionName))
                 {
-                    Logger.Warning?.Print(LogClass.ServiceBsd, $"Unsupported GetSockOpt Option: {option} Level: {level}");
+                    LogInvalidGetSockOpt(option, level);
                     optionValue.Clear();
 
                     return LinuxError.SUCCESS;
@@ -330,6 +338,16 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Invalid GetSockOpt option: {option}, level: {level}")]
+        private partial void LogInvalidGetSockOpt(BsdSocketOption option, SocketOptionLevel level);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Invalid SetSockOpt option: {option}, level: {level}")]
+        private partial void LogInvalidSetSockOpt(BsdSocketOption option, SocketOptionLevel level);
+        
         public LinuxError SetSocketOption(BsdSocketOption option, SocketOptionLevel level, ReadOnlySpan<byte> optionValue)
         {
             try
@@ -338,14 +356,14 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 
                 if (result != LinuxError.SUCCESS)
                 {
-                    Logger.Warning?.Print(LogClass.ServiceBsd, $"Invalid SetSockOpt Option: {option} Level: {level}");
+                    LogInvalidSetSockOpt(option, level);
 
                     return result;
                 }
 
                 if (!WinSockHelper.TryConvertSocketOption(option, level, out SocketOptionName optionName))
                 {
-                    Logger.Warning?.Print(LogClass.ServiceBsd, $"Unsupported SetSockOpt Option: {option} Level: {level}");
+                    LogInvalidSetSockOpt(option, level);
 
                     return LinuxError.SUCCESS;
                 }
@@ -481,7 +499,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 
             if (!CanSupportMMsgHdr(message))
             {
-                Logger.Warning?.Print(LogClass.ServiceBsd, "Unsupported BsdMMsgHdr");
+                LogUnsupportedMessageHeader();
 
                 return LinuxError.EOPNOTSUPP;
             }
@@ -508,6 +526,11 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Unsupported BsdMMsgHdr")]
+        private partial void LogUnsupportedMessageHeader();
+        
         public LinuxError SendMMsg(out int vlen, BsdMMsgHdr message, BsdSocketFlags flags)
         {
             vlen = 0;
@@ -519,7 +542,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 
             if (!CanSupportMMsgHdr(message))
             {
-                Logger.Warning?.Print(LogClass.ServiceBsd, "Unsupported BsdMMsgHdr");
+                LogUnsupportedMessageHeader();
 
                 return LinuxError.EOPNOTSUPP;
             }

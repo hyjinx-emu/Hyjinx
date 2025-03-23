@@ -1,11 +1,12 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser
 {
-    class IBtmUserCore : IpcService
+    partial class IBtmUserCore : IpcService<IBtmUserCore>
     {
         public KEvent _bleScanEvent;
         public int _bleScanEventHandle;
@@ -36,7 +37,7 @@ namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser
                 if (result != Result.Success)
                 {
                     // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
-                    Logger.Error?.Print(LogClass.ServiceBsd, "Out of handles!");
+                    LogOutOfHandles();
                 }
             }
 
@@ -46,6 +47,11 @@ namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Out of handles!")]
+        private partial void LogOutOfHandles();
 
         [CommandCmif(17)] // 5.0.0+
         // AcquireBleConnectionEvent() -> (byte<1>, handle<copy>)
@@ -62,7 +68,7 @@ namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser
                 if (result != Result.Success)
                 {
                     // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
-                    Logger.Error?.Print(LogClass.ServiceBsd, "Out of handles!");
+                    LogOutOfHandles();
                 }
             }
 
@@ -88,7 +94,7 @@ namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser
                 if (result != Result.Success)
                 {
                     // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
-                    Logger.Error?.Print(LogClass.ServiceBsd, "Out of handles!");
+                    LogOutOfHandles();
                 }
             }
 
@@ -114,7 +120,7 @@ namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser
                 if (result != Result.Success)
                 {
                     // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
-                    Logger.Error?.Print(LogClass.ServiceBsd, "Out of handles!");
+                    LogOutOfHandles();
                 }
             }
 

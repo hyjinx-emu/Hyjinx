@@ -1,14 +1,16 @@
 using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Hyjinx.Graphics.OpenGL
 {
-    public static class Debugger
+    public partial class Debugger
     {
+        private static readonly ILogger<Debugger> _logger = Logger.DefaultLoggerFactory.CreateLogger<Debugger>();
         private static DebugProc _debugCallback;
 
         private static int _counter;
@@ -47,8 +49,13 @@ namespace Hyjinx.Graphics.OpenGL
 
             GL.DebugMessageCallback(_debugCallback, IntPtr.Zero);
 
-            Logger.Warning?.Print(LogClass.Gpu, "OpenGL Debugging is enabled. Performance will be negatively impacted.");
+            LogOpenGlDebuggingEnabled(_logger);
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "OpenGL Debugging is enabled. Performance will be negatively impacted.")]
+        private static partial void LogOpenGlDebuggingEnabled(ILogger logger);
 
         private static void GLDebugHandler(
             DebugSource source,
@@ -64,25 +71,25 @@ namespace Hyjinx.Graphics.OpenGL
             switch (type)
             {
                 case DebugType.DebugTypeError:
-                    Logger.Error?.Print(LogClass.Gpu, $"{severity}: {msg}\nCallStack={Environment.StackTrace}", "GLERROR");
+                    _logger.LogError(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), $"{severity}: {msg}\nCallStack={Environment.StackTrace}", "GLERROR");
                     break;
                 case DebugType.DebugTypePerformance:
-                    Logger.Warning?.Print(LogClass.Gpu, $"{severity}: {msg}", "GLPERF");
+                    _logger.LogWarning(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), $"{severity}: {msg}", "GLPERF");
                     break;
                 case DebugType.DebugTypePushGroup:
-                    Logger.Info?.Print(LogClass.Gpu, $"{{ ({id}) {severity}: {msg}", "GLINFO");
+                    _logger.LogInformation(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)),$"{{ ({id}) {severity}: {msg}", "GLINFO");
                     break;
                 case DebugType.DebugTypePopGroup:
-                    Logger.Info?.Print(LogClass.Gpu, $"}} ({id}) {severity}: {msg}", "GLINFO");
+                    _logger.LogInformation(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), $"}} ({id}) {severity}: {msg}", "GLINFO");
                     break;
                 default:
                     if (source == DebugSource.DebugSourceApplication)
                     {
-                        Logger.Info?.Print(LogClass.Gpu, $"{type} {severity}: {msg}", "GLINFO");
+                        _logger.LogInformation(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), $"{type} {severity}: {msg}", "GLINFO");
                     }
                     else
                     {
-                        Logger.Debug?.Print(LogClass.Gpu, $"{type} {severity}: {msg}", "GLDEBUG");
+                        _logger.LogError(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), $"{type} {severity}: {msg}", "GLDEBUG");
                     }
                     break;
             }

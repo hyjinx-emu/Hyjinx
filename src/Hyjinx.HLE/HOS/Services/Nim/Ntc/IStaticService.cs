@@ -1,10 +1,10 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Nim.Ntc.StaticService;
 
 namespace Hyjinx.HLE.HOS.Services.Nim.Ntc
 {
     [Service("ntc")]
-    class IStaticService : IpcService
+    class IStaticService : IpcService<IStaticService>
     {
         public IStaticService(ServiceCtx context) { }
 
@@ -16,7 +16,7 @@ namespace Hyjinx.HLE.HOS.Services.Nim.Ntc
 
             MakeObject(context, new IEnsureNetworkClockAvailabilityService(context));
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNtc, new { unknown });
+            // Logger.Stub?.PrintStub(LogClass.ServiceNtc, new { unknown });
 
             return ResultCode.Success;
         }

@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Services.Am.AppletAE;
 using Hyjinx.HLE.HOS.Services.Hid;
@@ -32,8 +32,8 @@ namespace Hyjinx.HLE.HOS.Applets
             byte[] controllerSupportArgPrivate = _normalSession.Pop();
             ControllerSupportArgPrivate privateArg = IApplet.ReadStruct<ControllerSupportArgPrivate>(controllerSupportArgPrivate);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerApplet ArgPriv {privateArg.PrivateSize} {privateArg.ArgSize} {privateArg.Mode} " +
-                        $"HoldType:{(NpadJoyHoldType)privateArg.NpadJoyHoldType} StyleSets:{(ControllerType)privateArg.NpadStyleSet}");
+            // Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerApplet ArgPriv {privateArg.PrivateSize} {privateArg.ArgSize} {privateArg.Mode} " +
+                        //$"HoldType:{(NpadJoyHoldType)privateArg.NpadJoyHoldType} StyleSets:{(ControllerType)privateArg.NpadStyleSet}");
 
             if (privateArg.Mode != ControllerSupportMode.ShowControllerSupport)
             {
@@ -52,7 +52,7 @@ namespace Hyjinx.HLE.HOS.Applets
                 ControllerSupportArgV7 arg = IApplet.ReadStruct<ControllerSupportArgV7>(controllerSupportArg);
                 argHeader = arg.Header;
 
-                Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerSupportArg Version 7 EnableExplainText={arg.EnableExplainText != 0}");
+                // Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerSupportArg Version 7 EnableExplainText={arg.EnableExplainText != 0}");
                 // Read enable text here?
             }
             else if (privateArg.ArgSize == Marshal.SizeOf<ControllerSupportArgVPre7>())
@@ -60,12 +60,12 @@ namespace Hyjinx.HLE.HOS.Applets
                 ControllerSupportArgVPre7 arg = IApplet.ReadStruct<ControllerSupportArgVPre7>(controllerSupportArg);
                 argHeader = arg.Header;
 
-                Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerSupportArg Version Pre-7 EnableExplainText={arg.EnableExplainText != 0}");
+                // Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerSupportArg Version Pre-7 EnableExplainText={arg.EnableExplainText != 0}");
                 // Read enable text here?
             }
             else
             {
-                Logger.Stub?.PrintStub(LogClass.ServiceHid, "ControllerSupportArg Version Unknown");
+                // Logger.Stub?.PrintStub(LogClass.ServiceHid, "ControllerSupportArg Version Unknown");
 
                 argHeader = IApplet.ReadStruct<ControllerSupportArgHeader>(controllerSupportArg); // Read just the header
             }
@@ -74,7 +74,7 @@ namespace Hyjinx.HLE.HOS.Applets
             int playerMax = argHeader.PlayerCountMax;
             bool singleMode = argHeader.EnableSingleMode != 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerApplet Arg {playerMin} {playerMax} {argHeader.EnableTakeOverConnection} {argHeader.EnableSingleMode}");
+            // Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerApplet Arg {playerMin} {playerMax} {argHeader.EnableTakeOverConnection} {argHeader.EnableSingleMode}");
 
             if (singleMode)
             {
@@ -107,7 +107,7 @@ namespace Hyjinx.HLE.HOS.Applets
                 SelectedId = (uint)GetNpadIdTypeFromIndex(primaryIndex),
             };
 
-            Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerApplet ReturnResult {result.PlayerCount} {result.SelectedId}");
+            // Logger.Stub?.PrintStub(LogClass.ServiceHid, $"ControllerApplet ReturnResult {result.PlayerCount} {result.SelectedId}");
 
             _normalSession.Push(BuildResponse(result));
             AppletStateChanged?.Invoke(this, null);

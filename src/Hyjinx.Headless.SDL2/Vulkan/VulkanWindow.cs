@@ -1,7 +1,8 @@
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Input.HLE;
 using Hyjinx.SDL2.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 using static SDL2.SDL;
@@ -10,6 +11,8 @@ namespace Hyjinx.Headless.SDL2.Vulkan
 {
     class VulkanWindow : WindowBase
     {
+        private readonly ILogger<VulkanWindow> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<VulkanWindow>();
         private readonly GraphicsDebugLevel _glLogLevel;
 
         public VulkanWindow(
@@ -55,8 +58,7 @@ namespace Hyjinx.Headless.SDL2.Vulkan
                 if (SDL_Vulkan_CreateSurface(WindowHandle, instance, out surfaceHandle) == SDL_bool.SDL_FALSE)
                 {
                     string errorMessage = $"SDL_Vulkan_CreateSurface failed with error \"{SDL_GetError()}\"";
-
-                    Logger.Error?.Print(LogClass.Application, errorMessage);
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), errorMessage);
 
                     throw new Exception(errorMessage);
                 }
@@ -96,8 +98,7 @@ namespace Hyjinx.Headless.SDL2.Vulkan
             }
 
             string errorMessage = $"SDL_Vulkan_GetInstanceExtensions failed with error \"{SDL_GetError()}\"";
-
-            Logger.Error?.Print(LogClass.Application, errorMessage);
+            _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), errorMessage);
 
             throw new Exception(errorMessage);
         }

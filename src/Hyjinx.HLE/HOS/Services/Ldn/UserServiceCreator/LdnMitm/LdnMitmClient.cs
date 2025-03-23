@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
@@ -38,7 +38,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
         public NetworkError ConnectPrivate(ConnectPrivateRequest request)
         {
             // NOTE: This method is not implemented in ldn_mitm
-            Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient ConnectPrivate");
+            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient ConnectPrivate");
 
             return NetworkError.None;
         }
@@ -51,7 +51,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
         public bool CreateNetworkPrivate(CreateAccessPointPrivateRequest request, byte[] advertiseData)
         {
             // NOTE: This method is not implemented in ldn_mitm
-            Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient CreateNetworkPrivate");
+            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient CreateNetworkPrivate");
 
             return true;
         }
@@ -69,7 +69,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
         public ResultCode Reject(DisconnectReason disconnectReason, uint nodeId)
         {
             // NOTE: This method is not implemented in ldn_mitm
-            Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient Reject");
+            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient Reject");
 
             return ResultCode.Success;
         }
@@ -87,13 +87,13 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
         public void SetGameVersion(byte[] versionString)
         {
             // NOTE: This method is not implemented in ldn_mitm
-            Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient SetGameVersion");
+            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient SetGameVersion");
         }
 
         public void SetStationAcceptPolicy(AcceptPolicy acceptPolicy)
         {
             // NOTE: This method is not implemented in ldn_mitm
-            Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient SetStationAcceptPolicy");
+            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient SetStationAcceptPolicy");
         }
 
         public void Dispose()

@@ -3,8 +3,9 @@ using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Shim;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Sdk.Account;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,9 +13,12 @@ using System.Linq;
 
 namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
-    public class AccountManager : IEmulatorAccountManager
+    public partial class AccountManager : IEmulatorAccountManager
     {
         public static readonly UserId DefaultUserId = new("00000000000000010000000000000000");
+
+        private static readonly ILogger<AccountManager> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<AccountManager>();
 
         private readonly AccountSaveDataManager _accountSaveDataManager;
 
@@ -53,12 +57,17 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
                     commandLineUserProfileOverride = _profiles.Values.FirstOrDefault(x => x.Name == initialProfileName)?.UserId ?? default;
                     if (commandLineUserProfileOverride.IsNull)
                     {
-                        Logger.Warning?.Print(LogClass.Application, $"The command line specified profile named '{initialProfileName}' was not found");
+                        LogProfileNotFound(initialProfileName);
                     }
                 }
                 OpenUser(commandLineUserProfileOverride.IsNull ? _accountSaveDataManager.LastOpened : commandLineUserProfileOverride);
             }
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "The command line specified profile named '{name}' was not found.")]
+        private partial void LogProfileNotFound(string name);
 
         public void AddUser(string name, byte[] image, UserId userId = new UserId())
         {

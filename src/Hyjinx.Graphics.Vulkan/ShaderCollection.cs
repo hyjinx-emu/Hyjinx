@@ -1,5 +1,6 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,11 @@ using System.Threading.Tasks;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    class ShaderCollection : IProgram
+    partial class ShaderCollection : IProgram
     {
+        private readonly ILogger<ShaderCollection> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<ShaderCollection>();
+        
         private readonly PipelineShaderStageCreateInfo[] _infos;
         private readonly Shader[] _shaders;
 
@@ -472,11 +476,16 @@ namespace Hyjinx.Graphics.Vulkan
             }
             catch (VulkanException e)
             {
-                Logger.Error?.PrintMsg(LogClass.Gpu, $"Background Compilation failed: {e.Message}");
+                LogBackgroundCompilationFailed(e);
 
                 LinkStatus = ProgramLinkStatus.Failure;
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Background compilation failed.")]
+        private partial void LogBackgroundCompilationFailed(Exception exception);
 
         private void EnsureShadersReady()
         {
@@ -665,7 +674,8 @@ namespace Hyjinx.Graphics.Vulkan
             {
                 if (_firstBackgroundUse)
                 {
-                    Logger.Warning?.Print(LogClass.Gpu, "Background pipeline compile missed on draw - incorrect pipeline state?");
+                    LogBackgroundPipelineCompileMissed();
+                    
                     _firstBackgroundUse = false;
                 }
 
@@ -676,6 +686,11 @@ namespace Hyjinx.Graphics.Vulkan
 
             return true;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Background pipeline compile missed on draw - incorrect pipeline state?")]
+        private partial void LogBackgroundPipelineCompileMissed();
 
         public void UpdateDescriptorCacheCommandBufferIndex(int commandBufferIndex)
         {

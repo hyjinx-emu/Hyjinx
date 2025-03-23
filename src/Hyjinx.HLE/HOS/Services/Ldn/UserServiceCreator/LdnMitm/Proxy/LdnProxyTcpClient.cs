@@ -1,4 +1,5 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -6,8 +7,11 @@ using System.Threading;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {
-    internal class LdnProxyTcpClient : NetCoreServer.TcpClient, ILdnTcpSocket
+    internal partial class LdnProxyTcpClient : NetCoreServer.TcpClient, ILdnTcpSocket
     {
+        private readonly ILogger<LdnProxyTcpClient> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpClient>();
+        
         private readonly LanProtocol _protocol;
         private byte[] _buffer;
         private int _bufferEnd;
@@ -24,8 +28,13 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
         protected override void OnConnected()
         {
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTCPClient connected!");
+            LogClientConnected();
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPClient connected!")]
+        private partial void LogClientConnected();
 
         protected override void OnReceived(byte[] buffer, long offset, long size)
         {
@@ -42,16 +51,21 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTcpClient is sending a packet but endpoint is not null.")]
+        private partial void LogLdnProxyTcpClientSendingPacketToEndpoint();
+        
         public bool SendPacketAsync(EndPoint endPoint, byte[] data)
         {
             if (endPoint != null)
             {
-                Logger.Warning?.PrintMsg(LogClass.ServiceLdn, "LdnProxyTcpClient is sending a packet but endpoint is not null.");
+                LogLdnProxyTcpClientSendingPacketToEndpoint();
             }
 
             if (IsConnecting && !IsConnected)
             {
-                Logger.Info?.PrintMsg(LogClass.ServiceLdn, "LdnProxyTCPClient needs to connect before sending packets. Waiting...");
+                LogConnectBeforeSendingPackets();
 
                 while (IsConnecting && !IsConnected)
                 {
@@ -62,10 +76,20 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
             return SendAsync(data);
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "LdnProxyTCPClient needs to connect before sending packets. Waiting...")]
+        private partial void LogConnectBeforeSendingPackets();
+
         protected override void OnError(SocketError error)
         {
-            Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTCPClient caught an error with code {error}");
+            LogErrorOccurred(nameof(LdnProxyTcpClient), error);
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "{client} caught an error with code {error}")]
+        private partial void LogErrorOccurred(string client, SocketError error);
 
         protected override void Dispose(bool disposingManagedResources)
         {

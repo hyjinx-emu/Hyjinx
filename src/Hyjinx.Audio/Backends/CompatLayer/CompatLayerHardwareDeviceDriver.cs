@@ -2,17 +2,19 @@ using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Backends.Dummy;
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;
 
 namespace Hyjinx.Audio.Backends.CompatLayer
 {
-    public class CompatLayerHardwareDeviceDriver : IHardwareDeviceDriver
+    public partial class CompatLayerHardwareDeviceDriver : IHardwareDeviceDriver
     {
         private readonly IHardwareDeviceDriver _realDriver;
+        private readonly ILogger<CompatLayerHardwareDeviceDriver> _logger = Logger.DefaultLoggerFactory.CreateLogger<CompatLayerHardwareDeviceDriver>();
 
         public static bool IsSupported => true;
 
@@ -95,7 +97,7 @@ namespace Hyjinx.Audio.Backends.CompatLayer
 
             throw new ArgumentException("No valid sample format configuration found!");
         }
-
+        
         public IHardwareDeviceSession OpenDeviceSession(Direction direction, IVirtualMemoryManager memoryManager, SampleFormat sampleFormat, uint sampleRate, uint channelCount)
         {
             if (channelCount == 0)
@@ -112,7 +114,7 @@ namespace Hyjinx.Audio.Backends.CompatLayer
             {
                 if (direction == Direction.Input)
                 {
-                    Logger.Warning?.Print(LogClass.Audio, "The selected audio backend doesn't support audio input, fallback to dummy...");
+                    LogAudioBackendDoesNotSupportInput();
 
                     return new DummyHardwareDeviceSessionInput(this, memoryManager);
                 }
@@ -123,8 +125,7 @@ namespace Hyjinx.Audio.Backends.CompatLayer
             SampleFormat hardwareSampleFormat = SelectHardwareSampleFormat(sampleFormat);
             uint hardwareChannelCount = SelectHardwareChannelCount(channelCount);
 
-            IHardwareDeviceSession realSession = _realDriver.OpenDeviceSession(direction, memoryManager, hardwareSampleFormat, sampleRate, hardwareChannelCount);
-
+            var realSession = _realDriver.OpenDeviceSession(direction, memoryManager, hardwareSampleFormat, sampleRate, hardwareChannelCount);
             if (hardwareChannelCount == channelCount && hardwareSampleFormat == sampleFormat)
             {
                 return realSession;
@@ -132,17 +133,17 @@ namespace Hyjinx.Audio.Backends.CompatLayer
 
             if (hardwareSampleFormat != sampleFormat)
             {
-                Logger.Warning?.Print(LogClass.Audio, $"{sampleFormat} isn't supported by the audio device, conversion to {hardwareSampleFormat} will happen.");
+                LogFormatNotSupportedByDevice(sampleFormat, hardwareSampleFormat);
 
                 if (hardwareSampleFormat < sampleFormat)
                 {
-                    Logger.Warning?.Print(LogClass.Audio, $"{hardwareSampleFormat} has lower quality than {sampleFormat}, expect some loss in audio fidelity.");
+                    LogFormatLowerQualityExpected(hardwareSampleFormat, sampleFormat);
                 }
             }
 
             if (direction == Direction.Input)
             {
-                Logger.Warning?.Print(LogClass.Audio, "The selected audio backend doesn't support the requested audio input configuration, fallback to dummy...");
+                LogAudioBackendDoesNotSupportRequestedConfiguration();
 
                 // TODO: We currently don't support audio input upsampling/downsampling, implement this.
                 realSession.Dispose();
@@ -159,7 +160,27 @@ namespace Hyjinx.Audio.Backends.CompatLayer
             // If we need to do post processing before sending to the hardware device, wrap around it.
             return new CompatLayerHardwareDeviceSession(realSessionOutputBase, sampleFormat, channelCount);
         }
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+            Message = "The selected audio backend doesn't support audio input, fallback to dummy...")]
+        private partial void LogAudioBackendDoesNotSupportInput();
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+            Message = "{hardwareFormat} has lower quality than {format}, expect some loss in audio fidelity.")]
+        private partial void LogFormatLowerQualityExpected(SampleFormat hardwareFormat, SampleFormat format);
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+            Message = "{format} isn't supported by the audio device, conversion to {hardwareFormat} will happen.")]
+        private partial void LogFormatNotSupportedByDevice(SampleFormat format, SampleFormat hardwareFormat);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+            Message = "The selected audio backend doesn't support the requested audio input configuration, fallback to dummy...")]
+        private partial void LogAudioBackendDoesNotSupportRequestedConfiguration();
+        
         public bool SupportsChannelCount(uint channelCount)
         {
             return channelCount == 1 || channelCount == 2 || channelCount == 6;

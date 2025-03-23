@@ -9,9 +9,10 @@ using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Tools.Ncm;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,8 +20,11 @@ using ContentType = LibHac.Ncm.ContentType;
 
 namespace Hyjinx.HLE.Loaders.Processes.Extensions
 {
-    public static class PartitionFileSystemExtensions
+    public static partial class PartitionFileSystemExtensions
     {
+        private static readonly ILogger _logger =
+            Logger.DefaultLoggerFactory.CreateLogger(typeof(PartitionFileSystemExtensions));
+        
         private static readonly DownloadableContentJsonSerializerContext _contentSerializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
         public static Dictionary<ulong, ContentMetaData> GetContentData(this IFileSystem partitionFileSystem,
@@ -136,7 +140,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
                             }
                             else
                             {
-                                Logger.Warning?.Print(LogClass.Application, $"Cannot find AddOnContent file {downloadableContentContainer.ContainerPath}. It may have been moved or renamed.");
+                                LogCannotFindAddOnContentFile(_logger, downloadableContentContainer.ContainerPath);
                             }
                         }
                     }
@@ -149,6 +153,11 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
 
             return (false, ProcessResult.Failed);
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Cannot find AddOnContent file '{file}'. It may have been moved or renamed.")]
+        private static partial void LogCannotFindAddOnContentFile(ILogger logger, string file);
 
         public static Nca GetNca(this IFileSystem fileSystem, KeySet keySet, string path)
         {

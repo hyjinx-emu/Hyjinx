@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 namespace Hyjinx.HLE.HOS.Services.Ldn
 {
     [Service("ldn:u")]
-    class IUserServiceCreator : IpcService
+    class IUserServiceCreator : IpcService<IUserServiceCreator>
     {
         public IUserServiceCreator(ServiceCtx context) : base(context.Device.System.LdnServer) { }
 

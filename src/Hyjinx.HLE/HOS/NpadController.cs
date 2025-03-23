@@ -2,19 +2,24 @@ using Hyjinx.Common;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Controller.Motion;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Hid;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using CemuHookClient = Hyjinx.Input.Motion.CemuHook.Client;
 using ConfigControllerType = Hyjinx.Common.Configuration.Hid.ControllerType;
+using PlayerIndex = Hyjinx.Common.Configuration.Hid.PlayerIndex;
 
 namespace Hyjinx.Input.HLE
 {
-    public class NpadController : IDisposable
+    public partial class NpadController : IDisposable
     {
+        private static readonly ILogger<NpadController> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<NpadController>();
+        
         private class HLEButtonMappingEntry
         {
             public readonly GamepadButtonInputId DriverInputId;
@@ -545,14 +550,25 @@ namespace Hyjinx.Input.HLE
 
                     _gamepad.Rumble(low, high, uint.MaxValue);
 
-                    Logger.Debug?.Print(LogClass.Hid, $"Effect for {controllerConfig.PlayerIndex} " +
-                        $"L.low.amp={leftVibrationValue.AmplitudeLow}, " +
-                        $"L.high.amp={leftVibrationValue.AmplitudeHigh}, " +
-                        $"R.low.amp={rightVibrationValue.AmplitudeLow}, " +
-                        $"R.high.amp={rightVibrationValue.AmplitudeHigh} " +
-                        $"--> ({low}, {high})");
+                    LogEffect(controllerConfig.PlayerIndex,
+                        leftVibrationValue.AmplitudeLow,
+                        leftVibrationValue.AmplitudeHigh,
+                        rightVibrationValue.AmplitudeLow,
+                        rightVibrationValue.AmplitudeHigh,
+                        low, high);
                 }
             }
         }
+        
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Effect for {playerIndex} " +
+                      "L.low.amp={leftAmplitudeLow}, " +
+                      "L.high.amp={leftAmplitudeHigh}, " +
+                      "R.low.amp={rightAmplitudeLow}, " +
+                      "R.high.amp={rightAmplitudeHigh} " +
+                      "--> ({low}, {high})")]
+        private partial void LogEffect(PlayerIndex playerIndex, float leftAmplitudeLow, float leftAmplitudeHigh,
+            float rightAmplitudeLow, float rightAmplitudeHigh, float low, float high);
     }
 }

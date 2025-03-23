@@ -1,9 +1,10 @@
 using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL;
 using Hyjinx.UI.Common.Configuration;
+using Microsoft.Extensions.Logging;
 using SPB.Graphics;
 using SPB.Graphics.Exceptions;
 using SPB.Graphics.OpenGL;
@@ -14,8 +15,11 @@ using System;
 
 namespace Hyjinx.Ava.UI.Renderer
 {
-    public class EmbeddedWindowOpenGL : EmbeddedWindow
+    public partial class EmbeddedWindowOpenGL : EmbeddedWindow
     {
+        private static readonly ILogger<EmbeddedWindowOpenGL> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<EmbeddedWindowOpenGL>();
+        
         private SwappableNativeWindowBase _window;
 
         public OpenGLContextBase Context { get; set; }
@@ -75,9 +79,14 @@ namespace Hyjinx.Ava.UI.Renderer
                     throw;
                 }
 
-                Logger.Warning?.Print(LogClass.UI, $"Failed to {(!unbind ? "bind" : "unbind")} OpenGL context: {e}");
+                LogFailedToActionContext(unbind ? "unbind" : "bind", e);
             }
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.UI, EventName = nameof(LogClass.UI),
+            Message = "Failed to {action} OpenGL context.")]
+        private partial void LogFailedToActionContext(string action, Exception exception);
 
         public void SwapBuffers()
         {

@@ -1,11 +1,11 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Hid.HidServer;
 using Hyjinx.HLE.HOS.Services.Hid.Types;
 
 namespace Hyjinx.HLE.HOS.Services.Hid
 {
     [Service("hid:sys")]
-    class IHidSystemServer : IpcService
+    class IHidSystemServer : IpcService<IHidSystemServer>
     {
         public IHidSystemServer(ServiceCtx context) { }
 
@@ -15,7 +15,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid
         {
             ulong commonPolicy = context.RequestData.ReadUInt64();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceHid, new { commonPolicy });
+            // Logger.Stub?.PrintStub(LogClass.ServiceHid, new { commonPolicy });
 
             return ResultCode.Success;
         }

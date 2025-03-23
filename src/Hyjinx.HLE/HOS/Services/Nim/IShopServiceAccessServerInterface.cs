@@ -1,12 +1,12 @@
 using LibHac.Ncm;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Arp;
 using Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface;
 
 namespace Hyjinx.HLE.HOS.Services.Nim
 {
     [Service("nim:eca")] // 5.0.0+
-    class IShopServiceAccessServerInterface : IpcService
+    class IShopServiceAccessServerInterface : IpcService<IShopServiceAccessServerInterface>
     {
         public IShopServiceAccessServerInterface(ServiceCtx context) { }
 
@@ -19,7 +19,7 @@ namespace Hyjinx.HLE.HOS.Services.Nim
 
             MakeObject(context, new IShopServiceAccessServer());
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNim);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNim);
 
             return ResultCode.Success;
         }

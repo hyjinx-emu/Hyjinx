@@ -1,4 +1,5 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -17,6 +18,8 @@ namespace Hyjinx.UI.Common.Helper
         [LibraryImport("shell32.dll", SetLastError = true)]
         private static partial IntPtr ILCreateFromPathW([MarshalAs(UnmanagedType.LPWStr)] string pszPath);
 
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(OpenHelper));
+        
         public static void OpenFolder(string path)
         {
             if (Directory.Exists(path))
@@ -30,9 +33,14 @@ namespace Hyjinx.UI.Common.Helper
             }
             else
             {
-                Logger.Notice.Print(LogClass.Application, $"Directory \"{path}\" doesn't exist!");
+                LogDirectoryDoesNotExist(_logger, path);
             }
         }
+
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Directory '{path}' does not exist!")]
+        private static partial void LogDirectoryDoesNotExist(ILogger logger, string path);
 
         public static void LocateFile(string path)
         {
@@ -78,9 +86,14 @@ namespace Hyjinx.UI.Common.Helper
             }
             else
             {
-                Logger.Notice.Print(LogClass.Application, $"File \"{path}\" doesn't exist!");
+                LogFileDoesNotExist(_logger, path);
             }
         }
+        
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "File '{path}' does not exist!")]
+        private static partial void LogFileDoesNotExist(ILogger logger, string path);
 
         public static void OpenUrl(string url)
         {
@@ -105,8 +118,14 @@ namespace Hyjinx.UI.Common.Helper
             }
             else
             {
-                Logger.Notice.Print(LogClass.Application, $"Cannot open url \"{url}\" on this platform!");
+                LogCannotOpenUrl(_logger, url);
             }
         }
+        
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Cannot open url '{url}' on this platform!")]
+        private static partial void LogCannotOpenUrl(ILogger logger, string url);
+
     }
 }

@@ -1,8 +1,8 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 
 namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
 {
-    class IManagerDisplayService : IpcService
+    class IManagerDisplayService : IpcService<IManagerDisplayService>
     {
 #pragma warning disable IDE0052 // Remove unread private member
         private readonly IApplicationDisplayService _applicationDisplayService;
@@ -67,7 +67,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
         // AddToLayerStack(u32, u64)
         public ResultCode AddToLayerStack(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceVi);
+            // Logger.Stub?.PrintStub(LogClass.ServiceVi);
 
             return ResultCode.Success;
         }
@@ -76,7 +76,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
         // SetLayerVisibility(b8, u64)
         public ResultCode SetLayerVisibility(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceVi);
+            // Logger.Stub?.PrintStub(LogClass.ServiceVi);
 
             return ResultCode.Success;
         }

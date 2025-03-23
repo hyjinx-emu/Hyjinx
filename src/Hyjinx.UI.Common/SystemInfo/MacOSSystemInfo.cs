@@ -1,4 +1,5 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -47,7 +48,7 @@ namespace Hyjinx.UI.Common.SystemInfo
 
             if (result != 0)
             {
-                Logger.Error?.Print(LogClass.Application, $"Failed to query Available RAM. host_page_size() error = {result}");
+                LogHostPageSizeError(_logger, result);
                 return 0;
             }
 
@@ -58,13 +59,23 @@ namespace Hyjinx.UI.Common.SystemInfo
 
             if (result != 0)
             {
-                Logger.Error?.Print(LogClass.Application, $"Failed to query Available RAM. host_statistics64() error = {result}");
+                LogHostStatisticsError(_logger, result);
                 return 0;
             }
 
             return (ulong)(stats.FreeCount + stats.InactiveCount) * pageSize;
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Failed to query Available RAM. host_page_size() error = {result}")]
+        private static partial void LogHostPageSizeError(ILogger logger, int result);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Failed to query Available RAM. host_statistics64() error = {result}")]
+        private static partial void LogHostStatisticsError(ILogger logger, int result);
+        
         private const string SystemLibraryName = "libSystem.dylib";
 
         [LibraryImport(SystemLibraryName, SetLastError = true)]
@@ -76,13 +87,17 @@ namespace Hyjinx.UI.Common.SystemInfo
             {
                 int err = Marshal.GetLastWin32Error();
 
-                Logger.Error?.Print(LogClass.Application, $"Cannot retrieve '{name}'. Error Code {err}");
-
+                LogCannotRetrieveObject(_logger, name, err);
                 return err;
             }
 
             return 0;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Cannot retrieve '{name}'. Error Code {err}")]
+        private static partial void LogCannotRetrieveObject(ILogger logger, string name, int err);
 
         private static int SysctlByName<T>(string name, ref T oldValue)
         {

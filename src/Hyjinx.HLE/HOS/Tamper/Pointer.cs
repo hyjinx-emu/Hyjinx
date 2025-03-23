@@ -1,11 +1,15 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Tamper.Operations;
+using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
 namespace Hyjinx.HLE.HOS.Tamper
 {
     class Pointer : IOperand
     {
+        private static readonly ILogger<Pointer> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<Pointer>();
+        
         private readonly IOperand _position;
         private readonly ITamperedProcess _process;
 
@@ -24,7 +28,8 @@ namespace Hyjinx.HLE.HOS.Tamper
         {
             ulong position = _position.Get<ulong>();
 
-            Logger.Debug?.Print(LogClass.TamperMachine, $"0x{position:X16}@{Unsafe.SizeOf<T>()}: {value:X}");
+            _logger.LogDebug(new EventId((int)LogClass.TamperMachine, nameof(LogClass.TamperMachine)),
+                "0x{position:X16}@{size:X}: {value:X}", position, Unsafe.SizeOf<T>(), value);
 
             _process.WriteMemory(position, value);
         }

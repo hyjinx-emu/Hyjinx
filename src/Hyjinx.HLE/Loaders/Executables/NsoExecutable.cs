@@ -2,7 +2,8 @@ using LibHac.Common.FixedArrays;
 using LibHac.Fs;
 using LibHac.Loader;
 using LibHac.Tools.FsSystem;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,6 +12,9 @@ namespace Hyjinx.HLE.Loaders.Executables
 {
     partial class NsoExecutable : IExecutable
     {
+        private static readonly ILogger<NsoExecutable> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<NsoExecutable>();
+        
         public byte[] Program { get; }
         public Span<byte> Text => Program.AsSpan((int)TextOffset, (int)TextSize);
         public Span<byte> Ro => Program.AsSpan((int)RoOffset, (int)RoSize);
@@ -116,7 +120,8 @@ namespace Hyjinx.HLE.Loaders.Executables
 
             if (stringBuilder.Length > 0)
             {
-                Logger.Info?.Print(LogClass.Loader, $"{Name}:\n{stringBuilder.ToString().TrimEnd('\r', '\n')}");
+                _logger.LogInformation(new EventId((int)LogClass.Loader, nameof(LogClass.Loader)),
+                    "{name}: {message}", Name, stringBuilder.ToString().TrimEnd('\r', '\n'));
             }
         }
     }

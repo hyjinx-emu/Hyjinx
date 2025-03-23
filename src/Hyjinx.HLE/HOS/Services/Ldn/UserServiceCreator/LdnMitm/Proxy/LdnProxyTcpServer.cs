@@ -1,13 +1,17 @@
 using NetCoreServer;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Net.Sockets;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {
-    internal class LdnProxyTcpServer : TcpServer, ILdnTcpSocket
+    internal partial class LdnProxyTcpServer : TcpServer, ILdnTcpSocket
     {
+        private readonly ILogger<LdnProxyTcpServer> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpServer>();
+        
         private readonly LanProtocol _protocol;
 
         public LdnProxyTcpServer(LanProtocol protocol, IPAddress address, int port) : base(address, port)
@@ -17,7 +21,8 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
             OptionSendBufferSize = LanProtocol.TcpTxBufferSize;
             OptionReceiveBufferSize = LanProtocol.TcpRxBufferSize;
 
-            Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTCPServer created a server for this address: {address}:{port}");
+            _logger.LogInformation(new EventId((int)LogClass.ServiceLdn, nameof(LogClass.ServiceLdn)),
+                "LdnProxyTCPServer created a server for this address: {address}:{port}", address, port);
         }
 
         protected override TcpSession CreateSession()
@@ -27,8 +32,13 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
         protected override void OnError(SocketError error)
         {
-            Logger.Error?.PrintMsg(LogClass.ServiceLdn, $"LdnProxyTCPServer caught an error with code {error}");
+            LogErrorOccurred(nameof(LdnProxyTcpServer), error);
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "{client} caught an error with code {error}")]
+        private partial void LogErrorOccurred(string client, SocketError error);
 
         protected override void Dispose(bool disposingManagedResources)
         {

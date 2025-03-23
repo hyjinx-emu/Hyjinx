@@ -1,7 +1,7 @@
 using LibHac.Ns;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration.Multiplayer;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
@@ -11,6 +11,7 @@ using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Net;
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
 {
-    class IUserLocalCommunicationService : IpcService, IDisposable
+    partial class IUserLocalCommunicationService : IpcService<IUserLocalCommunicationService>, IDisposable
     {
         public INetworkClient NetworkClient { get; private set; }
 
@@ -184,7 +185,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
                 }
                 else
                 {
-                    Logger.Info?.Print(LogClass.ServiceLdn, $"Console's LDN IP is \"{unicastAddress.Address}\".");
+                    LogLocalIpAddress(_logger, unicastAddress.Address);
 
                     context.ResponseData.Write(NetworkHelpers.ConvertIpv4Address(unicastAddress.Address));
                     context.ResponseData.Write(NetworkHelpers.ConvertIpv4Address(unicastAddress.IPv4Mask));
@@ -197,6 +198,11 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Console's LDN IP is {address}")]
+        private static partial void LogLocalIpAddress(ILogger logger, IPAddress address);
 
         [CommandCmif(3)]
         // GetDisconnectReason() -> u16 disconnect_reason
@@ -1062,7 +1068,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
                     {
                         MultiplayerMode mode = context.Device.Configuration.MultiplayerMode;
 
-                        Logger.Info?.PrintMsg(LogClass.ServiceLdn, $"Initializing with multiplayer mode: {mode}");
+                        LogInitializingMultiplayerMode(_logger, mode);
 
                         switch (mode)
                         {
@@ -1094,6 +1100,11 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
 
             return resultCode;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+            Message = "Initializing with multiplayer mode: {mode}")]
+        private static partial void LogInitializingMultiplayerMode(ILogger logger, MultiplayerMode mode);
 
         public void Dispose()
         {

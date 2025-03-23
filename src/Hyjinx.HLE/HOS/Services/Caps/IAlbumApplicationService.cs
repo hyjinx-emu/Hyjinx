@@ -1,11 +1,11 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Caps.Types;
 
 namespace Hyjinx.HLE.HOS.Services.Caps
 {
     [Service("caps:u")]
-    class IAlbumApplicationService : IpcService
+    class IAlbumApplicationService : IpcService<IAlbumApplicationService>
     {
         public IAlbumApplicationService(ServiceCtx context) { }
 
@@ -59,7 +59,7 @@ namespace Hyjinx.HLE.HOS.Services.Caps
             //       The list contents needs to be determined.
             //       Service populate the buffer with a ApplicationAlbumFileEntry related to the pid.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceCaps, new { contentType, startTime, endTime, appletResourceUserId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceCaps, new { contentType, startTime, endTime, appletResourceUserId });
 
             context.ResponseData.Write(count);
 

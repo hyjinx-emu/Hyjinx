@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
 {
-    class IManagerForSystemService : IpcService
+    class IManagerForSystemService : IpcService<IManagerForSystemService>
     {
         private readonly ManagerServer _managerServer;
 

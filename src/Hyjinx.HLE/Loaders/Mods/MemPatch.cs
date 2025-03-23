@@ -1,12 +1,16 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Hyjinx.HLE.Loaders.Mods
 {
-    public class MemPatch
+    public partial class MemPatch
     {
+        private static readonly ILogger<MemPatch> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<MemPatch>();
+        
         readonly Dictionary<uint, byte[]> _patches = new();
 
         /// <summary>
@@ -83,7 +87,7 @@ namespace Hyjinx.HLE.Loaders.Mods
                     patchSize = memory.Length - patchOffset; // Add warning?
                 }
 
-                Logger.Info?.Print(LogClass.ModLoader, $"Patching address offset {patchOffset:x} <= {BitConverter.ToString(patch).Replace('-', ' ')} len={patchSize}");
+                LogPatchingAddressOffset(patchOffset, BitConverter.ToString(patch).Replace('-', ' '), patchSize);
 
                 patch.AsSpan(0, patchSize).CopyTo(memory.Slice(patchOffset, patchSize));
 
@@ -92,5 +96,10 @@ namespace Hyjinx.HLE.Loaders.Mods
 
             return count;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
+            Message = "Patching address offset {offset:x} <= {patch} len={patchSize}")]
+        private partial void LogPatchingAddressOffset(int offset, string patch, int patchSize);
     }
 }

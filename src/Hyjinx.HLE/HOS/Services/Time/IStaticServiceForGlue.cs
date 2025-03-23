@@ -10,7 +10,7 @@ namespace Hyjinx.HLE.HOS.Services.Time
     [Service("time:a", TimePermissions.Admin)]
     [Service("time:r", TimePermissions.Repair)]
     [Service("time:u", TimePermissions.User)]
-    class IStaticServiceForGlue : IpcService
+    class IStaticServiceForGlue : IpcService<IStaticServiceForGlue>
     {
         private readonly IStaticServiceForPsc _inner;
         private readonly TimePermissions _permissions;

@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Ssl.SslService;
 using Hyjinx.HLE.HOS.Services.Ssl.Types;
 using Hyjinx.Memory;
@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace Hyjinx.HLE.HOS.Services.Ssl
 {
     [Service("ssl")]
-    class ISslService : IpcService
+    class ISslService : IpcService<ISslService>
     {
         // NOTE: The SSL service is used by games to connect it to various official online services, which we do not intend to support.
         //       In this case it is acceptable to stub all calls of the service.
@@ -26,7 +26,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
 
             MakeObject(context, new ISslContext(context.Request.HandleDesc.PId, sslVersion));
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { sslVersion });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { sslVersion });
 
             return ResultCode.Success;
         }
@@ -119,7 +119,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
             // 1 = 3.0.0+, 2 = 5.0.0+, 3 = 6.0.0+
             uint interfaceVersion = context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { interfaceVersion });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { interfaceVersion });
 
             return ResultCode.Success;
         }

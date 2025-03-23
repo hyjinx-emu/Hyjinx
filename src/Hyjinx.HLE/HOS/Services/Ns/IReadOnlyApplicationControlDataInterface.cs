@@ -3,7 +3,7 @@ using LibHac.Ns;
 
 namespace Hyjinx.HLE.HOS.Services.Ns
 {
-    class IReadOnlyApplicationControlDataInterface : IpcService
+    class IReadOnlyApplicationControlDataInterface : IpcService<IReadOnlyApplicationControlDataInterface>
     {
         public IReadOnlyApplicationControlDataInterface(ServiceCtx context) { }
 

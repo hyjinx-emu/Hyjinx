@@ -1,8 +1,8 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 
 namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
 {
-    class ISystemDisplayService : IpcService
+    class ISystemDisplayService : IpcService<ISystemDisplayService>
     {
 #pragma warning disable IDE0052 // Remove unread private member
         private readonly IApplicationDisplayService _applicationDisplayService;
@@ -17,7 +17,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
         // SetLayerZ(u64, u64)
         public ResultCode SetLayerZ(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceVi);
+            // Logger.Stub?.PrintStub(LogClass.ServiceVi);
 
             return ResultCode.Success;
         }
@@ -26,7 +26,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
         // SetLayerVisibility(b8, u64)
         public ResultCode SetLayerVisibility(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceVi);
+            // Logger.Stub?.PrintStub(LogClass.ServiceVi);
 
             return ResultCode.Success;
         }
@@ -35,7 +35,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
         // CreateStrayLayer(u32, u64) -> (u64, u64, buffer<bytes, 6>)
         public ResultCode CreateStrayLayer(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceVi);
+            // Logger.Stub?.PrintStub(LogClass.ServiceVi);
 
             return _applicationDisplayService.CreateStrayLayer(context);
         }
@@ -53,7 +53,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
             context.ResponseData.Write(60.0f);
             context.ResponseData.Write(0);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceVi);
+            // Logger.Stub?.PrintStub(LogClass.ServiceVi);
 
             return ResultCode.Success;
         }

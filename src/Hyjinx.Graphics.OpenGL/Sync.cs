@@ -1,12 +1,13 @@
 using OpenTK.Graphics.OpenGL;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Hyjinx.Graphics.OpenGL
 {
-    class Sync : IDisposable
+    partial class Sync : IDisposable
     {
         private class SyncHandle
         {
@@ -17,6 +18,7 @@ namespace Hyjinx.Graphics.OpenGL
         private ulong _firstHandle = 0;
         private static ClientWaitSyncFlags SyncFlags => HwCapabilities.RequiresSyncFlush ? ClientWaitSyncFlags.None : ClientWaitSyncFlags.SyncFlushCommandsBit;
 
+        private readonly ILogger<Sync> _logger = Logger.DefaultLoggerFactory.CreateLogger<Sync>();
         private readonly List<SyncHandle> _handles = new();
 
         public void Create(ulong id)
@@ -105,11 +107,16 @@ namespace Hyjinx.Graphics.OpenGL
 
                     if (syncResult == WaitSyncStatus.TimeoutExpired)
                     {
-                        Logger.Error?.PrintMsg(LogClass.Gpu, $"GL Sync Object {result.ID} failed to signal within 1000ms. Continuing...");
+                        LogGlSyncFailedToSignal(result.ID);
                     }
                 }
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "GL Sync Object {id} failed to signal within 1000ms. Continuing...")]
+        private partial void LogGlSyncFailedToSignal(ulong id);
 
         public void Cleanup()
         {

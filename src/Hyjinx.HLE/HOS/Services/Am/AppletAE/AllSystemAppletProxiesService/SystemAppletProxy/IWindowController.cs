@@ -1,8 +1,8 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class IWindowController : IpcService
+    class IWindowController : IpcService<IWindowController>
     {
         private readonly ulong _pid;
 
@@ -19,7 +19,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
 
             context.ResponseData.Write(appletResourceUserId);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { appletResourceUserId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { appletResourceUserId });
 
             return ResultCode.Success;
         }
@@ -28,7 +28,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         // AcquireForegroundRights()
         public ResultCode AcquireForegroundRights(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }

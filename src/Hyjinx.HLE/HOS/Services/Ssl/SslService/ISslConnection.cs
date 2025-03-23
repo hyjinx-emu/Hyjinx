@@ -1,14 +1,15 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Services.Sockets.Bsd;
 using Hyjinx.HLE.HOS.Services.Ssl.Types;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 
 namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 {
-    class ISslConnection : IpcService, IDisposable
+    internal partial class ISslConnection : IpcService<ISslConnection>, IDisposable
     {
         private bool _doNotClockSocket;
         private bool _getServerCertChain;
@@ -95,10 +96,15 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             _hostName = Encoding.ASCII.GetString(hostNameData).Trim('\0');
 
-            Logger.Info?.Print(LogClass.ServiceSsl, _hostName);
+            LogHostName(_hostName);
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
+            Message = "Setting host name to: {hostName}")]
+        private partial void LogHostName(string hostName);
 
         [CommandCmif(2)]
         // SetVerifyOption(nn::ssl::sf::VerifyOption)
@@ -106,7 +112,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             _verifyOption = (VerifyOption)context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _verifyOption });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _verifyOption });
 
             return ResultCode.Success;
         }
@@ -124,7 +130,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             _connection.Socket.Blocking = _ioMode == IoMode.Blocking;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _ioMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _ioMode });
 
             return ResultCode.Success;
         }
@@ -152,8 +158,8 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             context.ResponseData.Write((uint)_hostName.Length);
 
-            Logger.Info?.Print(LogClass.ServiceSsl, _hostName);
-
+            LogHostName(_hostName);
+            
             return ResultCode.Success;
         }
 
@@ -163,7 +169,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             context.ResponseData.Write((uint)_verifyOption);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _verifyOption });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _verifyOption });
 
             return ResultCode.Success;
         }
@@ -174,7 +180,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             context.ResponseData.Write((uint)_ioMode);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _ioMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _ioMode });
 
             return ResultCode.Success;
         }
@@ -335,7 +341,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             SessionCacheMode sessionCacheMode = (SessionCacheMode)context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { sessionCacheMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { sessionCacheMode });
 
             _sessionCacheMode = sessionCacheMode;
 
@@ -348,7 +354,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             context.ResponseData.Write((uint)_sessionCacheMode);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _sessionCacheMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { _sessionCacheMode });
 
             return ResultCode.Success;
         }
@@ -381,7 +387,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
             bool value = context.RequestData.ReadUInt32() != 0;
             OptionType option = (OptionType)context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { option, value });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { option, value });
 
             return SetOption(option, value);
         }
@@ -392,7 +398,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
         {
             OptionType option = (OptionType)context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { option });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { option });
 
             ResultCode result = GetOption(option, out bool value);
 
@@ -429,7 +435,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             context.Memory.Read(inputDataPosition, _nextAplnProto);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { inputDataSize });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { inputDataSize });
 
             return ResultCode.Success;
         }
@@ -445,7 +451,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
 
             context.ResponseData.Write(_nextAplnProto.Length);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { outputDataSize });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSsl, new { outputDataSize });
 
             return ResultCode.Success;
         }
@@ -471,12 +477,17 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
                     break;
 
                 default:
-                    Logger.Warning?.Print(LogClass.ServiceSsl, $"Unsupported option {option}");
+                    LogUnsupportedOption(option);
                     return ResultCode.InvalidOption;
             }
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
+            Message = "Unsupported option {option}")]
+        private partial void LogUnsupportedOption(OptionType option);
 
         private ResultCode GetOption(OptionType option, out bool value)
         {
@@ -499,7 +510,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
                     break;
 
                 default:
-                    Logger.Warning?.Print(LogClass.ServiceSsl, $"Unsupported option {option}");
+                    LogUnsupportedOption(option);
 
                     value = false;
                     return ResultCode.InvalidOption;

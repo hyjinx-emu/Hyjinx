@@ -4,7 +4,7 @@ using LibHac.Ncm;
 using LibHac.Ns;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Memory;
@@ -14,6 +14,7 @@ using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationPro
 using Hyjinx.HLE.HOS.Services.Sdb.Pdm.QueryService;
 using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Numerics;
 using System.Threading;
@@ -22,7 +23,7 @@ using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy
 {
-    class IApplicationFunctions : IpcService
+    partial class IApplicationFunctions : IpcService<IApplicationFunctions>
     {
         private long _defaultSaveDataSize = 200000000;
         private long _defaultJournalSaveDataSize = 200000000;
@@ -93,7 +94,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
         {
             ulong titleId = context.RequestData.ReadUInt64();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { titleId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { titleId });
 
             if (titleId == 0)
             {
@@ -141,7 +142,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
 
             if (firstSupported > (int)TitleLanguage.BrazilianPortuguese)
             {
-                Logger.Warning?.Print(LogClass.ServiceAm, "Application has zero supported languages");
+                LogNoSupportedLanguagesFound();
 
                 context.ResponseData.Write(desiredLanguageCode);
 
@@ -155,7 +156,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
                 SystemLanguage newLanguage = Enum.Parse<SystemLanguage>(Enum.GetName(typeof(TitleLanguage), firstSupported));
                 desiredLanguageCode = SystemStateMgr.GetLanguageCode((int)newLanguage);
 
-                Logger.Info?.Print(LogClass.ServiceAm, $"Application doesn't support configured language. Using {newLanguage}");
+                LogLanguageNotSupported(newLanguage);
             }
 
             context.ResponseData.Write(desiredLanguageCode);
@@ -163,16 +164,31 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
             return ResultCode.Success;
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Application has zero supported languages.")]
+        private partial void LogNoSupportedLanguagesFound();
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Application doesn't support configured language. Using {language}")]
+        private partial void LogLanguageNotSupported(SystemLanguage language);
+
         [CommandCmif(22)]
         // SetTerminateResult(u32)
         public ResultCode SetTerminateResult(ServiceCtx context)
         {
             LibHac.Result result = new(context.RequestData.ReadUInt32());
 
-            Logger.Info?.Print(LogClass.ServiceAm, $"Result = 0x{result.Value:x8} ({result.ToStringWithName()}).");
+            LogTerminationResult(result.Value, result.ToStringWithName());
 
             return ResultCode.Success;
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
+            Message = "Result = 0x{value:X8} ({name}).")]
+        private partial void LogTerminationResult(uint value, string name);
 
         [CommandCmif(23)]
         // GetDisplayVersion() -> nn::oe::DisplayVersion
@@ -201,7 +217,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
 
             context.ResponseData.Write((uint)ResultCode.Success);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { saveDataType, userId, saveDataSize, journalSize });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { saveDataType, userId, saveDataSize, journalSize });
 
             return ResultCode.Success;
         }
@@ -220,7 +236,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
             context.ResponseData.Write(_defaultSaveDataSize);
             context.ResponseData.Write(_defaultJournalSaveDataSize);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { saveDataType, userId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { saveDataType, userId });
 
             return ResultCode.Success;
         }
@@ -264,7 +280,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
             context.ResponseData.Write(_defaultSaveDataSize);
             context.ResponseData.Write(_defaultJournalSaveDataSize);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -275,7 +291,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
         {
             // NOTE: This set two internal fields at offsets 0x89 and 0x8B to value 1 then it signals an internal event.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -286,7 +302,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
         {
             // NOTE: This set two internal fields at offsets 0x89 and 0x8B to value 0 then it signals an internal event.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -299,7 +315,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
 
             // NOTE: This set two internal fields at offsets 0x89 to value 1 and 0x90 to value of "nanoSeconds" then it signals an internal event.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { nanoSeconds });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { nanoSeconds });
 
             return ResultCode.Success;
         }
@@ -310,7 +326,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
         {
             // NOTE: This set two internal fields at offsets 0x89 and 0x90 to value 0 then it signals an internal event.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -331,7 +347,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
             context.ResponseData.Write(0L);
             context.ResponseData.Write(0L);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -344,7 +360,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
 
             // NOTE: Service stores the "enabled" value in a private field, when enabled is false, it stores nn::os::GetSystemTick() too.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { enabled });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { enabled });
 
             return ResultCode.Success;
         }
@@ -362,7 +378,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
         // InitializeGamePlayRecording(u64, handle<copy>)
         public ResultCode InitializeGamePlayRecording(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -373,7 +389,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
         {
             _gamePlayRecordingState = context.RequestData.ReadInt32() != 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { _gamePlayRecordingState });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { _gamePlayRecordingState });
 
             return ResultCode.Success;
         }
@@ -384,7 +400,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
         {
             bool applicationCrashReportEnabled = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { applicationCrashReportEnabled });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { applicationCrashReportEnabled });
 
             return ResultCode.Success;
         }
@@ -427,7 +443,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
             {
                 // TODO: Initialize buffer and object.
 
-                Logger.Stub?.PrintStub(LogClass.ServiceAm, new { transferMemoryAddress, transferMemorySize, width, height });
+                // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { transferMemoryAddress, transferMemorySize, width, height });
 
                 resultCode = ResultCode.Success;
             }
@@ -463,7 +479,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
                 }
             }
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { frameBufferPos, frameBufferSize, x, y, width, height, windowOriginMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { frameBufferPos, frameBufferSize, x, y, width, height, windowOriginMode });
 
             return resultCode;
         }
@@ -477,7 +493,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
             }
             */
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { x, y, width, height, frameBufferPos, frameBufferSize, windowOriginMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { x, y, width, height, frameBufferPos, frameBufferSize, windowOriginMode });
 
             return ResultCode.Success;
         }
@@ -488,7 +504,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
         {
             bool visible = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { visible });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { visible });
 
             // NOTE: It sets an internal field and return ResultCode.Success in all case.
 
@@ -522,7 +538,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
 
             ulong value = context.RequestData.ReadUInt64();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { kind, value });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { kind, value });
 
             context.Device.UIHandler.ExecuteProgram(context.Device, kind, value);
 
@@ -557,7 +573,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
 
             context.ResponseData.Write(previousProgramIndex);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { previousProgramIndex });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { previousProgramIndex });
 
             return ResultCode.Success;
         }
@@ -609,7 +625,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
             //       If an IStorage is available, returns it with ResultCode.Success.
             //       If not, just returns ResultCode.NotAvailable. Since we don't support friend feature for now, it's fine to do the same.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.NotAvailable;
         }

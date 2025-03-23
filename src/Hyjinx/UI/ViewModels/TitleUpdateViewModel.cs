@@ -13,13 +13,14 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.HLE.Utilities;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,7 +45,9 @@ namespace Hyjinx.Ava.UI.ViewModels
         private object _selectedUpdate;
 
         private static readonly TitleUpdateMetadataJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
-
+        private static readonly ILogger<TitleUpdateViewModel> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<TitleUpdateViewModel>();
+        
         public AvaloniaList<TitleUpdateModel> TitleUpdates
         {
             get => _titleUpdates;
@@ -94,9 +97,10 @@ namespace Hyjinx.Ava.UI.ViewModels
             {
                 TitleUpdateWindowData = JsonHelper.DeserializeFromFile(TitleUpdateJsonPath, _serializerContext.TitleUpdateMetadata);
             }
-            catch
+            catch (Exception ex)
             {
-                Logger.Warning?.Print(LogClass.Application, $"Failed to deserialize title update data for {ApplicationData.IdBaseString} at {TitleUpdateJsonPath}");
+                _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex,
+                "Failed to deserialize title update data for {idBaseString} at {path}", applicationData.IdBaseString, TitleUpdateJsonPath);
 
                 TitleUpdateWindowData = new TitleUpdateMetadata
                 {

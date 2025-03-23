@@ -1,5 +1,6 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 
@@ -8,8 +9,11 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
     /// <summary>
     /// Represents a background disk cache writer.
     /// </summary>
-    class BackgroundDiskCacheWriter : IDisposable
+    partial class BackgroundDiskCacheWriter : IDisposable
     {
+        private readonly ILogger<BackgroundDiskCacheWriter> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<BackgroundDiskCacheWriter>();
+        
         /// <summary>
         /// Possible operation to do on the <see cref="_fileWriterWorkerQueue"/>.
         /// </summary>
@@ -100,17 +104,18 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
                     {
                         _hostStorage.AddShader(_context, data.Program, data.HostCode);
                     }
-                    catch (DiskCacheLoadException diskCacheLoadException)
+                    catch (Exception ex) when (ex is DiskCacheLoadException or IOException)
                     {
-                        Logger.Error?.Print(LogClass.Gpu, $"Error writing shader to disk cache. {diskCacheLoadException.Message}");
-                    }
-                    catch (IOException ioException)
-                    {
-                        Logger.Error?.Print(LogClass.Gpu, $"Error writing shader to disk cache. {ioException.Message}");
+                        LogErrorWritingShaderToCache(ex);
                     }
                     break;
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Error writing shader to disk cache.")]
+        private partial void LogErrorWritingShaderToCache(Exception exception);
 
         /// <summary>
         /// Adds a shader program to be cached in the background.

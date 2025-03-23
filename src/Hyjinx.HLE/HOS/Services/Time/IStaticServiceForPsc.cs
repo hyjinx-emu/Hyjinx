@@ -16,7 +16,7 @@ namespace Hyjinx.HLE.HOS.Services.Time
 {
     [Service("time:s", TimePermissions.System)]
     [Service("time:su", TimePermissions.SystemUpdate)]
-    class IStaticServiceForPsc : IpcService
+    class IStaticServiceForPsc : IpcService<IStaticServiceForPsc>
     {
         private readonly TimeManager _timeManager;
         private readonly TimePermissions _permissions;

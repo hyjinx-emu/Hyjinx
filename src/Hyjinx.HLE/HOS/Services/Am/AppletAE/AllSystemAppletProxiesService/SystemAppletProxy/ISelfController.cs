@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy.Types;
@@ -7,7 +7,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class ISelfController : IpcService
+    class ISelfController : IpcService<ISelfController>
     {
         private readonly ulong _pid;
 
@@ -51,7 +51,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         // Exit()
         public ResultCode Exit(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -60,7 +60,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         // LockExit()
         public ResultCode LockExit(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -69,7 +69,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         // UnlockExit()
         public ResultCode UnlockExit(ServiceCtx context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -123,7 +123,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
 
             context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_libraryAppletLaunchableEventHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -134,7 +134,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             bool screenShotPermission = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { screenShotPermission });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { screenShotPermission });
 
             _screenShotPermission = screenShotPermission;
 
@@ -147,7 +147,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             bool operationModeChangedNotification = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { operationModeChangedNotification });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { operationModeChangedNotification });
 
             _operationModeChangedNotification = operationModeChangedNotification;
 
@@ -160,7 +160,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             bool performanceModeChangedNotification = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { performanceModeChangedNotification });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { performanceModeChangedNotification });
 
             _performanceModeChangedNotification = performanceModeChangedNotification;
 
@@ -175,7 +175,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
             bool unknownFlag2 = context.RequestData.ReadBoolean();
             bool unknownFlag3 = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { unknownFlag1, unknownFlag2, unknownFlag3 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { unknownFlag1, unknownFlag2, unknownFlag3 });
 
             return ResultCode.Success;
         }
@@ -186,7 +186,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             bool restartMessageEnabled = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { restartMessageEnabled });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { restartMessageEnabled });
 
             _restartMessageEnabled = restartMessageEnabled;
 
@@ -199,7 +199,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             bool outOfFocusSuspendingEnabled = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { outOfFocusSuspendingEnabled });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { outOfFocusSuspendingEnabled });
 
             _outOfFocusSuspendingEnabled = outOfFocusSuspendingEnabled;
 
@@ -212,7 +212,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             uint screenShotImageOrientation = context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { screenShotImageOrientation });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { screenShotImageOrientation });
 
             _screenShotImageOrientation = screenShotImageOrientation;
 
@@ -260,7 +260,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             bool handlesRequestToDisplay = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { handlesRequestToDisplay });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { handlesRequestToDisplay });
 
             _handlesRequestToDisplay = handlesRequestToDisplay;
 
@@ -273,7 +273,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             uint idleTimeDetectionExtension = context.RequestData.ReadUInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { idleTimeDetectionExtension });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { idleTimeDetectionExtension });
 
             _idleTimeDetectionExtension = idleTimeDetectionExtension;
 
@@ -286,7 +286,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             context.ResponseData.Write(_idleTimeDetectionExtension);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { _idleTimeDetectionExtension });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { _idleTimeDetectionExtension });
 
             return ResultCode.Success;
         }
@@ -297,7 +297,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             // TODO: Call idle:sys ReportUserIsActive when implemented.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -309,7 +309,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
             // NOTE: This should call IsAmbientLightSensorAvailable through to Lbl, but there's no situation where we'd want false.
             context.ResponseData.Write(true);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -342,7 +342,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
             context.ResponseData.Write(1); // OverLimit
             context.ResponseData.Write(10000f); // Lux - 10K lux is ambient light.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -358,7 +358,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
                 return ResultCode.InvalidParameters;
             }
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { wirelessPriorityMode });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { wirelessPriorityMode });
 
             return ResultCode.Success;
         }
@@ -415,7 +415,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
                 return ResultCode.InvalidParameters;
             }
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { albumReportOption });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { albumReportOption });
 
             return ResultCode.Success;
         }
@@ -426,7 +426,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
         {
             bool recordVolumeMuted = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { recordVolumeMuted });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { recordVolumeMuted });
 
             _recordVolumeMuted = recordVolumeMuted;
 

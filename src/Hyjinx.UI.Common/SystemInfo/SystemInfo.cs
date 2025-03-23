@@ -1,5 +1,6 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Helper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
@@ -7,8 +8,11 @@ using System.Text;
 
 namespace Hyjinx.UI.Common.SystemInfo
 {
-    public class SystemInfo
+    public partial class SystemInfo
     {
+        protected static readonly ILogger<SystemInfo> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<SystemInfo>();
+        
         public string OsDescription { get; protected set; }
         public string CpuName { get; protected set; }
         public ulong RamTotal { get; protected set; }
@@ -25,9 +29,11 @@ namespace Hyjinx.UI.Common.SystemInfo
 
         public void Print()
         {
-            Logger.Notice.Print(LogClass.Application, $"Operating System: {OsDescription}");
-            Logger.Notice.Print(LogClass.Application, $"CPU: {CpuName}");
-            Logger.Notice.Print(LogClass.Application, $"RAM: Total {ToGBString(RamTotal)} ; Available {ToGBString(RamAvailable)}");
+            var logger = Logger.DefaultLogger;
+            
+            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Operating System: {OsDescription}", OsDescription);
+            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "CPU: {CpuName}", CpuName);
+            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "RAM: {Total} / {Available}", ToGBString(RamTotal), ToGBString(RamAvailable));
         }
 
         public static SystemInfo Gather()
@@ -45,10 +51,15 @@ namespace Hyjinx.UI.Common.SystemInfo
                 return new MacOSSystemInfo();
             }
 
-            Logger.Error?.Print(LogClass.Application, "SystemInfo unsupported on this platform");
+            LogSystemInfoNotSupported(_logger);
 
             return new SystemInfo();
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "SystemInfo unsupported on this platform")]
+        private static partial void LogSystemInfoNotSupported(ILogger logger);
 
         // x86 exposes a 48 byte ASCII "CPU brand" string via CPUID leaves 0x80000002-0x80000004.
         internal static string GetCpuidCpuName()

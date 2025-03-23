@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class IGlobalStateController : IpcService
+    class IGlobalStateController : IpcService<IGlobalStateController>
     {
         public IGlobalStateController() { }
     }

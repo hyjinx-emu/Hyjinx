@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Threed.Blender;
 using Hyjinx.Graphics.Gpu.Engine.Types;
@@ -6,6 +6,7 @@ using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Gpu.Shader;
 using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Texture;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -14,7 +15,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed
     /// <summary>
     /// GPU state updater.
     /// </summary>
-    class StateUpdater
+    partial class StateUpdater
     {
         public const int ShaderStateIndex = 26;
         public const int RtColorMaskIndex = 14;
@@ -37,6 +38,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed
 
         private readonly StateUpdateTracker<ThreedClassState> _updateTracker;
 
+        private static readonly ILogger<StateUpdater> _logger = Logger.DefaultLoggerFactory.CreateLogger<StateUpdater>();
         private readonly ShaderProgramInfo[] _currentProgramInfo;
         private ShaderSpecializationState _shaderSpecState;
         private readonly SpecializationStateUpdater _currentSpecState;
@@ -996,7 +998,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed
 
                 if (!FormatTable.TryGetAttribFormat(packedFormat, out Format format))
                 {
-                    Logger.Debug?.Print(LogClass.Gpu, $"Invalid attribute format 0x{vertexAttrib.UnpackFormat():X}.");
+                    LogInvalidAttributeFormat(vertexAttrib.UnpackFormat());
 
                     format = vertexAttrib.UnpackType() switch
                     {
@@ -1017,6 +1019,11 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed
             _context.Renderer.Pipeline.SetVertexAttribs(vertexAttribs);
             _currentSpecState.SetAttributeTypes(ref _state.State.VertexAttribState);
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Invalid attribute format 0x{format:X}.")]
+        private partial void LogInvalidAttributeFormat(uint format);
 
         /// <summary>
         /// Updates host line width based on guest GPU state.

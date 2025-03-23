@@ -1,7 +1,7 @@
 namespace Hyjinx.HLE.HOS.Services.Sdb.Pdm
 {
     [Service("pdm:ntfy")]
-    class INotifyService : IpcService
+    class INotifyService : IpcService<INotifyService>
     {
         public INotifyService(ServiceCtx context) { }
     }

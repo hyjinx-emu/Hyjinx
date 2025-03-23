@@ -1,6 +1,7 @@
 using Hyjinx.Common;
 using Hyjinx.Common.Collections;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;
 using System;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Hyjinx.Graphics.Vulkan
 {
-    internal class HostMemoryAllocator
+    internal partial class HostMemoryAllocator
     {
         private readonly struct HostMemoryAllocation
         {
@@ -27,6 +28,9 @@ namespace Hyjinx.Graphics.Vulkan
             }
         }
 
+        private readonly ILogger<HostMemoryAllocator> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<HostMemoryAllocator>();
+        
         private readonly MemoryAllocator _allocator;
         private readonly Vk _api;
         private readonly ExtExternalMemoryHost _hostMemoryApi;
@@ -119,7 +123,7 @@ namespace Hyjinx.Graphics.Vulkan
 
                 if (result < Result.Success)
                 {
-                    Logger.Debug?.PrintMsg(LogClass.Gpu, $"Host mapping import 0x{pageAlignedPointer:x16} 0x{pageAlignedSize:x8} failed.");
+                    LogHostMappingFailed(pageAlignedPointer, pageAlignedSize);
                     return false;
                 }
 
@@ -138,6 +142,11 @@ namespace Hyjinx.Graphics.Vulkan
 
             return true;
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Host mapping import 0x{pointer:x16} 0x{size:x8} failed.")]
+        private partial void LogHostMappingFailed(nint pointer, ulong size);
 
         public (Auto<MemoryAllocation>, ulong) GetExistingAllocation(IntPtr pointer, ulong size)
         {

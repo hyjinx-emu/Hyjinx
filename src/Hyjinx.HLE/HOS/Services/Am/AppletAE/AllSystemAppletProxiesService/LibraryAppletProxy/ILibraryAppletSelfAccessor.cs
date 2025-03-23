@@ -3,7 +3,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletProxy
 {
-    class ILibraryAppletSelfAccessor : IpcService
+    class ILibraryAppletSelfAccessor : IpcService<ILibraryAppletSelfAccessor>
     {
         private readonly AppletStandalone _appletStandalone = new();
 

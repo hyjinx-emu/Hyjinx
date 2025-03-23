@@ -4,7 +4,7 @@ using Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy;
 
 namespace Hyjinx.HLE.HOS.Services.Fs
 {
-    class IMultiCommitManager : DisposableIpcService // 6.0.0+
+    class IMultiCommitManager : DisposableIpcService<IMultiCommitManager> // 6.0.0+
     {
         private SharedRef<LibHac.FsSrv.Sf.IMultiCommitManager> _baseCommitManager;
 

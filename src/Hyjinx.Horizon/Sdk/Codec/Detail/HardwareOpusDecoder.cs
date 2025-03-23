@@ -1,7 +1,7 @@
 using Concentus;
 using Concentus.Enums;
 using Concentus.Structs;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Sf;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
@@ -149,7 +149,7 @@ namespace Hyjinx.Horizon.Sdk.Codec.Detail
         [CmifCommand(1)]
         public Result SetContext(ReadOnlySpan<byte> context)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio);
 
             return Result.Success;
         }
@@ -167,7 +167,7 @@ namespace Hyjinx.Horizon.Sdk.Codec.Detail
         [CmifCommand(3)] // 3.0.0+
         public Result SetContextForMultiStream(ReadOnlySpan<byte> arg0)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceAudio);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAudio);
 
             return Result.Success;
         }

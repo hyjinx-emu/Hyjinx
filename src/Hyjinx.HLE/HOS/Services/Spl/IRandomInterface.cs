@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 namespace Hyjinx.HLE.HOS.Services.Spl
 {
     [Service("csrng")]
-    class IRandomInterface : DisposableIpcService
+    class IRandomInterface : DisposableIpcService<IRandomInterface>
     {
         private readonly RandomNumberGenerator _rng;
 

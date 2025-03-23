@@ -1,12 +1,13 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.SystemState;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 
 namespace Hyjinx.HLE.HOS.Services.Settings
 {
     [Service("set")]
-    class ISettingsServer : IpcService
+    partial class ISettingsServer : IpcService<ISettingsServer>
     {
         public ISettingsServer(ServiceCtx context) { }
 
@@ -106,7 +107,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
         {
             context.ResponseData.Write(false);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSet);
+            // Logger.Stub?.PrintStub(LogClass.ServiceSet);
 
             return ResultCode.Success;
         }
@@ -118,6 +119,11 @@ namespace Hyjinx.HLE.HOS.Services.Settings
             return GetKeyCodeMapImpl(context, 2);
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
+            Message = "Wrong buffer size")]
+        private partial void LogWrongBufferSize();
+        
         [CommandCmif(11)] // 10.1.0+
         // GetDeviceNickName() -> buffer<nn::settings::system::DeviceNickName, 0x16>
         public ResultCode GetDeviceNickName(ServiceCtx context)
@@ -132,7 +138,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
 
             if (deviceNickNameBufferSize != 0x80)
             {
-                Logger.Warning?.Print(LogClass.ServiceSet, "Wrong buffer size");
+                LogWrongBufferSize();
             }
 
             context.Memory.Write(deviceNickNameBufferPosition, Encoding.ASCII.GetBytes(context.Device.System.State.DeviceNickName + '\0'));
@@ -144,7 +150,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
         {
             if (context.Request.ReceiveBuff[0].Size != 0x1000)
             {
-                Logger.Warning?.Print(LogClass.ServiceSet, "Wrong buffer size");
+                LogWrongBufferSize();
             }
 
             byte[] keyCodeMap;

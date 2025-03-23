@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Ptm.Ipc;
 using Hyjinx.Horizon.Sdk.Sf;
@@ -18,7 +18,7 @@ namespace Hyjinx.Horizon.Ts.Ipc
         [CmifCommand(0)]
         public Result GetTemperatureRange(out int minimumTemperature, out int maximumTemperature)
         {
-            Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode });
+            // Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode });
 
             minimumTemperature = MeasurementServer.MinimumTemperature;
             maximumTemperature = MeasurementServer.MaximumTemperature;
@@ -29,7 +29,7 @@ namespace Hyjinx.Horizon.Ts.Ipc
         [CmifCommand(2)]
         public Result SetMeasurementMode(byte measurementMode)
         {
-            Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode, measurementMode });
+            // Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode, measurementMode });
 
             return Result.Success;
         }
@@ -37,7 +37,7 @@ namespace Hyjinx.Horizon.Ts.Ipc
         [CmifCommand(4)]
         public Result GetTemperature(out int temperature)
         {
-            Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode });
+            // Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode });
 
             temperature = MeasurementServer.DefaultTemperature;
 

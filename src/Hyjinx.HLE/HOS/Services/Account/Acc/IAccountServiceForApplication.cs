@@ -1,11 +1,11 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Account.Acc.AccountService;
 using Hyjinx.HLE.HOS.Services.Arp;
 
 namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
     [Service("acc:u0", AccountServiceFlag.Application)] // Max Sessions: 4
-    class IAccountServiceForApplication : IpcService
+    class IAccountServiceForApplication : IpcService<IAccountServiceForApplication>
     {
         private readonly ApplicationServiceServer _applicationServiceServer;
 
@@ -100,7 +100,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
             // TODO: Determine where ApplicationLaunchProperty is used.
             ApplicationLaunchProperty applicationLaunchProperty = ApplicationLaunchProperty.GetByPid(context);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { applicationLaunchProperty.TitleId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { applicationLaunchProperty.TitleId });
 
             return ResultCode.Success;
         }
@@ -192,7 +192,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
 
             context.ResponseData.Write((byte)context.Device.Processes.ActiveApplication.ApplicationControlProperties.UserAccountSwitchLock);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
 
             return ResultCode.Success;
         }

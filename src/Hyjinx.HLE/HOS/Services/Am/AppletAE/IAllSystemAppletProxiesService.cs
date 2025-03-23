@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService;
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE
 {
     [Service("appletAE")]
-    class IAllSystemAppletProxiesService : IpcService
+    class IAllSystemAppletProxiesService : IpcService<IAllSystemAppletProxiesService>
     {
         public IAllSystemAppletProxiesService(ServiceCtx context) { }
 

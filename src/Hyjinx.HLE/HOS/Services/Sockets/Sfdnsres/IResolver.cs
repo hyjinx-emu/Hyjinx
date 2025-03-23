@@ -1,9 +1,10 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Sockets.Nsd.Manager;
 using Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy;
 using Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Types;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ using System.Text;
 namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 {
     [Service("sfdnsres")]
-    class IResolver : IpcService
+    partial class IResolver : IpcService<IResolver>
     {
         public IResolver(ServiceCtx context)
         {
@@ -34,7 +35,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 #pragma warning restore IDE0059
 
             // TODO: This is stubbed in 2.0.0+, reverse 1.0.0 version for the sake of completeness.
-            Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { cancelHandleRequest });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { cancelHandleRequest });
 
             return ResultCode.NotAllocated;
         }
@@ -50,7 +51,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 #pragma warning restore IDE0059
 
             // TODO: This is stubbed in 2.0.0+, reverse 1.0.0 version for the sake of completeness.
-            Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { cancelHandleRequest });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { cancelHandleRequest });
 
             return ResultCode.NotAllocated;
         }
@@ -177,7 +178,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 
             context.ResponseData.Write(cancelHandleRequest);
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { cancelHandleRequest });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { cancelHandleRequest });
 
             return ResultCode.Success;
         }
@@ -191,7 +192,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
             ulong pidPlaceHolder = context.RequestData.ReadUInt64();
 #pragma warning restore IDE0059
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { cancelHandleRequest });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { cancelHandleRequest });
 
             return ResultCode.Success;
         }
@@ -259,7 +260,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 
             // TODO: Parse and use options.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { unknown });
+            // Logger.Stub?.PrintStub(LogClass.ServiceSfdnsres, new { unknown });
 
             NetDbError netDbErrorCode = NetDbError.Success;
             GaiError errno = GaiError.Success;
@@ -280,6 +281,11 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
             return ResultCode.Success;
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceSfdnsres, EventName = nameof(LogClass.ServiceSfdnsres),
+            Message = "Guest network access disabled, DNS Blocked: {host}")]
+        private static partial void LogGuestNetworkAccessDisabled(ILogger logger, string host);
+        
         private static ResultCode GetHostByNameRequestImpl(
             ServiceCtx context,
             ulong inputBufferPosition,
@@ -294,7 +300,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 
             if (!context.Device.Configuration.EnableInternetAccess)
             {
-                Logger.Info?.Print(LogClass.ServiceSfdnsres, $"Guest network access disabled, DNS Blocked: {host}");
+                LogGuestNetworkAccessDisabled(_logger, host);
 
                 WriteResponse(context, withOptions, 0, GaiError.NoData, NetDbError.HostNotFound);
 
@@ -333,14 +339,14 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 
                 if (DnsBlacklist.IsHostBlocked(host))
                 {
-                    Logger.Info?.Print(LogClass.ServiceSfdnsres, $"DNS Blocked: {host}");
+                    LogDnsBlockedForHost(_logger, host);
 
                     netDbErrorCode = NetDbError.HostNotFound;
                     errno = GaiError.NoData;
                 }
                 else
                 {
-                    Logger.Info?.Print(LogClass.ServiceSfdnsres, $"Trying to resolve: {host}");
+                    LogTryingToResolveHost(_logger, host);
 
                     try
                     {
@@ -379,6 +385,21 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
             return ResultCode.Success;
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceSfdnsres, EventName = nameof(LogClass.ServiceSfdnsres),
+            Message = "DNS Blocked: {host}")]
+        private static partial void LogDnsBlockedForHost(ILogger logger, string host);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceSfdnsres, EventName = nameof(LogClass.ServiceSfdnsres),
+            Message = "Trying to resolve {host}")]
+        private static partial void LogTryingToResolveHost(ILogger logger, string host);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.ServiceSfdnsres, EventName = nameof(LogClass.ServiceSfdnsres),
+            Message = "Guest network access disabled, DNS Blocked.")]
+        private static partial void LogGuestNetworkAccessDisabled(ILogger logger);
+        
         private static ResultCode GetHostByAddrRequestImpl(
             ServiceCtx context,
             ulong inputBufferPosition,
@@ -391,7 +412,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
         {
             if (!context.Device.Configuration.EnableInternetAccess)
             {
-                Logger.Info?.Print(LogClass.ServiceSfdnsres, "Guest network access disabled, DNS Blocked.");
+                LogGuestNetworkAccessDisabled(_logger);
 
                 WriteResponse(context, withOptions, 0, GaiError.NoData, NetDbError.HostNotFound);
 
@@ -515,7 +536,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 
             if (!context.Device.Configuration.EnableInternetAccess)
             {
-                Logger.Info?.Print(LogClass.ServiceSfdnsres, $"Guest network access disabled, DNS Blocked: {host}");
+                LogGuestNetworkAccessDisabled(_logger, host);
 
                 WriteResponse(context, withOptions, 0, GaiError.NoData, NetDbError.HostNotFound);
 
@@ -559,14 +580,14 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
 
                 if (DnsBlacklist.IsHostBlocked(host))
                 {
-                    Logger.Info?.Print(LogClass.ServiceSfdnsres, $"DNS Blocked: {host}");
+                    LogDnsBlockedForHost(_logger, host);
 
                     netDbErrorCode = NetDbError.HostNotFound;
                     errno = GaiError.NoData;
                 }
                 else
                 {
-                    Logger.Info?.Print(LogClass.ServiceSfdnsres, $"Trying to resolve: {host}");
+                    LogTryingToResolveHost(_logger, host);
 
                     try
                     {

@@ -1,7 +1,8 @@
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -12,9 +13,10 @@ namespace Hyjinx.Audio.Input
     /// <summary>
     /// The audio input manager.
     /// </summary>
-    public class AudioInputManager : IDisposable
+    public partial class AudioInputManager : IDisposable
     {
         private readonly object _lock = new();
+        private readonly ILogger<AudioInputManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<AudioInputManager>();
 
         /// <summary>
         /// Lock used for session allocation.
@@ -92,14 +94,18 @@ namespace Hyjinx.Audio.Input
                 int sessionId = _sessionIds[index];
 
                 _sessionIds[index] = -1;
-
                 _activeSessionCount++;
 
-                Logger.Info?.Print(LogClass.AudioRenderer, $"Registered new input ({sessionId})");
+                LogRegisteredInput(sessionId);
 
                 return sessionId;
             }
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Registered new input ({sessionId})")]
+        private partial void LogRegisteredInput(int sessionId);
 
         /// <summary>
         /// Release a given <paramref name="sessionId"/>.
@@ -116,8 +122,13 @@ namespace Hyjinx.Audio.Input
                 _sessionIds[newIndex] = sessionId;
             }
 
-            Logger.Info?.Print(LogClass.AudioRenderer, $"Unregistered input ({sessionId})");
+            LogUnregisteredInput(sessionId);
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Unregistered input ({sessionId})")]
+        private partial void LogUnregisteredInput(int sessionId);
 
         /// <summary>
         /// Used to update audio input system.

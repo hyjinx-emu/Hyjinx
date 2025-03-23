@@ -1,5 +1,5 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel;
@@ -8,6 +8,7 @@ using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.Buffers.Binary;
@@ -17,7 +18,7 @@ using System.Threading;
 
 namespace Hyjinx.HLE.HOS.Services
 {
-    class ServerBase : IDisposable
+    partial class ServerBase : IDisposable
     {
         // Must be the maximum value used by services (highest one know is the one used by nvservices = 0x8000).
         // Having a size that is too low will cause failures as data copy will fail if the receiving buffer is
@@ -32,6 +33,9 @@ namespace Hyjinx.HLE.HOS.Services
             0x0048BFFF,
             0x01007FFF,
         };
+
+        private static readonly ILogger<ServerBase> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<ServerBase>();
 
         // The amount of time Dispose() will wait to Join() the thread executing the ServerLoop()
         private static readonly TimeSpan _threadJoinTimeout = TimeSpan.FromSeconds(3);
@@ -511,13 +515,18 @@ namespace Hyjinx.HLE.HOS.Services
             response.RawData = _responseDataStream.ToArray();
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Service, EventName = nameof(LogClass.Service),
+            Message = "The ServerBase thread didn't terminate within {timeout:g}, waiting longer...")]
+        private partial void LogServerTerminationTimedOutWaitingLonger(TimeSpan timeout);
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing && _selfThread != null)
             {
                 if (_selfThread.HostThread.ManagedThreadId != Environment.CurrentManagedThreadId && _selfThread.HostThread.Join(_threadJoinTimeout) == false)
                 {
-                    Logger.Warning?.Print(LogClass.Service, $"The ServerBase thread didn't terminate within {_threadJoinTimeout:g}, waiting longer.");
+                    LogServerTerminationTimedOutWaitingLonger(_threadJoinTimeout);
 
                     _selfThread.HostThread.Join(Timeout.Infinite);
                 }

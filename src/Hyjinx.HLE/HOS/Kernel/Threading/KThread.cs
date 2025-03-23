@@ -1,9 +1,10 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Kernel.Common;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.HOS.Kernel.SupervisorCall;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -11,8 +12,10 @@ using System.Threading;
 
 namespace Hyjinx.HLE.HOS.Kernel.Threading
 {
-    class KThread : KSynchronizationObject, IKFutureSchedulerObject
+    internal partial class KThread : KSynchronizationObject, IKFutureSchedulerObject
     {
+        private static readonly ILogger<KThread> _logger = Logger.DefaultLoggerFactory.CreateLogger<KThread>();
+        
         private const int TlsUserDisableCountOffset = 0x100;
         private const int TlsUserInterruptFlagOffset = 0x102;
 
@@ -1215,13 +1218,23 @@ namespace Hyjinx.HLE.HOS.Kernel.Threading
 
         public void PrintGuestStackTrace()
         {
-            Logger.Info?.Print(LogClass.Cpu, $"Guest stack trace:\n{GetGuestStackTrace()}\n");
+            LogGuestStackTrace(GetGuestStackTrace());
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Cpu, EventName = nameof(LogClass.Cpu),
+            Message = "Guest stack trace: {stackTrace}")]
+        private partial void LogGuestStackTrace(string stackTrace);
 
         public void PrintGuestRegisterPrintout()
         {
-            Logger.Info?.Print(LogClass.Cpu, $"Guest CPU registers:\n{GetGuestRegisterPrintout()}\n");
+            LogGuestCpuRegisters(GetGuestRegisterPrintout());
         }
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Cpu, EventName = nameof(LogClass.Cpu),
+            Message = "Guest CPU registers: {registers}")]
+        private partial void LogGuestCpuRegisters(string registers);
 
         public void AddCpuTime(long ticks)
         {

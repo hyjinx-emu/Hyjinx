@@ -1,8 +1,9 @@
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Renderer.Common;
 using Hyjinx.Audio.Renderer.Dsp.State;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -14,8 +15,9 @@ using static Hyjinx.Audio.Renderer.Parameter.VoiceInParameter;
 
 namespace Hyjinx.Audio.Renderer.Dsp
 {
-    public static class DataSourceHelper
+    public partial class DataSourceHelper
     {
+        private static ILogger<DataSourceHelper> _logger = Logger.DefaultLoggerFactory.CreateLogger<DataSourceHelper>();  
         private const int FixedPointPrecision = 15;
 
         public struct WaveBufferInformation
@@ -168,7 +170,7 @@ namespace Hyjinx.Audio.Renderer.Dsp
                                 decodedSampleCount = PcmHelper.Decode(tempSpan, waveBufferPcmFloat, targetSampleStartOffset, targetSampleEndOffset, info.ChannelIndex, info.ChannelCount);
                                 break;
                             default:
-                                Logger.Error?.Print(LogClass.AudioRenderer, "Unsupported sample format " + info.SampleFormat);
+                                LogUnsupportedFormat(_logger, info.SampleFormat);
                                 break;
                         }
 
@@ -176,7 +178,7 @@ namespace Hyjinx.Audio.Renderer.Dsp
 
                         if (decodedSampleCount < 0)
                         {
-                            Logger.Warning?.Print(LogClass.AudioRenderer, "Decoding failed, skipping WaveBuffer");
+                            LogDecodingFailed(_logger);
 
                             voiceState.MarkEndOfBufferWaveBufferProcessing(ref waveBuffer, ref waveBufferIndex, ref waveBufferConsumed, ref playedSampleCount);
                             decodedSampleCount = 0;
@@ -254,6 +256,16 @@ namespace Hyjinx.Audio.Renderer.Dsp
                 voiceState.Fraction = fraction;
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Unsupported sample format {format}")]
+        private static partial void LogUnsupportedFormat(ILogger logger, SampleFormat format);
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+            Message = "Decoding failed, skipping wave buffer")]
+        private static partial void LogDecodingFailed(ILogger logger);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ToFloatAvx(Span<float> output, ReadOnlySpan<int> input, int sampleCount)

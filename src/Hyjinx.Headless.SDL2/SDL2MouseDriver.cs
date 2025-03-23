@@ -1,6 +1,7 @@
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Input;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -14,6 +15,9 @@ namespace Hyjinx.Headless.SDL2
     {
         private const int CursorHideIdleTime = 5; // seconds
 
+        private readonly ILogger<SDL2MouseDriver> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<SDL2MouseDriver>();
+        
         private bool _isDisposed;
         private readonly HideCursorMode _hideCursorMode;
         private bool _isHidden;
@@ -34,7 +38,8 @@ namespace Hyjinx.Headless.SDL2
             {
                 if (SDL_ShowCursor(SDL_DISABLE) != SDL_DISABLE)
                 {
-                    Logger.Error?.PrintMsg(LogClass.Application, "Failed to disable the cursor.");
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Failed to disable the cursor.");
                 }
 
                 _isHidden = true;
@@ -78,7 +83,8 @@ namespace Hyjinx.Headless.SDL2
                 {
                     if (SDL_ShowCursor(SDL_DISABLE) != SDL_DISABLE)
                     {
-                        Logger.Error?.PrintMsg(LogClass.Application, "Failed to disable the cursor.");
+                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Failed to disable the cursor.");
                     }
 
                     _isHidden = true;
@@ -90,7 +96,8 @@ namespace Hyjinx.Headless.SDL2
                 {
                     if (SDL_ShowCursor(SDL_ENABLE) != SDL_ENABLE)
                     {
-                        Logger.Error?.PrintMsg(LogClass.Application, "Failed to enable the cursor.");
+                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                            "Failed to enable the cursor.");
                     }
 
                     _isHidden = false;

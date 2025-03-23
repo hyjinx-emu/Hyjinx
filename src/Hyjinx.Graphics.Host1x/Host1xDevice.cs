@@ -1,12 +1,13 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Device;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Numerics;
 
 namespace Hyjinx.Graphics.Host1x
 {
-    public sealed class Host1xDevice : IDisposable
+    public sealed partial class Host1xDevice : IDisposable
     {
         private readonly struct Command
         {
@@ -20,6 +21,8 @@ namespace Hyjinx.Graphics.Host1x
             }
         }
 
+        private readonly ILogger<Host1xDevice> _logger = Logger.DefaultLoggerFactory.CreateLogger<Host1xDevice>();
+        
         private readonly SyncptIncrManager _syncptIncrMgr;
         private readonly AsyncWorkQueue<Command> _commandQueue;
 
@@ -154,10 +157,15 @@ namespace Hyjinx.Graphics.Host1x
                     DeviceWrite(_offset, data);
                     break;
                 default:
-                    Logger.Error?.Print(LogClass.Host1x, $"Unsupported opcode \"{opCode}\".");
+                    LogUnsupportedOpCode(opCode);
                     break;
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Host1x, EventName = nameof(LogClass.Host1x),
+            Message = "Unsupported opcode '{opCode}'.")]
+        private partial void LogUnsupportedOpCode(OpCode opCode);
 
         private void DeviceWrite(int offset, int data)
         {

@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.Graphics.Device;
 using Hyjinx.Graphics.GAL;
@@ -7,6 +7,7 @@ using Hyjinx.Graphics.Gpu.Engine.Threed;
 using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Memory.Range;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -15,7 +16,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.MME
     /// <summary>
     /// Macro High-level emulation.
     /// </summary>
-    class MacroHLE : IMacroEE
+    partial class MacroHLE : IMacroEE
     {
         private const int ColorLayerCountOffset = 0x818;
         private const int ColorStructSize = 0x40;
@@ -32,6 +33,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.MME
         private const int UpdateConstantBufferSizesBase = 0x34bc;
         private const int UpdateConstantBufferAddressCbu = 0x3460;
 
+        private readonly ILogger<MacroHLE> _logger = Logger.DefaultLoggerFactory.CreateLogger<MacroHLE>();
         private readonly GPFifoProcessor _processor;
         private readonly MacroHLEFunctionName _functionName;
 
@@ -528,13 +530,17 @@ namespace Hyjinx.Graphics.Gpu.Engine.MME
         {
             if (!Fifo.TryDequeue(out var value))
             {
-                Logger.Warning?.Print(LogClass.Gpu, "Macro attempted to fetch an inexistent argument.");
-
+                LogMacroAttemptedToFetchBadArgument();
                 return new FifoWord(0UL, 0);
             }
 
             return value;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Macro attempted to fetch a non-existent argument.")]
+        private partial void LogMacroAttemptedToFetchBadArgument();
 
         /// <summary>
         /// Reads data from a GPU register.

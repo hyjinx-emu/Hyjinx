@@ -1,5 +1,7 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.FileSystem;
+using LibHac.Diag;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 
@@ -10,6 +12,9 @@ namespace Hyjinx.UI.Common.Helper
     /// </summary>
     public static class SetupValidator
     {
+        private static readonly ILogger _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger(typeof(SetupValidator));
+        
         public static bool IsFirmwareValid(ContentManager contentManager, out UserError error)
         {
             bool hasFirmware = contentManager.GetCurrentFirmwareVersion() != null;
@@ -65,11 +70,13 @@ namespace Hyjinx.UI.Common.Helper
                     {
                         try
                         {
-                            Logger.Info?.Print(LogClass.Application, $"Installing firmware {firmwareVersion.VersionString}");
+                            _logger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                                "Installing firmware {firmwareVersion}", firmwareVersion.VersionString);
 
                             contentManager.InstallFirmware(baseApplicationPath);
 
-                            Logger.Info?.Print(LogClass.Application, $"System version {firmwareVersion.VersionString} successfully installed.");
+                            _logger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                                "System version {firmwareVersion} successfully installed.", firmwareVersion.VersionString);
 
                             outError = UserError.Success;
 

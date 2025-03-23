@@ -1,7 +1,8 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Gpu.Image;
 using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Shader.Translation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 
@@ -10,8 +11,11 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
     /// <summary>
     /// Represents a GPU state and memory accessor.
     /// </summary>
-    class DiskCacheGpuAccessor : GpuAccessorBase, IGpuAccessor
+    partial class DiskCacheGpuAccessor : GpuAccessorBase, IGpuAccessor
     {
+        private readonly ILogger<DiskCacheGpuAccessor> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<DiskCacheGpuAccessor>();
+        
         private readonly ReadOnlyMemory<byte> _data;
         private readonly ReadOnlyMemory<byte> _cb1Data;
         private readonly ShaderSpecializationState _oldSpecState;
@@ -72,8 +76,13 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
         /// <inheritdoc/>
         public void Log(string message)
         {
-            Logger.Warning?.Print(LogClass.Gpu, $"Shader translator: {message}");
+            LogShaderTranslatorMessage(message);
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "Shader translator: {message}")]
+        private partial void LogShaderTranslatorMessage(string message);
 
         /// <inheritdoc/>
         public ReadOnlySpan<ulong> GetCode(ulong address, int minimumSize)

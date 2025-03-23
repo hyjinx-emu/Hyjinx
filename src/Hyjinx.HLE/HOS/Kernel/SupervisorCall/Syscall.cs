@@ -1,5 +1,5 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.HOS.Kernel.Common;
@@ -9,6 +9,7 @@ using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.Threading;
@@ -16,8 +17,9 @@ using System.Threading;
 namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
 {
     [SvcImpl]
-    class Syscall : ISyscallApi
+    partial class Syscall : ISyscallApi
     {
+        private static readonly ILogger<Syscall> _logger = Logger.DefaultLoggerFactory.CreateLogger<Syscall>();
         private readonly KernelContext _context;
 
         public Syscall(KernelContext context)
@@ -1900,18 +1902,22 @@ namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
             }
             else
             {
-                Logger.Debug?.Print(LogClass.KernelSvc, "Debugger triggered.");
+                LogDebuggerTriggered();
             }
         }
+
+        [LoggerMessage(LogLevel.Debug,
+            EventId = (int)LogClass.KernelSvc, EventName = nameof(LogClass.KernelSvc),
+            Message = "Debugger triggered.")]
+        private partial void LogDebuggerTriggered();
 
         [Svc(0x27)]
         public void OutputDebugString([PointerSized] ulong strPtr, [PointerSized] ulong size)
         {
             KProcess process = KernelStatic.GetCurrentProcess();
-
-            string str = MemoryHelper.ReadAsciiString(process.CpuMemory, strPtr, (long)size);
-
-            Logger.Warning?.Print(LogClass.KernelSvc, str);
+            
+            _logger.LogWarning(new EventId((int)LogClass.KernelSvc, nameof(LogClass.KernelSvc)), 
+                MemoryHelper.ReadAsciiString(process.CpuMemory, strPtr, (long)size));
         }
 
         [Svc(0x29)]

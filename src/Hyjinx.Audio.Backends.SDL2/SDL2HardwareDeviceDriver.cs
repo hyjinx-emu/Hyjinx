@@ -1,8 +1,9 @@
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
 using Hyjinx.SDL2.Common;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
@@ -12,16 +13,19 @@ using static SDL2.SDL;
 
 namespace Hyjinx.Audio.Backends.SDL2
 {
-    public class SDL2HardwareDeviceDriver : IHardwareDeviceDriver
+    public partial class SDL2HardwareDeviceDriver : IHardwareDeviceDriver
     {
+        private static readonly ILogger<SDL2HardwareDeviceDriver> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<SDL2HardwareDeviceDriver>();
+        
         private readonly ManualResetEvent _updateRequiredEvent;
         private readonly ManualResetEvent _pauseEvent;
         private readonly ConcurrentDictionary<SDL2HardwareDeviceSession, byte> _sessions;
 
+
         private readonly bool _supportSurroundConfiguration;
 
         public float Volume { get; set; }
-
         // TODO: Add this to SDL2-CS
         // NOTE: We use a DllImport here because of marshaling issue for spec.
 #pragma warning disable SYSLIB1054
@@ -41,9 +45,7 @@ namespace Hyjinx.Audio.Backends.SDL2
 
             if (res != 0)
             {
-                Logger.Error?.Print(LogClass.Application,
-                    $"SDL_GetDefaultAudioInfo failed with error \"{SDL_GetError()}\"");
-
+                LogGetFailedWithErrorMessage(SDL_GetError());
                 _supportSurroundConfiguration = true;
             }
             else
@@ -53,6 +55,11 @@ namespace Hyjinx.Audio.Backends.SDL2
 
             Volume = 1f;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "SDL_GetDefaultAudioInfo failed with error '{errorMessage}'")]
+        private partial void LogGetFailedWithErrorMessage(string errorMessage);
 
         public static bool IsSupported => IsSupportedInternal();
 
@@ -140,8 +147,7 @@ namespace Hyjinx.Audio.Backends.SDL2
 
             if (device == 0)
             {
-                Logger.Error?.Print(LogClass.Application, $"SDL2 open audio device initialization failed with error \"{SDL_GetError()}\"");
-
+                LogDeviceInitializationFailed(_logger, SDL_GetError());
                 return 0;
             }
 
@@ -149,7 +155,7 @@ namespace Hyjinx.Audio.Backends.SDL2
 
             if (!isValid)
             {
-                Logger.Error?.Print(LogClass.Application, "SDL2 open audio device is not valid");
+                LogOpenAudioNotValid(_logger);
                 SDL_CloseAudioDevice(device);
 
                 return 0;
@@ -157,6 +163,16 @@ namespace Hyjinx.Audio.Backends.SDL2
 
             return device;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "SDL2 open audio device initialization failed with error '{errorMessage}'.")]
+        private static partial void LogDeviceInitializationFailed(ILogger logger, string errorMessage);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "SDL2 open audio device is not valid.")]
+        private static partial void LogOpenAudioNotValid(ILogger logger);
 
         public void Dispose()
         {

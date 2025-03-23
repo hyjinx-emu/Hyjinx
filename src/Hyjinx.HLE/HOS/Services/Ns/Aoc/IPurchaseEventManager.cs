@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
@@ -6,7 +6,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
 {
-    class IPurchaseEventManager : IpcService
+    class IPurchaseEventManager : IpcService<IPurchaseEventManager>
     {
         private readonly KEvent _purchasedEvent;
 
@@ -29,7 +29,7 @@ namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
             //       Then it seems to use the buffer content and compare it with a stored linked instrusive list.
             //       Since we don't support purchase from eShop, we can stub it.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceNs);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNs);
 
             return ResultCode.Success;
         }
@@ -59,9 +59,7 @@ namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
             // NOTE: Service finds info using internal array then convert it into nn::ec::detail::PurchasedProductInfo.
             //       Returns 0x320A4 if the internal array size is null.
             //       Since we don't support purchase from eShop, we can stub it.
-
-            Logger.Debug?.PrintStub(LogClass.ServiceNs); // NOTE: Uses Debug to avoid spamming.
-
+            
             return ResultCode.Success;
         }
     }

@@ -1,6 +1,7 @@
 using Microsoft.Win32;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -11,6 +12,8 @@ namespace Hyjinx.UI.Common.Helper
 {
     public static partial class FileAssociationHelper
     {
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(FileAssociationHelper));
+        
         private static readonly string[] _fileExtensions = { ".nca", ".nro", ".nso", ".nsp", ".xci" };
 
         [SupportedOSPlatform("linux")]
@@ -47,7 +50,7 @@ namespace Hyjinx.UI.Common.Helper
 
                 if (mimeProcess.ExitCode != 0)
                 {
-                    Logger.Error?.PrintMsg(LogClass.Application, $"Unable to {installKeyword} mime types. Make sure xdg-utils is installed. Process exited with code: {mimeProcess.ExitCode}");
+                    LogUnableToExecuteMimeOperation(_logger, installKeyword, mimeProcess.ExitCode);
 
                     return false;
                 }
@@ -62,13 +65,23 @@ namespace Hyjinx.UI.Common.Helper
 
                 if (updateMimeProcess.ExitCode != 0)
                 {
-                    Logger.Error?.PrintMsg(LogClass.Application, $"Could not update local mime database. Process exited with code: {updateMimeProcess.ExitCode}");
+                    LogUnableToUpdateMimeDatabase(_logger, updateMimeProcess.ExitCode);
                 }
             }
 
             return true;
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Unable to {keyword} mime types. Make sure xdg-utils is installed. Process exited with code: {exitCode}")]
+        private static partial void LogUnableToExecuteMimeOperation(ILogger logger, string keyword, int exitCode);
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Could not update local mime database. Process exited with code: {exitCode}")]
+        private static partial void LogUnableToUpdateMimeDatabase(ILogger logger, int exitCode);
+        
         [SupportedOSPlatform("windows")]
         private static bool AreMimeTypesRegisteredWindows()
         {
@@ -112,9 +125,10 @@ namespace Hyjinx.UI.Common.Helper
                     {
                         return true;
                     }
-                    Logger.Debug?.Print(LogClass.Application, $"Removing type association {ext}");
+                    
+                    _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Removing type association {ext}", ext);
                     Registry.CurrentUser.DeleteSubKeyTree(keyString);
-                    Logger.Debug?.Print(LogClass.Application, $"Removed type association {ext}");
+                    _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Removed type association {ext}", ext);
                 }
                 else
                 {
@@ -125,10 +139,10 @@ namespace Hyjinx.UI.Common.Helper
                         return false;
                     }
 
-                    Logger.Debug?.Print(LogClass.Application, $"Adding type association {ext}");
+                    _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Adding type association {ext}", ext);
                     using var openCmd = key.CreateSubKey(@"shell\open\command");
                     openCmd.SetValue("", $"\"{Environment.ProcessPath}\" \"%1\"");
-                    Logger.Debug?.Print(LogClass.Application, $"Added type association {ext}");
+                    _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Added type association {ext}", ext);
 
                 }
 

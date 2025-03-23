@@ -1,6 +1,6 @@
 using MsgPack;
 using MsgPack.Serialization;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Prepo.Types;
@@ -9,6 +9,7 @@ using Hyjinx.Horizon.Sdk.Arp;
 using Hyjinx.Horizon.Sdk.Prepo;
 using Hyjinx.Horizon.Sdk.Sf;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 using ApplicationId = Hyjinx.Horizon.Sdk.Ncm.ApplicationId;
@@ -23,6 +24,7 @@ namespace Hyjinx.Horizon.Prepo.Ipc
             System,
         }
 
+        private readonly ILogger<PrepoService> _logger = Logger.DefaultLoggerFactory.CreateLogger<PrepoService>();
         private readonly ArpApi _arp;
         private readonly PrepoServicePermissionLevel _permissionLevel;
         private ulong _systemSessionId;
@@ -231,7 +233,7 @@ namespace Hyjinx.Horizon.Prepo.Ipc
             builder.AppendLine($" Room: {gameRoom}");
             builder.AppendLine($" Report: {MessagePackObjectFormatter.Format(deserializedReport)}");
 
-            Logger.Info?.Print(LogClass.ServicePrepo, builder.ToString());
+            _logger.LogInformation(new EventId((int)LogClass.ServicePrepo, nameof(LogClass.ServicePrepo)), "{message}", builder);
 
             return Result.Success;
         }

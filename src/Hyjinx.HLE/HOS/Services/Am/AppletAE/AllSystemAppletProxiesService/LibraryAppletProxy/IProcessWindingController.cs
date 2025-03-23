@@ -2,7 +2,7 @@ using Hyjinx.Common;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletProxy
 {
-    class IProcessWindingController : IpcService
+    class IProcessWindingController : IpcService<IProcessWindingController>
     {
         public IProcessWindingController() { }
 

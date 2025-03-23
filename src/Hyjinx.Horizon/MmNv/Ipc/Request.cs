@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.MmNv;
 using Hyjinx.Horizon.Sdk.Sf;
@@ -17,7 +17,7 @@ namespace Hyjinx.Horizon.MmNv.Ipc
         {
             bool isAutoClearEvent = autoClearEvent != 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, fgmPriority, isAutoClearEvent });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, fgmPriority, isAutoClearEvent });
 
             Register(module, fgmPriority, isAutoClearEvent);
 
@@ -27,7 +27,7 @@ namespace Hyjinx.Horizon.MmNv.Ipc
         [CmifCommand(1)]
         public Result FinalizeOld(Module module)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module });
 
             lock (_sessionList)
             {
@@ -40,7 +40,7 @@ namespace Hyjinx.Horizon.MmNv.Ipc
         [CmifCommand(2)]
         public Result SetAndWaitOld(Module module, uint clockRateMin, int clockRateMax)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, clockRateMin, clockRateMax });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, clockRateMin, clockRateMax });
 
             lock (_sessionList)
             {
@@ -53,7 +53,7 @@ namespace Hyjinx.Horizon.MmNv.Ipc
         [CmifCommand(3)]
         public Result GetOld(out uint clockRateActual, Module module)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module });
 
             lock (_sessionList)
             {
@@ -70,7 +70,7 @@ namespace Hyjinx.Horizon.MmNv.Ipc
         {
             bool isAutoClearEvent = autoClearEvent != 0;
 
-            Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, fgmPriority, isAutoClearEvent });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, fgmPriority, isAutoClearEvent });
 
             requestId = Register(module, fgmPriority, isAutoClearEvent);
 
@@ -80,7 +80,7 @@ namespace Hyjinx.Horizon.MmNv.Ipc
         [CmifCommand(5)]
         public Result Finalize(uint requestId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId });
 
             lock (_sessionList)
             {
@@ -93,7 +93,7 @@ namespace Hyjinx.Horizon.MmNv.Ipc
         [CmifCommand(6)]
         public Result SetAndWait(uint requestId, uint clockRateMin, int clockRateMax)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId, clockRateMin, clockRateMax });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId, clockRateMin, clockRateMax });
 
             lock (_sessionList)
             {
@@ -106,7 +106,7 @@ namespace Hyjinx.Horizon.MmNv.Ipc
         [CmifCommand(7)]
         public Result Get(out uint clockRateActual, uint requestId)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId });
+            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId });
 
             lock (_sessionList)
             {

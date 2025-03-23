@@ -1,11 +1,11 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
 
 namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 {
-    class IPsmSession : IpcService
+    class IPsmSession : IpcService<IPsmSession>
     {
         private readonly KEvent _stateChangeEvent;
         private int _stateChangeEventHandle;
@@ -32,7 +32,7 @@ namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
 
             context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_stateChangeEventHandle);
 
-            Logger.Stub?.PrintStub(LogClass.ServicePsm);
+            // Logger.Stub?.PrintStub(LogClass.ServicePsm);
 
             return ResultCode.Success;
         }
@@ -47,7 +47,7 @@ namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
                 _stateChangeEventHandle = -1;
             }
 
-            Logger.Stub?.PrintStub(LogClass.ServicePsm);
+            // Logger.Stub?.PrintStub(LogClass.ServicePsm);
 
             return ResultCode.Success;
         }
@@ -58,7 +58,7 @@ namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
         {
             bool chargerTypeChangeEventEnabled = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargerTypeChangeEventEnabled });
+            // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargerTypeChangeEventEnabled });
 
             return ResultCode.Success;
         }
@@ -69,7 +69,7 @@ namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
         {
             bool powerSupplyChangeEventEnabled = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServicePsm, new { powerSupplyChangeEventEnabled });
+            // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { powerSupplyChangeEventEnabled });
 
             return ResultCode.Success;
         }
@@ -80,7 +80,7 @@ namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
         {
             bool batteryVoltageStateChangeEventEnabled = context.RequestData.ReadBoolean();
 
-            Logger.Stub?.PrintStub(LogClass.ServicePsm, new { batteryVoltageStateChangeEventEnabled });
+            // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { batteryVoltageStateChangeEventEnabled });
 
             return ResultCode.Success;
         }

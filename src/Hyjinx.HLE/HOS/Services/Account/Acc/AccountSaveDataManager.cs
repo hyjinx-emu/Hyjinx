@@ -1,7 +1,8 @@
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Account.Acc.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,8 +12,9 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
 {
     class AccountSaveDataManager
     {
+        private readonly ILogger<AccountSaveDataManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<AccountSaveDataManager>();
         private readonly string _profilesJsonPath = Path.Join(AppDataManager.BaseDirPath, "system", "Profiles.json");
-
+        
         private static readonly ProfilesJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
         public UserId LastOpened { get; set; }
@@ -38,7 +40,9 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error?.Print(LogClass.Application, $"Failed to parse {_profilesJsonPath}: {ex.Message} Loading default profile!");
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        ex, "Failed to parse {profilesJsonPath}, loading default profile!",
+                        _profilesJsonPath);
 
                     LastOpened = AccountManager.DefaultUserId;
                 }

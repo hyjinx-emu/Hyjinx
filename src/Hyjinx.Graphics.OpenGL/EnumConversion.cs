@@ -1,12 +1,22 @@
 using OpenTK.Graphics.OpenGL;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Shader;
+using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.Graphics.OpenGL
 {
     static class EnumConversion
     {
+        private static readonly ILogger _logger =
+            Logger.DefaultLoggerFactory.CreateLogger(typeof(EnumConversion).FullName!);
+        
+        private static void LogInvalidEnumValue<T>(T value)
+        {
+            _logger.LogDebug(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)),
+                $"Invalid {nameof(T)} enum value {value}");
+        }
+        
         public static TextureWrapMode Convert(this AddressMode mode)
         {
             switch (mode)
@@ -29,8 +39,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return TextureWrapMode.ClampToEdge;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(AddressMode)} enum value: {mode}.");
-
+            LogInvalidEnumValue(mode);
             return TextureWrapMode.Clamp;
         }
 
@@ -131,9 +140,9 @@ namespace Hyjinx.Graphics.OpenGL
                 case AdvancedBlendOp.HslLuminosity:
                     return NvBlendEquationAdvanced.HslLuminosityNv;
             }
-
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(AdvancedBlendOp)} enum value: {op}.");
-
+            
+            LogInvalidEnumValue(op);
+            
             return NvBlendEquationAdvanced.Zero;
         }
 
@@ -149,7 +158,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return All.ConjointNv;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(AdvancedBlendOverlap)} enum value: {overlap}.");
+            LogInvalidEnumValue(overlap);
 
             return All.UncorrelatedNv;
         }
@@ -213,7 +222,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return All.OneMinusConstantAlpha;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(BlendFactor)} enum value: {factor}.");
+            LogInvalidEnumValue(factor);
 
             return All.Zero;
         }
@@ -239,8 +248,8 @@ namespace Hyjinx.Graphics.OpenGL
                     return BlendEquationMode.FuncReverseSubtract;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(BlendOp)} enum value: {op}.");
-
+            LogInvalidEnumValue(op);
+            
             return BlendEquationMode.FuncAdd;
         }
 
@@ -253,9 +262,9 @@ namespace Hyjinx.Graphics.OpenGL
                 case CompareMode.CompareRToTexture:
                     return TextureCompareMode.CompareRToTexture;
             }
-
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(CompareMode)} enum value: {mode}.");
-
+            
+            LogInvalidEnumValue(mode);
+            
             return TextureCompareMode.None;
         }
 
@@ -289,7 +298,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return All.Always;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(CompareOp)} enum value: {op}.");
+            LogInvalidEnumValue(op);
 
             return All.Never;
         }
@@ -304,7 +313,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return ClipDepthMode.ZeroToOne;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(DepthMode)} enum value: {mode}.");
+            LogInvalidEnumValue(mode);
 
             return ClipDepthMode.NegativeOneToOne;
         }
@@ -319,7 +328,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return All.StencilIndex;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(DepthStencilMode)} enum value: {mode}.");
+            LogInvalidEnumValue(mode);
 
             return All.Depth;
         }
@@ -335,8 +344,8 @@ namespace Hyjinx.Graphics.OpenGL
                 case Face.FrontAndBack:
                     return CullFaceMode.FrontAndBack;
             }
-
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(Face)} enum value: {face}.");
+            
+            LogInvalidEnumValue(face);
 
             return CullFaceMode.Back;
         }
@@ -351,7 +360,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return FrontFaceDirection.Ccw;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(FrontFace)} enum value: {frontFace}.");
+            LogInvalidEnumValue(frontFace);
 
             return FrontFaceDirection.Cw;
         }
@@ -368,7 +377,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return DrawElementsType.UnsignedInt;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(IndexType)} enum value: {type}.");
+            LogInvalidEnumValue(type);
 
             return DrawElementsType.UnsignedByte;
         }
@@ -383,7 +392,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return TextureMagFilter.Linear;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(MagFilter)} enum value: {filter}.");
+            LogInvalidEnumValue(filter);
 
             return TextureMagFilter.Nearest;
         }
@@ -406,7 +415,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return TextureMinFilter.LinearMipmapLinear;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(MinFilter)} enum value: {filter}.");
+            LogInvalidEnumValue(filter);
 
             return TextureMinFilter.Nearest;
         }
@@ -423,7 +432,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return OpenTK.Graphics.OpenGL.PolygonMode.Fill;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(Hyjinx.Graphics.GAL.PolygonMode)} enum value: {mode}.");
+            LogInvalidEnumValue(mode);
 
             return OpenTK.Graphics.OpenGL.PolygonMode.Fill;
         }
@@ -464,7 +473,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return PrimitiveType.Patches;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(PrimitiveTopology)} enum value: {topology}.");
+            LogInvalidEnumValue(topology);
 
             return PrimitiveType.Points;
         }
@@ -489,7 +498,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return TransformFeedbackPrimitiveType.Triangles;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(PrimitiveTopology)} enum value: {topology}.");
+            LogInvalidEnumValue(topology);
 
             return TransformFeedbackPrimitiveType.Points;
         }
@@ -524,7 +533,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return OpenTK.Graphics.OpenGL.StencilOp.DecrWrap;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(Hyjinx.Graphics.GAL.StencilOp)} enum value: {op}.");
+            LogInvalidEnumValue(op);
 
             return OpenTK.Graphics.OpenGL.StencilOp.Keep;
         }
@@ -547,7 +556,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return All.Alpha;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(SwizzleComponent)} enum value: {swizzleComponent}.");
+            LogInvalidEnumValue(swizzleComponent);
 
             return All.Zero;
         }
@@ -583,7 +592,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return TextureTarget.TextureBuffer;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(Target)} enum value: {target}.");
+            LogInvalidEnumValue(target);
 
             return TextureTarget.Texture2D;
         }
@@ -610,7 +619,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return NvViewportSwizzle.ViewportSwizzleNegativeWNv;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(ViewportSwizzle)} enum value: {swizzle}.");
+            LogInvalidEnumValue(swizzle);
 
             return NvViewportSwizzle.ViewportSwizzlePositiveXNv;
         }
@@ -653,7 +662,7 @@ namespace Hyjinx.Graphics.OpenGL
                     return All.Set;
             }
 
-            Logger.Debug?.Print(LogClass.Gpu, $"Invalid {nameof(LogicalOp)} enum value: {op}.");
+            LogInvalidEnumValue(op);
 
             return All.Never;
         }

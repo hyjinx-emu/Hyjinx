@@ -1,8 +1,9 @@
 using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
@@ -12,8 +13,11 @@ using static SDL2.SDL;
 
 namespace Hyjinx.Audio.Backends.SDL2
 {
-    class SDL2HardwareDeviceSession : HardwareDeviceSessionOutputBase
+    partial class SDL2HardwareDeviceSession : HardwareDeviceSessionOutputBase
     {
+        private readonly ILogger<SDL2HardwareDeviceSession> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<SDL2HardwareDeviceSession>();
+        
         private readonly SDL2HardwareDeviceDriver _driver;
         private readonly ConcurrentQueue<SDL2AudioBuffer> _queuedBuffers;
         private readonly IDynamicRingBuffer _ringBuffer;
@@ -67,10 +71,15 @@ namespace Hyjinx.Audio.Backends.SDL2
 
                     SDL_PauseAudioDevice(_outputStream, _started ? 0 : 1);
 
-                    Logger.Info?.Print(LogClass.Audio, $"New audio stream setup with a target sample count of {_sampleCount}");
+                    LogNewAudioStreamConfigured(_sampleCount);
                 }
             }
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+            Message = "New audio stream setup with a target sample count of {sampleCount}.")]
+        private partial void LogNewAudioStreamConfigured(uint sampleCount);
 
         private unsafe void Update(IntPtr userdata, IntPtr stream, int streamLength)
         {

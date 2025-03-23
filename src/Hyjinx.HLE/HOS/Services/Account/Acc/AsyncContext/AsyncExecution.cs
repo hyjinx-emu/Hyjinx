@@ -1,13 +1,17 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Kernel.Threading;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext
 {
-    class AsyncExecution
+    internal partial class AsyncExecution
     {
+        private static readonly ILogger<AsyncExecution> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<AsyncExecution>();
+
         private readonly CancellationTokenSource _tokenSource;
         private readonly CancellationToken _token;
 
@@ -37,7 +41,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext
                 }
                 catch (Exception ex)
                 {
-                    Logger.Warning?.Print(LogClass.ServiceAcc, $"Exception: {ex.Message}");
+                    LogUnexpectedErrorOccurred(ex);
                 }
 
                 SystemEvent.ReadableEvent.Signal();
@@ -47,6 +51,11 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext
 
             IsInitialized = true;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceAcc, EventName = nameof(LogClass.ServiceAcc),
+            Message = "An unexpected error occurred.")]
+        private partial void LogUnexpectedErrorOccurred(Exception exception);
 
         public void Cancel()
         {

@@ -1,14 +1,18 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Device;
 using Hyjinx.Graphics.Nvdec.Image;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace Hyjinx.Graphics.Nvdec
 {
-    public class NvdecDevice : IDeviceStateWithContext
+    public partial class NvdecDevice : IDeviceStateWithContext
     {
+        private readonly ILogger<NvdecDevice> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<NvdecDevice>();
+        
         private readonly ResourceManager _rm;
         private readonly DeviceState<NvdecRegisters> _state;
 
@@ -74,9 +78,14 @@ namespace Hyjinx.Graphics.Nvdec
                     Vp9Decoder.Decode(_rm, ref _state.State);
                     break;
                 default:
-                    Logger.Error?.Print(LogClass.Nvdec, $"Unsupported codec \"{applicationId}\".");
+                    LogUnsupportedCodec(applicationId);
                     break;
             }
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Nvdec, EventName = nameof(LogClass.Nvdec),
+            Message = "Unsupported codec '{applicationId}'.")]
+        private partial void LogUnsupportedCodec(ApplicationId applicationId);
     }
 }

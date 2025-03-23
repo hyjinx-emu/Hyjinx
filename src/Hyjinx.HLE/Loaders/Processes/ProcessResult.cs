@@ -1,22 +1,24 @@
 using LibHac.Common;
 using LibHac.Loader;
 using LibHac.Ns;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hyjinx.HLE.Loaders.Processes
 {
-    public class ProcessResult
+    public partial class ProcessResult
     {
         public static ProcessResult Failed => new(null, new BlitStruct<ApplicationControlProperty>(1), false, false, null, 0, 0, 0, TitleLanguage.AmericanEnglish);
-
+        private static readonly ILogger<ProcessResult> _logger = Logger.DefaultLoggerFactory.CreateLogger<ProcessResult>();
+        
         private readonly byte _mainThreadPriority;
         private readonly uint _mainThreadStackSize;
-
+        
         public readonly IDiskCacheLoadState DiskCacheLoadState;
 
         public readonly MetaLoader MetaLoader;
@@ -79,7 +81,7 @@ namespace Hyjinx.HLE.Loaders.Processes
             Result result = device.System.KernelContext.Processes[ProcessId].Start(_mainThreadPriority, _mainThreadStackSize);
             if (result != Result.Success)
             {
-                Logger.Error?.Print(LogClass.Loader, $"Process start returned error \"{result}\".");
+                LogProcessStartFailure(result);
 
                 return false;
             }
@@ -87,9 +89,19 @@ namespace Hyjinx.HLE.Loaders.Processes
             // TODO: LibHac npdm currently doesn't support version field.
             string version = ProgramId > 0x0100000000007FFF ? DisplayVersion : device.System.ContentManager.GetCurrentFirmwareVersion()?.VersionString ?? "?";
 
-            Logger.Info?.Print(LogClass.Loader, $"Application Loaded: {Name} v{version} [{ProgramIdText}] [{(Is64Bit ? "64-bit" : "32-bit")}]");
+            LogApplicationLoaded(Name, version, ProgramIdText, Is64Bit ? "64-bit" : "32-bit");
 
             return true;
         }
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Process start returned error {result}.")]
+        private partial void LogProcessStartFailure(Result result);
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Application loaded: {name} v{version} [{programIdText}] [{bits}]")]
+        private partial void LogApplicationLoaded(string name, string version, string programIdText, string bits);
     }
 }

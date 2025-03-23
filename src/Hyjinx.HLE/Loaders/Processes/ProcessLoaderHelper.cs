@@ -10,7 +10,7 @@ using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Common;
@@ -20,6 +20,7 @@ using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Arp;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -27,13 +28,15 @@ using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace Hyjinx.HLE.Loaders.Processes
 {
-    static class ProcessLoaderHelper
+    static partial class ProcessLoaderHelper
     {
         // NOTE: If you want to change this value make sure to increment the InternalVersion of Ptc and PtcProfiler.
         //       You also need to add a new migration path and adjust the existing ones.
         // TODO: Remove this workaround when ASLR is implemented.
         private const ulong CodeStartOffset = 0x500000UL;
 
+        private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(ProcessLoaderHelper));
+        
         public static LibHac.Result RegisterProgramMapInfo(Switch device, IFileSystem partitionFileSystem)
         {
             ulong applicationId = 0;
@@ -95,9 +98,19 @@ namespace Hyjinx.HLE.Loaders.Processes
             return device.System.LibHacHorizonManager.NsClient.Fs.RegisterProgramIndexMapInfo(mapInfo[..programCount]);
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Error calling {methodName}. Result {result}")]
+        private static partial void LogErrorCallingMethod(ILogger logger, string methodName, LibHac.Result result);
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Ensuring required savedata exists.")]
+        private static partial void LogEnsuringRequiredDataExists(ILogger logger);
+        
         public static LibHac.Result EnsureSaveData(Switch device, ApplicationId applicationId, BlitStruct<ApplicationControlProperty> applicationControlProperty)
         {
-            Logger.Info?.Print(LogClass.Application, "Ensuring required savedata exists.");
+            LogEnsuringRequiredDataExists(_logger);
 
             ref ApplicationControlProperty control = ref applicationControlProperty.Value;
 
@@ -111,13 +124,13 @@ namespace Hyjinx.HLE.Loaders.Processes
                 control.UserAccountSaveDataJournalSize = 0x4000;
                 control.SaveDataOwnerId = applicationId.Value;
 
-                Logger.Warning?.Print(LogClass.Application, "No control file was found for this game. Using a dummy one instead. This may cause inaccuracies in some games.");
+                LogNoControlFileFoundForGame(_logger);
             }
 
             LibHac.Result resultCode = device.System.LibHacHorizonManager.HyjinxClient.Fs.EnsureApplicationCacheStorage(out _, out _, applicationId, in control);
             if (resultCode.IsFailure())
             {
-                Logger.Error?.Print(LogClass.Application, $"Error calling EnsureApplicationCacheStorage. Result code {resultCode.ToStringWithName()}");
+                LogErrorCallingMethod(_logger, nameof(ApplicationSaveDataManagement.EnsureApplicationCacheStorage), resultCode);
 
                 return resultCode;
             }
@@ -127,12 +140,17 @@ namespace Hyjinx.HLE.Loaders.Processes
             resultCode = device.System.LibHacHorizonManager.HyjinxClient.Fs.EnsureApplicationSaveData(out _, applicationId, in control, in userId);
             if (resultCode.IsFailure())
             {
-                Logger.Error?.Print(LogClass.Application, $"Error calling EnsureApplicationSaveData. Result code {resultCode.ToStringWithName()}");
+                LogErrorCallingMethod(_logger, nameof(ApplicationSaveDataManagement.EnsureApplicationSaveData), resultCode);
             }
 
             return resultCode;
         }
-
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "No control file was found for this game. Using a dummy one instead. This may cause inaccuracies in some games.")]
+        private static partial void LogNoControlFileFoundForGame(ILogger logger);
+        
         public static bool LoadKip(KernelContext context, KipExecutable kip)
         {
             uint endOffset = kip.DataOffset + (uint)kip.Data.Length;
@@ -173,7 +191,7 @@ namespace Hyjinx.HLE.Loaders.Processes
             Result result = region.AllocatePages(out KPageList pageList, (ulong)codePagesCount);
             if (result != Result.Success)
             {
-                Logger.Error?.Print(LogClass.Loader, $"Process initialization returned error \"{result}\".");
+                LogProcessInitializationError(_logger, result);
 
                 return false;
             }
@@ -192,7 +210,7 @@ namespace Hyjinx.HLE.Loaders.Processes
             result = process.InitializeKip(creationInfo, kip.Capabilities, pageList, context.ResourceLimit, memoryRegion, processContextFactory);
             if (result != Result.Success)
             {
-                Logger.Error?.Print(LogClass.Loader, $"Process initialization returned error \"{result}\".");
+                LogProcessInitializationError(_logger, result);
 
                 return false;
             }
@@ -200,7 +218,7 @@ namespace Hyjinx.HLE.Loaders.Processes
             result = LoadIntoMemory(process, kip, codeBaseAddress);
             if (result != Result.Success)
             {
-                Logger.Error?.Print(LogClass.Loader, $"Process initialization returned error \"{result}\".");
+                LogProcessInitializationError(_logger, result);
 
                 return false;
             }
@@ -210,7 +228,7 @@ namespace Hyjinx.HLE.Loaders.Processes
             result = process.Start(kip.Priority, (ulong)kip.StackSize);
             if (result != Result.Success)
             {
-                Logger.Error?.Print(LogClass.Loader, $"Process start returned error \"{result}\".");
+                LogProcessStartError(_logger, result);
 
                 return false;
             }
@@ -220,6 +238,21 @@ namespace Hyjinx.HLE.Loaders.Processes
             return true;
         }
 
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Process initialization returned error '{result}'.")]
+        private static partial void LogProcessInitializationError(ILogger logger, Result result);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Process initialization returned error '{result}'.")]
+        private static partial void LogProcessInitializationError(ILogger logger, LibHac.Result result);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Process start returned error '{result}'.")]
+        private static partial void LogProcessStartError(ILogger logger, Result result);
+        
         public static ProcessResult LoadNsos(
             Switch device,
             KernelContext context,
@@ -239,7 +272,7 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             if (resultCode.IsFailure())
             {
-                Logger.Error?.Print(LogClass.Loader, $"Process initialization failed getting npdm. Result Code {resultCode.ToStringWithName()}");
+                LogProcessInitializationError(_logger, resultCode);
 
                 return ProcessResult.Failed;
             }
@@ -341,7 +374,7 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             if (result != Result.Success)
             {
-                Logger.Error?.Print(LogClass.Loader, "Process initialization failed setting resource limit values.");
+                LogFailedSettingResourceLimits(_logger);
 
                 return ProcessResult.Failed;
             }
@@ -352,7 +385,7 @@ namespace Hyjinx.HLE.Loaders.Processes
             MemoryRegion memoryRegion = (MemoryRegion)(npdm.Acid.Flags >> 2 & 0xf);
             if (memoryRegion > MemoryRegion.NvServices)
             {
-                Logger.Error?.Print(LogClass.Loader, "Process initialization failed due to invalid ACID flags.");
+                LogInvalidAcidFlags(_logger);
 
                 return ProcessResult.Failed;
             }
@@ -386,19 +419,19 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             if (result != Result.Success)
             {
-                Logger.Error?.Print(LogClass.Loader, $"Process initialization returned error \"{result}\".");
+                LogProcessInitializationError(_logger, result);
 
                 return ProcessResult.Failed;
             }
 
             for (int index = 0; index < executables.Length; index++)
             {
-                Logger.Info?.Print(LogClass.Loader, $"Loading image {index} at 0x{nsoBase[index]:x16}...");
+                LogLoadingImage(_logger, index, nsoBase[index]);
 
                 result = LoadIntoMemory(process, executables[index], nsoBase[index]);
                 if (result != Result.Success)
                 {
-                    Logger.Error?.Print(LogClass.Loader, $"Process initialization returned error \"{result}\".");
+                    LogProcessInitializationError(_logger, result);
 
                     return ProcessResult.Failed;
                 }
@@ -453,6 +486,21 @@ namespace Hyjinx.HLE.Loaders.Processes
             return processResult;
         }
 
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Loading image {index} at 0x{location:X16}...")]
+        private static partial void LogLoadingImage(ILogger logger, int index, ulong location);
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Process initialization failed setting resource limit values.")]
+        private static partial void LogFailedSettingResourceLimits(ILogger logger);
+
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+            Message = "Process initialization failed due to invalid ACID flags.")]
+        private static partial void LogInvalidAcidFlags(ILogger logger);
+        
         public static Result LoadIntoMemory(KProcess process, IExecutable image, ulong baseAddress)
         {
             ulong textStart = baseAddress + image.TextOffset;

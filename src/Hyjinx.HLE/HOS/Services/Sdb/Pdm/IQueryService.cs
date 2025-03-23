@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.Sdb.Pdm.QueryService;
 namespace Hyjinx.HLE.HOS.Services.Sdb.Pdm
 {
     [Service("pdm:qry")]
-    class IQueryService : IpcService
+    class IQueryService : IpcService<IQueryService>
     {
         public IQueryService(ServiceCtx context) { }
 

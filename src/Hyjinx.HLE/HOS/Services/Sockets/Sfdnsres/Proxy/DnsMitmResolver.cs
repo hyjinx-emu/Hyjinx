@@ -1,5 +1,6 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Sockets.Nsd;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,15 +9,28 @@ using System.Net;
 
 namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
 {
-    class DnsMitmResolver
+    partial class DnsMitmResolver
     {
         private const string HostsFilePath = "/atmosphere/hosts/default.txt";
 
+        private static readonly ILogger<DnsMitmResolver> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<DnsMitmResolver>();
+        
         private static DnsMitmResolver _instance;
         public static DnsMitmResolver Instance => _instance ??= new DnsMitmResolver();
 
         private readonly Dictionary<string, IPAddress> _mitmHostEntries = new();
-
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Invalid entry in hosts file: {line}")]
+        private partial void LogInvalidEntryInHostsFile(string line);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "Failed to parse IP address in hosts file: {line}")]
+        private partial void LogFailedToParseIpAddress(string line);
+        
         public void ReloadEntries(ServiceCtx context)
         {
             string sdPath = FileSystem.VirtualFileSystem.GetSdCardPath();
@@ -52,16 +66,14 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
                     // 0. Check the size of the array
                     if (entry.Length < 2)
                     {
-                        Logger.Warning?.PrintMsg(LogClass.ServiceBsd, $"Invalid entry in hosts file: {line}");
-
+                        LogInvalidEntryInHostsFile(line);
                         continue;
                     }
 
                     // 1. Parse the address
                     if (!IPAddress.TryParse(entry[0], out IPAddress address))
                     {
-                        Logger.Warning?.PrintMsg(LogClass.ServiceBsd, $"Failed to parse IP address in hosts file: {entry[0]}");
-
+                        LogFailedToParseIpAddress(entry[0]);
                         continue;
                     }
 
@@ -88,7 +100,8 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
                 // NOTE: MatchesSimpleExpression also allows "?" as a wildcard
                 if (FileSystemName.MatchesSimpleExpression(hostEntry.Key, host))
                 {
-                    Logger.Info?.PrintMsg(LogClass.ServiceBsd, $"Redirecting '{host}' to: {hostEntry.Value}");
+                    _logger.LogInformation(new EventId((int)LogClass.ServiceBsd, nameof(LogClass.ServiceBsd)),
+                        "Redirecting '{host}' to: {address}", host, hostEntry.Value);
 
                     return new IPHostEntry
                     {

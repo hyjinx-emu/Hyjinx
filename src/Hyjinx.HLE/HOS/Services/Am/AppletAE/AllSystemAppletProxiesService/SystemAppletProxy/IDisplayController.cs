@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.Horizon.Common;
@@ -6,7 +6,7 @@ using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class IDisplayController : IpcService
+    class IDisplayController : IpcService<IDisplayController>
     {
         private readonly KTransferMemory _transferMem;
         private bool _lastApplicationCaptureBufferAcquired;
@@ -24,7 +24,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Syst
             bool unknown1 = context.RequestData.ReadBoolean();
             int unknown2 = context.RequestData.ReadInt32();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm, new { unknown1, unknown2 });
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { unknown1, unknown2 });
 
             return ResultCode.Success;
         }

@@ -1,9 +1,9 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Time.Clock;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.HLE.Utilities;
-using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 {
-    class ITimeZoneServiceForPsc : IpcService
+    partial class ITimeZoneServiceForPsc : IpcService<ITimeZoneServiceForPsc>
     {
         private readonly TimeZoneManager _timeZoneManager;
         private readonly bool _writePermission;
@@ -152,7 +152,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
             if (timeZoneRuleBufferSize != 0x4000)
             {
                 // TODO: find error code here
-                Logger.Error?.Print(LogClass.ServiceTime, $"TimeZoneRule buffer size is 0x{timeZoneRuleBufferSize:x} (expected 0x4000)");
+                LogInvalidBufferSize(timeZoneRuleBufferSize);
 
                 throw new InvalidOperationException();
             }
@@ -172,6 +172,11 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 
             return result;
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+            Message = "TimeZoneRule buffer size is 0x{size:x} (expected 0x4000)")]
+        private partial void LogInvalidBufferSize(ulong size);
 
         [CommandCmif(20)] // 9.0.0+
         // GetDeviceLocationNameOperationEventReadableHandle() -> handle<copy>
@@ -191,7 +196,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
             if (bufferSize != 0x4000)
             {
                 // TODO: find error code here
-                Logger.Error?.Print(LogClass.ServiceTime, $"TimeZoneRule buffer size is 0x{bufferSize:x} (expected 0x4000)");
+                LogInvalidBufferSize(bufferSize);
 
                 throw new InvalidOperationException();
             }
@@ -236,7 +241,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
             if (inBufferSize != 0x4000)
             {
                 // TODO: find error code here
-                Logger.Error?.Print(LogClass.ServiceTime, $"TimeZoneRule buffer size is 0x{inBufferSize:x} (expected 0x4000)");
+                LogInvalidBufferSize(inBufferSize);
 
                 throw new InvalidOperationException();
             }

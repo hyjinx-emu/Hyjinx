@@ -1,15 +1,16 @@
 using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL.Image;
 using Hyjinx.Graphics.OpenGL.Queries;
 using Hyjinx.Graphics.Shader.Translation;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hyjinx.Graphics.OpenGL
 {
-    public sealed class OpenGLRenderer : IRenderer
+    public sealed partial class OpenGLRenderer : IRenderer
     {
         private readonly Pipeline _pipeline;
 
@@ -21,6 +22,9 @@ namespace Hyjinx.Graphics.OpenGL
 
         public IWindow Window => _window;
 
+        private readonly ILogger<OpenGLRenderer> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<OpenGLRenderer>();
+        
         private readonly TextureCopy _textureCopy;
         private readonly TextureCopy _backgroundTextureCopy;
         internal TextureCopy TextureCopy => BackgroundContextWorker.InBackground ? _backgroundTextureCopy : _textureCopy;
@@ -253,8 +257,13 @@ namespace Hyjinx.Graphics.OpenGL
             GpuRenderer = GL.GetString(StringName.Renderer);
             GpuVersion = GL.GetString(StringName.Version);
 
-            Logger.Notice.Print(LogClass.Gpu, $"{GpuVendor} {GpuRenderer} ({GpuVersion})");
+            LogGpuInformation(GpuVendor, GpuRenderer, GpuVendor);
         }
+
+        [LoggerMessage(LogLevel.Critical,
+            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+            Message = "{vendorName} {renderer} {gpuVersion}")]
+        private partial void LogGpuInformation(string vendorName, string renderer, string gpuVersion);
 
         public void ResetCounter(CounterType type)
         {

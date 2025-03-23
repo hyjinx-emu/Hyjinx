@@ -5,7 +5,7 @@ using Hyjinx.HLE.HOS.Services.Settings;
 namespace Hyjinx.HLE.HOS.Services.Bluetooth
 {
     [Service("bt")]
-    class IBluetoothUser : IpcService
+    class IBluetoothUser : IpcService<IBluetoothUser>
     {
         public IBluetoothUser(ServiceCtx context) { }
 

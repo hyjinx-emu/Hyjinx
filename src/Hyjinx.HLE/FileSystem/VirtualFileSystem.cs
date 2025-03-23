@@ -13,8 +13,9 @@ using LibHac.Tools.Es;
 using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers.Text;
 using System.Collections.Concurrent;
@@ -25,7 +26,7 @@ using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem
 {
-    public class VirtualFileSystem : IDisposable
+    public partial class VirtualFileSystem : IDisposable
     {
         public static readonly string SafeNandPath = Path.Combine(AppDataManager.DefaultNandDir, "safe");
         public static readonly string SystemNandPath = Path.Combine(AppDataManager.DefaultNandDir, "system");
@@ -36,6 +37,9 @@ namespace Hyjinx.HLE.FileSystem
         public SdmmcApi SdCard { get; private set; }
         public ModLoader ModLoader { get; private set; }
 
+        private static readonly ILogger<VirtualFileSystem> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<VirtualFileSystem>();
+        
         private readonly ConcurrentDictionary<ulong, Stream> _romFsByPid;
 
         private static bool _isInitialized = false;
@@ -359,13 +363,13 @@ namespace Hyjinx.HLE.FileSystem
 
                         if (rc.IsFailure())
                         {
-                            Logger.Warning?.Print(LogClass.Application, $"Error {rc.ToStringWithName()} when creating save data 0x{info[i].SaveDataId:x} in the {spaceId} save data space");
+                            LogErrorWhenCreatingSaveData(_logger, rc.ToStringWithName(), info[i].SaveDataId, spaceId);
 
                             // Don't bother fixing the extra data if we couldn't create the directory
                             continue;
                         }
 
-                        Logger.Info?.Print(LogClass.Application, $"Recreated directory for save data 0x{info[i].SaveDataId:x} in the {spaceId} save data space");
+                        LogRecreatedDirectoryForSaveData(_logger, info[i].SaveDataId, spaceId);
 
                         // Try to fix the extra data in the new directory
                         rc = FixExtraData(out wasFixNeeded, hos, in info[i]);
@@ -373,16 +377,36 @@ namespace Hyjinx.HLE.FileSystem
 
                     if (rc.IsFailure())
                     {
-                        Logger.Warning?.Print(LogClass.Application, $"Error {rc.ToStringWithName()} when fixing extra data for save data 0x{info[i].SaveDataId:x} in the {spaceId} save data space");
+                        LogErrorWhileFixExtraDataForSaveData(_logger, rc.ToStringWithName(), info[i].SaveDataId, spaceId);
                     }
                     else if (wasFixNeeded)
                     {
-                        Logger.Info?.Print(LogClass.Application, $"Fixed extra data for save data 0x{info[i].SaveDataId:x} in the {spaceId} save data space");
+                        LogFixedExtraDataForSaveData(_logger, info[i].SaveDataId, spaceId);
                     }
                 }
             }
         }
-
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Error {error} when creating save data 0x{id:X} in the {spaceId} save data space.")]
+        private static partial void LogErrorWhenCreatingSaveData(ILogger logger, string error, ulong id, SaveDataSpaceId spaceId);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Recreated directory for save data 0x{saveDataId:x} in the {spaceId} save data space")]
+        private static partial void LogRecreatedDirectoryForSaveData(ILogger logger, ulong saveDataId, SaveDataSpaceId spaceId);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Fixed extra data for save data 0x{saveDataId:x} in the {spaceId} save data space")]
+        private static partial void LogFixedExtraDataForSaveData(ILogger logger, ulong saveDataId, SaveDataSpaceId spaceId);
+        
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Error '{message}' occurred while fixing extra data for save data 0x{saveDataId:x} in the {spaceId} save data space")]
+        private static partial void LogErrorWhileFixExtraDataForSaveData(ILogger logger, string message, ulong saveDataId, SaveDataSpaceId spaceId);
+        
         private static Result CreateSaveDataDirectory(HorizonClient hos, in SaveDataInfo info)
         {
             if (info.SpaceId != SaveDataSpaceId.User && info.SpaceId != SaveDataSpaceId.System)
@@ -502,18 +526,26 @@ namespace Hyjinx.HLE.FileSystem
 
                 if (rc.IsFailure())
                 {
-                    Logger.Warning?.Print(LogClass.Application,
-                        $"Error {rc.ToStringWithName()} when fixing extra data for system save data 0x{fixInfo.StaticSaveDataId:x}");
+                    LogErrorWhenFixingExtraData(_logger, rc.ToStringWithName(), fixInfo.StaticSaveDataId);
                 }
                 else if (wasFixNeeded)
                 {
-                    Logger.Info?.Print(LogClass.Application,
-                        $"Tried to rebuild extra data for system save data 0x{fixInfo.StaticSaveDataId:x}");
+                    LogTriedToRebuildExtraDataForSystemSaveData(_logger, fixInfo.StaticSaveDataId);
                 }
             }
 
             return Result.Success;
         }
+
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Error {error} when fixing extra data for system save data 0x{saveDataId:X}")]
+        private static partial void LogErrorWhenFixingExtraData(ILogger logger, string error, ulong saveDataId);
+        
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+            Message = "Tried to rebuild extra data for system save data 0x{staticSaveDataId:x}")]
+        private static partial void LogTriedToRebuildExtraDataForSystemSaveData(ILogger logger, ulong staticSaveDataId);
 
         private static Result FixSystemExtraData(out bool wasFixNeeded, HorizonClient hos, in ExtraDataFixInfo info)
         {

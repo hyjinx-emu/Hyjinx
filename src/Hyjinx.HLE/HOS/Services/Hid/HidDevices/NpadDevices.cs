@@ -1,9 +1,10 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Hid.Types;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,8 +12,9 @@ using System.Runtime.CompilerServices;
 
 namespace Hyjinx.HLE.HOS.Services.Hid
 {
-    public class NpadDevices : BaseDevice
+    public partial class NpadDevices : BaseDevice
     {
+        private static readonly ILogger<NpadDevices> _logger = Logger.DefaultLoggerFactory.CreateLogger<NpadDevices>();
         private const int NoMatchNotifyFrequencyMs = 2000;
         private int _activeCount;
         private long _lastNotifyTimestamp;
@@ -144,9 +146,14 @@ namespace Hyjinx.HLE.HOS.Services.Hid
 
                 _configuredTypes[(int)player] = controllerType;
 
-                Logger.Info?.Print(LogClass.Hid, $"Configured Controller {controllerType} to {player}");
+                LogConnectedControllerToPlayer(controllerType, player);
             }
         }
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Connected controller {type} to {player}")]
+        private partial void LogConnectedControllerToPlayer(ControllerType type, PlayerIndex player);
 
         public void Update(IList<GamepadInput> states)
         {
@@ -207,11 +214,21 @@ namespace Hyjinx.HLE.HOS.Services.Hid
 
             if (_activeCount == 0 && PerformanceCounter.ElapsedMilliseconds > _lastNotifyTimestamp + NoMatchNotifyFrequencyMs)
             {
-                Logger.Warning?.Print(LogClass.Hid, $"No matching controllers found. Application requests '{SupportedStyleSets}' on '{string.Join(", ", GetSupportedPlayers())}'");
+                LogNoMatchingControllersFound(SupportedStyleSets, string.Join(", ", GetSupportedPlayers()));
                 _lastNotifyTimestamp = PerformanceCounter.ElapsedMilliseconds;
             }
         }
 
+        [LoggerMessage(LogLevel.Warning,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "No matching controllers found. Application requests '{supported}' on '{selected}'")]
+        private partial void LogNoMatchingControllersFound(ControllerType supported, string selected);
+
+        [LoggerMessage(LogLevel.Information,
+            EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
+            Message = "Disconnected controller {type} from {player}")]
+        private partial void LogDisconnectedControllerFromPlayer(ControllerType type, PlayerIndex player);
+        
         private void SetupNpad(PlayerIndex player, ControllerType type)
         {
             ref NpadInternalState controller = ref _device.Hid.SharedMemory.Npads[(int)player].InternalState;
@@ -230,8 +247,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid
                 _styleSetUpdateEvents[(int)player].ReadableEvent.Signal(); // Signal disconnect
                 _activeCount--;
 
-                Logger.Info?.Print(LogClass.Hid, $"Disconnected Controller {oldType} from {player}");
-
+                LogDisconnectedControllerFromPlayer(oldType, player);
                 return;
             }
 
@@ -308,7 +324,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid
             _styleSetUpdateEvents[(int)player].ReadableEvent.Signal();
             _activeCount++;
 
-            Logger.Info?.Print(LogClass.Hid, $"Connected Controller {type} to {player}");
+            LogConnectedControllerToPlayer(type, player);
         }
 
         private ref RingLifo<NpadCommonState> GetCommonStateLifo(ref NpadInternalState npad)

@@ -1,4 +1,4 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types;
 using Hyjinx.Horizon.Common;
@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu
 {
-    class NvHostCtrlGpuDeviceFile : NvDeviceFile
+    class NvHostCtrlGpuDeviceFile : NvDeviceFile<NvHostCtrlGpuDeviceFile>
     {
         private static readonly Stopwatch _pTimer = new();
         private static readonly double _ticksToNs = (1.0 / Stopwatch.Frequency) * 1_000_000_000;
@@ -155,7 +155,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu
 
         private NvInternalResult ZbcSetTable(ref ZbcSetTableArguments arguments)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             return NvInternalResult.Success;
         }
@@ -230,7 +230,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu
 
         private NvInternalResult NumVsms(ref NumVsmsArguments arguments)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             arguments.NumVsms = 2;
 
@@ -239,7 +239,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu
 
         private NvInternalResult VsmsMapping(ref VsmsMappingArguments arguments)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             arguments.Sm0GpcIndex = 0;
             arguments.Sm0TpcIndex = 0;
@@ -251,7 +251,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu
 
         private NvInternalResult GetActiveSlotMask(ref GetActiveSlotMaskArguments arguments)
         {
-            Logger.Stub?.PrintStub(LogClass.ServiceNv);
+            // Logger.Stub?.PrintStub(LogClass.ServiceNv);
 
             arguments.Slot = 0x07;
             arguments.Mask = 0x01;

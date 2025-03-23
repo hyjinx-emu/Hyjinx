@@ -1,5 +1,5 @@
 using Hyjinx.Common;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Gpu.Engine.Types;
 using Hyjinx.Graphics.Gpu.Image;
@@ -7,6 +7,7 @@ using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader;
 using Hyjinx.Graphics.Shader;
 using Hyjinx.Graphics.Shader.Translation;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hyjinx.Graphics.Gpu.Engine.Threed.ComputeDraw
@@ -18,6 +19,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed.ComputeDraw
     {
         private const int ComputeLocalSize = 32;
 
+        private static readonly ILogger<VtgAsComputeState> _logger = Logger.DefaultLoggerFactory.CreateLogger<VtgAsComputeState>();
         private readonly GpuContext _context;
         private readonly GpuChannel _channel;
         private readonly DeviceStateWithShadow<ThreedClassState> _state;
@@ -112,7 +114,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed.ComputeDraw
                 _geometryIndexDataCount = geometryIbDataCount;
             }
         }
-
+        
         /// <summary>
         /// Emulates the vertex stage using compute.
         /// </summary>
@@ -131,7 +133,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed.ComputeDraw
 
                 if (!FormatTable.TryGetSingleComponentAttribFormat(vertexAttrib.UnpackFormat(), out Format format, out int componentsCount))
                 {
-                    Logger.Debug?.Print(LogClass.Gpu, $"Invalid attribute format 0x{vertexAttrib.UnpackFormat():X}.");
+                    _logger.LogDebug(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), "Invalid attribute format 0x{format:X}.", vertexAttrib.UnpackFormat());
 
                     format = vertexAttrib.UnpackType() switch
                     {

@@ -1,11 +1,10 @@
-using Hyjinx.Common.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace Hyjinx.Common.Utilities
+namespace Hyjinx.UI.Common.Utilities
 {
     internal static class Performance
     {
@@ -27,7 +26,7 @@ namespace Hyjinx.Common.Utilities
         }
     }
 
-    public sealed class XCIFileTrimmer
+    public sealed partial class XCIFileTrimmer
     {
         private const long BytesInAMegabyte = 1024 * 1024;
         private const int BufferSize = 8 * (int)BytesInAMegabyte;
@@ -88,32 +87,6 @@ namespace Hyjinx.Common.Utilities
         private bool _fileOK = true;
         private bool _freeSpaceChecked = false;
         private bool _freeSpaceValid = false;
-
-        public enum OperationOutcome
-        {
-            InvalidXCIFile,
-            NoTrimNecessary,
-            NoUntrimPossible,
-            FreeSpaceCheckFailed,
-            FileIOWriteError,
-            ReadOnlyFileCannotFix,
-            FileSizeChanged,
-            Successful
-        }
-
-        public enum LogType
-        {
-            Info,
-            Warn,
-            Error,
-            Progress
-        }
-
-        public interface ILog
-        {
-            public void Write(LogType logType, string text);
-            public void Progress(long current, long total, string text, bool complete);
-        }
 
         public bool FileOK => _fileOK;
         public bool Trimmed => _fileOK && FileSizeB < UntrimmedFileSizeB;

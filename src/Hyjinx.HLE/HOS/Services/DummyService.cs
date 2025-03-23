@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services
 {
-    class DummyService : IpcService
+    class DummyService : IpcService<DummyService>
     {
         public string ServiceName { get; set; }
 

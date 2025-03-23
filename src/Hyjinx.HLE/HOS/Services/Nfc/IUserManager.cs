@@ -3,7 +3,7 @@ using Hyjinx.HLE.HOS.Services.Nfc.NfcManager;
 namespace Hyjinx.HLE.HOS.Services.Nfc
 {
     [Service("nfc:user")]
-    class IUserManager : IpcService
+    class IUserManager : IpcService<IUserManager>
     {
         public IUserManager(ServiceCtx context) { }
 

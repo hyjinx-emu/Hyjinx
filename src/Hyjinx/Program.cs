@@ -5,15 +5,17 @@ using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.GraphicsDriver;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
+using Hyjinx.Logging;
 using Hyjinx.Common.SystemInterop;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.SDL2.Common;
 using Hyjinx.UI.Common;
+using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
-using Hyjinx.UI.Common.Logging;
 using Hyjinx.UI.Common.SystemInfo;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -34,10 +36,10 @@ namespace Hyjinx.Ava
         public static string ConfigurationPath { get; private set; }
         public static bool PreviewerDetached { get; private set; }
         public static bool UseHardwareAcceleration { get; private set; }
-
+        
         [LibraryImport("user32.dll", SetLastError = true)]
         public static partial int MessageBoxA(IntPtr hWnd, [MarshalAs(UnmanagedType.LPStr)] string text, [MarshalAs(UnmanagedType.LPStr)] string caption, uint type);
-
+        
         private const uint MbIconwarning = 0x30;
 
         public static void Main(string[] args)
@@ -95,15 +97,17 @@ namespace Hyjinx.Ava
             AppDomain.CurrentDomain.UnhandledException += (sender, e) => ProcessUnhandledException(e.ExceptionObject as Exception, e.IsTerminating);
             AppDomain.CurrentDomain.ProcessExit += (sender, e) => Exit();
 
+            // Initialize the logger system.
+            LoggerModule.Initialize(UpTime);
+            
+            // TODO: Viper - Fix this so it's configuration driven (it's too noisy).
+            // LoggerAdapter.Register();
+            
             // Setup base data directory.
             AppDataManager.Initialize(CommandLineState.BaseDirPathArg);
 
             // Initialize the configuration.
             ConfigurationState.Initialize();
-
-            // Initialize the logger system.
-            // LoggerAdapter.Register();
-            LoggerModule.Initialize(UpTime);
 
             // Initialize Discord integration.
             DiscordIntegrationModule.Initialize();
@@ -160,14 +164,17 @@ namespace Hyjinx.Ava
             {
                 // No configuration, we load the default values and save it to disk
                 ConfigurationPath = appDataConfigurationPath;
-                Logger.Notice.Print(LogClass.Application, $"No configuration file found. Saving default configuration to: {ConfigurationPath}");
+                
+                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "No configuration file found. Saving default configuration to: {ConfigurationPath}", ConfigurationPath);
 
                 ConfigurationState.Instance.LoadDefault();
                 ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationPath);
             }
             else
             {
-                Logger.Notice.Print(LogClass.Application, $"Loading configuration from: {ConfigurationPath}");
+                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Loading configuration from: {ConfigurationPath}", ConfigurationPath);
 
                 if (ConfigurationFileFormat.TryLoad(ConfigurationPath, out ConfigurationFileFormat configurationFileFormat))
                 {
@@ -175,7 +182,8 @@ namespace Hyjinx.Ava
                 }
                 else
                 {
-                    Logger.Warning?.PrintMsg(LogClass.Application, $"Failed to load config! Loading the default config instead.\nFailed config location: {ConfigurationPath}");
+                    Logger.DefaultLogger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Failed to load config! Loading the default config instead.\nFailed config location: {path}", ConfigurationPath);
 
                     ConfigurationState.Instance.LoadDefault();
                 }
@@ -223,31 +231,25 @@ namespace Hyjinx.Ava
 
         private static void PrintSystemInfo()
         {
-            Logger.Notice.Print(LogClass.Application, $"Hyjinx Version: {Version}");
+            Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                "Hyjinx Version: {Version}", Version);
             SystemInfo.Gather().Print();
-
-            // Logger.Notice.Print(LogClass.Application, $"Logs Enabled: {(Logger.GetEnabledLevels().Count == 0 ? "<None>" : string.Join(", ", Logger.GetEnabledLevels()))}");
-
+            
             if (AppDataManager.Mode == AppDataManager.LaunchMode.Custom)
             {
-                Logger.Notice.Print(LogClass.Application, $"Launch Mode: Custom Path {AppDataManager.BaseDirPath}");
+                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                "Launch Mode: Custom Path {BaseDirPath}", AppDataManager.BaseDirPath);
             }
             else
             {
-                Logger.Notice.Print(LogClass.Application, $"Launch Mode: {AppDataManager.Mode}");
+                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                 "Launch Mode: {Mode}", AppDataManager.Mode);
             }
         }
 
         private static void ProcessUnhandledException(Exception ex, bool isTerminating)
         {
-            string message = $"Unhandled exception caught: {ex}";
-
-            Logger.Error?.PrintMsg(LogClass.Application, message);
-
-            if (Logger.Error == null)
-            {
-                Logger.Notice.PrintMsg(LogClass.Application, message);
-            }
+            Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An unhandled exception was caught.");
 
             if (isTerminating)
             {

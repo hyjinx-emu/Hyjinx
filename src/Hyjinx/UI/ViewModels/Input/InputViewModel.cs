@@ -16,10 +16,11 @@ using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Controller.Motion;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Input;
 using Hyjinx.UI.Common.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,6 +35,9 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
 {
     public class InputViewModel : BaseModel, IDisposable
     {
+        private readonly ILogger<InputViewModel> _logger = 
+            Logger.DefaultLoggerFactory.CreateLogger<InputViewModel>();
+        
         private const string Disabled = "disabled";
         private const string ProControllerResource = "Hyjinx.UI.Common/Resources/Controller_ProCon.svg";
         private const string JoyConPairResource = "Hyjinx.UI.Common/Resources/Controller_JoyConPair.svg";
@@ -711,7 +715,8 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
                 catch (JsonException) { }
                 catch (InvalidOperationException)
                 {
-                    Logger.Error?.Print(LogClass.Configuration, $"Profile {ProfileName} is incompatible with the current input configuration system.");
+                    _logger.LogError(new EventId((int)LogClass.Configuration, nameof(LogClass.Configuration)),
+                        "Profile {ProfileName} is incompatible with the current input configuration system.", ProfileName);
 
                     await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogProfileInvalidProfileErrorMessage, ProfileName));
 

@@ -1,6 +1,7 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Texture;
 using Hyjinx.Graphics.Vic.Types;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
@@ -9,8 +10,10 @@ using static Hyjinx.Graphics.Vic.Image.SurfaceCommon;
 
 namespace Hyjinx.Graphics.Vic.Image
 {
-    class SurfaceWriter
+    partial class SurfaceWriter
     {
+        private static ILogger<SurfaceWriter> _logger = Logger.DefaultLoggerFactory.CreateLogger<SurfaceWriter>();
+        
         public static void Write(ResourceManager rm, Surface input, ref OutputSurfaceConfig config, ref PlaneOffsets offsets)
         {
             switch (config.OutPixelFormat)
@@ -26,10 +29,15 @@ namespace Hyjinx.Graphics.Vic.Image
                     WriteNv12(rm, input, ref config, ref offsets);
                     break;
                 default:
-                    Logger.Error?.Print(LogClass.Vic, $"Unsupported pixel format \"{config.OutPixelFormat}\".");
+                    LogUnsupportedPixelFormat(_logger, config.OutPixelFormat);
                     break;
             }
         }
+        
+        [LoggerMessage(LogLevel.Error,
+            EventId = (int)LogClass.Vic, EventName = nameof(LogClass.Vic),
+            Message = "Unsupported pixel format '{format}'.")]
+        private static partial void LogUnsupportedPixelFormat(ILogger logger, PixelFormat format);
 
         private unsafe static void WriteA8B8G8R8(ResourceManager rm, Surface input, ref OutputSurfaceConfig config, ref PlaneOffsets offsets)
         {

@@ -79,7 +79,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.HLE.Generators", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{0BA89F51-4EA2-495D-A732-FAABFE0A9725}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{996E745A-5BDB-432F-ADF9-2BE3F00BCB43}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{996E745A-5BDB-432F-ADF9-2BE3F00BCB43}"
 	ProjectSection(SolutionItems) = preProject
 		src\.build\exe.props = src\.build\exe.props
 		src\.build\common.props = src\.build\common.props
@@ -102,6 +102,17 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Audio.Abstractions", "src\Hyjinx.Audio.Abstractions\Hyjinx.Audio.Abstractions.csproj", "{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Input.Abstractions", "src\Hyjinx.Input.Abstractions\Hyjinx.Input.Abstractions.csproj", "{97B67FE1-134D-4436-85BD-5A652751168E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Logging", "src\Hyjinx.Logging\Hyjinx.Logging.csproj", "{8FF33806-F88F-423E-B98E-63B363E0CB5F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{EEB9FB42-5EF6-4135-B051-D5DC604AA6F2}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		Directory.Packages.props = Directory.Packages.props
+		nuget.config = nuget.config
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -281,6 +292,10 @@ Global
 		{97B67FE1-134D-4436-85BD-5A652751168E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97B67FE1-134D-4436-85BD-5A652751168E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97B67FE1-134D-4436-85BD-5A652751168E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FF33806-F88F-423E-B98E-63B363E0CB5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FF33806-F88F-423E-B98E-63B363E0CB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FF33806-F88F-423E-B98E-63B363E0CB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FF33806-F88F-423E-B98E-63B363E0CB5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -315,5 +330,6 @@ Global
 		{01B3E63B-FA18-4FFC-8896-C05132E1DABA} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{97B67FE1-134D-4436-85BD-5A652751168E} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
+		{996E745A-5BDB-432F-ADF9-2BE3F00BCB43} = {EEB9FB42-5EF6-4135-B051-D5DC604AA6F2}
 	EndGlobalSection
 EndGlobal

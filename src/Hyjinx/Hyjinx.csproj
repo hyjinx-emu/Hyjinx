@@ -8,6 +8,7 @@
     <TieredPGO>true</TieredPGO>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RootNamespace>Hyjinx.Ava</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

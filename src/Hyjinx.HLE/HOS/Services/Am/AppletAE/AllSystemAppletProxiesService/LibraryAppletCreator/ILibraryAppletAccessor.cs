@@ -1,14 +1,15 @@
-using Hyjinx.Common.Logging;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Applets;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.LibraryAppletCreator
 {
-    class ILibraryAppletAccessor : DisposableIpcService
+    class ILibraryAppletAccessor : DisposableIpcService<ILibraryAppletAccessor>
     {
         private readonly KernelContext _kernelContext;
 
@@ -44,7 +45,8 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Libr
             _normalSession.DataAvailable += OnNormalOutData;
             _interactiveSession.DataAvailable += OnInteractiveOutData;
 
-            Logger.Info?.Print(LogClass.ServiceAm, $"Applet '{appletId}' created.");
+            _logger.LogInformation(new EventId((int)LogClass.ServiceAm, nameof(LogClass.ServiceAm)),
+                "Applet {appletId} created.", appletId);
         }
 
         private void OnAppletStateChanged(object sender, EventArgs e)
@@ -93,7 +95,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Libr
             // TODO: Since we don't support software Applet for now, we can just signals the changed state of the applet.
             _stateChangedEvent.ReadableEvent.Signal();
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }
@@ -113,7 +115,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.Libr
             //       It seems to be used only with software keyboard inline.
             //       Since we doesn't support applets for now, it's fine to stub it.
 
-            Logger.Stub?.PrintStub(LogClass.ServiceAm);
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm);
 
             return ResultCode.Success;
         }

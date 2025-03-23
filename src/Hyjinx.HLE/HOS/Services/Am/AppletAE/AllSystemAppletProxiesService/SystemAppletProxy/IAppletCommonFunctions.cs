@@ -1,6 +1,6 @@
 namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
 {
-    class IAppletCommonFunctions : IpcService
+    class IAppletCommonFunctions : IpcService<IAppletCommonFunctions>
     {
         public IAppletCommonFunctions() { }
     }
