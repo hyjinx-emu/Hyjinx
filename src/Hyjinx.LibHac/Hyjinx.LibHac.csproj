@@ -3,15 +3,16 @@
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    
+    <!-- For backwards compatibility -->
+    <AssemblyName>Hyjinx.LibHac</AssemblyName>
+    <RootNamespace>LibHac</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
     <Authors>Alex Barney</Authors>
     <Copyright>Copyright © 2018-2022 Alex Barney</Copyright>
     <Description>A library that reimplements select portions of the Nintendo Switch operating system and allows reading content formats used by the OS.</Description>
-    <PackageProjectUrl>https://github.com/Thealexbarney/LibHac</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 

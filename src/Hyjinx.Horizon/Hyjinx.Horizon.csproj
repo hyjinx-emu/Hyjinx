@@ -4,12 +4,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Audio\Hyjinx.Audio.csproj" />
     <ProjectReference Include="..\Hyjinx.Horizon.Generators\Hyjinx.Horizon.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Hyjinx.LibHac\Hyjinx.LibHac.csproj" />
     <ProjectReference Include="..\Hyjinx.Memory\Hyjinx.Memory.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Concentus" />
-    <PackageReference Include="LibHac" />
     <PackageReference Include="MsgPack.Cli" />
   </ItemGroup>
 </Project>
