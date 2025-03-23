@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 using static LibHac.Fs.PathUtility;
@@ -60,7 +60,7 @@ public static class PathNormalizer
                 ReplaceParentDirectoryPath(convertedPath.Span, currentPath);
 
                 // Set current path to be the replacement path.
-                currentPath = new U8Span(convertedPath.Span);
+                currentPath = convertedPath.Span;
             }
 
             bool skipNextSeparator = false;
