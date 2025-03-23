@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 
-namespace Hyjinx.Logging;
+namespace Hyjinx.UI.Common.AutoConfiguration;
 
 public static class LoggerModule
 {

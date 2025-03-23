@@ -11,6 +11,7 @@ using Hyjinx.Common.SystemInterop;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.SDL2.Common;
 using Hyjinx.UI.Common;
+using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Hyjinx.UI.Common.SystemInfo;
