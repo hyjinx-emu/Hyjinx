@@ -92,7 +92,7 @@ namespace Hyjinx.Graphics.Vulkan
                 DriverId.MesaDozen => "Dozen",
                 DriverId.MesaNvk => "NVK",
                 DriverId.ImaginationOpenSourceMesa => "Imagination (Open)",
-                DriverId.MesaAgxv => "Honeykrisp",
+                DriverId.MesaHoneykrisp => "Honeykrisp",
                 _ => id.ToString(),
             };
         }
