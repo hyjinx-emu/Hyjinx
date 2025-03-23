@@ -1,6 +1,7 @@
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.IO;
 using System.Runtime.Versioning;
@@ -43,11 +44,11 @@ namespace Hyjinx.Common.Configuration
         public static string? CustomNandPath { get; set; } // TODO: Actually implement this into VFS
         public static string? CustomSdCardPath { get; set; } // TODO: Actually implement this into VFS
 
-        private static readonly ILogger<AppDataManager> _logger;
+        private static readonly ILogger<AppDataManager> _logger = null!;
 
         static AppDataManager()
         {
-            _logger = Logger.DefaultLoggerFactory.CreateLogger<AppDataManager>();
+            _logger = new NullLogger<AppDataManager>();
             KeysDirPathUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".switch");
         }
 

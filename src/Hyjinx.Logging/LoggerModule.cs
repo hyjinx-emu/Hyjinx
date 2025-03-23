@@ -1,3 +1,4 @@
+using Hyjinx.Common.Configuration;
 using Hyjinx.Logging.Console;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Logging.File;
@@ -35,7 +36,7 @@ public static class LoggerModule
             
             logging.AddFile(console =>
             {
-                console.OutputDirectory = "./Logs";
+                console.OutputDirectory = AppDataManager.GetOrCreateLogsDir();
                 console.FormatterName = FileFormatterNames.Simple;
                 console.MaxQueueLength = DefaultMaxQueueLength;
                 console.UpTime = upTime;
