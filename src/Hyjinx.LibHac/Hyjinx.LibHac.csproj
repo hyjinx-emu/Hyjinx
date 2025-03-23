@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <VersionPrefix>0.19.0</VersionPrefix>
+    <TargetFramework>net7.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Alex Barney</Authors>
+    <Copyright>Copyright © 2018-2022 Alex Barney</Copyright>
+    <Description>A library that reimplements select portions of the Nintendo Switch operating system and allows reading content formats used by the OS.</Description>
+    <PackageProjectUrl>https://github.com/Thealexbarney/LibHac</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- When doing a release build with a Git directory, SourceLink will set the SourceRoot needed for DeterministicSourcePaths -->
+    <!-- Otherwise use a manually specified path -->
+    <PathMap Condition=" '$(BuildType)' == 'Release' and '$(HasGitDir)' == 'false' ">$(MSBuildProjectDirectory)=C:/LibHac/</PathMap>
+    <DeterministicSourcePaths Condition=" '$(BuildType)' == 'Release' and '$(HasGitDir)' == 'true' ">true</DeterministicSourcePaths>
+
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(DefineConstants);ENABLE_ASSERTS</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Condition="Exists('Common\ResultNameResolver.Generated.cs')" Remove="Common\ResultNameResolver.Archive.cs" />
+    <Compile Condition="Exists('Common\Keys\DefaultKeySet.Generated.cs')" Remove="Common\Keys\DefaultKeySet.Empty.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>LibHac.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

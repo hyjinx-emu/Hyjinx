@@ -115,6 +115,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{EEB9FB42
 		global.json = global.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.LibHac", "src\Hyjinx.LibHac\Hyjinx.LibHac.csproj", "{6B0A68D2-64F0-4792-8234-E38943C58A3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.LibHac.Tests", "src\Hyjinx.LibHac.Tests\Hyjinx.LibHac.Tests.csproj", "{F7EFF2C5-6358-4106-812D-B08CC4CF7771}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -297,6 +301,14 @@ Global
 		{8FF33806-F88F-423E-B98E-63B363E0CB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FF33806-F88F-423E-B98E-63B363E0CB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FF33806-F88F-423E-B98E-63B363E0CB5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B0A68D2-64F0-4792-8234-E38943C58A3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B0A68D2-64F0-4792-8234-E38943C58A3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B0A68D2-64F0-4792-8234-E38943C58A3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B0A68D2-64F0-4792-8234-E38943C58A3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7EFF2C5-6358-4106-812D-B08CC4CF7771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7EFF2C5-6358-4106-812D-B08CC4CF7771}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7EFF2C5-6358-4106-812D-B08CC4CF7771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7EFF2C5-6358-4106-812D-B08CC4CF7771}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
