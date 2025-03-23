@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
@@ -169,7 +169,7 @@ public abstract class IFileSystem : IDisposable
             return ResultFs.NullptrArgument.Log();
 
         using var pathNormalized = new Path();
-        Result res = pathNormalized.InitializeWithNormalization(path);
+        Result res = pathNormalized.InitializeWithNormalization(path.Value);
         if (res.IsFailure()) return res;
 
         return DoGetEntryType(out entryType, in pathNormalized);
@@ -211,7 +211,7 @@ public abstract class IFileSystem : IDisposable
             return ResultFs.NullptrArgument.Log();
 
         using var pathNormalized = new Path();
-        Result res = pathNormalized.InitializeWithNormalization(path);
+        Result res = pathNormalized.InitializeWithNormalization(path.Value);
         if (res.IsFailure()) return res;
 
         return DoOpenFile(ref file, in pathNormalized, mode);

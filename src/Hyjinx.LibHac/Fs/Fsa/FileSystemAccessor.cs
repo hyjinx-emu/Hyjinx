@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Diag;
@@ -153,18 +153,18 @@ internal class FileSystemAccessor : IDisposable
 
         if (res.IsSuccess() && isNormalized)
         {
-            path.SetShallowBuffer(pathBuffer);
+            path.SetShallowBuffer(pathBuffer.Value);
         }
         else
         {
             if (_pathFlags.IsWindowsPathAllowed())
             {
-                res = path.InitializeWithReplaceForwardSlashes(pathBuffer);
+                res = path.InitializeWithReplaceForwardSlashes(pathBuffer.Value);
                 if (res.IsFailure()) return res.Miss();
             }
             else
             {
-                res = path.InitializeWithReplaceBackslash(pathBuffer);
+                res = path.InitializeWithReplaceBackslash(pathBuffer.Value);
                 if (res.IsFailure()) return res.Miss();
             }
 

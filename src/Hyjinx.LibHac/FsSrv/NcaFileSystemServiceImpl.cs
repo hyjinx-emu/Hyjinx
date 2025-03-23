@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
@@ -579,7 +579,7 @@ public class NcaFileSystemServiceImpl
         nspPathLen += 4;
 
         using var pathNsp = new Path();
-        Result res = pathNsp.InitializeWithNormalization(path, nspPathLen);
+        Result res = pathNsp.InitializeWithNormalization(path.Value, nspPathLen);
         if (res.IsFailure()) return res.Miss();
 
         using var nspFileStorage = new SharedRef<FileStorageBasedFileSystem>(new FileStorageBasedFileSystem());
@@ -606,7 +606,7 @@ public class NcaFileSystemServiceImpl
         var ncaFileStorage = new FileStorageBasedFileSystem();
 
         using var pathNca = new Path();
-        Result res = pathNca.InitializeWithNormalization(path);
+        Result res = pathNca.InitializeWithNormalization(path.Value);
         if (res.IsFailure()) return res.Miss();
 
         res = ncaFileStorage.Initialize(ref baseFileSystem, in pathNca, OpenMode.Read);
