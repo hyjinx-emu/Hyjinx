@@ -5,7 +5,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     
     <!-- For backwards compatibility -->
-    <AssemblyName>Hyjinx.LibHac</AssemblyName>
     <RootNamespace>LibHac</RootNamespace>
   </PropertyGroup>
 

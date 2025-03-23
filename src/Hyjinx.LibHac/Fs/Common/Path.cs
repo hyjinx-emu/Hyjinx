@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Diagnostics;
 using LibHac.Common;
@@ -337,9 +337,9 @@ public ref struct Path
     /// Releases any current write buffer and sets <paramref name="buffer"/> as this <see cref="Path"/>'s string.
     /// </summary>
     /// <param name="buffer">The buffer containing the new path.</param>
-    private void SetReadOnlyBuffer(ReadOnlySpan<byte> buffer)
+    private void SetReadOnlyBuffer(scoped ReadOnlySpan<byte> buffer)
     {
-        _string = buffer;
+        _string = new Span<byte>(buffer.ToArray());
 
         byte[] oldBuffer = Shared.Move(ref _writeBuffer);
 
@@ -374,7 +374,7 @@ public ref struct Path
     /// This function will always set the <c>IsNormalized</c> flag to <see langword="true"/>.</remarks>
     /// <param name="buffer">The buffer containing the new path.</param>
     /// <returns><see cref="Result.Success"/>: The operation was successful.</returns>
-    public Result SetShallowBuffer(ReadOnlySpan<byte> buffer)
+    public Result SetShallowBuffer(scoped ReadOnlySpan<byte> buffer)
     {
         Assert.SdkRequires(_writeBufferLength == 0);
 
@@ -1175,7 +1175,7 @@ public static class PathFunctions
     /// <returns><see cref="Result.Success"/>: The operation was successful.<br/>
     /// <see cref="ResultFs.InvalidCharacter"/>: The path contains an invalid character.<br/>
     /// <see cref="ResultFs.InvalidPathFormat"/>: The path is in an invalid format or is not normalized.</returns>
-    public static Result SetUpFixedPath(scoped ref Path path, ReadOnlySpan<byte> pathBuffer)
+    public static Result SetUpFixedPath(scoped ref Path path, scoped ReadOnlySpan<byte> pathBuffer)
     {
         Result res = PathNormalizer.IsNormalized(out bool isNormalized, out _, pathBuffer);
         if (res.IsFailure()) return res.Miss();
