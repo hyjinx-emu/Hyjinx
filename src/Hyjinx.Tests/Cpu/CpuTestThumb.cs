@@ -1,5 +1,4 @@
 using ARMeilleure.State;
-using NUnit.Framework;
 
 namespace Hyjinx.Tests.Cpu
 {
@@ -271,7 +270,7 @@ namespace Hyjinx.Tests.Cpu
             if (Size != 0x1000)
             {
                 // TODO: Change it to depend on DataBaseAddress instead.
-                Assert.Ignore("This test currently only support 4KiB page size");
+                ClassicAssert.Ignore("This test currently only support 4KiB page size");
             }
 
             RunPrecomputedTestCase(test);

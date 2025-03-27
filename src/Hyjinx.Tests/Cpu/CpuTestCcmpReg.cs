@@ -1,7 +1,5 @@
 #define CcmpReg
 
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("CcmpReg")]

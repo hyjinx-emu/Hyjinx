@@ -1,7 +1,5 @@
 #define AluRx
 
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("AluRx")]

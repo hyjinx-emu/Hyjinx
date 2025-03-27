@@ -1,8 +1,6 @@
 using Hyjinx.Memory;
 using Hyjinx.Memory.Range;
-using System;
 using System.Buffers;
-using System.Collections.Generic;
 
 namespace Hyjinx.Tests.Memory
 {

@@ -1,6 +1,3 @@
-using NUnit.Framework;
-using System;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("T32Mem")]

@@ -1,9 +1,6 @@
 #define Misc
 
-using ARMeilleure.State;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
@@ -419,7 +416,7 @@ namespace Hyjinx.Tests.Cpu
         {
             if (!BitConverter.IsLittleEndian)
             {
-                Assert.Ignore();
+                ClassicAssert.Ignore();
             }
 
             for (ulong gapOffset = 0; gapOffset < displacement; gapOffset++)

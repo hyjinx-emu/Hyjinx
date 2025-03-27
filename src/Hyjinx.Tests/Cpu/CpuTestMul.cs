@@ -1,7 +1,5 @@
 #define Mul
 
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("Mul")]

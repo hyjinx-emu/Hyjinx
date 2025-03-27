@@ -1,7 +1,6 @@
 #define SimdExt
 
 using ARMeilleure.State;
-using NUnit.Framework;
 
 namespace Hyjinx.Tests.Cpu
 {

@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using Hyjinx.Audio.Renderer.Parameter;
 using System.Runtime.CompilerServices;
 
@@ -9,8 +8,8 @@ namespace Hyjinx.Tests.Audio.Renderer
         [Test]
         public void EnsureTypeSize()
         {
-            Assert.AreEqual(0x20, Unsafe.SizeOf<MemoryPoolInParameter>());
-            Assert.AreEqual(0x10, Unsafe.SizeOf<MemoryPoolOutStatus>());
+            ClassicAssert.AreEqual(0x20, Unsafe.SizeOf<MemoryPoolInParameter>());
+            ClassicAssert.AreEqual(0x10, Unsafe.SizeOf<MemoryPoolOutStatus>());
         }
     }
 }

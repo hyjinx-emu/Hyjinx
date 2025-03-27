@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/library.props" />
+
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    
+    <!-- For backwards compatibility -->
+    <RootNamespace>LibHac</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Alex Barney</Authors>
+    <Copyright>Copyright © 2018-2022 Alex Barney</Copyright>
+    <Description>A library that reimplements select portions of the Nintendo Switch operating system and allows reading content formats used by the OS.</Description>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(DefineConstants);ENABLE_ASSERTS</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Condition="Exists('Common\ResultNameResolver.Generated.cs')" Remove="Common\ResultNameResolver.Archive.cs" />
+    <Compile Condition="Exists('Common\Keys\DefaultKeySet.Generated.cs')" Remove="Common\Keys\DefaultKeySet.Empty.cs" />
+  </ItemGroup>
+
+</Project>

@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using System.Runtime.CompilerServices;
 
@@ -11,7 +10,7 @@ namespace Hyjinx.Tests.Time
             [Test]
             public void EnsureTypeSize()
             {
-                Assert.AreEqual(0x4000, Unsafe.SizeOf<TimeZoneRule>());
+                ClassicAssert.AreEqual(0x4000, Unsafe.SizeOf<TimeZoneRule>());
             }
         }
     }

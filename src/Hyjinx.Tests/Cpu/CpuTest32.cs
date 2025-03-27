@@ -1,11 +1,9 @@
 using ARMeilleure;
 using ARMeilleure.State;
-using ARMeilleure.Translation;
-using NUnit.Framework;
 using Hyjinx.Cpu.Jit;
 using Hyjinx.Memory;
 using Hyjinx.Tests.Unicorn;
-using System;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 using MemoryPermission = Hyjinx.Tests.Unicorn.MemoryPermission;
 
 namespace Hyjinx.Tests.Cpu
@@ -438,7 +436,7 @@ namespace Hyjinx.Tests.Cpu
             Assert.That(V128ToSimdValue(_context.GetV(14)), Is.EqualTo(_unicornEmu.Q[14]), "V14");
             Assert.That(V128ToSimdValue(_context.GetV(15)), Is.EqualTo(_unicornEmu.Q[15]), "V15");
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(_context.GetPstateFlag(PState.GE0Flag), Is.EqualTo((_unicornEmu.CPSR & (1u << 16)) != 0), "GE0Flag");
                 Assert.That(_context.GetPstateFlag(PState.GE1Flag), Is.EqualTo((_unicornEmu.CPSR & (1u << 17)) != 0), "GE1Flag");
@@ -468,14 +466,14 @@ namespace Hyjinx.Tests.Cpu
             {
                 if (float.IsNaN(_unicornEmu.Q[0].AsFloat()))
                 {
-                    Assert.Ignore("NaN test.");
+                    ClassicAssert.Ignore("NaN test.");
                 }
             }
             else if (fpSkips.HasFlag(FpSkips.IfNaND))
             {
                 if (double.IsNaN(_unicornEmu.Q[0].AsDouble()))
                 {
-                    Assert.Ignore("NaN test.");
+                    ClassicAssert.Ignore("NaN test.");
                 }
             }
 
@@ -483,7 +481,7 @@ namespace Hyjinx.Tests.Cpu
             {
                 if ((_unicornEmu.Fpscr & (int)Fpsr.Ufc) != 0)
                 {
-                    Assert.Ignore("Underflow test.");
+                    ClassicAssert.Ignore("Underflow test.");
                 }
             }
 
@@ -491,7 +489,7 @@ namespace Hyjinx.Tests.Cpu
             {
                 if ((_unicornEmu.Fpscr & (int)Fpsr.Ofc) != 0)
                 {
-                    Assert.Ignore("Overflow test.");
+                    ClassicAssert.Ignore("Overflow test.");
                 }
             }
         }
@@ -508,7 +506,7 @@ namespace Hyjinx.Tests.Cpu
                     if (IsNormalOrSubnormalS(_unicornEmu.Q[0].AsFloat()) &&
                         IsNormalOrSubnormalS(_context.GetV(0).As<float>()))
                     {
-                        Assert.Multiple(() =>
+                        ClassicAssert.Multiple(() =>
                         {
                             Assert.That(_context.GetV(0).Extract<float>(0),
                                 Is.EqualTo(_unicornEmu.Q[0].GetFloat(0)).Within(1).Ulps, "V0[0]");
@@ -533,7 +531,7 @@ namespace Hyjinx.Tests.Cpu
                     if (IsNormalOrSubnormalD(_unicornEmu.Q[0].AsDouble()) &&
                         IsNormalOrSubnormalD(_context.GetV(0).As<double>()))
                     {
-                        Assert.Multiple(() =>
+                        ClassicAssert.Multiple(() =>
                         {
                             Assert.That(_context.GetV(0).Extract<double>(0),
                                 Is.EqualTo(_unicornEmu.Q[0].GetDouble(0)).Within(1).Ulps, "V0[0]");

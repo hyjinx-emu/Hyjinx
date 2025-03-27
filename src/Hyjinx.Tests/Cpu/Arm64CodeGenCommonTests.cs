@@ -1,5 +1,4 @@
 using ARMeilleure.CodeGen.Arm64;
-using NUnit.Framework;
 
 namespace Hyjinx.Tests.Cpu
 {

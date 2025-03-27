@@ -1,0 +1,20 @@
+<Project>
+  <Import Project="./library.props" />
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <Using Include="NUnit.Framework.Legacy" />
+  </ItemGroup>
+
+</Project>

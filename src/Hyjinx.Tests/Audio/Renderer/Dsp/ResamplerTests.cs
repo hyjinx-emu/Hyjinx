@@ -1,7 +1,5 @@
-using NUnit.Framework;
 using Hyjinx.Audio.Renderer.Dsp;
 using Hyjinx.Audio.Renderer.Parameter;
-using System;
 
 namespace Hyjinx.Tests.Audio.Renderer.Dsp
 {
@@ -74,13 +72,13 @@ namespace Hyjinx.Tests.Audio.Renderer.Dsp
                 float thisDelta = Math.Abs(expectedOutput[sample] - outputBuffer[sample]);
 
                 // Ensure no discontinuities
-                Assert.IsTrue(thisDelta < 0.1f);
+                Assert.That(thisDelta < 0.1f);
                 sumDifference += thisDelta;
             }
 
             sumDifference /= outputSampleCount;
             // Expect the output to be 99% similar to the expected resampled sine wave
-            Assert.IsTrue(sumDifference < 0.01f);
+            Assert.That(sumDifference < 0.01f);
         }
     }
 }

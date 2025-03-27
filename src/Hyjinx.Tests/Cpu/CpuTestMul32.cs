@@ -1,7 +1,5 @@
 #define Mul32
 
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("Mul32")]

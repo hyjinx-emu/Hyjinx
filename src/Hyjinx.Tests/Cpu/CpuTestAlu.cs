@@ -1,8 +1,5 @@
 #define Alu
 
-using NUnit.Framework;
-using System.Collections.Generic;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("Alu")]

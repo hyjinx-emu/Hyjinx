@@ -1,5 +1,3 @@
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("T32Alu")]

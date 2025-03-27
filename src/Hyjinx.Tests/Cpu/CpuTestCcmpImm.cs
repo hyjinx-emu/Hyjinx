@@ -1,7 +1,5 @@
 #define CcmpImm
 
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("CcmpImm")]

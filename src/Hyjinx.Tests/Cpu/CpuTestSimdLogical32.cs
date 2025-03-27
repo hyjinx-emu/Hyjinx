@@ -1,7 +1,6 @@
 #define SimdLogical32
 
 using ARMeilleure.State;
-using NUnit.Framework;
 
 namespace Hyjinx.Tests.Cpu
 {

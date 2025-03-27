@@ -1,7 +1,6 @@
 #define AluBinary
 
-using ARMeilleure.State;
-using NUnit.Framework;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {

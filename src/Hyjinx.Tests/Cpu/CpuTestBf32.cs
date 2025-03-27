@@ -1,8 +1,5 @@
 #define Bf32
 
-using NUnit.Framework;
-using System;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("Bf32")]

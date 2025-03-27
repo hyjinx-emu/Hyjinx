@@ -1,7 +1,5 @@
 #define Csel
 
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("Csel")]

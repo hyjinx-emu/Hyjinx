@@ -1,9 +1,8 @@
 #define SimdReg32
 
 using ARMeilleure.State;
-using NUnit.Framework;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
@@ -300,7 +299,7 @@ namespace Hyjinx.Tests.Cpu
 
             ExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1, v2: v2, runUnicorn: false);
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
                 Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
@@ -334,7 +333,7 @@ namespace Hyjinx.Tests.Cpu
 
             ExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1, v2: v2, runUnicorn: false);
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
                 Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
@@ -368,7 +367,7 @@ namespace Hyjinx.Tests.Cpu
 
             ExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1, v2: v2, runUnicorn: false);
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
                 Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
@@ -690,7 +689,7 @@ namespace Hyjinx.Tests.Cpu
         {
             /*if (size == 2u)
             {
-                Assert.Ignore("Hyjinx.Tests.Unicorn.UnicornException : Invalid instruction (UC_ERR_INSN_INVALID)");
+                ClassicAssert.Ignore("Hyjinx.Tests.Unicorn.UnicornException : Invalid instruction (UC_ERR_INSN_INVALID)");
             }*/
 
             uint opcode = 0xf2800e00u; // VMULL.P8 Q0, D0, D0
@@ -724,7 +723,7 @@ namespace Hyjinx.Tests.Cpu
         {
             if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
             {
-                Assert.Ignore("Unicorn on ARM64 crash while executing this test");
+                ClassicAssert.Ignore("Unicorn on ARM64 crash while executing this test");
             }
 
             uint opcode = 0xf2000400u; // VSHL.S8 D0, D0, D0

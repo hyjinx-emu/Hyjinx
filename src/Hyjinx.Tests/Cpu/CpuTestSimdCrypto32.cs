@@ -1,7 +1,7 @@
 // https://www.intel.com/content/dam/doc/white-paper/advanced-encryption-standard-new-instructions-set-paper.pdf
 
 using ARMeilleure.State;
-using NUnit.Framework;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
@@ -26,12 +26,12 @@ namespace Hyjinx.Tests.Cpu
 
             ExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1, runUnicorn: false);
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
                 Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(roundKeyL));
                 Assert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(roundKeyH));
@@ -60,12 +60,12 @@ namespace Hyjinx.Tests.Cpu
 
             ExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1, runUnicorn: false);
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
                 Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(roundKeyL));
                 Assert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(roundKeyH));
@@ -95,14 +95,14 @@ namespace Hyjinx.Tests.Cpu
                 v1: rm == 2u ? v : default,
                 runUnicorn: false);
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
                 Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
             if (rm == 2u)
             {
-                Assert.Multiple(() =>
+                ClassicAssert.Multiple(() =>
                 {
                     Assert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(valueL));
                     Assert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(valueH));
@@ -133,14 +133,14 @@ namespace Hyjinx.Tests.Cpu
                 v1: rm == 2u ? v : default,
                 runUnicorn: false);
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
                 Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
                 Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
             if (rm == 2u)
             {
-                Assert.Multiple(() =>
+                ClassicAssert.Multiple(() =>
                 {
                     Assert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(valueL));
                     Assert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(valueH));

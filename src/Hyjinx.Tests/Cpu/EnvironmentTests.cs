@@ -1,8 +1,6 @@
 using ARMeilleure.Translation;
-using NUnit.Framework;
 using Hyjinx.Cpu.Jit;
 using Hyjinx.Tests.Memory;
-using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -43,7 +41,7 @@ namespace Hyjinx.Tests.Cpu
 
             // Subnormal results are not flushed to zero by default.
             // This operation should not be allowed to do constant propagation, hence the methods that explicitly disallow inlining.
-            Assert.AreNotEqual(GetDenormal() + GetZero(), 0f);
+            ClassicAssert.AreNotEqual(GetDenormal() + GetZero(), 0f);
 
             bool methodCalled = false;
             bool isFz = false;
@@ -56,11 +54,11 @@ namespace Hyjinx.Tests.Cpu
             int result = method(Marshal.GetFunctionPointerForDelegate(ManagedMethod));
 
             // Subnormal results are not flushed to zero by default, which we should have returned to exiting the method.
-            Assert.AreNotEqual(GetDenormal() + GetZero(), 0f);
+            ClassicAssert.AreNotEqual(GetDenormal() + GetZero(), 0f);
 
-            Assert.True(result == 0);
-            Assert.True(methodCalled);
-            Assert.True(isFz);
+            Assert.That(result == 0);
+            Assert.That(methodCalled);
+            Assert.That(isFz);
             return;
 
             void ManagedMethod()

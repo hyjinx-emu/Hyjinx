@@ -1,7 +1,5 @@
 #define Bfm
 
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("Bfm")]
