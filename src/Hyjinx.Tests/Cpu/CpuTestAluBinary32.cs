@@ -1,7 +1,6 @@
 #define AluBinary32
 
-using ARMeilleure.State;
-using NUnit.Framework;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
@@ -88,7 +87,7 @@ namespace Hyjinx.Tests.Cpu
 
             ExecutionContext context = GetContext();
             ulong result = context.GetX((int)rd);
-            Assert.That(result == test.Results[size]);
+            ClassicAssert.That(result == test.Results[size]);
         }
 #endif
     }

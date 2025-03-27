@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using Hyjinx.Audio.Renderer.Parameter;
 using System.Runtime.CompilerServices;
 
@@ -9,8 +8,8 @@ namespace Hyjinx.Tests.Audio.Renderer
         [Test]
         public void EnsureTypeSize()
         {
-            Assert.AreEqual(0xC0, Unsafe.SizeOf<EffectInParameterVersion1>());
-            Assert.AreEqual(0xC0, Unsafe.SizeOf<EffectInParameterVersion2>());
+            ClassicAssert.AreEqual(0xC0, Unsafe.SizeOf<EffectInParameterVersion1>());
+            ClassicAssert.AreEqual(0xC0, Unsafe.SizeOf<EffectInParameterVersion2>());
         }
     }
 }

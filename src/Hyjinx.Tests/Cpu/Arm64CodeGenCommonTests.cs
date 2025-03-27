@@ -1,5 +1,4 @@
 using ARMeilleure.CodeGen.Arm64;
-using NUnit.Framework;
 
 namespace Hyjinx.Tests.Cpu
 {
@@ -37,10 +36,10 @@ namespace Hyjinx.Tests.Cpu
         {
             bool valid = CodeGenCommon.TryEncodeBitMask(test.Value, out int immN, out int immS, out int immR);
 
-            Assert.That(valid, Is.EqualTo(test.Valid));
-            Assert.That(immN, Is.EqualTo(test.ImmN));
-            Assert.That(immS, Is.EqualTo(test.ImmS));
-            Assert.That(immR, Is.EqualTo(test.ImmR));
+            ClassicAssert.That(valid, Is.EqualTo(test.Valid));
+            ClassicAssert.That(immN, Is.EqualTo(test.ImmN));
+            ClassicAssert.That(immS, Is.EqualTo(test.ImmS));
+            ClassicAssert.That(immR, Is.EqualTo(test.ImmR));
         }
     }
 }

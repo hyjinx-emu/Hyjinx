@@ -1,7 +1,5 @@
 #define Mov
 
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("Mov")]

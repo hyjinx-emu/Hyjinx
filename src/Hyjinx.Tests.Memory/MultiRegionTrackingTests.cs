@@ -1,9 +1,5 @@
-using NUnit.Framework;
 using Hyjinx.Memory;
 using Hyjinx.Memory.Tracking;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Hyjinx.Tests.Memory
 {
@@ -56,8 +52,8 @@ namespace Hyjinx.Tests.Memory
 
             handle.QueryModified(startAddress, size, (address, range) =>
             {
-                Assert.IsTrue(addressPredicate(address)); // Written pages must be even.
-                Assert.GreaterOrEqual(address, lastAddress); // Must be signalled in ascending order, regardless of write order.
+                ClassicAssert.IsTrue(addressPredicate(address)); // Written pages must be even.
+                ClassicAssert.GreaterOrEqual(address, lastAddress); // Must be signalled in ascending order, regardless of write order.
                 lastAddress = address;
                 regionCount++;
             });
@@ -72,8 +68,8 @@ namespace Hyjinx.Tests.Memory
 
             handle.QueryModified(startAddress, size, (address, range) =>
             {
-                Assert.IsTrue(addressPredicate(address)); // Written pages must be even.
-                Assert.GreaterOrEqual(address, lastAddress); // Must be signalled in ascending order, regardless of write order.
+                ClassicAssert.IsTrue(addressPredicate(address)); // Written pages must be even.
+                ClassicAssert.GreaterOrEqual(address, lastAddress); // Must be signalled in ascending order, regardless of write order.
                 lastAddress = address;
                 regionCount++;
             }, sequenceNumber);
@@ -93,7 +89,7 @@ namespace Hyjinx.Tests.Memory
                 {
                     resultAddress = address;
                 });
-                Assert.AreEqual(resultAddress, (ulong)i * PageSize + address);
+                ClassicAssert.AreEqual(resultAddress, (ulong)i * PageSize + address);
             });
         }
 
@@ -119,7 +115,7 @@ namespace Hyjinx.Tests.Memory
 
             int oddRegionCount = ExpectQueryInOrder(handle, 0, PageSize * PageCount, (address) => (address / PageSize) % 2 == 1);
 
-            Assert.AreEqual(oddRegionCount, PageCount / 2); // Must have written to all odd pages.
+            ClassicAssert.AreEqual(oddRegionCount, PageCount / 2); // Must have written to all odd pages.
 
             // Write to all the even pages.
             RandomOrder(random, even, (i) =>
@@ -129,7 +125,7 @@ namespace Hyjinx.Tests.Memory
 
             int evenRegionCount = ExpectQueryInOrder(handle, 0, PageSize * PageCount, (address) => (address / PageSize) % 2 == 0);
 
-            Assert.AreEqual(evenRegionCount, PageCount / 2);
+            ClassicAssert.AreEqual(evenRegionCount, PageCount / 2);
         }
 
         [Test]
@@ -172,7 +168,7 @@ namespace Hyjinx.Tests.Memory
                 }, 1);
             }
 
-            Assert.AreEqual(oddRegionCount, PageCount / 2); // Must have written to all odd pages.
+            ClassicAssert.AreEqual(oddRegionCount, PageCount / 2); // Must have written to all odd pages.
 
             // Write to all pages.
 
@@ -182,19 +178,19 @@ namespace Hyjinx.Tests.Memory
 
             int evenRegionCount = ExpectQueryInOrder(handle, 0, PageSize * PageCount, (address) => (address / PageSize) % 2 == 0, 1);
 
-            Assert.AreEqual(evenRegionCount, PageCount / 2); // Must have written to all even pages.
+            ClassicAssert.AreEqual(evenRegionCount, PageCount / 2); // Must have written to all even pages.
 
             oddRegionCount = 0;
 
             handle.QueryModified(0, PageSize * PageCount, (address, range) => { oddRegionCount++; }, 1);
 
-            Assert.AreEqual(oddRegionCount, 0); // Sequence number has not changed, so found no dirty subregions.
+            ClassicAssert.AreEqual(oddRegionCount, 0); // Sequence number has not changed, so found no dirty subregions.
 
             // With sequence number 2, all all pages should be reported as modified.
 
             oddRegionCount = ExpectQueryInOrder(handle, 0, PageSize * PageCount, (address) => (address / PageSize) % 2 == 1, 2);
 
-            Assert.AreEqual(oddRegionCount, PageCount / 2); // Must have written to all odd pages.
+            ClassicAssert.AreEqual(oddRegionCount, PageCount / 2); // Must have written to all odd pages.
         }
 
         [Test]
@@ -242,8 +238,8 @@ namespace Hyjinx.Tests.Memory
             {
                 int region = regionSizes[regionInd++];
 
-                Assert.AreEqual(address, expectedAddress);
-                Assert.AreEqual(size, (ulong)(PageSize * region));
+                ClassicAssert.AreEqual(address, expectedAddress);
+                ClassicAssert.AreEqual(size, (ulong)(PageSize * region));
 
                 expectedAddress += (ulong)(PageSize * (region + 1));
             });
@@ -256,12 +252,12 @@ namespace Hyjinx.Tests.Memory
             const int PageCount = 32;
             const int OverlapStart = 16;
 
-            Assert.AreEqual(0, _tracking.GetRegionCount());
+            ClassicAssert.AreEqual(0, _tracking.GetRegionCount());
 
             IMultiRegionHandle handleLow = GetGranular(smart, 0, PageSize * PageCount, PageSize);
             PreparePages(handleLow, PageCount);
 
-            Assert.AreEqual(PageCount, _tracking.GetRegionCount());
+            ClassicAssert.AreEqual(PageCount, _tracking.GetRegionCount());
 
             IMultiRegionHandle handleHigh = GetGranular(smart, PageSize * OverlapStart, PageSize * PageCount, PageSize);
             PreparePages(handleHigh, PageCount, PageSize * OverlapStart);
@@ -269,15 +265,15 @@ namespace Hyjinx.Tests.Memory
             // Combined pages (and assuming overlapStart <= pageCount) should be pageCount after overlapStart.
             int totalPages = OverlapStart + PageCount;
 
-            Assert.AreEqual(totalPages, _tracking.GetRegionCount());
+            ClassicAssert.AreEqual(totalPages, _tracking.GetRegionCount());
 
             handleLow.Dispose(); // After disposing one, the pages for the other remain.
 
-            Assert.AreEqual(PageCount, _tracking.GetRegionCount());
+            ClassicAssert.AreEqual(PageCount, _tracking.GetRegionCount());
 
             handleHigh.Dispose(); // After disposing the other, there are no pages left.
 
-            Assert.AreEqual(0, _tracking.GetRegionCount());
+            ClassicAssert.AreEqual(0, _tracking.GetRegionCount());
         }
 
         [Test]
@@ -357,19 +353,19 @@ namespace Hyjinx.Tests.Memory
                 bool modified = false;
                 combined.QueryModified(PageSize * (ulong)i, PageSize, (_, _) => { modified = true; });
 
-                Assert.AreEqual(expectedDirty[i], modified);
+                ClassicAssert.AreEqual(expectedDirty[i], modified);
             }
 
-            Assert.AreEqual(new bool[3], actionsTriggered);
+            ClassicAssert.AreEqual(new bool[3], actionsTriggered);
 
             _tracking.VirtualMemoryEvent(PageSize * 5, PageSize, false);
-            Assert.IsTrue(actionsTriggered[0]);
+            ClassicAssert.IsTrue(actionsTriggered[0]);
 
             _tracking.VirtualMemoryEvent(PageSize * 10, PageSize, false);
-            Assert.IsTrue(actionsTriggered[1]);
+            ClassicAssert.IsTrue(actionsTriggered[1]);
 
             _tracking.VirtualMemoryEvent(PageSize * 15, PageSize, false);
-            Assert.IsTrue(actionsTriggered[2]);
+            ClassicAssert.IsTrue(actionsTriggered[2]);
 
             // The double page handles should be disposed, as they were split into granular handles.
             foreach (RegionHandle doublePage in doublePages)
@@ -386,18 +382,18 @@ namespace Hyjinx.Tests.Memory
                     throws = true;
                 }
 
-                Assert.IsTrue(throws);
+                ClassicAssert.IsTrue(throws);
             }
 
             IEnumerable<IRegionHandle> combinedHandles = combined.GetHandles();
 
-            Assert.AreEqual(handleGroups[0].ElementAt(0), combinedHandles.ElementAt(3));
-            Assert.AreEqual(handleGroups[0].ElementAt(1), combinedHandles.ElementAt(4));
-            Assert.AreEqual(handleGroups[0].ElementAt(2), combinedHandles.ElementAt(5));
+            ClassicAssert.AreEqual(handleGroups[0].ElementAt(0), combinedHandles.ElementAt(3));
+            ClassicAssert.AreEqual(handleGroups[0].ElementAt(1), combinedHandles.ElementAt(4));
+            ClassicAssert.AreEqual(handleGroups[0].ElementAt(2), combinedHandles.ElementAt(5));
 
-            Assert.AreEqual(singlePages[0], combinedHandles.ElementAt(8));
-            Assert.AreEqual(singlePages[1], combinedHandles.ElementAt(9));
-            Assert.AreEqual(singlePages[2], combinedHandles.ElementAt(10));
+            ClassicAssert.AreEqual(singlePages[0], combinedHandles.ElementAt(8));
+            ClassicAssert.AreEqual(singlePages[1], combinedHandles.ElementAt(9));
+            ClassicAssert.AreEqual(singlePages[2], combinedHandles.ElementAt(10));
         }
 
         [Test]
@@ -413,11 +409,11 @@ namespace Hyjinx.Tests.Memory
 
             // Precise write to first handle in the multiregion.
             _tracking.VirtualMemoryEvent(PageSize * 3, PageSize, true, precise: true);
-            Assert.IsFalse(actionTriggered); // Action not triggered.
+            ClassicAssert.IsFalse(actionTriggered); // Action not triggered.
 
             bool firstPageModified = false;
             granular.QueryModified(PageSize * 3, PageSize, (_, _) => { firstPageModified = true; });
-            Assert.IsTrue(firstPageModified); // First page is modified.
+            ClassicAssert.IsTrue(firstPageModified); // First page is modified.
 
             // Precise write to all handles in the multiregion.
             _tracking.VirtualMemoryEvent(PageSize * 3, PageSize * 3, true, precise: true);
@@ -430,10 +426,10 @@ namespace Hyjinx.Tests.Memory
                 granular.QueryModified(PageSize * (ulong)i, PageSize, (_, _) => { pagesModified[index] = true; });
             }
 
-            Assert.IsTrue(actionTriggered); // Action triggered.
+            ClassicAssert.IsTrue(actionTriggered); // Action triggered.
 
             // Precise writes are ignored on two later handles due to the action returning true.
-            Assert.AreEqual(pagesModified, new bool[] { true, false, false });
+            ClassicAssert.AreEqual(pagesModified, new bool[] { true, false, false });
         }
     }
 }

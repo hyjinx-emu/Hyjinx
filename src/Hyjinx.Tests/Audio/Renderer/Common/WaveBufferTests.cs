@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using Hyjinx.Audio.Renderer.Common;
 using System.Runtime.CompilerServices;
 
@@ -9,7 +8,7 @@ namespace Hyjinx.Tests.Audio.Renderer.Common
         [Test]
         public void EnsureTypeSize()
         {
-            Assert.AreEqual(0x30, Unsafe.SizeOf<WaveBuffer>());
+            ClassicAssert.AreEqual(0x30, Unsafe.SizeOf<WaveBuffer>());
         }
     }
 }

@@ -1,14 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../.build/library.props" />
+  <Import Project="../.build/unittest.props" />
   
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="UnicornEngine.Unicorn" />
   </ItemGroup>

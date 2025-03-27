@@ -1,8 +1,8 @@
 using ARMeilleure.Memory;
-using ARMeilleure.State;
 using ARMeilleure.Translation;
 using Hyjinx.Cpu;
 using Hyjinx.Cpu.Jit;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {

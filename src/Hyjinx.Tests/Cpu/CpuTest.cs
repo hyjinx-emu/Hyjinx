@@ -1,10 +1,9 @@
 using ARMeilleure;
 using ARMeilleure.State;
-using NUnit.Framework;
 using Hyjinx.Cpu.Jit;
 using Hyjinx.Memory;
 using Hyjinx.Tests.Unicorn;
-using System;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 using MemoryPermission = Hyjinx.Tests.Unicorn.MemoryPermission;
 
 namespace Hyjinx.Tests.Cpu
@@ -329,43 +328,43 @@ namespace Hyjinx.Tests.Cpu
             }
 
 #pragma warning disable IDE0055 // Disable formatting
-            Assert.That(_context.GetX(0),  Is.EqualTo(_unicornEmu.X[0]), "X0");
-            Assert.That(_context.GetX(1),  Is.EqualTo(_unicornEmu.X[1]), "X1");
-            Assert.That(_context.GetX(2),  Is.EqualTo(_unicornEmu.X[2]), "X2");
-            Assert.That(_context.GetX(3),  Is.EqualTo(_unicornEmu.X[3]), "X3");
-            Assert.That(_context.GetX(4),  Is.EqualTo(_unicornEmu.X[4]));
-            Assert.That(_context.GetX(5),  Is.EqualTo(_unicornEmu.X[5]));
-            Assert.That(_context.GetX(6),  Is.EqualTo(_unicornEmu.X[6]));
-            Assert.That(_context.GetX(7),  Is.EqualTo(_unicornEmu.X[7]));
-            Assert.That(_context.GetX(8),  Is.EqualTo(_unicornEmu.X[8]));
-            Assert.That(_context.GetX(9),  Is.EqualTo(_unicornEmu.X[9]));
-            Assert.That(_context.GetX(10), Is.EqualTo(_unicornEmu.X[10]));
-            Assert.That(_context.GetX(11), Is.EqualTo(_unicornEmu.X[11]));
-            Assert.That(_context.GetX(12), Is.EqualTo(_unicornEmu.X[12]));
-            Assert.That(_context.GetX(13), Is.EqualTo(_unicornEmu.X[13]));
-            Assert.That(_context.GetX(14), Is.EqualTo(_unicornEmu.X[14]));
-            Assert.That(_context.GetX(15), Is.EqualTo(_unicornEmu.X[15]));
-            Assert.That(_context.GetX(16), Is.EqualTo(_unicornEmu.X[16]));
-            Assert.That(_context.GetX(17), Is.EqualTo(_unicornEmu.X[17]));
-            Assert.That(_context.GetX(18), Is.EqualTo(_unicornEmu.X[18]));
-            Assert.That(_context.GetX(19), Is.EqualTo(_unicornEmu.X[19]));
-            Assert.That(_context.GetX(20), Is.EqualTo(_unicornEmu.X[20]));
-            Assert.That(_context.GetX(21), Is.EqualTo(_unicornEmu.X[21]));
-            Assert.That(_context.GetX(22), Is.EqualTo(_unicornEmu.X[22]));
-            Assert.That(_context.GetX(23), Is.EqualTo(_unicornEmu.X[23]));
-            Assert.That(_context.GetX(24), Is.EqualTo(_unicornEmu.X[24]));
-            Assert.That(_context.GetX(25), Is.EqualTo(_unicornEmu.X[25]));
-            Assert.That(_context.GetX(26), Is.EqualTo(_unicornEmu.X[26]));
-            Assert.That(_context.GetX(27), Is.EqualTo(_unicornEmu.X[27]));
-            Assert.That(_context.GetX(28), Is.EqualTo(_unicornEmu.X[28]));
-            Assert.That(_context.GetX(29), Is.EqualTo(_unicornEmu.X[29]));
-            Assert.That(_context.GetX(30), Is.EqualTo(_unicornEmu.X[30]));
-            Assert.That(_context.GetX(31), Is.EqualTo(_unicornEmu.SP), "X31");
+            ClassicAssert.That(_context.GetX(0),  Is.EqualTo(_unicornEmu.X[0]), "X0");
+            ClassicAssert.That(_context.GetX(1),  Is.EqualTo(_unicornEmu.X[1]), "X1");
+            ClassicAssert.That(_context.GetX(2),  Is.EqualTo(_unicornEmu.X[2]), "X2");
+            ClassicAssert.That(_context.GetX(3),  Is.EqualTo(_unicornEmu.X[3]), "X3");
+            ClassicAssert.That(_context.GetX(4),  Is.EqualTo(_unicornEmu.X[4]));
+            ClassicAssert.That(_context.GetX(5),  Is.EqualTo(_unicornEmu.X[5]));
+            ClassicAssert.That(_context.GetX(6),  Is.EqualTo(_unicornEmu.X[6]));
+            ClassicAssert.That(_context.GetX(7),  Is.EqualTo(_unicornEmu.X[7]));
+            ClassicAssert.That(_context.GetX(8),  Is.EqualTo(_unicornEmu.X[8]));
+            ClassicAssert.That(_context.GetX(9),  Is.EqualTo(_unicornEmu.X[9]));
+            ClassicAssert.That(_context.GetX(10), Is.EqualTo(_unicornEmu.X[10]));
+            ClassicAssert.That(_context.GetX(11), Is.EqualTo(_unicornEmu.X[11]));
+            ClassicAssert.That(_context.GetX(12), Is.EqualTo(_unicornEmu.X[12]));
+            ClassicAssert.That(_context.GetX(13), Is.EqualTo(_unicornEmu.X[13]));
+            ClassicAssert.That(_context.GetX(14), Is.EqualTo(_unicornEmu.X[14]));
+            ClassicAssert.That(_context.GetX(15), Is.EqualTo(_unicornEmu.X[15]));
+            ClassicAssert.That(_context.GetX(16), Is.EqualTo(_unicornEmu.X[16]));
+            ClassicAssert.That(_context.GetX(17), Is.EqualTo(_unicornEmu.X[17]));
+            ClassicAssert.That(_context.GetX(18), Is.EqualTo(_unicornEmu.X[18]));
+            ClassicAssert.That(_context.GetX(19), Is.EqualTo(_unicornEmu.X[19]));
+            ClassicAssert.That(_context.GetX(20), Is.EqualTo(_unicornEmu.X[20]));
+            ClassicAssert.That(_context.GetX(21), Is.EqualTo(_unicornEmu.X[21]));
+            ClassicAssert.That(_context.GetX(22), Is.EqualTo(_unicornEmu.X[22]));
+            ClassicAssert.That(_context.GetX(23), Is.EqualTo(_unicornEmu.X[23]));
+            ClassicAssert.That(_context.GetX(24), Is.EqualTo(_unicornEmu.X[24]));
+            ClassicAssert.That(_context.GetX(25), Is.EqualTo(_unicornEmu.X[25]));
+            ClassicAssert.That(_context.GetX(26), Is.EqualTo(_unicornEmu.X[26]));
+            ClassicAssert.That(_context.GetX(27), Is.EqualTo(_unicornEmu.X[27]));
+            ClassicAssert.That(_context.GetX(28), Is.EqualTo(_unicornEmu.X[28]));
+            ClassicAssert.That(_context.GetX(29), Is.EqualTo(_unicornEmu.X[29]));
+            ClassicAssert.That(_context.GetX(30), Is.EqualTo(_unicornEmu.X[30]));
+            ClassicAssert.That(_context.GetX(31), Is.EqualTo(_unicornEmu.SP), "X31");
 #pragma warning restore IDE0055
 
             if (fpTolerances == FpTolerances.None)
             {
-                Assert.That(V128ToSimdValue(_context.GetV(0)), Is.EqualTo(_unicornEmu.Q[0]), "V0");
+                ClassicAssert.That(V128ToSimdValue(_context.GetV(0)), Is.EqualTo(_unicornEmu.Q[0]), "V0");
             }
             else
             {
@@ -373,48 +372,48 @@ namespace Hyjinx.Tests.Cpu
             }
 
 #pragma warning disable IDE0055 // Disable formatting
-            Assert.That(V128ToSimdValue(_context.GetV(1)),  Is.EqualTo(_unicornEmu.Q[1]), "V1");
-            Assert.That(V128ToSimdValue(_context.GetV(2)),  Is.EqualTo(_unicornEmu.Q[2]), "V2");
-            Assert.That(V128ToSimdValue(_context.GetV(3)),  Is.EqualTo(_unicornEmu.Q[3]), "V3");
-            Assert.That(V128ToSimdValue(_context.GetV(4)),  Is.EqualTo(_unicornEmu.Q[4]), "V4");
-            Assert.That(V128ToSimdValue(_context.GetV(5)),  Is.EqualTo(_unicornEmu.Q[5]), "V5");
-            Assert.That(V128ToSimdValue(_context.GetV(6)),  Is.EqualTo(_unicornEmu.Q[6]));
-            Assert.That(V128ToSimdValue(_context.GetV(7)),  Is.EqualTo(_unicornEmu.Q[7]));
-            Assert.That(V128ToSimdValue(_context.GetV(8)),  Is.EqualTo(_unicornEmu.Q[8]));
-            Assert.That(V128ToSimdValue(_context.GetV(9)),  Is.EqualTo(_unicornEmu.Q[9]));
-            Assert.That(V128ToSimdValue(_context.GetV(10)), Is.EqualTo(_unicornEmu.Q[10]));
-            Assert.That(V128ToSimdValue(_context.GetV(11)), Is.EqualTo(_unicornEmu.Q[11]));
-            Assert.That(V128ToSimdValue(_context.GetV(12)), Is.EqualTo(_unicornEmu.Q[12]));
-            Assert.That(V128ToSimdValue(_context.GetV(13)), Is.EqualTo(_unicornEmu.Q[13]));
-            Assert.That(V128ToSimdValue(_context.GetV(14)), Is.EqualTo(_unicornEmu.Q[14]));
-            Assert.That(V128ToSimdValue(_context.GetV(15)), Is.EqualTo(_unicornEmu.Q[15]));
-            Assert.That(V128ToSimdValue(_context.GetV(16)), Is.EqualTo(_unicornEmu.Q[16]));
-            Assert.That(V128ToSimdValue(_context.GetV(17)), Is.EqualTo(_unicornEmu.Q[17]));
-            Assert.That(V128ToSimdValue(_context.GetV(18)), Is.EqualTo(_unicornEmu.Q[18]));
-            Assert.That(V128ToSimdValue(_context.GetV(19)), Is.EqualTo(_unicornEmu.Q[19]));
-            Assert.That(V128ToSimdValue(_context.GetV(20)), Is.EqualTo(_unicornEmu.Q[20]));
-            Assert.That(V128ToSimdValue(_context.GetV(21)), Is.EqualTo(_unicornEmu.Q[21]));
-            Assert.That(V128ToSimdValue(_context.GetV(22)), Is.EqualTo(_unicornEmu.Q[22]));
-            Assert.That(V128ToSimdValue(_context.GetV(23)), Is.EqualTo(_unicornEmu.Q[23]));
-            Assert.That(V128ToSimdValue(_context.GetV(24)), Is.EqualTo(_unicornEmu.Q[24]));
-            Assert.That(V128ToSimdValue(_context.GetV(25)), Is.EqualTo(_unicornEmu.Q[25]));
-            Assert.That(V128ToSimdValue(_context.GetV(26)), Is.EqualTo(_unicornEmu.Q[26]));
-            Assert.That(V128ToSimdValue(_context.GetV(27)), Is.EqualTo(_unicornEmu.Q[27]));
-            Assert.That(V128ToSimdValue(_context.GetV(28)), Is.EqualTo(_unicornEmu.Q[28]));
-            Assert.That(V128ToSimdValue(_context.GetV(29)), Is.EqualTo(_unicornEmu.Q[29]));
-            Assert.That(V128ToSimdValue(_context.GetV(30)), Is.EqualTo(_unicornEmu.Q[30]), "V30");
-            Assert.That(V128ToSimdValue(_context.GetV(31)), Is.EqualTo(_unicornEmu.Q[31]), "V31");
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(1)),  Is.EqualTo(_unicornEmu.Q[1]), "V1");
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(2)),  Is.EqualTo(_unicornEmu.Q[2]), "V2");
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(3)),  Is.EqualTo(_unicornEmu.Q[3]), "V3");
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(4)),  Is.EqualTo(_unicornEmu.Q[4]), "V4");
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(5)),  Is.EqualTo(_unicornEmu.Q[5]), "V5");
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(6)),  Is.EqualTo(_unicornEmu.Q[6]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(7)),  Is.EqualTo(_unicornEmu.Q[7]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(8)),  Is.EqualTo(_unicornEmu.Q[8]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(9)),  Is.EqualTo(_unicornEmu.Q[9]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(10)), Is.EqualTo(_unicornEmu.Q[10]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(11)), Is.EqualTo(_unicornEmu.Q[11]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(12)), Is.EqualTo(_unicornEmu.Q[12]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(13)), Is.EqualTo(_unicornEmu.Q[13]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(14)), Is.EqualTo(_unicornEmu.Q[14]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(15)), Is.EqualTo(_unicornEmu.Q[15]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(16)), Is.EqualTo(_unicornEmu.Q[16]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(17)), Is.EqualTo(_unicornEmu.Q[17]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(18)), Is.EqualTo(_unicornEmu.Q[18]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(19)), Is.EqualTo(_unicornEmu.Q[19]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(20)), Is.EqualTo(_unicornEmu.Q[20]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(21)), Is.EqualTo(_unicornEmu.Q[21]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(22)), Is.EqualTo(_unicornEmu.Q[22]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(23)), Is.EqualTo(_unicornEmu.Q[23]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(24)), Is.EqualTo(_unicornEmu.Q[24]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(25)), Is.EqualTo(_unicornEmu.Q[25]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(26)), Is.EqualTo(_unicornEmu.Q[26]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(27)), Is.EqualTo(_unicornEmu.Q[27]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(28)), Is.EqualTo(_unicornEmu.Q[28]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(29)), Is.EqualTo(_unicornEmu.Q[29]));
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(30)), Is.EqualTo(_unicornEmu.Q[30]), "V30");
+            ClassicAssert.That(V128ToSimdValue(_context.GetV(31)), Is.EqualTo(_unicornEmu.Q[31]), "V31");
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
-                Assert.That(_context.GetPstateFlag(PState.VFlag), Is.EqualTo(_unicornEmu.OverflowFlag), "VFlag");
-                Assert.That(_context.GetPstateFlag(PState.CFlag), Is.EqualTo(_unicornEmu.CarryFlag),    "CFlag");
-                Assert.That(_context.GetPstateFlag(PState.ZFlag), Is.EqualTo(_unicornEmu.ZeroFlag),     "ZFlag");
-                Assert.That(_context.GetPstateFlag(PState.NFlag), Is.EqualTo(_unicornEmu.NegativeFlag), "NFlag");
+                ClassicAssert.That(_context.GetPstateFlag(PState.VFlag), Is.EqualTo(_unicornEmu.OverflowFlag), "VFlag");
+                ClassicAssert.That(_context.GetPstateFlag(PState.CFlag), Is.EqualTo(_unicornEmu.CarryFlag),    "CFlag");
+                ClassicAssert.That(_context.GetPstateFlag(PState.ZFlag), Is.EqualTo(_unicornEmu.ZeroFlag),     "ZFlag");
+                ClassicAssert.That(_context.GetPstateFlag(PState.NFlag), Is.EqualTo(_unicornEmu.NegativeFlag), "NFlag");
             });
 
-            Assert.That((int)_context.Fpcr,                 Is.EqualTo(_unicornEmu.Fpcr),                 "Fpcr");
-            Assert.That((int)_context.Fpsr & (int)fpsrMask, Is.EqualTo(_unicornEmu.Fpsr & (int)fpsrMask), "Fpsr");
+            ClassicAssert.That((int)_context.Fpcr,                 Is.EqualTo(_unicornEmu.Fpcr),                 "Fpcr");
+            ClassicAssert.That((int)_context.Fpsr & (int)fpsrMask, Is.EqualTo(_unicornEmu.Fpsr & (int)fpsrMask), "Fpsr");
 #pragma warning restore IDE0055
 
             if (_usingMemory)
@@ -422,7 +421,7 @@ namespace Hyjinx.Tests.Cpu
                 byte[] mem = _memory.GetSpan(DataBaseAddress, (int)Size).ToArray();
                 byte[] unicornMem = _unicornEmu.MemoryRead(DataBaseAddress, Size);
 
-                Assert.That(mem, Is.EqualTo(unicornMem), "Data");
+                ClassicAssert.That(mem, Is.EqualTo(unicornMem), "Data");
             }
         }
 
@@ -432,14 +431,14 @@ namespace Hyjinx.Tests.Cpu
             {
                 if (float.IsNaN(_unicornEmu.Q[0].AsFloat()))
                 {
-                    Assert.Ignore("NaN test.");
+                    ClassicAssert.Ignore("NaN test.");
                 }
             }
             else if (fpSkips.HasFlag(FpSkips.IfNaND))
             {
                 if (double.IsNaN(_unicornEmu.Q[0].AsDouble()))
                 {
-                    Assert.Ignore("NaN test.");
+                    ClassicAssert.Ignore("NaN test.");
                 }
             }
 
@@ -447,7 +446,7 @@ namespace Hyjinx.Tests.Cpu
             {
                 if ((_unicornEmu.Fpsr & (int)Fpsr.Ufc) != 0)
                 {
-                    Assert.Ignore("Underflow test.");
+                    ClassicAssert.Ignore("Underflow test.");
                 }
             }
 
@@ -455,7 +454,7 @@ namespace Hyjinx.Tests.Cpu
             {
                 if ((_unicornEmu.Fpsr & (int)Fpsr.Ofc) != 0)
                 {
-                    Assert.Ignore("Overflow test.");
+                    ClassicAssert.Ignore("Overflow test.");
                 }
             }
         }
@@ -472,15 +471,15 @@ namespace Hyjinx.Tests.Cpu
                     if (IsNormalOrSubnormalS(_unicornEmu.Q[0].AsFloat()) &&
                         IsNormalOrSubnormalS(_context.GetV(0).As<float>()))
                     {
-                        Assert.Multiple(() =>
+                        ClassicAssert.Multiple(() =>
                         {
-                            Assert.That(_context.GetV(0).Extract<float>(0),
+                            ClassicAssert.That(_context.GetV(0).Extract<float>(0),
                                 Is.EqualTo(_unicornEmu.Q[0].GetFloat(0)).Within(1).Ulps, "V0[0]");
-                            Assert.That(_context.GetV(0).Extract<float>(1),
+                            ClassicAssert.That(_context.GetV(0).Extract<float>(1),
                                 Is.EqualTo(_unicornEmu.Q[0].GetFloat(1)).Within(1).Ulps, "V0[1]");
-                            Assert.That(_context.GetV(0).Extract<float>(2),
+                            ClassicAssert.That(_context.GetV(0).Extract<float>(2),
                                 Is.EqualTo(_unicornEmu.Q[0].GetFloat(2)).Within(1).Ulps, "V0[2]");
-                            Assert.That(_context.GetV(0).Extract<float>(3),
+                            ClassicAssert.That(_context.GetV(0).Extract<float>(3),
                                 Is.EqualTo(_unicornEmu.Q[0].GetFloat(3)).Within(1).Ulps, "V0[3]");
                         });
 
@@ -488,7 +487,7 @@ namespace Hyjinx.Tests.Cpu
                     }
                     else
                     {
-                        Assert.That(V128ToSimdValue(_context.GetV(0)), Is.EqualTo(_unicornEmu.Q[0]));
+                        ClassicAssert.That(V128ToSimdValue(_context.GetV(0)), Is.EqualTo(_unicornEmu.Q[0]));
                     }
                 }
 
@@ -497,11 +496,11 @@ namespace Hyjinx.Tests.Cpu
                     if (IsNormalOrSubnormalD(_unicornEmu.Q[0].AsDouble()) &&
                         IsNormalOrSubnormalD(_context.GetV(0).As<double>()))
                     {
-                        Assert.Multiple(() =>
+                        ClassicAssert.Multiple(() =>
                         {
-                            Assert.That(_context.GetV(0).Extract<double>(0),
+                            ClassicAssert.That(_context.GetV(0).Extract<double>(0),
                                 Is.EqualTo(_unicornEmu.Q[0].GetDouble(0)).Within(1).Ulps, "V0[0]");
-                            Assert.That(_context.GetV(0).Extract<double>(1),
+                            ClassicAssert.That(_context.GetV(0).Extract<double>(1),
                                 Is.EqualTo(_unicornEmu.Q[0].GetDouble(1)).Within(1).Ulps, "V0[1]");
                         });
 
@@ -509,7 +508,7 @@ namespace Hyjinx.Tests.Cpu
                     }
                     else
                     {
-                        Assert.That(V128ToSimdValue(_context.GetV(0)), Is.EqualTo(_unicornEmu.Q[0]));
+                        ClassicAssert.That(V128ToSimdValue(_context.GetV(0)), Is.EqualTo(_unicornEmu.Q[0]));
                     }
                 }
             }

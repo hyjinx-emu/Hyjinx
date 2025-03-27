@@ -1,9 +1,6 @@
 #define Misc
 
-using ARMeilleure.State;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
@@ -194,7 +191,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            Assert.That(GetContext().GetX(0), Is.Zero);
+            ClassicAssert.That(GetContext().GetX(0), Is.Zero);
         }
 
         // 18 integer solutions.
@@ -241,7 +238,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            Assert.That(GetContext().GetV(0).As<float>(), Is.EqualTo(16f));
+            ClassicAssert.That(GetContext().GetV(0).As<float>(), Is.EqualTo(16f));
         }
 
         // 18 integer solutions.
@@ -288,7 +285,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            Assert.That(GetContext().GetV(0).As<double>(), Is.EqualTo(16d));
+            ClassicAssert.That(GetContext().GetV(0).As<double>(), Is.EqualTo(16d));
         }
 
         [Test, Ignore("The Tester supports only one return point.")]
@@ -355,7 +352,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            Assert.That(GetContext().GetX(0), Is.EqualTo(Fn(a)));
+            ClassicAssert.That(GetContext().GetX(0), Is.EqualTo(Fn(a)));
         }
 
         [Explicit]
@@ -377,7 +374,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            Assert.That(GetContext().GetX(0), Is.EqualTo(Result));
+            ClassicAssert.That(GetContext().GetX(0), Is.EqualTo(Result));
 
             Reset();
 
@@ -394,7 +391,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            Assert.That(GetContext().GetX(0), Is.EqualTo(Result));
+            ClassicAssert.That(GetContext().GetX(0), Is.EqualTo(Result));
         }
 
         [Explicit]
@@ -407,7 +404,7 @@ namespace Hyjinx.Tests.Cpu
             uint opcode = 0xD503201F; // NOP
             ExecutionContext context = SingleOpcode(opcode, x0: a);
 
-            Assert.That(context.GetX(0), Is.EqualTo(a));
+            ClassicAssert.That(context.GetX(0), Is.EqualTo(a));
         }
 
         [Explicit]
@@ -419,7 +416,7 @@ namespace Hyjinx.Tests.Cpu
         {
             if (!BitConverter.IsLittleEndian)
             {
-                Assert.Ignore();
+                ClassicAssert.Ignore();
             }
 
             for (ulong gapOffset = 0; gapOffset < displacement; gapOffset++)

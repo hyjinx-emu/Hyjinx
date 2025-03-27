@@ -1,5 +1,3 @@
-using System;
-
 namespace Hyjinx.Tests.Unicorn
 {
     public readonly struct SimdValue : IEquatable<SimdValue>

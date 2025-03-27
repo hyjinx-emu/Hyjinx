@@ -1,9 +1,7 @@
 #define SimdMemory32
 
 using ARMeilleure.State;
-using NUnit.Framework;
 using Hyjinx.Memory;
-using System;
 
 namespace Hyjinx.Tests.Cpu
 {

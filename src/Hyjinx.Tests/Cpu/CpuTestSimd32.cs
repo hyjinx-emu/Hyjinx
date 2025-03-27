@@ -1,8 +1,7 @@
 #define Simd32
 
 using ARMeilleure.State;
-using NUnit.Framework;
-using System.Collections.Generic;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
@@ -202,10 +201,10 @@ namespace Hyjinx.Tests.Cpu
 
             ExecutionContext context = SingleOpcode(opcode, v0: v0, v1: v1, runUnicorn: false);
 
-            Assert.Multiple(() =>
+            ClassicAssert.Multiple(() =>
             {
-                Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
-                Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
+                ClassicAssert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
+                ClassicAssert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
 
             // Unicorn does not yet support hash instructions in A32.

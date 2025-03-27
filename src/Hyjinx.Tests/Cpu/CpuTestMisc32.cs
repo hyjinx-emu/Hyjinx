@@ -1,8 +1,6 @@
 #define Misc32
 
 using ARMeilleure.State;
-using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace Hyjinx.Tests.Cpu
 {

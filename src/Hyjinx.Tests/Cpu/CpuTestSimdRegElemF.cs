@@ -1,8 +1,6 @@
 #define SimdRegElemF
 
 using ARMeilleure.State;
-using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace Hyjinx.Tests.Cpu
 {

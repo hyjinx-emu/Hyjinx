@@ -1,7 +1,5 @@
 #define AluRs32
 
-using NUnit.Framework;
-
 namespace Hyjinx.Tests.Cpu
 {
     [Category("AluRs32")]

@@ -1,16 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../.build/library.props" />
+  <Import Project="../.build/unittest.props" />
   
-  <PropertyGroup>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="NUnit" />
-    <PackageReference Include="NUnit3TestAdapter" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Memory\Hyjinx.Memory.csproj" />
   </ItemGroup>

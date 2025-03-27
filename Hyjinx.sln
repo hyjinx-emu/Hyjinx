@@ -85,6 +85,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{996E745A
 		src\.build\common.props = src\.build\common.props
 		src\.build\library.props = src\.build\library.props
 		src\.build\netstandard.props = src\.build\netstandard.props
+		src\.build\unittest.props = src\.build\unittest.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{5C86EA50-A78D-4456-B2F9-7F6D2448EBF7}"

@@ -1,4 +1,3 @@
-using System;
 using UnicornEngine.Const;
 
 namespace Hyjinx.Tests.Unicorn

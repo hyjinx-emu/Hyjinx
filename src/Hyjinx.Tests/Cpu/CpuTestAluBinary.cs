@@ -1,7 +1,6 @@
 #define AluBinary
 
-using ARMeilleure.State;
-using NUnit.Framework;
+using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
@@ -76,7 +75,7 @@ namespace Hyjinx.Tests.Cpu
 
             ExecutionContext context = GetContext();
             ulong result = context.GetX((int)rd);
-            Assert.That(result == test.Results[size]);
+            ClassicAssert.That(result == test.Results[size]);
         }
 
         [Test, Pairwise, Description("CRC32X <Wd>, <Wn>, <Xm>"), Ignore("Unicorn fails.")]
