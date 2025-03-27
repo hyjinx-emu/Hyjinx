@@ -11,11 +11,11 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
             int previousRevision = BehaviourContext.BaseRevisionMagic + (BehaviourContext.LastRevision - 1);
             int invalidRevision = BehaviourContext.BaseRevisionMagic + (BehaviourContext.LastRevision + 1);
 
-            ClassicAssert.IsTrue(BehaviourContext.CheckFeatureSupported(latestRevision, latestRevision));
-            ClassicAssert.IsFalse(BehaviourContext.CheckFeatureSupported(previousRevision, latestRevision));
-            ClassicAssert.IsTrue(BehaviourContext.CheckFeatureSupported(latestRevision, previousRevision));
+            Assert.That(BehaviourContext.CheckFeatureSupported(latestRevision, latestRevision));
+            Assert.That(!BehaviourContext.CheckFeatureSupported(previousRevision, latestRevision));
+            Assert.That(BehaviourContext.CheckFeatureSupported(latestRevision, previousRevision));
             // In case we get an invalid revision, this is supposed to auto default to REV1 internally.. idk what the hell Nintendo was thinking here..
-            ClassicAssert.IsTrue(BehaviourContext.CheckFeatureSupported(invalidRevision, latestRevision));
+            Assert.That(BehaviourContext.CheckFeatureSupported(invalidRevision, latestRevision));
         }
 
         [Test]
@@ -25,11 +25,11 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision1);
 
-            ClassicAssert.IsFalse(behaviourContext.IsMemoryPoolForceMappingEnabled());
+            Assert.That(!behaviourContext.IsMemoryPoolForceMappingEnabled());
 
             behaviourContext.UpdateFlags(0x1);
 
-            ClassicAssert.IsTrue(behaviourContext.IsMemoryPoolForceMappingEnabled());
+            Assert.That(behaviourContext.IsMemoryPoolForceMappingEnabled());
         }
 
         [Test]
@@ -39,22 +39,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision1);
 
-            ClassicAssert.IsFalse(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsFalse(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(!behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(!behaviourContext.IsSplitterSupported());
+            Assert.That(!behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(!behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(!behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(!behaviourContext.IsSplitterBugFixed());
+            Assert.That(!behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(!behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(!behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(!behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(!behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(!behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.70f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(1, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -68,22 +68,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision2);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsFalse(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(!behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(!behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(!behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(!behaviourContext.IsSplitterBugFixed());
+            Assert.That(!behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(!behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(!behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(!behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(!behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(!behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.70f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(1, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -97,22 +97,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision3);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsFalse(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(!behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(!behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(!behaviourContext.IsSplitterBugFixed());
+            Assert.That(!behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(!behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(!behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(!behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(!behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(!behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.70f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(1, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -126,22 +126,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision4);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(!behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(!behaviourContext.IsSplitterBugFixed());
+            Assert.That(!behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(!behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(!behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(!behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(!behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(!behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.75f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(1, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -155,22 +155,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision5);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(behaviourContext.IsSplitterBugFixed());
+            Assert.That(behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(!behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(!behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(!behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(!behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.80f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(2, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -184,22 +184,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision6);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsFalse(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(behaviourContext.IsSplitterBugFixed());
+            Assert.That(behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(!behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(!behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(!behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(!behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.80f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(2, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -213,22 +213,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision7);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(behaviourContext.IsSplitterBugFixed());
+            Assert.That(behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(!behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(!behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(!behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.80f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(2, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -242,22 +242,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision8);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(behaviourContext.IsSplitterBugFixed());
+            Assert.That(behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(!behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(!behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.80f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(3, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -271,22 +271,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision9);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsTrue(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsFalse(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(behaviourContext.IsSplitterBugFixed());
+            Assert.That(behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(!behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.80f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(3, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -300,22 +300,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision10);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsTrue(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsTrue(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsFalse(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(behaviourContext.IsSplitterBugFixed());
+            Assert.That(behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(!behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.80f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(4, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -329,22 +329,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision11);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsTrue(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsTrue(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsTrue(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsFalse(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(behaviourContext.IsSplitterBugFixed());
+            Assert.That(behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(!behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.80f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(5, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -358,22 +358,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision12);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsTrue(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsTrue(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsTrue(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsFalse(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(behaviourContext.IsSplitterBugFixed());
+            Assert.That(behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(!behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.80f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(5, behaviourContext.GetCommandProcessingTimeEstimatorVersion());
@@ -387,22 +387,22 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             behaviourContext.SetUserRevision(BehaviourContext.BaseRevisionMagic + BehaviourContext.Revision13);
 
-            ClassicAssert.IsTrue(behaviourContext.IsAdpcmLoopContextBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsLongSizePreDelaySupported());
-            ClassicAssert.IsTrue(behaviourContext.IsAudioUsbDeviceOutputSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsFlushVoiceWaveBuffersSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsElapsedFrameCountSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsDecodingBehaviourFlagSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
-            ClassicAssert.IsTrue(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsWaveBufferVersion2Supported());
-            ClassicAssert.IsTrue(behaviourContext.IsEffectInfoVersion2Supported());
-            ClassicAssert.IsTrue(behaviourContext.UseMultiTapBiquadFilterProcessing());
-            ClassicAssert.IsTrue(behaviourContext.IsNewEffectChannelMappingSupported());
-            ClassicAssert.IsTrue(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
-            ClassicAssert.IsTrue(behaviourContext.IsSplitterPrevVolumeResetSupported());
+            Assert.That(behaviourContext.IsAdpcmLoopContextBugFixed());
+            Assert.That(behaviourContext.IsSplitterSupported());
+            Assert.That(behaviourContext.IsLongSizePreDelaySupported());
+            Assert.That(behaviourContext.IsAudioUsbDeviceOutputSupported());
+            Assert.That(behaviourContext.IsFlushVoiceWaveBuffersSupported());
+            Assert.That(behaviourContext.IsSplitterBugFixed());
+            Assert.That(behaviourContext.IsElapsedFrameCountSupported());
+            Assert.That(behaviourContext.IsDecodingBehaviourFlagSupported());
+            Assert.That(behaviourContext.IsBiquadFilterEffectStateClearBugFixed());
+            Assert.That(behaviourContext.IsMixInParameterDirtyOnlyUpdateSupported());
+            Assert.That(behaviourContext.IsWaveBufferVersion2Supported());
+            Assert.That(behaviourContext.IsEffectInfoVersion2Supported());
+            Assert.That(behaviourContext.UseMultiTapBiquadFilterProcessing());
+            Assert.That(behaviourContext.IsNewEffectChannelMappingSupported());
+            Assert.That(behaviourContext.IsBiquadFilterParameterForSplitterEnabled());
+            Assert.That(behaviourContext.IsSplitterPrevVolumeResetSupported());
 
             ClassicAssert.AreEqual(0.80f, behaviourContext.GetAudioRendererProcessingTimeLimit());
             ClassicAssert.AreEqual(5, behaviourContext.GetCommandProcessingTimeEstimatorVersion());

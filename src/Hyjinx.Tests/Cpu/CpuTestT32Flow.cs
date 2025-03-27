@@ -108,7 +108,7 @@ namespace Hyjinx.Tests.Cpu
 
             ExecuteOpcodes(runUnicorn: false);
 
-            ClassicAssert.That(GetContext().GetX(0), Is.EqualTo(CodeBaseAddress + 0x5));
+            Assert.That(GetContext().GetX(0), Is.EqualTo(CodeBaseAddress + 0x5));
         }
 
         [Test]
@@ -132,8 +132,8 @@ namespace Hyjinx.Tests.Cpu
 
             ExecuteOpcodes(runUnicorn: false);
 
-            ClassicAssert.That(GetContext().GetX(0), Is.EqualTo(CodeBaseAddress + 0x5));
-            ClassicAssert.That(GetContext().GetPstateFlag(PState.TFlag), Is.EqualTo(false));
+            Assert.That(GetContext().GetX(0), Is.EqualTo(CodeBaseAddress + 0x5));
+            Assert.That(GetContext().GetPstateFlag(PState.TFlag), Is.EqualTo(false));
         }
 
         [Test]
@@ -159,8 +159,8 @@ namespace Hyjinx.Tests.Cpu
 
             ExecuteOpcodes(runUnicorn: false);
 
-            ClassicAssert.That(GetContext().GetX(0), Is.EqualTo(CodeBaseAddress + 0x7));
-            ClassicAssert.That(GetContext().GetPstateFlag(PState.TFlag), Is.EqualTo(false));
+            Assert.That(GetContext().GetX(0), Is.EqualTo(CodeBaseAddress + 0x7));
+            Assert.That(GetContext().GetPstateFlag(PState.TFlag), Is.EqualTo(false));
         }
     }
 }

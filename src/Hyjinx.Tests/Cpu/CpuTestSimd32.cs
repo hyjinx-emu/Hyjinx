@@ -203,8 +203,8 @@ namespace Hyjinx.Tests.Cpu
 
             ClassicAssert.Multiple(() =>
             {
-                ClassicAssert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
-                ClassicAssert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
+                Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
+                Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
 
             // Unicorn does not yet support hash instructions in A32.

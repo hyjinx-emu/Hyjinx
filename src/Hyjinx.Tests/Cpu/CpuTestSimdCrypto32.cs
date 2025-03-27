@@ -28,13 +28,13 @@ namespace Hyjinx.Tests.Cpu
 
             ClassicAssert.Multiple(() =>
             {
-                ClassicAssert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
-                ClassicAssert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
+                Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
+                Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
             ClassicAssert.Multiple(() =>
             {
-                ClassicAssert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(roundKeyL));
-                ClassicAssert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(roundKeyH));
+                Assert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(roundKeyL));
+                Assert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(roundKeyH));
             });
 
             // Unicorn does not yet support crypto instructions in A32.
@@ -62,13 +62,13 @@ namespace Hyjinx.Tests.Cpu
 
             ClassicAssert.Multiple(() =>
             {
-                ClassicAssert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
-                ClassicAssert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
+                Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
+                Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
             ClassicAssert.Multiple(() =>
             {
-                ClassicAssert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(roundKeyL));
-                ClassicAssert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(roundKeyH));
+                Assert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(roundKeyL));
+                Assert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(roundKeyH));
             });
 
             // Unicorn does not yet support crypto instructions in A32.
@@ -97,15 +97,15 @@ namespace Hyjinx.Tests.Cpu
 
             ClassicAssert.Multiple(() =>
             {
-                ClassicAssert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
-                ClassicAssert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
+                Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
+                Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
             if (rm == 2u)
             {
                 ClassicAssert.Multiple(() =>
                 {
-                    ClassicAssert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(valueL));
-                    ClassicAssert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(valueH));
+                    Assert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(valueL));
+                    Assert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(valueH));
                 });
             }
 
@@ -135,15 +135,15 @@ namespace Hyjinx.Tests.Cpu
 
             ClassicAssert.Multiple(() =>
             {
-                ClassicAssert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
-                ClassicAssert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
+                Assert.That(GetVectorE0(context.GetV(0)), Is.EqualTo(resultL));
+                Assert.That(GetVectorE1(context.GetV(0)), Is.EqualTo(resultH));
             });
             if (rm == 2u)
             {
                 ClassicAssert.Multiple(() =>
                 {
-                    ClassicAssert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(valueL));
-                    ClassicAssert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(valueH));
+                    Assert.That(GetVectorE0(context.GetV(1)), Is.EqualTo(valueL));
+                    Assert.That(GetVectorE1(context.GetV(1)), Is.EqualTo(valueH));
                 });
             }
 

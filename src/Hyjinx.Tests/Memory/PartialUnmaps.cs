@@ -156,7 +156,7 @@ namespace Hyjinx.Tests.Memory
                 shouldAccess = false;
                 testThread.Join();
 
-                ClassicAssert.False(error);
+                Assert.That(!error);
 
                 string test = null;
 
@@ -263,7 +263,7 @@ namespace Hyjinx.Tests.Memory
                 writeLoopState.Running = 0;
                 testThread.Join();
 
-                ClassicAssert.False(writeLoopState.Error != 0);
+                Assert.That(writeLoopState.Error == 0);
             }
             finally
             {
@@ -458,7 +458,7 @@ namespace Hyjinx.Tests.Memory
                 thread.Join();
             }
 
-            ClassicAssert.False(error);
+            Assert.That(!error);
         }
     }
 }

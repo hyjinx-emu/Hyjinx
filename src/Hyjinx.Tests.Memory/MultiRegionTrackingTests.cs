@@ -52,7 +52,7 @@ namespace Hyjinx.Tests.Memory
 
             handle.QueryModified(startAddress, size, (address, range) =>
             {
-                ClassicAssert.IsTrue(addressPredicate(address)); // Written pages must be even.
+                Assert.That(addressPredicate(address)); // Written pages must be even.
                 ClassicAssert.GreaterOrEqual(address, lastAddress); // Must be signalled in ascending order, regardless of write order.
                 lastAddress = address;
                 regionCount++;
@@ -68,7 +68,7 @@ namespace Hyjinx.Tests.Memory
 
             handle.QueryModified(startAddress, size, (address, range) =>
             {
-                ClassicAssert.IsTrue(addressPredicate(address)); // Written pages must be even.
+                Assert.That(addressPredicate(address)); // Written pages must be even.
                 ClassicAssert.GreaterOrEqual(address, lastAddress); // Must be signalled in ascending order, regardless of write order.
                 lastAddress = address;
                 regionCount++;
@@ -359,13 +359,13 @@ namespace Hyjinx.Tests.Memory
             ClassicAssert.AreEqual(new bool[3], actionsTriggered);
 
             _tracking.VirtualMemoryEvent(PageSize * 5, PageSize, false);
-            ClassicAssert.IsTrue(actionsTriggered[0]);
+            Assert.That(actionsTriggered[0]);
 
             _tracking.VirtualMemoryEvent(PageSize * 10, PageSize, false);
-            ClassicAssert.IsTrue(actionsTriggered[1]);
+            Assert.That(actionsTriggered[1]);
 
             _tracking.VirtualMemoryEvent(PageSize * 15, PageSize, false);
-            ClassicAssert.IsTrue(actionsTriggered[2]);
+            Assert.That(actionsTriggered[2]);
 
             // The double page handles should be disposed, as they were split into granular handles.
             foreach (RegionHandle doublePage in doublePages)
@@ -382,7 +382,7 @@ namespace Hyjinx.Tests.Memory
                     throws = true;
                 }
 
-                ClassicAssert.IsTrue(throws);
+                Assert.That(throws);
             }
 
             IEnumerable<IRegionHandle> combinedHandles = combined.GetHandles();
@@ -409,11 +409,11 @@ namespace Hyjinx.Tests.Memory
 
             // Precise write to first handle in the multiregion.
             _tracking.VirtualMemoryEvent(PageSize * 3, PageSize, true, precise: true);
-            ClassicAssert.IsFalse(actionTriggered); // Action not triggered.
+            Assert.That(!actionTriggered); // Action not triggered.
 
             bool firstPageModified = false;
             granular.QueryModified(PageSize * 3, PageSize, (_, _) => { firstPageModified = true; });
-            ClassicAssert.IsTrue(firstPageModified); // First page is modified.
+            Assert.That(firstPageModified); // First page is modified.
 
             // Precise write to all handles in the multiregion.
             _tracking.VirtualMemoryEvent(PageSize * 3, PageSize * 3, true, precise: true);
@@ -426,7 +426,7 @@ namespace Hyjinx.Tests.Memory
                 granular.QueryModified(PageSize * (ulong)i, PageSize, (_, _) => { pagesModified[index] = true; });
             }
 
-            ClassicAssert.IsTrue(actionTriggered); // Action triggered.
+            Assert.That(actionTriggered); // Action triggered.
 
             // Precise writes are ignored on two later handles due to the action returning true.
             ClassicAssert.AreEqual(pagesModified, new bool[] { true, false, false });

@@ -191,7 +191,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            ClassicAssert.That(GetContext().GetX(0), Is.Zero);
+            Assert.That(GetContext().GetX(0), Is.Zero);
         }
 
         // 18 integer solutions.
@@ -238,7 +238,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            ClassicAssert.That(GetContext().GetV(0).As<float>(), Is.EqualTo(16f));
+            Assert.That(GetContext().GetV(0).As<float>(), Is.EqualTo(16f));
         }
 
         // 18 integer solutions.
@@ -285,7 +285,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            ClassicAssert.That(GetContext().GetV(0).As<double>(), Is.EqualTo(16d));
+            Assert.That(GetContext().GetV(0).As<double>(), Is.EqualTo(16d));
         }
 
         [Test, Ignore("The Tester supports only one return point.")]
@@ -352,7 +352,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            ClassicAssert.That(GetContext().GetX(0), Is.EqualTo(Fn(a)));
+            Assert.That(GetContext().GetX(0), Is.EqualTo(Fn(a)));
         }
 
         [Explicit]
@@ -374,7 +374,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            ClassicAssert.That(GetContext().GetX(0), Is.EqualTo(Result));
+            Assert.That(GetContext().GetX(0), Is.EqualTo(Result));
 
             Reset();
 
@@ -391,7 +391,7 @@ namespace Hyjinx.Tests.Cpu
             Opcode(0xD65F03C0);
             ExecuteOpcodes();
 
-            ClassicAssert.That(GetContext().GetX(0), Is.EqualTo(Result));
+            Assert.That(GetContext().GetX(0), Is.EqualTo(Result));
         }
 
         [Explicit]
@@ -404,7 +404,7 @@ namespace Hyjinx.Tests.Cpu
             uint opcode = 0xD503201F; // NOP
             ExecutionContext context = SingleOpcode(opcode, x0: a);
 
-            ClassicAssert.That(context.GetX(0), Is.EqualTo(a));
+            Assert.That(context.GetX(0), Is.EqualTo(a));
         }
 
         [Explicit]

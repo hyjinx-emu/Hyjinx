@@ -49,7 +49,7 @@ namespace Hyjinx.Tests.Audio.Renderer.Dsp
 
             sumDifference /= expectedOutput.Length;
             // Expect the output to be 98% similar to the expected resampled sine wave
-            ClassicAssert.IsTrue(sumDifference < 0.02f);
+            Assert.That(sumDifference < 0.02f);
         }
     }
 }

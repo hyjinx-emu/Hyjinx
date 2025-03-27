@@ -49,46 +49,46 @@ namespace Hyjinx.Tests.Memory
             });
 
             bool dirtyInitial = handle.Dirty;
-            ClassicAssert.True(dirtyInitial); // Handle starts dirty.
+            Assert.That(dirtyInitial); // Handle starts dirty.
 
             handle.Reprotect();
 
             bool dirtyAfterReprotect = handle.Dirty;
-            ClassicAssert.False(dirtyAfterReprotect); // Handle is no longer dirty.
+            Assert.That(!dirtyAfterReprotect); // Handle is no longer dirty.
 
             _tracking.VirtualMemoryEvent(PageSize * 2, 4, true);
             _tracking.VirtualMemoryEvent(PageSize * 2, 4, false);
 
             bool dirtyAfterUnrelatedReadWrite = handle.Dirty;
-            ClassicAssert.False(dirtyAfterUnrelatedReadWrite); // Not dirtied, as the write was to an unrelated address.
+            Assert.That(!dirtyAfterUnrelatedReadWrite); // Not dirtied, as the write was to an unrelated address.
 
             ClassicAssert.IsNull(readTrackingTriggered); // Hasn't been triggered yet
 
             _tracking.VirtualMemoryEvent(0, 4, false);
 
             bool dirtyAfterRelatedRead = handle.Dirty;
-            ClassicAssert.False(dirtyAfterRelatedRead); // Only triggers on write.
+            Assert.That(!dirtyAfterRelatedRead); // Only triggers on write.
             ClassicAssert.AreEqual(readTrackingTriggered, (0UL, 4UL)); // Read action was triggered.
 
             readTrackingTriggered = null;
             _tracking.VirtualMemoryEvent(0, 4, true);
 
             bool dirtyAfterRelatedWrite = handle.Dirty;
-            ClassicAssert.True(dirtyAfterRelatedWrite); // Dirty flag should now be set.
+            Assert.That(dirtyAfterRelatedWrite); // Dirty flag should now be set.
 
             _tracking.VirtualMemoryEvent(4, 4, true);
             bool dirtyAfterRelatedWrite2 = handle.Dirty;
-            ClassicAssert.True(dirtyAfterRelatedWrite2); // Dirty flag should still be set.
+            Assert.That(dirtyAfterRelatedWrite2); // Dirty flag should still be set.
 
             handle.Reprotect();
 
             bool dirtyAfterReprotect2 = handle.Dirty;
-            ClassicAssert.False(dirtyAfterReprotect2); // Handle is no longer dirty.
+            Assert.That(!dirtyAfterReprotect2); // Handle is no longer dirty.
 
             handle.Dispose();
 
             bool dirtyAfterDispose = TestSingleWrite(handle, 0, 4);
-            ClassicAssert.False(dirtyAfterDispose); // Handle cannot be triggered when disposed
+            Assert.That(!dirtyAfterDispose); // Handle cannot be triggered when disposed
         }
 
         [Test]
@@ -122,27 +122,27 @@ namespace Hyjinx.Tests.Memory
             for (int i = 0; i < 16; i++)
             {
                 // No handles are dirty.
-                ClassicAssert.False(allHandle.Dirty);
+                Assert.That(!allHandle.Dirty);
                 ClassicAssert.IsNull(readTrackingTriggeredAll);
                 for (int j = 0; j < 16; j++)
                 {
-                    ClassicAssert.False(containedHandles[j].Dirty);
+                    Assert.That(!containedHandles[j].Dirty);
                 }
 
                 _tracking.VirtualMemoryEvent((ulong)i * PageSize, 1, true);
 
                 // Only the handle covering the entire range and the relevant contained handle are dirty.
-                ClassicAssert.True(allHandle.Dirty);
+                Assert.That(allHandle.Dirty);
                 ClassicAssert.AreEqual(readTrackingTriggeredAll, ((ulong)i * PageSize, 1UL)); // Triggered read tracking
                 for (int j = 0; j < 16; j++)
                 {
                     if (j == i)
                     {
-                        ClassicAssert.True(containedHandles[j].Dirty);
+                        Assert.That(containedHandles[j].Dirty);
                     }
                     else
                     {
-                        ClassicAssert.False(containedHandles[j].Dirty);
+                        Assert.That(!containedHandles[j].Dirty);
                     }
                 }
 
@@ -167,24 +167,24 @@ namespace Hyjinx.Tests.Memory
             // Anywhere inside the pages the region is contained on should trigger.
 
             bool originalRangeTriggers = TestSingleWrite(handle, address, size);
-            ClassicAssert.True(originalRangeTriggers);
+            Assert.That(originalRangeTriggers);
 
             bool alignedRangeTriggers = TestSingleWrite(handle, alignedStart, alignedSize);
-            ClassicAssert.True(alignedRangeTriggers);
+            Assert.That(alignedRangeTriggers);
 
             bool alignedStartTriggers = TestSingleWrite(handle, alignedStart, 1);
-            ClassicAssert.True(alignedStartTriggers);
+            Assert.That(alignedStartTriggers);
 
             bool alignedEndTriggers = TestSingleWrite(handle, alignedEnd - 1, 1);
-            ClassicAssert.True(alignedEndTriggers);
+            Assert.That(alignedEndTriggers);
 
             // Outside the tracked range should not trigger.
 
             bool alignedBeforeTriggers = TestSingleWrite(handle, alignedStart - 1, 1);
-            ClassicAssert.False(alignedBeforeTriggers);
+            Assert.That(!alignedBeforeTriggers);
 
             bool alignedAfterTriggers = TestSingleWrite(handle, alignedEnd, 1);
-            ClassicAssert.False(alignedAfterTriggers);
+            Assert.That(!alignedAfterTriggers);
         }
 
         [Test, Explicit, Timeout(1000)]
@@ -403,7 +403,7 @@ namespace Hyjinx.Tests.Memory
             ClassicAssert.AreEqual(MemoryPermission.ReadAndWrite, protection);
 
             bool dirtyInitial = handle.Dirty;
-            ClassicAssert.True(dirtyInitial); // Handle starts dirty.
+            Assert.That(dirtyInitial); // Handle starts dirty.
 
             handle.Reprotect();
 
@@ -420,14 +420,14 @@ namespace Hyjinx.Tests.Memory
             ClassicAssert.AreEqual(MemoryPermission.None, protection);
 
             bool dirtyAfterReprotect = handle.Dirty;
-            ClassicAssert.False(dirtyAfterReprotect); // Handle is no longer dirty.
+            Assert.That(!dirtyAfterReprotect); // Handle is no longer dirty.
 
             // First we should read, which will trigger the action. This _should not_ remove write protection on the memory.
 
             _tracking.VirtualMemoryEvent(0, 4, false);
 
             bool dirtyAfterRead = handle.Dirty;
-            ClassicAssert.False(dirtyAfterRead); // Not dirtied, as this was a read.
+            Assert.That(!dirtyAfterRead); // Not dirtied, as this was a read.
 
             ClassicAssert.AreEqual(readTrackingTriggered, (0UL, 4UL)); // Read action was triggered.
 
@@ -440,7 +440,7 @@ namespace Hyjinx.Tests.Memory
             _tracking.VirtualMemoryEvent(0, 4, true);
 
             bool dirtyAfterWriteAfterRead = handle.Dirty;
-            ClassicAssert.True(dirtyAfterWriteAfterRead); // Should be dirty.
+            Assert.That(dirtyAfterWriteAfterRead); // Should be dirty.
 
             ClassicAssert.AreEqual(MemoryPermission.ReadAndWrite, protection); // All protection is now be removed from the memory.
 
@@ -479,7 +479,7 @@ namespace Hyjinx.Tests.Memory
 
             ClassicAssert.IsNull(readTrackingTriggered); // Still hasn't been triggered.
             bool dirtyAfterPreciseActionTrue = handle.Dirty;
-            ClassicAssert.False(dirtyAfterPreciseActionTrue); // Not dirtied - precise action returned true.
+            Assert.That(!dirtyAfterPreciseActionTrue); // Not dirtied - precise action returned true.
             ClassicAssert.AreEqual(preciseTriggered, (0UL, 4UL, true)); // Precise action was triggered.
 
             // Handle is now dirty.
@@ -501,7 +501,7 @@ namespace Hyjinx.Tests.Memory
 
             ClassicAssert.AreEqual(readTrackingTriggered, (8UL, 4UL)); // Read action triggered, as precise action returned false.
             bool dirtyAfterPreciseActionFalse = handle.Dirty;
-            ClassicAssert.True(dirtyAfterPreciseActionFalse); // Dirtied, as precise action returned false.
+            Assert.That(dirtyAfterPreciseActionFalse); // Dirtied, as precise action returned false.
             ClassicAssert.AreEqual(preciseTriggered, (8UL, 4UL, true)); // Precise action was triggered.
         }
     }

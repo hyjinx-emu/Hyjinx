@@ -87,7 +87,7 @@ namespace Hyjinx.Tests.Cpu
 
             ExecutionContext context = GetContext();
             ulong result = context.GetX((int)rd);
-            ClassicAssert.That(result == test.Results[size]);
+            Assert.That(result == test.Results[size]);
         }
 #endif
     }

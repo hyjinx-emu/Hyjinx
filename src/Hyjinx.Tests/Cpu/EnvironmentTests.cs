@@ -56,9 +56,9 @@ namespace Hyjinx.Tests.Cpu
             // Subnormal results are not flushed to zero by default, which we should have returned to exiting the method.
             ClassicAssert.AreNotEqual(GetDenormal() + GetZero(), 0f);
 
-            ClassicAssert.True(result == 0);
-            ClassicAssert.True(methodCalled);
-            ClassicAssert.True(isFz);
+            Assert.That(result == 0);
+            Assert.That(methodCalled);
+            Assert.That(isFz);
             return;
 
             void ManagedMethod()

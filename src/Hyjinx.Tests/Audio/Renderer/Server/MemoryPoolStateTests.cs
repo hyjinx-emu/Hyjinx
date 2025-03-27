@@ -20,12 +20,12 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             memoryPool.DspAddress = 0x2000000;
 
-            ClassicAssert.IsTrue(memoryPool.Contains(0x1000000, 0x10));
-            ClassicAssert.IsTrue(memoryPool.Contains(0x1000FE0, 0x10));
-            ClassicAssert.IsTrue(memoryPool.Contains(0x1000FFF, 0x1));
-            ClassicAssert.IsFalse(memoryPool.Contains(0x1000FFF, 0x2));
-            ClassicAssert.IsFalse(memoryPool.Contains(0x1001000, 0x10));
-            ClassicAssert.IsFalse(memoryPool.Contains(0x2000000, 0x10));
+            Assert.That(memoryPool.Contains(0x1000000, 0x10));
+            Assert.That(memoryPool.Contains(0x1000FE0, 0x10));
+            Assert.That(memoryPool.Contains(0x1000FFF, 0x1));
+            Assert.That(!memoryPool.Contains(0x1000FFF, 0x2));
+            Assert.That(!memoryPool.Contains(0x1001000, 0x10));
+            Assert.That(!memoryPool.Contains(0x2000000, 0x10));
         }
 
         [Test]
@@ -51,11 +51,11 @@ namespace Hyjinx.Tests.Audio.Renderer.Server
 
             memoryPool.SetCpuAddress(0x1000000, 0x1000);
 
-            ClassicAssert.IsFalse(memoryPool.IsMapped());
+            Assert.That(!memoryPool.IsMapped());
 
             memoryPool.DspAddress = 0x2000000;
 
-            ClassicAssert.IsTrue(memoryPool.IsMapped());
+            Assert.That(memoryPool.IsMapped());
         }
     }
 }
