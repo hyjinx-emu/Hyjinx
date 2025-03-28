@@ -6,6 +6,7 @@ using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
+using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;

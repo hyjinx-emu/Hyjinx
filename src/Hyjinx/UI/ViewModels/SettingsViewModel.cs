@@ -15,6 +15,7 @@ using Hyjinx.Graphics.GAL;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.UI.Common.Configuration;
