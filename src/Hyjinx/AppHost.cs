@@ -56,7 +56,7 @@ using InputManager = Hyjinx.Input.HLE.InputManager;
 using IRenderer = Hyjinx.Graphics.GAL.IRenderer;
 using Key = Hyjinx.Input.Key;
 using MouseButton = Hyjinx.Input.MouseButton;
-using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
+using ScalingFilter = Hyjinx.UI.Common.Configuration.ScalingFilter;
 using Size = Avalonia.Size;
 using Switch = Hyjinx.HLE.Switch;
 

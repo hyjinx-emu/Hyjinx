@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.Json.Nodes;
-using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
 
 namespace Hyjinx.UI.Common.Configuration
 {

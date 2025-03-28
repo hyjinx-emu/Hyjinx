@@ -28,7 +28,7 @@ using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AntiAliasing = Hyjinx.UI.Common.Configuration.AntiAliasing;
-using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
+using ScalingFilter = Hyjinx.UI.Common.Configuration.ScalingFilter;
 using TimeZone = Hyjinx.Ava.UI.Models.TimeZone;
 
 namespace Hyjinx.Ava.UI.ViewModels
@@ -164,7 +164,7 @@ namespace Hyjinx.Ava.UI.ViewModels
         public bool IsSoundIoEnabled { get; set; }
         public bool IsSDL2Enabled { get; set; }
         public bool IsCustomResolutionScaleActive => _resolutionScale == 4;
-        public bool IsScalingFilterActive => _scalingFilter == (int)Hyjinx.Common.Configuration.ScalingFilter.Fsr;
+        public bool IsScalingFilterActive => _scalingFilter == (int)Hyjinx.UI.Common.Configuration.ScalingFilter.Fsr;
 
         public bool IsVulkanSelected => GraphicsBackendIndex == 0;
         public bool UseHypervisor { get; set; }

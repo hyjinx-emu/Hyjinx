@@ -8,7 +8,6 @@ using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
-using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
 
 namespace Hyjinx.UI.Common.Configuration
 {

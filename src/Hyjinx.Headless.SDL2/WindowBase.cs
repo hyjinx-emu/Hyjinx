@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using static SDL2.SDL;
 using AntiAliasing = Hyjinx.UI.Common.Configuration.AntiAliasing;
-using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
+using ScalingFilter = Hyjinx.UI.Common.Configuration.ScalingFilter;
 using Switch = Hyjinx.HLE.Switch;
 
 namespace Hyjinx.Headless.SDL2
