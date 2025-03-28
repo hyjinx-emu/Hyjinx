@@ -1,6 +1,7 @@
 using CommandLine;
 using Hyjinx.Common.Configuration;
 using Hyjinx.HLE.HOS.SystemState;
+using Hyjinx.UI.Common.Configuration;
 
 namespace Hyjinx.Headless.SDL2
 {

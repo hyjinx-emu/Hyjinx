@@ -1,11 +1,11 @@
 using LibHac.Tools.FsSystem;
 using Hyjinx.Audio.Integration;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Configuration.Multiplayer;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.HLE.UI;
 using System;

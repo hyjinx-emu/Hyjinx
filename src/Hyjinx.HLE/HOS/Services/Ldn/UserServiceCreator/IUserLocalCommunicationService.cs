@@ -1,6 +1,5 @@
 using LibHac.Ns;
 using Hyjinx.Common;
-using Hyjinx.Common.Configuration.Multiplayer;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.Common.Utilities;

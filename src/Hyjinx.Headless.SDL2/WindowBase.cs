@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using static SDL2.SDL;
-using AntiAliasing = Hyjinx.Common.Configuration.AntiAliasing;
+using AntiAliasing = Hyjinx.UI.Common.Configuration.AntiAliasing;
 using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
 using Switch = Hyjinx.HLE.Switch;
 
