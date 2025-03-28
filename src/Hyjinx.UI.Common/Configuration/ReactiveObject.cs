@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Hyjinx.Common
+namespace Hyjinx.UI.Common.Configuration
 {
     public class ReactiveObject<T>
     {
