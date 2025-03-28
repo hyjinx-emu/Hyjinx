@@ -3,6 +3,7 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
@@ -14,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.Json.Nodes;
+using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
 
 namespace Hyjinx.UI.Common.Configuration
 {

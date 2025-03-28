@@ -1,6 +1,6 @@
-using Hyjinx.Common.Configuration;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
+using Hyjinx.Graphics.GAL;
 using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.EXT;

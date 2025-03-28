@@ -1,4 +1,5 @@
 using Hyjinx.Common.Configuration;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Input.HLE;
 using Hyjinx.SDL2.Common;

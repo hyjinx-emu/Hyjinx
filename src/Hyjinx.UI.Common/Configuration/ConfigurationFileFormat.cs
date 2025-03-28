@@ -2,11 +2,13 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
+using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
 
 namespace Hyjinx.UI.Common.Configuration
 {

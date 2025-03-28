@@ -11,6 +11,7 @@ using Hyjinx.Ava.UI.Models.Input;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.GraphicsDriver;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.FileSystem;
@@ -26,6 +27,8 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using AntiAliasing = Hyjinx.UI.Common.Configuration.AntiAliasing;
+using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
 using TimeZone = Hyjinx.Ava.UI.Models.TimeZone;
 
 namespace Hyjinx.Ava.UI.ViewModels

@@ -1,7 +1,10 @@
 using CommandLine;
 using Hyjinx.Common.Configuration;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.UI.Common.Configuration;
+using AntiAliasing = Hyjinx.UI.Common.Configuration.AntiAliasing;
+using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
 
 namespace Hyjinx.Headless.SDL2
 {
