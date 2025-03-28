@@ -1,8 +1,10 @@
 using System.IO;
 
-namespace Hyjinx.Common.Utilities
+namespace Hyjinx.Common.Configuration;
+
+partial class AppDataManager
 {
-    public static class FileSystemUtils
+    private static class FileSystemUtils
     {
         public static void CopyDirectory(string sourceDir, string destinationDir, bool recursive)
         {
