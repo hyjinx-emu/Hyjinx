@@ -7,7 +7,7 @@
     xmlns:locale="clr-namespace:Hyjinx.Ava.Common.Locale"
     xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
     xmlns:viewModels="clr-namespace:Hyjinx.Ava.UI.ViewModels"
-    xmlns:config="clr-namespace:Hyjinx.Common.Configuration;assembly=Hyjinx.Common"
+    xmlns:config="clr-namespace:Hyjinx.HLE.HOS;assembly=Hyjinx.HLE"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:Class="Hyjinx.Ava.UI.Views.Main.MainStatusBarView"
     x:DataType="viewModels:MainWindowViewModel">

@@ -5,6 +5,7 @@ using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.OpenGL;
+using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Applets;
 using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
 using Hyjinx.HLE.UI;
