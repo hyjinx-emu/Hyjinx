@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Hyjinx.Common.Configuration
+namespace Hyjinx.HLE.Loaders.Processes
 {
     public struct TitleUpdateMetadata
     {

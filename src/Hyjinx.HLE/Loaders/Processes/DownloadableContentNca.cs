@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.Common.Configuration
+namespace Hyjinx.HLE.Loaders.Processes
 {
     public struct DownloadableContentNca
     {
