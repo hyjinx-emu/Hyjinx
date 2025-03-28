@@ -17,11 +17,9 @@ using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Renderer;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
-using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.SystemInterop;
-using Hyjinx.Common.Utilities;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
@@ -47,6 +45,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -337,6 +336,12 @@ namespace Hyjinx.Ava
             }
         }
 
+        private static string SanitizeFileName(string fileName)
+        {
+            var reservedChars = new HashSet<char>(Path.GetInvalidFileNameChars());
+            return string.Concat(fileName.Select(c => reservedChars.Contains(c) ? '_' : c));
+        }
+        
         private void Renderer_ScreenCaptured(object sender, ScreenCaptureImageInfo e)
         {
             if (e.Data.Length > 0 && e.Height > 0 && e.Width > 0)
@@ -346,7 +351,7 @@ namespace Hyjinx.Ava
                     lock (_lockObject)
                     {
                         string applicationName = Device.Processes.ActiveApplication.Name;
-                        string sanitizedApplicationName = FileSystemUtils.SanitizeFileName(applicationName);
+                        string sanitizedApplicationName = SanitizeFileName(applicationName);
                         DateTime currentTime = DateTime.Now;
 
                         string filename = $"{sanitizedApplicationName}_{currentTime.Year}-{currentTime.Month:D2}-{currentTime.Day:D2}_{currentTime.Hour:D2}-{currentTime.Minute:D2}-{currentTime.Second:D2}.png";

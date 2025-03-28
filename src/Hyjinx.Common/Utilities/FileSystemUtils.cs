@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Hyjinx.Common.Utilities
 {
@@ -45,12 +43,6 @@ namespace Hyjinx.Common.Utilities
         {
             CopyDirectory(sourceDir, destinationDir, true);
             Directory.Delete(sourceDir, true);
-        }
-
-        public static string SanitizeFileName(string fileName)
-        {
-            var reservedChars = new HashSet<char>(Path.GetInvalidFileNameChars());
-            return string.Concat(fileName.Select(c => reservedChars.Contains(c) ? '_' : c));
         }
     }
 }
