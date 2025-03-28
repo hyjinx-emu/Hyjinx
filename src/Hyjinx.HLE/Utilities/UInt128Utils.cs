@@ -1,9 +1,9 @@
 using System;
 using System.Globalization;
 
-namespace Hyjinx.Common.Utilities
+namespace Hyjinx.HLE.Utilities
 {
-    public static class UInt128Utils
+    internal static class UInt128Utils
     {
         public static UInt128 FromHex(string hex)
         {
