@@ -1,7 +1,6 @@
-using Hyjinx.Logging.Abstractions;
-using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
+using Hyjinx.HLE.Utilities;
 using System;
 using System.Net.NetworkInformation;
 

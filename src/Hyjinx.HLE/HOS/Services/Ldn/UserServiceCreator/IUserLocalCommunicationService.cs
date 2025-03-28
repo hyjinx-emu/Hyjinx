@@ -8,6 +8,7 @@ using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm;
+using Hyjinx.HLE.Utilities;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Memory;
 using Microsoft.Extensions.Logging;
