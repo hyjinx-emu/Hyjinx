@@ -14,6 +14,7 @@ using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
+using Hyjinx.UI.Common.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
