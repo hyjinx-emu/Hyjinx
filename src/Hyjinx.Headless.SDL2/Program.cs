@@ -30,6 +30,7 @@ using Hyjinx.Input;
 using Hyjinx.Input.HLE;
 using Hyjinx.Input.SDL2;
 using Hyjinx.SDL2.Common;
+using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using System;
