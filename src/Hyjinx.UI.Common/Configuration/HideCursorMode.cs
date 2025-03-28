@@ -1,4 +1,4 @@
-namespace Hyjinx.Common.Configuration
+namespace Hyjinx.UI.Common.Configuration
 {
     public enum HideCursorMode
     {

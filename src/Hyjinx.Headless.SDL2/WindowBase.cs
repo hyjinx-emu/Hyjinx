@@ -11,6 +11,7 @@ using Hyjinx.HLE.UI;
 using Hyjinx.Input;
 using Hyjinx.Input.HLE;
 using Hyjinx.SDL2.Common;
+using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;

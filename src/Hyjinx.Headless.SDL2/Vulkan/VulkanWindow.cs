@@ -2,6 +2,7 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Input.HLE;
 using Hyjinx.SDL2.Common;
+using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
