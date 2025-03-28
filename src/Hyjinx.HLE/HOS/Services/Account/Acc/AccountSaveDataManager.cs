@@ -1,7 +1,7 @@
 using Hyjinx.Common.Configuration;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.HOS.Services.Account.Acc.Types;
+using Hyjinx.HLE.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;

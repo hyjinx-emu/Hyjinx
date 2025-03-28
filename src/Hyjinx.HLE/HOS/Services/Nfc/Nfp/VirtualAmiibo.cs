@@ -1,10 +1,10 @@
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Memory;
-using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Mii;
 using Hyjinx.HLE.HOS.Services.Mii.Types;
 using Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
+using Hyjinx.HLE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;

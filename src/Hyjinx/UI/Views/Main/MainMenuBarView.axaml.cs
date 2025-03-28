@@ -9,7 +9,7 @@ using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
-using Hyjinx.Common.Utilities;
+using Hyjinx.HLE.Utilities;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;

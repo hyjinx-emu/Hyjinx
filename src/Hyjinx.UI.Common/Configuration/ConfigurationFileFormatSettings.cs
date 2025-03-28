@@ -1,4 +1,4 @@
-using Hyjinx.Common.Utilities;
+using Hyjinx.HLE.Utilities;
 
 namespace Hyjinx.UI.Common.Configuration
 {
