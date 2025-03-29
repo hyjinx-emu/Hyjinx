@@ -1,13 +1,8 @@
-using Hyjinx.Common.Utilities;
-using System.Text.Json.Serialization;
+namespace Hyjinx.UI.Common.Configuration;
 
-namespace Hyjinx.UI.Common.Configuration
+public enum ScalingFilter
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<ScalingFilter>))]
-    public enum ScalingFilter
-    {
-        Bilinear,
-        Nearest,
-        Fsr,
-    }
+    Bilinear,
+    Nearest,
+    Fsr,
 }

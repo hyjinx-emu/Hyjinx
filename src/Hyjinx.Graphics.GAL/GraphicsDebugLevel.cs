@@ -1,14 +1,9 @@
-using Hyjinx.Common.Utilities;
-using System.Text.Json.Serialization;
+namespace Hyjinx.Graphics.GAL;
 
-namespace Hyjinx.Graphics.GAL
+public enum GraphicsDebugLevel
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<GraphicsDebugLevel>))]
-    public enum GraphicsDebugLevel
-    {
-        None,
-        Error,
-        Slowdowns,
-        All,
-    }
+    None,
+    Error,
+    Slowdowns,
+    All,
 }

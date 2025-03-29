@@ -1,16 +1,11 @@
-using Hyjinx.Common.Utilities;
-using System.Text.Json.Serialization;
+namespace Hyjinx.UI.Common.Configuration;
 
-namespace Hyjinx.UI.Common.Configuration
+public enum AntiAliasing
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<AntiAliasing>))]
-    public enum AntiAliasing
-    {
-        None,
-        Fxaa,
-        SmaaLow,
-        SmaaMedium,
-        SmaaHigh,
-        SmaaUltra,
-    }
+    None,
+    Fxaa,
+    SmaaLow,
+    SmaaMedium,
+    SmaaHigh,
+    SmaaUltra,
 }

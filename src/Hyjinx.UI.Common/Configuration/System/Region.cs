@@ -1,17 +1,12 @@
-using Hyjinx.Common.Utilities;
-using System.Text.Json.Serialization;
+namespace Hyjinx.UI.Common.Configuration.System;
 
-namespace Hyjinx.UI.Common.Configuration.System
+public enum Region
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<Region>))]
-    public enum Region
-    {
-        Japan,
-        USA,
-        Europe,
-        Australia,
-        China,
-        Korea,
-        Taiwan,
-    }
+    Japan,
+    USA,
+    Europe,
+    Australia,
+    China,
+    Korea,
+    Taiwan,
 }

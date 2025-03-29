@@ -1,13 +1,8 @@
-using Hyjinx.Common.Utilities;
-using System.Text.Json.Serialization;
+namespace Hyjinx.UI.Common.Configuration;
 
-namespace Hyjinx.UI.Common.Configuration
+public enum BackendThreading
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<BackendThreading>))]
-    public enum BackendThreading
-    {
-        Auto,
-        Off,
-        On,
-    }
+    Auto,
+    Off,
+    On,
 }

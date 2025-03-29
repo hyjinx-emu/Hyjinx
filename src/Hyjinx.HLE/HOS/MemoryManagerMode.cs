@@ -1,13 +1,8 @@
-using Hyjinx.Common.Utilities;
-using System.Text.Json.Serialization;
+namespace Hyjinx.HLE.HOS;
 
-namespace Hyjinx.HLE.HOS
+public enum MemoryManagerMode : byte
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<MemoryManagerMode>))]
-    public enum MemoryManagerMode : byte
-    {
-        SoftwarePageTable,
-        HostMapped,
-        HostMappedUnsafe,
-    }
+    SoftwarePageTable,
+    HostMapped,
+    HostMappedUnsafe,
 }

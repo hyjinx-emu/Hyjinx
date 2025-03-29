@@ -1,12 +1,7 @@
-using Hyjinx.Common.Utilities;
-using System.Text.Json.Serialization;
+namespace Hyjinx.UI.Common.Configuration;
 
-namespace Hyjinx.UI.Common.Configuration
+public enum GraphicsBackend
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<GraphicsBackend>))]
-    public enum GraphicsBackend
-    {
-        Vulkan,
-        OpenGl,
-    }
+    Vulkan,
+    OpenGl,
 }

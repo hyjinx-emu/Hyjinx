@@ -1,12 +1,24 @@
-namespace Hyjinx.UI.Common.Configuration.UI
+using Microsoft.Extensions.Configuration;
+
+namespace Hyjinx.UI.Common.Configuration.UI;
+
+public record ShownFileTypes
 {
-    public struct ShownFileTypes
-    {
-        public bool NSP { get; set; }
-        public bool PFS0 { get; set; }
-        public bool XCI { get; set; }
-        public bool NCA { get; set; }
-        public bool NRO { get; set; }
-        public bool NSO { get; set; }
-    }
+    [ConfigurationKeyName("nsp")]
+    public bool NSP { get; set; }
+    
+    [ConfigurationKeyName("pfs0")]
+    public bool PFS0 { get; set; }
+    
+    [ConfigurationKeyName("xci")]
+    public bool XCI { get; set; }
+    
+    [ConfigurationKeyName("nca")]
+    public bool NCA { get; set; }
+    
+    [ConfigurationKeyName("nro")]
+    public bool NRO { get; set; }
+    
+    [ConfigurationKeyName("nso")]
+    public bool NSO { get; set; }
 }
