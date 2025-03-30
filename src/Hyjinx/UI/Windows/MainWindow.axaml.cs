@@ -21,6 +21,7 @@ using Hyjinx.Input.HLE;
 using Hyjinx.Input.SDL2;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
+using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Microsoft.Extensions.Logging;
@@ -639,7 +640,7 @@ namespace Hyjinx.Ava.UI.Windows
 #pragma warning restore IDE0055
             };
 
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
             LoadApplications();
         }
 

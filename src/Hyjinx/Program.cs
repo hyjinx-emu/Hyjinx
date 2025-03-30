@@ -1,12 +1,10 @@
 using Avalonia;
 using Avalonia.Threading;
-using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.GraphicsDriver;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.Logging;
 using Hyjinx.Common.SystemInterop;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.SDL2.Common;
@@ -33,9 +31,7 @@ namespace Hyjinx.Ava
         public static double WindowScaleFactor { get; set; }
         public static double DesktopScaleFactor { get; set; } = 1.0;
         public static string Version { get; private set; }
-        public static string ConfigurationPath { get; private set; }
         public static bool PreviewerDetached { get; private set; }
-        public static bool UseHardwareAcceleration { get; private set; }
         
         [LibraryImport("user32.dll", SetLastError = true)]
         public static partial int MessageBoxA(IntPtr hWnd, [MarshalAs(UnmanagedType.LPStr)] string text, [MarshalAs(UnmanagedType.LPStr)] string caption, uint type);
@@ -67,14 +63,14 @@ namespace Hyjinx.Ava
                     EnableMultiTouch = true,
                     EnableIme = true,
                     EnableInputFocusProxy = Environment.GetEnvironmentVariable("XDG_CURRENT_DESKTOP") == "gamescope",
-                    RenderingMode = UseHardwareAcceleration ?
+                    RenderingMode = ConfigurationModule.UseHardwareAcceleration ?
                         new[] { X11RenderingMode.Glx, X11RenderingMode.Software } :
                         new[] { X11RenderingMode.Software },
                 })
                 .With(new Win32PlatformOptions
                 {
                     WinUICompositionBackdropCornerRadius = 8.0f,
-                    RenderingMode = UseHardwareAcceleration ?
+                    RenderingMode = ConfigurationModule.UseHardwareAcceleration ?
                         new[] { Win32RenderingMode.AngleEgl, Win32RenderingMode.Software } :
                         new[] { Win32RenderingMode.Software },
                 })
@@ -115,7 +111,7 @@ namespace Hyjinx.Ava
             // Initialize SDL2 driver
             SDL2Driver.MainThreadDispatcher = action => Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Input);
 
-            ReloadConfig();
+            ConfigurationModule.Initialize();
 
             WindowScaleFactor = ForceDpiAware.GetWindowScaleFactor();
 
@@ -137,95 +133,6 @@ namespace Hyjinx.Ava
             if (CommandLineState.LaunchPathArg != null)
             {
                 MainWindow.DeferLoadApplication(CommandLineState.LaunchPathArg, CommandLineState.LaunchApplicationId, CommandLineState.StartFullscreenArg);
-            }
-        }
-
-        public static void ReloadConfig()
-        {
-            string localConfigurationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ReleaseInformation.ConfigName);
-            string appDataConfigurationPath = Path.Combine(AppDataManager.BaseDirPath, ReleaseInformation.ConfigName);
-
-            // Now load the configuration as the other subsystems are now registered
-            if (File.Exists(localConfigurationPath))
-            {
-                ConfigurationPath = localConfigurationPath;
-            }
-            else if (File.Exists(appDataConfigurationPath))
-            {
-                ConfigurationPath = appDataConfigurationPath;
-            }
-
-            if (!string.IsNullOrEmpty(CommandLineState.OverrideConfigFile) && File.Exists(CommandLineState.OverrideConfigFile))
-            {
-                ConfigurationPath = CommandLineState.OverrideConfigFile;
-            }
-
-            if (ConfigurationPath == null)
-            {
-                // No configuration, we load the default values and save it to disk
-                ConfigurationPath = appDataConfigurationPath;
-                
-                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                    "No configuration file found. Saving default configuration to: {ConfigurationPath}", ConfigurationPath);
-
-                ConfigurationState.Instance.LoadDefault();
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationPath);
-            }
-            else
-            {
-                Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                    "Loading configuration from: {ConfigurationPath}", ConfigurationPath);
-
-                if (ConfigurationFileFormat.TryLoad(ConfigurationPath, out ConfigurationFileFormat configurationFileFormat))
-                {
-                    ConfigurationState.Instance.Load(configurationFileFormat, ConfigurationPath);
-                }
-                else
-                {
-                    Logger.DefaultLogger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                        "Failed to load config! Loading the default config instead.\nFailed config location: {path}", ConfigurationPath);
-
-                    ConfigurationState.Instance.LoadDefault();
-                }
-            }
-
-            UseHardwareAcceleration = ConfigurationState.Instance.EnableHardwareAcceleration.Value;
-
-            // Check if graphics backend was overridden
-            if (CommandLineState.OverrideGraphicsBackend != null)
-            {
-                if (CommandLineState.OverrideGraphicsBackend.ToLower() == "opengl")
-                {
-                    ConfigurationState.Instance.Graphics.GraphicsBackend.Value = GraphicsBackend.OpenGl;
-                }
-                else if (CommandLineState.OverrideGraphicsBackend.ToLower() == "vulkan")
-                {
-                    ConfigurationState.Instance.Graphics.GraphicsBackend.Value = GraphicsBackend.Vulkan;
-                }
-            }
-
-            // Check if docked mode was overriden.
-            if (CommandLineState.OverrideDockedMode.HasValue)
-            {
-                ConfigurationState.Instance.System.EnableDockedMode.Value = CommandLineState.OverrideDockedMode.Value;
-            }
-
-            // Check if HideCursor was overridden.
-            if (CommandLineState.OverrideHideCursor is not null)
-            {
-                ConfigurationState.Instance.HideCursor.Value = CommandLineState.OverrideHideCursor!.ToLower() switch
-                {
-                    "never" => HideCursorMode.Never,
-                    "onidle" => HideCursorMode.OnIdle,
-                    "always" => HideCursorMode.Always,
-                    _ => ConfigurationState.Instance.HideCursor.Value,
-                };
-            }
-
-            // Check if hardware-acceleration was overridden.
-            if (CommandLineState.OverrideHardwareAcceleration != null)
-            {
-                UseHardwareAcceleration = CommandLineState.OverrideHardwareAcceleration.Value;
             }
         }
 

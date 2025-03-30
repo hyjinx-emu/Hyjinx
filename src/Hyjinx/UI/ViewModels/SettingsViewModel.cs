@@ -18,6 +18,7 @@ using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
+using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Configuration.System;
 using Microsoft.Extensions.Logging;
@@ -587,7 +588,7 @@ namespace Hyjinx.Ava.UI.ViewModels
             config.Multiplayer.LanInterfaceId.Value = _networkInterfaces[NetworkInterfaceList[NetworkInterfaceIndex]];
             config.Multiplayer.Mode.Value = (MultiplayerMode)MultiplayerModeIndex;
 
-            config.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+            config.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
 
             MainWindow.UpdateGraphicsConfig();
 
@@ -598,7 +599,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
         private static void RevertIfNotSaved()
         {
-            Program.ReloadConfig();
+            ConfigurationModule.Initialize();
         }
 
         public void ApplyButton()
