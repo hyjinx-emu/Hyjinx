@@ -1,6 +1,4 @@
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
