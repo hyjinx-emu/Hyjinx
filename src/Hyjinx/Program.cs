@@ -1,4 +1,6 @@
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
@@ -13,6 +15,7 @@ using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Hyjinx.UI.Common.SystemInfo;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
@@ -49,11 +52,27 @@ namespace Hyjinx.Ava
 
             PreviewerDetached = true;
 
+            var services = new ServiceCollection();
             Initialize(args);
             
-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+            var progam = new Program(services.BuildServiceProvider());
+            progam.Run(args);
         }
 
+        private readonly AppBuilder app;
+        private readonly IServiceProvider applicationServices;
+        
+        private Program(IServiceProvider applicationServices)
+        {
+            app = BuildAvaloniaApp();
+            this.applicationServices = applicationServices;
+        }
+
+        public void Run(string[] args)
+        {
+            app.StartWithClassicDesktopLifetime(args);
+        }
+        
         public static AppBuilder BuildAvaloniaApp()
         {
             return AppBuilder.Configure<App>()
