@@ -4,7 +4,6 @@ using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
-using Hyjinx.HLE.Utilities;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using Microsoft.Extensions.Configuration;
@@ -554,7 +553,8 @@ public record ConfigurationFileFormat
     [Obsolete("This method of loading the configuration file is obsolete.")]
     public static bool TryLoad(string path, out ConfigurationFileFormat configurationFileFormat)
     {
-        throw new NotImplementedException();
+        configurationFileFormat = new ConfigurationFileFormat();
+        return true;
     }
 
     /// <summary>
@@ -564,6 +564,5 @@ public record ConfigurationFileFormat
     [Obsolete("This method of saving the configuration file is obsolete.")]
     public void SaveConfig(string path)
     {
-        throw new NotImplementedException();
     }
 }
