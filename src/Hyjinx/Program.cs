@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.Ava
 {
-    internal partial class Program
+    internal partial class Program : IDisposable
     {
         /// <summary>
         /// Monitors the duration of time the application has been active.
@@ -33,6 +33,7 @@ namespace Hyjinx.Ava
         public static double DesktopScaleFactor { get; set; } = 1.0;
         public static string Version { get; private set; }
         public static bool PreviewerDetached { get; private set; }
+        public static string[] Arguments { get; private set; }
         
         [LibraryImport("user32.dll", SetLastError = true)]
         public static partial int MessageBoxA(IntPtr hWnd, [MarshalAs(UnmanagedType.LPStr)] string text, [MarshalAs(UnmanagedType.LPStr)] string caption, uint type);
@@ -41,6 +42,7 @@ namespace Hyjinx.Ava
 
         public static void Main(string[] args)
         {
+            Arguments = args;
             Version = ReleaseInformation.Version;
 
             if (OperatingSystem.IsWindows() && !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17134))
@@ -51,27 +53,76 @@ namespace Hyjinx.Ava
             PreviewerDetached = true;
 
             var services = new ServiceCollection();
-            Initialize(args);
+            Initialize(services, args);
             
-            var progam = new Program(services.BuildServiceProvider());
-            progam.Run(args);
+            using var program = new Program(services.BuildServiceProvider());
+            program.AttachGlobalEventListeners();
+            program.Run(args);
         }
 
-        private readonly AppBuilder app;
-        private readonly IServiceProvider applicationServices;
+        private readonly AppBuilder _app;
+        private readonly IServiceProvider _applicationServices;
         
         private Program(IServiceProvider applicationServices)
         {
-            app = BuildAvaloniaApp();
-            this.applicationServices = applicationServices;
+            _app = BuildAvaloniaApp();
+            _applicationServices = applicationServices;
+        }
+
+        ~Program()
+        {
+            Dispose(false);
+        }
+
+        private void AttachGlobalEventListeners()
+        {
+            // Hook unhandled exception and process exit events.
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+        }
+
+        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            ProcessUnhandledException((Exception)e.ExceptionObject, e.IsTerminating);
+        }
+
+        private void OnProcessExit(object? sender, EventArgs e)
+        {
+            Exit();
+        }
+
+        private void DetachGlobalEventListeners()
+        {
+            // Hook unhandled exception and process exit events.
+            AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
+            AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
+        }
+
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_applicationServices is IDisposable disposableApplicationServices)
+                {
+                    disposableApplicationServices.Dispose();
+                }
+                
+                DetachGlobalEventListeners();
+            }
         }
 
         public void Run(string[] args)
         {
-            app.StartWithClassicDesktopLifetime(args);
+            _app.StartWithClassicDesktopLifetime(args);
         }
         
-        public static AppBuilder BuildAvaloniaApp()
+        private static AppBuilder BuildAvaloniaApp()
         {
             return AppBuilder.Configure<App>()
                 .UsePlatformDetect()
@@ -94,7 +145,7 @@ namespace Hyjinx.Ava
                 .UseSkia();
         }
 
-        private static void Initialize(string[] args)
+        private static void Initialize(IServiceCollection services, string[] args)
         {
             // Parse arguments
             CommandLineState.ParseArguments(args);
@@ -105,10 +156,6 @@ namespace Hyjinx.Ava
             }
 
             Console.Title = $"Hyjinx Console {Version}";
-
-            // Hook unhandled exception and process exit events.
-            AppDomain.CurrentDomain.UnhandledException += (sender, e) => ProcessUnhandledException(e.ExceptionObject as Exception, e.IsTerminating);
-            AppDomain.CurrentDomain.ProcessExit += (sender, e) => Exit();
 
             // Initialize the logger system.
             LoggerModule.Initialize(UpTime);

@@ -7,8 +7,6 @@ namespace Hyjinx.UI.Common.Helper
 {
     public static partial class CommandLineState
     {
-        public static string[] Arguments { get; private set; }
-
         public static bool? OverrideDockedMode { get; private set; }
         public static bool? OverrideHardwareAcceleration { get; private set; }
         public static string OverrideGraphicsBackend { get; private set; }
@@ -123,8 +121,6 @@ namespace Hyjinx.UI.Common.Helper
                         break;
                 }
             }
-
-            Arguments = arguments.ToArray();
         }
 
         [LoggerMessage(LogLevel.Error,
