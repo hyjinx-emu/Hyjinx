@@ -15,6 +15,7 @@ namespace Hyjinx.Common.Configuration
         private const string GamesDir = "games";
         private const string ProfilesDir = "profiles";
         private const string KeysDir = "system";
+        private const string LogsDir = "Logs";
 
         public enum LaunchMode
         {
@@ -141,7 +142,7 @@ namespace Hyjinx.Common.Configuration
 
             if (Mode == LaunchMode.Portable)
             {
-                logDir = Path.Combine(BaseDirPath, "Logs");
+                logDir = Path.Combine(BaseDirPath, LogsDir);
                 try
                 {
                     Directory.CreateDirectory(logDir);
@@ -157,7 +158,7 @@ namespace Hyjinx.Common.Configuration
                 if (OperatingSystem.IsMacOS())
                 {
                     // NOTE: Should evaluate to "~/Library/Logs/Hyjinx/".
-                    logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Logs", DefaultBaseDir);
+                    logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", LogsDir, DefaultBaseDir);
                     try
                     {
                         Directory.CreateDirectory(logDir);
@@ -171,7 +172,7 @@ namespace Hyjinx.Common.Configuration
                     if (string.IsNullOrEmpty(logDir))
                     {
                         // NOTE: Should evaluate to "~/Library/Application Support/Hyjinx/Logs".
-                        logDir = Path.Combine(BaseDirPath, "Logs");
+                        logDir = Path.Combine(BaseDirPath, LogsDir);
 
                         try
                         {
@@ -186,8 +187,8 @@ namespace Hyjinx.Common.Configuration
                 }
                 else if (OperatingSystem.IsWindows())
                 {
-                    // NOTE: Should evaluate to a "Logs" directory in whatever directory Hyjinx was launched from.
-                    logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+                    // NOTE: Should evaluate to a "Logs" directory in whatever directory the application was launched from.
+                    logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LogsDir);
                     try
                     {
                         Directory.CreateDirectory(logDir);
@@ -201,7 +202,7 @@ namespace Hyjinx.Common.Configuration
                     if (string.IsNullOrEmpty(logDir))
                     {
                         // NOTE: Should evaluate to "C:\Users\user\AppData\Roaming\Hyjinx\Logs".
-                        logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DefaultBaseDir, "Logs");
+                        logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DefaultBaseDir, LogsDir);
 
                         try
                         {
@@ -217,7 +218,7 @@ namespace Hyjinx.Common.Configuration
                 else if (OperatingSystem.IsLinux())
                 {
                     // NOTE: Should evaluate to "~/.config/Hyjinx/Logs".
-                    logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DefaultBaseDir, "Logs");
+                    logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DefaultBaseDir, LogsDir);
 
                     try
                     {
