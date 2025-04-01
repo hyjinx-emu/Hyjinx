@@ -11,7 +11,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.MME
     static class MacroHLETable
     {
         /// <summary>
-        /// Macroo High-level implementation table entry.
+        /// Macro High-level implementation table entry.
         /// </summary>
         readonly struct TableEntry
         {

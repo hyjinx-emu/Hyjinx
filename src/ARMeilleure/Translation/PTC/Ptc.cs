@@ -4,7 +4,6 @@ using ARMeilleure.CodeGen.Unwinding;
 using ARMeilleure.Common;
 using ARMeilleure.Memory;
 using Hyjinx.Common;
-using Hyjinx.Common.Configuration;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Microsoft.Extensions.Logging;
