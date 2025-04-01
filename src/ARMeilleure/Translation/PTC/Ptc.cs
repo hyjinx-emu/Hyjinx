@@ -104,7 +104,7 @@ namespace ARMeilleure.Translation.PTC
             Disable();
         }
 
-        public void Initialize(string titleIdText, string displayVersion, bool enabled, MemoryManagerType memoryMode)
+        public void Initialize(string titleIdText, string displayVersion, bool enabled, MemoryManagerType memoryMode, string cachePath)
         {
             Wait();
 
@@ -130,8 +130,8 @@ namespace ARMeilleure.Translation.PTC
             DisplayVersion = !string.IsNullOrEmpty(displayVersion) ? displayVersion : DisplayVersionDefault;
             _memoryMode = memoryMode;
 
-            string workPathActual = Path.Combine(AppDataManager.GamesDirPath, TitleIdText, "cache", "cpu", ActualDir);
-            string workPathBackup = Path.Combine(AppDataManager.GamesDirPath, TitleIdText, "cache", "cpu", BackupDir);
+            string workPathActual = Path.Combine(cachePath, ActualDir);
+            string workPathBackup = Path.Combine(cachePath, BackupDir);
 
             if (!Directory.Exists(workPathActual))
             {

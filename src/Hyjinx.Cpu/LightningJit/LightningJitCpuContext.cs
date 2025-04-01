@@ -40,7 +40,7 @@ namespace Hyjinx.Cpu.LightningJit
         }
 
         /// <inheritdoc/>
-        public IDiskCacheLoadState LoadDiskCache(string titleIdText, string displayVersion, bool enabled)
+        public IDiskCacheLoadState LoadDiskCache(string titleIdText, string displayVersion, bool enabled, string cachePath)
         {
             return new DummyDiskCacheLoadState();
         }
