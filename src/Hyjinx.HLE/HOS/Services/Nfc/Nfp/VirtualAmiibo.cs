@@ -165,9 +165,9 @@ namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp
 
         private static VirtualAmiiboFile LoadAmiiboFile(string amiiboId)
         {
-            Directory.CreateDirectory(Path.Join(AppDataManager.BaseDirPath, "system", "amiibo"));
+            Directory.CreateDirectory(Path.Join(AppDataManager.KeysDirPath, "amiibo"));
 
-            string filePath = Path.Join(AppDataManager.BaseDirPath, "system", "amiibo", $"{amiiboId}.json");
+            string filePath = Path.Join(AppDataManager.KeysDirPath, "amiibo", $"{amiiboId}.json");
 
             VirtualAmiiboFile virtualAmiiboFile;
 
@@ -196,7 +196,7 @@ namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp
 
         private static void SaveAmiiboFile(VirtualAmiiboFile virtualAmiiboFile)
         {
-            string filePath = Path.Join(AppDataManager.BaseDirPath, "system", "amiibo", $"{virtualAmiiboFile.AmiiboId}.json");
+            string filePath = Path.Join(AppDataManager.KeysDirPath, "amiibo", $"{virtualAmiiboFile.AmiiboId}.json");
             JsonHelper.SerializeToFile(filePath, virtualAmiiboFile, _serializerContext.VirtualAmiiboFile);
         }
     }

@@ -11,8 +11,7 @@ namespace Hyjinx.Common.Configuration
     {
         private const string DefaultBaseDir = "Hyjinx";
         private const string DefaultPortableDir = "portable";
-
-        // The following 3 are always part of Base Directory
+        
         private const string GamesDir = "games";
         private const string ProfilesDir = "profiles";
         private const string KeysDir = "system";

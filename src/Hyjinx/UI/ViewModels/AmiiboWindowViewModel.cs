@@ -62,9 +62,9 @@ namespace Hyjinx.Ava.UI.ViewModels
             LastScannedAmiiboId = lastScannedAmiiboId;
             TitleId = titleId;
 
-            Directory.CreateDirectory(Path.Join(AppDataManager.BaseDirPath, "system", "amiibo"));
+            Directory.CreateDirectory(Path.Join(AppDataManager.KeysDirPath, "amiibo"));
 
-            _amiiboJsonPath = Path.Join(AppDataManager.BaseDirPath, "system", "amiibo", "Amiibo.json");
+            _amiiboJsonPath = Path.Join(AppDataManager.KeysDirPath, "amiibo", "Amiibo.json");
             _amiiboList = new List<AmiiboApi>();
             _amiiboSeries = new ObservableCollection<string>();
             _amiibos = new AvaloniaList<AmiiboApi>();
