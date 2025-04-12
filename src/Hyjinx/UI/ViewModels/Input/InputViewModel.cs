@@ -668,7 +668,7 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
             }
             else
             {
-                config = new InputConfig();
+                throw new NotSupportedException($"Device type {activeDevice.Type} is not supported.");
             }
 
             config.PlayerIndex = _playerId;
