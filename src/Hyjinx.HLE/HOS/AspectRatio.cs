@@ -1,5 +1,8 @@
-﻿namespace Hyjinx.HLE.HOS;
+﻿using System.Text.Json.Serialization;
 
+namespace Hyjinx.HLE.HOS;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum AspectRatio
 {
     Fixed4x3,

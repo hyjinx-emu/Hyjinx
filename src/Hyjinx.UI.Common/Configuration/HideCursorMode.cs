@@ -1,9 +1,11 @@
-namespace Hyjinx.UI.Common.Configuration
+using System.Text.Json.Serialization;
+
+namespace Hyjinx.UI.Common.Configuration;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum HideCursorMode
 {
-    public enum HideCursorMode
-    {
-        Never,
-        OnIdle,
-        Always,
-    }
+    Never,
+    OnIdle,
+    Always,
 }

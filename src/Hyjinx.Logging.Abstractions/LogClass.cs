@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace Hyjinx.Logging.Abstractions;
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum LogClass
 {
     Application,
