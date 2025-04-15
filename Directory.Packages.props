@@ -5,7 +5,7 @@
   <PropertyGroup>
     <AvaloniaVersion>11.2.5</AvaloniaVersion>
     <AvaloniaSvgVersion>11.2.0.2</AvaloniaSvgVersion>
-    <MicrosoftExtensionsVersion>9.0.3</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>9.0.4</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
