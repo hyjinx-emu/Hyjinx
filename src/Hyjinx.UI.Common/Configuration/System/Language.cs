@@ -1,28 +1,26 @@
-using Hyjinx.Common.Utilities;
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.UI.Common.Configuration.System
+namespace Hyjinx.UI.Common.Configuration.System;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum Language
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<Language>))]
-    public enum Language
-    {
-        Japanese,
-        AmericanEnglish,
-        French,
-        German,
-        Italian,
-        Spanish,
-        Chinese,
-        Korean,
-        Dutch,
-        Portuguese,
-        Russian,
-        Taiwanese,
-        BritishEnglish,
-        CanadianFrench,
-        LatinAmericanSpanish,
-        SimplifiedChinese,
-        TraditionalChinese,
-        BrazilianPortuguese,
-    }
+    Japanese,
+    AmericanEnglish,
+    French,
+    German,
+    Italian,
+    Spanish,
+    Chinese,
+    Korean,
+    Dutch,
+    Portuguese,
+    Russian,
+    Taiwanese,
+    BritishEnglish,
+    CanadianFrench,
+    LatinAmericanSpanish,
+    SimplifiedChinese,
+    TraditionalChinese,
+    BrazilianPortuguese,
 }

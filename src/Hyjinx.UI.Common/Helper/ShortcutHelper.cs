@@ -94,7 +94,7 @@ namespace Hyjinx.UI.Common.Helper
 
             if (OperatingSystem.IsWindows())
             {
-                string iconPath = Path.Combine(AppDataManager.BaseDirPath, "games", applicationId, "app");
+                string iconPath = Path.Combine(AppDataManager.GamesDirPath, applicationId, "app");
 
                 CreateShortcutWindows(applicationFilePath, applicationId, iconData, iconPath, cleanedAppName, desktopPath);
 

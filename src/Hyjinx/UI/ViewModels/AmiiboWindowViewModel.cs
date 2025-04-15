@@ -7,8 +7,8 @@ using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
+using Hyjinx.HLE.Utilities;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.Common.Utilities;
 using Hyjinx.UI.Common.Models.Amiibo;
 using Microsoft.Extensions.Logging;
 using System;
@@ -62,9 +62,9 @@ namespace Hyjinx.Ava.UI.ViewModels
             LastScannedAmiiboId = lastScannedAmiiboId;
             TitleId = titleId;
 
-            Directory.CreateDirectory(Path.Join(AppDataManager.BaseDirPath, "system", "amiibo"));
+            Directory.CreateDirectory(Path.Join(AppDataManager.KeysDirPath, "amiibo"));
 
-            _amiiboJsonPath = Path.Join(AppDataManager.BaseDirPath, "system", "amiibo", "Amiibo.json");
+            _amiiboJsonPath = Path.Join(AppDataManager.KeysDirPath, "amiibo", "Amiibo.json");
             _amiiboList = new List<AmiiboApi>();
             _amiiboSeries = new ObservableCollection<string>();
             _amiibos = new AvaloniaList<AmiiboApi>();

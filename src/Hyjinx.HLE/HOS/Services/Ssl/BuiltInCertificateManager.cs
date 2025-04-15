@@ -91,7 +91,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
 
         private CertStoreEntry ReadCertStoreEntry(ReadOnlySpan<byte> buffer, CertStoreFileEntry entry)
         {
-            string customCertificatePath = System.IO.Path.Join(AppDataManager.BaseDirPath, "system", "ssl", $"{entry.Id}.der");
+            string customCertificatePath = System.IO.Path.Join(AppDataManager.KeysDirPath, "ssl", $"{entry.Id}.der");
 
             byte[] data;
 

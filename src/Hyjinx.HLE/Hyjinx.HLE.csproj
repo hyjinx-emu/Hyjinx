@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.Cpu\Hyjinx.Cpu.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Gpu\Hyjinx.Graphics.Gpu.csproj" />
     <ProjectReference Include="..\Hyjinx.Graphics.Host1x\Hyjinx.Graphics.Host1x.csproj" />

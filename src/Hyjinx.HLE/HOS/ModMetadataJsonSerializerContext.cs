@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.Common.Configuration
+namespace Hyjinx.HLE.HOS
 {
     [JsonSourceGenerationOptions(WriteIndented = true)]
     [JsonSerializable(typeof(ModMetadata))]

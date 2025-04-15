@@ -1,4 +1,4 @@
-namespace Hyjinx.Common.Configuration
+namespace Hyjinx.HLE.HOS
 {
     public class Mod
     {

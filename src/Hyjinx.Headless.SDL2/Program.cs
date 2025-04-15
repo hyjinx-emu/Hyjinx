@@ -25,10 +25,12 @@ using Hyjinx.HLE;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.Input;
 using Hyjinx.Input.HLE;
 using Hyjinx.Input.SDL2;
 using Hyjinx.SDL2.Common;
+using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using System;
@@ -590,7 +592,7 @@ namespace Hyjinx.Headless.SDL2
                 options.AudioVolume,
                 options.UseHypervisor ?? true,
                 options.MultiplayerLanInterfaceId,
-                Hyjinx.Common.Configuration.Multiplayer.MultiplayerMode.Disabled);
+                MultiplayerMode.Disabled);
 
             return new Switch(configuration);
         }

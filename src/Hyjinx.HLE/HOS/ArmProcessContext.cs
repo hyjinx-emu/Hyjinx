@@ -12,6 +12,7 @@ namespace Hyjinx.HLE.HOS
             string titleIdText,
             string displayVersion,
             bool diskCacheEnabled,
+            string diskCachePath,
             ulong codeAddress,
             ulong codeSize);
     }
@@ -66,11 +67,12 @@ namespace Hyjinx.HLE.HOS
             string titleIdText,
             string displayVersion,
             bool diskCacheEnabled,
+            string diskCachePath,
             ulong codeAddress,
             ulong codeSize)
         {
             _cpuContext.PrepareCodeRange(codeAddress, codeSize);
-            return _cpuContext.LoadDiskCache(titleIdText, displayVersion, diskCacheEnabled);
+            return _cpuContext.LoadDiskCache(titleIdText, displayVersion, diskCacheEnabled, diskCachePath);
         }
 
         public void InvalidateCacheRegion(ulong address, ulong size)

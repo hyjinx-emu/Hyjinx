@@ -16,6 +16,7 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.Loaders.Processes;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.HLE.Utilities;
 using Hyjinx.UI.App.Common;

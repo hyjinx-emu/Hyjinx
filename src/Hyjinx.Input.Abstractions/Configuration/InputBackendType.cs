@@ -1,9 +1,11 @@
-namespace Hyjinx.Common.Configuration.Hid
+using System.Text.Json.Serialization;
+
+namespace Hyjinx.Common.Configuration.Hid;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum InputBackendType
 {
-    public enum InputBackendType
-    {
-        Invalid,
-        WindowKeyboard,
-        GamepadSDL2,
-    }
+    Invalid,
+    WindowKeyboard,
+    GamepadSDL2,
 }

@@ -1,6 +1,5 @@
 using LibHac.Ns;
 using Hyjinx.Common;
-using Hyjinx.Common.Configuration.Multiplayer;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.Common.Utilities;
@@ -9,6 +8,7 @@ using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm;
+using Hyjinx.HLE.Utilities;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Memory;
 using Microsoft.Extensions.Logging;

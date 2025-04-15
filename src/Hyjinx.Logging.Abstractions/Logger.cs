@@ -23,11 +23,12 @@ public static class Logger
     /// Initializes the logger.
     /// </summary>
     /// <param name="factory">The factory to use while creating new loggers.</param>
-    public static void Initialize(ILoggerFactory factory)
+    /// <param name="defaultLogger">The default logger.</param>
+    public static void Initialize(ILoggerFactory factory, ILogger defaultLogger)
     {
         ArgumentNullException.ThrowIfNull(factory);
         
         DefaultLoggerFactory = factory;
-        DefaultLogger = factory.CreateLogger("Program");
+        DefaultLogger = defaultLogger;
     }
 }

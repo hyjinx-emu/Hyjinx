@@ -19,6 +19,7 @@ using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Input;
+using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -667,7 +668,7 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
             }
             else
             {
-                config = new InputConfig();
+                throw new NotSupportedException($"Device type {activeDevice.Type} is not supported.");
             }
 
             config.PlayerIndex = _playerId;
@@ -870,7 +871,7 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
             // NOTE: Do not modify InputConfig.Value directly as other code depends on the on-change event.
             ConfigurationState.Instance.Hid.InputConfig.Value = newConfig;
 
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         }
 
         public void NotifyChange(string property)

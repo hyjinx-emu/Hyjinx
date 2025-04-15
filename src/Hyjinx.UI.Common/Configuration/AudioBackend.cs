@@ -1,14 +1,12 @@
-using Hyjinx.Common.Utilities;
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.UI.Common.Configuration
+namespace Hyjinx.UI.Common.Configuration;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum AudioBackend
 {
-    [JsonConverter(typeof(TypedStringEnumConverter<AudioBackend>))]
-    public enum AudioBackend
-    {
-        Dummy,
-        OpenAl,
-        SoundIo,
-        SDL2,
-    }
+    Dummy,
+    OpenAl,
+    SoundIo,
+    SDL2,
 }

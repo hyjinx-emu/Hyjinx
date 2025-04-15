@@ -122,6 +122,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.LibHac.Tests", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.SPB", "src\Hyjinx.SPB\Hyjinx.SPB.csproj", "{B4A67875-4CBE-4286-89E8-F0D472698526}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Hashing", "src\Hyjinx.Hashing\Hyjinx.Hashing.csproj", "{BF61DE62-9C02-4224-B7E4-5CDD68032748}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -316,6 +318,10 @@ Global
 		{B4A67875-4CBE-4286-89E8-F0D472698526}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4A67875-4CBE-4286-89E8-F0D472698526}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4A67875-4CBE-4286-89E8-F0D472698526}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

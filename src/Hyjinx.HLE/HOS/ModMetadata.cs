@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Hyjinx.Common.Configuration
+namespace Hyjinx.HLE.HOS
 {
     public struct ModMetadata
     {

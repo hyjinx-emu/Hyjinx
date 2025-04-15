@@ -5,12 +5,14 @@ using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.Graphics.OpenGL;
+using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Applets;
 using Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
 using Hyjinx.HLE.UI;
 using Hyjinx.Input;
 using Hyjinx.Input.HLE;
 using Hyjinx.SDL2.Common;
+using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -19,8 +21,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using static SDL2.SDL;
-using AntiAliasing = Hyjinx.Common.Configuration.AntiAliasing;
-using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
+using AntiAliasing = Hyjinx.UI.Common.Configuration.AntiAliasing;
+using ScalingFilter = Hyjinx.UI.Common.Configuration.ScalingFilter;
 using Switch = Hyjinx.HLE.Switch;
 
 namespace Hyjinx.Headless.SDL2

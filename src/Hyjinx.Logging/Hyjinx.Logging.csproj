@@ -20,7 +20,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.Logging.Abstractions\Hyjinx.Logging.Abstractions.csproj" />
   </ItemGroup>
 

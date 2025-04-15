@@ -24,6 +24,10 @@
   
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
     <PackageReference Include="securifybv.ShellLink" />
     <PackageReference Include="System.Management" />
   </ItemGroup>

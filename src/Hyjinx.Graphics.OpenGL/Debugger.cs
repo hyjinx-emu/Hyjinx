@@ -1,5 +1,5 @@
 using OpenTK.Graphics.OpenGL;
-using Hyjinx.Common.Configuration;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;

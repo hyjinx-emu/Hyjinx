@@ -1,7 +1,9 @@
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Common;
-using Hyjinx.Common.Utilities;
+using Hyjinx.HLE.Utilities;
+using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -44,7 +46,7 @@ namespace Hyjinx.Ava.Common.Locale
             {
                 ConfigurationState.Instance.UI.LanguageCode.Value = _localeLanguageCode;
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
             }
         }
 

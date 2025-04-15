@@ -3,6 +3,7 @@ using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Services.Mii.Types;
 using Hyjinx.HLE.HOS.Services.Time;
 using Hyjinx.HLE.HOS.Services.Time.Clock;
+using Hyjinx.HLE.Utilities;
 using System;
 
 namespace Hyjinx.HLE.HOS.Services.Mii

@@ -10,6 +10,7 @@ using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Memory;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.HLE.HOS
@@ -133,7 +134,8 @@ namespace Hyjinx.HLE.HOS
                 }
             }
 
-            DiskCacheLoadState = processContext.Initialize(_titleIdText, _displayVersion, _diskCacheEnabled, _codeAddress, _codeSize);
+            var diskCachePath = Path.Combine(AppDataManager.GamesDirPath, _titleIdText, "cache", "cpu");
+            DiskCacheLoadState = processContext.Initialize(_titleIdText, _displayVersion, _diskCacheEnabled, diskCachePath, _codeAddress, _codeSize);
 
             return processContext;
         }

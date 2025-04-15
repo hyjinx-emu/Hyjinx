@@ -1,9 +1,12 @@
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Hyjinx.Common.Configuration;
+using Hyjinx.Graphics.GAL;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.OpenGL;
+using Hyjinx.HLE.HOS;
 using Hyjinx.Input.HLE;
+using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using static SDL2.SDL;

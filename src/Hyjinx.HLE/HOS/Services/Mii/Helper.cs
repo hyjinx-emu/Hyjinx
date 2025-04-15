@@ -1,4 +1,5 @@
 using Hyjinx.Common.Utilities;
+using Hyjinx.HLE.Utilities;
 using System;
 using System.Buffers.Binary;
 

@@ -17,12 +17,9 @@ using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Renderer;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
-using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Configuration.Multiplayer;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.SystemInterop;
-using Hyjinx.Common.Utilities;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
@@ -32,6 +29,7 @@ using Hyjinx.HLE;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.HOS.SystemState;
 using Hyjinx.Input;
 using Hyjinx.Input.HLE;
@@ -40,7 +38,6 @@ using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Microsoft.Extensions.Logging;
-using SDL2;
 using Silk.NET.Vulkan;
 using SkiaSharp;
 using SPB.Graphics.Vulkan;
@@ -48,16 +45,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using static Hyjinx.Ava.UI.Helpers.Win32NativeInterop;
-using AntiAliasing = Hyjinx.Common.Configuration.AntiAliasing;
+using AntiAliasing = Hyjinx.UI.Common.Configuration.AntiAliasing;
 using InputManager = Hyjinx.Input.HLE.InputManager;
 using IRenderer = Hyjinx.Graphics.GAL.IRenderer;
 using Key = Hyjinx.Input.Key;
 using MouseButton = Hyjinx.Input.MouseButton;
-using ScalingFilter = Hyjinx.Common.Configuration.ScalingFilter;
+using ScalingFilter = Hyjinx.UI.Common.Configuration.ScalingFilter;
 using Size = Avalonia.Size;
 using Switch = Hyjinx.HLE.Switch;
 
@@ -338,6 +336,12 @@ namespace Hyjinx.Ava
             }
         }
 
+        private static string SanitizeFileName(string fileName)
+        {
+            var reservedChars = new HashSet<char>(Path.GetInvalidFileNameChars());
+            return string.Concat(fileName.Select(c => reservedChars.Contains(c) ? '_' : c));
+        }
+        
         private void Renderer_ScreenCaptured(object sender, ScreenCaptureImageInfo e)
         {
             if (e.Data.Length > 0 && e.Height > 0 && e.Width > 0)
@@ -347,7 +351,7 @@ namespace Hyjinx.Ava
                     lock (_lockObject)
                     {
                         string applicationName = Device.Processes.ActiveApplication.Name;
-                        string sanitizedApplicationName = FileSystemUtils.SanitizeFileName(applicationName);
+                        string sanitizedApplicationName = SanitizeFileName(applicationName);
                         DateTime currentTime = DateTime.Now;
 
                         string filename = $"{sanitizedApplicationName}_{currentTime.Year}-{currentTime.Month:D2}-{currentTime.Day:D2}_{currentTime.Hour:D2}-{currentTime.Minute:D2}-{currentTime.Second:D2}.png";

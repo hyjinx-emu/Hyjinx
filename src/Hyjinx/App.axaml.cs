@@ -75,8 +75,7 @@ namespace Hyjinx.Ava
 
                     if (result == UserResult.Yes)
                     {
-                        var path = Environment.ProcessPath;
-                        var proc = Process.Start(path, CommandLineState.Arguments);
+                        Process.Start(Environment.ProcessPath!, Program.Arguments);
                         desktop.Shutdown();
                         Environment.Exit(0);
                     }

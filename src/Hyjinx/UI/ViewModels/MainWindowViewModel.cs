@@ -30,6 +30,7 @@ using Hyjinx.HLE.UI;
 using Hyjinx.Input.HLE;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common;
+using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Hyjinx.UI.Common.Utilities;
@@ -721,7 +722,7 @@ namespace Hyjinx.Ava.UI.ViewModels
             {
                 ConfigurationState.Instance.UI.StartFullscreen.Value = value;
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
 
                 OnPropertyChanged();
             }
@@ -734,7 +735,7 @@ namespace Hyjinx.Ava.UI.ViewModels
             {
                 ConfigurationState.Instance.UI.ShowConsole.Value = value;
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
 
                 OnPropertyChanged();
             }
@@ -783,7 +784,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                 OnPropertyChanged(nameof(IsGrid));
                 OnPropertyChanged(nameof(IsList));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
             }
         }
 
@@ -797,7 +798,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                 OnPropertyChanged(nameof(GridSizeScale));
                 OnPropertyChanged(nameof(GridItemSelectorSize));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
             }
         }
 
@@ -811,7 +812,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SortName));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
             }
         }
 
@@ -866,7 +867,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                 OnPropertyChanged(nameof(GridItemSelectorSize));
                 OnPropertyChanged(nameof(ShowNames));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
             }
         }
 
@@ -900,7 +901,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                 OnPropertyChanged(nameof(SortMode));
                 OnPropertyChanged(nameof(SortName));
 
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
             }
         }
 
@@ -1436,7 +1437,7 @@ namespace Hyjinx.Ava.UI.ViewModels
             if (Program.PreviewerDetached)
             {
                 ConfigurationState.Instance.UI.LanguageCode.Value = (string)languageCode;
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
             }
         }
 
@@ -1718,7 +1719,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
         public static void SaveConfig()
         {
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(Program.ConfigurationPath);
+            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         }
 
         public static async Task PerformanceCheck()

@@ -5,6 +5,7 @@ using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
+using Hyjinx.HLE.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

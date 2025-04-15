@@ -2,9 +2,9 @@ using System.Buffers.Binary;
 using System.Net;
 using System.Net.NetworkInformation;
 
-namespace Hyjinx.Common.Utilities
+namespace Hyjinx.HLE.Utilities
 {
-    public static class NetworkHelpers
+    internal static class NetworkHelpers
     {
         private static (IPInterfaceProperties, UnicastIPAddressInformation) GetLocalInterface(NetworkInterface adapter, bool isPreferred)
         {

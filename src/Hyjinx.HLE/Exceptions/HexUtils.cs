@@ -1,9 +1,9 @@
 using System;
 using System.Text;
 
-namespace Hyjinx.Common
+namespace Hyjinx.HLE.Exceptions
 {
-    public static class HexUtils
+    internal static class HexUtils
     {
         private static readonly char[] _hexChars = "0123456789ABCDEF".ToCharArray();
 

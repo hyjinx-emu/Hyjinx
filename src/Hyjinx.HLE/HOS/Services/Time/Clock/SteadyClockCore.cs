@@ -1,5 +1,6 @@
 using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
+using Hyjinx.HLE.Utilities;
 using System;
 
 namespace Hyjinx.HLE.HOS.Services.Time.Clock

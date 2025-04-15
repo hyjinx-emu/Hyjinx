@@ -46,9 +46,9 @@ namespace Hyjinx.Cpu.Jit
         }
 
         /// <inheritdoc/>
-        public IDiskCacheLoadState LoadDiskCache(string titleIdText, string displayVersion, bool enabled)
+        public IDiskCacheLoadState LoadDiskCache(string titleIdText, string displayVersion, bool enabled, string cachePath)
         {
-            return new JitDiskCacheLoadState(_translator.LoadDiskCache(titleIdText, displayVersion, enabled));
+            return new JitDiskCacheLoadState(_translator.LoadDiskCache(titleIdText, displayVersion, enabled, cachePath));
         }
 
         /// <inheritdoc/>
