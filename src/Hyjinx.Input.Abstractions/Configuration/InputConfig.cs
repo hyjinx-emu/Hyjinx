@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Hyjinx.Common.Configuration.Hid
 {
-    public class InputConfig : INotifyPropertyChanged
+    public abstract class InputConfig : INotifyPropertyChanged
     {
         /// <summary>
         /// The current version of the input file format

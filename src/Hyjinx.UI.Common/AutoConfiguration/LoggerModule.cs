@@ -1,10 +1,8 @@
 using Hyjinx.Common.Configuration;
 using Hyjinx.Logging.Console;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Logging.File;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Diagnostics;
 
 namespace Hyjinx.UI.Common.AutoConfiguration;
@@ -14,11 +12,8 @@ public static class LoggerModule
     private const string DefaultTimestampFormat = @"hh\:mm\:ss\.ffff";
     private const int DefaultMaxQueueLength = 10000;
     
-    private static IServiceProvider? LoggingServices { get; set; }
-    
-    public static void Initialize(Stopwatch upTime)
+    public static void Initialize(IServiceCollection services, Stopwatch upTime)
     {
-        var services = new ServiceCollection();
         services.AddLogging(logging =>
         {
             logging.SetMinimumLevel(LogLevel.Information);
@@ -45,10 +40,5 @@ public static class LoggerModule
                 opts.TimestampFormat = DefaultTimestampFormat;
             });
         });
-
-        LoggingServices = services.BuildServiceProvider();
-        var factory = LoggingServices.GetRequiredService<ILoggerFactory>();
-        
-        Logger.Initialize(factory);
     }
 }

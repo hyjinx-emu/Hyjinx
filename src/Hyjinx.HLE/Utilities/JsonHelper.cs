@@ -7,7 +7,6 @@ namespace Hyjinx.HLE.Utilities;
 
 public class JsonHelper
 {
-    private static readonly JsonNamingPolicy _snakeCasePolicy = new SnakeCaseNamingPolicy();
     private const int DefaultFileWriteBufferSize = 4096;
 
     /// <summary>
@@ -21,8 +20,6 @@ public class JsonHelper
     {
         JsonSerializerOptions options = new()
         {
-            DictionaryKeyPolicy = _snakeCasePolicy,
-            PropertyNamingPolicy = _snakeCasePolicy,
             WriteIndented = indented,
             AllowTrailingCommas = true,
             ReadCommentHandling = JsonCommentHandling.Skip,
