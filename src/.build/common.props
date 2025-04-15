@@ -1,9 +1,17 @@
 <Project>
+
+  <PropertyGroup>
+    <!-- Determines whether the DMCA related code is set to compile within the codebase. -->
+    <IsDmcaEnabled>true</IsDmcaEnabled>
+  </PropertyGroup>
   
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <DefineConstants Condition=" '$(ExtraDefineConstants)' != '' ">$(DefineConstants);$(ExtraDefineConstants)</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <DefineConstants Condition=" '$(IsDmcaEnabled)' == 'true' ">$(DefineConstants);IS_DMCA_ENABLED</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup>

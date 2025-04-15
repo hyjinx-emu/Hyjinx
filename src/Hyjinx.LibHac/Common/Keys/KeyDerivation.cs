@@ -1,10 +1,14 @@
-﻿using System;
+﻿#if IS_DMCA_ENABLED
+#pragma warning disable CS0618
+
+using System;
 using System.Runtime.InteropServices;
 using LibHac.Crypto;
 using LibHac.Diag;
 
 namespace LibHac.Common.Keys;
 
+[Obsolete("This class can no longer be used due to DMCA requirements.")]
 internal static class KeyDerivation
 {
     private const int HoviSeedSize = 0x10;
@@ -493,3 +497,6 @@ internal static class KeyDerivation
         }
     }
 }
+
+#pragma warning restore CS0618
+#endif

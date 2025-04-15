@@ -1,4 +1,7 @@
-﻿//-----------------------------------------------------------------------------
+﻿#if IS_DMCA_ENABLED
+#pragma warning disable CS0618
+
+//-----------------------------------------------------------------------------
 // This file was automatically generated.
 // Changes to this file will be lost when the file is regenerated.
 //
@@ -462,3 +465,6 @@ internal static partial class DefaultKeySet
 
     private static ReadOnlySpan<byte> DeviceRsaKeys => [];
 }
+
+#pragma warning restore CS0618
+#endif

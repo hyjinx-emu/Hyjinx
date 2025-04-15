@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if IS_DMCA_ENABLED
+#pragma warning disable CS0618
+
+using System;
 using System.Diagnostics;
 using LibHac.Diag;
 using LibHac.Util;
@@ -6,6 +9,7 @@ using LibHac.Util;
 namespace LibHac.Common.Keys;
 
 [DebuggerDisplay("{" + nameof(Name) + "}")]
+[Obsolete("This class can no longer be used due to DMCA requirements.")]
 public readonly struct KeyInfo
 {
     public enum KeyRangeType : byte
@@ -174,3 +178,6 @@ public readonly struct KeyInfo
         return isValid1 && isValid2;
     }
 }
+
+#pragma warning restore CS0618
+#endif

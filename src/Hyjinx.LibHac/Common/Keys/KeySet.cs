@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if IS_DMCA_ENABLED
+#pragma warning disable CS0618
+
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using LibHac.Boot;
@@ -9,6 +12,7 @@ using LibHac.Util;
 
 namespace LibHac.Common.Keys;
 
+[Obsolete("This class can no longer be used due to DMCA requirements.")]
 public class KeySet
 {
     public enum Mode
@@ -430,3 +434,6 @@ public struct DeviceRsaKeys
 {
     public RsaKeyPair ETicketRsaKey;
 }
+
+#pragma warning restore CS0618
+#endif

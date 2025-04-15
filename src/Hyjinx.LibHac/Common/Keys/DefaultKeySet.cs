@@ -1,4 +1,8 @@
-﻿using LibHac.Boot;
+﻿#if IS_DMCA_ENABLED
+#pragma warning disable CS0618
+
+using LibHac.Boot;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static LibHac.Common.Keys.KeySet;
@@ -6,6 +10,7 @@ using Type = LibHac.Common.Keys.KeyInfo.KeyType;
 
 namespace LibHac.Common.Keys;
 
+[Obsolete("This class can no longer be used due to DMCA requirements.")]
 internal static partial class DefaultKeySet
 {
     /// <summary>
@@ -213,3 +218,6 @@ internal static partial class DefaultKeySet
         return keys;
     }
 }
+
+#pragma warning restore CS0618
+#endif

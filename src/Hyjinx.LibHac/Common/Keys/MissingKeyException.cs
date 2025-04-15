@@ -1,10 +1,14 @@
-﻿using System;
+﻿#if IS_DMCA_ENABLED
+#pragma warning disable CS0618
+
+using System;
 
 namespace LibHac.Common.Keys;
 
 /// <summary>
 /// This is the exception that is thrown when an action requires a key that is not found in the provided keyset.
 /// </summary>
+[Obsolete("This class can no longer be used due to DMCA requirements.")]
 public class MissingKeyException : LibHacException
 {
     /// <summary>
@@ -72,3 +76,6 @@ public class MissingKeyException : LibHacException
         }
     }
 }
+
+#pragma warning restore CS0618
+#endif

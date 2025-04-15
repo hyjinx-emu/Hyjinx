@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if IS_DMCA_ENABLED
+#pragma warning disable CS0618
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,6 +13,7 @@ using LibHac.Util;
 
 namespace LibHac.Common.Keys;
 
+[Obsolete("This class can no longer be used due to DMCA requirements.")]
 public static class ExternalKeyReader
 {
     private const int ReadBufferSize = 2048;
@@ -584,3 +588,6 @@ public static class ExternalKeyReader
         return false;
     }
 }
+
+#pragma warning restore CS0618
+#endif
