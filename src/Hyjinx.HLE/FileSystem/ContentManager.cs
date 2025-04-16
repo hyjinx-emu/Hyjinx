@@ -10,8 +10,8 @@ using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Tools.Ncm;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
-using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.FileSystem.Installers;
 using Hyjinx.HLE.HOS.Services.Ssl;
 using Hyjinx.HLE.HOS.Services.Time;
 using Hyjinx.HLE.Utilities;
@@ -440,45 +440,37 @@ namespace Hyjinx.HLE.FileSystem
 
         public void InstallFirmware(string firmwareSource)
         {
+            var file = new FileInfo(firmwareSource);
+            if (!file.Exists)
+            {
+                throw new FileNotFoundException("Firmware file does not exist.");
+            }
+            
             ContentPath.TryGetContentPath(StorageId.BuiltInSystem, out var contentPathString);
             ContentPath.TryGetRealPath(contentPathString, out var contentDirectory);
+            
             string registeredDirectory = Path.Combine(contentDirectory, "registered");
             string temporaryDirectory = Path.Combine(contentDirectory, "temp");
-
             if (Directory.Exists(temporaryDirectory))
             {
                 Directory.Delete(temporaryDirectory, true);
             }
 
-            if (Directory.Exists(firmwareSource))
-            {
-                InstallFromDirectory(firmwareSource, temporaryDirectory);
-                FinishInstallation(temporaryDirectory, registeredDirectory);
-
-                return;
-            }
-
-            if (!File.Exists(firmwareSource))
-            {
-                throw new FileNotFoundException("Firmware file does not exist.");
-            }
-
-            FileInfo info = new(firmwareSource);
-
-            using FileStream file = File.OpenRead(firmwareSource);
-
-            switch (info.Extension)
+            switch (file.Extension)
             {
                 case ".zip":
-                    using (ZipArchive archive = ZipFile.OpenRead(firmwareSource))
+                    var installer = new ZipFirmwareInstaller();
+                    installer.Install(file, new DirectoryInfo(temporaryDirectory));
+                    break;
+
+                case ".xci":
+                    using (var fs = File.OpenRead(firmwareSource))
                     {
-                        InstallFromZip(archive, temporaryDirectory);
+                        Xci xci = new(_virtualFileSystem.KeySet, fs.AsStorage());
+                        InstallFromCart(xci, temporaryDirectory);   
                     }
                     break;
-                case ".xci":
-                    Xci xci = new(_virtualFileSystem.KeySet, file.AsStorage());
-                    InstallFromCart(xci, temporaryDirectory);
-                    break;
+                
                 default:
                     throw new InvalidFirmwarePackageException("Input file is not a valid firmware package");
             }
@@ -524,36 +516,6 @@ namespace Hyjinx.HLE.FileSystem
             else
             {
                 throw new Exception("Update not found in xci file.");
-            }
-        }
-
-        private static void InstallFromZip(ZipArchive archive, string temporaryDirectory)
-        {
-            foreach (var entry in archive.Entries)
-            {
-                if (entry.FullName.EndsWith(".nca") || entry.FullName.EndsWith(".nca/00"))
-                {
-                    // Clean up the name and get the NcaId
-
-                    string[] pathComponents = entry.FullName.Replace(".cnmt", "").Split('/');
-
-                    string ncaId = pathComponents[^1];
-
-                    // If this is a fragmented nca, we need to get the previous element.GetZip
-                    if (ncaId.Equals("00"))
-                    {
-                        ncaId = pathComponents[^2];
-                    }
-
-                    if (ncaId.Contains(".nca"))
-                    {
-                        string newPath = Path.Combine(temporaryDirectory, ncaId);
-
-                        Directory.CreateDirectory(newPath);
-
-                        entry.ExtractToFile(Path.Combine(newPath, "00"));
-                    }
-                }
             }
         }
 
