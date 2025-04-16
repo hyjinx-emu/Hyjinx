@@ -124,6 +124,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.SPB", "src\Hyjinx.SP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Hashing", "src\Hyjinx.Hashing\Hyjinx.Hashing.csproj", "{BF61DE62-9C02-4224-B7E4-5CDD68032748}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.HLE.Abstractions", "src\Hyjinx.HLE.Abstractions\Hyjinx.HLE.Abstractions.csproj", "{4789150E-499C-4D16-9BA0-87E2FC5DC9AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -322,6 +324,10 @@ Global
 		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4789150E-499C-4D16-9BA0-87E2FC5DC9AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4789150E-499C-4D16-9BA0-87E2FC5DC9AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4789150E-499C-4D16-9BA0-87E2FC5DC9AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4789150E-499C-4D16-9BA0-87E2FC5DC9AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -357,5 +363,6 @@ Global
 		{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{97B67FE1-134D-4436-85BD-5A652751168E} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{996E745A-5BDB-432F-ADF9-2BE3F00BCB43} = {EEB9FB42-5EF6-4135-B051-D5DC604AA6F2}
+		{4789150E-499C-4D16-9BA0-87E2FC5DC9AE} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 	EndGlobalSection
 EndGlobal

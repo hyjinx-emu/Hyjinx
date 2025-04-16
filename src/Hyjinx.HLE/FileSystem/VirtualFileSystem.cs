@@ -13,6 +13,7 @@ using LibHac.Tools.Es;
 using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using Hyjinx.Common.Configuration;
+using Hyjinx.HLE.Abstractions;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS;
 using Microsoft.Extensions.Logging;
@@ -26,7 +27,7 @@ using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem
 {
-    public partial class VirtualFileSystem : IDisposable
+    public partial class VirtualFileSystem : IVirtualFileSystem, IDisposable
     {
         public static readonly string SystemNandPath = Path.Combine(AppDataManager.DefaultNandDir, "system");
         public static readonly string UserNandPath = Path.Combine(AppDataManager.DefaultNandDir, "user");
