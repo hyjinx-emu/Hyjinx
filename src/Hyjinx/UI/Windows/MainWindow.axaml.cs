@@ -243,8 +243,6 @@ namespace Hyjinx.Ava.UI.Windows
 
             AccountManager = new AccountManager(LibHacHorizonManager.HyjinxClient, CommandLineState.Profile);
 
-            VirtualFileSystem.ReloadKeySet();
-
             ApplicationHelper.Initialize(VirtualFileSystem, AccountManager, LibHacHorizonManager.HyjinxClient);
         }
 

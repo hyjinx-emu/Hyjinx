@@ -1,4 +1,4 @@
-﻿#if IS_DMCA_ENABLED
+﻿#if IS_TPM_BYPASS_ENABLED
 #pragma warning disable CS0618
 
 //-----------------------------------------------------------------------------

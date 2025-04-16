@@ -1,4 +1,4 @@
-﻿#if IS_DMCA_ENABLED
+﻿#if IS_TPM_BYPASS_ENABLED
 #pragma warning disable CS0618
 
 using System;
@@ -13,7 +13,7 @@ using RangeType = LibHac.Common.Keys.KeyInfo.KeyRangeType;
 
 namespace LibHac.Common.Keys;
 
-[Obsolete("This class can no longer be used due to DMCA requirements.")]
+[Obsolete("This class can no longer be used due to TPM restrictions.")]
 public static class ExternalKeyWriter
 {
     public static void PrintKeys(KeySet keySet, StringBuilder sb, List<KeyInfo> keys, Type filter, bool onlyPrintDifferentDevKeys)

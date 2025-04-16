@@ -1,8 +1,8 @@
 <Project>
 
   <PropertyGroup>
-    <!-- Determines whether the DMCA related code is set to compile within the codebase. -->
-    <IsDmcaEnabled>true</IsDmcaEnabled>
+    <!-- Determines whether the TPM bypass code is set to compile within the codebase. -->
+    <IsTpmBypassEnabled>true</IsTpmBypassEnabled>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -11,7 +11,7 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <DefineConstants Condition=" '$(IsDmcaEnabled)' == 'true' ">$(DefineConstants);IS_DMCA_ENABLED</DefineConstants>
+    <DefineConstants Condition=" '$(IsTpmBypassEnabled)' == 'true' ">$(DefineConstants);IS_TPM_BYPASS_ENABLED</DefineConstants>
   </PropertyGroup>
   
   <PropertyGroup>

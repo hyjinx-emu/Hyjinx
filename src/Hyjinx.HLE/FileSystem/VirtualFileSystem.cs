@@ -28,39 +28,34 @@ namespace Hyjinx.HLE.FileSystem
 {
     public partial class VirtualFileSystem : IDisposable
     {
-        public static readonly string SafeNandPath = Path.Combine(AppDataManager.DefaultNandDir, "safe");
         public static readonly string SystemNandPath = Path.Combine(AppDataManager.DefaultNandDir, "system");
         public static readonly string UserNandPath = Path.Combine(AppDataManager.DefaultNandDir, "user");
+        
+        private static readonly ILogger<VirtualFileSystem> _logger =
+            Logger.DefaultLoggerFactory.CreateLogger<VirtualFileSystem>();
+        
+        private static bool _isInitialized = false;
 
         public KeySet KeySet { get; private set; }
         public EmulatedGameCard GameCard { get; private set; }
         public SdmmcApi SdCard { get; private set; }
-        public ModLoader ModLoader { get; private set; }
+        public ModLoader ModLoader { get; } = new();
 
-        private static readonly ILogger<VirtualFileSystem> _logger =
-            Logger.DefaultLoggerFactory.CreateLogger<VirtualFileSystem>();
+        private readonly ConcurrentDictionary<ulong, Stream> _romFsByPid = new();
         
-        private readonly ConcurrentDictionary<ulong, Stream> _romFsByPid;
-
-        private static bool _isInitialized = false;
-
         public static VirtualFileSystem CreateInstance()
         {
             if (_isInitialized)
             {
-                throw new InvalidOperationException("VirtualFileSystem can only be instantiated once!");
+                throw new InvalidOperationException($"{nameof(VirtualFileSystem)} can only be instantiated once!");
             }
 
             _isInitialized = true;
 
-            return new VirtualFileSystem();
-        }
-
-        private VirtualFileSystem()
-        {
-            ReloadKeySet();
-            ModLoader = new ModLoader(); // Should only be created once
-            _romFsByPid = new ConcurrentDictionary<ulong, Stream>();
+            var result = new VirtualFileSystem();
+            result.ReloadKeySet();
+            
+            return result;
         }
 
         public void LoadRomFs(ulong pid, string fileName)
@@ -221,46 +216,6 @@ namespace Hyjinx.HLE.FileSystem
             };
 
             FileSystemServerInitializer.InitializeWithConfig(fsServerClient, fsServer, fsServerConfig);
-        }
-
-        public void ReloadKeySet()
-        {
-            KeySet ??= KeySet.CreateDefaultKeySet();
-
-            string keyFile = null;
-            string titleKeyFile = null;
-            string consoleKeyFile = null;
-
-            if (AppDataManager.Mode == AppDataManager.LaunchMode.UserProfile)
-            {
-                LoadSetAtPath(AppDataManager.KeysDirPathUser);
-            }
-
-            LoadSetAtPath(AppDataManager.KeysDirPath);
-
-            void LoadSetAtPath(string basePath)
-            {
-                string localKeyFile = Path.Combine(basePath, "prod.keys");
-                string localTitleKeyFile = Path.Combine(basePath, "title.keys");
-                string localConsoleKeyFile = Path.Combine(basePath, "console.keys");
-
-                if (File.Exists(localKeyFile))
-                {
-                    keyFile = localKeyFile;
-                }
-
-                if (File.Exists(localTitleKeyFile))
-                {
-                    titleKeyFile = localTitleKeyFile;
-                }
-
-                if (File.Exists(localConsoleKeyFile))
-                {
-                    consoleKeyFile = localConsoleKeyFile;
-                }
-            }
-
-            ExternalKeyReader.ReadKeyFile(KeySet, keyFile, titleKeyFile, consoleKeyFile, null);
         }
 
         public void ImportTickets(IFileSystem fs)

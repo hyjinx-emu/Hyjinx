@@ -1,4 +1,4 @@
-﻿#if IS_DMCA_ENABLED
+﻿#if IS_TPM_BYPASS_ENABLED
 #pragma warning disable CS0618
 
 using System;
@@ -8,7 +8,7 @@ using LibHac.Diag;
 
 namespace LibHac.Common.Keys;
 
-[Obsolete("This class can no longer be used due to DMCA requirements.")]
+[Obsolete("This class can no longer be used due to TPM restrictions.")]
 internal static class KeyDerivation
 {
     private const int HoviSeedSize = 0x10;

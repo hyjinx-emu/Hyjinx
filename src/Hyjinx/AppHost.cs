@@ -833,9 +833,6 @@ namespace Hyjinx.Ava
 
         private void InitializeSwitchInstance()
         {
-            // Initialize KeySet.
-            VirtualFileSystem.ReloadKeySet();
-
             // Initialize Renderer.
             IRenderer renderer;
 

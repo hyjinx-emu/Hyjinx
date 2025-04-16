@@ -1,4 +1,4 @@
-﻿#if IS_DMCA_ENABLED
+﻿#if IS_TPM_BYPASS_ENABLED
 #pragma warning disable CS0618
 
 using System;
@@ -8,7 +8,7 @@ namespace LibHac.Common.Keys;
 /// <summary>
 /// This is the exception that is thrown when an action requires a key that is not found in the provided keyset.
 /// </summary>
-[Obsolete("This class can no longer be used due to DMCA requirements.")]
+[Obsolete("This class can no longer be used due to TPM restrictions.")]
 public class MissingKeyException : LibHacException
 {
     /// <summary>
