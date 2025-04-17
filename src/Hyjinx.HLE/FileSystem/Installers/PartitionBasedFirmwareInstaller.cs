@@ -1,9 +1,16 @@
-﻿using LibHac.Common;
+﻿using Hyjinx.HLE.Exceptions;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
+using LibHac.Tools.Ncm;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem.Installers;
@@ -52,5 +59,138 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
         }
 
         return file.Release();
+    }
+    
+    protected SystemVersion? VerifyAndGetVersion(IFileSystem filesystem)
+    {
+        SystemVersion? systemVersion = null;
+
+        CnmtContentMetaEntry[] metaEntries = null;
+        Dictionary<ulong, List<(NcaContentType type, string path)>> updateNcas = new();
+        
+        foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
+        {
+            IStorage ncaStorage = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read).AsStorage();
+
+            Nca nca = new(virtualFileSystem.KeySet, ncaStorage);
+
+            if (nca.Header.TitleId == ContentManager.SystemUpdateTitleId && nca.Header.ContentType == NcaContentType.Meta)
+            {
+                IFileSystem fs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
+
+                string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
+
+                using var metaFile = new UniqueRef<IFile>();
+
+                if (fs.OpenFile(ref metaFile.Ref, cnmtPath.ToU8Span(), OpenMode.Read).IsSuccess())
+                {
+                    var meta = new Cnmt(metaFile.Get.AsStream());
+
+                    if (meta.Type == ContentMetaType.SystemUpdate)
+                    {
+                        metaEntries = meta.MetaEntries;
+                    }
+                }
+
+                continue;
+            }
+            else if (nca.Header.TitleId == ContentManager.SystemVersionTitleId && nca.Header.ContentType == NcaContentType.Data)
+            {
+                var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
+
+                using var systemVersionFile = new UniqueRef<IFile>();
+
+                if (romfs.OpenFile(ref systemVersionFile.Ref, "/file".ToU8Span(), OpenMode.Read).IsSuccess())
+                {
+                    systemVersion = new SystemVersion(systemVersionFile.Get.AsStream());
+                }
+            }
+
+            if (updateNcas.TryGetValue(nca.Header.TitleId, out var updateNcasItem))
+            {
+                updateNcasItem.Add((nca.Header.ContentType, entry.FullPath));
+            }
+            else
+            {
+                updateNcas.Add(nca.Header.TitleId, new List<(NcaContentType, string)>());
+                updateNcas[nca.Header.TitleId].Add((nca.Header.ContentType, entry.FullPath));
+            }
+
+            ncaStorage.Dispose();
+        }
+
+        if (metaEntries == null)
+        {
+            throw new FileNotFoundException("System update title was not found in the firmware package.");
+        }
+
+        foreach (CnmtContentMetaEntry metaEntry in metaEntries)
+        {
+            if (updateNcas.TryGetValue(metaEntry.TitleId, out var ncaEntry))
+            {
+                string metaNcaPath = ncaEntry.Find(x => x.type == NcaContentType.Meta).path;
+                string contentPath = ncaEntry.Find(x => x.type != NcaContentType.Meta).path;
+
+                // Nintendo in 9.0.0, removed PPC and only kept the meta nca of it.
+                // This is a perfect valid case, so we should just ignore the missing content nca and continue.
+                if (contentPath == null)
+                {
+                    updateNcas.Remove(metaEntry.TitleId);
+
+                    continue;
+                }
+
+                IStorage metaStorage = OpenPossibleFragmentedFile(filesystem, metaNcaPath, OpenMode.Read).AsStorage();
+                IStorage contentStorage = OpenPossibleFragmentedFile(filesystem, contentPath, OpenMode.Read).AsStorage();
+
+                Nca metaNca = new(virtualFileSystem.KeySet, metaStorage);
+
+                IFileSystem fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
+
+                string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
+
+                using var metaFile = new UniqueRef<IFile>();
+
+                if (fs.OpenFile(ref metaFile.Ref, cnmtPath.ToU8Span(), OpenMode.Read).IsSuccess())
+                {
+                    var meta = new Cnmt(metaFile.Get.AsStream());
+
+                    if (contentStorage.GetSize(out long size).IsSuccess())
+                    {
+                        byte[] contentData = new byte[size];
+
+                        Span<byte> content = new(contentData);
+
+                        contentStorage.Read(0, content);
+
+                        Span<byte> hash = new(new byte[32]);
+
+                        LibHac.Crypto.Sha256.GenerateSha256Hash(content, hash);
+
+                        if (LibHac.Common.Utilities.ArraysEqual(hash.ToArray(), meta.ContentEntries[0].Hash))
+                        {
+                            updateNcas.Remove(metaEntry.TitleId);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (updateNcas.Count > 0)
+        {
+            StringBuilder extraNcas = new();
+
+            foreach (var entry in updateNcas)
+            {
+                foreach (var (type, path) in entry.Value)
+                {
+                    extraNcas.AppendLine(path);
+                }
+            }
+
+            throw new InvalidFirmwarePackageException($"Firmware package contains unrelated archives. Please remove these paths: {Environment.NewLine}{extraNcas}");
+        }
+
+        return systemVersion;
     }
 }

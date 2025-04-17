@@ -1,4 +1,5 @@
-﻿using LibHac.Tools.Fs;
+﻿using Hyjinx.HLE.Exceptions;
+using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
@@ -40,6 +41,27 @@ public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem): Partitio
     
     public override SystemVersion Verify(string source)
     {
-        throw new System.NotImplementedException();
+        if (!File.Exists(source))
+        {
+            throw new FileNotFoundException("The file does not exist.");
+        }
+        
+        using var file = File.OpenRead(source);
+        Xci xci = new(virtualFileSystem.KeySet, file.AsStorage());
+
+        if (!xci.HasPartition(XciPartitionType.Update))
+        {
+            throw new InvalidFirmwarePackageException("Update not found in xci file.");
+        }
+        
+        XciPartition partition = xci.OpenPartition(XciPartitionType.Update);
+        
+        var result = VerifyAndGetVersion(partition);
+        if (result == null)
+        {
+            throw new InvalidFirmwarePackageException("The file provided was not a valid firmware package.");
+        }
+
+        return result;
     }
 }

@@ -1,4 +1,5 @@
-﻿using LibHac.FsSystem;
+﻿using Hyjinx.HLE.Exceptions;
+using LibHac.FsSystem;
 using System.IO;
 
 namespace Hyjinx.HLE.FileSystem.Installers;
@@ -21,6 +22,17 @@ public class DirectoryFirmwareInstaller(VirtualFileSystem virtualFileSystem) : P
 
     public override SystemVersion Verify(string source)
     {
-        throw new System.NotImplementedException();
+        if (!Directory.Exists(source))
+        {
+            throw new DirectoryNotFoundException("The directory does not exist.");
+        }
+        
+        var result = VerifyAndGetVersion(new LocalFileSystem(source));
+        if (result == null)
+        {
+            throw new InvalidFirmwarePackageException("The directory does not contain a valid firmware package.");
+        }
+
+        return result;
     }
 }
