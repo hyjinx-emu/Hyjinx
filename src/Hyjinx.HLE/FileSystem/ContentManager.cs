@@ -10,8 +10,8 @@ using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Tools.Ncm;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
-using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.FileSystem.Installers;
 using Hyjinx.HLE.HOS.Services.Ssl;
 using Hyjinx.HLE.HOS.Services.Time;
 using Hyjinx.HLE.Utilities;
@@ -442,6 +442,7 @@ namespace Hyjinx.HLE.FileSystem
         {
             ContentPath.TryGetContentPath(StorageId.BuiltInSystem, out var contentPathString);
             ContentPath.TryGetRealPath(contentPathString, out var contentDirectory);
+            
             string registeredDirectory = Path.Combine(contentDirectory, "registered");
             string temporaryDirectory = Path.Combine(contentDirectory, "temp");
 
@@ -449,39 +450,36 @@ namespace Hyjinx.HLE.FileSystem
             {
                 Directory.Delete(temporaryDirectory, true);
             }
-
+            
+            IFirmwareInstaller installer;
             if (Directory.Exists(firmwareSource))
             {
-                InstallFromDirectory(firmwareSource, temporaryDirectory);
-                FinishInstallation(temporaryDirectory, registeredDirectory);
-
-                return;
+                installer = new DirectoryFirmwareInstaller(_virtualFileSystem);
             }
-
-            if (!File.Exists(firmwareSource))
+            else
             {
-                throw new FileNotFoundException("Firmware file does not exist.");
+                var file = new FileInfo(firmwareSource);
+                if (!file.Exists)
+                {
+                    throw new FileNotFoundException("The firmware file does not exist.");
+                }
+                
+                switch (file.Extension)
+                {
+                    case ".zip":
+                        installer = new ZipArchiveFirmwareInstaller();
+                        break;
+
+                    case ".xci":
+                        installer = new XciFirmwareInstaller(_virtualFileSystem);
+                        break;
+
+                    default:
+                        throw new InvalidFirmwarePackageException("Input file is not a valid firmware package");
+                }
             }
 
-            FileInfo info = new(firmwareSource);
-
-            using FileStream file = File.OpenRead(firmwareSource);
-
-            switch (info.Extension)
-            {
-                case ".zip":
-                    using (ZipArchive archive = ZipFile.OpenRead(firmwareSource))
-                    {
-                        InstallFromZip(archive, temporaryDirectory);
-                    }
-                    break;
-                case ".xci":
-                    Xci xci = new(_virtualFileSystem.KeySet, file.AsStorage());
-                    InstallFromCart(xci, temporaryDirectory);
-                    break;
-                default:
-                    throw new InvalidFirmwarePackageException("Input file is not a valid firmware package");
-            }
+            installer.Install(firmwareSource, new DirectoryInfo(temporaryDirectory));
 
             FinishInstallation(temporaryDirectory, registeredDirectory);
         }
@@ -496,75 +494,6 @@ namespace Hyjinx.HLE.FileSystem
             Directory.Move(temporaryDirectory, registeredDirectory);
 
             LoadEntries();
-        }
-
-        private void InstallFromDirectory(string firmwareDirectory, string temporaryDirectory)
-        {
-            InstallFromPartition(new LocalFileSystem(firmwareDirectory), temporaryDirectory);
-        }
-
-        private void InstallFromPartition(IFileSystem filesystem, string temporaryDirectory)
-        {
-            foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
-            {
-                Nca nca = new(_virtualFileSystem.KeySet, OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read).AsStorage());
-
-                SaveNca(nca, entry.Name.Remove(entry.Name.IndexOf('.')), temporaryDirectory);
-            }
-        }
-
-        private void InstallFromCart(Xci gameCard, string temporaryDirectory)
-        {
-            if (gameCard.HasPartition(XciPartitionType.Update))
-            {
-                XciPartition partition = gameCard.OpenPartition(XciPartitionType.Update);
-
-                InstallFromPartition(partition, temporaryDirectory);
-            }
-            else
-            {
-                throw new Exception("Update not found in xci file.");
-            }
-        }
-
-        private static void InstallFromZip(ZipArchive archive, string temporaryDirectory)
-        {
-            foreach (var entry in archive.Entries)
-            {
-                if (entry.FullName.EndsWith(".nca") || entry.FullName.EndsWith(".nca/00"))
-                {
-                    // Clean up the name and get the NcaId
-
-                    string[] pathComponents = entry.FullName.Replace(".cnmt", "").Split('/');
-
-                    string ncaId = pathComponents[^1];
-
-                    // If this is a fragmented nca, we need to get the previous element.GetZip
-                    if (ncaId.Equals("00"))
-                    {
-                        ncaId = pathComponents[^2];
-                    }
-
-                    if (ncaId.Contains(".nca"))
-                    {
-                        string newPath = Path.Combine(temporaryDirectory, ncaId);
-
-                        Directory.CreateDirectory(newPath);
-
-                        entry.ExtractToFile(Path.Combine(newPath, "00"));
-                    }
-                }
-            }
-        }
-
-        public static void SaveNca(Nca nca, string ncaId, string temporaryDirectory)
-        {
-            string newPath = Path.Combine(temporaryDirectory, ncaId + ".nca");
-
-            Directory.CreateDirectory(newPath);
-
-            using FileStream file = File.Create(Path.Combine(newPath, "00"));
-            nca.BaseStorage.AsStream().CopyTo(file);
         }
 
         private static IFile OpenPossibleFragmentedFile(IFileSystem filesystem, string path, OpenMode mode)

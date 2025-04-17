@@ -1,15 +1,20 @@
-﻿using System.IO;
+﻿using LibHac.FsSystem;
+using System.IO;
 
 namespace Hyjinx.HLE.FileSystem.Installers;
 
-public class DirectoryFirmwareInstaller : IFirmwareInstaller
+/// <summary>
+/// An <see cref="IFirmwareInstaller"/> which uses a directory as the source for the firmware.
+/// </summary>
+/// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
+public class DirectoryFirmwareInstaller(VirtualFileSystem virtualFileSystem) : PartitionBasedFirmwareInstaller(virtualFileSystem)
 {
-    public void Install(string source, DirectoryInfo destination)
+    public override void Install(string source, DirectoryInfo destination)
     {
-        throw new System.NotImplementedException();
+        InstallFromPartition(new LocalFileSystem(source), destination.FullName);
     }
 
-    public SystemVersion Verify(string source)
+    public override SystemVersion Verify(string source)
     {
         throw new System.NotImplementedException();
     }

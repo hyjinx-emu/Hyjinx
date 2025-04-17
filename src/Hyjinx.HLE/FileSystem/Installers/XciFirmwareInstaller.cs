@@ -1,15 +1,44 @@
-﻿using System.IO;
+﻿using LibHac.Tools.Fs;
+using LibHac.Tools.FsSystem;
+using System;
+using System.IO;
 
 namespace Hyjinx.HLE.FileSystem.Installers;
 
-public class XciFirmwareInstaller : IFirmwareInstaller
+/// <summary>
+/// An <see cref="IFirmwareInstaller"/> which is capable of extracting the firmware from an Xci cart.
+/// </summary>
+/// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
+public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem): PartitionBasedFirmwareInstaller(virtualFileSystem)
 {
-    public void Install(string source, DirectoryInfo destination)
+    public override void Install(string source, DirectoryInfo destination)
     {
-        throw new System.NotImplementedException();
-    }
+        if (!File.Exists(source))
+        {
+            throw new FileNotFoundException("The file does not exist.");
+        }
+        
+        using var file = File.OpenRead(source);
 
-    public SystemVersion Verify(string source)
+        var xci = new Xci(virtualFileSystem.KeySet, file.AsStorage());
+        InstallFromCart(xci, destination);
+    }
+    
+    private void InstallFromCart(Xci gameCard, DirectoryInfo destination)
+    {
+        if (gameCard.HasPartition(XciPartitionType.Update))
+        {
+            XciPartition partition = gameCard.OpenPartition(XciPartitionType.Update);
+
+            InstallFromPartition(partition, destination.FullName);
+        }
+        else
+        {
+            throw new Exception("Update not found in xci file.");
+        }
+    }
+    
+    public override SystemVersion Verify(string source)
     {
         throw new System.NotImplementedException();
     }
