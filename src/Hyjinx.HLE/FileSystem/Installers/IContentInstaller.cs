@@ -10,7 +10,7 @@ public interface IContentInstaller
     /// <summary>
     /// Installs the content to the destination.
     /// </summary>
-    /// <param name="file">The file to install.</param>
+    /// <param name="source">The content source to install.</param>
     /// <param name="destination">The destination.</param>
-    void Install(FileInfo file, DirectoryInfo destination);
+    void Install(string source, DirectoryInfo destination);
 }
