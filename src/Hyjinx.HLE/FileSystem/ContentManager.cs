@@ -26,7 +26,7 @@ using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem
 {
-    public partial class ContentManager
+    public partial class ContentManager : IContentManager
     {
         private const ulong SystemVersionTitleId = 0x0100000000000809;
         private const ulong SystemUpdateTitleId = 0x0100000000000816;
