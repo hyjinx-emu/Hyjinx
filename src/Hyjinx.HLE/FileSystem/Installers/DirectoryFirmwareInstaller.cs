@@ -11,6 +11,11 @@ public class DirectoryFirmwareInstaller(VirtualFileSystem virtualFileSystem) : P
 {
     public override void Install(string source, DirectoryInfo destination)
     {
+        if (!Directory.Exists(source))
+        {
+            throw new DirectoryNotFoundException("The directory does not exist.");
+        }
+        
         InstallFromPartition(new LocalFileSystem(source), destination.FullName);
     }
 
