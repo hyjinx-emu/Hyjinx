@@ -488,13 +488,6 @@ namespace Hyjinx.HLE.FileSystem
 
         public SystemVersion VerifyFirmwarePackage(string firmwarePackage)
         {
-            // LibHac.NcaHeader's DecryptHeader doesn't check if HeaderKey is empty and throws InvalidDataException instead
-            // So, we check it early for a better user experience.
-            if (_virtualFileSystem.KeySet.HeaderKey.IsZeros())
-            {
-                throw new MissingKeyException("HeaderKey is empty. Cannot decrypt NCA headers.");
-            }
-
             var installer = GetFirmwareInstaller(firmwarePackage);
             return installer.Verify(firmwarePackage);
         }
