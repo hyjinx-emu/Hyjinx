@@ -24,7 +24,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Condition="Exists('Legacy\Keys\DefaultKeySet.Generated.cs')" Remove="Legacy\Keys\DefaultKeySet.Empty.cs" />
+    <Compile Condition="Exists('Legacy\Common\Keys\DefaultKeySet.Generated.cs')" Remove="Legacy\Common\Keys\DefaultKeySet.Empty.cs" />
   </ItemGroup>
 
 </Project>

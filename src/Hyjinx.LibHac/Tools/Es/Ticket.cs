@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using LibHac.Common;
 using LibHac.Common.Keys;
-using LibHac.Tools.Crypto;
+using LibHac.Crypto;
 using LibHac.Util;
 
 namespace LibHac.Tools.Es;

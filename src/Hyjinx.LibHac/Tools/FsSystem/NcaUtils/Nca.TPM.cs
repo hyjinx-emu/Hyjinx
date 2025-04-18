@@ -6,7 +6,6 @@ using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Spl;
-using LibHac.Tools.Crypto;
 using System;
 using System.IO;
 

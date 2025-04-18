@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Security.Cryptography;
 using LibHac.Common;
-using LibHac.Crypto;
 
-namespace LibHac.Tools.Crypto;
+namespace LibHac.Crypto;
 
-public static class CryptoOld
+internal static class CryptoOld
 {
     public static Validity Rsa2048Pkcs1Verify(byte[] data, byte[] signature, byte[] modulus) =>
         Rsa.VerifyRsa2048Pkcs1Sha256(signature, modulus, new byte[] { 1, 0, 1 }, data)

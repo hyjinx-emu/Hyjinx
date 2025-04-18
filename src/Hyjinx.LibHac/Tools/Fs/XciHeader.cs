@@ -8,7 +8,6 @@ using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Gc.Impl;
-using LibHac.Tools.Crypto;
 using LibHac.Tools.FsSystem;
 using Aes = LibHac.Crypto.Aes;
 

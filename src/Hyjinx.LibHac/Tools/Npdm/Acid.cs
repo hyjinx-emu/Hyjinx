@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using LibHac.Common;
 using LibHac.Common.Keys;
-using LibHac.Tools.Crypto;
+using LibHac.Crypto;
 
 namespace LibHac.Tools.Npdm;
 
