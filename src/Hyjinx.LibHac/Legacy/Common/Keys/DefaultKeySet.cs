@@ -1,7 +1,6 @@
 ﻿#if IS_TPM_BYPASS_ENABLED
 #pragma warning disable CS0618
 
-using LibHac.Boot;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

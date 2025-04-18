@@ -1,12 +1,14 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Crypto;
 using LibHac.Util;
 
-namespace LibHac.Boot;
+// ReSharper disable once CheckNamespace
+namespace LibHac.Common.Keys;
 
 public struct EncryptedKeyBlob
 {
@@ -62,3 +64,5 @@ public struct KeyBlob
 
     public readonly override string ToString() => BytesRo.ToHexString();
 }
+
+#endif

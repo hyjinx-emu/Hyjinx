@@ -3,7 +3,6 @@
 
 using System;
 using System.Security.Cryptography;
-using LibHac.Boot;
 using LibHac.Common.FixedArrays;
 using LibHac.Crypto;
 using LibHac.FsSrv;
