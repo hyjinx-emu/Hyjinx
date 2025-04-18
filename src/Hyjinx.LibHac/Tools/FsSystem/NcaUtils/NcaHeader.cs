@@ -3,16 +3,13 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LibHac.Common;
-using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Diag;
-using LibHac.Fs;
-using LibHac.Tools.Crypto;
 using LibHac.Util;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public struct NcaHeader
+public partial class NcaHeader
 {
     internal const int HeaderSize = 0xC00;
     internal const int HeaderSectorSize = 0x200;
@@ -22,16 +19,6 @@ public struct NcaHeader
     private readonly Memory<byte> _header;
 
     public NcaVersion FormatVersion { get; }
-    public bool IsEncrypted { get; }
-
-    public NcaHeader(KeySet keySet, IStorage headerStorage)
-    {
-        (byte[] header, bool isEncrypted) = DecryptHeader(keySet, headerStorage);
-
-        _header = header;
-        IsEncrypted = isEncrypted;
-        FormatVersion = DetectNcaVersion(_header.Span);
-    }
 
     private ref NcaHeaderStruct Header => ref Unsafe.As<byte, NcaHeaderStruct>(ref _header.Span[0]);
 
@@ -100,12 +87,6 @@ public struct NcaHeader
         set => Header.ContentIndex = value;
     }
 
-    public TitleVersion SdkVersion
-    {
-        get => new TitleVersion(Header.SdkVersion);
-        set => Header.SdkVersion = value.Version;
-    }
-
     public Span<byte> RightsId => _header.Span.Slice(NcaHeaderStruct.RightsIdOffset, NcaHeaderStruct.RightsIdSize);
 
     public bool HasRightsId => !Utilities.IsZeros(RightsId);
@@ -126,11 +107,6 @@ public struct NcaHeader
     public long GetSectionStartOffset(int index)
     {
         return BlockToOffset(GetSectionEntry(index).StartBlock);
-    }
-
-    public long GetSectionEndOffset(int index)
-    {
-        return BlockToOffset(GetSectionEntry(index).EndBlock);
     }
 
     public long GetSectionSize(int index)
@@ -198,61 +174,6 @@ public struct NcaHeader
         return (long)blockIndex * BlockSize;
     }
 
-    private static (byte[] header, bool isEncrypted) DecryptHeader(KeySet keySet, IStorage storage)
-    {
-        byte[] buf = new byte[HeaderSize];
-        storage.Read(0, buf).ThrowIfFailure();
-
-        if (CheckIfDecrypted(buf))
-        {
-            int decVersion = buf[0x203] - '0';
-
-            if (decVersion != 0 && decVersion != 2 && decVersion != 3)
-            {
-                throw new NotSupportedException($"NCA version {decVersion} is not supported.");
-            }
-
-            return (buf, false);
-        }
-
-        byte[] key1 = keySet.HeaderKey.SubKeys[0].DataRo.ToArray();
-        byte[] key2 = keySet.HeaderKey.SubKeys[1].DataRo.ToArray();
-
-        var transform = new Aes128XtsTransform(key1, key2, true);
-
-        transform.TransformBlock(buf, HeaderSectorSize * 0, HeaderSectorSize, 0);
-        transform.TransformBlock(buf, HeaderSectorSize * 1, HeaderSectorSize, 1);
-
-        if (buf[0x200] != 'N' || buf[0x201] != 'C' || buf[0x202] != 'A')
-        {
-            throw new InvalidDataException(
-                "Unable to decrypt NCA header. The file is not an NCA file or the header key is incorrect.");
-        }
-
-        int version = buf[0x203] - '0';
-
-        if (version == 3)
-        {
-            for (int sector = 2; sector < HeaderSize / HeaderSectorSize; sector++)
-            {
-                transform.TransformBlock(buf, sector * HeaderSectorSize, HeaderSectorSize, (ulong)sector);
-            }
-        }
-        else if (version == 2)
-        {
-            for (int i = 0x400; i < HeaderSize; i += HeaderSectorSize)
-            {
-                transform.TransformBlock(buf, i, HeaderSectorSize, 0);
-            }
-        }
-        else if (version != 0)
-        {
-            throw new NotSupportedException($"NCA version {version} is not supported.");
-        }
-
-        return (buf, true);
-    }
-
     private static bool CheckIfDecrypted(ReadOnlySpan<byte> header)
     {
         Assert.SdkRequiresGreaterEqual(header.Length, 0x400);
@@ -309,23 +230,13 @@ public struct NcaHeader
         return NcaVersion.Nca0;
     }
 
-    public Validity VerifySignature1(byte[] modulus)
-    {
-        return CryptoOld.Rsa2048PssVerify(_header.Span.Slice(0x200, 0x200).ToArray(), Signature1.ToArray(), modulus);
-    }
-
-    public Validity VerifySignature2(byte[] modulus)
-    {
-        return CryptoOld.Rsa2048PssVerify(_header.Span.Slice(0x200, 0x200).ToArray(), Signature2.ToArray(), modulus);
-    }
-
     public bool IsNca0() => FormatVersion >= NcaVersion.Nca0;
 
-    private static ReadOnlySpan<byte> Nca0FixedBodyKeySha256Hash => new byte[]
-    {
+    private static ReadOnlySpan<byte> Nca0FixedBodyKeySha256Hash => 
+    [
         0x9A, 0xBB, 0xD2, 0x11, 0x86, 0x00, 0x21, 0x9D, 0x7A, 0xDC, 0x5B, 0x43, 0x95, 0xF8, 0x4E, 0xFD,
         0xFF, 0x6B, 0x25, 0xEF, 0x9F, 0x96, 0x85, 0x28, 0x18, 0x9E, 0x76, 0xB0, 0x92, 0xF0, 0x6A, 0xCB
-    };
+    ];
 
     [StructLayout(LayoutKind.Explicit, Size = 0xC00)]
     private struct NcaHeaderStruct
@@ -363,14 +274,4 @@ public struct NcaHeader
         public int EndBlock;
         public bool IsEnabled;
     }
-}
-
-public enum NcaVersion
-{
-    Unknown,
-    Nca3,
-    Nca2,
-    Nca0,
-    Nca0FixedKey,
-    Nca0RsaOaep
 }
