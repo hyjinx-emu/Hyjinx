@@ -14,7 +14,7 @@ internal static class KeyDerivation
 {
     private const int HoviSeedSize = 0x10;
 
-    public static void DeriveAllKeys(KeySet keySet, IProgressReport logger = null)
+    public static void DeriveAllKeys(KeySet keySet, IProgressReport? logger = null)
     {
         DeriveKeyBlobKeys(keySet);
         DecryptKeyBlobs(keySet, logger);

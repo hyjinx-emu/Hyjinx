@@ -17,6 +17,8 @@ public partial class KeySet
 {
     public static readonly KeySet Empty = new();
     
+    internal KeySet() { }
+    
     public enum Mode
     {
         Dev,
@@ -223,7 +225,7 @@ public partial class KeySet
         return DefaultKeySet.CreateDefaultKeySet();
     }
 
-    public void DeriveKeys(IProgressReport logger = null)
+    public void DeriveKeys(IProgressReport? logger = null)
     {
         Mode originalMode = CurrentMode;
 
