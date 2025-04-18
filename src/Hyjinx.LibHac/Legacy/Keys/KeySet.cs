@@ -10,6 +10,7 @@ using LibHac.Crypto;
 using LibHac.FsSrv;
 using LibHac.Util;
 
+// ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
 
 [Obsolete("This class can no longer be used due to TPM restrictions.")]

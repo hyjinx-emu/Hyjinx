@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using LibHac.Crypto;
 using LibHac.Diag;
 
+// ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
 
 [Obsolete("This class can no longer be used due to TPM restrictions.")]

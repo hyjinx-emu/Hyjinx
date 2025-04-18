@@ -6,6 +6,7 @@ using System.Diagnostics;
 using LibHac.Diag;
 using LibHac.Util;
 
+// ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
 
 [DebuggerDisplay("{" + nameof(Name) + "}")]

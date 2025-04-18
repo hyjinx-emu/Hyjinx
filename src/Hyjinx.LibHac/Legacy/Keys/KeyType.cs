@@ -2,6 +2,7 @@
 
 using System;
 
+// ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
 
 [Obsolete("This enum can no longer be used due to TPM restrictions.")]

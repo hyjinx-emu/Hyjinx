@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using static LibHac.Common.Keys.KeySet;
 using Type = LibHac.Common.Keys.KeyInfo.KeyType;
 
+// ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
 
 [Obsolete("This class can no longer be used due to TPM restrictions.")]

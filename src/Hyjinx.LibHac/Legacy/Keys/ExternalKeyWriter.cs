@@ -11,6 +11,7 @@ using LibHac.Util;
 using Type = LibHac.Common.Keys.KeyInfo.KeyType;
 using RangeType = LibHac.Common.Keys.KeyInfo.KeyRangeType;
 
+// ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
 
 [Obsolete("This class can no longer be used due to TPM restrictions.")]
