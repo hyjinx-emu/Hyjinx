@@ -2,7 +2,6 @@
 #pragma warning disable CS0618
 
 using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using LibHac.Boot;
 using LibHac.Common.FixedArrays;
@@ -14,8 +13,10 @@ using LibHac.Util;
 namespace LibHac.Common.Keys;
 
 [Obsolete("This class can no longer be used due to TPM restrictions.")]
-public class KeySet
+public partial class KeySet
 {
+    public static readonly KeySet Empty = new();
+    
     public enum Mode
     {
         Dev,
@@ -136,26 +137,6 @@ public class KeySet
     private RsaSigningKeyParameters _rsaSigningKeyParamsProd;
     private RsaKeyParameters _rsaKeyParams;
 
-
-    public Span<RSAParameters> NcaHeaderSigningKeyParams
-    {
-        get
-        {
-            ref Optional<Array2<RSAParameters>> keys = ref RsaSigningKeyParams.NcaHeaderSigningKeys;
-
-            if (!keys.HasValue)
-            {
-                keys.Set(new Array2<RSAParameters>());
-                keys.Value[0] = CreateRsaParameters(in NcaHeaderSigningKeys[0]);
-                keys.Value[1] = CreateRsaParameters(in NcaHeaderSigningKeys[1]);
-            }
-
-            // Todo: Remove local variable after Roslyn issue #67697 is fixed
-            ref Array2<RSAParameters> array = ref keys.Value;
-            return array.Items;
-        }
-    }
-
     public Span<RSAParameters> AcidSigningKeyParams
     {
         get
@@ -240,11 +221,6 @@ public class KeySet
     public static KeySet CreateDefaultKeySet()
     {
         return DefaultKeySet.CreateDefaultKeySet();
-    }
-
-    public static List<KeyInfo> CreateKeyInfoList()
-    {
-        return DefaultKeySet.CreateKeyList();
     }
 
     public void DeriveKeys(IProgressReport logger = null)
