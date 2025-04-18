@@ -2,11 +2,13 @@
 
 using LibHac.Common;
 using LibHac.Common.Keys;
+using LibHac.Fs;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using System;
 using System.IO;
 using Xunit;
+using Path = System.IO.Path;
 
 namespace LibHac.Tests.Tools;
 
@@ -37,12 +39,12 @@ public class NcaTests
     /// <summary>
     /// Defines the location of an encrypted NCA file.
     /// </summary>
-    private static readonly string EncryptedNcaFile = Path.Combine(RegisteredPath, NcaFileName, "00");
+    private static readonly string EncryptedNcaFile = Path.Combine(RegisteredPath, NcaFileName);
     
     /// <summary>
     /// Defines the location of an unencrypted NCA file.
     /// </summary>
-    private static readonly string UnencryptedNcaFile = Path.Combine(RegisteredPath, $"{NcaFileName}.unencrypted", "00");
+    private static readonly string UnencryptedNcaFile = Path.Combine(RegisteredPath, $"{NcaFileName}.unencrypted");
     
     #endregion
     
@@ -50,6 +52,23 @@ public class NcaTests
     
     [Fact]
     public void CanReadAnEncryptedNca()
+    {
+        var keySet = CreateEncryptedKeySet();
+
+        var file = Path.Combine(EncryptedNcaFile, "00");
+        if (!File.Exists(file))
+        {
+            Assert.Fail($"The file '{file}' does not exist.");
+        }
+        
+        using var fs = File.OpenRead(file);
+        var target = new Nca(keySet, fs.AsStorage());
+
+        var result = target.VerifyNca();
+        Assert.True(result == Validity.Valid);
+    }
+
+    private KeySet CreateEncryptedKeySet()
     {
         var prodKeysFile = GetFileIfExists(SystemPath, "prod.keys");
         if (prodKeysFile == null)
@@ -63,16 +82,7 @@ public class NcaTests
         var keySet = KeySet.CreateDefaultKeySet();
         ExternalKeyReader.ReadKeyFile(keySet, prodKeysFile, titleKeysFile, consoleKeysFile);
         
-        if (!File.Exists(EncryptedNcaFile))
-        {
-            Assert.Fail($"The file '{EncryptedNcaFile}' does not exist.");
-        }
-
-        using var fs = File.OpenRead(EncryptedNcaFile);
-        var target = new Nca(keySet, fs.AsStorage());
-
-        var result = target.VerifyNca();
-        Assert.True(result == Validity.Valid);
+        return keySet;
     }
 
     private static string? GetFileIfExists(string path, string fileName)
@@ -91,18 +101,43 @@ public class NcaTests
     [Fact]
     public void CanDecryptAnEncryptedNcaFile()
     {
-        Assert.Fail();
+        var keySet = CreateEncryptedKeySet();
+
+        var inFile = Path.Combine(EncryptedNcaFile, "00");
+        var outFile = Path.Combine(UnencryptedNcaFile, "00");
+        
+        using var fs = File.OpenRead(inFile);
+        var target = new Nca(keySet, fs.AsStorage());
+
+        var horizon = new Horizon(new HorizonConfiguration());
+        
+        var client = horizon.CreatePrivilegedHorizonClient();
+        client.Fs.SetServerlessAccessLog(true);
+        
+        if (Directory.Exists(UnencryptedNcaFile))
+        {
+            Directory.Delete(UnencryptedNcaFile, true);
+        }
+
+        Directory.CreateDirectory(UnencryptedNcaFile);
+
+        using var outStream = File.OpenWrite(outFile);
+        target.OpenDecryptedHeaderStorage().Slice(0, NcaHeader.HeaderSize).CopyToStream(outStream);
+        outStream.Flush();
+        
+        Assert.Success(Result.Success);
     }
     
     [Fact]
     public void CanReadAnUnencryptedNca()
     {
-        if (!File.Exists(UnencryptedNcaFile))
+        var file = Path.Combine(UnencryptedNcaFile, "00");
+        if (!File.Exists(file))
         {
-            Assert.Fail($"The file '{UnencryptedNcaFile}' does not exist.");
+            Assert.Fail($"The file '{file}' does not exist.");
         }
 
-        using var fs = File.OpenRead(UnencryptedNcaFile);
+        using var fs = File.OpenRead(file);
         var target = new Nca(KeySet.Empty, fs.AsStorage());
 
         var result = target.VerifyNca();

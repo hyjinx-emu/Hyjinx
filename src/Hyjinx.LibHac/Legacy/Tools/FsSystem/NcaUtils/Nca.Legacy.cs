@@ -15,6 +15,11 @@ partial class Nca
         return OpenRawStorageWithPatch(patchNca, GetSectionIndexFromType(type));
     }
 
+    public IStorage OpenRawStorage(NcaSectionType type)
+    {
+        return OpenRawStorage(GetSectionIndexFromType(type));
+    }
+
     public IStorage OpenEncryptedNca() => OpenFullNca(true);
     public IStorage OpenDecryptedNca() => OpenFullNca(false);
 

@@ -238,7 +238,7 @@ public partial class NcaHeader
         0xFF, 0x6B, 0x25, 0xEF, 0x9F, 0x96, 0x85, 0x28, 0x18, 0x9E, 0x76, 0xB0, 0x92, 0xF0, 0x6A, 0xCB
     ];
 
-    [StructLayout(LayoutKind.Explicit, Size = 0xC00)]
+    [StructLayout(LayoutKind.Explicit, Size = HeaderSize)]
     private struct NcaHeaderStruct
     {
         public const int RightsIdOffset = 0x230;

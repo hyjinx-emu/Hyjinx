@@ -124,7 +124,7 @@ public partial class Nca
         return BaseStorage.Slice(offset, size);
     }
 
-    private IStorage OpenRawStorage(int index, bool openEncrypted = false)
+    internal IStorage OpenRawStorage(int index, bool openEncrypted = false)
     {
         if (Header.IsNca0())
             return OpenNca0RawStorage(index, openEncrypted);
