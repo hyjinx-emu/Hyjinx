@@ -124,7 +124,7 @@ public partial class Nca
         return BaseStorage.Slice(offset, size);
     }
 
-    private IStorage OpenRawStorage(int index, bool openEncrypted)
+    private IStorage OpenRawStorage(int index, bool openEncrypted = false)
     {
         if (Header.IsNca0())
             return OpenNca0RawStorage(index, openEncrypted);
@@ -156,8 +156,6 @@ public partial class Nca
             _ => throw new NotSupportedException("The encryption type is not supported.")
         };
     }
-
-    public IStorage OpenRawStorage(int index) => OpenRawStorage(index, false);
 
     private IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
     {
@@ -195,12 +193,7 @@ public partial class Nca
         return storage;
     }
 
-    public IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel)
-    {
-        return OpenStorage(index, integrityCheckLevel, false);
-    }
-
-    public IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed)
+    public IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
     {
         IStorage rawStorage = OpenRawStorage(index);
         NcaFsHeader header = GetFsHeader(index);
@@ -219,13 +212,8 @@ public partial class Nca
 
         return returnStorage;
     }
-
-    public IStorage OpenStorageWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel)
-    {
-        return OpenStorageWithPatch(patchNca, index, integrityCheckLevel, false);
-    }
-
-    public IStorage OpenStorageWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed)
+    
+    public IStorage OpenStorageWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
     {
         IStorage rawStorage = OpenRawStorageWithPatch(patchNca, index);
         NcaFsHeader header = patchNca.GetFsHeader(index);
