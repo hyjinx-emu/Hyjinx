@@ -23,11 +23,6 @@ public partial class Nca
 
     private static readonly string[] KakNames = { "application", "ocean", "system" };
 
-    private byte[] GetContentKey(NcaKeyType type)
-    {
-        return Header.HasRightsId ? GetDecryptedTitleKey() : GetDecryptedKey((int)type);
-    }
-
     public bool CanOpenSection(NcaSectionType type)
     {
         if (!TryGetSectionIndexFromType(type, Header.ContentType, out int index))
@@ -157,90 +152,16 @@ public partial class Nca
     {
         NcaFsHeader header = GetFsHeader(index);
 
-        switch (header.EncryptionType)
+        return header.EncryptionType switch
         {
-            case NcaEncryptionType.None:
-                return baseStorage;
-            case NcaEncryptionType.AesXts:
-                return OpenAesXtsStorage(baseStorage, index, decrypting);
-            case NcaEncryptionType.AesCtr:
-                return OpenAesCtrStorage(baseStorage, index, Header.GetSectionStartOffset(index), header.Counter);
-            case NcaEncryptionType.AesCtrEx:
-                return OpenAesCtrExStorage(baseStorage, index, decrypting);
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
-
-    // ReSharper disable UnusedParameter.Local
-    private IStorage OpenAesXtsStorage(IStorage baseStorage, int index, bool decrypting)
-    {
-        const int sectorSize = 0x200;
-
-        byte[] key0 = GetContentKey(NcaKeyType.AesXts0);
-        byte[] key1 = GetContentKey(NcaKeyType.AesXts1);
-
-        // todo: Handle xts for nca version 3
-        return new CachedStorage(new Aes128XtsStorage(baseStorage, key0, key1, sectorSize, true, decrypting), 2, true);
-    }
-    
-    // ReSharper restore UnusedParameter.Local
-    private IStorage OpenAesCtrStorage(IStorage baseStorage, int index, long offset, ulong upperCounter)
-    {
-        byte[] key = GetContentKey(NcaKeyType.AesCtr);
-        byte[] counter = Aes128CtrStorage.CreateCounter(upperCounter, Header.GetSectionStartOffset(index));
-
-        var aesStorage = new Aes128CtrStorage(baseStorage, key, offset, counter, true);
-        return new CachedStorage(aesStorage, 0x4000, 4, true);
-    }
-
-    private IStorage OpenAesCtrExStorage(IStorage baseStorage, int index, bool decrypting)
-    {
-        NcaFsHeader fsHeader = GetFsHeader(index);
-        NcaFsPatchInfo info = fsHeader.GetPatchInfo();
-
-        long sectionOffset = Header.GetSectionStartOffset(index);
-        long sectionSize = Header.GetSectionSize(index);
-
-        long bktrOffset = info.RelocationTreeOffset;
-        long bktrSize = sectionSize - bktrOffset;
-        long dataSize = info.RelocationTreeOffset;
-
-        byte[] key = GetContentKey(NcaKeyType.AesCtr);
-        byte[] counter = Aes128CtrStorage.CreateCounter(fsHeader.Counter, bktrOffset + sectionOffset);
-        byte[] counterEx = Aes128CtrStorage.CreateCounter(fsHeader.Counter, sectionOffset);
-
-        IStorage bucketTreeData;
-        IStorage outputBucketTreeData;
-
-        if (decrypting)
-        {
-            bucketTreeData = new CachedStorage(new Aes128CtrStorage(baseStorage.Slice(bktrOffset, bktrSize), key, counter, true), 4, true);
-            outputBucketTreeData = bucketTreeData;
-        }
-        else
-        {
-            bucketTreeData = baseStorage.Slice(bktrOffset, bktrSize);
-            outputBucketTreeData = new CachedStorage(new Aes128CtrStorage(baseStorage.Slice(bktrOffset, bktrSize), key, counter, true), 4, true);
-        }
-
-        var encryptionBucketTreeData = new SubStorage(bucketTreeData,
-            info.EncryptionTreeOffset - bktrOffset, sectionSize - info.EncryptionTreeOffset);
-
-        var cachedBucketTreeData = new CachedStorage(encryptionBucketTreeData, IndirectStorage.NodeSize, 6, true);
-
-        var treeHeader = new BucketTree.Header();
-        info.EncryptionTreeHeader.CopyTo(SpanHelpers.AsByteSpan(ref treeHeader));
-        long nodeStorageSize = AesCtrCounterExtendedStorage.QueryNodeStorageSize(treeHeader.EntryCount);
-        long entryStorageSize = AesCtrCounterExtendedStorage.QueryEntryStorageSize(treeHeader.EntryCount);
-
-        var tableNodeStorage = new SubStorage(cachedBucketTreeData, 0, nodeStorageSize);
-        var tableEntryStorage = new SubStorage(cachedBucketTreeData, nodeStorageSize, entryStorageSize);
-
-        IStorage decStorage = new Aes128CtrExStorage(baseStorage.Slice(0, dataSize), tableNodeStorage,
-            tableEntryStorage, treeHeader.EntryCount, key, counterEx, true);
-
-        return new ConcatenationStorage(new[] { decStorage, outputBucketTreeData }, true);
+            NcaEncryptionType.None => baseStorage,
+            #if IS_TPM_BYPASS_ENABLED
+            NcaEncryptionType.AesXts => OpenAesXtsStorage(baseStorage, index, decrypting),
+            NcaEncryptionType.AesCtr => OpenAesCtrStorage(baseStorage, index, Header.GetSectionStartOffset(index), header.Counter),
+            NcaEncryptionType.AesCtrEx => OpenAesCtrExStorage(baseStorage, index, decrypting),
+            #endif
+            _ => throw new NotSupportedException("The encryption type is not supported.")
+        };
     }
 
     private IStorage OpenRawStorage(int index, bool openEncrypted)

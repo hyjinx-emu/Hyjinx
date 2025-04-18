@@ -1,25 +1,10 @@
 ﻿using LibHac.Common;
-using LibHac.Fs;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 public static partial class NcaExtensions
 {
-    public static IStorage OpenStorage(this Nca nca, int index, IntegrityCheckLevel integrityCheckLevel,
-        bool openRaw)
-    {
-        if (openRaw) return nca.OpenRawStorage(index);
-        return nca.OpenStorage(index, integrityCheckLevel);
-    }
-
-    public static IStorage OpenStorage(this Nca nca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel,
-        bool openRaw)
-    {
-        if (openRaw) return nca.OpenRawStorage(type);
-        return nca.OpenStorage(type, integrityCheckLevel);
-    }
-
-    public static Validity VerifyNca(this Nca nca, IProgressReport logger = null, bool quiet = false)
+    public static Validity VerifyNca(this Nca nca, IProgressReport? logger = null, bool quiet = false)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -33,8 +18,8 @@ public static partial class NcaExtensions
 
         return Validity.Valid;
     }
-
-    public static Validity VerifySection(this Nca nca, int index, IProgressReport logger = null, bool quiet = false)
+    
+    private static Validity VerifySection(this Nca nca, int index, IProgressReport? logger = null, bool quiet = false)
     {
         NcaFsHeader sect = nca.GetFsHeader(index);
         NcaHashType hashType = sect.HashType;
@@ -50,7 +35,7 @@ public static partial class NcaExtensions
         return validity;
     }
 
-    public static Validity VerifyNca(this Nca nca, Nca patchNca, IProgressReport logger = null, bool quiet = false)
+    public static Validity VerifyNca(this Nca nca, Nca patchNca, IProgressReport? logger = null, bool quiet = false)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -64,8 +49,8 @@ public static partial class NcaExtensions
 
         return Validity.Valid;
     }
-
-    public static Validity VerifySection(this Nca nca, Nca patchNca, int index, IProgressReport logger = null, bool quiet = false)
+    
+    private static Validity VerifySection(this Nca nca, Nca patchNca, int index, IProgressReport? logger = null, bool quiet = false)
     {
         NcaFsHeader sect = nca.GetFsHeader(index);
         NcaHashType hashType = sect.HashType;
