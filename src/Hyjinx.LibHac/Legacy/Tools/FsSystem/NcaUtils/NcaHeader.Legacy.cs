@@ -8,12 +8,6 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 
 partial class NcaHeader
 {
-    public TitleVersion SdkVersion
-    {
-        get => new TitleVersion(Header.SdkVersion);
-        set => Header.SdkVersion = value.Version;
-    }
-    
     public long GetSectionEndOffset(int index)
     {
         return BlockToOffset(GetSectionEntry(index).EndBlock);

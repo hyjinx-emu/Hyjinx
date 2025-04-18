@@ -101,13 +101,11 @@ public class NcaTests
     [Fact]
     public void CanDecryptAnEncryptedNcaFile()
     {
-        var keySet = CreateEncryptedKeySet();
-
         var inFile = Path.Combine(EncryptedNcaFile, "00");
         var outFile = Path.Combine(UnencryptedNcaFile, "00");
         
         using var fs = File.OpenRead(inFile);
-        var target = new Nca(keySet, fs.AsStorage());
+        var target = new Nca(CreateEncryptedKeySet(), fs.AsStorage());
 
         var horizon = new Horizon(new HorizonConfiguration());
         
@@ -126,6 +124,49 @@ public class NcaTests
         outStream.Flush();
         
         Assert.Success(Result.Success);
+    }
+    
+    [Fact]
+    public void EncryptedAndUnencryptedFilesAreIdentical()
+    {
+        var encryptedFile = Path.Combine(EncryptedNcaFile, "00");
+        if (!File.Exists(encryptedFile))
+        {
+            Assert.Fail($"The file '{encryptedFile}' does not exist.");
+        }
+        
+        using var fs1 = File.OpenRead(encryptedFile);
+        var target1 = new Nca(CreateEncryptedKeySet(), fs1.AsStorage());
+        
+        var unencryptedFile = Path.Combine(UnencryptedNcaFile, "00");
+        if (!File.Exists(unencryptedFile))
+        {
+            Assert.Fail($"The file '{unencryptedFile}' does not exist.");
+        }
+
+        using var fs2 = File.OpenRead(unencryptedFile);
+        var target2 = new Nca(KeySet.Empty, fs2.AsStorage());
+        
+        Assert.Equal(target1.Header.Signature1.ToArray(), target2.Header.Signature1.ToArray());
+        Assert.Equal(target1.Header.Signature2.ToArray(), target2.Header.Signature2.ToArray());
+        Assert.Equal(target1.Header.Magic, target2.Header.Magic);
+        Assert.Equal(target1.Header.DistributionType, target2.Header.DistributionType);
+        Assert.Equal(target1.Header.ContentType, target2.Header.ContentType);
+        Assert.Equal(target1.Header.KeyGeneration, target2.Header.KeyGeneration); // KeyGenerationOld
+        Assert.Equal(target1.Header.KeyAreaKeyIndex, target2.Header.KeyAreaKeyIndex); // KeyAreaEncryptionKeyIndex
+        Assert.Equal(target1.Header.NcaSize, target2.Header.NcaSize); // ContentSize
+        Assert.Equal(target1.Header.TitleId, target2.Header.TitleId); // ProgramId
+        Assert.Equal(target1.Header.ContentIndex, target2.Header.ContentIndex);
+        Assert.Equal(target1.Header.SdkVersion, target2.Header.SdkVersion);
+        // KeyGeneration2
+        // SignatureKeyGeneration
+        Assert.Equal(target1.Header.RightsId.ToArray(), target2.Header.RightsId.ToArray());
+        
+        // Not part of the specification.
+        Assert.Equal(target1.Header.FormatVersion, target2.Header.FormatVersion);
+        Assert.Equal(target1.Header.Version, target2.Header.Version);
+        Assert.Equal(target1.Header.HasRightsId, target2.Header.HasRightsId);
+
     }
     
     [Fact]

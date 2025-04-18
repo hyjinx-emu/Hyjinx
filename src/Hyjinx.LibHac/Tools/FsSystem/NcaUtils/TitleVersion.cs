@@ -1,6 +1,6 @@
 ﻿namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public class TitleVersion
+public record TitleVersion
 {
     public uint Version { get; }
     public int Major { get; }

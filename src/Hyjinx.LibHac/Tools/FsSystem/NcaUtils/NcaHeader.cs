@@ -86,6 +86,12 @@ public partial class NcaHeader
         get => Header.ContentIndex;
         set => Header.ContentIndex = value;
     }
+    
+    public TitleVersion SdkVersion
+    {
+        get => new(Header.SdkVersion);
+        set => Header.SdkVersion = value.Version;
+    }
 
     public Span<byte> RightsId => _header.Span.Slice(NcaHeaderStruct.RightsIdOffset, NcaHeaderStruct.RightsIdSize);
 
@@ -263,6 +269,7 @@ public partial class NcaHeader
         [FieldOffset(0x218)] public int ContentIndex;
         [FieldOffset(0x21C)] public uint SdkVersion;
         [FieldOffset(0x220)] public byte KeyGeneration2;
+        [FieldOffset(0x221)] public byte SignatureKeyGeneration;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = SectionEntrySize)]
