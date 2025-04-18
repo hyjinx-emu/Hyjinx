@@ -13,12 +13,8 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 
 public partial class Nca
 {
-    private byte[] Nca0KeyArea { get; set; }
-    private IStorage Nca0TransformedBody { get; set; }
     public IStorage BaseStorage { get; }
     public NcaHeader Header { get; }
-
-    private static readonly string[] KakNames = [ "application", "ocean", "system" ];
 
     public bool CanOpenSection(NcaSectionType type)
     {
@@ -28,22 +24,6 @@ public partial class Nca
         }
 
         return CanOpenSection(index);
-    }
-
-    public bool CanOpenSection(int index)
-    {
-        if (!SectionExists(index)) return false;
-        if (GetFsHeader(index).EncryptionType == NcaEncryptionType.None) return true;
-
-        int keyRevision = Utilities.GetMasterKeyRevision(Header.KeyGeneration);
-
-        if (Header.HasRightsId)
-        {
-            return KeySet.ExternalKeySet.Contains(new RightsId(Header.RightsId)) &&
-                   !KeySet.TitleKeks[keyRevision].IsZeros();
-        }
-
-        return !KeySet.KeyAreaKeys[keyRevision][Header.KeyAreaKeyIndex].IsZeros();
     }
 
     public bool SectionExists(NcaSectionType type)
@@ -100,8 +80,7 @@ public partial class Nca
 
                 if (!IsSubRange(sparseInfo.PhysicalOffset, dataSize, ncaStorageSize))
                 {
-                    throw new InvalidDataException(
-                        $"Section offset (0x{offset:x}) and length (0x{size:x}) fall outside the total NCA length (0x{ncaStorageSize:x}).");
+                    throw new InvalidDataException($"Section offset (0x{offset:x}) and length (0x{size:x}) fall outside the total NCA length (0x{ncaStorageSize:x}).");
                 }
 
                 IStorage baseStorage = BaseStorage.Slice(sparseInfo.PhysicalOffset, dataSize);

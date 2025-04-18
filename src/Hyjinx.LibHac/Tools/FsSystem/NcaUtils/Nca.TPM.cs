@@ -19,12 +19,35 @@ partial class Nca
     private bool IsEncrypted => Header.IsEncrypted;
     
     private KeySet KeySet { get; }
+    private byte[]? Nca0KeyArea { get; set; }
+    private IStorage? Nca0TransformedBody { get; set; }
+    
+    /// <summary>
+    /// Defines the names of the key area keys.
+    /// </summary>
+    private static readonly string[] KakNames = [ "application", "ocean", "system" ];
     
     public Nca(KeySet keySet, IStorage storage)
     {
         KeySet = keySet;
         BaseStorage = storage;
         Header = new NcaHeader(keySet, storage);
+    }
+    
+    public bool CanOpenSection(int index)
+    {
+        if (!SectionExists(index)) return false;
+        if (GetFsHeader(index).EncryptionType == NcaEncryptionType.None) return true;
+
+        int keyRevision = Utilities.GetMasterKeyRevision(Header.KeyGeneration);
+
+        if (Header.HasRightsId)
+        {
+            return KeySet.ExternalKeySet.Contains(new RightsId(Header.RightsId)) &&
+                   !KeySet.TitleKeks[keyRevision].IsZeros();
+        }
+
+        return !KeySet.KeyAreaKeys[keyRevision][Header.KeyAreaKeyIndex].IsZeros();
     }
     
     private byte[] GetContentKey(NcaKeyType type)
