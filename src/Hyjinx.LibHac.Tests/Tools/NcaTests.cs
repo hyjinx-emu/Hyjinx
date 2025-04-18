@@ -10,11 +10,28 @@ namespace LibHac.Tests.Tools;
 
 public class NcaTests
 {
+    /// <summary>
+    /// Defines the root path.
+    /// </summary>
+    private static readonly string RootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx");
+    
+    /// <summary>
+    /// Defines the full path to the 'system' folder.
+    /// </summary>
+    private static readonly string SystemPath = Path.Combine(RootPath, "system");
+    
+    /// <summary>
+    /// Defines the full path to the 'registered' folder.
+    /// </summary>
+    private static readonly string RegisteredPath = Path.Combine(RootPath, "bis", "system", "Contents", "registered");
+
+    /// <summary>
+    /// Defines the file which will be the target of the tests.
+    /// </summary>
+    private static readonly string NcaFile = Path.Combine(RegisteredPath, "00b7c40c749108f42bdebad952179172.nca", "00");
+    
     #if IS_TPM_BYPASS_ENABLED
     #pragma warning disable CS0618 // Type or member is obsolete
-
-    private static readonly string RootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx"); 
-    private static readonly string SystemPath = Path.Combine(RootPath, "system");
     
     [Fact]
     public void CanReadAnEncryptedNca()
@@ -30,15 +47,13 @@ public class NcaTests
         
         var keySet = KeySet.CreateDefaultKeySet();
         ExternalKeyReader.ReadKeyFile(keySet, prodKeysFile, titleKeysFile, consoleKeysFile);
-
-        var ncaFileName = "00b7c40c749108f42bdebad952179172.nca";
-        var ncaFilePath = Path.Combine(RootPath, "bis", "system", "Contents", "registered", ncaFileName, "00");
-        if (!File.Exists(ncaFilePath))
+        
+        if (!File.Exists(NcaFile))
         {
-            Assert.Fail($"The file '{ncaFilePath}' does not exist.");
+            Assert.Fail($"The file '{NcaFile}' does not exist.");
         }
 
-        using var fs = File.OpenRead(ncaFilePath);
+        using var fs = File.OpenRead(NcaFile);
         var target = new Nca(keySet, fs.AsStorage());
 
         var result = target.VerifyNca();
