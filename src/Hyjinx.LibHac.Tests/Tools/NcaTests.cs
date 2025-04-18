@@ -1,4 +1,6 @@
-﻿using LibHac.Common;
+﻿#pragma warning disable CS0618 // Type or member is obsolete
+
+using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
@@ -10,6 +12,8 @@ namespace LibHac.Tests.Tools;
 
 public class NcaTests
 {
+    #region Constants
+    
     /// <summary>
     /// Defines the root path.
     /// </summary>
@@ -26,12 +30,23 @@ public class NcaTests
     private static readonly string RegisteredPath = Path.Combine(RootPath, "bis", "system", "Contents", "registered");
 
     /// <summary>
-    /// Defines the file which will be the target of the tests.
+    /// Defines the name of the NCA file to target.
     /// </summary>
-    private static readonly string NcaFile = Path.Combine(RegisteredPath, "00b7c40c749108f42bdebad952179172.nca", "00");
+    private static string NcaFileName = "00b7c40c749108f42bdebad952179172.nca";
+    
+    /// <summary>
+    /// Defines the location of an encrypted NCA file.
+    /// </summary>
+    private static readonly string EncryptedNcaFile = Path.Combine(RegisteredPath, NcaFileName, "00");
+    
+    /// <summary>
+    /// Defines the location of an unencrypted NCA file.
+    /// </summary>
+    private static readonly string UnencryptedNcaFile = Path.Combine(RegisteredPath, $"{NcaFileName}.unencrypted", "00");
+    
+    #endregion
     
     #if IS_TPM_BYPASS_ENABLED
-    #pragma warning disable CS0618 // Type or member is obsolete
     
     [Fact]
     public void CanReadAnEncryptedNca()
@@ -48,12 +63,12 @@ public class NcaTests
         var keySet = KeySet.CreateDefaultKeySet();
         ExternalKeyReader.ReadKeyFile(keySet, prodKeysFile, titleKeysFile, consoleKeysFile);
         
-        if (!File.Exists(NcaFile))
+        if (!File.Exists(EncryptedNcaFile))
         {
-            Assert.Fail($"The file '{NcaFile}' does not exist.");
+            Assert.Fail($"The file '{EncryptedNcaFile}' does not exist.");
         }
 
-        using var fs = File.OpenRead(NcaFile);
+        using var fs = File.OpenRead(EncryptedNcaFile);
         var target = new Nca(keySet, fs.AsStorage());
 
         var result = target.VerifyNca();
@@ -71,6 +86,28 @@ public class NcaTests
         return null;
     }
     
-    #pragma warning restore CS0618 // Type or member is obsolete
     #endif
+
+    [Fact]
+    public void CanDecryptAnEncryptedNcaFile()
+    {
+        // TODO: Make it so.
+    }
+    
+    [Fact]
+    public void CanReadAnUnencryptedNca()
+    {
+        if (!File.Exists(UnencryptedNcaFile))
+        {
+            Assert.Fail($"The file '{UnencryptedNcaFile}' does not exist.");
+        }
+
+        using var fs = File.OpenRead(UnencryptedNcaFile);
+        var target = new Nca(KeySet.Empty, fs.AsStorage());
+
+        var result = target.VerifyNca();
+        Assert.True(result == Validity.Valid);
+    }
 }
+
+#pragma warning restore CS0618 // Type or member is obsolete
