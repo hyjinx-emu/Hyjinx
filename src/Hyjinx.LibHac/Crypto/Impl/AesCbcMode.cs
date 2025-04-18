@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace LibHac.Crypto.Impl;
 
-public struct AesCbcMode
+internal struct AesCbcMode
 {
     private AesCore _aesCore;
 

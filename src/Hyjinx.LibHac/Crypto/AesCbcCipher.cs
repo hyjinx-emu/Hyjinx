@@ -3,7 +3,7 @@ using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
 
-public class AesCbcEncryptor : ICipher
+internal class AesCbcEncryptor : ICipher
 {
     private AesCbcMode _baseCipher;
 
@@ -19,7 +19,7 @@ public class AesCbcEncryptor : ICipher
     }
 }
 
-public class AesCbcDecryptor : ICipher
+internal class AesCbcDecryptor : ICipher
 {
     private AesCbcMode _baseCipher;
 

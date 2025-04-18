@@ -3,12 +3,12 @@ using LibHac.Common;
 
 namespace LibHac.Crypto;
 
-public interface ICipher
+internal interface ICipher
 {
     int Transform(ReadOnlySpan<byte> input, Span<byte> output);
 }
 
-public interface ICipherWithIv : ICipher
+internal interface ICipherWithIv : ICipher
 {
     ref Buffer16 Iv { get; }
 }

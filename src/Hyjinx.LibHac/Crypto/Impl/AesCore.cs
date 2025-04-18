@@ -5,7 +5,7 @@ using LibHac.Common;
 
 namespace LibHac.Crypto.Impl;
 
-public struct AesCore
+internal struct AesCore
 {
     private ICryptoTransform _transform;
     private bool _isDecrypting;

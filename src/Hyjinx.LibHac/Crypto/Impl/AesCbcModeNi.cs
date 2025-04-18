@@ -7,7 +7,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace LibHac.Crypto.Impl;
 
-public struct AesCbcModeNi
+internal struct AesCbcModeNi
 {
     private AesCoreNi _aesCore;
 

@@ -4,7 +4,7 @@ using LibHac.Diag;
 
 namespace LibHac.Crypto;
 
-public static class HmacSha256
+internal static class HmacSha256
 {
     public const int HashSize = Sha256.DigestSize;
 

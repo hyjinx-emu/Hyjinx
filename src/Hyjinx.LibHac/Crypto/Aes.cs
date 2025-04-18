@@ -9,7 +9,7 @@ using AesNi = System.Runtime.Intrinsics.X86.Aes;
 
 namespace LibHac.Crypto;
 
-public static class Aes
+internal static class Aes
 {
     public const int KeySize128 = 0x10;
     public const int BlockSize = 0x10;

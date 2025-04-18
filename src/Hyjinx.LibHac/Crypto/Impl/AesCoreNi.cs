@@ -9,7 +9,7 @@ using AesNi = System.Runtime.Intrinsics.X86.Aes;
 namespace LibHac.Crypto.Impl;
 
 [StructLayout(LayoutKind.Sequential, Size = RoundKeyCount * RoundKeySize)]
-public struct AesCoreNi
+internal struct AesCoreNi
 {
     private const int RoundKeyCount = 11;
     private const int RoundKeySize = 0x10;

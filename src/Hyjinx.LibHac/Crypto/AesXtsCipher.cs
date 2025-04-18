@@ -4,7 +4,7 @@ using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
 
-public class AesXtsEncryptor : ICipherWithIv
+internal class AesXtsEncryptor : ICipherWithIv
 {
     private AesXtsMode _baseCipher;
 
@@ -22,7 +22,7 @@ public class AesXtsEncryptor : ICipherWithIv
     }
 }
 
-public class AesXtsDecryptor : ICipherWithIv
+internal class AesXtsDecryptor : ICipherWithIv
 {
     private AesXtsMode _baseCipher;
 

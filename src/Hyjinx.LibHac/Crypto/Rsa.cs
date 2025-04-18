@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace LibHac.Crypto;
 
-public static class Rsa
+internal static class Rsa
 {
     public const int ModulusSize2048Pss = 256;
     public const int MaximumExponentSize2048Pss = 3;

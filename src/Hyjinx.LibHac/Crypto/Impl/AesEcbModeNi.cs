@@ -2,7 +2,7 @@
 
 namespace LibHac.Crypto.Impl;
 
-public struct AesEcbModeNi
+internal struct AesEcbModeNi
 {
     private AesCoreNi _aesCore;
 

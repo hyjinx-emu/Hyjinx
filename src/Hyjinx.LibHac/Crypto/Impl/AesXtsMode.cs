@@ -7,7 +7,7 @@ using LibHac.Common;
 
 namespace LibHac.Crypto.Impl;
 
-public struct AesXtsMode
+internal struct AesXtsMode
 {
     private AesCore _dataAesCore;
     private AesCore _tweakAesCore;

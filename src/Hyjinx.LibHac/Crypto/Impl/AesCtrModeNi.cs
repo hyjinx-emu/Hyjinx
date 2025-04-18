@@ -8,7 +8,7 @@ using LibHac.Common;
 
 namespace LibHac.Crypto.Impl;
 
-public struct AesCtrModeNi
+internal struct AesCtrModeNi
 {
     private AesCoreNi _aesCore;
 

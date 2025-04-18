@@ -4,7 +4,7 @@ using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
 
-public class AesCtrCipher : ICipherWithIv
+internal class AesCtrCipher : ICipherWithIv
 {
     private AesCtrMode _baseCipher;
 

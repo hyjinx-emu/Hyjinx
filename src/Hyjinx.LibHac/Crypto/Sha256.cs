@@ -3,7 +3,7 @@ using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
 
-public static class Sha256
+internal static class Sha256
 {
     public const int DigestSize = 0x20;
 

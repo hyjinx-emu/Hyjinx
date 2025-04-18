@@ -6,7 +6,7 @@ using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
 
-public class AesCbcEncryptorNi : ICipherWithIv
+internal class AesCbcEncryptorNi : ICipherWithIv
 {
     private AesCbcModeNi _baseCipher;
 
@@ -24,7 +24,7 @@ public class AesCbcEncryptorNi : ICipherWithIv
     }
 }
 
-public class AesCbcDecryptorNi : ICipherWithIv
+internal class AesCbcDecryptorNi : ICipherWithIv
 {
     private AesCbcModeNi _baseCipher;
 

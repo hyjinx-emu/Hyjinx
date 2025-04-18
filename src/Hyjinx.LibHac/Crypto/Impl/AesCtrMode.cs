@@ -9,7 +9,7 @@ using LibHac.Util;
 
 namespace LibHac.Crypto.Impl;
 
-public struct AesCtrMode
+internal struct AesCtrMode
 {
     private AesCore _aesCore;
     public Buffer16 Iv;
