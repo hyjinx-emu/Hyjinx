@@ -1115,15 +1115,6 @@ namespace Hyjinx.Ava.UI.ViewModels
                     thread.Start();
                 }
             }
-            catch (MissingKeyException ex)
-            {
-                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An exception occurred.");
-
-                    await UserErrorDialog.ShowUserErrorDialog(UserError.NoKeys);
-                }
-            }
             catch (Exception ex)
             {
                 await ContentDialogHelper.CreateErrorDialog(ex.Message);

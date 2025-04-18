@@ -144,15 +144,6 @@ internal partial class Program : IDisposable
         // Enable OGL multithreading on the driver, and some other flags.
         DriverUtilities.InitDriverConfig(ConfigurationState.Instance.Graphics.BackendThreading == BackendThreading.Off);
 
-        // Check if keys exists.
-        if (!File.Exists(Path.Combine(AppDataManager.KeysDirPath, "prod.keys")))
-        {
-            if (!(AppDataManager.Mode == AppDataManager.LaunchMode.UserProfile && File.Exists(Path.Combine(AppDataManager.KeysDirPathUser, "prod.keys"))))
-            {
-                MainWindow.ShowKeyErrorOnLoad = true;
-            }
-        }
-
         if (CommandLineState.LaunchPathArg != null)
         {
             MainWindow.DeferLoadApplication(CommandLineState.LaunchPathArg, CommandLineState.LaunchApplicationId, CommandLineState.StartFullscreenArg);

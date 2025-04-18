@@ -61,7 +61,6 @@ namespace Hyjinx.Ava.UI.Windows
         internal MainWindowViewModel ViewModel { get; private set; }
         public SettingsWindow SettingsWindow { get; set; }
 
-        public static bool ShowKeyErrorOnLoad { get; set; }
         public ApplicationLibrary ApplicationLibrary { get; set; }
 
         public readonly double StatusBarHeight;
@@ -323,53 +322,44 @@ namespace Hyjinx.Ava.UI.Windows
                     await Dispatcher.UIThread.InvokeAsync(ShowVmMaxMapCountWarning);
                 }
             }
-
-            if (!ShowKeyErrorOnLoad)
+            
+            if (_deferLoad)
             {
-                if (_deferLoad)
+                _deferLoad = false;
+
+                if (ApplicationLibrary.TryGetApplicationsFromFile(_launchPath, out List<ApplicationData> applications))
                 {
-                    _deferLoad = false;
+                    ApplicationData applicationData;
 
-                    if (ApplicationLibrary.TryGetApplicationsFromFile(_launchPath, out List<ApplicationData> applications))
+                    if (_launchApplicationId != null)
                     {
-                        ApplicationData applicationData;
+                        applicationData = applications.Find(application => application.IdString == _launchApplicationId);
 
-                        if (_launchApplicationId != null)
+                        if (applicationData != null)
                         {
-                            applicationData = applications.Find(application => application.IdString == _launchApplicationId);
-
-                            if (applicationData != null)
-                            {
-                                await ViewModel.LoadApplication(applicationData, _startFullscreen);
-                            }
-                            else
-                            {
-                                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                                    "Couldn't find requested application id '{launchApplicationId}' in '{launchPath}'.", _launchApplicationId, _launchPath);
-                                
-                                await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
-                            }
+                            await ViewModel.LoadApplication(applicationData, _startFullscreen);
                         }
                         else
                         {
-                            applicationData = applications[0];
-                            await ViewModel.LoadApplication(applicationData, _startFullscreen);
+                            _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                                "Couldn't find requested application id '{launchApplicationId}' in '{launchPath}'.", _launchApplicationId, _launchPath);
+                            
+                            await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
                         }
                     }
                     else
                     {
-                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                            "Couldn't find any application in '{launchPath}'.", _launchPath);
-                        
-                        await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
+                        applicationData = applications[0];
+                        await ViewModel.LoadApplication(applicationData, _startFullscreen);
                     }
                 }
-            }
-            else
-            {
-                ShowKeyErrorOnLoad = false;
-
-                await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.NoKeys));
+                else
+                {
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Couldn't find any application in '{launchPath}'.", _launchPath);
+                    
+                    await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
+                }
             }
 
             // MIRROR ADJ: We aren't using semver release tags for the time being

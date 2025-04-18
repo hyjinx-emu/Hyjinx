@@ -11,11 +11,6 @@ namespace Hyjinx.UI.Common
         Success = 0x0,
 
         /// <summary>
-        /// No keys are present.
-        /// </summary>
-        NoKeys = 0x1,
-
-        /// <summary>
         /// No firmware is installed.
         /// </summary>
         NoFirmware = 0x2,
