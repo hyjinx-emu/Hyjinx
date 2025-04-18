@@ -13,7 +13,6 @@ using LibHac.Tools.Es;
 using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using Hyjinx.Common.Configuration;
-using Hyjinx.HLE.Abstractions;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS;
 using Microsoft.Extensions.Logging;
@@ -54,7 +53,12 @@ namespace Hyjinx.HLE.FileSystem
             _isInitialized = true;
 
             var result = new VirtualFileSystem();
+            
+            #if IS_TPM_BYPASS_ENABLED
+            #pragma warning disable CS0618 // Type or member is obsolete
             result.ReloadKeySet();
+            #pragma warning restore CS0618 // Type or member is obsolete
+            #endif
             
             return result;
         }
@@ -124,29 +128,6 @@ namespace Hyjinx.HLE.FileSystem
             }
 
             return GetFullPath(MakeFullPath(parts[0]), parts[1]);
-        }
-
-        public static string SystemPathToSwitchPath(string systemPath)
-        {
-            string baseSystemPath = AppDataManager.BaseDirPath + Path.DirectorySeparatorChar;
-
-            if (systemPath.StartsWith(baseSystemPath))
-            {
-                string rawPath = systemPath.Replace(baseSystemPath, "");
-                int firstSeparatorOffset = rawPath.IndexOf(Path.DirectorySeparatorChar);
-
-                if (firstSeparatorOffset == -1)
-                {
-                    return $"{rawPath}:/";
-                }
-
-                var basePath = rawPath.AsSpan(0, firstSeparatorOffset);
-                var fileName = rawPath.AsSpan(firstSeparatorOffset + 1);
-
-                return $"{basePath}:/{fileName}";
-            }
-
-            return null;
         }
 
         private static string MakeFullPath(string path, bool isDirectory = true)
@@ -618,7 +599,7 @@ namespace Hyjinx.HLE.FileSystem
 
         private static readonly ExtraDataFixInfo[] _systemExtraDataFixInfo =
         {
-            new ExtraDataFixInfo()
+            new()
             {
                 StaticSaveDataId = 0x8000000000000030,
                 OwnerId = 0x010000000000001F,
@@ -626,7 +607,7 @@ namespace Hyjinx.HLE.FileSystem
                 DataSize = 0x10000,
                 JournalSize = 0x10000,
             },
-            new ExtraDataFixInfo()
+            new()
             {
                 StaticSaveDataId = 0x8000000000001040,
                 OwnerId = 0x0100000000001009,

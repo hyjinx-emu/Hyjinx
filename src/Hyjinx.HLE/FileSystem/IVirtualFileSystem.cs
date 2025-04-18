@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Hyjinx.HLE.Abstractions;
+namespace Hyjinx.HLE.FileSystem;
 
 /// <summary>
 /// A mechanism for virtualizing the emulated file system.
