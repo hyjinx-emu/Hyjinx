@@ -91,7 +91,7 @@ public class NcaTests
     [Fact]
     public void CanDecryptAnEncryptedNcaFile()
     {
-        // TODO: Make it so.
+        Assert.Fail();
     }
     
     [Fact]
