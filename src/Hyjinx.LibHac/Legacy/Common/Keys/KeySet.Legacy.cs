@@ -1,4 +1,4 @@
-﻿#if IS_UNUSED_ENABLED
+﻿#if IS_LEGACY_ENABLED
 
 using LibHac.Common.FixedArrays;
 using LibHac.Util;

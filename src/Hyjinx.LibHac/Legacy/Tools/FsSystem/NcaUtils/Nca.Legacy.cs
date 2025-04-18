@@ -1,7 +1,11 @@
-﻿#if IS_UNUSED_ENABLED
+﻿#if IS_LEGACY_ENABLED
 
+using LibHac.Common;
 using LibHac.Fs;
+using System;
+using System.Collections.Generic;
 
+// ReSharper disable once CheckNamespace
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 partial class Nca

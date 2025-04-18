@@ -1,4 +1,4 @@
-﻿#if IS_UNUSED_ENABLED
+﻿#if IS_LEGACY_ENABLED
 
 using LibHac.Common;
 using LibHac.Crypto;
@@ -8,6 +8,7 @@ using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
 
+// ReSharper disable once CheckNamespace
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 partial class NcaExtensions

@@ -1,8 +1,9 @@
-﻿#if IS_UNUSED_ENABLED
+﻿#if IS_LEGACY_ENABLED
 
 using LibHac.Common;
-using LibHac.Tools.Crypto;
+using LibHac.Crypto;
 
+// ReSharper disable once CheckNamespace
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 partial class NcaHeader
