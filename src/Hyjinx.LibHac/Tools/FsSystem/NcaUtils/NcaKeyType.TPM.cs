@@ -1,4 +1,6 @@
-﻿namespace LibHac.Tools.FsSystem.NcaUtils;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+namespace LibHac.Tools.FsSystem.NcaUtils;
 
 internal enum NcaKeyType
 {
@@ -8,3 +10,5 @@ internal enum NcaKeyType
     AesCtrEx = 3,
     AesCtrHw = 4
 }
+
+#endif

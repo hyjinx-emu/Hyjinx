@@ -13,15 +13,12 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 
 public partial class Nca
 {
-    [Obsolete("This property can no longer be used due to TPM restrictions.")]
-    private bool IsEncrypted => Header.IsEncrypted;
-
     private byte[] Nca0KeyArea { get; set; }
     private IStorage Nca0TransformedBody { get; set; }
     public IStorage BaseStorage { get; }
     public NcaHeader Header { get; }
 
-    private static readonly string[] KakNames = { "application", "ocean", "system" };
+    private static readonly string[] KakNames = [ "application", "ocean", "system" ];
 
     public bool CanOpenSection(NcaSectionType type)
     {
@@ -59,12 +56,12 @@ public partial class Nca
         return SectionExists(index);
     }
 
-    public bool SectionExists(int index)
+    internal bool SectionExists(int index)
     {
         return Header.IsSectionEnabled(index);
     }
 
-    public NcaFsHeader GetFsHeader(int index)
+    internal NcaFsHeader GetFsHeader(int index)
     {
         if (Header.IsNca0())
             return GetNca0FsHeader(index);
@@ -148,22 +145,6 @@ public partial class Nca
         return BaseStorage.Slice(offset, size);
     }
 
-    private IStorage OpenDecryptedStorage(IStorage baseStorage, int index, bool decrypting)
-    {
-        NcaFsHeader header = GetFsHeader(index);
-
-        return header.EncryptionType switch
-        {
-            NcaEncryptionType.None => baseStorage,
-            #if IS_TPM_BYPASS_ENABLED
-            NcaEncryptionType.AesXts => OpenAesXtsStorage(baseStorage, index, decrypting),
-            NcaEncryptionType.AesCtr => OpenAesCtrStorage(baseStorage, index, Header.GetSectionStartOffset(index), header.Counter),
-            NcaEncryptionType.AesCtrEx => OpenAesCtrExStorage(baseStorage, index, decrypting),
-            #endif
-            _ => throw new NotSupportedException("The encryption type is not supported.")
-        };
-    }
-
     private IStorage OpenRawStorage(int index, bool openEncrypted)
     {
         if (Header.IsNca0())
@@ -179,6 +160,22 @@ public partial class Nca
         IStorage decryptedStorage = OpenDecryptedStorage(storage, index, !openEncrypted);
 
         return decryptedStorage;
+    }
+    
+    private IStorage OpenDecryptedStorage(IStorage baseStorage, int index, bool decrypting)
+    {
+        NcaFsHeader header = GetFsHeader(index);
+
+        return header.EncryptionType switch
+        {
+            NcaEncryptionType.None => baseStorage,
+#if IS_TPM_BYPASS_ENABLED
+            NcaEncryptionType.AesXts => OpenAesXtsStorage(baseStorage, index, decrypting),
+            NcaEncryptionType.AesCtr => OpenAesCtrStorage(baseStorage, index, Header.GetSectionStartOffset(index), header.Counter),
+            NcaEncryptionType.AesCtrEx => OpenAesCtrExStorage(baseStorage, index, decrypting),
+#endif
+            _ => throw new NotSupportedException("The encryption type is not supported.")
+        };
     }
 
     public IStorage OpenRawStorage(int index) => OpenRawStorage(index, false);
@@ -352,11 +349,6 @@ public partial class Nca
         return OpenFileSystemWithPatch(patchNca, GetSectionIndexFromType(type), integrityCheckLevel);
     }
 
-    public IStorage OpenRawStorage(NcaSectionType type)
-    {
-        return OpenRawStorage(GetSectionIndexFromType(type));
-    }
-
     public IStorage OpenStorage(NcaSectionType type, IntegrityCheckLevel integrityCheckLevel)
     {
         return OpenStorage(GetSectionIndexFromType(type), integrityCheckLevel);
@@ -382,7 +374,7 @@ public partial class Nca
         return index;
     }
 
-    public static bool TryGetSectionIndexFromType(NcaSectionType type, NcaContentType contentType, out int index)
+    private static bool TryGetSectionIndexFromType(NcaSectionType type, NcaContentType contentType, out int index)
     {
         switch (type)
         {
@@ -512,7 +504,7 @@ public partial class Nca
         return new SubStorage(bodyStorage, offset, size);
     }
 
-    public NcaFsHeader GetNca0FsHeader(int index)
+    private NcaFsHeader GetNca0FsHeader(int index)
     {
         // NCA0 stores the FS header in the first block of the section instead of the header
         IStorage bodyStorage = OpenNca0BodyStorage(false);

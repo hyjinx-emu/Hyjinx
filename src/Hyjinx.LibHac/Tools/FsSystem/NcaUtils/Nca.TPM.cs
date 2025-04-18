@@ -15,6 +15,9 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 
 partial class Nca
 {
+    [Obsolete("This property can no longer be used due to TPM restrictions.")]
+    private bool IsEncrypted => Header.IsEncrypted;
+    
     private KeySet KeySet { get; }
     
     public Nca(KeySet keySet, IStorage storage)
