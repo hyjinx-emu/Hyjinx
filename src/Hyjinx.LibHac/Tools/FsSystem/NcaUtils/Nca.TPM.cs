@@ -55,7 +55,7 @@ partial class Nca
         return Header.HasRightsId ? GetDecryptedTitleKey() : GetDecryptedKey((int)type);
     }
     
-    public byte[] GetDecryptedKey(int index)
+    private byte[] GetDecryptedKey(int index)
     {
         if (index < 0 || index > 3) throw new ArgumentOutOfRangeException(nameof(index));
 
@@ -113,7 +113,7 @@ partial class Nca
         return Nca0KeyArea;
     }
     
-    public byte[] GetDecryptedTitleKey()
+    private byte[] GetDecryptedTitleKey()
     {
         int keyRevision = Utilities.GetMasterKeyRevision(Header.KeyGeneration);
         byte[] titleKek = KeySet.TitleKeks[keyRevision].DataRo.ToArray();
