@@ -8,6 +8,7 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tools.FsSystem.RomFs;
+using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
@@ -441,7 +442,7 @@ public partial class Nca
         byte[] key0 = GetContentKey(NcaKeyType.AesXts0);
         byte[] key1 = GetContentKey(NcaKeyType.AesXts1);
 
-        Nca0TransformedBody = new CachedStorage(new Aes128XtsStorage(GetRawStorage(), key0, key1, NcaHeader.HeaderSectorSize, true, !openEncrypted), 1, true);
+        Nca0TransformedBody = new CachedStorage(new Aes128XtsStorage(GetRawStorage(), key0, key1, NcaHeaderStruct.HeaderSectorSize, true, !openEncrypted), 1, true);
         return Nca0TransformedBody;
 
         IStorage GetRawStorage()

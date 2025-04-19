@@ -2,8 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LibHac.FsSystem;
-
-// ReSharper disable ImpureMethodCallOnReadonlyValueField
+using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
@@ -100,26 +99,5 @@ public struct NcaFsHeader
     {
         get => Header.CounterVersion;
         set => Header.CounterVersion = value;
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    private struct FsHeaderStruct
-    {
-        public const int IntegrityInfoOffset = 8;
-        public const int IntegrityInfoSize = 0xF8;
-        public const int PatchInfoOffset = 0x100;
-        public const int PatchInfoSize = 0x40;
-        public const int SparseInfoOffset = 0x148;
-        public const int SparseInfoSize = 0x30;
-        public const int CompressionInfoOffset = 0x178;
-        public const int CompressionInfoSize = 0x28;
-
-        [FieldOffset(0)] public short Version;
-        [FieldOffset(2)] public byte FormatType;
-        [FieldOffset(3)] public byte HashType;
-        [FieldOffset(4)] public byte EncryptionType;
-        [FieldOffset(0x140)] public ulong UpperCounter;
-        [FieldOffset(0x140)] public int CounterType;
-        [FieldOffset(0x144)] public int CounterVersion;
     }
 }

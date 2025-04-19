@@ -1,21 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Diag;
 using LibHac.Util;
+using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 public partial class NcaHeader
 {
-    internal const int HeaderSize = 0xC00;
-    internal const int HeaderSectorSize = 0x200;
-    internal const int BlockSize = 0x200;
-    internal const int SectionCount = 4;
-
     private readonly Memory<byte> _header;
 
     public NcaVersion FormatVersion { get; }
@@ -140,7 +135,7 @@ public partial class NcaHeader
 
     public Span<byte> GetEncryptedKey(int index)
     {
-        if (index < 0 || index >= SectionCount)
+        if (index < 0 || index >= NcaHeaderStruct.SectionCount)
         {
             throw new ArgumentOutOfRangeException($"Key index must be between 0 and 3. Actual: {index}");
         }
@@ -169,7 +164,7 @@ public partial class NcaHeader
 
     private static void ValidateSectionIndex(int index)
     {
-        if (index < 0 || index >= SectionCount)
+        if (index < 0 || index >= NcaHeaderStruct.SectionCount)
         {
             throw new ArgumentOutOfRangeException($"NCA section index must be between 0 and 3. Actual: {index}");
         }
@@ -177,7 +172,7 @@ public partial class NcaHeader
 
     private static long BlockToOffset(int blockIndex)
     {
-        return (long)blockIndex * BlockSize;
+        return (long)blockIndex * NcaHeaderStruct.BlockSize;
     }
 
     private static bool CheckIfDecrypted(ReadOnlySpan<byte> header)
@@ -243,42 +238,4 @@ public partial class NcaHeader
         0x9A, 0xBB, 0xD2, 0x11, 0x86, 0x00, 0x21, 0x9D, 0x7A, 0xDC, 0x5B, 0x43, 0x95, 0xF8, 0x4E, 0xFD,
         0xFF, 0x6B, 0x25, 0xEF, 0x9F, 0x96, 0x85, 0x28, 0x18, 0x9E, 0x76, 0xB0, 0x92, 0xF0, 0x6A, 0xCB
     ];
-
-    [StructLayout(LayoutKind.Explicit, Size = HeaderSize)]
-    private struct NcaHeaderStruct
-    {
-        public const int RightsIdOffset = 0x230;
-        public const int RightsIdSize = 0x10;
-        public const int SectionEntriesOffset = 0x240;
-        public const int FsHeaderHashOffset = 0x280;
-        public const int FsHeaderHashSize = 0x20;
-        public const int KeyAreaOffset = 0x300;
-        public const int KeyAreaSize = 0x100;
-        public const int FsHeadersOffset = 0x400;
-        public const int FsHeaderSize = 0x200;
-
-        [FieldOffset(0x000)] public byte Signature1;
-        [FieldOffset(0x100)] public byte Signature2;
-        [FieldOffset(0x200)] public uint Magic;
-        [FieldOffset(0x204)] public byte DistributionType;
-        [FieldOffset(0x205)] public byte ContentType;
-        [FieldOffset(0x206)] public byte KeyGeneration1;
-        [FieldOffset(0x207)] public byte KeyAreaKeyIndex;
-        [FieldOffset(0x208)] public long NcaSize;
-        [FieldOffset(0x210)] public ulong TitleId;
-        [FieldOffset(0x218)] public int ContentIndex;
-        [FieldOffset(0x21C)] public uint SdkVersion;
-        [FieldOffset(0x220)] public byte KeyGeneration2;
-        [FieldOffset(0x221)] public byte SignatureKeyGeneration;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1, Size = SectionEntrySize)]
-    private struct NcaSectionEntryStruct
-    {
-        public const int SectionEntrySize = 0x10;
-
-        public int StartBlock;
-        public int EndBlock;
-        public bool IsEnabled;
-    }
 }
