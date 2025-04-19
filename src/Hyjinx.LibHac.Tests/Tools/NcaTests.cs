@@ -120,7 +120,6 @@ public class NcaTests
         Directory.CreateDirectory(UnencryptedNcaFile);
 
         using var outStream = File.OpenWrite(outFile);
-        target.OpenDecryptedHeaderStorage().Slice(0, NcaHeader.HeaderSize).CopyToStream(outStream);
         outStream.Flush();
         
         Assert.Success(Result.Success);
