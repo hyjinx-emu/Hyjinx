@@ -24,7 +24,7 @@ partial class NcaHeader
     
     private static (byte[] header, bool isEncrypted) DecryptHeader(KeySet keySet, IStorage storage)
     {
-        byte[] buf = new byte[NcaHeaderStruct.HeaderSize];
+        byte[] buf = new byte[HeaderSize];
         storage.Read(0, buf).ThrowIfFailure();
 
         if (CheckIfDecrypted(buf))
@@ -44,8 +44,8 @@ partial class NcaHeader
 
         var transform = new Aes128XtsTransform(key1, key2, true);
 
-        transform.TransformBlock(buf, NcaHeaderStruct.HeaderSectorSize * 0, NcaHeaderStruct.HeaderSectorSize, 0);
-        transform.TransformBlock(buf, NcaHeaderStruct.HeaderSectorSize * 1, NcaHeaderStruct.HeaderSectorSize, 1);
+        transform.TransformBlock(buf, HeaderSectorSize * 0, HeaderSectorSize, 0);
+        transform.TransformBlock(buf, HeaderSectorSize * 1, HeaderSectorSize, 1);
 
         if (buf[0x200] != 'N' || buf[0x201] != 'C' || buf[0x202] != 'A')
         {
@@ -57,16 +57,16 @@ partial class NcaHeader
 
         if (version == 3)
         {
-            for (int sector = 2; sector < NcaHeaderStruct.HeaderSize / NcaHeaderStruct.HeaderSectorSize; sector++)
+            for (int sector = 2; sector < HeaderSize / HeaderSectorSize; sector++)
             {
-                transform.TransformBlock(buf, sector * NcaHeaderStruct.HeaderSectorSize, NcaHeaderStruct.HeaderSectorSize, (ulong)sector);
+                transform.TransformBlock(buf, sector * HeaderSectorSize, HeaderSectorSize, (ulong)sector);
             }
         }
         else if (version == 2)
         {
-            for (int i = 0x400; i < NcaHeaderStruct.HeaderSize; i += NcaHeaderStruct.HeaderSectorSize)
+            for (int i = 0x400; i < HeaderSize; i += HeaderSectorSize)
             {
-                transform.TransformBlock(buf, i, NcaHeaderStruct.HeaderSectorSize, 0);
+                transform.TransformBlock(buf, i, HeaderSectorSize, 0);
             }
         }
         else if (version != 0)

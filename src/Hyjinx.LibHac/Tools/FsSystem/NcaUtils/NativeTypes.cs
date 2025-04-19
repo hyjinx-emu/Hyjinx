@@ -7,18 +7,33 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// </summary>
 public static class NativeTypes
 {
+    public const int HeaderSize = 0xC00;
+    public const int HeaderSectorSize = 0x200;
+    public const int BlockSize = 0x200;
+    public const int SectionCount = 4;
+        
+    public const int RightsIdOffset = 0x230;
+    public const int RightsIdSize = 0x10;
+    public const int SectionEntriesOffset = 0x240;
+    public const int FsHeaderHashOffset = 0x280;
+    public const int FsHeaderHashSize = 0x20;
+    public const int KeyAreaOffset = 0x300;
+    public const int KeyAreaSize = 0x100;
+    public const int FsHeadersOffset = 0x400;
+    public const int FsHeaderSize = 0x200;
+    
+    public const int IntegrityInfoOffset = 8;
+    public const int IntegrityInfoSize = 0xF8;
+    public const int PatchInfoOffset = 0x100;
+    public const int PatchInfoSize = 0x40;
+    public const int SparseInfoOffset = 0x148;
+    public const int SparseInfoSize = 0x30;
+    public const int CompressionInfoOffset = 0x178;
+    public const int CompressionInfoSize = 0x28;
+    
     [StructLayout(LayoutKind.Explicit)]
     public struct FsHeaderStruct
     {
-        public const int IntegrityInfoOffset = 8;
-        public const int IntegrityInfoSize = 0xF8;
-        public const int PatchInfoOffset = 0x100;
-        public const int PatchInfoSize = 0x40;
-        public const int SparseInfoOffset = 0x148;
-        public const int SparseInfoSize = 0x30;
-        public const int CompressionInfoOffset = 0x178;
-        public const int CompressionInfoSize = 0x28;
-
         [FieldOffset(0)] public short Version;
         [FieldOffset(2)] public byte FormatType;
         [FieldOffset(3)] public byte HashType;
@@ -31,21 +46,6 @@ public static class NativeTypes
     [StructLayout(LayoutKind.Explicit, Size = HeaderSize)]
     public struct NcaHeaderStruct
     {
-        public const int HeaderSize = 0xC00;
-        public const int HeaderSectorSize = 0x200;
-        public const int BlockSize = 0x200;
-        public const int SectionCount = 4;
-        
-        public const int RightsIdOffset = 0x230;
-        public const int RightsIdSize = 0x10;
-        public const int SectionEntriesOffset = 0x240;
-        public const int FsHeaderHashOffset = 0x280;
-        public const int FsHeaderHashSize = 0x20;
-        public const int KeyAreaOffset = 0x300;
-        public const int KeyAreaSize = 0x100;
-        public const int FsHeadersOffset = 0x400;
-        public const int FsHeaderSize = 0x200;
-
         [FieldOffset(0x000)] public byte Signature1;
         [FieldOffset(0x100)] public byte Signature2;
         [FieldOffset(0x200)] public uint Magic;

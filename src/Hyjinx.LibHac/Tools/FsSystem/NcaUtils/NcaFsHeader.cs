@@ -43,17 +43,17 @@ public struct NcaFsHeader
 
     public NcaFsIntegrityInfoIvfc GetIntegrityInfoIvfc()
     {
-        return new NcaFsIntegrityInfoIvfc(_header.Slice(FsHeaderStruct.IntegrityInfoOffset, FsHeaderStruct.IntegrityInfoSize));
+        return new NcaFsIntegrityInfoIvfc(_header.Slice(IntegrityInfoOffset, IntegrityInfoSize));
     }
 
     public NcaFsIntegrityInfoSha256 GetIntegrityInfoSha256()
     {
-        return new NcaFsIntegrityInfoSha256(_header.Slice(FsHeaderStruct.IntegrityInfoOffset, FsHeaderStruct.IntegrityInfoSize));
+        return new NcaFsIntegrityInfoSha256(_header.Slice(IntegrityInfoOffset, IntegrityInfoSize));
     }
 
     public NcaFsPatchInfo GetPatchInfo()
     {
-        return new NcaFsPatchInfo(_header.Slice(FsHeaderStruct.PatchInfoOffset, FsHeaderStruct.PatchInfoSize));
+        return new NcaFsPatchInfo(_header.Slice(PatchInfoOffset, PatchInfoSize));
     }
 
     public bool IsPatchSection()
@@ -63,8 +63,7 @@ public struct NcaFsHeader
 
     public ref NcaSparseInfo GetSparseInfo()
     {
-        return ref MemoryMarshal.Cast<byte, NcaSparseInfo>(_header.Span.Slice(FsHeaderStruct.SparseInfoOffset,
-            FsHeaderStruct.SparseInfoSize))[0];
+        return ref MemoryMarshal.Cast<byte, NcaSparseInfo>(_header.Span.Slice(SparseInfoOffset, SparseInfoSize))[0];
     }
 
     public bool ExistsSparseLayer()
@@ -74,8 +73,7 @@ public struct NcaFsHeader
 
     public ref NcaCompressionInfo GetCompressionInfo()
     {
-        return ref MemoryMarshal.Cast<byte, NcaCompressionInfo>(_header.Span.Slice(FsHeaderStruct.CompressionInfoOffset,
-            FsHeaderStruct.CompressionInfoSize))[0];
+        return ref MemoryMarshal.Cast<byte, NcaCompressionInfo>(_header.Span.Slice(CompressionInfoOffset, CompressionInfoSize))[0];
     }
 
     public bool ExistsCompressionLayer()

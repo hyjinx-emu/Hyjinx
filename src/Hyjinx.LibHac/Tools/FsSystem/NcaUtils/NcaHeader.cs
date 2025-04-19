@@ -88,20 +88,20 @@ public partial class NcaHeader
         set => Header.SdkVersion = value.Version;
     }
 
-    public Span<byte> RightsId => _header.Span.Slice(NcaHeaderStruct.RightsIdOffset, NcaHeaderStruct.RightsIdSize);
+    public Span<byte> RightsId => _header.Span.Slice(RightsIdOffset, RightsIdSize);
 
     public bool HasRightsId => !Utilities.IsZeros(RightsId);
 
     public Span<byte> GetKeyArea()
     {
-        return _header.Span.Slice(NcaHeaderStruct.KeyAreaOffset, NcaHeaderStruct.KeyAreaSize);
+        return _header.Span.Slice(KeyAreaOffset, KeyAreaSize);
     }
 
     private ref NcaSectionEntryStruct GetSectionEntry(int index)
     {
         ValidateSectionIndex(index);
 
-        int offset = NcaHeaderStruct.SectionEntriesOffset + NcaSectionEntryStruct.SectionEntrySize * index;
+        int offset = SectionEntriesOffset + NcaSectionEntryStruct.SectionEntrySize * index;
         return ref Unsafe.As<byte, NcaSectionEntryStruct>(ref _header.Span[offset]);
     }
 
@@ -129,18 +129,18 @@ public partial class NcaHeader
     {
         ValidateSectionIndex(index);
 
-        int offset = NcaHeaderStruct.FsHeaderHashOffset + NcaHeaderStruct.FsHeaderHashSize * index;
-        return _header.Span.Slice(offset, NcaHeaderStruct.FsHeaderHashSize);
+        int offset = FsHeaderHashOffset + FsHeaderHashSize * index;
+        return _header.Span.Slice(offset, FsHeaderHashSize);
     }
 
     public Span<byte> GetEncryptedKey(int index)
     {
-        if (index < 0 || index >= NcaHeaderStruct.SectionCount)
+        if (index < 0 || index >= SectionCount)
         {
             throw new ArgumentOutOfRangeException($"Key index must be between 0 and 3. Actual: {index}");
         }
 
-        int offset = NcaHeaderStruct.KeyAreaOffset + Aes.KeySize128 * index;
+        int offset = KeyAreaOffset + Aes.KeySize128 * index;
         return _header.Span.Slice(offset, Aes.KeySize128);
     }
 
@@ -148,8 +148,8 @@ public partial class NcaHeader
     {
         Span<byte> expectedHash = GetFsHeaderHash(index);
 
-        int offset = NcaHeaderStruct.FsHeadersOffset + NcaHeaderStruct.FsHeaderSize * index;
-        Memory<byte> headerData = _header.Slice(offset, NcaHeaderStruct.FsHeaderSize);
+        int offset = FsHeadersOffset + FsHeaderSize * index;
+        Memory<byte> headerData = _header.Slice(offset, FsHeaderSize);
 
         Span<byte> actualHash = stackalloc byte[Sha256.DigestSize];
         Sha256.GenerateSha256Hash(headerData.Span, actualHash);
@@ -164,7 +164,7 @@ public partial class NcaHeader
 
     private static void ValidateSectionIndex(int index)
     {
-        if (index < 0 || index >= NcaHeaderStruct.SectionCount)
+        if (index < 0 || index >= SectionCount)
         {
             throw new ArgumentOutOfRangeException($"NCA section index must be between 0 and 3. Actual: {index}");
         }
@@ -172,7 +172,7 @@ public partial class NcaHeader
 
     private static long BlockToOffset(int blockIndex)
     {
-        return (long)blockIndex * NcaHeaderStruct.BlockSize;
+        return (long)blockIndex * BlockSize;
     }
 
     private static bool CheckIfDecrypted(ReadOnlySpan<byte> header)
@@ -208,7 +208,7 @@ public partial class NcaHeader
 
         // There are multiple versions of NCA0 that each encrypt the key area differently.
         // Examine the key area to detect which version this NCA is.
-        ReadOnlySpan<byte> keyArea = header.Slice(NcaHeaderStruct.KeyAreaOffset, NcaHeaderStruct.KeyAreaSize);
+        ReadOnlySpan<byte> keyArea = header.Slice(KeyAreaOffset, KeyAreaSize);
 
         // The end of the key area will only be non-zero if it's RSA-OAEP encrypted
         var zeros = new Buffer16();
