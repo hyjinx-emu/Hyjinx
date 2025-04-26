@@ -370,7 +370,9 @@ public partial class Nca
         Debug.Assert(info.LevelCount == 2);
 
         IStorage hashStorage = pfsStorage.Slice(info.GetLevelOffset(0), info.GetLevelSize(0), leaveOpen);
-        IStorage dataStorage = pfsStorage.Slice(info.GetLevelOffset(1), info.GetLevelSize(1), leaveOpen);
+
+        var size = info.GetLevelSize(1);
+        IStorage dataStorage = pfsStorage.Slice(info.GetLevelOffset(1), size, leaveOpen);
 
         var initInfo = new IntegrityVerificationInfo[3];
 

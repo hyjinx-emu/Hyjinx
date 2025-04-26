@@ -15,7 +15,7 @@ public struct NcaFsHeader
         _header = headerData;
     }
 
-    private ref FsHeaderStruct Header => ref Unsafe.As<byte, FsHeaderStruct>(ref _header.Span[0]);
+    private ref NcaFsHeaderStruct Header => ref Unsafe.As<byte, NcaFsHeaderStruct>(ref _header.Span[0]);
 
     public short Version
     {
@@ -98,4 +98,9 @@ public struct NcaFsHeader
         get => Header.CounterVersion;
         set => Header.CounterVersion = value;
     }
+
+    public readonly byte[] ToByteArray()
+    {
+        return _header.Span.ToArray();
+    } 
 }

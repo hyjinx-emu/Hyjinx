@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
@@ -13,7 +13,7 @@ public struct NcaFsPatchInfo
         _data = data;
     }
 
-    private ref PatchInfoStruct Data => ref Unsafe.As<byte, PatchInfoStruct>(ref _data.Span[0]);
+    private ref NcaFsPatchInfoStruct Data => ref Unsafe.As<byte, NcaFsPatchInfoStruct>(ref _data.Span[0]);
 
     public long RelocationTreeOffset
     {
@@ -41,13 +41,4 @@ public struct NcaFsPatchInfo
 
     public Span<byte> RelocationTreeHeader => _data.Span.Slice(0x10, 0x10);
     public Span<byte> EncryptionTreeHeader => _data.Span.Slice(0x30, 0x10);
-
-    [StructLayout(LayoutKind.Explicit)]
-    private struct PatchInfoStruct
-    {
-        [FieldOffset(0x00)] public long RelocationTreeOffset;
-        [FieldOffset(0x08)] public long RelocationTreeSize;
-        [FieldOffset(0x20)] public long EncryptionTreeOffset;
-        [FieldOffset(0x28)] public long EncryptionTreeSize;
-    }
 }

@@ -20,6 +20,11 @@ public partial class NcaHeader
     public Span<byte> Signature1 => _header.Span.Slice(0, 0x100);
     public Span<byte> Signature2 => _header.Span.Slice(0x100, 0x100);
 
+    public byte[] ToByteArray()
+    {
+        return _header.ToArray();
+    }
+    
     public uint Magic
     {
         get => Header.Magic;
@@ -97,11 +102,11 @@ public partial class NcaHeader
         return _header.Span.Slice(KeyAreaOffset, KeyAreaSize);
     }
 
-    private ref NcaSectionEntryStruct GetSectionEntry(int index)
+    public ref NcaSectionEntryStruct GetSectionEntry(int index)
     {
         ValidateSectionIndex(index);
 
-        int offset = SectionEntriesOffset + NcaSectionEntryStruct.SectionEntrySize * index;
+        int offset = SectionEntriesOffset + SectionEntrySize * index;
         return ref Unsafe.As<byte, NcaSectionEntryStruct>(ref _header.Span[offset]);
     }
 
@@ -170,7 +175,7 @@ public partial class NcaHeader
         }
     }
 
-    private static long BlockToOffset(int blockIndex)
+    public static long BlockToOffset(int blockIndex)
     {
         return (long)blockIndex * BlockSize;
     }
