@@ -2,8 +2,8 @@
 
 public enum NcaHashType
 {
-    Auto,
-    None,
-    Sha256,
-    Ivfc
+    Auto = 0,
+    None = 1,
+    Sha256 = 2,
+    Ivfc = 3
 }

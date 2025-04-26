@@ -1,4 +1,5 @@
-﻿#pragma warning disable CS0618 // Type or member is obsolete
+﻿#if IS_TPM_BYPASS_ENABLED
+#pragma warning disable CS0618 // Type or member is obsolete
 
 using LibHac.Common;
 using LibHac.Common.Keys;
@@ -6,7 +7,9 @@ using LibHac.Fs;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Xunit;
 using Path = System.IO.Path;
 
@@ -17,38 +20,41 @@ public class NcaTests
     #region Constants
     
     /// <summary>
-    /// Defines the root path.
+    /// Defines the source root path.
     /// </summary>
-    private static readonly string RootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx");
+    private static readonly string SourceRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx-Backup");
+    
+    /// <summary>
+    /// Defines the destination root path.
+    /// </summary>
+    private static readonly string DestinationRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx");
     
     /// <summary>
     /// Defines the full path to the 'system' folder.
     /// </summary>
-    private static readonly string SystemPath = Path.Combine(RootPath, "system");
+    private static readonly string SystemPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx", "system");
     
-    /// <summary>
-    /// Defines the full path to the 'registered' folder.
-    /// </summary>
-    private static readonly string RegisteredPath = Path.Combine(RootPath, "bis", "system", "Contents", "registered");
+    private static string GetRegisteredPath(string rootPath)
+    {
+        return Path.Combine(rootPath, "bis", "system", "Contents", "registered");
+    }
 
     /// <summary>
     /// Defines the name of the NCA file to target.
     /// </summary>
-    private static string NcaFileName = "00b7c40c749108f42bdebad952179172.nca";
+    private static string NcaFileName = "0216bd3304abdc931246551f9bfa2020.nca";
     
     /// <summary>
     /// Defines the location of an encrypted NCA file.
     /// </summary>
-    private static readonly string EncryptedNcaFile = Path.Combine(RegisteredPath, NcaFileName);
+    private static readonly string EncryptedNcaFile = Path.Combine(GetRegisteredPath(SourceRootPath), NcaFileName);
     
     /// <summary>
     /// Defines the location of an unencrypted NCA file.
     /// </summary>
-    private static readonly string UnencryptedNcaFile = Path.Combine(RegisteredPath, $"{NcaFileName}.unencrypted");
+    private static readonly string UnencryptedNcaFile = Path.Combine(GetRegisteredPath(DestinationRootPath), NcaFileName);
     
     #endregion
-    
-    #if IS_TPM_BYPASS_ENABLED
     
     [Fact]
     public void CanReadAnEncryptedNca()
@@ -96,8 +102,6 @@ public class NcaTests
         return null;
     }
     
-    #endif
-
     [Fact]
     public void CanDecryptAnEncryptedNcaFile()
     {
@@ -130,6 +134,52 @@ public class NcaTests
     }
     
     [Fact]
+    public void CanDecryptAllEncryptedNcaFiles()
+    {
+        var sourcePath = GetRegisteredPath(SourceRootPath);
+        var sourceDirectories = Directory.EnumerateDirectories(sourcePath).Select(o => new DirectoryInfo(o));
+
+        var targetRootPath = GetRegisteredPath(DestinationRootPath);
+        if (Directory.Exists(targetRootPath))
+        {
+            Directory.Delete(targetRootPath, true);
+        }
+        
+        Directory.CreateDirectory(targetRootPath);
+        
+        var horizon = new Horizon(new HorizonConfiguration());
+        
+        var client = horizon.CreatePrivilegedHorizonClient();
+        client.Fs.SetServerlessAccessLog(true);
+
+        var keySet = CreateEncryptedKeySet();
+        
+        foreach (var sourceDirectory in sourceDirectories)
+        {
+            var sourceFiles = sourceDirectory.GetFiles();
+            
+            var targetPath = Path.Combine(targetRootPath, sourceDirectory.Name);
+            Directory.CreateDirectory(targetPath);
+
+            foreach (var sourceFile in sourceFiles)
+            {
+                using var fs = sourceFile.OpenRead();
+                var input = new Nca(keySet, fs.AsStorage());
+                
+                var outFile = new FileInfo(Path.Combine(targetPath, sourceFile.Name));
+                using var outStream = outFile.OpenWrite();
+                
+                var decrypter = new NcaDecrypter();
+                decrypter.Decrypt(input, outStream);
+                
+                outStream.Flush();
+                
+                Debug.WriteLine($"File '{sourceFile.FullName}': Before: {fs.Length}, After: {outStream.Length}");
+            }
+        }
+    }
+    
+    [Fact]
     public void EncryptedAndUnencryptedFilesAreIdentical()
     {
         var encryptedFile = new FileInfo(Path.Combine(EncryptedNcaFile, "00"));
@@ -157,12 +207,9 @@ public class NcaTests
         Assert.Equal(target1.Header.ContentType, target2.Header.ContentType);
         Assert.Equal(target1.Header.KeyGeneration, target2.Header.KeyGeneration); // KeyGenerationOld
         Assert.Equal(target1.Header.KeyAreaKeyIndex, target2.Header.KeyAreaKeyIndex); // KeyAreaEncryptionKeyIndex
-        // Assert.Equal(target1.Header.NcaSize, target2.Header.NcaSize); // ContentSize
         Assert.Equal(target1.Header.TitleId, target2.Header.TitleId); // ProgramId
         Assert.Equal(target1.Header.ContentIndex, target2.Header.ContentIndex);
         Assert.Equal(target1.Header.SdkVersion, target2.Header.SdkVersion);
-        // Assert.Equal(target1.Header.KeyGeneration2, target2.Header.KeyGeneration2);
-        // Assert.Equal(target1.Header.SignatureKeyGeneration, target2.Header.SignatureKeyGeneration);
         Assert.Equal(target1.Header.RightsId.ToArray(), target2.Header.RightsId.ToArray());
         
         // Not part of the specification.
@@ -200,3 +247,4 @@ public class NcaTests
 }
 
 #pragma warning restore CS0618 // Type or member is obsolete
+#endif

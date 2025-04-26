@@ -1,5 +1,6 @@
 ﻿using LibHac.Crypto;
 using LibHac.FsSystem;
+using LibHac.Util;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -60,7 +61,10 @@ public class NcaDecrypter
             var fsHeaderBuffer = buffer.AsSpan().Slice(FsHeadersOffset + (FsHeaderSize * i), FsHeaderSize).ToArray();
             scoped ref var fsHeader = ref MemoryMarshal.Cast<byte, NcaFsHeaderStruct>(fsHeaderBuffer)[0];
             fsHeader.EncryptionType = (byte)NcaEncryptionType.None;
+            
+            // TODO: Viper - Need to re-implement the integrity hashing info capability.
             fsHeader.HashType = (byte)NcaHashType.None;
+            Array.Clear(fsHeaderBuffer, IntegrityInfoOffset, IntegrityInfoSize);
 
             scoped ref var sparseInfo = ref MemoryMarshal.Cast<byte, NcaSparseInfo>(fsHeaderBuffer.AsSpan()
                 .Slice(SparseInfoOffset, SparseInfoSize))[0];
@@ -68,7 +72,7 @@ public class NcaDecrypter
 
             scoped ref var fsEntry = ref MemoryMarshal.Cast<byte, NcaSectionEntryStruct>(buffer.AsSpan()
                 .Slice(SectionEntriesOffset + (SectionEntrySize * i), SectionEntrySize))[0];
-            
+
             var tempFile = new FileInfo(Path.GetTempFileName());
             var tempFs = tempFile.OpenWrite();
 
@@ -87,16 +91,16 @@ public class NcaDecrypter
             // Transfer the new hash into the parent header.
             Array.Copy(actualHash, 0, buffer, FsHeaderHashOffset + (FsHeaderHashSize * i) , FsHeaderHashSize);
 
-            // Overwrite the new header data into the parent.
-            Array.Copy(fsHeaderBuffer, 0, buffer, FsHeadersOffset + (FsHeaderSize * i), FsHeaderSize);
-            
             files[i] = tempFile;
             
-            // TODO: Viper - Recalculate the start block and end block positions based on the decrypted data length. 
-            // fsEntry.StartBlock = blockPos;
-            // fsEntry.EndBlock = blockPos + (int)(fsHeader.Length / BlockSize) + (int)(fsHeader.Length % BlockSize);
-            // var offset = NcaHeader.BlockToOffset(fsEntry.StartBlock);
-            // dataSize += NcaHeader.BlockToOffset(fsEntry.EndBlock - fsEntry.StartBlock);
+            var blocks = (int)BitUtil.DivideUp(fsHeader.Length, BlockSize);
+            fsEntry.StartBlock = blockPos;
+            fsEntry.EndBlock = blockPos + blocks;
+            fsEntry.IsEnabled = true;
+            blockPos += blocks;
+
+            // Overwrite the new header data into the parent.
+            Array.Copy(fsHeaderBuffer, 0, buffer, FsHeadersOffset + (FsHeaderSize * i), FsHeaderSize);
         }
 
         outStream.Write(buffer);
@@ -104,65 +108,14 @@ public class NcaDecrypter
         foreach (var entry in files)
         {
             using var fs = entry.Value.OpenRead();
+            fs.CopyTo(outStream);
             
-            var block = new byte[BlockSize];
-            var bytesRead = fs.Read(block, 0, BlockSize);
-
-            outStream.Write(block);
+            // var block = new byte[BlockSize];
+            // int bytesRead;
+            // while ((bytesRead = fs.Read(block, 0, BlockSize)) > 0)
+            // {
+            //     outStream.Write(block, 0, bytesRead);
+            // }
         }
-        
-        // header.NcaSize = HeaderSize + dataSize;
-
-        // // Transfer the signature data into the buffer.
-        // Array.Copy(Signature1 ?? [], 0, buffer, 0, SignatureSize);
-        // Array.Copy(Signature2 ?? [], 0, buffer, SignatureSize, SignatureSize);
-        //
-        // scoped ref var header = ref MemoryMarshal.Cast<byte, NcaHeaderStruct>(buffer)[0];
-        //
-        // header.Magic = Magic;
-        // header.DistributionType = (byte)DistributionType;
-        // header.ContentType = (byte)ContentType;
-        // header.KeyGeneration1 = KeyGeneration1;
-        // header.KeyAreaKeyIndex = KeyAreaKeyIndex;
-        // header.NcaSize = 0; // TODO: Need to fix this. Sum of all parts plus the header (should exactly match the file size on disk).
-        // header.TitleId = TitleId;
-        // header.ContentIndex = ContentIndex;
-        // header.SdkVersion = SdkVersion;
-        // header.KeyGeneration2 = KeyGeneration2;
-        // header.SignatureKeyGeneration = SignatureKeyGeneration;
-        //
-        // Array.Copy(RightsId ?? [], 0, buffer,RightsIdOffset, RightsIdSize);
-
-        // for (var i = 0; i < Sections.Count; i++)
-        // {
-        //     var current = Sections[i];
-        //     
-        //     var fsHeaderBuffer = new byte[FsHeaderSize];
-        //     scoped ref var fsHeader = ref MemoryMarshal.Cast<byte, NcaFsHeaderStruct>(fsHeaderBuffer)[0];
-        //     
-        //     // Transfer everything the original header contained before we modify it for our own usage.
-        //     Array.Copy(current.Item2.ToByteArray(), 0, fsHeaderBuffer, 0, FsHeaderSize);
-        //     
-        //     // Mark the data as having been decrypted.
-        //     fsHeader.EncryptionType = (byte)NcaEncryptionType.None;
-        //     
-        //     // Generate the hash.
-        //     var actualHash = new byte[Sha256.DigestSize];
-        //     Sha256.GenerateSha256Hash(fsHeaderBuffer, actualHash);
-        //     
-        //     // Transfer the new hash into the parent header.
-        //     Array.Copy(actualHash, 0, buffer, FsHeaderHashOffset + (FsHeaderHashSize * i) , FsHeaderHashSize);
-        //     
-        //     // Overwrite the new header data into the parent.
-        //     Array.Copy(fsHeaderBuffer, 0, buffer, FsHeadersOffset + (FsHeaderSize * i), FsHeaderSize);
-        //     
-        //     // Calculate where the data will be stored at within the output file...
-        //     var sectionEntryBuffer = new byte[SectionEntrySize];
-        //     scoped ref var sectionEntry = ref MemoryMarshal.Cast<byte, NcaSectionEntryStruct>(sectionEntryBuffer)[0];
-        //
-        //     sectionEntry.StartBlock = 1;
-        //     sectionEntry.EndBlock = 2;
-        //     sectionEntry.IsEnabled = true;
-        // }
     }
 }
