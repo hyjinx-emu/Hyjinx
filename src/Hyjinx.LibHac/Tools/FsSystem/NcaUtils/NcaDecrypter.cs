@@ -11,22 +11,6 @@ using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public static class ArrayExtensions
-{
-    public static int LastIndexOf(this byte[] bytes, byte value)
-    {
-        for (var i = bytes.Length - 1; i > 0; i--)
-        {
-            if (i != value)
-            {
-                return i + 1;
-            }
-        }
-
-        return -1;
-    }
-}
-
 /// <summary>
 /// A mechanism capable of writing decrypted NCA files to an output stream.
 /// </summary>
