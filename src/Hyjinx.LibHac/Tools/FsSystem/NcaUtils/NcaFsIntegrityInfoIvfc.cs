@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
@@ -60,29 +60,5 @@ public struct NcaFsIntegrityInfoIvfc
         {
             throw new ArgumentOutOfRangeException($"IVFC level index must be between 0 and 6. Actual: {index}");
         }
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    private struct IvfcStruct
-    {
-        public const int IvfcLevelsOffset = 0x10;
-        public const int SaltSourceOffset = 0xA0;
-        public const int SaltSourceSize = 0x20;
-        public const int MasterHashOffset = 0xC0;
-
-        [FieldOffset(0)] public uint Magic;
-        [FieldOffset(4)] public int Version;
-        [FieldOffset(8)] public int MasterHashSize;
-        [FieldOffset(12)] public int LevelCount;
-    }
-
-    [StructLayout(LayoutKind.Explicit, Size = IvfcLevelSize)]
-    private struct IvfcLevel
-    {
-        public const int IvfcLevelSize = 0x18;
-
-        [FieldOffset(0)] public long Offset;
-        [FieldOffset(8)] public long Size;
-        [FieldOffset(0x10)] public int BlockSize;
     }
 }

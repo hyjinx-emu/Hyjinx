@@ -1,9 +1,11 @@
 ﻿#if IS_TPM_BYPASS_ENABLED
 #pragma warning disable CS0618 // Type or member is obsolete
 
+using Hyjinx.HLE.FileSystem;
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Fs;
+using LibHac.Fs.Fsa;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using System;
@@ -42,7 +44,7 @@ public class NcaTests
     /// <summary>
     /// Defines the name of the NCA file to target.
     /// </summary>
-    private static string NcaFileName = "0216bd3304abdc931246551f9bfa2020.nca";
+    private static string NcaFileName = "79e18e7cbd5de5b700f054bb95e95efd.nca";
     
     /// <summary>
     /// Defines the location of an encrypted NCA file.
@@ -101,6 +103,42 @@ public class NcaTests
 
         return null;
     }
+
+    [Fact]
+    public void CanReadEncryptedFirmwareVersion()
+    {
+        var file = new FileInfo(Path.Combine(EncryptedNcaFile, "00"));
+        using var fs = file.OpenRead();
+
+        var nca = new Nca(CreateEncryptedKeySet(), fs.AsStorage());
+        var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.None);
+
+        using var systemVersionFile = new UniqueRef<IFile>();
+
+        if (romfs.OpenFile(ref systemVersionFile.Ref, "/file".ToU8Span(), OpenMode.Read).IsSuccess())
+        {
+            var version = new SystemVersion(systemVersionFile.Get.AsStream());
+            Assert.True(version.VersionString == "19.0.1");
+        }
+    }
+    
+    [Fact]
+    public void CanReadDecryptedFirmwareVersion()
+    {
+        var file = new FileInfo(Path.Combine(UnencryptedNcaFile, "00"));
+        using var fs = file.OpenRead();
+
+        var nca = new Nca(KeySet.Empty, fs.AsStorage());
+        var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.None);
+
+        using var systemVersionFile = new UniqueRef<IFile>();
+
+        if (romfs.OpenFile(ref systemVersionFile.Ref, "/file".ToU8Span(), OpenMode.Read).IsSuccess())
+        {
+            var version = new SystemVersion(systemVersionFile.Get.AsStream());
+            Assert.True(version.VersionString == "19.0.1");
+        }
+    }
     
     [Fact]
     public void CanDecryptAnEncryptedNcaFile()
@@ -123,12 +161,17 @@ public class NcaTests
 
         Directory.CreateDirectory(UnencryptedNcaFile);
 
-        using var outStream = outFile.OpenWrite();
+        var outStream = outFile.OpenWrite();
 
         var decrypter = new NcaDecrypter();
         decrypter.Decrypt(input, outStream);
-        
-        outStream.Flush();
+
+        outStream.Dispose();
+
+        outStream = outFile.OpenRead();
+
+        var nca = new Nca(KeySet.Empty, outStream.AsStorage());
+        var fs0 = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
         
         Assert.Success(Result.Success);
     }
@@ -171,8 +214,6 @@ public class NcaTests
                 
                 var decrypter = new NcaDecrypter();
                 decrypter.Decrypt(input, outStream);
-                
-                outStream.Flush();
                 
                 Debug.WriteLine($"File '{sourceFile.FullName}': Before: {fs.Length}, After: {outStream.Length}");
             }

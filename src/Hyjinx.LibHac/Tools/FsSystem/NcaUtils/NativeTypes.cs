@@ -43,7 +43,7 @@ public static class NativeTypes
         [FieldOffset(0x140)] public ulong UpperCounter;
         [FieldOffset(0x140)] public int CounterType;
         [FieldOffset(0x144)] public int CounterVersion;
-        [FieldOffset(0x1F8)] public long Length;
+        // [FieldOffset(0x1F8)] public long Length;
     }
     
     [StructLayout(LayoutKind.Explicit)]
@@ -79,5 +79,29 @@ public static class NativeTypes
         [FieldOffset(0x08)] public long RelocationTreeSize;
         [FieldOffset(0x20)] public long EncryptionTreeOffset;
         [FieldOffset(0x28)] public long EncryptionTreeSize;
+    }
+    
+    [StructLayout(LayoutKind.Explicit)]
+    public struct IvfcStruct
+    {
+        public const int IvfcLevelsOffset = 0x10;
+        public const int SaltSourceOffset = 0xA0;
+        public const int SaltSourceSize = 0x20;
+        public const int MasterHashOffset = 0xC0;
+
+        [FieldOffset(0)] public uint Magic;
+        [FieldOffset(4)] public int Version;
+        [FieldOffset(8)] public int MasterHashSize;
+        [FieldOffset(12)] public int LevelCount;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size = IvfcLevelSize)]
+    public struct IvfcLevel
+    {
+        public const int IvfcLevelSize = 0x18;
+
+        [FieldOffset(0)] public long Offset;
+        [FieldOffset(8)] public long Size;
+        [FieldOffset(0x10)] public int BlockSize;
     }
 }

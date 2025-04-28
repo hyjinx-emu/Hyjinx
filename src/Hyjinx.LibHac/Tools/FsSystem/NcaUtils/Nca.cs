@@ -50,7 +50,7 @@ public partial class Nca
         return Header.GetFsHeader(index);
     }
 
-    private IStorage OpenSectionStorage(int index)
+    internal IStorage OpenSectionStorage(int index)
     {
         if (!SectionExists(index)) throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
 
@@ -141,8 +141,13 @@ public partial class Nca
 
         return decryptedStorage;
     }
+
+    internal IStorage OpenDecryptedStorage(int index)
+    {
+        return OpenDecryptedStorage(BaseStorage, index, true);
+    }
     
-    private IStorage OpenDecryptedStorage(IStorage baseStorage, int index, bool decrypting)
+    internal IStorage OpenDecryptedStorage(IStorage baseStorage, int index, bool decrypting)
     {
         NcaFsHeader header = GetFsHeader(index);
 
@@ -204,7 +209,15 @@ public partial class Nca
             return rawStorage.Slice(0, header.GetPatchInfo().RelocationTreeOffset);
         }
 
-        IStorage returnStorage = CreateVerificationStorage(integrityCheckLevel, header, rawStorage);
+        IStorage returnStorage;
+        if (header.HashType == NcaHashType.None)
+        {
+            returnStorage = rawStorage;
+        }
+        else
+        {
+            returnStorage = CreateVerificationStorage(integrityCheckLevel, header, rawStorage);
+        }
 
         if (!leaveCompressed && header.ExistsCompressionLayer())
         {

@@ -145,8 +145,8 @@ partial class Nca
         byte[] key = GetContentKey(NcaKeyType.AesCtr);
         byte[] counter = Aes128CtrStorage.CreateCounter(upperCounter, Header.GetSectionStartOffset(index));
 
-        var aesStorage = new Aes128CtrStorage(baseStorage, key, offset, counter, true);
-        return new CachedStorage(aesStorage, 0x4000, 4, true);
+        return new Aes128CtrStorage(baseStorage, key, offset, counter, true);
+        // return new CachedStorage(aesStorage, 0x4000, 4, true);
     }
     
     private IStorage OpenAesCtrExStorage(IStorage baseStorage, int index, bool decrypting)
