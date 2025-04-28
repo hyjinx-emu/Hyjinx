@@ -507,7 +507,7 @@ namespace Hyjinx.HLE.FileSystem
                         var path = VirtualFileSystem.SwitchPathToSystemPath(entry.ContentPath);
 
                         using FileStream fileStream = File.OpenRead(path);
-                        Nca nca = new(_virtualFileSystem.KeySet, fileStream.AsStorage());
+                        Nca nca = new(KeySet.Empty, fileStream.AsStorage());
 
                         if (nca.Header.TitleId == SystemVersionTitleId && nca.Header.ContentType == NcaContentType.Data)
                         {
