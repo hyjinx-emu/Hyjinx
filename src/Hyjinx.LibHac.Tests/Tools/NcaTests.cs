@@ -163,7 +163,7 @@ public class NcaTests
 
         var outStream = outFile.OpenWrite();
 
-        var decrypter = new NcaDecrypter();
+        var decrypter = new NcaDecrypter2();
         decrypter.Decrypt(input, outStream);
 
         outStream.Dispose();
