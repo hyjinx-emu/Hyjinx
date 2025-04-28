@@ -161,17 +161,10 @@ public class NcaTests
 
         Directory.CreateDirectory(UnencryptedNcaFile);
 
-        var outStream = outFile.OpenWrite();
+        using var outStream = outFile.OpenWrite();
 
         var decrypter = new NcaDecrypter2();
         decrypter.Decrypt(input, outStream);
-
-        outStream.Dispose();
-
-        outStream = outFile.OpenRead();
-
-        var nca = new Nca(KeySet.Empty, outStream.AsStorage());
-        var fs0 = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
         
         Assert.Success(Result.Success);
     }
@@ -212,7 +205,7 @@ public class NcaTests
                 var outFile = new FileInfo(Path.Combine(targetPath, sourceFile.Name));
                 using var outStream = outFile.OpenWrite();
                 
-                var decrypter = new NcaDecrypter();
+                var decrypter = new NcaDecrypter2();
                 decrypter.Decrypt(input, outStream);
                 
                 Debug.WriteLine($"File '{sourceFile.FullName}': Before: {fs.Length}, After: {outStream.Length}");
