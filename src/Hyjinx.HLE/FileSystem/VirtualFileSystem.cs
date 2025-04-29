@@ -31,8 +31,8 @@ namespace Hyjinx.HLE.FileSystem
         public static readonly string SystemNandPath = Path.Combine(AppDataManager.DefaultNandDir, "system");
         public static readonly string UserNandPath = Path.Combine(AppDataManager.DefaultNandDir, "user");
         
-        private static readonly ILogger<VirtualFileSystem> _logger =
-            Logger.DefaultLoggerFactory.CreateLogger<VirtualFileSystem>();
+        private static readonly ILogger<VirtualFileSystem>? _logger =
+            Logger.DefaultLoggerFactory?.CreateLogger<VirtualFileSystem>();
         
         private static bool _isInitialized = false;
 
@@ -43,7 +43,10 @@ namespace Hyjinx.HLE.FileSystem
 
         private readonly ConcurrentDictionary<ulong, Stream> _romFsByPid = new();
         
-        public static VirtualFileSystem CreateInstance()
+        #if IS_TPM_BYPASS_ENABLED
+        #pragma warning disable CS0618 // Type or member is obsolete
+                
+        public static VirtualFileSystem CreateInstance(KeySet? keySet = null)
         {
             if (_isInitialized)
             {
@@ -53,15 +56,20 @@ namespace Hyjinx.HLE.FileSystem
             _isInitialized = true;
 
             var result = new VirtualFileSystem();
-            
-            #if IS_TPM_BYPASS_ENABLED
-            #pragma warning disable CS0618 // Type or member is obsolete
-            result.ReloadKeySet();
-            #pragma warning restore CS0618 // Type or member is obsolete
-            #endif
+            if (keySet != null)
+            {
+                result.KeySet = keySet;
+            }
+            else
+            {
+                result.ReloadKeySet();
+            }
             
             return result;
         }
+        
+        #pragma warning restore CS0618 // Type or member is obsolete
+        #endif
 
         public void LoadRomFs(ulong pid, string fileName)
         {

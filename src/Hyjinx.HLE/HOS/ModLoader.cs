@@ -114,7 +114,7 @@ namespace Hyjinx.HLE.HOS
             }
         }
 
-        private static readonly ILogger<ModLoader> _logger = Logger.DefaultLoggerFactory.CreateLogger<ModLoader>();
+        private static readonly ILogger<ModLoader> _logger = Logger.DefaultLoggerFactory?.CreateLogger<ModLoader>();
         private readonly Dictionary<ulong, ModCache> _appMods; // key is ApplicationId
         private PatchCache _patches;
 

@@ -113,7 +113,7 @@ namespace Hyjinx.UI.App.Common
         /// <exception cref="ArgumentException">An error occured while reading bytes from the stream.</exception>
         /// <exception cref="EndOfStreamException">The end of the stream is reached.</exception>
         /// <exception cref="IOException">An I/O error occurred.</exception>
-        private ApplicationData GetApplicationFromNsp(PartitionFileSystem pfs, string filePath)
+        public ApplicationData GetApplicationFromNsp(PartitionFileSystem pfs, string filePath)
         {
             bool isExeFs = false;
 

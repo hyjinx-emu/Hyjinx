@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.HLE\Hyjinx.HLE.csproj" />
     <ProjectReference Include="..\Hyjinx.LibHac\Hyjinx.LibHac.csproj" />
+    <ProjectReference Include="..\Hyjinx.UI.Common\Hyjinx.UI.Common.csproj" />
   </ItemGroup>
 
 </Project>
