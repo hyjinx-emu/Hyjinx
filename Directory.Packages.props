@@ -3,8 +3,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <PropertyGroup>
-    <AvaloniaVersion>11.2.5</AvaloniaVersion>
-    <AvaloniaSvgVersion>11.2.0.2</AvaloniaSvgVersion>
+    <AvaloniaVersion>11.2.8</AvaloniaVersion>
+    <AvaloniaSvgVersion>11.2.7.1</AvaloniaSvgVersion>
     <MicrosoftExtensionsVersion>9.0.3</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <ItemGroup>
