@@ -243,7 +243,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
             return nacpData;
         }
 
-        public static Cnmt GetCnmt(this Nca cnmtNca, IntegrityCheckLevel checkLevel, ContentMetaType metaType)
+        public static Cnmt? GetCnmt(this Nca cnmtNca, IntegrityCheckLevel checkLevel, ContentMetaType metaType)
         {
             string path = $"/{metaType}_{cnmtNca.Header.TitleId:x16}.cnmt";
             using var cnmtFile = new UniqueRef<IFile>();

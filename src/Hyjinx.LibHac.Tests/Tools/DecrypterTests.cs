@@ -30,7 +30,7 @@ public class DecrypterTests
     /// </summary>
     protected static readonly string SystemPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".switch");
     
-    protected KeySet CreateEncryptedKeySet()
+    protected static KeySet CreateEncryptedKeySet()
     {
         var prodKeysFile = GetFileIfExists(SystemPath, "prod.keys");
         if (prodKeysFile == null)

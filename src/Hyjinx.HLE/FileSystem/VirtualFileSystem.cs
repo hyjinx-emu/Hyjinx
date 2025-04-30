@@ -46,7 +46,7 @@ namespace Hyjinx.HLE.FileSystem
         #if IS_TPM_BYPASS_ENABLED
         #pragma warning disable CS0618 // Type or member is obsolete
                 
-        public static VirtualFileSystem CreateInstance(KeySet? keySet = null)
+        public static VirtualFileSystem CreateInstance(KeySet? keySet = null, bool force = false)
         {
             if (_isInitialized)
             {
@@ -56,9 +56,9 @@ namespace Hyjinx.HLE.FileSystem
             _isInitialized = true;
 
             var result = new VirtualFileSystem();
-            if (keySet != null)
+            if (keySet != null || force)
             {
-                result.KeySet = keySet;
+                result.KeySet = keySet!;
             }
             else
             {
