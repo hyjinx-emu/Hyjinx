@@ -18,7 +18,7 @@ public class XciTests : GameDecrypterTests
         var keySet = CreateEncryptedKeySet();
         
         using var inStream = inFile.OpenRead();
-
+        
         var xci = new Xci(keySet, inStream.AsStorage());
         using var outStream = destination.OpenWrite();
         

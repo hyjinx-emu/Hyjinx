@@ -2,11 +2,8 @@
 #pragma warning disable 0618 // Type or member is obsolete
 
 using Hyjinx.Common.Configuration;
-using Hyjinx.HLE.FileSystem;
 using Hyjinx.UI.App.Common;
 using LibHac.Common.Keys;
-using LibHac.FsSystem;
-using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
 using Xunit;
