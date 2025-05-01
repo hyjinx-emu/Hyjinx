@@ -21,6 +21,8 @@ public abstract class GameDecrypterTests : DecrypterTests
 {
     protected abstract string TargetFileName { get; }
     
+    protected abstract string TitleName { get; }
+    
     /// <summary>
     /// Defines the path to the source emulation roms.
     /// </summary>
@@ -58,7 +60,7 @@ public abstract class GameDecrypterTests : DecrypterTests
         var keySet = CreateEncryptedKeySet();
         
         var result = ReadApplicationData(keySet, file);
-        Assert.Equal("Baba Is You", result.Name);
+        Assert.Equal(TitleName, result.Name);
     }
     
     [Fact]
@@ -71,21 +73,10 @@ public abstract class GameDecrypterTests : DecrypterTests
         }
         
         var result = ReadApplicationData(KeySet.Empty, file);
-        Assert.Equal("Baba Is You", result.Name);
+        Assert.Equal(TitleName, result.Name);
     }
 
-    private static ApplicationData ReadApplicationData(KeySet keySet, FileInfo file)
-    {
-        using var fs = file.OpenRead();
-
-        var pfs = new PartitionFileSystem();
-        pfs.Initialize(fs.AsStorage());
-        
-        using var vfs = VirtualFileSystem.CreateInstance(keySet, true);
-        var library = new ApplicationLibrary(vfs, IntegrityCheckLevel.ErrorOnInvalid);
-
-        return library.GetApplicationFromNsp(pfs, file.FullName);
-    }
+    protected abstract ApplicationData ReadApplicationData(KeySet keySet, FileInfo file);
     
     [Fact]
     public void CanDecryptAnEncryptedFile()

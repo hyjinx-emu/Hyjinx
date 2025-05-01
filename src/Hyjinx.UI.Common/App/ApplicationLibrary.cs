@@ -81,7 +81,7 @@ namespace Hyjinx.UI.App.Common
         /// <exception cref="ArgumentException">An error occured while reading bytes from the stream.</exception>
         /// <exception cref="EndOfStreamException">The end of the stream is reached.</exception>
         /// <exception cref="IOException">An I/O error occurred.</exception>
-        private ApplicationData GetApplicationFromExeFs(PartitionFileSystem pfs, string filePath)
+        public ApplicationData GetApplicationFromExeFs(PartitionFileSystem pfs, string filePath)
         {
             ApplicationData data = new()
             {
@@ -193,7 +193,7 @@ namespace Hyjinx.UI.App.Common
         /// <exception cref="InvalidDataException">The NCA header could not be decrypted.</exception>
         /// <exception cref="NotSupportedException">The NCA version is not supported.</exception>
         /// <exception cref="HorizonResultException">An error occured while reading PFS data.</exception>
-        private List<ApplicationData> GetApplicationsFromPfs(IFileSystem pfs, string filePath)
+        public List<ApplicationData> GetApplicationsFromPfs(IFileSystem pfs, string filePath)
         {
             var applications = new List<ApplicationData>();
             string extension = Path.GetExtension(filePath).ToLower();
