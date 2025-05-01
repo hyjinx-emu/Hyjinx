@@ -108,7 +108,6 @@ public class NspDecrypter(KeySet keySet)
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         var offset = 0L;
         
-        // scoped ref var header = ref MemoryMarshal.Cast<byte, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>(metadataBytes)[0];
         for (var i = 0; i < context.Entries.Count; i++)
         {
             var item = context.Entries[i];

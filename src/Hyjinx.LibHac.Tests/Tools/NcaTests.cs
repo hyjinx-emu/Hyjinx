@@ -8,6 +8,7 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,16 @@ public class NcaTests : DecrypterTests
     /// Defines the name of the NCA file to target.
     /// </summary>
     private static string NcaFileName = "79e18e7cbd5de5b700f054bb95e95efd.nca";
+    
+    /// <summary>
+    /// Defines the source root path.
+    /// </summary>
+    protected static readonly string SourceRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx-Backup");
+
+    /// <summary>
+    /// Defines the destination root path.
+    /// </summary>
+    protected static readonly string DestinationRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx");
     
     /// <summary>
     /// Defines the location of an encrypted NCA file.

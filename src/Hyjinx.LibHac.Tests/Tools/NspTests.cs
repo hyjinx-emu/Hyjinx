@@ -8,6 +8,7 @@ using LibHac.Common.Keys;
 using LibHac.FsSystem;
 using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
+using System;
 using System.IO;
 using Xunit;
 using Path = System.IO.Path;
@@ -19,14 +20,27 @@ public class NspTests : DecrypterTests
     /// <summary>
     /// Defines the name of the NSP file to target.
     /// </summary>
-    private static string NspFileName = "Baba Is You [01002CD00A51C000][v0][Base].nsp";
+    private static string NspFileName = "Baba Is You [01002CD00A51C800][v720896][Update].nsp";
+    
+    /// <summary>
+    /// Defines the path to the source emulation roms.
+    /// </summary>
+    protected static readonly string SourceGamesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Emulation", "Hyjinx", "backup");
+    
+    /// <summary>
+    /// Defines the path to the destination emulation roms.
+    /// </summary>
+    protected static readonly string DestinationGamesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Emulation", "Hyjinx", "roms");
     
     /// <summary>
     /// Defines the location of an encrypted NSP file.
     /// </summary>
     private static readonly string EncryptedNspFile = Path.Combine(SourceGamesPath, NspFileName);
 
-    private static readonly string DecryptedNspFile = Path.Combine("./", NspFileName);
+    /// <summary>
+    /// Defines the location of a decrypted NSP file.
+    /// </summary>
+    private static readonly string DecryptedNspFile = Path.Combine(DestinationGamesPath, NspFileName);
     
     static NspTests()
     {

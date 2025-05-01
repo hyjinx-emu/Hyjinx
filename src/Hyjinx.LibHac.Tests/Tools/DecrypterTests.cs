@@ -11,21 +11,6 @@ namespace LibHac.Tests.Tools;
 public class DecrypterTests
 {
     /// <summary>
-    /// Defines the path to the emulation roms.
-    /// </summary>
-    protected static readonly string SourceGamesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Emulation", "Hyjinx", "roms");
-    
-    /// <summary>
-    /// Defines the source root path.
-    /// </summary>
-    protected static readonly string SourceRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx-Backup");
-    
-    /// <summary>
-    /// Defines the destination root path.
-    /// </summary>
-    protected static readonly string DestinationRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Hyjinx");
-    
-    /// <summary>
     /// Defines the full path to the 'system' folder.
     /// </summary>
     protected static readonly string SystemPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".switch");
