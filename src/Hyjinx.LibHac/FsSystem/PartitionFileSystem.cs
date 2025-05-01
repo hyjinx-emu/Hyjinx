@@ -83,12 +83,16 @@ public class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> : IFil
 {
     private static ReadOnlySpan<byte> RootPath => "/"u8;
 
+    public IStorage BaseStorage => _baseStorage;
+    
     private IStorage _baseStorage;
     private TMetaData _metaData;
     private bool _isInitialized;
     private long _metaDataSize;
     private UniqueRef<TMetaData> _uniqueMetaData;
     private SharedRef<IStorage> _sharedStorage;
+
+    public TMetaData UnsafeMetaData => _metaData;
 
     /// <summary>
     /// Provides access to a file from a <see cref="PartitionFileSystemCore{TMetaData,TFormat,THeader,TEntry}"/>.

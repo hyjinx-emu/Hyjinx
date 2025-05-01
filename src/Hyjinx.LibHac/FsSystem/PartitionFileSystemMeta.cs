@@ -72,7 +72,9 @@ namespace LibHac.FsSystem
         protected long MetaDataSize;
         protected MemoryResource Allocator;
         protected Buffer MetaDataBuffer;
-
+        
+        public THeader UnsafeHeader => MemoryMarshal.Cast<byte, THeader>(HeaderBuffer.Span)[0];
+        
         private ref readonly THeader Header => ref MemoryMarshal.GetReference(HeaderBuffer.GetSpan<THeader>());
         private ReadOnlySpan<TEntry> Entries => EntryBuffer.GetSpan<TEntry>();
         private ReadOnlySpan<byte> NameTable => NameTableBuffer.Span;

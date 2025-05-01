@@ -26,6 +26,8 @@ public class NspTests : DecrypterTests
     /// </summary>
     private static readonly string EncryptedNspFile = Path.Combine(SourceGamesPath, NspFileName);
 
+    private static readonly string DecryptedNspFile = Path.Combine("./", NspFileName);
+    
     static NspTests()
     {
         AppDataManager.Initialize("./");
@@ -43,6 +45,19 @@ public class NspTests : DecrypterTests
         var keySet = CreateEncryptedKeySet();
         
         var result = ReadApplicationData(keySet, file);
+        Assert.Equal("Baba Is You", result.Name);
+    }
+    
+    [Fact]
+    public void CanReadApplicationDataFromDecryptedNsp()
+    {
+        var file = new FileInfo(DecryptedNspFile);
+        if (!file.Exists)
+        {
+            Assert.Fail($"The file '{file}' does not exist.");
+        }
+        
+        var result = ReadApplicationData(KeySet.Empty, file);
         Assert.Equal("Baba Is You", result.Name);
     }
 
@@ -68,16 +83,13 @@ public class NspTests : DecrypterTests
             Assert.Fail($"The file '{inFile}' does not exist.");
         }
 
-        var outFile = new FileInfo(Path.Combine("./", NspFileName));
+        var outFile = new FileInfo(DecryptedNspFile);
         if (outFile.Exists)
         {
             outFile.Delete();
         }
 
         DoDecrypt(inFile, outFile);
-
-        var data = ReadApplicationData(KeySet.Empty, outFile);
-        Assert.Equal("Baba Is You", data.Name);
     }
 
     private static void DoDecrypt(FileInfo inFile, FileInfo destination)
