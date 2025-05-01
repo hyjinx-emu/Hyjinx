@@ -10,17 +10,12 @@ using LibHac.Fs;
 using LibHac.Gc.Impl;
 using LibHac.Tools.FsSystem;
 using Aes = LibHac.Crypto.Aes;
+using static LibHac.Tools.Fs.NativeTypes;
 
 namespace LibHac.Tools.Fs;
 
 public class XciHeader
 {
-    private const int SignatureSize = 0x100;
-    private const string HeaderMagic = "HEAD";
-    private const uint HeaderMagicValue = 0x44414548; // HEAD
-    private const int EncryptedHeaderSize = 0x70;
-    private const int GcTitleKeyKekIndexMax = 0x10;
-
     private static readonly byte[] XciHeaderPubk =
     {
         0x98, 0xC7, 0x26, 0xB6, 0x0D, 0x0A, 0x50, 0xA7, 0x39, 0x21, 0x0A, 0xE3, 0x2F, 0xE4, 0x3E, 0x2E,
