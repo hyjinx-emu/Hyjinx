@@ -83,7 +83,8 @@ public class XciHeader
     public byte[] InitialDataAuthNonce { get; set; }
     public byte[] InitialData { get; set; }
     public byte[] DecryptedTitleKey { get; set; }
-
+    public byte[] EncryptedHeader { get; set; }
+    
     public XciHeader(KeySet keySet, Stream stream)
     {
         DetermineXciSubStorages(out IStorage keyAreaStorage, out IStorage bodyStorage, stream.AsStorage())
@@ -140,14 +141,14 @@ public class XciHeader
             SelT1Key = reader.ReadInt32();
             SelKey = reader.ReadInt32();
             LimAreaPage = reader.ReadInt32();
+            EncryptedHeader = reader.ReadBytes(EncryptedHeaderSize);
 
             if (keySet != null && !keySet.XciHeaderKey.IsZeros())
             {
                 IsHeaderDecrypted = true;
 
-                byte[] encHeader = reader.ReadBytes(EncryptedHeaderSize);
                 byte[] decHeader = new byte[EncryptedHeaderSize];
-                Aes.DecryptCbc128(encHeader, decHeader, keySet.XciHeaderKey, AesCbcIv);
+                Aes.DecryptCbc128(EncryptedHeader, decHeader, keySet.XciHeaderKey, AesCbcIv);
 
                 using (var decReader = new BinaryReader(new MemoryStream(decHeader)))
                 {

@@ -5,12 +5,19 @@ namespace LibHac.Tools.Fs;
 public static class NativeTypes
 {
     public const int HeaderSize = 0x200;
-    
+
+    public const int SignatureOffset = 0;
     public const int SignatureSize = 0x100;
     public const string HeaderMagic = "HEAD";
     public const uint HeaderMagicValue = 0x44414548; // HEAD
-    public const int EncryptedHeaderSize = 0x70;
     public const int GcTitleKeyKekIndexMax = 0x10;
+
+    public const int AesCbcIvOffset = 0x120;
+    public const int RootPartitionHeaderHashOffset = 0x140;
+    public const int InitialDataHashOffset = 0x160;
+    
+    public const int EncryptedHeaderOffset = 0x190;
+    public const int EncryptedHeaderSize = 0x70;
     
     [StructLayout(LayoutKind.Explicit)]
     public struct XciHeaderStruct
@@ -35,6 +42,5 @@ public static class NativeTypes
         [FieldOffset(392)] public int SelKey;
         [FieldOffset(396)] public int LimAreaPage;
         // Encrypted header (112)
-        // Unknown value (4)
     }
 }
