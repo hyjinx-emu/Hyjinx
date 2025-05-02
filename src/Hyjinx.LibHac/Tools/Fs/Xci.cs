@@ -41,7 +41,13 @@ public class Xci
 
         using var partitionFile = new UniqueRef<IFile>();
         root.OpenFile(ref partitionFile.Ref, partitionFileName.ToU8Span(), OpenMode.Read).ThrowIfFailure();
-        return new XciPartition(partitionFile.Release().AsStorage());
+
+        var f = partitionFile.Release();
+        return new XciPartition(f.AsStorage())
+        {
+            NameOffset = f.GetNameOffset(),
+            Offset = f.GetOffset()
+        };
     }
 
     private XciPartition GetRootPartition()
@@ -73,6 +79,7 @@ public class Xci
 public class XciPartition : Sha256PartitionFileSystem
 {
     public long Offset { get; internal set; }
+    public int NameOffset { get; internal set; }
     public Validity HashValidity { get; set; } = Validity.Unchecked;
 
     public XciPartition(IStorage storage)

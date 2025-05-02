@@ -24,6 +24,16 @@ public abstract class IFile : IDisposable
 {
     public virtual void Dispose() { }
 
+    public virtual long GetOffset()
+    {
+        return -1;
+    }
+
+    public virtual int GetNameOffset()
+    {
+        return -1;
+    }
+
     /// <summary>
     /// Reads a sequence of bytes from the current <see cref="IFile"/>.
     /// </summary>

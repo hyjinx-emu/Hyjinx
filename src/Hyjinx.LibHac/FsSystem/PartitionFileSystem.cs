@@ -6,6 +6,7 @@ using LibHac.Crypto;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using LibHac.FsSystem.Impl;
 using LibHac.Util;
 using Buffer = LibHac.Mem.Buffer;
 
@@ -98,7 +99,7 @@ public class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> : IFil
     /// Provides access to a file from a <see cref="PartitionFileSystemCore{TMetaData,TFormat,THeader,TEntry}"/>.
     /// </summary>
     /// <remarks>Based on nnSdk 16.2.0 (FS 16.0.0)</remarks>
-    private class PartitionFile : IFile
+    public class PartitionFile : IFile
     {
         private TEntry _partitionEntry;
         private readonly PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> _parent;
@@ -109,6 +110,35 @@ public class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> : IFil
             _partitionEntry = partitionEntry;
             _parent = parent;
             _mode = mode;
+        }
+
+        public override int GetNameOffset()
+        {
+            if (_partitionEntry is Sha256PartitionFileSystemFormat.PartitionEntry p1)
+            {
+                return p1.NameOffset;
+            }
+            
+            if (_partitionEntry is PartitionFileSystemFormat.PartitionEntry p2)
+            {
+                return p2.NameOffset;
+            }
+
+            return base.GetNameOffset();
+        }
+        public override long GetOffset()
+        {
+            if (_partitionEntry is Sha256PartitionFileSystemFormat.PartitionEntry p1)
+            {
+                return p1.Offset;
+            }
+            
+            if (_partitionEntry is PartitionFileSystemFormat.PartitionEntry p2)
+            {
+                return p2.Offset;
+            }
+
+            return base.GetOffset();
         }
 
         protected override Result DoWrite(long offset, ReadOnlySpan<byte> source, in WriteOption option)
