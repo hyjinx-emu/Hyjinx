@@ -73,14 +73,25 @@ public class NcaDecrypter2
 
         var storage = source.OpenRawStorage(sectionId);
         storage.GetSize(out var s).ThrowIfFailure();
-
-        var buffer = new byte[s];
-        storage.Read(0, buffer);
         
         var tempFile = new FileInfo(Path.GetTempFileName());
-        
         var tempFs = tempFile.OpenWrite();
-        tempFs.Write(buffer, 0, buffer.Length);
+
+        var remaining = s;
+        var pos = 0L;
+
+        while (remaining > 0)
+        {
+            var bufferSize = Math.Min(remaining, 0x8000);
+            var buffer = new byte[bufferSize]; // TODO: Viper - This isn't supported when the value is above an actual int max value.
+
+            storage.Read(pos, buffer);
+            tempFs.Write(buffer, 0, buffer.Length);
+            
+            remaining -= bufferSize;
+            pos += bufferSize;
+        }
+
         tempFs.Flush();
         
         var outputLength = tempFs.Length;
