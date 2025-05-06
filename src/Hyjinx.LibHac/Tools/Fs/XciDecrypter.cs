@@ -6,7 +6,6 @@ using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using System;
@@ -22,91 +21,260 @@ public class XciDecrypter(KeySet keySet)
 {
     private class DecryptionContext
     {
-        public byte[] InputHeaderBytes { get; set; }
+        public byte[] FileHeader { get; set; }
         public Xci Xci { get; set; }
         public KeySet KeySet { get; set; }
         public Stream InputStream { get; set; }
         public Stream OutputStream { get; set; }
-        public Dictionary<XciPartitionType, List<(EntryMetadata, FileInfo)>> Partitions { get; } = new();
+        public Dictionary<XciPartitionType, PartitionDefinition> Partitions { get; } = new();
+        public FileInfo UnknownContentFile { get; set; }
+        public long Position { get; set; }
+        
+        public PartitionDefinition RootPartitionDefinition { get; set; }
+        public byte[] RootPartitionHeader { get; set; }
     }
     
-    internal class EntryMetadata
+    internal class PartitionDefinition
+    {
+        /// <summary>
+        /// The starting offset of the partition.
+        /// </summary>
+        public long Offset { get; set; }
+        
+        public long OriginalOffset { get; set; }
+
+        /// <summary>
+        /// The total size of the partition.
+        /// </summary>
+        public long Size { get; set; }
+
+        public List<FileDefinition> Files { get; set; } = new();
+
+        public byte[] PartitionHeader { get; set; }
+    }
+    
+    internal class FileDefinition
     {
         public required string FullPath { get; init; }
         public required string Name { get; init; }
         public required DirectoryEntryType Type { get; init; }
-        public required NxFileAttributes Attributes { get; init; }
-        public required long OriginalSize { get; init; }
-        public required long Size { get; init; }
+        public NxFileAttributes Attributes { get; init; }
+        public long OriginalSize { get; init; }
+        public long Size { get; init; }
+        public FileInfo? TempFile { get; init; }
     }
     
     public void Decrypt(Stream inputStream, Stream outStream)
     {
         var context = new DecryptionContext
         {
-            InputHeaderBytes = new byte[HeaderSize],
             KeySet = keySet,
             InputStream = inputStream,
             OutputStream = outStream,
+            Xci = new Xci(keySet, inputStream.AsStorage())
         };
-        
-        inputStream.ReadExactly(context.InputHeaderBytes);
-        
-        // Data in the input stream was all zeroes until 0x7000 (28672)
-        var header = context.InputHeaderBytes.AsSpan();
-        var signature = header.Slice(SignatureOffset, SignatureSize);
-        // 
-        var aesCbcIv = header.Slice(AesCbcIvOffset, Aes.KeySize128).ToArray();
-        Array.Reverse(aesCbcIv);
-        
-        var rootPartitionHash = header.Slice(RootPartitionHeaderHashOffset, Sha256.DigestSize);
-        var initialDataHash = header.Slice(InitialDataHashOffset, Sha256.DigestSize);
-        var encryptedHeader = header.Slice(EncryptedHeaderOffset, EncryptedHeaderSize);
-        
-        scoped ref var headerStruct = ref MemoryMarshal.Cast<byte, XciHeaderStruct>(header)[0];
 
-        inputStream.Position = 0; // Reset the stream position before engaging it with the Xci type.
+        DumpFileHeader(context);
+        DumpUnknownData(context);
         
-        context.Xci = new Xci(keySet, inputStream.AsStorage());
+        // Dump the root partition information,
+        DumpContentsForRootPartition(context);
         
-        // TODO: Viper - Need to find one with a logo partition.
-        
-        // TODO: Viper - Need to handle the root partition differently as it simply points to the other partitions.
-        // DumpContentsForPartition(context, XciPartitionType.Root);
-        DumpContentsForPartition(context, XciPartitionType.Logo);
+        // Dump all content partitions.
         DumpContentsForPartition(context, XciPartitionType.Update);
         DumpContentsForPartition(context, XciPartitionType.Normal);
         DumpContentsForPartition(context, XciPartitionType.Secure);
+        DumpContentsForPartition(context, XciPartitionType.Logo);
+
+        // Write everything into the new file.
+        WriteFileHeader(context);
+        WriteUnknownBlocks(context);
+        WriteRootPartition(context);
+        WritePartitions(context);
+        
+        outStream.Flush();
     }
 
-    private void DumpContentsForPartition(DecryptionContext context, XciPartitionType partition)
+    private void DumpFileHeader(DecryptionContext context)
     {
-        if (!context.Xci.HasPartition(partition))
+        var pos = context.InputStream.Position;
+        
+        // Reset the stream position before engaging it with the Xci type.
+        context.InputStream.Position = 0;
+        var header = new byte[HeaderSize];
+        context.InputStream.ReadExactly(header);
+        context.Position = pos;
+
+        // Update the context with the file header that was read.
+        context.FileHeader = header;
+    }
+
+    private void DumpUnknownData(DecryptionContext context)
+    {
+        // Move the stream back to the start point of the unknown data.
+        context.InputStream.Seek(HeaderSize, SeekOrigin.Begin);
+        context.UnknownContentFile = new FileInfo(System.IO.Path.GetTempFileName());
+
+        using var tempFs = context.UnknownContentFile.OpenWrite();
+        var remaining = context.Xci.Header.RootPartitionOffset - HeaderSize;
+        
+        while (remaining > 0)
         {
-            Debug.WriteLine($"Partition '{partition}' not found.");
+            var bufferSize = Math.Min(remaining, 0x8000);
+            var buffer = new byte[bufferSize];
+ 
+            context.InputStream.ReadExactly(buffer);
+            tempFs.Write(buffer);
+            remaining -= bufferSize;
+
+            context.Position += bufferSize;
+        }
+    }
+
+    private void WriteFileHeader(DecryptionContext context)
+    {
+        var header = context.FileHeader.AsSpan();
+        
+        // Clear the signature since we cannot replicate it.
+        header.Slice(SignatureOffset, SignatureSize).Clear();
+        
+        // Clear the AES header data.
+        header.Slice(AesCbcIvOffset, Aes.KeySize128).Clear();
+        
+        // Clear the hash of the root partition header.
+        header.Slice(RootPartitionHeaderHashOffset, Sha256.DigestSize).Clear();
+        
+        // Clear the initial data hash.
+        header.Slice(InitialDataHashOffset, Sha256.DigestSize).Clear();
+        
+        // TODO: Viper - Need to handle encrypted headers using the XciHeaderKey (when one is found).
+        // var encryptedHeader = header.Slice(EncryptedHeaderOffset, EncryptedHeaderSize);
+        
+        context.OutputStream.Write(context.FileHeader);
+    }
+
+    private void WriteUnknownBlocks(DecryptionContext context)
+    {
+        using var tempFs = context.UnknownContentFile.OpenRead();
+        tempFs.CopyTo(context.OutputStream);
+
+        context.OutputStream.Flush();
+    }
+
+    private void WriteRootPartition(DecryptionContext context)
+    {
+        WritePartitionHeader(context, context.RootPartitionDefinition);
+    }
+
+    private void WritePartitions(DecryptionContext context)
+    {
+        foreach (var partition in context.Partitions.Values)
+        {
+            // Write the partition header.
+            WritePartitionHeader(context, partition);
+
+            // Write the partition contents.
+            foreach (var file in partition.Files)
+            {
+                using var tempFs = file.TempFile!.OpenRead();
+                tempFs.CopyTo(context.OutputStream);   
+            }
+            
+            context.OutputStream.Flush();
+        }
+
+        context.OutputStream.Flush();
+    }
+
+    private void WritePartitionHeader(DecryptionContext context, PartitionDefinition partition)
+    {
+        context.OutputStream.Write(partition.PartitionHeader);
+    }
+
+    private byte[] DumpRootPartitionHeader(DecryptionContext context)
+    {
+        var pos = context.InputStream.Position;
+        context.InputStream.Position = context.Xci.Header.RootPartitionOffset;
+        
+        var header = new byte[context.Xci.Header.RootPartitionHeaderSize];
+        context.InputStream.ReadExactly(header);
+        
+        context.InputStream.Position = pos;
+        return header;
+    }
+
+    private void DumpContentsForRootPartition(DecryptionContext context)
+    {
+        var partition = context.Xci.OpenPartition(XciPartitionType.Root);
+        
+        var definition = new PartitionDefinition
+        {
+            Offset = context.Position,
+            OriginalOffset = context.Xci.Header.RootPartitionOffset,
+            Size = context.Xci.Header.RootPartitionHeaderSize,
+            PartitionHeader = DumpRootPartitionHeader(context)
+        };
+
+        foreach (var entry in partition.EnumerateEntries())
+        {
+            definition.Files.Add(new FileDefinition
+            {
+                FullPath = entry.FullPath,
+                Name = entry.Name,
+                Type = entry.Type,
+                Attributes = entry.Attributes,
+                Size = entry.Size,
+                OriginalSize = entry.Size
+            });
+        }
+        
+        context.RootPartitionDefinition = definition;
+        context.Position += definition.Size;
+    }
+
+    private void DumpContentsForPartition(DecryptionContext context, XciPartitionType type)
+    {
+        if (!context.Xci.HasPartition(type))
+        {
+            Debug.WriteLine($"Partition '{type}' not found.");
             return;
         }
         
-        var entries = new List<(EntryMetadata, FileInfo)>();
+        var partition = context.Xci.OpenPartition(type);
+        Debug.WriteLine($"Dumping partition: {type}, Offset: {partition.Offset}, Validity: {partition.HashValidity}");
+
+        var headerSize = partition.UnsafeMetaData.GetMetaDataSize();
+        var definition = new PartitionDefinition
+        {
+            Offset = context.InputStream.Position - headerSize
+        };
         
-        var pfs = context.Xci.OpenPartition(partition);
-        Debug.WriteLine($"Dumping partition: {partition}, Offset: {pfs.Offset}, Validity: {pfs.HashValidity}");
+        // Read the partition header.
+        var header = new byte[headerSize];
+        context.InputStream.Position = definition.Offset;
+        context.InputStream.ReadExactly(header);
+        definition.PartitionHeader = header;
 
         var stopwatch = Stopwatch.StartNew();
-        foreach (var file in pfs.EnumerateEntries())
+        foreach (var file in partition.EnumerateEntries())
         {
             stopwatch.Reset();
             
-            var result = DumpFile(pfs, file);
-            entries.Add(result);
+            var result = DumpFile(partition, file);
+            
+            definition.Files.Add(result);
+            definition.Size += result.Size;
             
             Debug.WriteLine($"File: {file.FullPath}, Type: {file.Type}, Size: {file.Size}, Attributes: {file.Attributes}, Elapsed: {stopwatch.Elapsed}");
         }
         
-        context.Partitions.Add(partition, entries);
+        context.Partitions.Add(type, definition);
+        
+        // Increment the position for the entire definitions size.
+        context.Position += definition.Size + partition.UnsafeMetaData.GetMetaDataSize();
     }
 
-    private (EntryMetadata, FileInfo) DumpFile(XciPartition pfs, DirectoryEntryEx entry)
+    private FileDefinition DumpFile(XciPartition pfs, DirectoryEntryEx entry)
     {
         using var file = new UniqueRef<IFile>();
         pfs.OpenFile(ref file.Ref, entry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
@@ -136,28 +304,28 @@ public class XciDecrypter(KeySet keySet)
             tempFile.Delete();
             outFs.Dispose();
 
-            return (
-                new EntryMetadata
-                {
-                    Name = entry.Name,
-                    FullPath = entry.FullPath,
-                    Attributes = entry.Attributes,
-                    Type = entry.Type,
-                    OriginalSize = entry.Size,
-                    Size = outFile.Length
-                }, outFile);
-        }
-
-        return (
-            new EntryMetadata
+            return new FileDefinition
             {
                 Name = entry.Name,
                 FullPath = entry.FullPath,
                 Attributes = entry.Attributes,
                 Type = entry.Type,
                 OriginalSize = entry.Size,
-                Size = tempFile.Length
-            }, tempFile);
+                Size = outFile.Length,
+                TempFile = outFile
+            };
+        }
+
+        return new FileDefinition
+        {
+            Name = entry.Name,
+            FullPath = entry.FullPath,
+            Attributes = entry.Attributes,
+            Type = entry.Type,
+            OriginalSize = entry.Size,
+            Size = tempFile.Length,
+            TempFile = tempFile
+        };
     }
 }
 
