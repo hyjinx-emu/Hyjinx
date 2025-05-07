@@ -12,6 +12,8 @@ public class XciTests : GameDecrypterTests
     protected override string TargetFileName => "New Super Mario Bros. U Deluxe [0100EA80032EA000][v0] [NKA][C][T].xci";
 
     protected override string TitleName => "New スーパーマリオブラザーズ U デラックス";
+    
+    protected override string TargetFileExtension => "xci";
 
     protected override void DoDecrypt(FileInfo inFile, FileInfo destination)
     {

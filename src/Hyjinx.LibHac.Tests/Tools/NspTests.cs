@@ -17,6 +17,8 @@ public class NspTests : GameDecrypterTests
 
     protected override string TitleName => "Baba Is You";
 
+    protected override string TargetFileExtension => "nsp";
+
     protected override void DoDecrypt(FileInfo inFile, FileInfo destination)
     {
         var keySet = CreateEncryptedKeySet();

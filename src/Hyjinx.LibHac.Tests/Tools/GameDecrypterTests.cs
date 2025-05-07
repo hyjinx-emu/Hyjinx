@@ -19,6 +19,8 @@ public abstract class GameDecrypterTests : DecrypterTests
     protected abstract string TargetFileName { get; }
     
     protected abstract string TitleName { get; }
+   
+    protected abstract string TargetFileExtension { get; }
     
     /// <summary>
     /// Defines the path to the source emulation roms.
@@ -43,6 +45,33 @@ public abstract class GameDecrypterTests : DecrypterTests
     private FileInfo GetDecryptedFile()
     {
         return new FileInfo(Path.Combine(DestinationGamesPath, TargetFileName));
+    }
+
+    [Fact]
+    public void CanDecryptEverything()
+    {
+        var source = new DirectoryInfo(SourceGamesPath);
+        if (!source.Exists)
+        {
+            Assert.Fail($"The source '{source}' does not exist.");
+        }
+        
+        var destination = new DirectoryInfo(DestinationGamesPath);
+        if (!destination.Exists)
+        {
+            destination.Create();
+        }
+
+        foreach (var file in source.EnumerateFiles($"*.{TargetFileExtension}"))
+        {
+            var outFile = new FileInfo(Path.Combine(destination.FullName, file.Name));
+            if (outFile.Exists)
+            {
+                outFile.Delete();
+            }
+            
+            DoDecrypt(file, outFile);
+        }
     }
     
     [Fact]
