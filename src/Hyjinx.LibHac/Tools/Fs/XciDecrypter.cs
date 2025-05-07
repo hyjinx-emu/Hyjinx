@@ -83,9 +83,9 @@ public class XciDecrypter(KeySet keySet)
         // Dump all content partitions.
         DumpContentsForPartition(context, XciPartitionType.Root);
         DumpContentsForPartition(context, XciPartitionType.Update);
+        DumpContentsForPartition(context, XciPartitionType.Logo);
         DumpContentsForPartition(context, XciPartitionType.Normal);
         DumpContentsForPartition(context, XciPartitionType.Secure);
-        DumpContentsForPartition(context, XciPartitionType.Logo);
         
         RecalculatePartitions(context);
         RecalculateRootPartition(context);
@@ -345,6 +345,8 @@ public class XciDecrypter(KeySet keySet)
             definition.Size += result.Size;
 
             Debug.WriteLine($"File: {file.FullPath}, Type: {file.Type}, Size: {file.Size}, Attributes: {file.Attributes}, Elapsed: {stopwatch.Elapsed}");
+            Debug.WriteLine($"Output: {result.TempFile?.FullName ?? "[NULL]"}");
+            Debug.WriteLine("---------------------------------------------");
         }
 
         // The partition definition also needs to include the size of the header.
@@ -362,34 +364,49 @@ public class XciDecrypter(KeySet keySet)
 
     private FileDefinition DumpFile(XciPartition pfs, DirectoryEntryEx entry)
     {
-        using var file = new UniqueRef<IFile>();
-        pfs.OpenFile(ref file.Ref, entry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
-
-        var contentStream = file.Get.AsStream();
-
-        var tempFile = new FileInfo(System.IO.Path.GetTempFileName());
-
-        var tempFs = tempFile.OpenWrite();
-        contentStream.CopyTo(tempFs);
-        tempFs.Flush();
-        tempFs.Dispose();
-
-        if (entry.Name.EndsWith(".nca", StringComparison.InvariantCultureIgnoreCase))
+        var entryName = new FileInfo(entry.Name);
+        if (!string.IsNullOrEmpty(entryName.Extension))
         {
-            tempFs = tempFile.OpenRead();
+            using var file = new UniqueRef<IFile>();
+            pfs.OpenFile(ref file.Ref, entry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-            var outFile = new FileInfo(System.IO.Path.GetTempFileName());
-            var outFs = outFile.OpenWrite();
+            var contentStream = file.Get.AsStream();
 
-            var nca = new Nca(keySet, tempFs.AsStorage());
+            var tempFile = new FileInfo(System.IO.Path.GetTempFileName());
 
-            var ncaDecrypter = new NcaDecrypter2();
-            ncaDecrypter.Decrypt(nca, outFs);
-
+            var tempFs = tempFile.OpenWrite();
+            contentStream.CopyTo(tempFs);
+            tempFs.Flush();
             tempFs.Dispose();
-            tempFile.Delete();
-            outFs.Dispose();
+            
+            if (entryName.Extension.EndsWith(".nca", StringComparison.InvariantCultureIgnoreCase))
+            {
+                tempFs = tempFile.OpenRead();
+                
+                var outFile = new FileInfo(System.IO.Path.GetTempFileName());
+                var outFs = outFile.OpenWrite();
 
+                var nca = new Nca(keySet, tempFs.AsStorage());
+
+                var ncaDecrypter = new NcaDecrypter2();
+                ncaDecrypter.Decrypt(nca, outFs);
+
+                tempFs.Dispose();
+                tempFile.Delete();
+                outFs.Dispose();
+
+                return new FileDefinition
+                {
+                    Name = entry.Name,
+                    FullPath = entry.FullPath,
+                    Attributes = entry.Attributes,
+                    Type = entry.Type,
+                    OriginalSize = entry.Size,
+                    Size = outFile.Length,
+                    TempFile = outFile
+                };
+            }
+            
             return new FileDefinition
             {
                 Name = entry.Name,
@@ -397,8 +414,8 @@ public class XciDecrypter(KeySet keySet)
                 Attributes = entry.Attributes,
                 Type = entry.Type,
                 OriginalSize = entry.Size,
-                Size = outFile.Length,
-                TempFile = outFile
+                Size = tempFile.Length,
+                TempFile = tempFile
             };
         }
 
@@ -409,8 +426,7 @@ public class XciDecrypter(KeySet keySet)
             Attributes = entry.Attributes,
             Type = entry.Type,
             OriginalSize = entry.Size,
-            Size = tempFile.Length,
-            TempFile = tempFile
+            Size = entry.Size,
         };
     }
 }

@@ -13,7 +13,7 @@ namespace LibHac.Tests.Tools;
 
 public class NspTests : GameDecrypterTests
 {
-    protected override string TargetFileName => "Baba Is You [01002CD00A51C800][v720896][Update].nsp";
+    protected override string TargetFileName => "The Legend of Zelda Breath of the Wild [B+U786432+2DLC].nsp";
 
     protected override string TitleName => "Baba Is You";
 

@@ -9,7 +9,7 @@ namespace LibHac.Tests.Tools;
 
 public class XciTests : GameDecrypterTests
 {
-    protected override string TargetFileName => "New Super Mario Bros. U Deluxe [0100EA80032EA000][v0] [NKA][C][T].xci";
+    protected override string TargetFileName => "Super Mario 3D World + Bowser's Fury 1.1.0 [010028600EBDA000][v65536] [NKA][C][T].xci";
 
     protected override string TitleName => "New スーパーマリオブラザーズ U デラックス";
     
