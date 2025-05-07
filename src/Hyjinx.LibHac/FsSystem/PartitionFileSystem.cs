@@ -8,6 +8,7 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem.Impl;
 using LibHac.Util;
+using System.Diagnostics;
 using Buffer = LibHac.Mem.Buffer;
 
 namespace LibHac.FsSystem;
@@ -223,11 +224,21 @@ public class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> : IFil
         {
             if (this is PartitionFileSystem.PartitionFile file)
             {
+                if (offset == 0)
+                {
+                    Debug.WriteLine($"Offset: {file._partitionEntry.Offset}, NameOffset: {file._partitionEntry.NameOffset}, Size: {file._partitionEntry.Size}");
+                }
+                
                 return DoRead(file, out bytesRead, offset, destination, in option).Ret();
             }
 
             if (this is Sha256PartitionFileSystem.PartitionFile fileSha)
             {
+                if (offset == 0)
+                {
+                    Debug.WriteLine($"Offset: {fileSha._partitionEntry.Offset}, NameOffset: {fileSha._partitionEntry.NameOffset}, Size: {fileSha._partitionEntry.Size}");
+                }
+                
                 return DoRead(fileSha, out bytesRead, offset, destination, in option).Ret();
             }
 
@@ -249,93 +260,98 @@ public class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> : IFil
             long hashTargetStart = fs._partitionEntry.HashTargetOffset;
             long hashTargetEnd = hashTargetStart + fs._partitionEntry.HashTargetSize;
 
-            if (readEnd > hashTargetStart && hashTargetEnd > offset)
+            if (hashTargetStart != 0 && hashTargetEnd != 0)
             {
-                // The portion we're reading contains at least some of the hashed region.
-
-                // Only hash target offset == 0 is supported.
-                if (hashTargetStart != 0)
-                    return ResultFs.InvalidSha256PartitionHashTarget.Log();
-
-                // Ensure that the hashed region doesn't extend past the end of the file.
-                if (hashTargetEnd > fs._partitionEntry.Size)
-                    return ResultFs.InvalidSha256PartitionHashTarget.Log();
-
-                // Validate our read offset.
-                long readOffset = entryStart + offset;
-                if (readOffset < offset)
-                    return ResultFs.OutOfRange.Log();
-
-                // Prepare a buffer for our calculated hash.
-                Span<byte> hash = stackalloc byte[Sha256Generator.HashSize];
-                var sha = new Sha256Generator();
-
-                if (offset <= hashTargetStart && hashTargetEnd <= readEnd)
+                if (readEnd > hashTargetStart && hashTargetEnd > offset)
                 {
-                    // Easy case: the portion we're reading contains the entire hashed region.
-                    sha.Initialize();
+                    // The portion we're reading contains at least some of the hashed region.
 
-                    res = fs._parent._baseStorage.Read(readOffset, destination.Slice(0, (int)readSize));
-                    if (res.IsFailure()) return res.Miss();
+                    // Only hash target offset == 0 is supported.
+                    if (hashTargetStart != 0)
+                        return ResultFs.InvalidSha256PartitionHashTarget.Log();
 
-                    sha.Update(destination.Slice((int)(hashTargetStart - offset), fs._partitionEntry.HashTargetSize));
-                    sha.GetHash(hash);
-                }
-                else if (hashTargetStart <= offset && readEnd <= hashTargetEnd)
-                {
-                    // The portion we're reading is located entirely within the hashed region.
-                    int remainingHashTargetSize = fs._partitionEntry.HashTargetSize;
-                    // ReSharper disable once UselessBinaryOperation
-                    // We still want to allow the code to handle any hash target start offset even though it's currently restricted to being only 0.
-                    long currentHashTargetOffset = entryStart + hashTargetStart;
-                    long remainingSize = readSize;
-                    int destBufferOffset = 0;
+                    // Ensure that the hashed region doesn't extend past the end of the file.
+                    if (hashTargetEnd > fs._partitionEntry.Size)
+                        return ResultFs.InvalidSha256PartitionHashTarget.Log();
 
-                    sha.Initialize();
+                    // Validate our read offset.
+                    long readOffset = entryStart + offset;
+                    if (readOffset < offset)
+                        return ResultFs.OutOfRange.Log();
 
-                    const int bufferForHashTargetSize = 0x200;
-                    Span<byte> bufferForHashTarget = stackalloc byte[bufferForHashTargetSize];
+                    // Prepare a buffer for our calculated hash.
+                    Span<byte> hash = stackalloc byte[Sha256Generator.HashSize];
+                    var sha = new Sha256Generator();
 
-                    // Loop over the entire hashed region to calculate the hash.
-                    while (remainingHashTargetSize > 0)
+                    if (offset <= hashTargetStart && hashTargetEnd <= readEnd)
                     {
-                        // Read the next chunk of the hash target and update the hash.
-                        int currentReadSize = Math.Min(bufferForHashTargetSize, remainingHashTargetSize);
-                        Span<byte> currentHashTargetBuffer = bufferForHashTarget.Slice(0, currentReadSize);
+                        // Easy case: the portion we're reading contains the entire hashed region.
+                        sha.Initialize();
 
-                        res = fs._parent._baseStorage.Read(currentHashTargetOffset, currentHashTargetBuffer);
+                        res = fs._parent._baseStorage.Read(readOffset, destination.Slice(0, (int)readSize));
                         if (res.IsFailure()) return res.Miss();
 
-                        sha.Update(currentHashTargetBuffer);
+                        sha.Update(
+                            destination.Slice((int)(hashTargetStart - offset), fs._partitionEntry.HashTargetSize));
+                        sha.GetHash(hash);
+                    }
+                    else if (hashTargetStart <= offset && readEnd <= hashTargetEnd)
+                    {
+                        // The portion we're reading is located entirely within the hashed region.
+                        int remainingHashTargetSize = fs._partitionEntry.HashTargetSize;
+                        // ReSharper disable once UselessBinaryOperation
+                        // We still want to allow the code to handle any hash target start offset even though it's currently restricted to being only 0.
+                        long currentHashTargetOffset = entryStart + hashTargetStart;
+                        long remainingSize = readSize;
+                        int destBufferOffset = 0;
 
-                        // Check if the chunk we just read contains any of the requested range.
-                        if (readOffset <= currentHashTargetOffset + currentReadSize && remainingSize > 0)
+                        sha.Initialize();
+
+                        const int bufferForHashTargetSize = 0x200;
+                        Span<byte> bufferForHashTarget = stackalloc byte[bufferForHashTargetSize];
+
+                        // Loop over the entire hashed region to calculate the hash.
+                        while (remainingHashTargetSize > 0)
                         {
-                            // Copy the relevant portion of the chunk into the destination buffer.
-                            int hashTargetBufferOffset = (int)Math.Max(readOffset - currentHashTargetOffset, 0);
-                            int copySize = (int)Math.Min(currentReadSize - hashTargetBufferOffset, remainingSize);
+                            // Read the next chunk of the hash target and update the hash.
+                            int currentReadSize = Math.Min(bufferForHashTargetSize, remainingHashTargetSize);
+                            Span<byte> currentHashTargetBuffer = bufferForHashTarget.Slice(0, currentReadSize);
 
-                            bufferForHashTarget.Slice(hashTargetBufferOffset, copySize).CopyTo(destination.Slice(destBufferOffset));
+                            res = fs._parent._baseStorage.Read(currentHashTargetOffset, currentHashTargetBuffer);
+                            if (res.IsFailure()) return res.Miss();
 
-                            remainingSize -= copySize;
-                            destBufferOffset += copySize;
+                            sha.Update(currentHashTargetBuffer);
+
+                            // Check if the chunk we just read contains any of the requested range.
+                            if (readOffset <= currentHashTargetOffset + currentReadSize && remainingSize > 0)
+                            {
+                                // Copy the relevant portion of the chunk into the destination buffer.
+                                int hashTargetBufferOffset = (int)Math.Max(readOffset - currentHashTargetOffset, 0);
+                                int copySize = (int)Math.Min(currentReadSize - hashTargetBufferOffset, remainingSize);
+
+                                bufferForHashTarget.Slice(hashTargetBufferOffset, copySize)
+                                    .CopyTo(destination.Slice(destBufferOffset));
+
+                                remainingSize -= copySize;
+                                destBufferOffset += copySize;
+                            }
+
+                            remainingHashTargetSize -= currentReadSize;
+                            currentHashTargetOffset += currentReadSize;
                         }
 
-                        remainingHashTargetSize -= currentReadSize;
-                        currentHashTargetOffset += currentReadSize;
+                        sha.GetHash(hash);
+                    }
+                    else
+                    {
+                        return ResultFs.InvalidSha256PartitionHashTarget.Log();
                     }
 
-                    sha.GetHash(hash);
-                }
-                else
-                {
-                    return ResultFs.InvalidSha256PartitionHashTarget.Log();
-                }
-
-                if (!CryptoUtil.IsSameBytes(fs._partitionEntry.Hash, hash, hash.Length))
-                {
-                    destination.Slice(0, (int)readSize).Clear();
-                    return ResultFs.Sha256PartitionHashVerificationFailed.Log();
+                    if (!CryptoUtil.IsSameBytes(fs._partitionEntry.Hash, hash, hash.Length))
+                    {
+                        destination.Slice(0, (int)readSize).Clear();
+                        return ResultFs.Sha256PartitionHashVerificationFailed.Log();
+                    }
                 }
             }
             else

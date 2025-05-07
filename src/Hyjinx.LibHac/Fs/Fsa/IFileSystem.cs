@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.FsSystem;
+using System.Diagnostics;
 
 namespace LibHac.Fs.Fsa;
 
@@ -191,6 +192,8 @@ public abstract class IFileSystem : IDisposable
         if ((mode & OpenMode.ReadWrite) == 0 || (mode & ~OpenMode.All) != 0)
             return ResultFs.InvalidModeForFileOpen.Log();
 
+        Debug.WriteLine($"Opening file: {path.ToString()}");
+        
         return DoOpenFile(ref file, in path, mode);
     }
 
@@ -214,6 +217,8 @@ public abstract class IFileSystem : IDisposable
         Result res = pathNormalized.InitializeWithNormalization(path.Value);
         if (res.IsFailure()) return res;
 
+        Debug.WriteLine($"Opening file: {pathNormalized.ToString()}");
+        
         return DoOpenFile(ref file, in pathNormalized, mode);
     }
 
@@ -230,6 +235,8 @@ public abstract class IFileSystem : IDisposable
         if ((mode & OpenDirectoryMode.All) == 0 ||
             (mode & ~(OpenDirectoryMode.All | OpenDirectoryMode.NoFileSize)) != 0)
             return ResultFs.InvalidModeForFileOpen.Log();
+        
+        Debug.WriteLine($"Opening directory: {path.ToString()}");
 
         return DoOpenDirectory(ref outDirectory, in path, mode);
     }

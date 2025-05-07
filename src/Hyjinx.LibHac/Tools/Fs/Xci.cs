@@ -4,6 +4,7 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
+using System.Diagnostics;
 
 namespace LibHac.Tools.Fs;
 
@@ -39,6 +40,8 @@ public class Xci
         if (type == XciPartitionType.Root) return root;
         string partitionFileName = $"/{type.GetFileName()}";
 
+        Debug.WriteLine($"Opening partition: {partitionFileName}");
+        
         using var partitionFile = new UniqueRef<IFile>();
         root.OpenFile(ref partitionFile.Ref, partitionFileName.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 

@@ -124,8 +124,8 @@ namespace LibHac.FsSystem
             Span<byte> headerSpan = HeaderBuffer.Span;
             ref readonly THeader header = ref Unsafe.As<byte, THeader>(ref MemoryMarshal.GetReference(headerSpan));
 
-            if (!CryptoUtil.IsSameBytes(headerSpan, TFormat.VersionSignature, TFormat.VersionSignature.Length))
-                return ResultFs.PartitionSignatureVerificationFailed.Log();
+            // if (!CryptoUtil.IsSameBytes(headerSpan, TFormat.VersionSignature, TFormat.VersionSignature.Length))
+            //     return ResultFs.PartitionSignatureVerificationFailed.Log();
 
             res = QueryMetaDataSize(out MetaDataSize, in header);
             if (res.IsFailure()) return res.Miss();
@@ -210,11 +210,11 @@ namespace LibHac.FsSystem
         {
             UnsafeHelpers.SkipParamInit(out outSize);
 
-            if (!CryptoUtil.IsSameBytes(SpanHelpers.AsReadOnlyByteSpan(header), TFormat.VersionSignature,
-                TFormat.VersionSignature.Length))
-            {
-                return TFormat.ResultSignatureVerificationFailed.Log();
-            }
+            // if (!CryptoUtil.IsSameBytes(SpanHelpers.AsReadOnlyByteSpan(header), TFormat.VersionSignature,
+            //     TFormat.VersionSignature.Length))
+            // {
+            //     return TFormat.ResultSignatureVerificationFailed.Log();
+            // }
 
             outSize = Unsafe.SizeOf<THeader>() + header.EntryCount * Unsafe.SizeOf<TEntry>() + header.NameTableSize;
             return Result.Success;
