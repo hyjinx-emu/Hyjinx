@@ -10,7 +10,6 @@ namespace Hyjinx.HLE.FileSystem;
 
 partial class VirtualFileSystem
 {
-    [Obsolete("This method can no longer be used due to TPM restrictions.")]
     public void ReloadKeySet()
     {
         KeySet ??= KeySet.CreateDefaultKeySet();

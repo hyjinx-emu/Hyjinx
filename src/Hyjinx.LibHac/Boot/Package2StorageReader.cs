@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
@@ -268,3 +270,5 @@ public class Package2StorageReader : IDisposable
         return _header.Meta.PayloadSizes[IniPayloadIndex] != 0;
     }
 }
+
+#endif

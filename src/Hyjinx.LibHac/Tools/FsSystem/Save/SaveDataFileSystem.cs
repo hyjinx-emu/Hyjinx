@@ -281,10 +281,12 @@ public class SaveDataFileSystem : IFileSystem
         headerStream.Position = 0x108;
         headerStream.Write(hash, 0, hash.Length);
 
+        byte[] cmac = new byte[0x10];
+
+        #if IS_TPM_BYPASS_ENABLED
         if (keySet == null || keySet.DeviceUniqueSaveMacKeys[0].IsZeros()) return ResultFs.PreconditionViolation.Log();
 
         byte[] cmacData = new byte[0x200];
-        byte[] cmac = new byte[0x10];
 
         headerStream.Position = 0x100;
         bytesRead = headerStream.Read(cmacData, 0, cmacData.Length);
@@ -292,7 +294,8 @@ public class SaveDataFileSystem : IFileSystem
             return ResultFs.OutOfRange.Log();
 
         Aes.CalculateCmac(cmac, cmacData, keySet.DeviceUniqueSaveMacKeys[0]);
-
+        #endif
+        
         headerStream.Position = 0;
         headerStream.Write(cmac, 0, 0x10);
         headerStream.Flush();

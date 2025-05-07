@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
@@ -136,3 +138,5 @@ public struct Package2Meta
         return ResultLibHac.InvalidPackage2MetaEntryPointNotFound.Log();
     }
 }
+
+#endif

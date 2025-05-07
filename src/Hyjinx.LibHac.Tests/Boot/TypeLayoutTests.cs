@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿#if IS_LEGACY_ENABLED
+
+using System.Runtime.CompilerServices;
 using LibHac.Boot;
 using Xunit;
 using static LibHac.Tests.Common.Layout;
@@ -106,3 +108,5 @@ public class TypeLayoutTests
         Assert.Equal(0xE0, GetOffset(in s, in s.PaddingE0));
     }
 }
+
+#endif

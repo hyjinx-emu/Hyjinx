@@ -2,8 +2,10 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
+using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Diag;
+using LibHac.Fs;
 using LibHac.Util;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
@@ -16,6 +18,19 @@ public partial class NcaHeader
     public NcaVersion FormatVersion { get; }
 
     private ref NcaHeaderStruct Header => ref Unsafe.As<byte, NcaHeaderStruct>(ref _header.Span[0]);
+
+    #if !IS_TPM_BYPASS_ENABLED
+    
+    public NcaHeader(IStorage storage)
+    {
+        byte[] buf = new byte[HeaderSize];
+        storage.Read(0, buf).ThrowIfFailure();
+        
+        _header = buf;
+        FormatVersion = DetectNcaVersion(_header.Span);
+    }
+    
+    #endif
 
     public Span<byte> Signature1 => _header.Span.Slice(0, 0x100);
     public Span<byte> Signature2 => _header.Span.Slice(0x100, 0x100);

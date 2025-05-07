@@ -1,12 +1,14 @@
-﻿using System;
+﻿using LibHac.FsSrv;
+using System;
 
 // ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
 
-[Obsolete("This class can no longer be used due to TPM restrictions.")]
 public partial class KeySet
 {
     public static readonly KeySet Empty = new();
+    
+    public ExternalKeySet ExternalKeySet { get; } = new();
     
     internal KeySet() { }
     

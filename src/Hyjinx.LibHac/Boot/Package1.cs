@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -570,3 +572,5 @@ public class Package1
 
     private static ReadOnlySpan<byte> LegacyDateCutoff => "20181107"u8;
 }
+
+#endif

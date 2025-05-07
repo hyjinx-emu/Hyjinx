@@ -40,7 +40,9 @@ public class DefaultFsServerObjects
         creators.SaveDataFileSystemCreator = new SaveDataFileSystemCreator(fsServer, keySet, null, randomGenerator);
         creators.GameCardStorageCreator = gcStorageCreator;
         creators.GameCardFileSystemCreator = new GameCardFileSystemCreator(new ArrayPoolMemoryResource(), gcStorageCreator, fsServer);
+        #if IS_TPM_BYPASS_ENABLED
         creators.EncryptedFileSystemCreator = new EncryptedFileSystemCreator(keySet);
+        #endif
         creators.BuiltInStorageFileSystemCreator = new EmulatedBisFileSystemCreator(ref sharedRootFileSystem.Ref);
         creators.SdCardFileSystemCreator = new EmulatedSdCardFileSystemCreator(sdmmcNew, ref sharedRootFileSystemCopy.Ref);
 

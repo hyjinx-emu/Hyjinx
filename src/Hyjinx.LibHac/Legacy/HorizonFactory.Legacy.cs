@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using LibHac.Bcat;
 using LibHac.Common.Keys;
 using LibHac.Fs.Fsa;
@@ -38,3 +40,5 @@ public static class HorizonFactory
         return horizon;
     }
 }
+
+#endif

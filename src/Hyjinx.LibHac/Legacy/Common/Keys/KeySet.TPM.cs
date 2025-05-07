@@ -53,8 +53,6 @@ partial class KeySet
         ? ref _rsaSigningKeyParamsDev
         : ref _rsaSigningKeyParamsProd;
 
-    public ExternalKeySet ExternalKeySet { get; } = new ExternalKeySet();
-
     public Span<AesKey> MarikoAesClassKeys => RootKeys.MarikoAesClassKeys.Items;
     public ref AesKey MarikoKek => ref RootKeys.MarikoKek;
     public ref AesKey MarikoBek => ref RootKeys.MarikoBek;

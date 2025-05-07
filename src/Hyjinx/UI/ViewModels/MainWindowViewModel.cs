@@ -20,7 +20,6 @@ using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.Common.Utilities;
 using Hyjinx.Cpu;
 using Hyjinx.HLE;
 using Hyjinx.HLE.FileSystem;
@@ -29,7 +28,6 @@ using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.UI;
 using Hyjinx.Input.HLE;
 using Hyjinx.UI.App.Common;
-using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
@@ -44,7 +42,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Key = Hyjinx.Input.Key;
-using MissingKeyException = LibHac.Common.Keys.MissingKeyException;
 using ShaderCacheLoadingState = Hyjinx.Graphics.Gpu.Shader.ShaderCacheState;
 
 namespace Hyjinx.Ava.UI.ViewModels

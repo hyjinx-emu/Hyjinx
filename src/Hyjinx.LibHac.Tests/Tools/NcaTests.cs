@@ -96,8 +96,6 @@ public class NcaTests
         return null;
     }
     
-    #endif
-
     [Fact]
     public void CanDecryptAnEncryptedNcaFile()
     {
@@ -124,7 +122,7 @@ public class NcaTests
         
         Assert.Success(Result.Success);
     }
-    
+
     [Fact]
     public void EncryptedAndUnencryptedFilesAreIdentical()
     {
@@ -168,6 +166,8 @@ public class NcaTests
 
     }
     
+    #endif
+
     [Fact]
     public void CanReadAnUnencryptedNca()
     {

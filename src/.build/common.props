@@ -7,7 +7,7 @@
 
   <PropertyGroup>
     <!-- Determines whether the TPM bypass code is set to compile within the codebase. -->
-    <IsTpmBypassEnabled>true</IsTpmBypassEnabled>
+    <IsTpmBypassEnabled>false</IsTpmBypassEnabled>
     <!-- Identifies whether any code that has been placed in any *.Legacy.cs files are being compiled. -->
     <IsLegacyEnabled>false</IsLegacyEnabled>
   

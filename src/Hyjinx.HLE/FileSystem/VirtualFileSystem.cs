@@ -54,15 +54,18 @@ namespace Hyjinx.HLE.FileSystem
 
             var result = new VirtualFileSystem();
             
-            #if IS_TPM_BYPASS_ENABLED
-            #pragma warning disable CS0618 // Type or member is obsolete
             result.ReloadKeySet();
-            #pragma warning restore CS0618 // Type or member is obsolete
-            #endif
             
             return result;
         }
 
+        #if !IS_TPM_BYPASS_ENABLED
+        public void ReloadKeySet()
+        {
+            KeySet ??= KeySet.CreateDefaultKeySet();
+        }
+        #endif
+        
         public void LoadRomFs(ulong pid, string fileName)
         {
             var romfsStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);

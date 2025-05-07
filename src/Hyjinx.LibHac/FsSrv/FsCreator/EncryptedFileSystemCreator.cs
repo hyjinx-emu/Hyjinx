@@ -1,4 +1,6 @@
-﻿using LibHac.Common;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -34,3 +36,5 @@ public class EncryptedFileSystemCreator : IEncryptedFileSystemCreator
         return Result.Success;
     }
 }
+
+#endif

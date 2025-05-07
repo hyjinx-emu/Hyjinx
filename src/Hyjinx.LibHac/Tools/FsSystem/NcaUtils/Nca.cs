@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
+using LibHac.Common.Keys;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -14,8 +15,20 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 
 public partial class Nca
 {
+    private KeySet KeySet { get; }
     public IStorage BaseStorage { get; }
     public NcaHeader Header { get; }
+    
+    #if !IS_TPM_BYPASS_ENABLED
+    
+    public Nca(KeySet keySet, IStorage storage)
+    {
+        KeySet = keySet;
+        BaseStorage = storage;
+        Header = new NcaHeader(storage);
+    }
+    
+    #endif
 
     public bool CanOpenSection(NcaSectionType type)
     {
@@ -26,7 +39,19 @@ public partial class Nca
 
         return CanOpenSection(index);
     }
+    
+    #if !IS_TPM_BYPASS_ENABLED
+    
+    public bool CanOpenSection(int index)
+    {
+        if (!SectionExists(index)) return false;
+        if (GetFsHeader(index).EncryptionType == NcaEncryptionType.None) return true;
 
+        return true;
+    }
+
+    #endif
+    
     public bool SectionExists(NcaSectionType type)
     {
         if (!TryGetSectionIndexFromType(type, Header.ContentType, out int index))
@@ -50,6 +75,8 @@ public partial class Nca
         return Header.GetFsHeader(index);
     }
 
+    #if !IS_TPM_BYPASS_ENABLED
+    
     private IStorage OpenSectionStorage(int index)
     {
         if (!SectionExists(index)) throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
@@ -58,63 +85,6 @@ public partial class Nca
         long size = Header.GetSectionSize(index);
 
         BaseStorage.GetSize(out long ncaStorageSize).ThrowIfFailure();
-
-        NcaFsHeader fsHeader = Header.GetFsHeader(index);
-
-        if (fsHeader.ExistsSparseLayer())
-        {
-            ref NcaSparseInfo sparseInfo = ref fsHeader.GetSparseInfo();
-
-            Unsafe.SkipInit(out BucketTree.Header header);
-            sparseInfo.MetaHeader.ItemsRo.CopyTo(SpanHelpers.AsByteSpan(ref header));
-            header.Verify().ThrowIfFailure();
-
-            var sparseStorage = new SparseStorage();
-
-            if (header.EntryCount == 0)
-            {
-                sparseStorage.Initialize(size);
-            }
-            else
-            {
-                long dataSize = sparseInfo.GetPhysicalSize();
-
-                if (!IsSubRange(sparseInfo.PhysicalOffset, dataSize, ncaStorageSize))
-                {
-                    throw new InvalidDataException($"Section offset (0x{offset:x}) and length (0x{size:x}) fall outside the total NCA length (0x{ncaStorageSize:x}).");
-                }
-
-                IStorage baseStorage = BaseStorage.Slice(sparseInfo.PhysicalOffset, dataSize);
-                baseStorage.GetSize(out long baseStorageSize).ThrowIfFailure();
-
-                long metaOffset = sparseInfo.MetaOffset;
-                long metaSize = sparseInfo.MetaSize;
-
-                if (metaOffset - sparseInfo.PhysicalOffset + metaSize > baseStorageSize)
-                    ResultFs.NcaBaseStorageOutOfRangeB.Value.ThrowIfFailure();
-
-                IStorage metaStorageEncrypted = baseStorage.Slice(metaOffset, metaSize);
-
-                ulong upperCounter = sparseInfo.MakeAesCtrUpperIv(new NcaAesCtrUpperIv(fsHeader.Counter)).Value;
-                IStorage metaStorage = OpenAesCtrStorage(metaStorageEncrypted, index, sparseInfo.PhysicalOffset + metaOffset, upperCounter);
-
-                long nodeOffset = 0;
-                long nodeSize = IndirectStorage.QueryNodeStorageSize(header.EntryCount);
-                // ReSharper disable once UselessBinaryOperation
-                long entryOffset = nodeOffset + nodeSize;
-                long entrySize = IndirectStorage.QueryEntryStorageSize(header.EntryCount);
-
-                using var nodeStorage = new ValueSubStorage(metaStorage, nodeOffset, nodeSize);
-                using var entryStorage = new ValueSubStorage(metaStorage, entryOffset, entrySize);
-
-                sparseStorage.Initialize(new ArrayPoolMemoryResource(), in nodeStorage, in entryStorage, header.EntryCount).ThrowIfFailure();
-
-                using var dataStorage = new ValueSubStorage(baseStorage, 0, sparseInfo.GetPhysicalSize());
-                sparseStorage.SetDataStorage(in dataStorage);
-            }
-
-            return sparseStorage;
-        }
 
         if (!IsSubRange(offset, size, ncaStorageSize))
         {
@@ -125,38 +95,15 @@ public partial class Nca
         return BaseStorage.Slice(offset, size);
     }
 
-    internal IStorage OpenRawStorage(int index, bool openEncrypted = false)
+    internal IStorage OpenRawStorage(int index)
     {
         if (Header.IsNca0())
-            return OpenNca0RawStorage(index, openEncrypted);
-
-        IStorage storage = OpenSectionStorage(index);
-
-        if (IsEncrypted == openEncrypted)
-        {
-            return storage;
-        }
-
-        IStorage decryptedStorage = OpenDecryptedStorage(storage, index, !openEncrypted);
-
-        return decryptedStorage;
+            return OpenNca0RawStorage(index);
+        
+        return OpenSectionStorage(index);
     }
     
-    private IStorage OpenDecryptedStorage(IStorage baseStorage, int index, bool decrypting)
-    {
-        NcaFsHeader header = GetFsHeader(index);
-
-        return header.EncryptionType switch
-        {
-            NcaEncryptionType.None => baseStorage,
-#if IS_TPM_BYPASS_ENABLED
-            NcaEncryptionType.AesXts => OpenAesXtsStorage(baseStorage, index, decrypting),
-            NcaEncryptionType.AesCtr => OpenAesCtrStorage(baseStorage, index, Header.GetSectionStartOffset(index), header.Counter),
-            NcaEncryptionType.AesCtrEx => OpenAesCtrExStorage(baseStorage, index, decrypting),
-#endif
-            _ => throw new NotSupportedException("The encryption type is not supported.")
-        };
-    }
+    #endif
 
     private IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
     {
@@ -425,41 +372,22 @@ public partial class Nca
         return new HierarchicalIntegrityVerificationStorage(initInfo, integrityCheckLevel, leaveOpen);
     }
 
-    private IStorage OpenNca0BodyStorage(bool openEncrypted)
+    private IStorage OpenNca0BodyStorage()
     {
-        // NCA0 encrypts the entire NCA body using AES-XTS instead of
-        // using different encryption types and IVs for each section.
         Assert.SdkEqual(0, Header.Version);
 
-        if (openEncrypted == IsEncrypted)
-        {
-            return GetRawStorage();
-        }
-
-        if (Nca0TransformedBody != null)
-            return Nca0TransformedBody;
-
-        byte[] key0 = GetContentKey(NcaKeyType.AesXts0);
-        byte[] key1 = GetContentKey(NcaKeyType.AesXts1);
-
-        Nca0TransformedBody = new CachedStorage(new Aes128XtsStorage(GetRawStorage(), key0, key1, HeaderSectorSize, true, !openEncrypted), 1, true);
-        return Nca0TransformedBody;
-
-        IStorage GetRawStorage()
-        {
-            BaseStorage.GetSize(out long ncaSize).ThrowIfFailure();
-            return BaseStorage.Slice(0x400, ncaSize - 0x400);
-        }
+        BaseStorage.GetSize(out long ncaSize).ThrowIfFailure();
+        return BaseStorage.Slice(0x400, ncaSize - 0x400);
     }
 
-    private IStorage OpenNca0RawStorage(int index, bool openEncrypted)
+    private IStorage OpenNca0RawStorage(int index)
     {
         if (!SectionExists(index)) throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
 
         long offset = Header.GetSectionStartOffset(index) - 0x400;
         long size = Header.GetSectionSize(index);
 
-        IStorage bodyStorage = OpenNca0BodyStorage(openEncrypted);
+        IStorage bodyStorage = OpenNca0BodyStorage();
 
         bodyStorage.GetSize(out long baseSize).ThrowIfFailure();
 
@@ -475,7 +403,7 @@ public partial class Nca
     private NcaFsHeader GetNca0FsHeader(int index)
     {
         // NCA0 stores the FS header in the first block of the section instead of the header
-        IStorage bodyStorage = OpenNca0BodyStorage(false);
+        IStorage bodyStorage = OpenNca0BodyStorage();
         long offset = Header.GetSectionStartOffset(index) - 0x400;
 
         byte[] fsHeaderData = new byte[0x200];
