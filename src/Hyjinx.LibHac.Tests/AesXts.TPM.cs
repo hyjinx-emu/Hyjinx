@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System.Linq;
 using LibHac.Tools.FsSystem;
 using LibHac.Util;
 using Xunit;
@@ -139,3 +141,5 @@ public class AesXts
         public byte[] GetTransformedText(bool decrypting) => decrypting ? PlainText : CipherText;
     }
 }
+
+#endif

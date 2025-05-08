@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Buffers;
 using System.Buffers.Binary;
 using LibHac.Fs;
@@ -122,3 +124,5 @@ public class Aes128CtrStorage : SectorStorage
         return counter;
     }
 }
+
+#endif

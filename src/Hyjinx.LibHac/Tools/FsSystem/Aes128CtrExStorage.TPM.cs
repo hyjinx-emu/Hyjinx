@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LibHac.Fs;
@@ -113,3 +115,5 @@ public class Aes128CtrExStorage : Aes128CtrStorage
         Counter[4] = (byte)(value >> 24);
     }
 }
+
+#endif

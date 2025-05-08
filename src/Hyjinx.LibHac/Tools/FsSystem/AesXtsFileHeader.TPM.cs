@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -125,3 +127,5 @@ public class AesXtsFileHeader
         return data;
     }
 }
+
+#endif

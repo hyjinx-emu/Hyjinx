@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System.Runtime.CompilerServices;
 using LibHac.FsSystem;
 using LibHac.FsSystem.Impl;
 using Xunit;
@@ -379,3 +381,5 @@ public class TypeLayoutTests
         Assert.Equal(0x20, GetOffset(in s, in s.Hash));
     }
 }
+
+#endif

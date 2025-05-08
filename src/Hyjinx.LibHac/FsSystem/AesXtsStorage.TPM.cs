@@ -1,4 +1,6 @@
-﻿// ReSharper disable NotAccessedField.Local
+﻿#if IS_TPM_BYPASS_ENABLED
+
+// ReSharper disable NotAccessedField.Local
 using System;
 using System.Buffers.Binary;
 using LibHac.Common;
@@ -113,3 +115,5 @@ public class AesXtsStorage : IStorage
         throw new NotImplementedException();
     }
 }
+
+#endif

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -131,3 +133,5 @@ public class AesXtsFile : IFile
         base.Dispose();
     }
 }
+
+#endif

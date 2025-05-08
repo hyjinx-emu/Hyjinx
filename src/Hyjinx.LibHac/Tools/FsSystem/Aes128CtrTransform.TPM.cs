@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Buffers;
 using System.Buffers.Binary;
 using System.Runtime.InteropServices;
@@ -73,3 +75,5 @@ public class Aes128CtrTransform
         }
     }
 }
+
+#endif

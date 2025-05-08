@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
@@ -81,3 +83,5 @@ public class AesCbcStorage : SectorStorage
         return Result.Success;
     }
 }
+
+#endif

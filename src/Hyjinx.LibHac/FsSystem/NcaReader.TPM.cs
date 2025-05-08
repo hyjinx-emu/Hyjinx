@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
@@ -648,3 +650,5 @@ public class NcaFsHeaderReader
         SpanHelpers.AsReadOnlyByteSpan(in _header).CopyTo(outBuffer);
     }
 }
+
+#endif

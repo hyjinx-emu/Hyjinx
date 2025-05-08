@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Diagnostics;
 using LibHac.Common;
 using LibHac.Fs;
@@ -285,3 +287,5 @@ public class AesXtsFileSystem : IFileSystem
         file.Get.Write(0, header.ToBytes(false), WriteOption.Flush).ThrowIfFailure();
     }
 }
+
+#endif

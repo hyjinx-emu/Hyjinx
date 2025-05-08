@@ -1,4 +1,6 @@
-﻿// ReSharper disable UnusedMember.Local
+﻿#if IS_TPM_BYPASS_ENABLED
+
+// ReSharper disable UnusedMember.Local
 using System;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
@@ -324,3 +326,5 @@ public class NcaFileSystemDriver : IDisposable
         throw new NotImplementedException();
     }
 }
+
+#endif

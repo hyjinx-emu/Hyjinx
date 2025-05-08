@@ -1,4 +1,6 @@
-﻿// Copyright (c) 2010 Gareth Lennox (garethl@dwakn.com)
+﻿#if IS_TPM_BYPASS_ENABLED
+
+// Copyright (c) 2010 Gareth Lennox (garethl@dwakn.com)
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification,
@@ -237,3 +239,5 @@ public class Aes128XtsTransform
             i[0] ^= 0x87;
     }
 }
+
+#endif

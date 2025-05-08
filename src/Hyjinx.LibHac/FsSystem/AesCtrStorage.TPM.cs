@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -233,3 +235,5 @@ public class AesCtrStorage : IStorage
         return Result.Success;
     }
 }
+
+#endif

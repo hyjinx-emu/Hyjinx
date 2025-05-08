@@ -1,3 +1,5 @@
+#if IS_TPM_BYPASS_ENABLED
+
 using System;
 using LibHac.Fs;
 
@@ -76,3 +78,5 @@ public class Aes128XtsStorage : SectorStorage
         return BaseStorage.Flush();
     }
 }
+
+#endif

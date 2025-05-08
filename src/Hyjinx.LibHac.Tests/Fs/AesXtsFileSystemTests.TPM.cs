@@ -1,4 +1,6 @@
-﻿using LibHac.Fs.Fsa;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using LibHac.Fs.Fsa;
 using LibHac.Tests.Fs.IFileSystemTestBase;
 using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
@@ -17,3 +19,5 @@ public class AesXtsFileSystemTests : IFileSystemTests
         return xtsFs;
     }
 }
+
+#endif

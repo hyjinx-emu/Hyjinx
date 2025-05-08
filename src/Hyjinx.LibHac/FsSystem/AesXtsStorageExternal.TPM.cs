@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
@@ -302,3 +304,5 @@ public class AesXtsStorageExternal : IStorage
         return Result.Success;
     }
 }
+
+#endif
