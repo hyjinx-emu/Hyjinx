@@ -1,13 +1,12 @@
-﻿using LibHac.Common;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Fs;
 using LibHac.Gc.Impl;
 using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using Aes = LibHac.Crypto.Aes;
-
-#if IS_TPM_BYPASS_ENABLED
 
 namespace LibHac.Tools.Fs;
 

@@ -1,9 +1,9 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
-
-#if IS_LEGACY_ENABLED
 
 internal class AesCbcEncryptor : ICipher
 {
@@ -21,8 +21,6 @@ internal class AesCbcEncryptor : ICipher
     }
 }
 
-#endif
-
 internal class AesCbcDecryptor : ICipher
 {
     private AesCbcMode _baseCipher;
@@ -38,3 +36,5 @@ internal class AesCbcDecryptor : ICipher
         return _baseCipher.Decrypt(input, output);
     }
 }
+
+#endif

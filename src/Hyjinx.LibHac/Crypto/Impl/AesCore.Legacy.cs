@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using LibHac.Common;
@@ -73,3 +75,5 @@ internal struct AesCore
         return _transform.TransformBlock(input, 0, length, output, 0);
     }
 }
+
+#endif

@@ -37,7 +37,6 @@ namespace Hyjinx.HLE.FileSystem
         private static bool _isInitialized = false;
 
         public KeySet KeySet { get; private set; }
-        public EmulatedGameCard GameCard { get; private set; }
         public SdmmcApi SdCard { get; private set; }
         public ModLoader ModLoader { get; } = new();
 
@@ -187,7 +186,9 @@ namespace Hyjinx.HLE.FileSystem
             // Use our own encrypted fs creator that doesn't actually do any encryption
             fsServerObjects.FsCreators.EncryptedFileSystemCreator = new EncryptedFileSystemCreator();
 
+#if IS_LEGACY_ENABLED
             GameCard = fsServerObjects.GameCard;
+#endif
             SdCard = fsServerObjects.Sdmmc;
 
             SdCard.SetSdCardInserted(true);

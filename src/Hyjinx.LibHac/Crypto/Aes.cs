@@ -1,4 +1,6 @@
-﻿// ReSharper disable AssignmentIsFullyDiscarded
+﻿#if IS_LEGACY_ENABLED
+
+// ReSharper disable AssignmentIsFullyDiscarded
 using System;
 using System.Runtime.CompilerServices;
 using LibHac.Crypto.Impl;
@@ -42,3 +44,5 @@ internal static partial class Aes
         return cipher.Transform(input, output);
     }
 }
+
+#endif

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -581,3 +583,5 @@ internal struct AesCoreNi
         return Sse2.Xor(s, t);
     }
 }
+
+#endif

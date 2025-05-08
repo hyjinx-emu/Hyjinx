@@ -8,7 +8,6 @@ using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Gc.Impl;
 using LibHac.Tools.FsSystem;
-using Aes = LibHac.Crypto.Aes;
 
 namespace LibHac.Tools.Fs;
 
@@ -116,7 +115,7 @@ public partial class XciHeader
             Flags = (GameCardAttribute)reader.ReadByte();
             PackageId = reader.ReadUInt64();
             ValidDataEndPage = reader.ReadInt64();
-            AesCbcIv = reader.ReadBytes(Aes.KeySize128);
+            AesCbcIv = reader.ReadBytes(0x10); // 128-bits
             Array.Reverse(AesCbcIv);
             RootPartitionOffset = reader.ReadInt64();
             RootPartitionHeaderSize = reader.ReadInt64();

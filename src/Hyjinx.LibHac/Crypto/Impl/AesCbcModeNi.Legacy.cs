@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -110,3 +112,5 @@ internal struct AesCbcModeNi
         return Math.Min(input.Length, output.Length) & ~0xF;
     }
 }
+
+#endif

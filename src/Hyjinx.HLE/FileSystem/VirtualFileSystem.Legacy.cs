@@ -8,6 +8,8 @@ namespace Hyjinx.HLE.FileSystem;
 
 partial class VirtualFileSystem
 {
+    public EmulatedGameCard GameCard { get; private set; }
+
     public static string? SystemPathToSwitchPath(string systemPath)
     {
         string baseSystemPath = AppDataManager.BaseDirPath + Path.DirectorySeparatorChar;
