@@ -25,6 +25,11 @@ public partial class NcaHeader
     {
         byte[] buf = new byte[HeaderSize];
         storage.Read(0, buf).ThrowIfFailure();
+
+        if (!CheckIsDecrypted(buf))
+        {
+            throw new EncryptedFileDetectedException("The file is encrypted.");
+        }
         
         _header = buf;
         FormatVersion = DetectNcaVersion(_header.Span);
@@ -148,17 +153,6 @@ public partial class NcaHeader
         return _header.Span.Slice(offset, FsHeaderHashSize);
     }
 
-    public Span<byte> GetEncryptedKey(int index)
-    {
-        if (index < 0 || index >= SectionCount)
-        {
-            throw new ArgumentOutOfRangeException($"Key index must be between 0 and 3. Actual: {index}");
-        }
-
-        int offset = KeyAreaOffset + Aes.KeySize128 * index;
-        return _header.Span.Slice(offset, Aes.KeySize128);
-    }
-
     public NcaFsHeader GetFsHeader(int index)
     {
         Span<byte> expectedHash = GetFsHeaderHash(index);
@@ -190,7 +184,7 @@ public partial class NcaHeader
         return (long)blockIndex * BlockSize;
     }
 
-    private static bool CheckIfDecrypted(ReadOnlySpan<byte> header)
+    private static bool CheckIsDecrypted(ReadOnlySpan<byte> header)
     {
         Assert.SdkRequiresGreaterEqual(header.Length, 0x400);
 

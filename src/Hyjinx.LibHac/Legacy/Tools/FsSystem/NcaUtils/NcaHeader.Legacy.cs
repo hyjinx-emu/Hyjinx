@@ -12,6 +12,17 @@ partial class NcaHeader
     {
         return BlockToOffset(GetSectionEntry(index).EndBlock);
     }
+
+    public Span<byte> GetEncryptedKey(int index)
+    {
+        if (index < 0 || index >= SectionCount)
+        {
+            throw new ArgumentOutOfRangeException($"Key index must be between 0 and 3. Actual: {index}");
+        }
+
+        int offset = KeyAreaOffset + Aes.KeySize128 * index;
+        return _header.Span.Slice(offset, Aes.KeySize128);
+    }
     
     public Validity VerifySignature1(byte[] modulus)
     {
