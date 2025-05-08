@@ -2,7 +2,6 @@
 using LibHac.Common.Keys;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
 
 namespace LibHac.Tools.Fs;
@@ -67,16 +66,5 @@ public class Xci
                 HashValidity = Header.PartitionFsHeaderValidity
             };
         }
-    }
-}
-
-public class XciPartition : Sha256PartitionFileSystem
-{
-    public long Offset { get; internal set; }
-    public Validity HashValidity { get; set; } = Validity.Unchecked;
-
-    public XciPartition(IStorage storage)
-    {
-        Initialize(storage).ThrowIfFailure();
     }
 }
