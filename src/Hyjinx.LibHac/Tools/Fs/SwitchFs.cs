@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -356,3 +358,5 @@ public class Application
         }
     }
 }
+
+#endif
