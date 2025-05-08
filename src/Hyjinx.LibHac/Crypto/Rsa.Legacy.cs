@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Numerics;
 using System.Security.Cryptography;
 
@@ -244,3 +246,5 @@ internal static class Rsa
         return t;
     }
 }
+
+#endif
