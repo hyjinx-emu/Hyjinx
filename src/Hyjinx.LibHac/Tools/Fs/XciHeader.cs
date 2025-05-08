@@ -37,17 +37,7 @@ public partial class XciHeader
     public int SelT1Key { get; set; }
     public int SelKey { get; set; }
     public int LimAreaPage { get; set; }
-
-    public bool IsHeaderDecrypted { get; set; }
-    public ulong FwVersion { get; set; }
-    public CardClockRate AccCtrl1 { get; set; }
-    public int Wait1TimeRead { get; set; }
-    public int Wait2TimeRead { get; set; }
-    public int Wait1TimeWrite { get; set; }
-    public int Wait2TimeWrite { get; set; }
-    public int FwMode { get; set; }
     public int UppVersion { get; set; }
-    public byte CompatibilityType { get; set; }
     public byte[] UppHash { get; set; }
     public ulong UppId { get; set; }
 
@@ -63,7 +53,6 @@ public partial class XciHeader
     public byte[] InitialDataAuthMac { get; set; }
     public byte[] InitialDataAuthNonce { get; set; }
     public byte[] InitialData { get; set; }
-    public byte[] DecryptedTitleKey { get; set; }
 
     public XciHeader(KeySet keySet, Stream stream)
     {

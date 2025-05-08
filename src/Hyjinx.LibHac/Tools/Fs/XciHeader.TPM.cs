@@ -35,6 +35,18 @@ partial class XciHeader
         0x9A, 0xC1, 0xDD, 0x62, 0x86, 0x9C, 0x2E, 0xE1, 0x2D, 0x6F, 0x62, 0x67, 0x51, 0x08, 0x0E, 0xCF
     };
     
+    public byte[] DecryptedTitleKey { get; set; }
+
+    public bool IsHeaderDecrypted { get; set; }
+    public ulong FwVersion { get; set; }
+    public CardClockRate AccCtrl1 { get; set; }
+    public int Wait1TimeRead { get; set; }
+    public int Wait2TimeRead { get; set; }
+    public int Wait1TimeWrite { get; set; }
+    public int Wait2TimeWrite { get; set; }
+    public int FwMode { get; set; }
+    public byte CompatibilityType { get; set; }
+
     private Result DecryptCardInitialData(Span<byte> dest, ReadOnlySpan<byte> initialData, int kekIndex, KeySet keySet)
     {
         if (initialData.Length != Unsafe.SizeOf<CardInitialData>())
