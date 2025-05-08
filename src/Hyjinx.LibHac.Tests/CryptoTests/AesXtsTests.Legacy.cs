@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using LibHac.Crypto;
@@ -125,3 +127,5 @@ public class AesXtsTests
         Common.CipherTestCore(tv.CipherText, tv.PlainText, Aes.CreateXtsDecryptor(key1, key2, tv.Iv));
     }
 }
+
+#endif

@@ -1,15 +1,17 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
 
-internal class AesEcbEncryptor : ICipher
+internal class AesEcbEncryptorNi : ICipher
 {
-    private AesEcbMode _baseCipher;
+    private AesEcbModeNi _baseCipher;
 
-    public AesEcbEncryptor(ReadOnlySpan<byte> key)
+    public AesEcbEncryptorNi(ReadOnlySpan<byte> key)
     {
-        _baseCipher = new AesEcbMode();
+        _baseCipher = new AesEcbModeNi();
         _baseCipher.Initialize(key, false);
     }
 
@@ -19,13 +21,13 @@ internal class AesEcbEncryptor : ICipher
     }
 }
 
-internal class AesEcbDecryptor : ICipher
+internal class AesEcbDecryptorNi : ICipher
 {
-    private AesEcbMode _baseCipher;
+    private AesEcbModeNi _baseCipher;
 
-    public AesEcbDecryptor(ReadOnlySpan<byte> key)
+    public AesEcbDecryptorNi(ReadOnlySpan<byte> key)
     {
-        _baseCipher = new AesEcbMode();
+        _baseCipher = new AesEcbModeNi();
         _baseCipher.Initialize(key, true);
     }
 
@@ -34,3 +36,5 @@ internal class AesEcbDecryptor : ICipher
         return _baseCipher.Decrypt(input, output);
     }
 }
+
+#endif

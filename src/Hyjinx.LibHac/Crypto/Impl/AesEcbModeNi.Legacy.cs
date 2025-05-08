@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 
 namespace LibHac.Crypto.Impl;
 
@@ -21,3 +23,5 @@ internal struct AesEcbModeNi
         return _aesCore.DecryptInterleaved8(input, output);
     }
 }
+
+#endif

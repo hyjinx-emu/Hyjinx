@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -143,3 +145,5 @@ public struct RsaKeyPair
     public Array4<byte> PublicExponent;
     public Array12<byte> Reserved;
 }
+
+#endif

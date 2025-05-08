@@ -6,6 +6,7 @@ using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
 
+#if IS_LEGACY_ENABLED
 internal class AesCbcEncryptorNi : ICipherWithIv
 {
     private AesCbcModeNi _baseCipher;
@@ -23,6 +24,7 @@ internal class AesCbcEncryptorNi : ICipherWithIv
         return _baseCipher.Encrypt(input, output);
     }
 }
+#endif
 
 internal class AesCbcDecryptorNi : ICipherWithIv
 {

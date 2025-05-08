@@ -1,4 +1,6 @@
-﻿using LibHac.Crypto;
+﻿#if IS_LEGACY_ENABLED
+
+using LibHac.Crypto;
 using Xunit;
 
 namespace LibHac.Tests.CryptoTests;
@@ -21,3 +23,5 @@ public class AesCtrTests
         Common.CipherTestCore(tv.PlainText, tv.CipherText, Aes.CreateCtrEncryptor(tv.Key, tv.Iv));
     }
 }
+
+#endif

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -256,3 +258,5 @@ internal struct AesXtsModeNi
         return Sse2.Xor(tmp1, tmp2);
     }
 }
+
+#endif

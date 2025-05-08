@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -181,3 +183,5 @@ internal struct AesXtsMode
         outputS[1] = input1S[1] ^ input2S[1];
     }
 }
+
+#endif

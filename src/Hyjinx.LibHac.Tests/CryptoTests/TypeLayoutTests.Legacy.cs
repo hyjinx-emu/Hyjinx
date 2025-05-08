@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿#if IS_LEGACY_ENABLED
+
+using System.Runtime.CompilerServices;
 using LibHac.Crypto;
 using Xunit;
 using static LibHac.Tests.Common.Layout;
@@ -72,3 +74,5 @@ public class TypeLayoutTests
         Assert.Equal(0x10, Unsafe.SizeOf<Crypto.AesCmac>());
     }
 }
+
+#endif

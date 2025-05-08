@@ -3,6 +3,8 @@ using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
 
+#if IS_LEGACY_ENABLED
+
 internal class AesCbcEncryptor : ICipher
 {
     private AesCbcMode _baseCipher;
@@ -18,6 +20,8 @@ internal class AesCbcEncryptor : ICipher
         return _baseCipher.Encrypt(input, output);
     }
 }
+
+#endif
 
 internal class AesCbcDecryptor : ICipher
 {

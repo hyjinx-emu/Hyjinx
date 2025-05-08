@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using LibHac.Common;
@@ -41,3 +43,5 @@ internal class AesXtsDecryptorNi : ICipherWithIv
         return _baseCipher.Decrypt(input, output);
     }
 }
+
+#endif

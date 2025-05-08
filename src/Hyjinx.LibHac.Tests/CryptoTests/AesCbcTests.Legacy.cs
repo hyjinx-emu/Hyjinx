@@ -1,68 +1,70 @@
-﻿using LibHac.Crypto;
+﻿#if IS_LEGACY_ENABLED
+
+using LibHac.Crypto;
 using Xunit;
 
 namespace LibHac.Tests.CryptoTests;
 
-public class AesEcbTests
+public class AesCbcTests
 {
     public static EncryptionTestVector[] EncryptTestVectors =
-        RspReader.ReadEncryptionTestVectorsArray(true, "ECBVarKey128.rsp", "ECBVarTxt128.rsp", "ECBKeySbox128.rsp", "ECBGFSbox128.rsp", "ECB128Long.rsp");
+        RspReader.ReadEncryptionTestVectorsArray(true, "CBCVarKey128.rsp", "CBCVarTxt128.rsp", "CBCKeySbox128.rsp", "CBCGFSbox128.rsp", "CBC128Long.rsp");
 
     public static EncryptionTestVector[] DecryptTestVectors =
-        RspReader.ReadEncryptionTestVectorsArray(false, "ECBVarKey128.rsp", "ECBVarTxt128.rsp", "ECBKeySbox128.rsp", "ECBGFSbox128.rsp", "ECB128Long.rsp");
+        RspReader.ReadEncryptionTestVectorsArray(false, "CBCVarKey128.rsp", "CBCVarTxt128.rsp", "CBCKeySbox128.rsp", "CBCGFSbox128.rsp", "CBC128Long.rsp");
 
     public static EncryptionTestVector[] EncryptMultiTestVectors =
-        RspReader.ReadEncryptionTestVectorsArray(true, "ECBMMT128.rsp");
+        RspReader.ReadEncryptionTestVectorsArray(true, "CBCMMT128.rsp");
 
     public static EncryptionTestVector[] DecryptMultiTestVectors =
-        RspReader.ReadEncryptionTestVectorsArray(false, "ECBMMT128.rsp");
+        RspReader.ReadEncryptionTestVectorsArray(false, "CBCMMT128.rsp");
 
     [Fact]
     public static void Encrypt()
     {
-        Common.EncryptCipherTest(EncryptTestVectors, (key, iv) => Aes.CreateEcbEncryptor(key, true));
+        Common.EncryptCipherTest(EncryptTestVectors, (key, iv) => Aes.CreateCbcEncryptor(key, iv, true));
     }
 
     [Fact]
     public static void Decrypt()
     {
-        Common.DecryptCipherTest(DecryptTestVectors, (key, iv) => Aes.CreateEcbDecryptor(key, true));
+        Common.DecryptCipherTest(DecryptTestVectors, (key, iv) => Aes.CreateCbcDecryptor(key, iv, true));
     }
 
     [Fact]
     public static void EncryptMulti()
     {
-        Common.EncryptCipherTest(EncryptMultiTestVectors, (key, iv) => Aes.CreateEcbEncryptor(key, true));
+        Common.EncryptCipherTest(EncryptMultiTestVectors, (key, iv) => Aes.CreateCbcEncryptor(key, iv, true));
     }
 
     [Fact]
     public static void DecryptMulti()
     {
-        Common.DecryptCipherTest(DecryptMultiTestVectors, (key, iv) => Aes.CreateEcbDecryptor(key, true));
+        Common.DecryptCipherTest(DecryptMultiTestVectors, (key, iv) => Aes.CreateCbcDecryptor(key, iv, true));
     }
 
     [AesIntrinsicsRequiredFact]
     public static void EncryptIntrinsics()
     {
-        Common.EncryptCipherTest(EncryptTestVectors, (key, iv) => Aes.CreateEcbEncryptor(key));
+        Common.EncryptCipherTest(EncryptTestVectors, (key, iv) => Aes.CreateCbcEncryptor(key, iv));
     }
 
     [AesIntrinsicsRequiredFact]
     public static void DecryptIntrinsics()
     {
-        Common.DecryptCipherTest(DecryptTestVectors, (key, iv) => Aes.CreateEcbDecryptor(key));
+        Common.DecryptCipherTest(DecryptTestVectors, (key, iv) => Aes.CreateCbcDecryptor(key, iv));
     }
 
     [AesIntrinsicsRequiredFact]
     public static void EncryptMultiIntrinsics()
     {
-        Common.EncryptCipherTest(EncryptMultiTestVectors, (key, iv) => Aes.CreateEcbEncryptor(key));
+        Common.EncryptCipherTest(EncryptMultiTestVectors, (key, iv) => Aes.CreateCbcEncryptor(key, iv));
     }
 
     [AesIntrinsicsRequiredFact]
     public static void DecryptMultiIntrinsics()
     {
-        Common.DecryptCipherTest(DecryptMultiTestVectors, (key, iv) => Aes.CreateEcbDecryptor(key));
+        Common.DecryptCipherTest(DecryptMultiTestVectors, (key, iv) => Aes.CreateCbcDecryptor(key, iv));
     }
 
 
@@ -74,62 +76,64 @@ public class AesEcbTests
 #pragma warning disable xUnit1013 // Public method should be marked as test
 
     public static TheoryData<EncryptionTestVector> EncryptTestVectors_Individual =
-        RspReader.ReadEncryptionTestVectors(true, "ECBVarKey128.rsp", "ECBVarTxt128.rsp", "ECBKeySbox128.rsp", "ECBGFSbox128.rsp", "ECB128Long.rsp");
+        RspReader.ReadEncryptionTestVectors(true, "CBCVarKey128.rsp", "CBCVarTxt128.rsp", "CBCKeySbox128.rsp", "CBCGFSbox128.rsp", "CBC128Long.rsp");
 
     public static TheoryData<EncryptionTestVector> DecryptTestVectors_Individual =
-        RspReader.ReadEncryptionTestVectors(false, "ECBVarKey128.rsp", "ECBVarTxt128.rsp", "ECBKeySbox128.rsp", "ECBGFSbox128.rsp", "ECB128Long.rsp");
+        RspReader.ReadEncryptionTestVectors(false, "CBCVarKey128.rsp", "CBCVarTxt128.rsp", "CBCKeySbox128.rsp", "CBCGFSbox128.rsp", "CBC128Long.rsp");
 
     public static TheoryData<EncryptionTestVector> EncryptMultiTestVectors_Individual =
-        RspReader.ReadEncryptionTestVectors(true, "ECBMMT128.rsp");
+        RspReader.ReadEncryptionTestVectors(true, "CBCMMT128.rsp");
 
     public static TheoryData<EncryptionTestVector> DecryptMultiTestVectors_Individual =
-        RspReader.ReadEncryptionTestVectors(false, "ECBMMT128.rsp");
+        RspReader.ReadEncryptionTestVectors(false, "CBCMMT128.rsp");
 
     //[Theory, MemberData(nameof(EncryptTestVectors_Individual))]
     public static void Encrypt_Individual(EncryptionTestVector tv)
     {
-        Common.CipherTestCore(tv.PlainText, tv.CipherText, Aes.CreateEcbEncryptor(tv.Key, true));
+        Common.CipherTestCore(tv.PlainText, tv.CipherText, Aes.CreateCbcEncryptor(tv.Key, tv.Iv, true));
     }
 
     //[Theory, MemberData(nameof(DecryptTestVectors_Individual))]
     public static void Decrypt_Individual(EncryptionTestVector tv)
     {
-        Common.CipherTestCore(tv.CipherText, tv.PlainText, Aes.CreateEcbDecryptor(tv.Key, true));
+        Common.CipherTestCore(tv.CipherText, tv.PlainText, Aes.CreateCbcDecryptor(tv.Key, tv.Iv, true));
     }
 
     //[Theory, MemberData(nameof(EncryptMultiTestVectors_Individual))]
     public static void EncryptMulti_Individual(EncryptionTestVector tv)
     {
-        Common.CipherTestCore(tv.PlainText, tv.CipherText, Aes.CreateEcbEncryptor(tv.Key, true));
+        Common.CipherTestCore(tv.PlainText, tv.CipherText, Aes.CreateCbcEncryptor(tv.Key, tv.Iv, true));
     }
 
     //[Theory, MemberData(nameof(DecryptMultiTestVectors_Individual))]
     public static void DecryptMulti_Individual(EncryptionTestVector tv)
     {
-        Common.CipherTestCore(tv.CipherText, tv.PlainText, Aes.CreateEcbDecryptor(tv.Key, true));
+        Common.CipherTestCore(tv.CipherText, tv.PlainText, Aes.CreateCbcDecryptor(tv.Key, tv.Iv, true));
     }
 
     //[AesIntrinsicsRequiredTheory, MemberData(nameof(EncryptTestVectors_Individual))]
     public static void EncryptIntrinsics_Individual(EncryptionTestVector tv)
     {
-        Common.CipherTestCore(tv.PlainText, tv.CipherText, Aes.CreateEcbEncryptor(tv.Key));
+        Common.CipherTestCore(tv.PlainText, tv.CipherText, Aes.CreateCbcEncryptor(tv.Key, tv.Iv));
     }
 
     //[AesIntrinsicsRequiredTheory, MemberData(nameof(DecryptTestVectors_Individual))]
     public static void DecryptIntrinsics_Individual(EncryptionTestVector tv)
     {
-        Common.CipherTestCore(tv.CipherText, tv.PlainText, Aes.CreateEcbDecryptor(tv.Key));
+        Common.CipherTestCore(tv.CipherText, tv.PlainText, Aes.CreateCbcDecryptor(tv.Key, tv.Iv));
     }
 
     //[AesIntrinsicsRequiredTheory, MemberData(nameof(EncryptMultiTestVectors_Individual))]
     public static void EncryptMultiIntrinsics_Individual(EncryptionTestVector tv)
     {
-        Common.CipherTestCore(tv.PlainText, tv.CipherText, Aes.CreateEcbEncryptor(tv.Key));
+        Common.CipherTestCore(tv.PlainText, tv.CipherText, Aes.CreateCbcEncryptor(tv.Key, tv.Iv));
     }
 
     //[AesIntrinsicsRequiredTheory, MemberData(nameof(DecryptMultiTestVectors_Individual))]
     public static void DecryptMultiIntrinsics_Individual(EncryptionTestVector tv)
     {
-        Common.CipherTestCore(tv.CipherText, tv.PlainText, Aes.CreateEcbDecryptor(tv.Key));
+        Common.CipherTestCore(tv.CipherText, tv.PlainText, Aes.CreateCbcDecryptor(tv.Key, tv.Iv));
     }
 }
+
+#endif

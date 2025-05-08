@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -56,3 +58,5 @@ internal struct AesCtrMode
         counterL[1] = BinaryPrimitives.ReverseEndianness(lo);
     }
 }
+
+#endif

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -126,3 +128,5 @@ internal struct AesCtrModeNi
         Unsafe.ReadUnaligned<Vector128<byte>>(ref counter[0]);
     }
 }
+
+#endif

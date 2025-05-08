@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Security.Cryptography;
 
 namespace LibHac.Crypto.Impl;
@@ -23,3 +25,5 @@ internal struct AesEcbMode
         return _aesCore.Decrypt(input, output);
     }
 }
+
+#endif

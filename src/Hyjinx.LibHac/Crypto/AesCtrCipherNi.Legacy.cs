@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using LibHac.Common;
@@ -23,3 +25,5 @@ internal class AesCtrCipherNi : ICipherWithIv
         return _baseCipher.Transform(input, output);
     }
 }
+
+#endif

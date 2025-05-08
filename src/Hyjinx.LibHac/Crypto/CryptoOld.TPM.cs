@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using System.Security.Cryptography;
 using LibHac.Common;
 
@@ -42,3 +44,5 @@ internal static class CryptoOld
         }
     }
 }
+
+#endif
