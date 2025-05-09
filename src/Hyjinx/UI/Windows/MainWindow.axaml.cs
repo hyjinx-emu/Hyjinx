@@ -344,7 +344,7 @@ namespace Hyjinx.Ava.UI.Windows
                             _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                                 "Couldn't find requested application id '{launchApplicationId}' in '{launchPath}'.", _launchApplicationId, _launchPath);
                             
-                            await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
+                            await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
                         }
                     }
                     else
@@ -358,7 +358,7 @@ namespace Hyjinx.Ava.UI.Windows
                     _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "Couldn't find any application in '{launchPath}'.", _launchPath);
                     
-                    await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialog(UserError.ApplicationNotFound));
+                    await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
                 }
             }
 

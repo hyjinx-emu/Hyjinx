@@ -28,10 +28,12 @@ using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.UI;
 using Hyjinx.Input.HLE;
 using Hyjinx.UI.App.Common;
+using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Hyjinx.UI.Common.Utilities;
+using LibHac.Tools.FsSystem.NcaUtils;
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using System;
@@ -1030,21 +1032,27 @@ namespace Hyjinx.Ava.UI.ViewModels
 
                 if (firmwareVersion == null)
                 {
-                    await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstallerFirmwareNotFoundErrorMessage, filename));
+                    await ContentDialogHelper.CreateErrorDialog(
+                        LocaleManager.Instance.UpdateAndGetDynamicValue(
+                            LocaleKeys.DialogFirmwareInstallerFirmwareNotFoundErrorMessage, filename));
 
                     return;
                 }
 
-                string dialogTitle = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstallerFirmwareInstallTitle, firmwareVersion.VersionString);
-                string dialogMessage = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstallerFirmwareInstallMessage, firmwareVersion.VersionString);
+                string dialogTitle = LocaleManager.Instance.UpdateAndGetDynamicValue(
+                    LocaleKeys.DialogFirmwareInstallerFirmwareInstallTitle, firmwareVersion.VersionString);
+                string dialogMessage = LocaleManager.Instance.UpdateAndGetDynamicValue(
+                    LocaleKeys.DialogFirmwareInstallerFirmwareInstallMessage, firmwareVersion.VersionString);
 
                 SystemVersion currentVersion = ContentManager.GetCurrentFirmwareVersion();
                 if (currentVersion != null)
                 {
-                    dialogMessage += LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstallerFirmwareInstallSubMessage, currentVersion.VersionString);
+                    dialogMessage += LocaleManager.Instance.UpdateAndGetDynamicValue(
+                        LocaleKeys.DialogFirmwareInstallerFirmwareInstallSubMessage, currentVersion.VersionString);
                 }
 
-                dialogMessage += LocaleManager.Instance[LocaleKeys.DialogFirmwareInstallerFirmwareInstallConfirmMessage];
+                dialogMessage +=
+                    LocaleManager.Instance[LocaleKeys.DialogFirmwareInstallerFirmwareInstallConfirmMessage];
 
                 UserResult result = await ContentDialogHelper.CreateConfirmationDialog(
                     dialogTitle,
@@ -1053,12 +1061,14 @@ namespace Hyjinx.Ava.UI.ViewModels
                     LocaleManager.Instance[LocaleKeys.InputDialogNo],
                     LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
-                UpdateWaitWindow waitingDialog = new(dialogTitle, LocaleManager.Instance[LocaleKeys.DialogFirmwareInstallerFirmwareInstallWaitMessage]);
+                UpdateWaitWindow waitingDialog = new(dialogTitle,
+                    LocaleManager.Instance[LocaleKeys.DialogFirmwareInstallerFirmwareInstallWaitMessage]);
 
                 if (result == UserResult.Yes)
                 {
-                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                    "Installing firmware {firmwareVersion}", firmwareVersion.VersionString);
+                    Logger.DefaultLogger.LogInformation(
+                        new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Installing firmware {firmwareVersion}", firmwareVersion.VersionString);
 
                     Thread thread = new(() =>
                     {
@@ -1075,15 +1085,21 @@ namespace Hyjinx.Ava.UI.ViewModels
                             {
                                 waitingDialog.Close();
 
-                                string message = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstallerFirmwareInstallSuccessMessage, firmwareVersion.VersionString);
+                                string message = LocaleManager.Instance.UpdateAndGetDynamicValue(
+                                    LocaleKeys.DialogFirmwareInstallerFirmwareInstallSuccessMessage,
+                                    firmwareVersion.VersionString);
 
-                                await ContentDialogHelper.CreateInfoDialog(dialogTitle, message, LocaleManager.Instance[LocaleKeys.InputDialogOk], "", LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
+                                await ContentDialogHelper.CreateInfoDialog(dialogTitle, message,
+                                    LocaleManager.Instance[LocaleKeys.InputDialogOk], "",
+                                    LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
 
-                                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), message);
+                                Logger.DefaultLogger.LogInformation(
+                                    new EventId((int)LogClass.Application, nameof(LogClass.Application)), message);
 
                                 // Purge Applet Cache.
 
-                                DirectoryInfo miiEditorCacheFolder = new(Path.Combine(AppDataManager.GamesDirPath, "0100000000001009", "cache"));
+                                DirectoryInfo miiEditorCacheFolder = new(Path.Combine(AppDataManager.GamesDirPath,
+                                    "0100000000001009", "cache"));
 
                                 if (miiEditorCacheFolder.Exists)
                                 {
@@ -1104,13 +1120,14 @@ namespace Hyjinx.Ava.UI.ViewModels
                         {
                             RefreshFirmwareStatus();
                         }
-                    })
-                    {
-                        Name = "GUI.FirmwareInstallerThread",
-                    };
+                    }) { Name = "GUI.FirmwareInstallerThread", };
 
                     thread.Start();
                 }
+            }
+            catch (EncryptedFileDetectedException)
+            {
+                await UserErrorDialog.ShowUserErrorDialogAsync(UserError.EncryptedFirmwareDetected);
             }
             catch (Exception ex)
             {

@@ -648,6 +648,7 @@
   "UserErrorApplicationNotFoundDescription": "Hyjinx couldn't find a valid application at the given path.",
   "UserErrorUnknownDescription": "An unknown error occured!",
   "UserErrorUndefinedDescription": "An undefined error occured! This shouldn't happen, please contact a dev!",
+  "UserErrorEncryptedFirmwareDetectedDescription": "Hyjinx was unable to use the firmware provided as the firmware appears to be encrypted.",
   "OpenSetupGuideMessage": "Open the Setup Guide",
   "NoUpdate": "No Update",
   "TitleUpdateVersionLabel": "Version {0}",
