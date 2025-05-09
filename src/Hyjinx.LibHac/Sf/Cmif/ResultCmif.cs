@@ -1,4 +1,6 @@
-﻿//-----------------------------------------------------------------------------
+﻿#if IS_LEGACY_ENABLED
+
+//-----------------------------------------------------------------------------
 // This file was automatically generated.
 // Changes to this file will be lost when the file is regenerated.
 //
@@ -40,3 +42,5 @@ public static class ResultCmif
     /// <summary>Error code: 2010-0301; Inner value: 0x25a0a</summary>
     public static Result.Base OutOfDomainEntry => new Result.Base(ModuleSf, 301);
 }
+
+#endif

@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿#if IS_LEGACY_ENABLED
+
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Fs;
@@ -128,3 +130,5 @@ public static class IniExtract
         public uint InitArrayEndOffset;
     }
 }
+
+#endif
