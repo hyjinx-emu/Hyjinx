@@ -3,7 +3,6 @@
   
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Version>1.1.0-dirty</Version>
     <SigningCertificate Condition=" '$(SigningCertificate)' == '' ">-</SigningCertificate>
     <TieredPGO>true</TieredPGO>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
@@ -67,10 +66,6 @@
     <Content Include="..\..\distribution\legal\THIRDPARTY.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>THIRDPARTY.md</TargetPath>
-    </Content>
-    <Content Include="..\..\LICENSE.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>LICENSE.txt</TargetPath>
     </Content>
   </ItemGroup>
 

@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using LibHac.Common;
 using LibHac.Common.Keys;
-using LibHac.Tools.Crypto;
+using LibHac.Crypto;
 using LibHac.Util;
 
 namespace LibHac.Tools.Es;
@@ -158,6 +158,7 @@ public class Ticket
             return commonKey;
         }
 
+#if IS_TPM_BYPASS_ENABLED
         if (keySet.ETicketRsaKey.PublicExponent.ItemsRo.IsZeros())
             return null;
 
@@ -169,6 +170,9 @@ public class Ticket
         {
             return null;
         }
+#else
+        return null;
+#endif
     }
 }
 

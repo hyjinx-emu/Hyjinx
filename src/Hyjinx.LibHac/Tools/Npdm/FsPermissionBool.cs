@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 // ReSharper disable InconsistentNaming
 namespace LibHac.Tools.Npdm;
 
@@ -31,3 +33,5 @@ public enum FsPermissionBool : ulong
     Unknown0x19 = 0x8000000000000800,
     Unknown0x1A = 0x8000000000004020
 }
+
+#endif

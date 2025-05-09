@@ -11,7 +11,7 @@ public static class Sha256
     /// Creates an uninitialized SHA-256 <see cref="IHash"/> object.
     /// </summary>
     /// <returns> The new uninitialized SHA-256 <see cref="IHash"/> object.</returns>
-    public static IHash CreateSha256Generator()
+    internal static IHash CreateSha256Generator()
     {
         return new Sha256Generator();
     }

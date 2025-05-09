@@ -615,62 +615,14 @@ namespace Hyjinx.Ava
 
             SystemVersion firmwareVersion = ContentManager.GetCurrentFirmwareVersion();
 
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
             {
                 if (!SetupValidator.CanStartApplication(ContentManager, ApplicationPath, out UserError userError))
                 {
-                    {
-                        if (SetupValidator.CanFixStartApplication(ContentManager, ApplicationPath, userError, out firmwareVersion))
-                        {
-                            if (userError == UserError.NoFirmware)
-                            {
-                                UserResult result = await ContentDialogHelper.CreateConfirmationDialog(
-                                    LocaleManager.Instance[LocaleKeys.DialogFirmwareNoFirmwareInstalledMessage],
-                                    LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstallEmbeddedMessage, firmwareVersion.VersionString),
-                                    LocaleManager.Instance[LocaleKeys.InputDialogYes],
-                                    LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                                    "");
+                    await UserErrorDialog.ShowUserErrorDialog(userError);
+                    Device.Dispose();
 
-                                if (result != UserResult.Yes)
-                                {
-                                    await UserErrorDialog.ShowUserErrorDialog(userError);
-                                    Device.Dispose();
-
-                                    return false;
-                                }
-                            }
-
-                            if (!SetupValidator.TryFixStartApplication(ContentManager, ApplicationPath, userError, out _))
-                            {
-                                await UserErrorDialog.ShowUserErrorDialog(userError);
-                                Device.Dispose();
-
-                                return false;
-                            }
-
-                            // Tell the user that we installed a firmware for them.
-                            if (userError == UserError.NoFirmware)
-                            {
-                                firmwareVersion = ContentManager.GetCurrentFirmwareVersion();
-
-                                _viewModel.RefreshFirmwareStatus();
-
-                                await ContentDialogHelper.CreateInfoDialog(
-                                    LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstalledMessage, firmwareVersion.VersionString),
-                                    LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogFirmwareInstallEmbeddedSuccessMessage, firmwareVersion.VersionString),
-                                    LocaleManager.Instance[LocaleKeys.InputDialogOk],
-                                    "",
-                                    LocaleManager.Instance[LocaleKeys.HyjinxInfo]);
-                            }
-                        }
-                        else
-                        {
-                            await UserErrorDialog.ShowUserErrorDialog(userError);
-                            Device.Dispose();
-
-                            return false;
-                        }
-                    }
+                    return false;
                 }
             }
 
@@ -833,9 +785,6 @@ namespace Hyjinx.Ava
 
         private void InitializeSwitchInstance()
         {
-            // Initialize KeySet.
-            VirtualFileSystem.ReloadKeySet();
-
             // Initialize Renderer.
             IRenderer renderer;
 

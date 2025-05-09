@@ -18,7 +18,6 @@ namespace Hyjinx.Ava.UI.Helpers
         {
             return error switch
             {
-                UserError.NoKeys => LocaleManager.Instance[LocaleKeys.UserErrorNoKeys],
                 UserError.NoFirmware => LocaleManager.Instance[LocaleKeys.UserErrorNoFirmware],
                 UserError.FirmwareParsingFailed => LocaleManager.Instance[LocaleKeys.UserErrorFirmwareParsingFailed],
                 UserError.ApplicationNotFound => LocaleManager.Instance[LocaleKeys.UserErrorApplicationNotFound],
@@ -31,7 +30,6 @@ namespace Hyjinx.Ava.UI.Helpers
         {
             return error switch
             {
-                UserError.NoKeys => LocaleManager.Instance[LocaleKeys.UserErrorNoKeysDescription],
                 UserError.NoFirmware => LocaleManager.Instance[LocaleKeys.UserErrorNoFirmwareDescription],
                 UserError.FirmwareParsingFailed => LocaleManager.Instance[LocaleKeys.UserErrorFirmwareParsingFailedDescription],
                 UserError.ApplicationNotFound => LocaleManager.Instance[LocaleKeys.UserErrorApplicationNotFoundDescription],
@@ -44,9 +42,7 @@ namespace Hyjinx.Ava.UI.Helpers
         {
             return error switch
             {
-                UserError.NoKeys or
-                    UserError.NoFirmware or
-                    UserError.FirmwareParsingFailed => true,
+                UserError.NoFirmware or UserError.FirmwareParsingFailed => true,
                 _ => false,
             };
         }
@@ -60,7 +56,6 @@ namespace Hyjinx.Ava.UI.Helpers
 
             return error switch
             {
-                UserError.NoKeys => SetupGuideUrl + "#initial-setup---placement-of-prodkeys",
                 UserError.NoFirmware => SetupGuideUrl + "#initial-setup-continued---installation-of-firmware",
                 _ => SetupGuideUrl,
             };

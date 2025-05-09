@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_TPM_BYPASS_ENABLED
+
+using System;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Crypto;
@@ -429,3 +431,5 @@ public sealed class GameCardEmulated : IGcApi
         return Result.Success;
     }
 }
+
+#endif

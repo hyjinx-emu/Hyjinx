@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿#if IS_LEGACY_ENABLED
+
+using System.Security.Cryptography;
 using LibHac.Crypto;
 using Xunit;
 
@@ -126,3 +128,5 @@ public class RsaTests
         0x54, 0xe5, 0x22, 0xeb, 0x28, 0x8a, 0x3d, 0x66, 0xe4, 0x81, 0xc2, 0x17, 0x1d, 0x0d, 0x7b, 0x5f
     };
 }
+
+#endif

@@ -12,9 +12,11 @@ namespace LibHac.FsSrv;
 public class DefaultFsServerObjects
 {
     public FileSystemCreatorInterfaces FsCreators { get; set; }
-    public EmulatedGameCard GameCard { get; set; }
+    public EmulatedGameCard? GameCard { get; set; }
     public SdmmcApi Sdmmc { get; set; }
+#if IS_LEGACY_ENABLED
     public GameCardEmulated GameCardNew { get; set; }
+#endif
     public EmulatedStorageDeviceManagerFactory StorageDeviceManagerFactory { get; set; }
 
     public static DefaultFsServerObjects GetDefaultEmulatedCreators(IFileSystem rootFileSystem, KeySet keySet,
@@ -23,7 +25,10 @@ public class DefaultFsServerObjects
         var creators = new FileSystemCreatorInterfaces();
         var gameCard = new EmulatedGameCard(keySet);
 
-        var gameCardNew = new GameCardEmulated();
+        IGcApi? gameCardNew = null;
+#if IS_LEGACY_ENABLED
+        gameCardNew = new GameCardEmulated();
+#endif
         var sdmmcNew = new SdmmcApi(fsServer);
 
         var gcStorageCreator = new GameCardStorageCreator(fsServer);
@@ -40,7 +45,9 @@ public class DefaultFsServerObjects
         creators.SaveDataFileSystemCreator = new SaveDataFileSystemCreator(fsServer, keySet, null, randomGenerator);
         creators.GameCardStorageCreator = gcStorageCreator;
         creators.GameCardFileSystemCreator = new GameCardFileSystemCreator(new ArrayPoolMemoryResource(), gcStorageCreator, fsServer);
+        #if IS_TPM_BYPASS_ENABLED
         creators.EncryptedFileSystemCreator = new EncryptedFileSystemCreator(keySet);
+        #endif
         creators.BuiltInStorageFileSystemCreator = new EmulatedBisFileSystemCreator(ref sharedRootFileSystem.Ref);
         creators.SdCardFileSystemCreator = new EmulatedSdCardFileSystemCreator(sdmmcNew, ref sharedRootFileSystemCopy.Ref);
 
@@ -51,7 +58,9 @@ public class DefaultFsServerObjects
             FsCreators = creators,
             GameCard = gameCard,
             Sdmmc = sdmmcNew,
+#if IS_LEGACY_ENABLED
             GameCardNew = gameCardNew,
+#endif
             StorageDeviceManagerFactory = storageDeviceManagerFactory
         };
     }

@@ -1,4 +1,6 @@
-﻿using LibHac.Crypto;
+﻿#if IS_LEGACY_ENABLED
+
+using LibHac.Crypto;
 using Xunit;
 
 namespace LibHac.Tests.CryptoTests;
@@ -24,3 +26,5 @@ public sealed class AesIntrinsicsRequiredFactAttribute : FactAttribute
         }
     }
 }
+
+#endif

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 
@@ -58,3 +60,5 @@ public class NullFile : IFile
         return ResultFs.UnsupportedOperation.Log();
     }
 }
+
+#endif

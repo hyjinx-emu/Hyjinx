@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -61,3 +63,5 @@ public static unsafe class InteropWin32
         public Span<char> AlternateFileName => SpanHelpers.CreateSpan(ref _alternateFileName[0], 14);
     }
 }
+
+#endif

@@ -55,8 +55,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.SDL2.Common", "src\H
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Audio.Backends.SDL2", "src\Hyjinx.Audio.Backends.SDL2\Hyjinx.Audio.Backends.SDL2.csproj", "{D99A395A-8569-4DB0-B336-900647890052}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Headless.SDL2", "src\Hyjinx.Headless.SDL2\Hyjinx.Headless.SDL2.csproj", "{390DC343-5CB4-4C79-A5DD-E3ED235E4C49}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Graphics.Nvdec.FFmpeg", "src\Hyjinx.Graphics.Nvdec.FFmpeg\Hyjinx.Graphics.Nvdec.FFmpeg.csproj", "{BEE1C184-C9A4-410B-8DFC-FB74D5C93AEB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx", "src\Hyjinx\Hyjinx.csproj", "{7C1B2721-13DA-4B62-B046-C626605ECCE6}"
@@ -123,6 +121,20 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.SPB", "src\Hyjinx.SPB\Hyjinx.SPB.csproj", "{B4A67875-4CBE-4286-89E8-F0D472698526}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Hashing", "src\Hyjinx.Hashing\Hyjinx.Hashing.csproj", "{BF61DE62-9C02-4224-B7E4-5CDD68032748}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{A8E070B8-0BBA-4D03-A579-8691B11EF072}"
+	ProjectSection(SolutionItems) = preProject
+		.github\csc.json = .github\csc.json
+		.github\dependabot.yml = .github\dependabot.yml
+		.github\labeler.yml = .github\labeler.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{B4DEE222-986E-44B6-B6F7-8FFEAE52E725}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\checks.yml = .github\workflows\checks.yml
+		.github\workflows\pr_triage.yml = .github\workflows\pr_triage.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -234,10 +246,6 @@ Global
 		{D99A395A-8569-4DB0-B336-900647890052}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D99A395A-8569-4DB0-B336-900647890052}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D99A395A-8569-4DB0-B336-900647890052}.Release|Any CPU.Build.0 = Release|Any CPU
-		{390DC343-5CB4-4C79-A5DD-E3ED235E4C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{390DC343-5CB4-4C79-A5DD-E3ED235E4C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{390DC343-5CB4-4C79-A5DD-E3ED235E4C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{390DC343-5CB4-4C79-A5DD-E3ED235E4C49}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BEE1C184-C9A4-410B-8DFC-FB74D5C93AEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BEE1C184-C9A4-410B-8DFC-FB74D5C93AEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEE1C184-C9A4-410B-8DFC-FB74D5C93AEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -350,12 +358,12 @@ Global
 		{2BCB3D7A-38C0-4FE7-8FDA-374C6AD56D0E} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
 		{DFAB6F2D-B9BF-4AFF-B22B-7684A328EBA3} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
 		{2D5D3A1D-5730-4648-B0AB-06C53CB910C0} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
-		{390DC343-5CB4-4C79-A5DD-E3ED235E4C49} = {5C86EA50-A78D-4456-B2F9-7F6D2448EBF7}
 		{6BC3E1B4-0627-467A-B46E-F4B44BF00583} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{C3FA6DC7-C7CA-446C-804D-F98FDBDDE43B} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{01B3E63B-FA18-4FFC-8896-C05132E1DABA} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{A67C70AF-18AC-4FB4-BCB4-0E8F45ECBFFA} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{97B67FE1-134D-4436-85BD-5A652751168E} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
 		{996E745A-5BDB-432F-ADF9-2BE3F00BCB43} = {EEB9FB42-5EF6-4135-B051-D5DC604AA6F2}
+		{B4DEE222-986E-44B6-B6F7-8FFEAE52E725} = {A8E070B8-0BBA-4D03-A579-8691B11EF072}
 	EndGlobalSection
 EndGlobal

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 // ReSharper disable InconsistentNaming
 namespace LibHac.Tools.Npdm;
 
@@ -43,3 +45,5 @@ public enum FsPermissionRw : ulong
     MountContent_System = 0x8000000000100008,
     HostAccess = 0xC000000000400000
 }
+
+#endif
