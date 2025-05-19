@@ -146,10 +146,12 @@ public partial class Nca
         IStorage rawStorage = OpenRawStorage(index);
         NcaFsHeader header = GetFsHeader(index);
 
+#if IS_TPM_BYPASS_ENABLED
         if (header.EncryptionType == NcaEncryptionType.AesCtrEx)
         {
             return rawStorage.Slice(0, header.GetPatchInfo().RelocationTreeOffset);
         }
+#endif
 
         IStorage returnStorage = CreateVerificationStorage(integrityCheckLevel, header, rawStorage);
 
