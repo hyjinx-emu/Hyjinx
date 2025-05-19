@@ -26,7 +26,7 @@ namespace ARMeilleure.Translation.PTC
 
     partial class Ptc : IPtcLoadState
     {
-        private readonly ILogger<Ptc> _logger;
+        private readonly ILogger<Ptc>? _logger;
         
         private const string OuterHeaderMagicString = "PTCohd\0\0";
         private const string InnerHeaderMagicString = "PTCihd\0\0";
@@ -80,7 +80,7 @@ namespace ARMeilleure.Translation.PTC
 
         public Ptc()
         {
-            _logger = Logger.DefaultLoggerFactory.CreateLogger<Ptc>();
+            _logger = Logger.DefaultLoggerFactory?.CreateLogger<Ptc>();
             Profiler = new PtcProfiler(this);
 
             InitializeCarriers();

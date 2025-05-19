@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using ARMeilleure.Signal;
 using ARMeilleure.Translation;
 using Hyjinx.Common.Memory.PartialUnmaps;
@@ -462,3 +464,5 @@ namespace Hyjinx.Tests.Memory
         }
     }
 }
+
+#endif

@@ -44,6 +44,7 @@ public class DefaultFsServerObjects
         creators.SubDirectoryFileSystemCreator = new SubDirectoryFileSystemCreator();
         creators.SaveDataFileSystemCreator = new SaveDataFileSystemCreator(fsServer, keySet, null, randomGenerator);
         creators.GameCardStorageCreator = gcStorageCreator;
+        creators.EncryptedFileSystemCreator = new FakeEncryptedFileSystemCreator();
         creators.GameCardFileSystemCreator = new GameCardFileSystemCreator(new ArrayPoolMemoryResource(), gcStorageCreator, fsServer);
         creators.BuiltInStorageFileSystemCreator = new EmulatedBisFileSystemCreator(ref sharedRootFileSystem.Ref);
         creators.SdCardFileSystemCreator = new EmulatedSdCardFileSystemCreator(sdmmcNew, ref sharedRootFileSystemCopy.Ref);

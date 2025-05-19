@@ -16,7 +16,7 @@ namespace Hyjinx.Audio.Renderer.Server.MemoryPool
     /// </summary>
     public partial class PoolMapper
     {
-        private readonly ILogger<PoolMapper> _logger = Logger.DefaultLoggerFactory.CreateLogger<PoolMapper>();
+        private readonly ILogger<PoolMapper>? _logger = Logger.DefaultLoggerFactory?.CreateLogger<PoolMapper>();
         const uint CurrentProcessPseudoHandle = 0xFFFF8001;
 
         /// <summary>

@@ -8,7 +8,7 @@ namespace Hyjinx.HLE.FileSystem
 {
     public class EncryptedFileSystemCreator : IEncryptedFileSystemCreator
     {
-        public Result Create(ref SharedRef<IFileSystem> outEncryptedFileSystem,
+        public Result Create(ref SharedRef<IFileSystem> outFileSystem,
             ref SharedRef<IFileSystem> baseFileSystem, IEncryptedFileSystemCreator.KeyId idIndex,
             in EncryptionSeed encryptionSeed)
         {
@@ -18,7 +18,7 @@ namespace Hyjinx.HLE.FileSystem
             }
 
             // TODO: Reenable when AesXtsFileSystem is fixed.
-            outEncryptedFileSystem = SharedRef<IFileSystem>.CreateMove(ref baseFileSystem);
+            outFileSystem = SharedRef<IFileSystem>.CreateMove(ref baseFileSystem);
 
             return Result.Success;
         }
