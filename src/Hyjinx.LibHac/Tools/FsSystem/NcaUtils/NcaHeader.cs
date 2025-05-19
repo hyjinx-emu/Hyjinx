@@ -2,7 +2,6 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
-using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -37,9 +36,6 @@ public partial class NcaHeader
     
     #endif
 
-    public Span<byte> Signature1 => _header.Span.Slice(0, 0x100);
-    public Span<byte> Signature2 => _header.Span.Slice(0x100, 0x100);
-
     public uint Magic
     {
         get => Header.Magic;
@@ -60,30 +56,6 @@ public partial class NcaHeader
         set => Header.ContentType = (byte)value;
     }
 
-    public byte KeyGeneration
-    {
-        get => Math.Max(Header.KeyGeneration1, Header.KeyGeneration2);
-        set
-        {
-            if (value > 2)
-            {
-                Header.KeyGeneration1 = 2;
-                Header.KeyGeneration2 = value;
-            }
-            else
-            {
-                Header.KeyGeneration1 = value;
-                Header.KeyGeneration2 = 0;
-            }
-        }
-    }
-
-    public byte KeyAreaKeyIndex
-    {
-        get => Header.KeyAreaKeyIndex;
-        set => Header.KeyAreaKeyIndex = value;
-    }
-
     public long NcaSize
     {
         get => Header.NcaSize;
@@ -101,21 +73,8 @@ public partial class NcaHeader
         get => Header.ContentIndex;
         set => Header.ContentIndex = value;
     }
-    
-    public TitleVersion SdkVersion
-    {
-        get => new(Header.SdkVersion);
-        set => Header.SdkVersion = value.Version;
-    }
 
     public Span<byte> RightsId => _header.Span.Slice(RightsIdOffset, RightsIdSize);
-
-    public bool HasRightsId => !Utilities.IsZeros(RightsId);
-
-    public Span<byte> GetKeyArea()
-    {
-        return _header.Span.Slice(KeyAreaOffset, KeyAreaSize);
-    }
 
     private ref NcaSectionEntryStruct GetSectionEntry(int index)
     {

@@ -47,7 +47,7 @@ public partial class Nca
         if (!SectionExists(index)) return false;
         if (GetFsHeader(index).EncryptionType == NcaEncryptionType.None) return true;
 
-        return true;
+        return false;
     }
 
     #endif
@@ -210,8 +210,7 @@ public partial class Nca
         switch (header.HashType)
         {
             case NcaHashType.Sha256:
-                return InitIvfcForPartitionFs(header.GetIntegrityInfoSha256(), rawStorage, integrityCheckLevel,
-                    true);
+                return InitIvfcForPartitionFs(header.GetIntegrityInfoSha256(), rawStorage, integrityCheckLevel, true);
             case NcaHashType.Ivfc:
                 // The FS header of an NCA0 section with IVFC verification must be manually skipped
                 if (Header.IsNca0())

@@ -76,6 +76,35 @@ partial class NcaHeader
 
         return (buf, true);
     }
+
+    public byte KeyGeneration
+    {
+        get => Math.Max(Header.KeyGeneration1, Header.KeyGeneration2);
+        set
+        {
+            if (value > 2)
+            {
+                Header.KeyGeneration1 = 2;
+                Header.KeyGeneration2 = value;
+            }
+            else
+            {
+                Header.KeyGeneration1 = value;
+                Header.KeyGeneration2 = 0;
+            }
+        }
+    }
+
+    public byte KeyAreaKeyIndex
+    {
+        get => Header.KeyAreaKeyIndex;
+        set => Header.KeyAreaKeyIndex = value;
+    }
+
+    public Span<byte> GetKeyArea()
+    {
+        return _header.Span.Slice(KeyAreaOffset, KeyAreaSize);
+    }
 }
 
 #pragma warning restore CS0618 // Type or member is obsolete
