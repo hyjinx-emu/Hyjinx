@@ -619,7 +619,7 @@ namespace Hyjinx.Ava
             {
                 if (!SetupValidator.CanStartApplication(ContentManager, ApplicationPath, out UserError userError))
                 {
-                    await UserErrorDialog.ShowUserErrorDialog(userError);
+                    await UserErrorDialog.ShowUserErrorDialogAsync(userError);
                     Device.Dispose();
 
                     return false;

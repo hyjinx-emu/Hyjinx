@@ -76,7 +76,8 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
 
             if (nca.Header.TitleId == ContentManager.SystemUpdateTitleId && nca.Header.ContentType == NcaContentType.Meta)
             {
-                IFileSystem fs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
+                // TODO: Viper - This should be enforcing integrity levels.
+                IFileSystem fs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
 
                 string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
 
@@ -96,7 +97,8 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
             }
             else if (nca.Header.TitleId == ContentManager.SystemVersionTitleId && nca.Header.ContentType == NcaContentType.Data)
             {
-                var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
+                // TODO: Viper - This should be enforcing integrity levels.
+                var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
 
                 using var systemVersionFile = new UniqueRef<IFile>();
 
@@ -145,7 +147,8 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
 
                 Nca metaNca = new(virtualFileSystem.KeySet, metaStorage);
 
-                IFileSystem fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
+                // TODO: Viper - This should be enforcing integrity levels.
+                IFileSystem fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
 
                 string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
 

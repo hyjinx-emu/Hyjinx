@@ -27,6 +27,11 @@ namespace Hyjinx.UI.Common
         ApplicationNotFound = 0x4,
 
         /// <summary>
+        /// The firmware is encrypted.
+        /// </summary>
+        EncryptedFirmwareDetected = 0x5,
+
+        /// <summary>
         /// An unknown error.
         /// </summary>
         Unknown = 0xDEAD,
