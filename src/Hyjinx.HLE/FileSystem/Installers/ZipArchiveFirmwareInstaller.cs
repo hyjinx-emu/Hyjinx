@@ -120,7 +120,8 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
             {
                 Nca metaNca = new(virtualFileSystem.KeySet, ncaStream.AsStorage());
 
-                IFileSystem fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
+                // TODO: Viper - This should be enforcing integrity levels.
+                IFileSystem fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
 
                 string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
 
@@ -151,7 +152,8 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
                 using Stream ncaStream = GetZipStream(archive.GetEntry(versionEntry));
                 Nca nca = new(virtualFileSystem.KeySet, ncaStream.AsStorage());
 
-                var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
+                // TODO: Viper - This should be enforcing integrity levels.
+                var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
 
                 using var systemVersionFile = new UniqueRef<IFile>();
 
@@ -185,7 +187,8 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
                     using Stream contentNcaStream = GetZipStream(contentZipEntry);
                     Nca metaNca = new(virtualFileSystem.KeySet, metaNcaStream.AsStorage());
 
-                    IFileSystem fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
+                    // TODO: Viper - This should be enforcing integrity levels.
+                    IFileSystem fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
 
                     string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
 
