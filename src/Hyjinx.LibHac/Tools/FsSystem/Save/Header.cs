@@ -93,15 +93,7 @@ public class Header
 
     private Validity ValidateSignature(KeySet keySet)
     {
-#if IS_TPM_BYPASS_ENABLED
-        Span<byte> calculatedCmac = stackalloc byte[0x10];
-
-        Aes.CalculateCmac(calculatedCmac, Data.AsSpan(0x100, 0x200), keySet.DeviceUniqueSaveMacKeys[0]);
-
-        return CryptoUtil.IsSameBytes(calculatedCmac, Cmac, Aes.BlockSize) ? Validity.Valid : Validity.Invalid;
-#else
         return Validity.Unchecked;
-#endif
     }
 }
 

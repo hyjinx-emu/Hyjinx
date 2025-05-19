@@ -1,5 +1,4 @@
 ﻿using LibHac.FsSrv;
-using System;
 
 // ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
@@ -11,9 +10,7 @@ public partial class KeySet
     public ExternalKeySet ExternalKeySet { get; } = new();
     
     internal KeySet() { }
-    
-    #if !IS_TPM_BYPASS_ENABLED
-    
+
     /// <summary>
     /// Returns a new <see cref="KeySet"/> containing any keys that have been compiled into the library.
     /// </summary>
@@ -22,6 +19,4 @@ public partial class KeySet
     {
         return Empty;
     }
-
-    #endif
 }

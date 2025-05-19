@@ -87,13 +87,9 @@ public partial class XciHeader
             reader.BaseStream.Position = SignatureSize;
             byte[] sigData = reader.ReadBytes(SignatureSize);
             reader.BaseStream.Position = SignatureSize + 4;
-
-            #if IS_TPM_BYPASS_ENABLED
-            SignatureValidity = CryptoOld.Rsa2048Pkcs1Verify(sigData, Signature, XciHeaderPubk);
-            #else
+            
             SignatureValidity = Validity.Unchecked;
-            #endif
-
+            
             RomAreaStartPage = reader.ReadInt32();
             BackupAreaStartPage = reader.ReadInt32();
             byte keyIndex = reader.ReadByte();
@@ -114,33 +110,6 @@ public partial class XciHeader
             SelT1Key = reader.ReadInt32();
             SelKey = reader.ReadInt32();
             LimAreaPage = reader.ReadInt32();
-
-            #if IS_TPM_BYPASS_ENABLED
-            if (keySet != null && !keySet.XciHeaderKey.IsZeros())
-            {
-                IsHeaderDecrypted = true;
-
-                byte[] encHeader = reader.ReadBytes(EncryptedHeaderSize);
-                byte[] decHeader = new byte[EncryptedHeaderSize];
-                Aes.DecryptCbc128(encHeader, decHeader, keySet.XciHeaderKey, AesCbcIv);
-
-                using (var decReader = new BinaryReader(new MemoryStream(decHeader)))
-                {
-                    FwVersion = decReader.ReadUInt64();
-                    AccCtrl1 = (CardClockRate)decReader.ReadInt32();
-                    Wait1TimeRead = decReader.ReadInt32();
-                    Wait2TimeRead = decReader.ReadInt32();
-                    Wait1TimeWrite = decReader.ReadInt32();
-                    Wait2TimeWrite = decReader.ReadInt32();
-                    FwMode = decReader.ReadInt32();
-                    UppVersion = decReader.ReadInt32();
-                    CompatibilityType = decReader.ReadByte();
-                    decReader.BaseStream.Position += 3;
-                    UppHash = decReader.ReadBytes(8);
-                    UppId = decReader.ReadUInt64();
-                }
-            }
-            #endif
             
             ImageHash = new byte[Sha256.DigestSize];
             Sha256.GenerateSha256Hash(sigData, ImageHash);
@@ -162,15 +131,6 @@ public partial class XciHeader
                     ? Validity.Valid
                     : Validity.Invalid;
             }
-
-            #if IS_TPM_BYPASS_ENABLED
-            Span<byte> key = stackalloc byte[0x10];
-            Result res = DecryptCardInitialData(key, InitialData, KekIndex, keySet);
-            if (res.IsSuccess())
-            {
-                DecryptedTitleKey = key.ToArray();
-            }
-            #endif
         }
     }
 
