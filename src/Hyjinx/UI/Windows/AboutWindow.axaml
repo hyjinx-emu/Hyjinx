@@ -63,7 +63,7 @@
                                 VerticalAlignment="Center" />
                             <TextBlock
                                 FontSize="11"
-                                Text="(REE-YOU-JINX)"
+                                Text="(HI-JINGKS)"
                                 TextAlignment="Start"
                                 Width="110"
                                 HorizontalAlignment="Center"
@@ -83,7 +83,7 @@
                     HorizontalAlignment="Center"
                     Background="Transparent"
                     Click="Button_OnClick"
-                    Tag="https://github.com/ryujinx-mirror/Hyjinx/wiki/Changelog#ryujinx-changelog">
+                    Tag="https://github.com/hyjinx-emu/Hyjinx">
                     <TextBlock
                         FontSize="10"
                         Text="{locale:Locale AboutChangelogButton}"
@@ -142,7 +142,7 @@
                         Background="Transparent"
                         Click="Button_OnClick"
                         CornerRadius="15"
-                        Tag="https://github.com/ryujinx-mirror/Hyjinx"
+                        Tag="https://github.com/hyjinx-emu/Hyjinx"
                         ToolTip.Tip="{locale:Locale AboutGithubUrlTooltipMessage}">
                         <Image Source="{Binding GithubLogo}" />
                     </Button>
@@ -223,7 +223,7 @@
                     HorizontalAlignment="Left"
                     Background="Transparent"
                     Click="Button_OnClick"
-                    Tag="https://github.com/ryujinx-mirror/Hyjinx/graphs/contributors?type=a">
+                    Tag="https://github.com/hyjinx-emu/Hyjinx/graphs/contributors?type=a">
                     <TextBlock
                         FontSize="10"
                         Text="{locale:Locale AboutHyjinxContributorsButtonHeader}"

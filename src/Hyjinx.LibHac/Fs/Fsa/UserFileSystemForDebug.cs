@@ -1,4 +1,6 @@
-﻿using LibHac.Common;
+﻿#if IS_LEGACY_ENABLED
+
+using LibHac.Common;
 using LibHac.Fs.Impl;
 
 namespace LibHac.Fs.Fsa;
@@ -28,3 +30,5 @@ public static class UserFileSystemForDebug
         return res;
     }
 }
+
+#endif

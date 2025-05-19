@@ -11,11 +11,6 @@ namespace Hyjinx.UI.Common
         Success = 0x0,
 
         /// <summary>
-        /// No keys are present.
-        /// </summary>
-        NoKeys = 0x1,
-
-        /// <summary>
         /// No firmware is installed.
         /// </summary>
         NoFirmware = 0x2,
@@ -30,6 +25,11 @@ namespace Hyjinx.UI.Common
         /// No application was found at the given path.
         /// </summary>
         ApplicationNotFound = 0x4,
+
+        /// <summary>
+        /// The firmware is encrypted.
+        /// </summary>
+        EncryptedFirmwareDetected = 0x5,
 
         /// <summary>
         /// An unknown error.

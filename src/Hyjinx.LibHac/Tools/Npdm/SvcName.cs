@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 namespace LibHac.Tools.Npdm;
 
 public enum SvcName
@@ -131,3 +133,5 @@ public enum SvcName
     SetResourceLimitLimitValue,
     CallSecureMonitor
 }
+
+#endif

@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using LibHac.Common;
 using LibHac.Common.Keys;
-using LibHac.Tools.Crypto;
+using LibHac.Crypto;
 
 namespace LibHac.Tools.Npdm;
 
@@ -43,14 +43,6 @@ public class Acid
         }
 
         Size = reader.ReadInt32();
-
-        if (keySet != null)
-        {
-            reader.BaseStream.Position = offset + 0x100;
-            byte[] signatureData = reader.ReadBytes(Size);
-            SignatureValidity =
-                CryptoOld.Rsa2048PssVerify(signatureData, Rsa2048Signature, keySet.AcidSigningKeyParams[0].Modulus);
-        }
 
         reader.BaseStream.Position = offset + 0x208;
         reader.ReadInt32();

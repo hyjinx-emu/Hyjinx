@@ -146,7 +146,7 @@ public class HierarchicalIntegrityVerificationStorage : IStorage
     /// <param name="returnOnError">If <see langword="true"/>, return as soon as an invalid block is found.</param>
     /// <param name="logger">An optional <see cref="IProgressReport"/> for reporting progress.</param>
     /// <returns>The <see cref="Validity"/> of the data of the specified hash level.</returns>
-    public Validity Validate(bool returnOnError, IProgressReport logger = null)
+    public Validity Validate(bool returnOnError, IProgressReport? logger = null)
     {
         Validity[] validities = LevelValidities[LevelValidities.Length - 1];
         IntegrityVerificationStorage storage = IntegrityStorages[IntegrityStorages.Length - 1];

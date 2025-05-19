@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using LibHac.Crypto;
 using LibHac.Util;
 using Xunit;
@@ -74,3 +76,5 @@ public class AesCmac
         public int Length;
     }
 }
+
+#endif

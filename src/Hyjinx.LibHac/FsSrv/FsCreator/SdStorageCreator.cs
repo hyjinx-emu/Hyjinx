@@ -1,4 +1,6 @@
-﻿using LibHac.Common;
+﻿#if IS_LEGACY_ENABLED
+
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Storage;
 
@@ -28,3 +30,5 @@ public class SdStorageCreator : ISdStorageCreator
         return _fsServer.Storage.OpenSdStorage(ref outStorage).Ret();
     }
 }
+
+#endif

@@ -3,7 +3,7 @@ using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;
 
-public class Sha256Generator : IHash
+internal class Sha256Generator : IHash
 {
     public const int HashSize = Sha256.DigestSize;
 

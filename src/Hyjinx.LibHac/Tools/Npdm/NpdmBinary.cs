@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 // ReSharper disable UnusedVariable
 
 using System;
@@ -80,3 +82,5 @@ public class NpdmBinary
         AciD = new Acid(stream, acidOffset, keySet);
     }
 }
+
+#endif

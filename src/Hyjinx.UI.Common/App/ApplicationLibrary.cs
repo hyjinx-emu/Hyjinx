@@ -422,11 +422,6 @@ namespace Hyjinx.UI.App.Common
                         }
                 }
             }
-            catch (MissingKeyException exception)
-            {
-                LogKeySetMissingKeyName(exception.Name);
-                return false;
-            }
             catch (InvalidDataException)
             {
                 LogHeaderKeyIsMissingOrInvalid(applicationPath);
@@ -824,10 +819,6 @@ namespace Hyjinx.UI.App.Common
                                 }
                             }
                         }
-                        catch (MissingKeyException)
-                        {
-                            applicationIcon = extension == ".xci" ? _xciIcon : _nspIcon;
-                        }
                         catch (InvalidDataException)
                         {
                             applicationIcon = extension == ".xci" ? _xciIcon : _nspIcon;
@@ -985,10 +976,6 @@ namespace Hyjinx.UI.App.Common
             catch (InvalidDataException)
             {
                 LogHeaderKeyIsMissingOrInvalid(updatePath!);
-            }
-            catch (MissingKeyException exception)
-            {
-                LogKeySetMissingKeyName(exception.Name);
             }
 
             return false;

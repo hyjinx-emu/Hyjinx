@@ -26,7 +26,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
 
         private const string TimeZoneSystemTitleMissingErrorMessage =
             "TimeZoneBinary system title not found! TimeZone conversions will not work, provide the system archive " +
-            "to fix this error. (See https://github.com/ryujinx-mirror/Hyjinx/wiki/Hyjinx-Setup-&-Configuration-Guide#initial-setup-continued---installation-of-firmware for more information)";
+            "to fix this error. (See https://github.com/hyjinx-emu/Hyjinx/wiki/Hyjinx-Setup-&-Configuration-Guide#initial-setup-continued---installation-of-firmware for more information)";
 
         private readonly ILogger<TimeZoneContentManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<TimeZoneContentManager>();
         private VirtualFileSystem _virtualFileSystem;

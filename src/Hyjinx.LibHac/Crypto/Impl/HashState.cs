@@ -1,6 +1,6 @@
 ﻿namespace LibHac.Crypto.Impl;
 
-public enum HashState
+internal enum HashState
 {
     Initial = 0,
     Initialized,

@@ -7,7 +7,8 @@ namespace Hyjinx.Ava.UI.Helpers
 {
     internal class UserErrorDialog
     {
-        private const string SetupGuideUrl = "https://github.com/ryujinx-mirror/Hyjinx/wiki/Hyjinx-Setup-&-Configuration-Guide";
+        // TODO: Viper - Update this to the public website instead of a github url.
+        private const string SetupGuideUrl = "https://github.com/hyjinx-emu/hyjinx/wiki/hyjinx-setup-and-configuration-guide";
 
         private static string GetErrorCode(UserError error)
         {
@@ -18,10 +19,10 @@ namespace Hyjinx.Ava.UI.Helpers
         {
             return error switch
             {
-                UserError.NoKeys => LocaleManager.Instance[LocaleKeys.UserErrorNoKeys],
                 UserError.NoFirmware => LocaleManager.Instance[LocaleKeys.UserErrorNoFirmware],
                 UserError.FirmwareParsingFailed => LocaleManager.Instance[LocaleKeys.UserErrorFirmwareParsingFailed],
                 UserError.ApplicationNotFound => LocaleManager.Instance[LocaleKeys.UserErrorApplicationNotFound],
+                UserError.EncryptedFirmwareDetected => LocaleManager.Instance[LocaleKeys.UserErrorFirmwareParsingFailed],
                 UserError.Unknown => LocaleManager.Instance[LocaleKeys.UserErrorUnknown],
                 _ => LocaleManager.Instance[LocaleKeys.UserErrorUndefined],
             };
@@ -31,10 +32,10 @@ namespace Hyjinx.Ava.UI.Helpers
         {
             return error switch
             {
-                UserError.NoKeys => LocaleManager.Instance[LocaleKeys.UserErrorNoKeysDescription],
                 UserError.NoFirmware => LocaleManager.Instance[LocaleKeys.UserErrorNoFirmwareDescription],
                 UserError.FirmwareParsingFailed => LocaleManager.Instance[LocaleKeys.UserErrorFirmwareParsingFailedDescription],
                 UserError.ApplicationNotFound => LocaleManager.Instance[LocaleKeys.UserErrorApplicationNotFoundDescription],
+                UserError.EncryptedFirmwareDetected => LocaleManager.Instance[LocaleKeys.UserErrorEncryptedFirmwareDetectedDescription],
                 UserError.Unknown => LocaleManager.Instance[LocaleKeys.UserErrorUnknownDescription],
                 _ => LocaleManager.Instance[LocaleKeys.UserErrorUndefinedDescription],
             };
@@ -44,9 +45,7 @@ namespace Hyjinx.Ava.UI.Helpers
         {
             return error switch
             {
-                UserError.NoKeys or
-                    UserError.NoFirmware or
-                    UserError.FirmwareParsingFailed => true,
+                UserError.NoFirmware or UserError.FirmwareParsingFailed => true,
                 _ => false,
             };
         }
@@ -60,13 +59,12 @@ namespace Hyjinx.Ava.UI.Helpers
 
             return error switch
             {
-                UserError.NoKeys => SetupGuideUrl + "#initial-setup---placement-of-prodkeys",
                 UserError.NoFirmware => SetupGuideUrl + "#initial-setup-continued---installation-of-firmware",
                 _ => SetupGuideUrl,
             };
         }
 
-        public static async Task ShowUserErrorDialog(UserError error)
+        public static async Task ShowUserErrorDialogAsync(UserError error)
         {
             string errorCode = GetErrorCode(error);
 

@@ -26,43 +26,43 @@ using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem
 {
-    public partial class VirtualFileSystem : IDisposable
+    public partial class VirtualFileSystem : IVirtualFileSystem, IDisposable
     {
-        public static readonly string SafeNandPath = Path.Combine(AppDataManager.DefaultNandDir, "safe");
         public static readonly string SystemNandPath = Path.Combine(AppDataManager.DefaultNandDir, "system");
         public static readonly string UserNandPath = Path.Combine(AppDataManager.DefaultNandDir, "user");
-
-        public KeySet KeySet { get; private set; }
-        public EmulatedGameCard GameCard { get; private set; }
-        public SdmmcApi SdCard { get; private set; }
-        public ModLoader ModLoader { get; private set; }
-
+        
         private static readonly ILogger<VirtualFileSystem> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<VirtualFileSystem>();
         
-        private readonly ConcurrentDictionary<ulong, Stream> _romFsByPid;
-
         private static bool _isInitialized = false;
 
+        public KeySet KeySet { get; private set; }
+        public SdmmcApi SdCard { get; private set; }
+        public ModLoader ModLoader { get; } = new();
+
+        private readonly ConcurrentDictionary<ulong, Stream> _romFsByPid = new();
+        
         public static VirtualFileSystem CreateInstance()
         {
             if (_isInitialized)
             {
-                throw new InvalidOperationException("VirtualFileSystem can only be instantiated once!");
+                throw new InvalidOperationException($"{nameof(VirtualFileSystem)} can only be instantiated once!");
             }
 
             _isInitialized = true;
 
-            return new VirtualFileSystem();
+            var result = new VirtualFileSystem();
+            
+            result.ReloadKeySet();
+            
+            return result;
         }
 
-        private VirtualFileSystem()
+        public void ReloadKeySet()
         {
-            ReloadKeySet();
-            ModLoader = new ModLoader(); // Should only be created once
-            _romFsByPid = new ConcurrentDictionary<ulong, Stream>();
+            KeySet ??= KeySet.CreateDefaultKeySet();
         }
-
+        
         public void LoadRomFs(ulong pid, string fileName)
         {
             var romfsStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
@@ -130,29 +130,6 @@ namespace Hyjinx.HLE.FileSystem
             return GetFullPath(MakeFullPath(parts[0]), parts[1]);
         }
 
-        public static string SystemPathToSwitchPath(string systemPath)
-        {
-            string baseSystemPath = AppDataManager.BaseDirPath + Path.DirectorySeparatorChar;
-
-            if (systemPath.StartsWith(baseSystemPath))
-            {
-                string rawPath = systemPath.Replace(baseSystemPath, "");
-                int firstSeparatorOffset = rawPath.IndexOf(Path.DirectorySeparatorChar);
-
-                if (firstSeparatorOffset == -1)
-                {
-                    return $"{rawPath}:/";
-                }
-
-                var basePath = rawPath.AsSpan(0, firstSeparatorOffset);
-                var fileName = rawPath.AsSpan(firstSeparatorOffset + 1);
-
-                return $"{basePath}:/{fileName}";
-            }
-
-            return null;
-        }
-
         private static string MakeFullPath(string path, bool isDirectory = true)
         {
             // Handles Common Switch Content Paths
@@ -207,7 +184,9 @@ namespace Hyjinx.HLE.FileSystem
             // Use our own encrypted fs creator that doesn't actually do any encryption
             fsServerObjects.FsCreators.EncryptedFileSystemCreator = new EncryptedFileSystemCreator();
 
+#if IS_LEGACY_ENABLED
             GameCard = fsServerObjects.GameCard;
+#endif
             SdCard = fsServerObjects.Sdmmc;
 
             SdCard.SetSdCardInserted(true);
@@ -221,46 +200,6 @@ namespace Hyjinx.HLE.FileSystem
             };
 
             FileSystemServerInitializer.InitializeWithConfig(fsServerClient, fsServer, fsServerConfig);
-        }
-
-        public void ReloadKeySet()
-        {
-            KeySet ??= KeySet.CreateDefaultKeySet();
-
-            string keyFile = null;
-            string titleKeyFile = null;
-            string consoleKeyFile = null;
-
-            if (AppDataManager.Mode == AppDataManager.LaunchMode.UserProfile)
-            {
-                LoadSetAtPath(AppDataManager.KeysDirPathUser);
-            }
-
-            LoadSetAtPath(AppDataManager.KeysDirPath);
-
-            void LoadSetAtPath(string basePath)
-            {
-                string localKeyFile = Path.Combine(basePath, "prod.keys");
-                string localTitleKeyFile = Path.Combine(basePath, "title.keys");
-                string localConsoleKeyFile = Path.Combine(basePath, "console.keys");
-
-                if (File.Exists(localKeyFile))
-                {
-                    keyFile = localKeyFile;
-                }
-
-                if (File.Exists(localTitleKeyFile))
-                {
-                    titleKeyFile = localTitleKeyFile;
-                }
-
-                if (File.Exists(localConsoleKeyFile))
-                {
-                    consoleKeyFile = localConsoleKeyFile;
-                }
-            }
-
-            ExternalKeyReader.ReadKeyFile(KeySet, keyFile, titleKeyFile, consoleKeyFile, null);
         }
 
         public void ImportTickets(IFileSystem fs)
@@ -662,7 +601,7 @@ namespace Hyjinx.HLE.FileSystem
 
         private static readonly ExtraDataFixInfo[] _systemExtraDataFixInfo =
         {
-            new ExtraDataFixInfo()
+            new()
             {
                 StaticSaveDataId = 0x8000000000000030,
                 OwnerId = 0x010000000000001F,
@@ -670,7 +609,7 @@ namespace Hyjinx.HLE.FileSystem
                 DataSize = 0x10000,
                 JournalSize = 0x10000,
             },
-            new ExtraDataFixInfo()
+            new()
             {
                 StaticSaveDataId = 0x8000000000001040,
                 OwnerId = 0x0100000000001009,

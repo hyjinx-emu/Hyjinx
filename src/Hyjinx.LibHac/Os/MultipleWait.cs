@@ -1,4 +1,6 @@
-﻿using LibHac.Diag;
+﻿#if IS_LEGACY_ENABLED
+
+using LibHac.Diag;
 using LibHac.Os.Impl;
 
 namespace LibHac.Os;
@@ -177,3 +179,5 @@ public static class MultipleWait
         holder.UserData = null;
     }
 }
+
+#endif
