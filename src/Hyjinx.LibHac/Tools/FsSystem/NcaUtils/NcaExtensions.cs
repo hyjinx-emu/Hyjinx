@@ -1,4 +1,6 @@
-﻿using LibHac.Common;
+﻿#if IS_LEGACY_ENABLED
+
+using LibHac.Common;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
@@ -66,3 +68,5 @@ public static partial class NcaExtensions
         return validity;
     }
 }
+
+#endif
