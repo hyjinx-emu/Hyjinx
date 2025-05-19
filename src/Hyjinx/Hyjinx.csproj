@@ -8,6 +8,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <RootNamespace>Hyjinx.Ava</RootNamespace>
+    <ApplicationIcon>Assets/Hyjinx.ico</ApplicationIcon>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
