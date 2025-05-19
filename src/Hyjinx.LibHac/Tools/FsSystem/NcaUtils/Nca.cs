@@ -19,16 +19,12 @@ public partial class Nca
     public IStorage BaseStorage { get; }
     public NcaHeader Header { get; }
     
-    #if !IS_TPM_BYPASS_ENABLED
-    
     public Nca(KeySet keySet, IStorage storage)
     {
         KeySet = keySet;
         BaseStorage = storage;
         Header = new NcaHeader(storage);
     }
-    
-    #endif
 
     public bool CanOpenSection(NcaSectionType type)
     {
@@ -39,9 +35,7 @@ public partial class Nca
 
         return CanOpenSection(index);
     }
-    
-    #if !IS_TPM_BYPASS_ENABLED
-    
+
     public bool CanOpenSection(int index)
     {
         if (!SectionExists(index)) return false;
@@ -49,8 +43,6 @@ public partial class Nca
 
         return false;
     }
-
-    #endif
     
     public bool SectionExists(NcaSectionType type)
     {
@@ -74,8 +66,6 @@ public partial class Nca
 
         return Header.GetFsHeader(index);
     }
-
-    #if !IS_TPM_BYPASS_ENABLED
     
     private IStorage OpenSectionStorage(int index)
     {
@@ -103,8 +93,6 @@ public partial class Nca
         return OpenSectionStorage(index);
     }
     
-    #endif
-
     private IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
     {
         IStorage patchStorage = patchNca.OpenRawStorage(index);
@@ -145,13 +133,6 @@ public partial class Nca
     {
         IStorage rawStorage = OpenRawStorage(index);
         NcaFsHeader header = GetFsHeader(index);
-
-#if IS_TPM_BYPASS_ENABLED
-        if (header.EncryptionType == NcaEncryptionType.AesCtrEx)
-        {
-            return rawStorage.Slice(0, header.GetPatchInfo().RelocationTreeOffset);
-        }
-#endif
 
         IStorage returnStorage = CreateVerificationStorage(integrityCheckLevel, header, rawStorage);
 

@@ -26,29 +26,9 @@ public struct NcaFsPatchInfo
         get => Data.RelocationTreeSize;
         set => Data.RelocationTreeSize = value;
     }
-
-    #if IS_TPM_BYPASS_ENABLED
-    
-    public long EncryptionTreeOffset
-    {
-        get => Data.EncryptionTreeOffset;
-        set => Data.EncryptionTreeOffset = value;
-    }
-
-    public long EncryptionTreeSize
-    {
-        get => Data.EncryptionTreeSize;
-        set => Data.EncryptionTreeSize = value;
-    }
-
-    #endif
     
     public Span<byte> RelocationTreeHeader => _data.Span.Slice(0x10, 0x10);
     
-    #if IS_TPM_BYPASS_ENABLED
-    public Span<byte> EncryptionTreeHeader => _data.Span.Slice(0x30, 0x10);
-    #endif
-
     [StructLayout(LayoutKind.Explicit)]
     private struct PatchInfoStruct
     {

@@ -16,6 +16,11 @@ partial class NcaHeader
     }
 
     public bool HasRightsId => !Utilities.IsZeros(RightsId);
+
+    public long GetSectionEndOffset(int index)
+    {
+        return BlockToOffset(GetSectionEntry(index).EndBlock);
+    }
 }
 
 #endif

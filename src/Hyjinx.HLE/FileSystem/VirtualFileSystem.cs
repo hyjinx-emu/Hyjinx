@@ -58,12 +58,10 @@ namespace Hyjinx.HLE.FileSystem
             return result;
         }
 
-        #if !IS_TPM_BYPASS_ENABLED
         public void ReloadKeySet()
         {
             KeySet ??= KeySet.CreateDefaultKeySet();
         }
-        #endif
         
         public void LoadRomFs(ulong pid, string fileName)
         {

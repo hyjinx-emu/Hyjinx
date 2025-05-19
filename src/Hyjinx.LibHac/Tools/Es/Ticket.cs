@@ -158,21 +158,7 @@ public class Ticket
             return commonKey;
         }
 
-#if IS_TPM_BYPASS_ENABLED
-        if (keySet.ETicketRsaKey.PublicExponent.ItemsRo.IsZeros())
-            return null;
-
-        try
-        {
-            return CryptoOld.DecryptRsaOaep(TitleKeyBlock, keySet.ETicketRsaKeyParams);
-        }
-        catch (CryptographicException)
-        {
-            return null;
-        }
-#else
-        return null;
-#endif
+        return null!;
     }
 }
 

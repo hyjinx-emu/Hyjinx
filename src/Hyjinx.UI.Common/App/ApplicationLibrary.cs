@@ -422,13 +422,6 @@ namespace Hyjinx.UI.App.Common
                         }
                 }
             }
-#if IS_TPM_BYPASS_ENABLED
-            catch (MissingKeyException exception)
-            {
-                LogKeySetMissingKeyName(exception.Name);
-                return false;
-            }
-#endif
             catch (InvalidDataException)
             {
                 LogHeaderKeyIsMissingOrInvalid(applicationPath);
@@ -826,12 +819,6 @@ namespace Hyjinx.UI.App.Common
                                 }
                             }
                         }
-#if IS_TPM_BYPASS_ENABLED
-                        catch (MissingKeyException)
-                        {
-                            applicationIcon = extension == ".xci" ? _xciIcon : _nspIcon;
-                        }
-#endif
                         catch (InvalidDataException)
                         {
                             applicationIcon = extension == ".xci" ? _xciIcon : _nspIcon;
@@ -990,12 +977,6 @@ namespace Hyjinx.UI.App.Common
             {
                 LogHeaderKeyIsMissingOrInvalid(updatePath!);
             }
-#if IS_TPM_BYPASS_ENABLED
-            catch (MissingKeyException exception)
-            {
-                LogKeySetMissingKeyName(exception.Name);
-            }
-#endif
 
             return false;
         }

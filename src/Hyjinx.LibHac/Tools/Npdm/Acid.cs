@@ -44,16 +44,6 @@ public class Acid
 
         Size = reader.ReadInt32();
 
-        #if IS_TPM_BYPASS_ENABLED
-        if (keySet != null)
-        {
-            reader.BaseStream.Position = offset + 0x100;
-            byte[] signatureData = reader.ReadBytes(Size);
-            SignatureValidity =
-                CryptoOld.Rsa2048PssVerify(signatureData, Rsa2048Signature, keySet.AcidSigningKeyParams[0].Modulus);
-        }
-        #endif
-
         reader.BaseStream.Position = offset + 0x208;
         reader.ReadInt32();
 

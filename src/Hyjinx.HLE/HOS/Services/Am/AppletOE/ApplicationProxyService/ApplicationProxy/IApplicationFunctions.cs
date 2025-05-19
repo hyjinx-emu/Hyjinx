@@ -675,7 +675,7 @@ namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.Applicatio
 
                 if (string.IsNullOrWhiteSpace(filePath))
                 {
-                    throw new InvalidSystemResourceException("JIT (010000000000003B) system title not found! The JIT will not work, provide the system archive to fix this error. (See https://github.com/ryujinx-mirror/Hyjinx#requirements for more information)");
+                    throw new InvalidSystemResourceException("JIT (010000000000003B) system title not found! The JIT will not work, provide the system archive to fix this error. (See https://github.com/hyjinx-emu/Hyjinx#requirements for more information)");
                 }
 
                 context.Device.LoadNca(filePath);

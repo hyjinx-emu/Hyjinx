@@ -17,8 +17,6 @@ public partial class NcaHeader
     public NcaVersion FormatVersion { get; }
 
     private ref NcaHeaderStruct Header => ref Unsafe.As<byte, NcaHeaderStruct>(ref _header.Span[0]);
-
-    #if !IS_TPM_BYPASS_ENABLED
     
     public NcaHeader(IStorage storage)
     {
@@ -33,8 +31,6 @@ public partial class NcaHeader
         _header = buf;
         FormatVersion = DetectNcaVersion(_header.Span);
     }
-    
-    #endif
 
     public uint Magic
     {
