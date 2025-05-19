@@ -120,7 +120,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Hashing", "src\Hyjin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{A8E070B8-0BBA-4D03-A579-8691B11EF072}"
 	ProjectSection(SolutionItems) = preProject
-		.github\csc.json = .github\csc.json
 		.github\dependabot.yml = .github\dependabot.yml
 		.github\labeler.yml = .github\labeler.yml
 	EndProjectSection
@@ -130,6 +129,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\build.yml = .github\workflows\build.yml
 		.github\workflows\checks.yml = .github\workflows\checks.yml
 		.github\workflows\pr_triage.yml = .github\workflows\pr_triage.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
 Global

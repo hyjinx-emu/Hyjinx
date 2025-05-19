@@ -1,4 +1,4 @@
-name: Build job
+name: Build
 
 on:
   workflow_dispatch:
@@ -31,13 +31,10 @@ jobs:
         with:
           global-json-file: global.json
 
-#      - name: Overwrite csc problem matcher
-#        run: echo "::add-matcher::.github/csc.json"
-
-#      - name: Get git short hash
-#        id: git_short_hash
-#        run: echo "result=$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
-#        shell: bash
+      - name: Get git short hash
+        id: git_short_hash
+        run: echo "result=$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
+        shell: bash
 
 #      - name: Change config filename
 #        if: github.event_name == 'pull_request' && matrix.platform.os != 'macos-13'
@@ -50,27 +47,11 @@ jobs:
 #        shell: bash
 
       - name: Build
-        run: dotnet build -c "${{ matrix.configuration }}" -p:Version="${{ env.HYJINX_BASE_VERSION }}" -p:SourceRevisionId="${{ steps.git_short_hash.outputs.result }}" -p:ExtraDefineConstants=DISABLE_UPDATER
+        run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}" -p:Version="${{ env.HYJINX_BASE_VERSION }}"
 
       - name: Run tests
-        uses: hyjinx-emu/unstable-commands@releases/v1.0.6
-        if: matrix.platform.name != 'linux-arm64'
-        with:
-          commands: dotnet test --no-build -c "${{ matrix.configuration }}"
-          timeout-minutes: 10
-          retry-codes: 139
-
-#      - name: Publish Hyjinx
-#        if: github.event_name == 'pull_request' && matrix.platform.os != 'macos-13'
-#        run: dotnet publish -c "${{ matrix.configuration }}" -r "${{ matrix.platform.name }}" -o ./publish -p:Version="${{ env.HYJINX_BASE_VERSION }}" -p:DebugType=embedded -p:SourceRevisionId="${{ steps.git_short_hash.outputs.result }}" -p:ExtraDefineConstants=DISABLE_UPDATER src/Hyjinx --self-contained true
-
-#      - name: Publish Hyjinx.Headless.SDL2
-#        if: github.event_name == 'pull_request' && matrix.platform.os != 'macos-13'
-#        run: dotnet publish -c "${{ matrix.configuration }}" -r "${{ matrix.platform.name }}" -o ./publish_sdl2_headless -p:Version="${{ env.HYJINX_BASE_VERSION }}" -p:DebugType=embedded -p:SourceRevisionId="${{ steps.git_short_hash.outputs.result }}" -p:ExtraDefineConstants=DISABLE_UPDATER src/Hyjinx.Headless.SDL2 --self-contained true
-
-#      - name: Publish Hyjinx.Gtk3
-#        if: github.event_name == 'pull_request' && matrix.platform.os != 'macos-13'
-#        run: dotnet publish -c "${{ matrix.configuration }}" -r "${{ matrix.platform.name }}" -o ./publish_gtk -p:Version="${{ env.HYJINX_BASE_VERSION }}" -p:DebugType=embedded -p:SourceRevisionId="${{ steps.git_short_hash.outputs.result }}" -p:ExtraDefineConstants=DISABLE_UPDATER src/Hyjinx.Gtk3 --self-contained true
+        run: dotnet test --no-build -c "${{ matrix.configuration }}"
+        timeout-minutes: 10
 
 #      - name: Set executable bit
 #        if: github.event_name == 'pull_request' && matrix.platform.os == 'ubuntu-latest'
