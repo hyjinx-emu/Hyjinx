@@ -3,7 +3,7 @@
 // ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
 
-public partial class KeySet
+public class KeySet
 {
     public static readonly KeySet Empty = new();
     
