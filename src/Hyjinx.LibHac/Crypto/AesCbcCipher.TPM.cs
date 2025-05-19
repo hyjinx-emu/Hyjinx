@@ -1,4 +1,4 @@
-﻿#if IS_LEGACY_ENABLED
+﻿#if IS_TPM_BYPASS_ENABLED
 
 using System;
 using LibHac.Crypto.Impl;

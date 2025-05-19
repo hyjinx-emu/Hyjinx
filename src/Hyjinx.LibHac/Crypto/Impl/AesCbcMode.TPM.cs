@@ -1,18 +1,18 @@
-﻿#if IS_LEGACY_ENABLED
+﻿#if IS_TPM_BYPASS_ENABLED
 
 using System;
 using System.Security.Cryptography;
 
 namespace LibHac.Crypto.Impl;
 
-internal struct AesEcbMode
+internal struct AesCbcMode
 {
     private AesCore _aesCore;
 
-    public void Initialize(ReadOnlySpan<byte> key, bool isDecrypting)
+    public void Initialize(ReadOnlySpan<byte> key, ReadOnlySpan<byte> iv, bool isDecrypting)
     {
         _aesCore = new AesCore();
-        _aesCore.Initialize(key, ReadOnlySpan<byte>.Empty, CipherMode.ECB, isDecrypting);
+        _aesCore.Initialize(key, iv, CipherMode.CBC, isDecrypting);
     }
 
     public int Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
