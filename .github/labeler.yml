@@ -10,11 +10,11 @@ gpu:
 - changed-files:
   - any-glob-to-any-file: ['src/Hyjinx.Graphics.*/**', 'src/Spv.Generator/**', 'src/Hyjinx.ShaderTools/**']
 
-'graphics-backend:opengl':
+opengl:
 - changed-files:
   - any-glob-to-any-file: 'src/Hyjinx.Graphics.OpenGL/**'
 
-'graphics-backend:vulkan':
+vulkan:
 - changed-files:
   - any-glob-to-any-file: ['src/Hyjinx.Graphics.Vulkan/**', 'src/Spv.Generator/**']
 
