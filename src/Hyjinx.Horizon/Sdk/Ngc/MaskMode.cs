@@ -1,8 +1,7 @@
-namespace Hyjinx.Horizon.Sdk.Ngc
+namespace Hyjinx.Horizon.Sdk.Ngc;
+
+enum MaskMode
 {
-    enum MaskMode
-    {
-        Overwrite = 0,
-        ReplaceByOneCharacter = 1,
-    }
+    Overwrite = 0,
+    ReplaceByOneCharacter = 1,
 }

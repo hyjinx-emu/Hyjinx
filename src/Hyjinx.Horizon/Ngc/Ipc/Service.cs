@@ -5,64 +5,63 @@ using Hyjinx.Horizon.Sdk.Sf;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
 using System;
 
-namespace Hyjinx.Horizon.Ngc.Ipc
+namespace Hyjinx.Horizon.Ngc.Ipc;
+
+partial class Service : INgcService
 {
-    partial class Service : INgcService
+    private readonly ProfanityFilter _profanityFilter;
+
+    public Service(ProfanityFilter profanityFilter)
     {
-        private readonly ProfanityFilter _profanityFilter;
+        _profanityFilter = profanityFilter;
+    }
 
-        public Service(ProfanityFilter profanityFilter)
+    [CmifCommand(0)]
+    public Result GetContentVersion(out uint version)
+    {
+        lock (_profanityFilter)
         {
-            _profanityFilter = profanityFilter;
+            return _profanityFilter.GetContentVersion(out version);
         }
+    }
 
-        [CmifCommand(0)]
-        public Result GetContentVersion(out uint version)
+    [CmifCommand(1)]
+    public Result Check(
+        out uint checkMask,
+        [Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias)] ReadOnlySpan<byte> text,
+        uint regionMask,
+        ProfanityFilterOption option)
+    {
+        lock (_profanityFilter)
         {
-            lock (_profanityFilter)
-            {
-                return _profanityFilter.GetContentVersion(out version);
-            }
+            return _profanityFilter.CheckProfanityWords(out checkMask, text, regionMask, option);
         }
+    }
 
-        [CmifCommand(1)]
-        public Result Check(
-            out uint checkMask,
-            [Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias)] ReadOnlySpan<byte> text,
-            uint regionMask,
-            ProfanityFilterOption option)
+    [CmifCommand(2)]
+    public Result Mask(
+        out int maskedWordsCount,
+        [Buffer(HipcBufferFlags.Out | HipcBufferFlags.MapAlias)] Span<byte> filteredText,
+        [Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias)] ReadOnlySpan<byte> text,
+        uint regionMask,
+        ProfanityFilterOption option)
+    {
+        lock (_profanityFilter)
         {
-            lock (_profanityFilter)
-            {
-                return _profanityFilter.CheckProfanityWords(out checkMask, text, regionMask, option);
-            }
+            int length = Math.Min(filteredText.Length, text.Length);
+
+            text[..length].CopyTo(filteredText[..length]);
+
+            return _profanityFilter.MaskProfanityWordsInText(out maskedWordsCount, filteredText, regionMask, option);
         }
+    }
 
-        [CmifCommand(2)]
-        public Result Mask(
-            out int maskedWordsCount,
-            [Buffer(HipcBufferFlags.Out | HipcBufferFlags.MapAlias)] Span<byte> filteredText,
-            [Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias)] ReadOnlySpan<byte> text,
-            uint regionMask,
-            ProfanityFilterOption option)
+    [CmifCommand(3)]
+    public Result Reload()
+    {
+        lock (_profanityFilter)
         {
-            lock (_profanityFilter)
-            {
-                int length = Math.Min(filteredText.Length, text.Length);
-
-                text[..length].CopyTo(filteredText[..length]);
-
-                return _profanityFilter.MaskProfanityWordsInText(out maskedWordsCount, filteredText, regionMask, option);
-            }
-        }
-
-        [CmifCommand(3)]
-        public Result Reload()
-        {
-            lock (_profanityFilter)
-            {
-                return _profanityFilter.Reload();
-            }
+            return _profanityFilter.Reload();
         }
     }
 }

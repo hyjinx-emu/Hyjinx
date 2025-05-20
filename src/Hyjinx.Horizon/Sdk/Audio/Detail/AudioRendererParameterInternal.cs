@@ -1,14 +1,13 @@
 using Hyjinx.Audio.Renderer.Parameter;
 
-namespace Hyjinx.Horizon.Sdk.Audio.Detail
-{
-    struct AudioRendererParameterInternal
-    {
-        public AudioRendererConfiguration Configuration;
+namespace Hyjinx.Horizon.Sdk.Audio.Detail;
 
-        public AudioRendererParameterInternal(AudioRendererConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+struct AudioRendererParameterInternal
+{
+    public AudioRendererConfiguration Configuration;
+
+    public AudioRendererParameterInternal(AudioRendererConfiguration configuration)
+    {
+        Configuration = configuration;
     }
 }

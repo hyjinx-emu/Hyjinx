@@ -1,10 +1,9 @@
-namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
+namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc;
+
+enum PresenceStatusFilter : uint
 {
-    enum PresenceStatusFilter : uint
-    {
-        None,
-        Online,
-        OnlinePlay,
-        OnlineOrOnlinePlay,
-    }
+    None,
+    Online,
+    OnlinePlay,
+    OnlineOrOnlinePlay,
 }

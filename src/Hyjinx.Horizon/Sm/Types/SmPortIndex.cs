@@ -1,8 +1,7 @@
-namespace Hyjinx.Horizon.Sm.Types
+namespace Hyjinx.Horizon.Sm.Types;
+
+enum SmPortIndex
 {
-    enum SmPortIndex
-    {
-        User,
-        Manager,
-    }
+    User,
+    Manager,
 }

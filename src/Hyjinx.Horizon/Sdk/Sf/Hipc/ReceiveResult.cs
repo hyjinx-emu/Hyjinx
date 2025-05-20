@@ -1,9 +1,8 @@
-namespace Hyjinx.Horizon.Sdk.Sf.Hipc
+namespace Hyjinx.Horizon.Sdk.Sf.Hipc;
+
+enum ReceiveResult
 {
-    enum ReceiveResult
-    {
-        Success,
-        Closed,
-        NeedsRetry,
-    }
+    Success,
+    Closed,
+    NeedsRetry,
 }

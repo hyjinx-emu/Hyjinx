@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Psc;
 
-namespace Hyjinx.Horizon.Psc.Ipc
+namespace Hyjinx.Horizon.Psc.Ipc;
+
+partial class PmService : IPmService
 {
-    partial class PmService : IPmService
-    {
-    }
 }

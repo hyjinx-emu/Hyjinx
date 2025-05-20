@@ -19,75 +19,74 @@ using Hyjinx.Horizon.Wlan;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Hyjinx.Horizon
+namespace Hyjinx.Horizon;
+
+public class ServiceTable
 {
-    public class ServiceTable
+    private int _readyServices;
+    private int _totalServices;
+
+    private readonly ManualResetEvent _servicesReadyEvent = new(false);
+
+    public IReader ArpReader { get; internal set; }
+    public IWriter ArpWriter { get; internal set; }
+
+    public IEnumerable<ServiceEntry> GetServices(HorizonOptions options)
     {
-        private int _readyServices;
-        private int _totalServices;
+        List<ServiceEntry> entries = new();
 
-        private readonly ManualResetEvent _servicesReadyEvent = new(false);
-
-        public IReader ArpReader { get; internal set; }
-        public IWriter ArpWriter { get; internal set; }
-
-        public IEnumerable<ServiceEntry> GetServices(HorizonOptions options)
+        void RegisterService<T>() where T : IService
         {
-            List<ServiceEntry> entries = new();
-
-            void RegisterService<T>() where T : IService
-            {
-                entries.Add(new ServiceEntry(T.Main, this, options));
-            }
-
-            RegisterService<ArpMain>();
-            RegisterService<AudioMain>();
-            RegisterService<BcatMain>();
-            RegisterService<FriendsMain>();
-            RegisterService<HshlMain>();
-            RegisterService<HwopusMain>(); // TODO: Merge with audio once we can start multiple threads.
-            RegisterService<InsMain>();
-            RegisterService<LblMain>();
-            RegisterService<LmMain>();
-            RegisterService<MmNvMain>();
-            RegisterService<NgcMain>();
-            RegisterService<OvlnMain>();
-            RegisterService<PrepoMain>();
-            RegisterService<PscMain>();
-            RegisterService<SrepoMain>();
-            RegisterService<TsMain>();
-            RegisterService<UsbMain>();
-            RegisterService<WlanMain>();
-
-            _totalServices = entries.Count;
-
-            return entries;
+            entries.Add(new ServiceEntry(T.Main, this, options));
         }
 
-        internal void SignalServiceReady()
-        {
-            if (Interlocked.Increment(ref _readyServices) == _totalServices)
-            {
-                _servicesReadyEvent.Set();
-            }
-        }
+        RegisterService<ArpMain>();
+        RegisterService<AudioMain>();
+        RegisterService<BcatMain>();
+        RegisterService<FriendsMain>();
+        RegisterService<HshlMain>();
+        RegisterService<HwopusMain>(); // TODO: Merge with audio once we can start multiple threads.
+        RegisterService<InsMain>();
+        RegisterService<LblMain>();
+        RegisterService<LmMain>();
+        RegisterService<MmNvMain>();
+        RegisterService<NgcMain>();
+        RegisterService<OvlnMain>();
+        RegisterService<PrepoMain>();
+        RegisterService<PscMain>();
+        RegisterService<SrepoMain>();
+        RegisterService<TsMain>();
+        RegisterService<UsbMain>();
+        RegisterService<WlanMain>();
 
-        public void WaitServicesReady()
-        {
-            _servicesReadyEvent.WaitOne();
-        }
+        _totalServices = entries.Count;
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _servicesReadyEvent.Dispose();
-            }
-        }
+        return entries;
+    }
 
-        public void Dispose()
+    internal void SignalServiceReady()
+    {
+        if (Interlocked.Increment(ref _readyServices) == _totalServices)
         {
-            Dispose(true);
+            _servicesReadyEvent.Set();
         }
+    }
+
+    public void WaitServicesReady()
+    {
+        _servicesReadyEvent.WaitOne();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _servicesReadyEvent.Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
     }
 }

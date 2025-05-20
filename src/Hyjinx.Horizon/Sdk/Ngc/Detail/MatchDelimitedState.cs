@@ -1,24 +1,23 @@
-namespace Hyjinx.Horizon.Sdk.Ngc.Detail
-{
-    struct MatchDelimitedState
-    {
-        public bool Matched;
-        public readonly bool PrevCharIsWordSeparator;
-        public readonly bool NextCharIsWordSeparator;
-        public readonly Sbv NoSeparatorMap;
-        public readonly AhoCorasick DelimitedWordsTrie;
+namespace Hyjinx.Horizon.Sdk.Ngc.Detail;
 
-        public MatchDelimitedState(
-            bool prevCharIsWordSeparator,
-            bool nextCharIsWordSeparator,
-            Sbv noSeparatorMap,
-            AhoCorasick delimitedWordsTrie)
-        {
-            Matched = false;
-            PrevCharIsWordSeparator = prevCharIsWordSeparator;
-            NextCharIsWordSeparator = nextCharIsWordSeparator;
-            NoSeparatorMap = noSeparatorMap;
-            DelimitedWordsTrie = delimitedWordsTrie;
-        }
+struct MatchDelimitedState
+{
+    public bool Matched;
+    public readonly bool PrevCharIsWordSeparator;
+    public readonly bool NextCharIsWordSeparator;
+    public readonly Sbv NoSeparatorMap;
+    public readonly AhoCorasick DelimitedWordsTrie;
+
+    public MatchDelimitedState(
+        bool prevCharIsWordSeparator,
+        bool nextCharIsWordSeparator,
+        Sbv noSeparatorMap,
+        AhoCorasick delimitedWordsTrie)
+    {
+        Matched = false;
+        PrevCharIsWordSeparator = prevCharIsWordSeparator;
+        NextCharIsWordSeparator = nextCharIsWordSeparator;
+        NoSeparatorMap = noSeparatorMap;
+        DelimitedWordsTrie = delimitedWordsTrie;
     }
 }

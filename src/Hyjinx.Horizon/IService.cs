@@ -1,7 +1,6 @@
-namespace Hyjinx.Horizon
+namespace Hyjinx.Horizon;
+
+interface IService
 {
-    interface IService
-    {
-        abstract static void Main(ServiceTable serviceTable);
-    }
+    abstract static void Main(ServiceTable serviceTable);
 }

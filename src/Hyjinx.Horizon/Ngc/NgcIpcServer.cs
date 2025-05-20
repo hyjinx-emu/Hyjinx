@@ -4,48 +4,47 @@ using Hyjinx.Horizon.Sdk.Ngc.Detail;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
 using Hyjinx.Horizon.Sdk.Sm;
 
-namespace Hyjinx.Horizon.Ngc
+namespace Hyjinx.Horizon.Ngc;
+
+class NgcIpcServer
 {
-    class NgcIpcServer
+    private const int MaxSessionsCount = 4;
+
+    private const int PointerBufferSize = 0;
+    private const int MaxDomains = 0;
+    private const int MaxDomainObjects = 0;
+    private const int MaxPortsCount = 1;
+
+    private static readonly ManagerOptions _options = new(PointerBufferSize, MaxDomains, MaxDomainObjects, false);
+
+    private SmApi _sm;
+    private ServerManager _serverManager;
+    private ProfanityFilter _profanityFilter;
+
+    public void Initialize(IFsClient fsClient)
     {
-        private const int MaxSessionsCount = 4;
+        HeapAllocator allocator = new();
 
-        private const int PointerBufferSize = 0;
-        private const int MaxDomains = 0;
-        private const int MaxDomainObjects = 0;
-        private const int MaxPortsCount = 1;
+        _sm = new SmApi();
+        _sm.Initialize().AbortOnFailure();
 
-        private static readonly ManagerOptions _options = new(PointerBufferSize, MaxDomains, MaxDomainObjects, false);
+        _profanityFilter = new(fsClient);
+        _profanityFilter.Initialize().AbortOnFailure();
 
-        private SmApi _sm;
-        private ServerManager _serverManager;
-        private ProfanityFilter _profanityFilter;
+        _serverManager = new ServerManager(allocator, _sm, MaxPortsCount, _options, MaxSessionsCount);
 
-        public void Initialize(IFsClient fsClient)
-        {
-            HeapAllocator allocator = new();
+        _serverManager.RegisterObjectForServer(new Service(_profanityFilter), ServiceName.Encode("ngc:u"), MaxSessionsCount);
+    }
 
-            _sm = new SmApi();
-            _sm.Initialize().AbortOnFailure();
+    public void ServiceRequests()
+    {
+        _serverManager.ServiceRequests();
+    }
 
-            _profanityFilter = new(fsClient);
-            _profanityFilter.Initialize().AbortOnFailure();
-
-            _serverManager = new ServerManager(allocator, _sm, MaxPortsCount, _options, MaxSessionsCount);
-
-            _serverManager.RegisterObjectForServer(new Service(_profanityFilter), ServiceName.Encode("ngc:u"), MaxSessionsCount);
-        }
-
-        public void ServiceRequests()
-        {
-            _serverManager.ServiceRequests();
-        }
-
-        public void Shutdown()
-        {
-            _serverManager.Dispose();
-            _profanityFilter.Dispose();
-            _sm.Dispose();
-        }
+    public void Shutdown()
+    {
+        _serverManager.Dispose();
+        _profanityFilter.Dispose();
+        _sm.Dispose();
     }
 }

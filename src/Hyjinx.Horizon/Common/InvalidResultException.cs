@@ -1,23 +1,22 @@
 using System;
 
-namespace Hyjinx.Horizon.Common
+namespace Hyjinx.Horizon.Common;
+
+public class InvalidResultException : Exception
 {
-    public class InvalidResultException : Exception
+    public InvalidResultException()
     {
-        public InvalidResultException()
-        {
-        }
+    }
 
-        public InvalidResultException(Result result) : base($"Unexpected result code {result} returned.")
-        {
-        }
+    public InvalidResultException(Result result) : base($"Unexpected result code {result} returned.")
+    {
+    }
 
-        public InvalidResultException(string message) : base(message)
-        {
-        }
+    public InvalidResultException(string message) : base(message)
+    {
+    }
 
-        public InvalidResultException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+    public InvalidResultException(string message, Exception innerException) : base(message, innerException)
+    {
     }
 }

@@ -8,171 +8,170 @@ using Hyjinx.Horizon.Sdk.Sf.Hipc;
 using System;
 using System.Buffers;
 
-namespace Hyjinx.Horizon.Sdk.Audio.Detail
+namespace Hyjinx.Horizon.Sdk.Audio.Detail;
+
+partial class AudioRenderer : IAudioRenderer, IDisposable
 {
-    partial class AudioRenderer : IAudioRenderer, IDisposable
+    private readonly AudioRenderSystem _renderSystem;
+    private int _workBufferHandle;
+    private int _processHandle;
+
+    public AudioRenderer(AudioRenderSystem renderSystem, int workBufferHandle, int processHandle)
     {
-        private readonly AudioRenderSystem _renderSystem;
-        private int _workBufferHandle;
-        private int _processHandle;
+        _renderSystem = renderSystem;
+        _workBufferHandle = workBufferHandle;
+        _processHandle = processHandle;
+    }
 
-        public AudioRenderer(AudioRenderSystem renderSystem, int workBufferHandle, int processHandle)
+    [CmifCommand(0)]
+    public Result GetSampleRate(out int sampleRate)
+    {
+        sampleRate = (int)_renderSystem.GetSampleRate();
+
+        return Result.Success;
+    }
+
+    [CmifCommand(1)]
+    public Result GetSampleCount(out int sampleCount)
+    {
+        sampleCount = (int)_renderSystem.GetSampleCount();
+
+        return Result.Success;
+    }
+
+    [CmifCommand(2)]
+    public Result GetMixBufferCount(out int mixBufferCount)
+    {
+        mixBufferCount = (int)_renderSystem.GetMixBufferCount();
+
+        return Result.Success;
+    }
+
+    [CmifCommand(3)]
+    public Result GetState(out int state)
+    {
+        state = _renderSystem.IsActive() ? 0 : 1;
+
+        return Result.Success;
+    }
+
+    [CmifCommand(4)]
+    public Result RequestUpdate(
+        [Buffer(HipcBufferFlags.Out | HipcBufferFlags.MapAlias)] Memory<byte> output,
+        [Buffer(HipcBufferFlags.Out | HipcBufferFlags.MapAlias)] Memory<byte> performanceOutput,
+        [Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias)] ReadOnlySequence<byte> input)
+    {
+        using MemoryHandle outputHandle = output.Pin();
+        using MemoryHandle performanceOutputHandle = performanceOutput.Pin();
+
+        Result result = new Result((int)_renderSystem.Update(output, performanceOutput, input));
+
+        return result;
+    }
+
+    [CmifCommand(5)]
+    public Result Start()
+    {
+        _renderSystem.Start();
+
+        return Result.Success;
+    }
+
+    [CmifCommand(6)]
+    public Result Stop()
+    {
+        _renderSystem.Stop();
+
+        return Result.Success;
+    }
+
+    [CmifCommand(7)]
+    public Result QuerySystemEvent([CopyHandle] out int eventHandle)
+    {
+        ResultCode rc = _renderSystem.QuerySystemEvent(out IWritableEvent systemEvent);
+
+        eventHandle = 0;
+
+        if (rc == ResultCode.Success && systemEvent is AudioEvent audioEvent)
         {
-            _renderSystem = renderSystem;
-            _workBufferHandle = workBufferHandle;
-            _processHandle = processHandle;
+            eventHandle = audioEvent.GetReadableHandle();
         }
 
-        [CmifCommand(0)]
-        public Result GetSampleRate(out int sampleRate)
+        return new Result((int)rc);
+    }
+
+    [CmifCommand(8)]
+    public Result SetRenderingTimeLimit(int percent)
+    {
+        _renderSystem.SetRenderingTimeLimitPercent((uint)percent);
+
+        return Result.Success;
+    }
+
+    [CmifCommand(9)]
+    public Result GetRenderingTimeLimit(out int percent)
+    {
+        percent = (int)_renderSystem.GetRenderingTimeLimit();
+
+        return Result.Success;
+    }
+
+    [CmifCommand(10)] // 3.0.0+
+    public Result RequestUpdateAuto(
+        [Buffer(HipcBufferFlags.Out | HipcBufferFlags.AutoSelect)] Memory<byte> output,
+        [Buffer(HipcBufferFlags.Out | HipcBufferFlags.AutoSelect)] Memory<byte> performanceOutput,
+        [Buffer(HipcBufferFlags.In | HipcBufferFlags.AutoSelect)] ReadOnlySequence<byte> input)
+    {
+        return RequestUpdate(output, performanceOutput, input);
+    }
+
+    [CmifCommand(11)] // 3.0.0+
+    public Result ExecuteAudioRendererRendering()
+    {
+        return new Result((int)_renderSystem.ExecuteAudioRendererRendering());
+    }
+
+    [CmifCommand(12)] // 15.0.0+
+    public Result SetVoiceDropParameter(float voiceDropParameter)
+    {
+        _renderSystem.SetVoiceDropParameter(voiceDropParameter);
+
+        return Result.Success;
+    }
+
+    [CmifCommand(13)] // 15.0.0+
+    public Result GetVoiceDropParameter(out float voiceDropParameter)
+    {
+        voiceDropParameter = _renderSystem.GetVoiceDropParameter();
+
+        return Result.Success;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            sampleRate = (int)_renderSystem.GetSampleRate();
+            _renderSystem.Dispose();
 
-            return Result.Success;
-        }
-
-        [CmifCommand(1)]
-        public Result GetSampleCount(out int sampleCount)
-        {
-            sampleCount = (int)_renderSystem.GetSampleCount();
-
-            return Result.Success;
-        }
-
-        [CmifCommand(2)]
-        public Result GetMixBufferCount(out int mixBufferCount)
-        {
-            mixBufferCount = (int)_renderSystem.GetMixBufferCount();
-
-            return Result.Success;
-        }
-
-        [CmifCommand(3)]
-        public Result GetState(out int state)
-        {
-            state = _renderSystem.IsActive() ? 0 : 1;
-
-            return Result.Success;
-        }
-
-        [CmifCommand(4)]
-        public Result RequestUpdate(
-            [Buffer(HipcBufferFlags.Out | HipcBufferFlags.MapAlias)] Memory<byte> output,
-            [Buffer(HipcBufferFlags.Out | HipcBufferFlags.MapAlias)] Memory<byte> performanceOutput,
-            [Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias)] ReadOnlySequence<byte> input)
-        {
-            using MemoryHandle outputHandle = output.Pin();
-            using MemoryHandle performanceOutputHandle = performanceOutput.Pin();
-
-            Result result = new Result((int)_renderSystem.Update(output, performanceOutput, input));
-
-            return result;
-        }
-
-        [CmifCommand(5)]
-        public Result Start()
-        {
-            _renderSystem.Start();
-
-            return Result.Success;
-        }
-
-        [CmifCommand(6)]
-        public Result Stop()
-        {
-            _renderSystem.Stop();
-
-            return Result.Success;
-        }
-
-        [CmifCommand(7)]
-        public Result QuerySystemEvent([CopyHandle] out int eventHandle)
-        {
-            ResultCode rc = _renderSystem.QuerySystemEvent(out IWritableEvent systemEvent);
-
-            eventHandle = 0;
-
-            if (rc == ResultCode.Success && systemEvent is AudioEvent audioEvent)
+            if (_workBufferHandle != 0)
             {
-                eventHandle = audioEvent.GetReadableHandle();
+                HorizonStatic.Syscall.CloseHandle(_workBufferHandle);
+
+                _workBufferHandle = 0;
             }
 
-            return new Result((int)rc);
-        }
-
-        [CmifCommand(8)]
-        public Result SetRenderingTimeLimit(int percent)
-        {
-            _renderSystem.SetRenderingTimeLimitPercent((uint)percent);
-
-            return Result.Success;
-        }
-
-        [CmifCommand(9)]
-        public Result GetRenderingTimeLimit(out int percent)
-        {
-            percent = (int)_renderSystem.GetRenderingTimeLimit();
-
-            return Result.Success;
-        }
-
-        [CmifCommand(10)] // 3.0.0+
-        public Result RequestUpdateAuto(
-            [Buffer(HipcBufferFlags.Out | HipcBufferFlags.AutoSelect)] Memory<byte> output,
-            [Buffer(HipcBufferFlags.Out | HipcBufferFlags.AutoSelect)] Memory<byte> performanceOutput,
-            [Buffer(HipcBufferFlags.In | HipcBufferFlags.AutoSelect)] ReadOnlySequence<byte> input)
-        {
-            return RequestUpdate(output, performanceOutput, input);
-        }
-
-        [CmifCommand(11)] // 3.0.0+
-        public Result ExecuteAudioRendererRendering()
-        {
-            return new Result((int)_renderSystem.ExecuteAudioRendererRendering());
-        }
-
-        [CmifCommand(12)] // 15.0.0+
-        public Result SetVoiceDropParameter(float voiceDropParameter)
-        {
-            _renderSystem.SetVoiceDropParameter(voiceDropParameter);
-
-            return Result.Success;
-        }
-
-        [CmifCommand(13)] // 15.0.0+
-        public Result GetVoiceDropParameter(out float voiceDropParameter)
-        {
-            voiceDropParameter = _renderSystem.GetVoiceDropParameter();
-
-            return Result.Success;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
+            if (_processHandle != 0)
             {
-                _renderSystem.Dispose();
+                HorizonStatic.Syscall.CloseHandle(_processHandle);
 
-                if (_workBufferHandle != 0)
-                {
-                    HorizonStatic.Syscall.CloseHandle(_workBufferHandle);
-
-                    _workBufferHandle = 0;
-                }
-
-                if (_processHandle != 0)
-                {
-                    HorizonStatic.Syscall.CloseHandle(_processHandle);
-
-                    _processHandle = 0;
-                }
+                _processHandle = 0;
             }
         }
+    }
 
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

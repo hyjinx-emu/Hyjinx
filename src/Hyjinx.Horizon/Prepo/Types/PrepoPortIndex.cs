@@ -1,12 +1,11 @@
-namespace Hyjinx.Horizon.Prepo.Types
+namespace Hyjinx.Horizon.Prepo.Types;
+
+enum PrepoPortIndex
 {
-    enum PrepoPortIndex
-    {
-        Admin,
-        Admin2,
-        Manager,
-        User,
-        System,
-        Debug,
-    }
+    Admin,
+    Admin2,
+    Manager,
+    User,
+    System,
+    Debug,
 }

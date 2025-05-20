@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace Hyjinx.Horizon.Sdk.Sf
+namespace Hyjinx.Horizon.Sdk.Sf;
+
+interface IServiceObject
 {
-    interface IServiceObject
-    {
-        IReadOnlyDictionary<int, CommandHandler> GetCommandHandlers();
-    }
+    IReadOnlyDictionary<int, CommandHandler> GetCommandHandlers();
 }

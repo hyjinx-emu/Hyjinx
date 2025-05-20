@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Hshl;
 
-namespace Hyjinx.Horizon.Hshl.Ipc
+namespace Hyjinx.Horizon.Hshl.Ipc;
+
+partial class SetterManager : ISetterManager
 {
-    partial class SetterManager : ISetterManager
-    {
-    }
 }

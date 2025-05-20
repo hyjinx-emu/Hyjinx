@@ -1,14 +1,13 @@
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Fs
+namespace Hyjinx.Horizon.Sdk.Fs;
+
+[Flags]
+public enum OpenMode
 {
-    [Flags]
-    public enum OpenMode
-    {
-        Read = 1,
-        Write = 2,
-        AllowAppend = 4,
-        ReadWrite = 3,
-        All = 7,
-    }
+    Read = 1,
+    Write = 2,
+    AllowAppend = 4,
+    ReadWrite = 3,
+    All = 7,
 }

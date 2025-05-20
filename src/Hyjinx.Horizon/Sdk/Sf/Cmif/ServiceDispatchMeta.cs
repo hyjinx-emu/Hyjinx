@@ -1,12 +1,11 @@
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
-{
-    readonly struct ServiceDispatchMeta
-    {
-        public ServiceDispatchTableBase DispatchTable { get; }
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
 
-        public ServiceDispatchMeta(ServiceDispatchTableBase dispatchTable)
-        {
-            DispatchTable = dispatchTable;
-        }
+readonly struct ServiceDispatchMeta
+{
+    public ServiceDispatchTableBase DispatchTable { get; }
+
+    public ServiceDispatchMeta(ServiceDispatchTableBase dispatchTable)
+    {
+        DispatchTable = dispatchTable;
     }
 }

@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Ptm
+namespace Hyjinx.Horizon.Ptm;
+
+class TsMain : IService
 {
-    class TsMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            TsIpcServer ipcServer = new();
+        TsIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

@@ -1,10 +1,9 @@
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+static partial class Os
 {
-    static partial class Os
+    public static void FinalizeMultiWaitHolder(MultiWaitHolderBase holder)
     {
-        public static void FinalizeMultiWaitHolder(MultiWaitHolderBase holder)
-        {
-            DebugUtil.Assert(!holder.IsLinked);
-        }
+        DebugUtil.Assert(!holder.IsLinked);
     }
 }

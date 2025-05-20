@@ -1,33 +1,32 @@
 using Hyjinx.Horizon.Common;
 
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+static partial class Os
 {
-    static partial class Os
+    private const int SelfProcessHandle = (0x1ffff << 15) | 1;
+
+    public static int GetCurrentProcessHandle()
     {
-        private const int SelfProcessHandle = (0x1ffff << 15) | 1;
+        return SelfProcessHandle;
+    }
 
-        public static int GetCurrentProcessHandle()
-        {
-            return SelfProcessHandle;
-        }
+    public static ulong GetCurrentProcessId()
+    {
+        return GetProcessId(GetCurrentProcessHandle());
+    }
 
-        public static ulong GetCurrentProcessId()
-        {
-            return GetProcessId(GetCurrentProcessHandle());
-        }
+    private static ulong GetProcessId(int handle)
+    {
+        Result result = TryGetProcessId(handle, out ulong pid);
 
-        private static ulong GetProcessId(int handle)
-        {
-            Result result = TryGetProcessId(handle, out ulong pid);
+        result.AbortOnFailure();
 
-            result.AbortOnFailure();
+        return pid;
+    }
 
-            return pid;
-        }
-
-        private static Result TryGetProcessId(int handle, out ulong pid)
-        {
-            return HorizonStatic.Syscall.GetProcessId(out pid, handle);
-        }
+    private static Result TryGetProcessId(int handle, out ulong pid)
+    {
+        return HorizonStatic.Syscall.GetProcessId(out pid, handle);
     }
 }

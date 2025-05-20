@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.LogManager
+namespace Hyjinx.Horizon.LogManager;
+
+class LmMain : IService
 {
-    class LmMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            LmIpcServer ipcServer = new();
+        LmIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Wlan
+namespace Hyjinx.Horizon.Wlan;
+
+class WlanMain : IService
 {
-    class WlanMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            WlanIpcServer ipcServer = new();
+        WlanIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

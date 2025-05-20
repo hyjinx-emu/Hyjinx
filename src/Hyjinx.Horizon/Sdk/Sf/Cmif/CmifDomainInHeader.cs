@@ -1,12 +1,11 @@
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+struct CmifDomainInHeader
 {
-    struct CmifDomainInHeader
-    {
-        public CmifDomainRequestType Type;
-        public byte ObjectsCount;
-        public ushort DataSize;
-        public int ObjectId;
-        public uint Padding;
-        public uint Token;
-    }
+    public CmifDomainRequestType Type;
+    public byte ObjectsCount;
+    public ushort DataSize;
+    public int ObjectId;
+    public uint Padding;
+    public uint Token;
 }

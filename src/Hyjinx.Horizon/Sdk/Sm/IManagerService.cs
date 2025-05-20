@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Sf;
 
-namespace Hyjinx.Horizon.Sdk.Sm
+namespace Hyjinx.Horizon.Sdk.Sm;
+
+interface IManagerService : IServiceObject
 {
-    interface IManagerService : IServiceObject
-    {
-    }
 }

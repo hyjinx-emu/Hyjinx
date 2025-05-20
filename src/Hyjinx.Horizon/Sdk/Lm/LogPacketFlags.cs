@@ -1,12 +1,11 @@
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Lm
+namespace Hyjinx.Horizon.Sdk.Lm;
+
+[Flags]
+enum LogPacketFlags : byte
 {
-    [Flags]
-    enum LogPacketFlags : byte
-    {
-        IsHead = 1 << 0,
-        IsTail = 1 << 1,
-        IsLittleEndian = 1 << 2,
-    }
+    IsHead = 1 << 0,
+    IsTail = 1 << 1,
+    IsLittleEndian = 1 << 2,
 }

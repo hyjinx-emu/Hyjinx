@@ -1,21 +1,20 @@
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+ref struct CmifRequest
 {
-    ref struct CmifRequest
-    {
-        public HipcMessageData Hipc;
-        public Span<byte> Data;
-        public Span<ushort> OutPointerSizes;
-        public Span<uint> Objects;
-        public int ServerPointerSize;
-        public int CurrentInPointerId;
-        public int SendBufferIndex;
-        public int RecvBufferIndex;
-        public int ExchBufferIndex;
-        public int SendStaticIndex;
-        public int RecvListIndex;
-        public int OutPointerSizeIndex;
-    }
+    public HipcMessageData Hipc;
+    public Span<byte> Data;
+    public Span<ushort> OutPointerSizes;
+    public Span<uint> Objects;
+    public int ServerPointerSize;
+    public int CurrentInPointerId;
+    public int SendBufferIndex;
+    public int RecvBufferIndex;
+    public int ExchBufferIndex;
+    public int SendStaticIndex;
+    public int RecvListIndex;
+    public int OutPointerSizeIndex;
 }

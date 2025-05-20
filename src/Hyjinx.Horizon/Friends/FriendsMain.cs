@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Friends
+namespace Hyjinx.Horizon.Friends;
+
+class FriendsMain : IService
 {
-    class FriendsMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            FriendsIpcServer ipcServer = new();
+        FriendsIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

@@ -1,39 +1,38 @@
 using Hyjinx.Horizon.Sdk.OsTypes.Impl;
 
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+class MultiWaitHolderBase
 {
-    class MultiWaitHolderBase
+    protected MultiWaitImpl MultiWait;
+
+    public bool IsLinked => MultiWait != null;
+
+    public virtual TriBool Signaled => TriBool.False;
+
+    public virtual int Handle => 0;
+
+    public void SetMultiWait(MultiWaitImpl multiWait)
     {
-        protected MultiWaitImpl MultiWait;
+        MultiWait = multiWait;
+    }
 
-        public bool IsLinked => MultiWait != null;
+    public MultiWaitImpl GetMultiWait()
+    {
+        return MultiWait;
+    }
 
-        public virtual TriBool Signaled => TriBool.False;
+    public virtual TriBool LinkToObjectList()
+    {
+        return TriBool.Undefined;
+    }
 
-        public virtual int Handle => 0;
+    public virtual void UnlinkFromObjectList()
+    {
+    }
 
-        public void SetMultiWait(MultiWaitImpl multiWait)
-        {
-            MultiWait = multiWait;
-        }
-
-        public MultiWaitImpl GetMultiWait()
-        {
-            return MultiWait;
-        }
-
-        public virtual TriBool LinkToObjectList()
-        {
-            return TriBool.Undefined;
-        }
-
-        public virtual void UnlinkFromObjectList()
-        {
-        }
-
-        public virtual long GetAbsoluteTimeToWakeup()
-        {
-            return long.MaxValue;
-        }
+    public virtual long GetAbsoluteTimeToWakeup()
+    {
+        return long.MaxValue;
     }
 }

@@ -1,38 +1,37 @@
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Sf
+namespace Hyjinx.Horizon.Sdk.Sf;
+
+[AttributeUsage(AttributeTargets.Parameter)]
+class BufferAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Parameter)]
-    class BufferAttribute : Attribute
+    public HipcBufferFlags Flags { get; }
+    public ushort FixedSize { get; }
+
+    public BufferAttribute(HipcBufferFlags flags)
     {
-        public HipcBufferFlags Flags { get; }
-        public ushort FixedSize { get; }
-
-        public BufferAttribute(HipcBufferFlags flags)
-        {
-            Flags = flags;
-        }
-
-        public BufferAttribute(HipcBufferFlags flags, ushort fixedSize)
-        {
-            Flags = flags | HipcBufferFlags.FixedSize;
-            FixedSize = fixedSize;
-        }
+        Flags = flags;
     }
 
-    [AttributeUsage(AttributeTargets.Parameter)]
-    class ClientProcessIdAttribute : Attribute
+    public BufferAttribute(HipcBufferFlags flags, ushort fixedSize)
     {
+        Flags = flags | HipcBufferFlags.FixedSize;
+        FixedSize = fixedSize;
     }
+}
 
-    [AttributeUsage(AttributeTargets.Parameter)]
-    class CopyHandleAttribute : Attribute
-    {
-    }
+[AttributeUsage(AttributeTargets.Parameter)]
+class ClientProcessIdAttribute : Attribute
+{
+}
 
-    [AttributeUsage(AttributeTargets.Parameter)]
-    class MoveHandleAttribute : Attribute
-    {
-    }
+[AttributeUsage(AttributeTargets.Parameter)]
+class CopyHandleAttribute : Attribute
+{
+}
+
+[AttributeUsage(AttributeTargets.Parameter)]
+class MoveHandleAttribute : Attribute
+{
 }

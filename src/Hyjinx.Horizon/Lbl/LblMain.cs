@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Lbl
+namespace Hyjinx.Horizon.Lbl;
+
+class LblMain : IService
 {
-    class LblMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            LblIpcServer ipcServer = new();
+        LblIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

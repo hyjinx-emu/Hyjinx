@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Sf;
 
-namespace Hyjinx.Horizon.Sdk.Usb
+namespace Hyjinx.Horizon.Sdk.Usb;
+
+interface IPmService : IServiceObject
 {
-    interface IPmService : IServiceObject
-    {
-    }
 }

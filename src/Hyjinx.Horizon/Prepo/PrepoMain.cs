@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Prepo
+namespace Hyjinx.Horizon.Prepo;
+
+class PrepoMain : IService
 {
-    class PrepoMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            PrepoIpcServer ipcServer = new();
+        PrepoIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

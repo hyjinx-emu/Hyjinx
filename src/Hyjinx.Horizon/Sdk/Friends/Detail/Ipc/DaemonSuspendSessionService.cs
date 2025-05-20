@@ -1,7 +1,6 @@
-namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
+namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc;
+
+partial class DaemonSuspendSessionService : IDaemonSuspendSessionService
 {
-    partial class DaemonSuspendSessionService : IDaemonSuspendSessionService
-    {
-        // NOTE: This service has no commands.
-    }
+    // NOTE: This service has no commands.
 }

@@ -1,15 +1,14 @@
-namespace Hyjinx.Horizon.Sdk.MmNv
+namespace Hyjinx.Horizon.Sdk.MmNv;
+
+enum Module : uint
 {
-    enum Module : uint
-    {
-        Cpu,
-        Gpu,
-        Emc,
-        SysBus,
-        MSelect,
-        NvDec,
-        NvEnc,
-        NvJpg,
-        Test,
-    }
+    Cpu,
+    Gpu,
+    Emc,
+    SysBus,
+    MSelect,
+    NvDec,
+    NvEnc,
+    NvJpg,
+    Test,
 }

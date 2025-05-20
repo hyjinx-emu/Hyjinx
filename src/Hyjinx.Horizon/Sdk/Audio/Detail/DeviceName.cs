@@ -3,28 +3,27 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Hyjinx.Horizon.Sdk.Audio.Detail
+namespace Hyjinx.Horizon.Sdk.Audio.Detail;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x100, Pack = 1)]
+struct DeviceName
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x100, Pack = 1)]
-    struct DeviceName
+    public Array256<byte> Name;
+
+    public DeviceName(string name)
     {
-        public Array256<byte> Name;
+        Name = new();
+        Encoding.ASCII.GetBytes(name, Name.AsSpan());
+    }
 
-        public DeviceName(string name)
+    public override string ToString()
+    {
+        int length = Name.AsSpan().IndexOf((byte)0);
+        if (length < 0)
         {
-            Name = new();
-            Encoding.ASCII.GetBytes(name, Name.AsSpan());
+            length = 0x100;
         }
 
-        public override string ToString()
-        {
-            int length = Name.AsSpan().IndexOf((byte)0);
-            if (length < 0)
-            {
-                length = 0x100;
-            }
-
-            return Encoding.ASCII.GetString(Name.AsSpan()[..length]);
-        }
+        return Encoding.ASCII.GetString(Name.AsSpan()[..length]);
     }
 }

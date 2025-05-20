@@ -1,10 +1,9 @@
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+struct CmifInHeader
 {
-    struct CmifInHeader
-    {
-        public uint Magic;
-        public uint Version;
-        public uint CommandId;
-        public uint Token;
-    }
+    public uint Magic;
+    public uint Version;
+    public uint CommandId;
+    public uint Token;
 }

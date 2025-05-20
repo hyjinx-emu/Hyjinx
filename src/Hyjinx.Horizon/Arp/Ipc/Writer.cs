@@ -4,72 +4,71 @@ using Hyjinx.Horizon.Sdk.Arp.Detail;
 using Hyjinx.Horizon.Sdk.OsTypes;
 using Hyjinx.Horizon.Sdk.Sf;
 
-namespace Hyjinx.Horizon.Arp.Ipc
+namespace Hyjinx.Horizon.Arp.Ipc;
+
+partial class Writer : IWriter, IServiceObject
 {
-    partial class Writer : IWriter, IServiceObject
+    private readonly ApplicationInstanceManager _applicationInstanceManager;
+
+    public Writer(ApplicationInstanceManager applicationInstanceManager)
     {
-        private readonly ApplicationInstanceManager _applicationInstanceManager;
+        _applicationInstanceManager = applicationInstanceManager;
+    }
 
-        public Writer(ApplicationInstanceManager applicationInstanceManager)
+    [CmifCommand(0)]
+    public Result AcquireRegistrar(out IRegistrar registrar)
+    {
+        if (_applicationInstanceManager.Entries[0] != null)
         {
-            _applicationInstanceManager = applicationInstanceManager;
-        }
-
-        [CmifCommand(0)]
-        public Result AcquireRegistrar(out IRegistrar registrar)
-        {
-            if (_applicationInstanceManager.Entries[0] != null)
+            if (_applicationInstanceManager.Entries[1] != null)
             {
-                if (_applicationInstanceManager.Entries[1] != null)
-                {
-                    registrar = null;
+                registrar = null;
 
-                    return ArpResult.NoFreeInstance;
-                }
-                else
-                {
-                    _applicationInstanceManager.Entries[1] = new ApplicationInstance();
-
-                    registrar = new Registrar(_applicationInstanceManager.Entries[1]);
-                }
+                return ArpResult.NoFreeInstance;
             }
             else
             {
-                _applicationInstanceManager.Entries[0] = new ApplicationInstance();
+                _applicationInstanceManager.Entries[1] = new ApplicationInstance();
 
-                registrar = new Registrar(_applicationInstanceManager.Entries[0]);
+                registrar = new Registrar(_applicationInstanceManager.Entries[1]);
             }
-
-            return Result.Success;
         }
-
-        [CmifCommand(1)]
-        public Result UnregisterApplicationInstance(ulong applicationInstanceId)
+        else
         {
-            if (_applicationInstanceManager.Entries[applicationInstanceId] != null)
-            {
-                _applicationInstanceManager.Entries[applicationInstanceId] = null;
-            }
+            _applicationInstanceManager.Entries[0] = new ApplicationInstance();
 
-            Os.SignalSystemEvent(ref _applicationInstanceManager.SystemEvent);
-
-            return Result.Success;
+            registrar = new Registrar(_applicationInstanceManager.Entries[0]);
         }
 
-        [CmifCommand(2)]
-        public Result AcquireApplicationProcessPropertyUpdater(out IUpdater updater, ulong applicationInstanceId)
+        return Result.Success;
+    }
+
+    [CmifCommand(1)]
+    public Result UnregisterApplicationInstance(ulong applicationInstanceId)
+    {
+        if (_applicationInstanceManager.Entries[applicationInstanceId] != null)
         {
-            updater = new Updater(_applicationInstanceManager, applicationInstanceId, false);
-
-            return Result.Success;
+            _applicationInstanceManager.Entries[applicationInstanceId] = null;
         }
 
-        [CmifCommand(3)]
-        public Result AcquireApplicationCertificateUpdater(out IUpdater updater, ulong applicationInstanceId)
-        {
-            updater = new Updater(_applicationInstanceManager, applicationInstanceId, true);
+        Os.SignalSystemEvent(ref _applicationInstanceManager.SystemEvent);
 
-            return Result.Success;
-        }
+        return Result.Success;
+    }
+
+    [CmifCommand(2)]
+    public Result AcquireApplicationProcessPropertyUpdater(out IUpdater updater, ulong applicationInstanceId)
+    {
+        updater = new Updater(_applicationInstanceManager, applicationInstanceId, false);
+
+        return Result.Success;
+    }
+
+    [CmifCommand(3)]
+    public Result AcquireApplicationCertificateUpdater(out IUpdater updater, ulong applicationInstanceId)
+    {
+        updater = new Updater(_applicationInstanceManager, applicationInstanceId, true);
+
+        return Result.Success;
     }
 }

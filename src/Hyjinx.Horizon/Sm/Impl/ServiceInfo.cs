@@ -1,20 +1,19 @@
 using Hyjinx.Horizon.Sdk.Sm;
 
-namespace Hyjinx.Horizon.Sm.Impl
+namespace Hyjinx.Horizon.Sm.Impl;
+
+struct ServiceInfo
 {
-    struct ServiceInfo
+    public ServiceName Name;
+    public ulong OwnerProcessId;
+    public int PortHandle;
+
+    public void Free()
     {
-        public ServiceName Name;
-        public ulong OwnerProcessId;
-        public int PortHandle;
+        HorizonStatic.Syscall.CloseHandle(PortHandle);
 
-        public void Free()
-        {
-            HorizonStatic.Syscall.CloseHandle(PortHandle);
-
-            Name = ServiceName.Invalid;
-            OwnerProcessId = 0L;
-            PortHandle = 0;
-        }
+        Name = ServiceName.Invalid;
+        OwnerProcessId = 0L;
+        PortHandle = 0;
     }
 }

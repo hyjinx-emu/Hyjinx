@@ -1,8 +1,7 @@
-namespace Hyjinx.Horizon.Sdk.Arp
+namespace Hyjinx.Horizon.Sdk.Arp;
+
+public enum ApplicationKind : byte
 {
-    public enum ApplicationKind : byte
-    {
-        Application,
-        MicroApplication,
-    }
+    Application,
+    MicroApplication,
 }

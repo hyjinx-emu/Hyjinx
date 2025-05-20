@@ -1,14 +1,13 @@
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Lm
-{
-    [Flags]
-    enum LogDestination
-    {
-        TargetManager = 1 << 0,
-        Uart = 1 << 1,
-        UartIfSleep = 1 << 2,
+namespace Hyjinx.Horizon.Sdk.Lm;
 
-        All = 0xffff,
-    }
+[Flags]
+enum LogDestination
+{
+    TargetManager = 1 << 0,
+    Uart = 1 << 1,
+    UartIfSleep = 1 << 2,
+
+    All = 0xffff,
 }

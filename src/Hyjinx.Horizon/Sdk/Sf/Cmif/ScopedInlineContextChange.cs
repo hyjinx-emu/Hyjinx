@@ -1,19 +1,18 @@
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+readonly struct ScopedInlineContextChange : IDisposable
 {
-    readonly struct ScopedInlineContextChange : IDisposable
+    private readonly int _previousContext;
+
+    public ScopedInlineContextChange(int newContext)
     {
-        private readonly int _previousContext;
+        _previousContext = InlineContext.Set(newContext);
+    }
 
-        public ScopedInlineContextChange(int newContext)
-        {
-            _previousContext = InlineContext.Set(newContext);
-        }
-
-        public void Dispose()
-        {
-            InlineContext.Set(_previousContext);
-        }
+    public void Dispose()
+    {
+        InlineContext.Set(_previousContext);
     }
 }

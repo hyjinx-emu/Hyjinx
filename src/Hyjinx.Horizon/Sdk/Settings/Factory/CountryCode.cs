@@ -1,8 +1,7 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Settings.Factory
+namespace Hyjinx.Horizon.Sdk.Settings.Factory;
+
+struct CountryCode
 {
-    struct CountryCode
-    {
-    }
 }

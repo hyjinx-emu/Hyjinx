@@ -1,34 +1,33 @@
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+class ServiceObjectHolder
 {
-    class ServiceObjectHolder
+    public IServiceObject ServiceObject { get; }
+
+    private readonly ServiceDispatchMeta _dispatchMeta;
+
+    public ServiceObjectHolder(ServiceObjectHolder objectHolder)
     {
-        public IServiceObject ServiceObject { get; }
+        ServiceObject = objectHolder.ServiceObject;
+        _dispatchMeta = objectHolder._dispatchMeta;
+    }
 
-        private readonly ServiceDispatchMeta _dispatchMeta;
+    public ServiceObjectHolder(IServiceObject serviceImpl)
+    {
+        ServiceObject = serviceImpl;
+        _dispatchMeta = new ServiceDispatchMeta(ServiceDispatchTable.Create(serviceImpl));
+    }
 
-        public ServiceObjectHolder(ServiceObjectHolder objectHolder)
-        {
-            ServiceObject = objectHolder.ServiceObject;
-            _dispatchMeta = objectHolder._dispatchMeta;
-        }
+    public ServiceObjectHolder Clone()
+    {
+        return new ServiceObjectHolder(this);
+    }
 
-        public ServiceObjectHolder(IServiceObject serviceImpl)
-        {
-            ServiceObject = serviceImpl;
-            _dispatchMeta = new ServiceDispatchMeta(ServiceDispatchTable.Create(serviceImpl));
-        }
-
-        public ServiceObjectHolder Clone()
-        {
-            return new ServiceObjectHolder(this);
-        }
-
-        public Result ProcessMessage(ref ServiceDispatchContext context, ReadOnlySpan<byte> inRawData)
-        {
-            return _dispatchMeta.DispatchTable.ProcessMessage(ref context, inRawData);
-        }
+    public Result ProcessMessage(ref ServiceDispatchContext context, ReadOnlySpan<byte> inRawData)
+    {
+        return _dispatchMeta.DispatchTable.ProcessMessage(ref context, inRawData);
     }
 }

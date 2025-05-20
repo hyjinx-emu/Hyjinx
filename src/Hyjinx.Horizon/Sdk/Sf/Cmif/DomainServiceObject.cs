@@ -1,7 +1,6 @@
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+abstract partial class DomainServiceObject : ServerDomainBase, IServiceObject
 {
-    abstract partial class DomainServiceObject : ServerDomainBase, IServiceObject
-    {
-        public abstract ServerDomainBase GetServerDomain();
-    }
+    public abstract ServerDomainBase GetServerDomain();
 }

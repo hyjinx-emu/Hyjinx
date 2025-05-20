@@ -2,84 +2,83 @@ using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.OsTypes.Impl;
 using System;
 
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+static partial class Os
 {
-    static partial class Os
+    public static Result CreateSystemEvent(out SystemEventType sysEvent, EventClearMode clearMode, bool interProcess)
     {
-        public static Result CreateSystemEvent(out SystemEventType sysEvent, EventClearMode clearMode, bool interProcess)
+        sysEvent = new SystemEventType();
+
+        if (interProcess)
         {
-            sysEvent = new SystemEventType();
+            Result result = InterProcessEvent.Create(ref sysEvent.InterProcessEvent, clearMode);
 
-            if (interProcess)
+            if (result != Result.Success)
             {
-                Result result = InterProcessEvent.Create(ref sysEvent.InterProcessEvent, clearMode);
-
-                if (result != Result.Success)
-                {
-                    return result;
-                }
-
-                sysEvent.State = SystemEventType.InitializationState.InitializedAsInterProcess;
-            }
-            else
-            {
-                throw new NotImplementedException();
+                return result;
             }
 
-            return Result.Success;
+            sysEvent.State = SystemEventType.InitializationState.InitializedAsInterProcess;
+        }
+        else
+        {
+            throw new NotImplementedException();
         }
 
-        public static void DestroySystemEvent(ref SystemEventType sysEvent)
-        {
-            var oldState = sysEvent.State;
-            sysEvent.State = SystemEventType.InitializationState.NotInitialized;
+        return Result.Success;
+    }
 
-            switch (oldState)
-            {
-                case SystemEventType.InitializationState.InitializedAsInterProcess:
-                    InterProcessEvent.Destroy(ref sysEvent.InterProcessEvent);
-                    break;
-            }
+    public static void DestroySystemEvent(ref SystemEventType sysEvent)
+    {
+        var oldState = sysEvent.State;
+        sysEvent.State = SystemEventType.InitializationState.NotInitialized;
+
+        switch (oldState)
+        {
+            case SystemEventType.InitializationState.InitializedAsInterProcess:
+                InterProcessEvent.Destroy(ref sysEvent.InterProcessEvent);
+                break;
         }
+    }
 
-        public static int DetachReadableHandleOfSystemEvent(ref SystemEventType sysEvent)
+    public static int DetachReadableHandleOfSystemEvent(ref SystemEventType sysEvent)
+    {
+        return InterProcessEvent.DetachReadableHandle(ref sysEvent.InterProcessEvent);
+    }
+
+    public static int DetachWritableHandleOfSystemEvent(ref SystemEventType sysEvent)
+    {
+        return InterProcessEvent.DetachWritableHandle(ref sysEvent.InterProcessEvent);
+    }
+
+    public static int GetReadableHandleOfSystemEvent(ref SystemEventType sysEvent)
+    {
+        return InterProcessEvent.GetReadableHandle(ref sysEvent.InterProcessEvent);
+    }
+
+    public static int GetWritableHandleOfSystemEvent(ref SystemEventType sysEvent)
+    {
+        return InterProcessEvent.GetWritableHandle(ref sysEvent.InterProcessEvent);
+    }
+
+    public static void SignalSystemEvent(ref SystemEventType sysEvent)
+    {
+        switch (sysEvent.State)
         {
-            return InterProcessEvent.DetachReadableHandle(ref sysEvent.InterProcessEvent);
+            case SystemEventType.InitializationState.InitializedAsInterProcess:
+                InterProcessEvent.Signal(ref sysEvent.InterProcessEvent);
+                break;
         }
+    }
 
-        public static int DetachWritableHandleOfSystemEvent(ref SystemEventType sysEvent)
+    public static void ClearSystemEvent(ref SystemEventType sysEvent)
+    {
+        switch (sysEvent.State)
         {
-            return InterProcessEvent.DetachWritableHandle(ref sysEvent.InterProcessEvent);
-        }
-
-        public static int GetReadableHandleOfSystemEvent(ref SystemEventType sysEvent)
-        {
-            return InterProcessEvent.GetReadableHandle(ref sysEvent.InterProcessEvent);
-        }
-
-        public static int GetWritableHandleOfSystemEvent(ref SystemEventType sysEvent)
-        {
-            return InterProcessEvent.GetWritableHandle(ref sysEvent.InterProcessEvent);
-        }
-
-        public static void SignalSystemEvent(ref SystemEventType sysEvent)
-        {
-            switch (sysEvent.State)
-            {
-                case SystemEventType.InitializationState.InitializedAsInterProcess:
-                    InterProcessEvent.Signal(ref sysEvent.InterProcessEvent);
-                    break;
-            }
-        }
-
-        public static void ClearSystemEvent(ref SystemEventType sysEvent)
-        {
-            switch (sysEvent.State)
-            {
-                case SystemEventType.InitializationState.InitializedAsInterProcess:
-                    InterProcessEvent.Clear(ref sysEvent.InterProcessEvent);
-                    break;
-            }
+            case SystemEventType.InitializationState.InitializedAsInterProcess:
+                InterProcessEvent.Clear(ref sysEvent.InterProcessEvent);
+                break;
         }
     }
 }

@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Sf;
 
-namespace Hyjinx.Horizon.Sdk.Ovln
+namespace Hyjinx.Horizon.Sdk.Ovln;
+
+interface IReceiverService : IServiceObject
 {
-    interface IReceiverService : IServiceObject
-    {
-    }
 }

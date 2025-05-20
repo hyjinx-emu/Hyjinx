@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Ins;
 
-namespace Hyjinx.Horizon.Ins.Ipc
+namespace Hyjinx.Horizon.Ins.Ipc;
+
+partial class SenderManager : ISenderManager
 {
-    partial class SenderManager : ISenderManager
-    {
-    }
 }

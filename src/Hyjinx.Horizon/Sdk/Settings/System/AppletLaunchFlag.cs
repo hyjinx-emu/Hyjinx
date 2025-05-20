@@ -1,9 +1,8 @@
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Settings.System
+namespace Hyjinx.Horizon.Sdk.Settings.System;
+
+[Flags]
+enum AppletLaunchFlag : uint
 {
-    [Flags]
-    enum AppletLaunchFlag : uint
-    {
-    }
 }

@@ -5,70 +5,69 @@ using Hyjinx.Horizon.Sdk.Sf;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
 using System;
 
-namespace Hyjinx.Horizon.Arp.Ipc
+namespace Hyjinx.Horizon.Arp.Ipc;
+
+partial class Updater : IUpdater, IServiceObject
 {
-    partial class Updater : IUpdater, IServiceObject
+    private readonly ApplicationInstanceManager _applicationInstanceManager;
+    private readonly ulong _applicationInstanceId;
+    private readonly bool _forCertificate;
+
+    public Updater(ApplicationInstanceManager applicationInstanceManager, ulong applicationInstanceId, bool forCertificate)
     {
-        private readonly ApplicationInstanceManager _applicationInstanceManager;
-        private readonly ulong _applicationInstanceId;
-        private readonly bool _forCertificate;
+        _applicationInstanceManager = applicationInstanceManager;
+        _applicationInstanceId = applicationInstanceId;
+        _forCertificate = forCertificate;
+    }
 
-        public Updater(ApplicationInstanceManager applicationInstanceManager, ulong applicationInstanceId, bool forCertificate)
+    [CmifCommand(0)]
+    public Result Issue()
+    {
+        throw new NotImplementedException();
+    }
+
+    [CmifCommand(1)]
+    public Result SetApplicationProcessProperty(ulong pid, ApplicationProcessProperty applicationProcessProperty)
+    {
+        if (_forCertificate)
         {
-            _applicationInstanceManager = applicationInstanceManager;
-            _applicationInstanceId = applicationInstanceId;
-            _forCertificate = forCertificate;
+            return ArpResult.DataAlreadyBound;
         }
 
-        [CmifCommand(0)]
-        public Result Issue()
+        if (pid == 0)
         {
-            throw new NotImplementedException();
+            return ArpResult.InvalidPid;
         }
 
-        [CmifCommand(1)]
-        public Result SetApplicationProcessProperty(ulong pid, ApplicationProcessProperty applicationProcessProperty)
+        _applicationInstanceManager.Entries[_applicationInstanceId].Pid = pid;
+        _applicationInstanceManager.Entries[_applicationInstanceId].ProcessProperty = applicationProcessProperty;
+
+        return Result.Success;
+    }
+
+    [CmifCommand(2)]
+    public Result DeleteApplicationProcessProperty()
+    {
+        if (_forCertificate)
         {
-            if (_forCertificate)
-            {
-                return ArpResult.DataAlreadyBound;
-            }
-
-            if (pid == 0)
-            {
-                return ArpResult.InvalidPid;
-            }
-
-            _applicationInstanceManager.Entries[_applicationInstanceId].Pid = pid;
-            _applicationInstanceManager.Entries[_applicationInstanceId].ProcessProperty = applicationProcessProperty;
-
-            return Result.Success;
+            return ArpResult.DataAlreadyBound;
         }
 
-        [CmifCommand(2)]
-        public Result DeleteApplicationProcessProperty()
+        _applicationInstanceManager.Entries[_applicationInstanceId].ProcessProperty = new ApplicationProcessProperty();
+
+        return Result.Success;
+    }
+
+    [CmifCommand(3)]
+    public Result SetApplicationCertificate([Buffer(HipcBufferFlags.In | HipcBufferFlags.AutoSelect)] ApplicationCertificate applicationCertificate)
+    {
+        if (!_forCertificate)
         {
-            if (_forCertificate)
-            {
-                return ArpResult.DataAlreadyBound;
-            }
-
-            _applicationInstanceManager.Entries[_applicationInstanceId].ProcessProperty = new ApplicationProcessProperty();
-
-            return Result.Success;
+            return ArpResult.DataAlreadyBound;
         }
 
-        [CmifCommand(3)]
-        public Result SetApplicationCertificate([Buffer(HipcBufferFlags.In | HipcBufferFlags.AutoSelect)] ApplicationCertificate applicationCertificate)
-        {
-            if (!_forCertificate)
-            {
-                return ArpResult.DataAlreadyBound;
-            }
+        _applicationInstanceManager.Entries[_applicationInstanceId].Certificate = applicationCertificate;
 
-            _applicationInstanceManager.Entries[_applicationInstanceId].Certificate = applicationCertificate;
-
-            return Result.Success;
-        }
+        return Result.Success;
     }
 }

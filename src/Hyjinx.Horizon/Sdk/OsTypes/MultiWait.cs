@@ -1,46 +1,45 @@
 using Hyjinx.Horizon.Sdk.OsTypes.Impl;
 using System.Collections.Generic;
 
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+class MultiWait
 {
-    class MultiWait
+    private readonly MultiWaitImpl _impl;
+
+    public IEnumerable<MultiWaitHolderBase> MultiWaits => _impl.MultiWaits;
+
+    public MultiWait()
     {
-        private readonly MultiWaitImpl _impl;
+        _impl = new MultiWaitImpl();
+    }
 
-        public IEnumerable<MultiWaitHolderBase> MultiWaits => _impl.MultiWaits;
+    public void LinkMultiWaitHolder(MultiWaitHolderBase multiWaitHolder)
+    {
+        DebugUtil.Assert(!multiWaitHolder.IsLinked);
 
-        public MultiWait()
-        {
-            _impl = new MultiWaitImpl();
-        }
+        _impl.LinkMultiWaitHolder(multiWaitHolder);
 
-        public void LinkMultiWaitHolder(MultiWaitHolderBase multiWaitHolder)
-        {
-            DebugUtil.Assert(!multiWaitHolder.IsLinked);
+        multiWaitHolder.SetMultiWait(_impl);
+    }
 
-            _impl.LinkMultiWaitHolder(multiWaitHolder);
+    public void MoveAllFrom(MultiWait other)
+    {
+        _impl.MoveAllFrom(other._impl);
+    }
 
-            multiWaitHolder.SetMultiWait(_impl);
-        }
+    public MultiWaitHolder WaitAny()
+    {
+        return (MultiWaitHolder)_impl.WaitAnyImpl(true, -1L);
+    }
 
-        public void MoveAllFrom(MultiWait other)
-        {
-            _impl.MoveAllFrom(other._impl);
-        }
+    public MultiWaitHolder TryWaitAny()
+    {
+        return (MultiWaitHolder)_impl.WaitAnyImpl(false, 0);
+    }
 
-        public MultiWaitHolder WaitAny()
-        {
-            return (MultiWaitHolder)_impl.WaitAnyImpl(true, -1L);
-        }
-
-        public MultiWaitHolder TryWaitAny()
-        {
-            return (MultiWaitHolder)_impl.WaitAnyImpl(false, 0);
-        }
-
-        public MultiWaitHolder TimedWaitAny(long timeout)
-        {
-            return (MultiWaitHolder)_impl.WaitAnyImpl(false, timeout);
-        }
+    public MultiWaitHolder TimedWaitAny(long timeout)
+    {
+        return (MultiWaitHolder)_impl.WaitAnyImpl(false, timeout);
     }
 }

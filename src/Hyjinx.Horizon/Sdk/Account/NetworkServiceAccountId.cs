@@ -1,20 +1,19 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Account
+namespace Hyjinx.Horizon.Sdk.Account;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x8, Pack = 0x8)]
+readonly record struct NetworkServiceAccountId
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x8, Pack = 0x8)]
-    readonly record struct NetworkServiceAccountId
+    public readonly ulong Id;
+
+    public NetworkServiceAccountId(ulong id)
     {
-        public readonly ulong Id;
+        Id = id;
+    }
 
-        public NetworkServiceAccountId(ulong id)
-        {
-            Id = id;
-        }
-
-        public override readonly string ToString()
-        {
-            return Id.ToString("x16");
-        }
+    public override readonly string ToString()
+    {
+        return Id.ToString("x16");
     }
 }

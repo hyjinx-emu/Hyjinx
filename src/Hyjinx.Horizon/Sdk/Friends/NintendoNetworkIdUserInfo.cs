@@ -1,9 +1,8 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Friends
+namespace Hyjinx.Horizon.Sdk.Friends;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x38)]
+struct NintendoNetworkIdUserInfo
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x38)]
-    struct NintendoNetworkIdUserInfo
-    {
-    }
 }

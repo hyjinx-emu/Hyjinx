@@ -1,16 +1,15 @@
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Fs
+namespace Hyjinx.Horizon.Sdk.Fs;
+
+public interface IFsClient
 {
-    public interface IFsClient
-    {
-        Result QueryMountSystemDataCacheSize(out long size, ulong dataId);
-        Result MountSystemData(string mountName, ulong dataId);
-        Result OpenFile(out FileHandle handle, string path, OpenMode openMode);
-        Result ReadFile(FileHandle handle, long offset, Span<byte> destination);
-        Result GetFileSize(out long size, FileHandle handle);
-        void CloseFile(FileHandle handle);
-        void Unmount(string mountName);
-    }
+    Result QueryMountSystemDataCacheSize(out long size, ulong dataId);
+    Result MountSystemData(string mountName, ulong dataId);
+    Result OpenFile(out FileHandle handle, string path, OpenMode openMode);
+    Result ReadFile(FileHandle handle, long offset, Span<byte> destination);
+    Result GetFileSize(out long size, FileHandle handle);
+    void CloseFile(FileHandle handle);
+    void Unmount(string mountName);
 }

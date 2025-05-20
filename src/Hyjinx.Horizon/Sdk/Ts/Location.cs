@@ -1,8 +1,7 @@
-namespace Hyjinx.Horizon.Sdk.Ts
+namespace Hyjinx.Horizon.Sdk.Ts;
+
+enum Location : byte
 {
-    enum Location : byte
-    {
-        Internal,
-        External,
-    }
+    Internal,
+    External,
 }

@@ -1,160 +1,159 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.MmNv;
 using Hyjinx.Horizon.Sdk.Sf;
+using Hyjinx.Logging.Abstractions;
 using System.Collections.Generic;
 
-namespace Hyjinx.Horizon.MmNv.Ipc
+namespace Hyjinx.Horizon.MmNv.Ipc;
+
+partial class Request : IRequest
 {
-    partial class Request : IRequest
+    private readonly List<Session> _sessionList = new();
+
+    private uint _uniqueId = 1;
+
+    [CmifCommand(0)]
+    public Result InitializeOld(Module module, uint fgmPriority, uint autoClearEvent)
     {
-        private readonly List<Session> _sessionList = new();
+        bool isAutoClearEvent = autoClearEvent != 0;
 
-        private uint _uniqueId = 1;
+        // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, fgmPriority, isAutoClearEvent });
 
-        [CmifCommand(0)]
-        public Result InitializeOld(Module module, uint fgmPriority, uint autoClearEvent)
+        Register(module, fgmPriority, isAutoClearEvent);
+
+        return Result.Success;
+    }
+
+    [CmifCommand(1)]
+    public Result FinalizeOld(Module module)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module });
+
+        lock (_sessionList)
         {
-            bool isAutoClearEvent = autoClearEvent != 0;
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, fgmPriority, isAutoClearEvent });
-
-            Register(module, fgmPriority, isAutoClearEvent);
-
-            return Result.Success;
+            _sessionList.Remove(GetSessionByModule(module));
         }
 
-        [CmifCommand(1)]
-        public Result FinalizeOld(Module module)
-        {
-            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module });
+        return Result.Success;
+    }
 
-            lock (_sessionList)
+    [CmifCommand(2)]
+    public Result SetAndWaitOld(Module module, uint clockRateMin, int clockRateMax)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, clockRateMin, clockRateMax });
+
+        lock (_sessionList)
+        {
+            GetSessionByModule(module)?.SetAndWait(clockRateMin, clockRateMax);
+        }
+
+        return Result.Success;
+    }
+
+    [CmifCommand(3)]
+    public Result GetOld(out uint clockRateActual, Module module)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module });
+
+        lock (_sessionList)
+        {
+            Session session = GetSessionByModule(module);
+
+            clockRateActual = session == null ? 0 : session.ClockRateMin;
+        }
+
+        return Result.Success;
+    }
+
+    [CmifCommand(4)]
+    public Result Initialize(out uint requestId, Module module, uint fgmPriority, uint autoClearEvent)
+    {
+        bool isAutoClearEvent = autoClearEvent != 0;
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, fgmPriority, isAutoClearEvent });
+
+        requestId = Register(module, fgmPriority, isAutoClearEvent);
+
+        return Result.Success;
+    }
+
+    [CmifCommand(5)]
+    public Result Finalize(uint requestId)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId });
+
+        lock (_sessionList)
+        {
+            _sessionList.Remove(GetSessionById(requestId));
+        }
+
+        return Result.Success;
+    }
+
+    [CmifCommand(6)]
+    public Result SetAndWait(uint requestId, uint clockRateMin, int clockRateMax)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId, clockRateMin, clockRateMax });
+
+        lock (_sessionList)
+        {
+            GetSessionById(requestId)?.SetAndWait(clockRateMin, clockRateMax);
+        }
+
+        return Result.Success;
+    }
+
+    [CmifCommand(7)]
+    public Result Get(out uint clockRateActual, uint requestId)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId });
+
+        lock (_sessionList)
+        {
+            Session session = GetSessionById(requestId);
+
+            clockRateActual = session == null ? 0 : session.ClockRateMin;
+        }
+
+        return Result.Success;
+    }
+
+    private Session GetSessionById(uint id)
+    {
+        foreach (Session session in _sessionList)
+        {
+            if (session.Id == id)
             {
-                _sessionList.Remove(GetSessionByModule(module));
+                return session;
             }
-
-            return Result.Success;
         }
 
-        [CmifCommand(2)]
-        public Result SetAndWaitOld(Module module, uint clockRateMin, int clockRateMax)
-        {
-            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, clockRateMin, clockRateMax });
+        return null;
+    }
 
-            lock (_sessionList)
+    private Session GetSessionByModule(Module module)
+    {
+        foreach (Session session in _sessionList)
+        {
+            if (session.Module == module)
             {
-                GetSessionByModule(module)?.SetAndWait(clockRateMin, clockRateMax);
+                return session;
             }
-
-            return Result.Success;
         }
 
-        [CmifCommand(3)]
-        public Result GetOld(out uint clockRateActual, Module module)
+        return null;
+    }
+
+    private uint Register(Module module, uint fgmPriority, bool isAutoClearEvent)
+    {
+        lock (_sessionList)
         {
-            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module });
+            // Nintendo ignores the fgm priority as the other services were deprecated.
+            Session session = new(_uniqueId++, module, isAutoClearEvent);
 
-            lock (_sessionList)
-            {
-                Session session = GetSessionByModule(module);
+            _sessionList.Add(session);
 
-                clockRateActual = session == null ? 0 : session.ClockRateMin;
-            }
-
-            return Result.Success;
-        }
-
-        [CmifCommand(4)]
-        public Result Initialize(out uint requestId, Module module, uint fgmPriority, uint autoClearEvent)
-        {
-            bool isAutoClearEvent = autoClearEvent != 0;
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { module, fgmPriority, isAutoClearEvent });
-
-            requestId = Register(module, fgmPriority, isAutoClearEvent);
-
-            return Result.Success;
-        }
-
-        [CmifCommand(5)]
-        public Result Finalize(uint requestId)
-        {
-            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId });
-
-            lock (_sessionList)
-            {
-                _sessionList.Remove(GetSessionById(requestId));
-            }
-
-            return Result.Success;
-        }
-
-        [CmifCommand(6)]
-        public Result SetAndWait(uint requestId, uint clockRateMin, int clockRateMax)
-        {
-            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId, clockRateMin, clockRateMax });
-
-            lock (_sessionList)
-            {
-                GetSessionById(requestId)?.SetAndWait(clockRateMin, clockRateMax);
-            }
-
-            return Result.Success;
-        }
-
-        [CmifCommand(7)]
-        public Result Get(out uint clockRateActual, uint requestId)
-        {
-            // Logger.Stub?.PrintStub(LogClass.ServiceMm, new { requestId });
-
-            lock (_sessionList)
-            {
-                Session session = GetSessionById(requestId);
-
-                clockRateActual = session == null ? 0 : session.ClockRateMin;
-            }
-
-            return Result.Success;
-        }
-
-        private Session GetSessionById(uint id)
-        {
-            foreach (Session session in _sessionList)
-            {
-                if (session.Id == id)
-                {
-                    return session;
-                }
-            }
-
-            return null;
-        }
-
-        private Session GetSessionByModule(Module module)
-        {
-            foreach (Session session in _sessionList)
-            {
-                if (session.Module == module)
-                {
-                    return session;
-                }
-            }
-
-            return null;
-        }
-
-        private uint Register(Module module, uint fgmPriority, bool isAutoClearEvent)
-        {
-            lock (_sessionList)
-            {
-                // Nintendo ignores the fgm priority as the other services were deprecated.
-                Session session = new(_uniqueId++, module, isAutoClearEvent);
-
-                _sessionList.Add(session);
-
-                return session.Id;
-            }
+            return session.Id;
         }
     }
 }

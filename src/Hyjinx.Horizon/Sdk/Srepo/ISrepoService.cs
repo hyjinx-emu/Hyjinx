@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Sf;
 
-namespace Hyjinx.Horizon.Sdk.Srepo
+namespace Hyjinx.Horizon.Sdk.Srepo;
+
+interface ISrepoService : IServiceObject
 {
-    interface ISrepoService : IServiceObject
-    {
-    }
 }

@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Ovln
+namespace Hyjinx.Horizon.Ovln;
+
+class OvlnMain : IService
 {
-    class OvlnMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            OvlnIpcServer ipcServer = new();
+        OvlnIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

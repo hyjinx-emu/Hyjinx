@@ -1,9 +1,8 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Settings.System
+namespace Hyjinx.Horizon.Sdk.Settings.System;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x8, Pack = 0x4)]
+struct AudioVolume
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x8, Pack = 0x4)]
-    struct AudioVolume
-    {
-    }
 }

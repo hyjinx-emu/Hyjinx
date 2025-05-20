@@ -1,15 +1,14 @@
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Sf
-{
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-    class CmifCommandAttribute : Attribute
-    {
-        public uint CommandId { get; }
+namespace Hyjinx.Horizon.Sdk.Sf;
 
-        public CmifCommandAttribute(uint commandId)
-        {
-            CommandId = commandId;
-        }
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+class CmifCommandAttribute : Attribute
+{
+    public uint CommandId { get; }
+
+    public CmifCommandAttribute(uint commandId)
+    {
+        CommandId = commandId;
     }
 }

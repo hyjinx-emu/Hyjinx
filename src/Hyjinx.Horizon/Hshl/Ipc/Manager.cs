@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Hshl;
 
-namespace Hyjinx.Horizon.Hshl.Ipc
+namespace Hyjinx.Horizon.Hshl.Ipc;
+
+partial class Manager : IManager
 {
-    partial class Manager : IManager
-    {
-    }
 }

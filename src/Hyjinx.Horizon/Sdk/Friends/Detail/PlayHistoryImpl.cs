@@ -1,8 +1,7 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Friends.Detail
+namespace Hyjinx.Horizon.Sdk.Friends.Detail;
+
+struct PlayHistoryImpl
 {
-    struct PlayHistoryImpl
-    {
-    }
 }

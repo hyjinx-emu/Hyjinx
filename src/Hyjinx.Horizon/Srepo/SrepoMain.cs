@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Srepo
+namespace Hyjinx.Horizon.Srepo;
+
+class SrepoMain : IService
 {
-    class SrepoMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            SrepoIpcServer ipcServer = new();
+        SrepoIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

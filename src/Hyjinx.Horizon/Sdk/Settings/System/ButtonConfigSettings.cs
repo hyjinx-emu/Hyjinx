@@ -1,9 +1,8 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Settings.System
+namespace Hyjinx.Horizon.Sdk.Settings.System;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x5A8)]
+struct ButtonConfigSettings
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x5A8)]
-    struct ButtonConfigSettings
-    {
-    }
 }

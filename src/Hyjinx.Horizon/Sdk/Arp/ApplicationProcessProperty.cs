@@ -1,10 +1,9 @@
 using Hyjinx.Common.Memory;
 
-namespace Hyjinx.Horizon.Sdk.Arp
+namespace Hyjinx.Horizon.Sdk.Arp;
+
+public struct ApplicationProcessProperty
 {
-    public struct ApplicationProcessProperty
-    {
-        public byte ProgramIndex;
-        public Array15<byte> Unknown;
-    }
+    public byte ProgramIndex;
+    public Array15<byte> Unknown;
 }
