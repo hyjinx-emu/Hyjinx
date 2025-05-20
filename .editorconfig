@@ -15,7 +15,7 @@ tab_width = 4
 
 # New line preferences
 end_of_line = lf
-insert_final_newline = true
+insert_final_newline = false
 
 # Markdown, JSON, YAML, props and csproj files
 [*.{md,json,yml,props,csproj}]
