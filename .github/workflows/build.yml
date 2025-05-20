@@ -51,10 +51,8 @@ jobs:
         shell: bash
         
       - name: Prepare Analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/dotnet-sonarscanner begin /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          ./.sonar/dotnet-sonarscanner begin /k:"hyjinx-emu_Hyjinx" /o:"hyjinx-emu" /d:sonar.sources="./src" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           
       - name: Build
         run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}"
@@ -64,7 +62,5 @@ jobs:
         timeout-minutes: 10
       
       - name: Publish Analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./.sonar/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
