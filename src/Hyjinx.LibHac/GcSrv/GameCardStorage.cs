@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -63,7 +63,8 @@ internal class ReadOnlyGameCardStorage : IStorage
         UnsafeHelpers.SkipParamInit(out size);
 
         Result res = _gc.GetCardStatus(out GameCardStatus status);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         size = status.CardSize;
         return Result.Success;
@@ -146,7 +147,8 @@ internal class WriteOnlyGameCardStorage : IStorage
         UnsafeHelpers.SkipParamInit(out size);
 
         Result res = _gc.Writer.GetCardAvailableRawSize(out long gameCardSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         size = gameCardSize + GcCardKeyAreaSize;
         return Result.Success;

@@ -586,9 +586,9 @@ public class SettingsViewModel : BaseModel
 
         config.Multiplayer.LanInterfaceId.Value = _networkInterfaces[NetworkInterfaceList[NetworkInterfaceIndex]];
         config.Multiplayer.Mode.Value = (MultiplayerMode)MultiplayerModeIndex;
-        
+
         MainWindow.UpdateGraphicsConfig();
-        
+
         _directoryChanged = false;
     }
 
@@ -606,7 +606,7 @@ public class SettingsViewModel : BaseModel
     public void OkButton()
     {
         ApplySettings();
-        
+
         ConfigurationState.Instance.ToFileFormat()
             .SaveConfig(ConfigurationModule.ConfigurationPath);
 

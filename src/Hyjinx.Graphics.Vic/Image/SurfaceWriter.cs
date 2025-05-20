@@ -13,7 +13,7 @@ namespace Hyjinx.Graphics.Vic.Image
     partial class SurfaceWriter
     {
         private static ILogger<SurfaceWriter> _logger = Logger.DefaultLoggerFactory.CreateLogger<SurfaceWriter>();
-        
+
         public static void Write(ResourceManager rm, Surface input, ref OutputSurfaceConfig config, ref PlaneOffsets offsets)
         {
             switch (config.OutPixelFormat)
@@ -33,7 +33,7 @@ namespace Hyjinx.Graphics.Vic.Image
                     break;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Vic, EventName = nameof(LogClass.Vic),
             Message = "Unsupported pixel format '{format}'.")]

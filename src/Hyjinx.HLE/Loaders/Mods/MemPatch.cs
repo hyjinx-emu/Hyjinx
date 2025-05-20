@@ -8,9 +8,9 @@ namespace Hyjinx.HLE.Loaders.Mods
 {
     public partial class MemPatch
     {
-        private static readonly ILogger<MemPatch> _logger = 
+        private static readonly ILogger<MemPatch> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<MemPatch>();
-        
+
         readonly Dictionary<uint, byte[]> _patches = new();
 
         /// <summary>

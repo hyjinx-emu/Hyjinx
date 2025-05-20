@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Fs;
@@ -221,14 +221,16 @@ public class LayeredFileSystem : IFileSystem
         public Result Initialize(in Path path)
         {
             Result res = _path.Initialize(in path);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var dir = new UniqueRef<IDirectory>();
 
             foreach (IFileSystem fs in SourceFileSystems)
             {
                 res = fs.OpenDirectory(ref dir.Ref, in path, Mode);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 SourceDirs.Add(dir.Release());
             }
@@ -248,7 +250,8 @@ public class LayeredFileSystem : IFileSystem
                 do
                 {
                     Result res = SourceDirs[i].Read(out subEntriesRead, entryBuffer.Slice(entryIndex, 1));
-                    if (res.IsFailure()) return res;
+                    if (res.IsFailure())
+                        return res;
 
                     if (subEntriesRead == 1 && Names.Add(StringUtils.Utf8ZToString(entryBuffer[entryIndex].Name)))
                     {
@@ -277,13 +280,15 @@ public class LayeredFileSystem : IFileSystem
             foreach (IFileSystem fs in SourceFileSystems)
             {
                 Result res = fs.OpenDirectory(ref dir.Ref, in path, Mode);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 long entriesRead;
                 do
                 {
                     res = dir.Get.Read(out entriesRead, SpanHelpers.AsSpan(ref entry));
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     if (entriesRead == 1 && names.Add(StringUtils.Utf8ZToString(entry.Name)))
                     {

@@ -10,9 +10,9 @@ namespace Hyjinx.UI.Common.SystemInfo
 {
     public partial class SystemInfo
     {
-        protected static readonly ILogger<SystemInfo> _logger = 
+        protected static readonly ILogger<SystemInfo> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<SystemInfo>();
-        
+
         public string OsDescription { get; protected set; }
         public string CpuName { get; protected set; }
         public ulong RamTotal { get; protected set; }
@@ -30,7 +30,7 @@ namespace Hyjinx.UI.Common.SystemInfo
         public void Print()
         {
             var logger = Logger.DefaultLogger;
-            
+
             logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Operating System: {OsDescription}", OsDescription);
             logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "CPU: {CpuName}", CpuName);
             logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "RAM: {Total} / {Available}", ToGBString(RamTotal), ToGBString(RamAvailable));

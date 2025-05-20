@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -53,7 +53,8 @@ public static class StorageExtensions
         output.GetSize(out long outputSize).ThrowIfFailure();
 
         long remaining = Math.Min(inputSize, outputSize);
-        if (remaining < 0) throw new ArgumentException("Storage must have an explicit length");
+        if (remaining < 0)
+            throw new ArgumentException("Storage must have an explicit length");
         progress?.SetTotal(remaining);
 
         long pos = 0;
@@ -104,7 +105,8 @@ public static class StorageExtensions
         const int bufferSize = 0x4000;
 
         long remaining = count;
-        if (remaining < 0) throw new ArgumentException("Storage must have an explicit length");
+        if (remaining < 0)
+            throw new ArgumentException("Storage must have an explicit length");
         progress?.SetTotal(remaining);
 
         long pos = offset;
@@ -142,7 +144,8 @@ public static class StorageExtensions
 
     public static byte[] ToArray(this IStorage storage)
     {
-        if (storage == null) return new byte[0];
+        if (storage == null)
+            return new byte[0];
 
         storage.GetSize(out long storageSize).ThrowIfFailure();
 
@@ -153,7 +156,8 @@ public static class StorageExtensions
 
     public static T[] ToArray<T>(this IStorage storage) where T : unmanaged
     {
-        if (storage == null) return new T[0];
+        if (storage == null)
+            return new T[0];
 
         storage.GetSize(out long storageSize).ThrowIfFailure();
 
@@ -194,31 +198,36 @@ public static class StorageExtensions
 
     public static IStorage AsStorage(this Stream stream)
     {
-        if (stream == null) return null;
+        if (stream == null)
+            return null;
         return new StreamStorage(stream, true);
     }
 
     public static IStorage AsStorage(this Stream stream, bool keepOpen)
     {
-        if (stream == null) return null;
+        if (stream == null)
+            return null;
         return new StreamStorage(stream, keepOpen);
     }
 
     public static IStorage AsStorage(this Stream stream, long start)
     {
-        if (stream == null) return null;
+        if (stream == null)
+            return null;
         return new StreamStorage(stream, true).Slice(start);
     }
 
     public static IStorage AsStorage(this Stream stream, long start, int length)
     {
-        if (stream == null) return null;
+        if (stream == null)
+            return null;
         return new StreamStorage(stream, true).Slice(start, length);
     }
 
     public static IStorage AsStorage(this Stream stream, long start, int length, bool keepOpen)
     {
-        if (stream == null) return null;
+        if (stream == null)
+            return null;
         return new StreamStorage(stream, keepOpen).Slice(start, length);
     }
 }

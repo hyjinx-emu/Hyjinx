@@ -50,7 +50,7 @@ namespace Hyjinx.UI.Common.SystemInfo
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "File '{file}' not found.")]
         private static partial void LogFileNotFound(ILogger logger, string file);
-        
+
         private static void ParseKeyValues(string filePath, Dictionary<string, string> itemDict)
         {
             if (!File.Exists(filePath))

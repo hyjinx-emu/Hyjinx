@@ -134,4 +134,3 @@ namespace Hyjinx.Ava.UI.Applet
         }
     }
 }
-

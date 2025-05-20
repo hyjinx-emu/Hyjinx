@@ -22,7 +22,7 @@ namespace Hyjinx.Graphics.Host1x
         }
 
         private readonly ILogger<Host1xDevice> _logger = Logger.DefaultLoggerFactory.CreateLogger<Host1xDevice>();
-        
+
         private readonly SyncptIncrManager _syncptIncrMgr;
         private readonly AsyncWorkQueue<Command> _commandQueue;
 

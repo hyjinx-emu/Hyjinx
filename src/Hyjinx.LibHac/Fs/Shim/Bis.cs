@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -79,7 +79,8 @@ public static class Bis
         }
 
         fs.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.IsEnabledAccessLog(AccessLogTarget.System))
             fs.EnableFileSystemAccessorAccessLog(mountName);
@@ -89,7 +90,8 @@ public static class Bis
         static Result Mount(FileSystemClientImpl fs, U8Span mountName, BisPartitionId partitionId)
         {
             Result res = fs.CheckMountNameAcceptingReservedMountName(mountName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystemProxy> fileSystemProxy = fs.GetFileSystemProxyServiceObject();
 
@@ -99,7 +101,8 @@ public static class Bis
             using var fileSystem = new SharedRef<IFileSystemSf>();
 
             res = fileSystemProxy.Get.OpenBisFileSystem(ref fileSystem.Ref, in sfPath, partitionId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var mountNameGenerator =
                 new UniqueRef<ICommonMountNameGenerator>(new BisCommonMountNameGenerator(partitionId));
@@ -114,7 +117,8 @@ public static class Bis
                 return ResultFs.AllocationMemoryFailedInBisB.Log();
 
             res = fs.Fs.Register(mountName, ref fileSystemAdapter.Ref, ref mountNameGenerator.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -172,7 +176,8 @@ public static class Bis
 
         Result res = fileSystemProxy.Get.OpenBisStorage(ref storage.Ref, partitionId);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var storageAdapter = new UniqueRef<IStorage>(new StorageServiceObjectAdapter(ref storage.Ref));
 
@@ -180,7 +185,8 @@ public static class Bis
         {
             res = ResultFs.AllocationMemoryFailedInBisC.Value;
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Log();
+            if (res.IsFailure())
+                return res.Log();
         }
 
         outPartitionStorage.Set(ref storageAdapter.Ref);
@@ -193,7 +199,8 @@ public static class Bis
 
         Result res = fileSystemProxy.Get.InvalidateBisCache();
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

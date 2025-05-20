@@ -13,7 +13,7 @@ namespace Hyjinx.Horizon.Sdk.Sf.Hipc
     {
         private readonly ILogger<ServerSessionManager> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<ServerSessionManager>();
-        
+
         public Result AcceptSession(int portHandle, ServiceObjectHolder obj)
         {
             return AcceptSession(out _, portHandle, obj);

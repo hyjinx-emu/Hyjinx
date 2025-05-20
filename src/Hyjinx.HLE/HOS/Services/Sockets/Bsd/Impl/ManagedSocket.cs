@@ -342,12 +342,12 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
             EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
             Message = "Invalid GetSockOpt option: {option}, level: {level}")]
         private partial void LogInvalidGetSockOpt(BsdSocketOption option, SocketOptionLevel level);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
             Message = "Invalid SetSockOpt option: {option}, level: {level}")]
         private partial void LogInvalidSetSockOpt(BsdSocketOption option, SocketOptionLevel level);
-        
+
         public LinuxError SetSocketOption(BsdSocketOption option, SocketOptionLevel level, ReadOnlySpan<byte> optionValue)
         {
             try
@@ -530,7 +530,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
             EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
             Message = "Unsupported BsdMMsgHdr")]
         private partial void LogUnsupportedMessageHeader();
-        
+
         public LinuxError SendMMsg(out int vlen, BsdMMsgHdr message, BsdSocketFlags flags)
         {
             vlen = 0;

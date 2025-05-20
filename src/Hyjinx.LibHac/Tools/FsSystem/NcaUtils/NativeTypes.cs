@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
@@ -11,7 +11,7 @@ public static class NativeTypes
     public const int HeaderSectorSize = 0x200;
     public const int BlockSize = 0x200;
     public const int SectionCount = 4;
-        
+
     public const int RightsIdOffset = 0x230;
     public const int RightsIdSize = 0x10;
     public const int SectionEntriesOffset = 0x240;
@@ -21,7 +21,7 @@ public static class NativeTypes
     public const int KeyAreaSize = 0x100;
     public const int FsHeadersOffset = 0x400;
     public const int FsHeaderSize = 0x200;
-    
+
     public const int IntegrityInfoOffset = 8;
     public const int IntegrityInfoSize = 0xF8;
     public const int PatchInfoOffset = 0x100;
@@ -30,7 +30,7 @@ public static class NativeTypes
     public const int SparseInfoSize = 0x30;
     public const int CompressionInfoOffset = 0x178;
     public const int CompressionInfoSize = 0x28;
-    
+
     [StructLayout(LayoutKind.Explicit)]
     public struct FsHeaderStruct
     {
@@ -42,7 +42,7 @@ public static class NativeTypes
         [FieldOffset(0x140)] public int CounterType;
         [FieldOffset(0x144)] public int CounterVersion;
     }
-    
+
     [StructLayout(LayoutKind.Explicit, Size = HeaderSize)]
     public struct NcaHeaderStruct
     {

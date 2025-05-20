@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using LibHac.Diag;
@@ -63,7 +63,8 @@ internal static class BufferManagerUtility
             }
 
             Result res = onFailure();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Thread.Sleep(RetryWait);
         }
@@ -127,13 +128,15 @@ internal static class BufferManagerUtility
         {
             // If we don't need to block, just allocate the buffer.
             Result res = AllocateBufferImpl();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
             // Otherwise, try to allocate repeatedly.
             Result res = DoContinuouslyUntilBufferIsAllocated(AllocateBufferImpl);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         Assert.SdkAssert(!tempBuffer.IsNull);

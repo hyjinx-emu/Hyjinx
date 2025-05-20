@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using LibHac.Bcat.Impl.Ipc;
 using LibHac.Bcat.Impl.Service;
 using LibHac.Bcat.Impl.Service.Core;

@@ -1,4 +1,4 @@
-﻿using LibHac.Fs;
+using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Shim;
 using Xunit;

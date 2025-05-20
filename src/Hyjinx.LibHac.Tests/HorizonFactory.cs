@@ -1,4 +1,4 @@
-﻿using LibHac.Bcat;
+using LibHac.Bcat;
 using LibHac.Common.Keys;
 using LibHac.Fs.Fsa;
 using LibHac.FsSrv;

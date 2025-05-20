@@ -1,4 +1,4 @@
-﻿using Hyjinx.Common;
+using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Configuration;
@@ -48,7 +48,7 @@ public class ConfigurationModule
         var config = new ConfigurationBuilder()
             .AddJsonFile(ConfigurationPath, optional: false, reloadOnChange: true)
             .Build();
-        
+
         services.AddSingleton<IConfiguration>(config);
         services.AddSingleton<IOptions<LaunchOptions>>(new OptionsWrapper<LaunchOptions>(launchOptions));
         services.AddOptions<ConfigurationFileFormat>().Bind(config);

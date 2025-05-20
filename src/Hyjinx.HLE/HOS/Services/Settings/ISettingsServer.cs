@@ -123,7 +123,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
             EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
             Message = "Wrong buffer size")]
         private partial void LogWrongBufferSize();
-        
+
         [CommandCmif(11)] // 10.1.0+
         // GetDeviceNickName() -> buffer<nn::settings::system::DeviceNickName, 0x16>
         public ResultCode GetDeviceNickName(ServiceCtx context)

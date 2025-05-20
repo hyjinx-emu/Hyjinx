@@ -15,10 +15,10 @@ namespace Hyjinx.HLE.Loaders.Processes
     {
         public static ProcessResult Failed => new(null, new BlitStruct<ApplicationControlProperty>(1), false, false, null, 0, 0, 0, TitleLanguage.AmericanEnglish);
         private static readonly ILogger<ProcessResult> _logger = Logger.DefaultLoggerFactory.CreateLogger<ProcessResult>();
-        
+
         private readonly byte _mainThreadPriority;
         private readonly uint _mainThreadStackSize;
-        
+
         public readonly IDiskCacheLoadState DiskCacheLoadState;
 
         public readonly MetaLoader MetaLoader;

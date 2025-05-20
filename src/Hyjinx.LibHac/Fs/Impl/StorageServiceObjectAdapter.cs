@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.FsSrv.Storage.Sf;

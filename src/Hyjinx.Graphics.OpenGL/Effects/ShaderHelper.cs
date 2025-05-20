@@ -7,7 +7,7 @@ namespace Hyjinx.Graphics.OpenGL.Effects
     internal partial class ShaderHelper
     {
         private static readonly ILogger<ShaderHelper> _logger = new LoggerFactory().CreateLogger<ShaderHelper>();
-        
+
         public static int CompileProgram(string shaderCode, ShaderType shaderType)
         {
             return CompileProgram(new string[] { shaderCode }, shaderType);
@@ -38,7 +38,7 @@ namespace Hyjinx.Graphics.OpenGL.Effects
 
             return program;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Failed to compile effect shader: {errorMessage}")]

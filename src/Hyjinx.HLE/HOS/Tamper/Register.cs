@@ -6,9 +6,9 @@ namespace Hyjinx.HLE.HOS.Tamper
 {
     partial class Register : IOperand
     {
-        private static readonly ILogger<Register> _logger = 
+        private static readonly ILogger<Register> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<Register>();
-        
+
         private ulong _register = 0;
         private readonly string _alias;
 

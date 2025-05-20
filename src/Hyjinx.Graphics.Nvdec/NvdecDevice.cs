@@ -10,9 +10,9 @@ namespace Hyjinx.Graphics.Nvdec
 {
     public partial class NvdecDevice : IDeviceStateWithContext
     {
-        private readonly ILogger<NvdecDevice> _logger = 
+        private readonly ILogger<NvdecDevice> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<NvdecDevice>();
-        
+
         private readonly ResourceManager _rm;
         private readonly DeviceState<NvdecRegisters> _state;
 

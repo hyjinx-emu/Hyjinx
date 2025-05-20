@@ -11,7 +11,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
     static partial class DiskCacheCommon
     {
         private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(DiskCacheCommon));
-        
+
         /// <summary>
         /// Opens a file for read or write.
         /// </summary>

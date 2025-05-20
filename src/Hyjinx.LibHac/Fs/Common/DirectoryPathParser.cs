@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using LibHac.Common;
 using LibHac.Diag;
@@ -49,7 +49,8 @@ public ref struct DirectoryPathParser
         if (windowsSkipLength != 0)
         {
             Result res = _currentPath.InitializeWithNormalization(pathBuffer, windowsSkipLength + 1);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _buffer = _buffer.Slice(1);
         }
@@ -60,7 +61,8 @@ public ref struct DirectoryPathParser
             if (!initialPath.IsEmpty)
             {
                 Result res = _currentPath.InitializeWithNormalization(initialPath);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
         }
 

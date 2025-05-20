@@ -51,7 +51,7 @@ namespace Hyjinx.Ava.UI.ViewModels
     public class MainWindowViewModel : BaseModel
     {
         private const int HotKeyPressDelayMs = 500;
-        
+
         private readonly ILogger<MainWindowViewModel> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<MainWindowViewModel>();
 
@@ -99,7 +99,7 @@ namespace Hyjinx.Ava.UI.ViewModels
         private float _volume;
         private float _volumeBeforeMute;
         private string _backendText;
-        
+
         private Cursor _cursor;
         private string _title;
         private ApplicationData _currentApplicationData;
@@ -1120,7 +1120,8 @@ namespace Hyjinx.Ava.UI.ViewModels
                         {
                             RefreshFirmwareStatus();
                         }
-                    }) { Name = "GUI.FirmwareInstallerThread", };
+                    })
+                    { Name = "GUI.FirmwareInstallerThread", };
 
                     thread.Start();
                 }
@@ -1568,7 +1569,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 #if RELEASE
             await PerformanceCheck();
 #endif
-            
+
             SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, ConfigurationState.Instance.System.Language, application.Id);
 
             PrepareLoadScreen();

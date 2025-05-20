@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using LibHac.Diag;
 
@@ -244,30 +244,30 @@ public class MultiWaitImpl : IDisposable
 
                     break;
                 case WaitCancelled:
-                {
-                    using ScopedLock<InternalCriticalSection> lk = ScopedLock.Lock(ref _csWait);
-
-                    if (_signaledHolder is not null)
                     {
-                        outHolder = _signaledHolder;
-                        return waitResult;
-                    }
+                        using ScopedLock<InternalCriticalSection> lk = ScopedLock.Lock(ref _csWait);
 
-                    break;
-                }
+                        if (_signaledHolder is not null)
+                        {
+                            outHolder = _signaledHolder;
+                            return waitResult;
+                        }
+
+                        break;
+                    }
                 case WaitInvalid:
                     outHolder = null;
                     return waitResult;
                 default:
-                {
-                    Assert.SdkAssert(index >= 0 && index < objectCount);
+                    {
+                        Assert.SdkAssert(index >= 0 && index < objectCount);
 
-                    using ScopedLock<InternalCriticalSection> lk = ScopedLock.Lock(ref _csWait);
+                        using ScopedLock<InternalCriticalSection> lk = ScopedLock.Lock(ref _csWait);
 
-                    _signaledHolder = objectsArrayToHolder[index];
-                    outHolder = _signaledHolder;
-                    return waitResult;
-                }
+                        _signaledHolder = objectsArrayToHolder[index];
+                        outHolder = _signaledHolder;
+                        return waitResult;
+                    }
             }
 
             replyTarget = OsTypes.InvalidNativeHandle;

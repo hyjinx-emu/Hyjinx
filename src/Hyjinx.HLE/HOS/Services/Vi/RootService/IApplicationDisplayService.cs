@@ -26,7 +26,7 @@ namespace Hyjinx.HLE.HOS.Services.Vi.RootService
         {
             public int RetrievedEventsCount;
         }
-        
+
         private readonly List<DisplayInfo> _displayInfo;
         private readonly Dictionary<ulong, DisplayState> _openDisplays;
 

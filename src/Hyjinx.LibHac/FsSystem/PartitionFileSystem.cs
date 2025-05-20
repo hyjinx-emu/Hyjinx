@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
@@ -54,7 +54,8 @@ file sealed class DefaultAllocatorForPartitionFileSystem : MemoryResource
 public class PartitionFileSystem : PartitionFileSystemCore<PartitionFileSystemMeta,
     Impl.PartitionFileSystemFormat,
     Impl.PartitionFileSystemFormat.PartitionFileSystemHeaderImpl,
-    Impl.PartitionFileSystemFormat.PartitionEntry> { }
+    Impl.PartitionFileSystemFormat.PartitionEntry>
+{ }
 
 /// <summary>
 /// Reads a hashed partition file system. These files start with "HFS0" and are typically found inside XCIs.
@@ -63,7 +64,8 @@ public class PartitionFileSystem : PartitionFileSystemCore<PartitionFileSystemMe
 public class Sha256PartitionFileSystem : PartitionFileSystemCore<Sha256PartitionFileSystemMeta,
     Impl.Sha256PartitionFileSystemFormat,
     Impl.PartitionFileSystemFormat.PartitionFileSystemHeaderImpl,
-    Impl.Sha256PartitionFileSystemFormat.PartitionEntry> { }
+    Impl.Sha256PartitionFileSystemFormat.PartitionEntry>
+{ }
 
 /// <summary>
 /// Provides the base for an <see cref="IFileSystem"/> that can read from different partition file system files.
@@ -110,7 +112,8 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
         protected override Result DoWrite(long offset, ReadOnlySpan<byte> source, in WriteOption option)
         {
             Result res = DryWrite(out bool needsAppend, offset, source.Length, in option, _mode);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (needsAppend)
                 return ResultFs.UnsupportedWriteForPartitionFile.Log();
@@ -137,7 +140,8 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
         protected override Result DoSetSize(long size)
         {
             Result res = DrySetSize(size, _mode);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return ResultFs.UnsupportedWriteForPartitionFile.Log();
         }
@@ -208,7 +212,8 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
             UnsafeHelpers.SkipParamInit(out bytesRead);
 
             Result res = fs.DryRead(out long readSize, offset, destination.Length, in option, fs._mode);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             long entryStart = fs._parent._metaDataSize + fs._partitionEntry.Offset;
             long readEnd = offset + readSize;
@@ -242,7 +247,8 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
                     sha.Initialize();
 
                     res = fs._parent._baseStorage.Read(readOffset, destination.Slice(0, (int)readSize));
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     sha.Update(destination.Slice((int)(hashTargetStart - offset), fs._partitionEntry.HashTargetSize));
                     sha.GetHash(hash);
@@ -270,7 +276,8 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
                         Span<byte> currentHashTargetBuffer = bufferForHashTarget.Slice(0, currentReadSize);
 
                         res = fs._parent._baseStorage.Read(currentHashTargetOffset, currentHashTargetBuffer);
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
 
                         sha.Update(currentHashTargetBuffer);
 
@@ -308,7 +315,8 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
             {
                 // We aren't reading hashed data, so we can just read from the base storage.
                 res = fs._parent._baseStorage.Read(entryStart + offset, destination.Slice(0, (int)readSize));
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             bytesRead = readSize;
@@ -321,11 +329,13 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
             UnsafeHelpers.SkipParamInit(out bytesRead);
 
             Result res = fs.DryRead(out long readSize, offset, destination.Length, in option, fs._mode);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = fs._parent._baseStorage.Read(fs._parent._metaDataSize + fs._partitionEntry.Offset + offset,
                 destination.Slice(0, (int)readSize));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             bytesRead = readSize;
             return Result.Success;
@@ -435,7 +445,8 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
             return ResultFs.AllocationMemoryFailedInPartitionFileSystemA.Log();
 
         Result res = _uniqueMetaData.Get.Initialize(baseStorage, allocator);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _metaData = _uniqueMetaData.Get;
         _baseStorage = baseStorage;

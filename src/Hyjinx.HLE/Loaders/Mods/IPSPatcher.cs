@@ -7,9 +7,9 @@ namespace Hyjinx.HLE.Loaders.Mods
 {
     internal partial class IpsPatcher
     {
-        private static readonly ILogger<IpsPatcher> _logger = 
+        private static readonly ILogger<IpsPatcher> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<IpsPatcher>();
-        
+
         readonly MemPatch _patches;
 
         public IpsPatcher(BinaryReader reader)

@@ -826,7 +826,7 @@ namespace Hyjinx.Graphics.Vulkan
                 return Array.Empty<DeviceInfo>();
             }
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Error querying Vulkan devices")]
@@ -896,12 +896,12 @@ namespace Hyjinx.Graphics.Vulkan
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "{vendor} {renderer} ({version})")]
         private partial void LogGpuVendorInformation(string vendor, string renderer, string version);
-        
+
         [LoggerMessage(LogLevel.Critical,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "GPU Memory: {available} MiB")]
         private partial void LogGpuMemoryAvailable(ulong available);
-        
+
         public void Initialize(GraphicsDebugLevel logLevel)
         {
             SetupContext(logLevel);

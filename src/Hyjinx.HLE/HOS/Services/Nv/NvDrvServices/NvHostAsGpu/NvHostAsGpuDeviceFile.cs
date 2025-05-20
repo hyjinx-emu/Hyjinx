@@ -175,7 +175,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Failed to allocate size {size:X16}!")]
         private partial void LogFailedToAllocate(ulong size);
-        
+
         private NvInternalResult FreeSpace(ref FreeSpaceArguments arguments)
         {
             ulong size = (ulong)arguments.Pages * (ulong)arguments.PageSize;
@@ -196,7 +196,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
                     result = NvInternalResult.InvalidInput;
                 }
             }
-            
+
             return result;
         }
 
@@ -230,17 +230,17 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Invalid buffer offset {offset:X16}!")]
         private partial void LogInvalidBufferOffset(ulong offset);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Address 0x{offset:X16} not mapped!")]
         private partial void LogAddressOffsetNotMapped(ulong offset);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Invalid NvMap handle 0x{handle:X8}!")]
         private partial void LogInvalidNvMapHandle(int handle);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Failed to map fixed buffer with offset 0x{offset:X16}, size 0x{size:X16} and alignment 0x{alignment:X16}!")]
@@ -250,7 +250,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Failed to map size 0x{size:X16}!")]
         private partial void LogFailedToMapSize(ulong size);
-        
+
         private NvInternalResult MapBufferEx(ref MapBufferExArguments arguments)
         {
             ulong physicalAddress;

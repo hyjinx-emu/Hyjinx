@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Buffer = LibHac.Mem.Buffer;
 using CacheHandle = System.UInt64;
 

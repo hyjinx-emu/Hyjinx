@@ -468,12 +468,12 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd
 
             return WriteBsdResult(context, updateCount, errno);
         }
-            
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
             Message = "Poll operation is not supported for {descriptor}")]
         private partial void LogPollOperationNotSupportedForEvent(IFileDescriptor descriptor);
-        
+
         [CommandCmif(7)]
         // Sysctl(buffer<unknown, 0x21, 0>, buffer<unknown, 0x21, 0>) -> (i32 ret, u32 bsd_errno, u32, buffer<unknown, 0x22, 0>)
         public ResultCode Sysctl(ServiceCtx context)

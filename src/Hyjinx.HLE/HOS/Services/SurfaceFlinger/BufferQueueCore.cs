@@ -342,7 +342,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             return true;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
             Message = "Slot {slot} is not owned by the producer (state = {state})")]

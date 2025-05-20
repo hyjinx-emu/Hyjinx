@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Os.Impl;
 
 namespace LibHac.Os;

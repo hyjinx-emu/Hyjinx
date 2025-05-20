@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
@@ -17,7 +17,7 @@ public partial class NcaHeader
     public NcaVersion FormatVersion { get; }
 
     private ref NcaHeaderStruct Header => ref Unsafe.As<byte, NcaHeaderStruct>(ref _header.Span[0]);
-    
+
     public NcaHeader(IStorage storage)
     {
         byte[] buf = new byte[HeaderSize];
@@ -27,7 +27,7 @@ public partial class NcaHeader
         {
             throw new EncryptedFileDetectedException("The file is encrypted.");
         }
-        
+
         _header = buf;
         FormatVersion = DetectNcaVersion(_header.Span);
     }
@@ -166,9 +166,12 @@ public partial class NcaHeader
     {
         int version = header[0x203] - '0';
 
-        if (version == 3) return NcaVersion.Nca3;
-        if (version == 2) return NcaVersion.Nca2;
-        if (version != 0) return NcaVersion.Unknown;
+        if (version == 3)
+            return NcaVersion.Nca3;
+        if (version == 2)
+            return NcaVersion.Nca2;
+        if (version != 0)
+            return NcaVersion.Unknown;
 
         // There are multiple versions of NCA0 that each encrypt the key area differently.
         // Examine the key area to detect which version this NCA is.
@@ -197,7 +200,7 @@ public partial class NcaHeader
 
     public bool IsNca0() => FormatVersion >= NcaVersion.Nca0;
 
-    private static ReadOnlySpan<byte> Nca0FixedBodyKeySha256Hash => 
+    private static ReadOnlySpan<byte> Nca0FixedBodyKeySha256Hash =>
     [
         0x9A, 0xBB, 0xD2, 0x11, 0x86, 0x00, 0x21, 0x9D, 0x7A, 0xDC, 0x5B, 0x43, 0x95, 0xF8, 0x4E, 0xFD,
         0xFF, 0x6B, 0x25, 0xEF, 0x9F, 0x96, 0x85, 0x28, 0x18, 0x9E, 0x76, 0xB0, 0x92, 0xF0, 0x6A, 0xCB

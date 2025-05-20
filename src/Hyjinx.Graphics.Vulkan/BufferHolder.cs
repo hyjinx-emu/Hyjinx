@@ -289,7 +289,8 @@ namespace Hyjinx.Graphics.Vulkan
             if (_pendingData != null)
             {
                 _mirrors.Clear();
-            };
+            }
+            ;
         }
 
         public void ClearMirrors(CommandBufferScoped cbs, int offset, int size)
@@ -309,7 +310,8 @@ namespace Hyjinx.Graphics.Vulkan
                 {
                     _gd.PipelineInternal.Rebind(_buffer, offset, size);
                 }
-            };
+            }
+            ;
         }
 
         public void UseMirrors()

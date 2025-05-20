@@ -16,31 +16,31 @@ namespace Hyjinx.HLE.HOS.Services
     internal interface IpcService
     {
         IReadOnlyDictionary<int, MethodInfo> CmifCommands { get; }
-        
+
         IReadOnlyDictionary<int, MethodInfo> TipcCommands { get; }
-        
+
         ServerBase Server { get; }
-        
+
         IpcService Parent { get; set; }
-        
+
         bool IsDomain { get; }
-        
+
         int ConvertToDomain();
-        
+
         void ConvertToSession();
-        
+
         void CallCmifMethod(ServiceCtx context);
-        
+
         void CallTipcMethod(ServiceCtx context);
-        
+
         bool TrySetServer(ServerBase newServer);
-        
+
         void SetParent(IpcService parent);
-        
+
         void DestroyAtExit();
-        
+
         int Add(IpcService obj);
-        
+
         IpcService GetObject(int id);
     }
 
@@ -51,9 +51,9 @@ namespace Hyjinx.HLE.HOS.Services
     internal abstract partial class IpcService<T> : IpcService
         where T : IpcService<T>
     {
-        protected static readonly ILogger<T> _logger = 
+        protected static readonly ILogger<T> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<T>();
-        
+
         public IReadOnlyDictionary<int, MethodInfo> CmifCommands { get; }
         public IReadOnlyDictionary<int, MethodInfo> TipcCommands { get; }
 
@@ -218,7 +218,7 @@ namespace Hyjinx.HLE.HOS.Services
                 if (serviceExists)
                 {
                     LogRequestReceived(GetType().Name, processRequest!.Name);
-                    
+
                     result = (ResultCode)processRequest.Invoke(this, new object[] { context });
                 }
                 else
@@ -227,7 +227,7 @@ namespace Hyjinx.HLE.HOS.Services
 
 
                     serviceName = (this is not DummyService dummyService) ? GetType().FullName : dummyService.ServiceName;
-                    
+
                     LogMissingService(serviceName!, commandId);
                 }
 
@@ -248,7 +248,7 @@ namespace Hyjinx.HLE.HOS.Services
             Message = "{serviceName}: {requestName}")]
         protected partial void LogRequestReceived(string serviceName, string requestName);
 
-        [LoggerMessage(LogLevel.Warning, 
+        [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
             Message = "Missing service {serviceName}: {commandId} ignored.")]
         protected partial void LogMissingService(string serviceName, int commandId);

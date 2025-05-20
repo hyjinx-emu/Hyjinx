@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 
@@ -17,7 +17,8 @@ public static class LoaderApi
 
         Result res = fileSystemProxy.Get.IsArchivedProgram(out isArchived, processId.Value);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

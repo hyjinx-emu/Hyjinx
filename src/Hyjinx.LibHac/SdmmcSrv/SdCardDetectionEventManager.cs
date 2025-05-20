@@ -1,4 +1,4 @@
-﻿using LibHac.FsSystem;
+using LibHac.FsSystem;
 using LibHac.Sdmmc;
 
 namespace LibHac.SdmmcSrv;

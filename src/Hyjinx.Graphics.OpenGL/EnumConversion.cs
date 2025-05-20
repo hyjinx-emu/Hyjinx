@@ -10,13 +10,13 @@ namespace Hyjinx.Graphics.OpenGL
     {
         private static readonly ILogger _logger =
             Logger.DefaultLoggerFactory.CreateLogger(typeof(EnumConversion).FullName!);
-        
+
         private static void LogInvalidEnumValue<T>(T value)
         {
             _logger.LogDebug(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)),
                 $"Invalid {nameof(T)} enum value {value}");
         }
-        
+
         public static TextureWrapMode Convert(this AddressMode mode)
         {
             switch (mode)
@@ -140,9 +140,9 @@ namespace Hyjinx.Graphics.OpenGL
                 case AdvancedBlendOp.HslLuminosity:
                     return NvBlendEquationAdvanced.HslLuminosityNv;
             }
-            
+
             LogInvalidEnumValue(op);
-            
+
             return NvBlendEquationAdvanced.Zero;
         }
 
@@ -249,7 +249,7 @@ namespace Hyjinx.Graphics.OpenGL
             }
 
             LogInvalidEnumValue(op);
-            
+
             return BlendEquationMode.FuncAdd;
         }
 
@@ -262,9 +262,9 @@ namespace Hyjinx.Graphics.OpenGL
                 case CompareMode.CompareRToTexture:
                     return TextureCompareMode.CompareRToTexture;
             }
-            
+
             LogInvalidEnumValue(mode);
-            
+
             return TextureCompareMode.None;
         }
 
@@ -344,7 +344,7 @@ namespace Hyjinx.Graphics.OpenGL
                 case Face.FrontAndBack:
                     return CullFaceMode.FrontAndBack;
             }
-            
+
             LogInvalidEnumValue(face);
 
             return CullFaceMode.Back;

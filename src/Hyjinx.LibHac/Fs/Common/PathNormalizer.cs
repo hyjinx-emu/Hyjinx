@@ -101,7 +101,8 @@ public static class PathNormalizer
                     if (!allowAllCharacters)
                     {
                         res = CheckInvalidCharacter(currentPath[i + dirLen]);
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
                     }
 
                     dirLen++;
@@ -186,7 +187,8 @@ public static class PathNormalizer
             outputBuffer[totalLength] = NullTerminator;
 
             res = IsNormalized(out bool isNormalized, out _, outputBuffer, allowAllCharacters);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Assert.SdkAssert(isNormalized);
 
@@ -232,14 +234,16 @@ public static class PathNormalizer
         for (int i = 0; i < path.Length; i++)
         {
             byte c = path[i];
-            if (c == NullTerminator) break;
+            if (c == NullTerminator)
+                break;
 
             pathLength++;
 
             if (!allowAllCharacters && state != PathState.Initial)
             {
                 Result res = CheckInvalidCharacter(c);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             switch (state)

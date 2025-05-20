@@ -9,9 +9,9 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {
     internal partial class LdnProxyTcpClient : NetCoreServer.TcpClient, ILdnTcpSocket
     {
-        private readonly ILogger<LdnProxyTcpClient> _logger = 
+        private readonly ILogger<LdnProxyTcpClient> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpClient>();
-        
+
         private readonly LanProtocol _protocol;
         private byte[] _buffer;
         private int _bufferEnd;
@@ -30,7 +30,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
         {
             LogClientConnected();
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "LdnProxyTCPClient connected!")]
@@ -55,7 +55,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "LdnProxyTcpClient is sending a packet but endpoint is not null.")]
         private partial void LogLdnProxyTcpClientSendingPacketToEndpoint();
-        
+
         public bool SendPacketAsync(EndPoint endPoint, byte[] data)
         {
             if (endPoint != null)

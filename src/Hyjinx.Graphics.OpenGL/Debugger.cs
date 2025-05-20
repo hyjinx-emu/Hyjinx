@@ -77,7 +77,7 @@ namespace Hyjinx.Graphics.OpenGL
                     _logger.LogWarning(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), $"{severity}: {msg}", "GLPERF");
                     break;
                 case DebugType.DebugTypePushGroup:
-                    _logger.LogInformation(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)),$"{{ ({id}) {severity}: {msg}", "GLINFO");
+                    _logger.LogInformation(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), $"{{ ({id}) {severity}: {msg}", "GLINFO");
                     break;
                 case DebugType.DebugTypePopGroup:
                     _logger.LogInformation(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)), $"}} ({id}) {severity}: {msg}", "GLINFO");

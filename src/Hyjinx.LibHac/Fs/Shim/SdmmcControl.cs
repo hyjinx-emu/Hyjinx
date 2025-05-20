@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.FsSrv.Sf;
 
 namespace LibHac.Fs.Shim;
@@ -19,10 +19,12 @@ public static class SdmmcControl
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetSdmmcConnectionStatus(out int speedMode, out int busWidth, (int)port);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outSpeedMode = (SdmmcSpeedMode)speedMode;
         outBusWidth = (SdmmcBusWidth)busWidth;
@@ -37,11 +39,13 @@ public static class SdmmcControl
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.SuspendSdmmcControl();
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -53,11 +57,13 @@ public static class SdmmcControl
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.ResumeSdmmcControl();
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

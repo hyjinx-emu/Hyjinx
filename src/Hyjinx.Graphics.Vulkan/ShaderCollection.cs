@@ -12,9 +12,9 @@ namespace Hyjinx.Graphics.Vulkan
 {
     partial class ShaderCollection : IProgram
     {
-        private readonly ILogger<ShaderCollection> _logger = 
+        private readonly ILogger<ShaderCollection> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<ShaderCollection>();
-        
+
         private readonly PipelineShaderStageCreateInfo[] _infos;
         private readonly Shader[] _shaders;
 
@@ -675,7 +675,7 @@ namespace Hyjinx.Graphics.Vulkan
                 if (_firstBackgroundUse)
                 {
                     LogBackgroundPipelineCompileMissed();
-                    
+
                     _firstBackgroundUse = false;
                 }
 

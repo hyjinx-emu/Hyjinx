@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace LibHac.Tools.FsSystem.Save;
 
@@ -34,7 +34,8 @@ public class AllocationTableIterator
 
     public bool MoveNext()
     {
-        if (_nextBlock == -1) return false;
+        if (_nextBlock == -1)
+            return false;
 
         VirtualBlock += _currentSegmentSize;
         PhysicalBlock = _nextBlock;
@@ -46,7 +47,8 @@ public class AllocationTableIterator
 
     public bool MovePrevious()
     {
-        if (_prevBlock == -1) return false;
+        if (_prevBlock == -1)
+            return false;
 
         PhysicalBlock = _prevBlock;
 
@@ -63,11 +65,13 @@ public class AllocationTableIterator
         {
             if (block < VirtualBlock)
             {
-                if (!MovePrevious()) return false;
+                if (!MovePrevious())
+                    return false;
             }
             else if (block >= VirtualBlock + CurrentSegmentSize)
             {
-                if (!MoveNext()) return false;
+                if (!MoveNext())
+                    return false;
             }
             else
             {

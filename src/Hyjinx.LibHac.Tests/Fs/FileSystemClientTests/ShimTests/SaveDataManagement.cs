@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using LibHac.Common;
 using LibHac.Fs;
@@ -685,7 +685,8 @@ public class SaveDataManagement
             {
                 var applicationId = new Ncm.ApplicationId((uint)i);
                 Result res = fs.CreateSaveData(applicationId, InvalidUserId, 0, 0x4000, 0x4000, SaveDataFlags.None);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
         }
         else
@@ -696,7 +697,8 @@ public class SaveDataManagement
             {
                 var applicationId = new Ncm.ApplicationId((uint)rng.Next());
                 Result res = fs.CreateSaveData(applicationId, InvalidUserId, 0, 0x4000, 0x4000, SaveDataFlags.None);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
         }
 

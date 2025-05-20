@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;

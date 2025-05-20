@@ -1,4 +1,4 @@
-﻿using SPB.Windowing;
+using SPB.Windowing;
 using System.Runtime.Versioning;
 
 using static SPB.Platform.Metal.MacOS;

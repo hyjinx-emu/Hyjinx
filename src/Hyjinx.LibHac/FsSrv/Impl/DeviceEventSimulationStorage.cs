@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -31,7 +31,8 @@ internal class DeviceEventSimulationStorage : IStorage
         Assert.SdkNotNull(_deviceEventSimulator);
 
         Result res = _deviceEventSimulator.CheckSimulatedAccessFailureEvent(SimulatingDeviceTargetOperation.Read);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseStorage.Get.Read(offset, destination);
     }
@@ -41,7 +42,8 @@ internal class DeviceEventSimulationStorage : IStorage
         Assert.SdkNotNull(_deviceEventSimulator);
 
         Result res = _deviceEventSimulator.CheckSimulatedAccessFailureEvent(SimulatingDeviceTargetOperation.Write);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseStorage.Get.Write(offset, source);
     }

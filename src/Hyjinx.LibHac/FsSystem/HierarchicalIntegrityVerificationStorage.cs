@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
@@ -167,7 +167,8 @@ public class HierarchicalIntegrityVerificationStorageControlArea : IDisposable
     {
         // Ensure the storage is large enough to hold the meta info.
         Result res = metaStorage.GetSize(out long metaSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (metaSize < Unsafe.SizeOf<HierarchicalIntegrityVerificationMetaInformation>())
             return ResultFs.InvalidSize.Log();
@@ -181,10 +182,12 @@ public class HierarchicalIntegrityVerificationStorageControlArea : IDisposable
 
         // Write the meta info to the storage.
         res = metaStorage.Write(0, SpanHelpers.AsReadOnlyByteSpan(in metaInfo));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = metaStorage.Flush();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -194,7 +197,8 @@ public class HierarchicalIntegrityVerificationStorageControlArea : IDisposable
     {
         // Ensure the storage is large enough to hold the meta info.
         Result res = metaStorage.GetSize(out long metaSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (metaSize < Unsafe.SizeOf<HierarchicalIntegrityVerificationMetaInformation>())
             return ResultFs.InvalidSize.Log();
@@ -202,7 +206,8 @@ public class HierarchicalIntegrityVerificationStorageControlArea : IDisposable
         // Validate both the previous and new metas.
         HierarchicalIntegrityVerificationMetaInformation previousMeta = default;
         res = metaStorage.Read(0, SpanHelpers.AsByteSpan(ref previousMeta));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (newMeta.Magic != IntegrityVerificationStorageMagic || newMeta.Magic != previousMeta.Magic)
             return ResultFs.IncorrectIntegrityVerificationMagicCode.Log();
@@ -212,10 +217,12 @@ public class HierarchicalIntegrityVerificationStorageControlArea : IDisposable
 
         // Write the new meta.
         res = metaStorage.Write(0, SpanHelpers.AsReadOnlyByteSpan(in newMeta));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = metaStorage.Flush();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -234,7 +241,8 @@ public class HierarchicalIntegrityVerificationStorageControlArea : IDisposable
     {
         // Ensure the storage is large enough to hold the meta info.
         Result res = metaStorage.GetSize(out long metaSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (metaSize < Unsafe.SizeOf<HierarchicalIntegrityVerificationMetaInformation>())
             return ResultFs.InvalidSize.Log();
@@ -242,7 +250,8 @@ public class HierarchicalIntegrityVerificationStorageControlArea : IDisposable
         // Set the storage and read the meta.
         _storage.Set(in metaStorage);
         res = _storage.Read(0, SpanHelpers.AsByteSpan(ref _meta));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Validate the meta magic and version.
         if (_meta.Magic != IntegrityVerificationStorageMagic)
@@ -611,7 +620,8 @@ public class HierarchicalIntegrityVerificationStorage : IStorage
                 for (int level = _layerCount - 2; level >= 0; level--)
                 {
                     Result res = _bufferedStorages[level].Flush();
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                 }
 
                 g.GlobalReadSemaphore.Acquire();
@@ -620,7 +630,8 @@ public class HierarchicalIntegrityVerificationStorage : IStorage
             try
             {
                 Result res = _bufferedStorages[_layerCount - 2].Read(offset, destination);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 return Result.Success;
             }
@@ -654,7 +665,8 @@ public class HierarchicalIntegrityVerificationStorage : IStorage
                 for (int level = _layerCount - 2; level >= 0; level--)
                 {
                     Result res = _bufferedStorages[level].Flush();
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                 }
 
                 g.GlobalWriteSemaphore.Acquire();
@@ -663,7 +675,8 @@ public class HierarchicalIntegrityVerificationStorage : IStorage
             try
             {
                 Result res = _bufferedStorages[_layerCount - 2].Write(offset, source);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 return Result.Success;
             }
@@ -690,22 +703,24 @@ public class HierarchicalIntegrityVerificationStorage : IStorage
         {
             case OperationId.FillZero:
             case OperationId.DestroySignature:
-            {
-                Result res = _bufferedStorages[_layerCount - 2]
-                    .OperateRange(outBuffer, operationId, offset, size, inBuffer);
-                if (res.IsFailure()) return res.Miss();
+                {
+                    Result res = _bufferedStorages[_layerCount - 2]
+                        .OperateRange(outBuffer, operationId, offset, size, inBuffer);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             case OperationId.InvalidateCache:
             case OperationId.QueryRange:
-            {
-                Result res = _bufferedStorages[_layerCount - 2]
-                    .OperateRange(outBuffer, operationId, offset, size, inBuffer);
-                if (res.IsFailure()) return res.Miss();
+                {
+                    Result res = _bufferedStorages[_layerCount - 2]
+                        .OperateRange(outBuffer, operationId, offset, size, inBuffer);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             default:
                 return ResultFs.UnsupportedOperateRangeForHierarchicalIntegrityVerificationStorage.Log();
         }
@@ -716,7 +731,8 @@ public class HierarchicalIntegrityVerificationStorage : IStorage
         for (int level = _layerCount - 2; level >= 0; level--)
         {
             Result res = _bufferedStorages[level].Commit();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -727,7 +743,8 @@ public class HierarchicalIntegrityVerificationStorage : IStorage
         for (int level = _layerCount - 2; level >= 0; level--)
         {
             Result res = _bufferedStorages[level].OnRollback();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;

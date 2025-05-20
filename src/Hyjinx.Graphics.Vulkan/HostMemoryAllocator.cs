@@ -30,7 +30,7 @@ namespace Hyjinx.Graphics.Vulkan
 
         private readonly ILogger<HostMemoryAllocator> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<HostMemoryAllocator>();
-        
+
         private readonly MemoryAllocator _allocator;
         private readonly Vk _api;
         private readonly ExtExternalMemoryHost _hostMemoryApi;

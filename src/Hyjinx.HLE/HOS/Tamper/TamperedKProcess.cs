@@ -8,9 +8,9 @@ namespace Hyjinx.HLE.HOS.Tamper
 {
     partial class TamperedKProcess : ITamperedProcess
     {
-        private static readonly ILogger<TamperedKProcess> _logger = 
+        private static readonly ILogger<TamperedKProcess> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<TamperedKProcess>();
-        
+
         private readonly KProcess _process;
 
         public ProcessState State => _process.State;
@@ -73,7 +73,7 @@ namespace Hyjinx.HLE.HOS.Tamper
         {
             LogResumingNotSupported();
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
             Message = "Process resuming is not supported!")]

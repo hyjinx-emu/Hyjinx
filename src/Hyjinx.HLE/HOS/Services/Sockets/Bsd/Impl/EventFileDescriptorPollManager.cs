@@ -27,14 +27,14 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
         {
             return evnt.FileDescriptor is EventFileDescriptor;
         }
-        
+
         // Logger.Warning?.Print(LogClass.ServiceBsd, $"Unsupported Poll input event type: {evnt.Data.InputEvents}");
 
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
             Message = "Unsupported Poll input event type: {events}")]
         private partial void LogUnsupportedPollInputEventType(PollEventTypeMask events);
-        
+
         public LinuxError Poll(List<PollEvent> events, int timeoutMilliseconds, out int updatedCount)
         {
             updatedCount = 0;

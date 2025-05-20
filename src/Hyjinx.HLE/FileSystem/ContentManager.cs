@@ -406,7 +406,7 @@ namespace Hyjinx.HLE.FileSystem
         {
             ContentPath.TryGetContentPath(StorageId.BuiltInSystem, out var contentPathString);
             ContentPath.TryGetRealPath(contentPathString, out var contentDirectory);
-            
+
             string registeredDirectory = Path.Combine(contentDirectory, "registered");
             string temporaryDirectory = Path.Combine(contentDirectory, "temp");
 
@@ -427,7 +427,7 @@ namespace Hyjinx.HLE.FileSystem
             {
                 return new DirectoryFirmwareInstaller(_virtualFileSystem);
             }
-            
+
             var file = new FileInfo(firmwareSource);
             if (!file.Exists)
             {

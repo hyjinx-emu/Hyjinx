@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -14,10 +14,12 @@ public static class FsaExtensions
             return ResultFs.NullptrArgument.Log();
 
         Result res = path.Initialize(StringUtils.StringToUtf8(value));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = path.Normalize(new PathFlags());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -26,7 +28,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.CreateFile(in pathNormalized, size, option);
     }
@@ -40,7 +43,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.DeleteFile(in pathNormalized);
     }
@@ -49,7 +53,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.CreateDirectory(in pathNormalized);
     }
@@ -58,7 +63,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.DeleteDirectory(in pathNormalized);
     }
@@ -67,7 +73,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.DeleteDirectoryRecursively(in pathNormalized);
     }
@@ -76,7 +83,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.CleanDirectoryRecursively(in pathNormalized);
     }
@@ -85,11 +93,13 @@ public static class FsaExtensions
     {
         using var currentPathNormalized = new Path();
         Result res = SetUpPath(ref currentPathNormalized.Ref(), currentPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var newPathNormalized = new Path();
         res = SetUpPath(ref newPathNormalized.Ref(), newPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.RenameFile(in currentPathNormalized, in newPathNormalized);
     }
@@ -98,11 +108,13 @@ public static class FsaExtensions
     {
         using var currentPathNormalized = new Path();
         Result res = SetUpPath(ref currentPathNormalized.Ref(), currentPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var newPathNormalized = new Path();
         res = SetUpPath(ref newPathNormalized.Ref(), newPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.RenameDirectory(in currentPathNormalized, in newPathNormalized);
     }
@@ -113,7 +125,8 @@ public static class FsaExtensions
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.GetEntryType(out entryType, in pathNormalized);
     }
@@ -124,7 +137,8 @@ public static class FsaExtensions
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.GetFreeSpaceSize(out freeSpace, in pathNormalized);
     }
@@ -135,7 +149,8 @@ public static class FsaExtensions
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.GetTotalSpaceSize(out totalSpace, in pathNormalized);
     }
@@ -144,7 +159,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.OpenFile(ref file, in pathNormalized, mode);
     }
@@ -153,7 +169,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.OpenDirectory(ref directory, in pathNormalized, mode);
     }
@@ -164,7 +181,8 @@ public static class FsaExtensions
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.GetFileTimeStampRaw(out timeStamp, in pathNormalized);
     }
@@ -173,7 +191,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.QueryEntry(outBuffer, inBuffer, queryId, in pathNormalized);
     }
@@ -182,7 +201,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.CreateDirectory(in pathNormalized, archiveAttribute);
     }
@@ -193,7 +213,8 @@ public static class FsaExtensions
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.GetFileAttributes(out attributes, in pathNormalized);
     }
@@ -202,7 +223,8 @@ public static class FsaExtensions
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.SetFileAttributes(in pathNormalized, attributes);
     }
@@ -213,7 +235,8 @@ public static class FsaExtensions
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.GetFileSize(out fileSize, in pathNormalized);
     }

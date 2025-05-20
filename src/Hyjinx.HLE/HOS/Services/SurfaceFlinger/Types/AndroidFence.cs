@@ -16,7 +16,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
         public int FenceCount;
 
         private byte _fenceStorageStart;
-        
+
         private Span<byte> Storage => MemoryMarshal.CreateSpan(ref _fenceStorageStart, Unsafe.SizeOf<NvFence>() * 4);
 
         public Span<NvFence> NvFences => MemoryMarshal.Cast<byte, NvFence>(Storage);
@@ -49,7 +49,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
             {
                 Logger.DefaultLogger.LogError(new EventId((int)LogClass.SurfaceFlinger, nameof(LogClass.SurfaceFlinger)),
                     "Android fence didn't signal in 3000 ms");
-                
+
                 Wait(gpuContext, Timeout.InfiniteTimeSpan);
             }
 

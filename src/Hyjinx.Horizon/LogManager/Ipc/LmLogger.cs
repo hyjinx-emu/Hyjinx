@@ -42,7 +42,7 @@ namespace Hyjinx.Horizon.LogManager.Ipc
             if (LogImpl(message))
             {
                 LogPacketDetails(_logPacket);
-                
+
                 _logPacket = new LogPacket();
             }
 
@@ -82,7 +82,7 @@ namespace Hyjinx.Horizon.LogManager.Ipc
             EventId = (int)LogClass.ServiceLm, EventName = nameof(LogClass.ServiceLm),
             Message = "Invalid message size (expected 0x{expected:X} but got 0x{actual:X}.")]
         private static partial void LogInvalidMessageSize(ILogger logger, uint expected, int actual);
-        
+
         private bool LogImpl(ReadOnlySpan<byte> message)
         {
             SpanReader reader = new(message);

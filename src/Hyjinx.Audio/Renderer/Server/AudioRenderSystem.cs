@@ -109,7 +109,7 @@ namespace Hyjinx.Audio.Renderer.Server
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Initializing with REV{revision}")]
         private partial void LogInitializingWithRevision(int revision);
-        
+
         public ResultCode Initialize(
             ref AudioRendererConfiguration parameter,
             uint processHandle,
@@ -381,7 +381,7 @@ namespace Hyjinx.Audio.Renderer.Server
 
             return ResultCode.Success;
         }
-        
+
         public void Start()
         {
             LogStartingRenderer(_sessionId);
@@ -397,7 +397,7 @@ namespace Hyjinx.Audio.Renderer.Server
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Starting renderer id {sessionId}")]
         private partial void LogStartingRenderer(int sessionId);
-        
+
         public void Stop()
         {
             LogStoppingRenderer(_sessionId);
@@ -409,12 +409,12 @@ namespace Hyjinx.Audio.Renderer.Server
 
             LogStoppedRenderer(_sessionId);
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Stopping renderer id {sessionId}")]
         private partial void LogStoppingRenderer(int sessionId);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Stopped renderer id {sessionId}")]
@@ -623,7 +623,7 @@ namespace Hyjinx.Audio.Renderer.Server
 
             return voiceDropped;
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Dropping voice {voiceId}")]

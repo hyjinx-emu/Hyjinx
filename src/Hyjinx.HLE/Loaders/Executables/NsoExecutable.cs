@@ -14,7 +14,7 @@ namespace Hyjinx.HLE.Loaders.Executables
     {
         private static readonly ILogger<NsoExecutable> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<NsoExecutable>();
-        
+
         public byte[] Program { get; }
         public Span<byte> Text => Program.AsSpan((int)TextOffset, (int)TextSize);
         public Span<byte> Ro => Program.AsSpan((int)RoOffset, (int)RoSize);

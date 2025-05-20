@@ -7,9 +7,9 @@ namespace Hyjinx.HLE.HOS.Tamper
 {
     class Pointer : IOperand
     {
-        private static readonly ILogger<Pointer> _logger = 
+        private static readonly ILogger<Pointer> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<Pointer>();
-        
+
         private readonly IOperand _position;
         private readonly ITamperedProcess _process;
 

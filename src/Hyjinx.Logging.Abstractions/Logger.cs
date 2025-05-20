@@ -13,7 +13,7 @@ public static class Logger
     /// Gets the default logger.
     /// </summary>
     public static ILogger DefaultLogger { get; private set; } = null!;
-    
+
     /// <summary>
     /// Gets the default logger factory.
     /// </summary>
@@ -27,7 +27,7 @@ public static class Logger
     public static void Initialize(ILoggerFactory factory, ILogger defaultLogger)
     {
         ArgumentNullException.ThrowIfNull(factory);
-        
+
         DefaultLoggerFactory = factory;
         DefaultLogger = defaultLogger;
     }

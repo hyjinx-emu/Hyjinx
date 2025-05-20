@@ -164,7 +164,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "{domain}!{parameter} String value size is too big!")]
         private partial void LogStringSizeTooBig(string domain, string parameter);
-        
+
         private NvInternalResult GetConfig(GetConfigurationArguments arguments)
         {
             if (!_isProductionMode && NxSettings.Settings.TryGetValue($"{arguments.Domain}!{arguments.Parameter}".ToLower(), out object nvSetting))
@@ -201,7 +201,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 
                 return NvInternalResult.Success;
             }
-            
+
             // NOTE: This actually return NotAvailableInProduction but this is directly translated as a InvalidInput before returning the ioctl.
             //return NvInternalResult.NotAvailableInProduction;
             return NvInternalResult.InvalidInput;
@@ -434,7 +434,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
                         else
                         {
                             LogInvalidEventAtIndex(eventIndex, isWaitEventAsyncCmd, isWaitEventCmd);
-                            
+
                             result = NvInternalResult.InvalidInput;
                         }
                     }
@@ -506,7 +506,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Closing channel.")]
         private partial void LogClosingChannel();
-        
+
         public override void Close()
         {
             LogClosingChannel();

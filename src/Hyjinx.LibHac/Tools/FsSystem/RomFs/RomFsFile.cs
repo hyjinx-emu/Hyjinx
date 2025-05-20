@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -24,12 +24,14 @@ public class RomFsFile : IFile
         UnsafeHelpers.SkipParamInit(out bytesRead);
 
         Result res = DryRead(out long toRead, offset, destination.Length, in option, OpenMode.Read);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         long storageOffset = Offset + offset;
 
         res = ConvertToApplicationResult(BaseStorage.Read(storageOffset, destination.Slice(0, (int)toRead)));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         bytesRead = toRead;
 

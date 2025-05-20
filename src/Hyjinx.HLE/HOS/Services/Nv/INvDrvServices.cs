@@ -99,7 +99,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Ioctl size inconsistency found!")]
         private partial void LogIoctlSizeInconsistencyFound();
-        
+
         private NvResult GetIoctlArgument(ServiceCtx context, NvIoctl ioctlCommand, out Span<byte> arguments)
         {
             (ulong inputDataPosition, ulong inputDataSize) = context.Request.GetBufferType0x21(0);
@@ -196,7 +196,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "INvDrvService is not initialized!")]
         private partial void LogServiceIsNotInitialized();
-        
+
         private NvResult EnsureInitialized()
         {
             if (_owner == 0)

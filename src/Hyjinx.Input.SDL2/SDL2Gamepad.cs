@@ -14,7 +14,7 @@ namespace Hyjinx.Input.SDL2
     partial class SDL2Gamepad : IGamepad
     {
         private readonly ILogger<SDL2Gamepad> _logger = Logger.DefaultLoggerFactory.CreateLogger<SDL2Gamepad>();
-        
+
         private bool HasConfiguration => _configuration != null;
 
         private record struct ButtonMappingEntry(GamepadButtonInputId To, GamepadButtonInputId From);
@@ -184,7 +184,7 @@ namespace Hyjinx.Input.SDL2
             EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
             Message = "Rumble is not supported on this game controller.")]
         private partial void LogRumbleIsNotSupported();
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
             Message = "Unsupported rumble duration {durationMs}.")]

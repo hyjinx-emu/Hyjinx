@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Util;
 
@@ -94,7 +94,8 @@ public abstract class IStorage : IDisposable
     public static Result CheckAccessRange(long offset, ulong size, long totalSize)
     {
         Result res = CheckAccessRange(offset, unchecked((long)size), totalSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -116,7 +117,8 @@ public abstract class IStorage : IDisposable
     public static Result CheckOffsetAndSize(long offset, ulong size)
     {
         Result res = CheckOffsetAndSize(offset, unchecked((long)size));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

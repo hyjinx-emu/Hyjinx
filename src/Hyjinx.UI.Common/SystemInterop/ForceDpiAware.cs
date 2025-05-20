@@ -32,7 +32,7 @@ namespace Hyjinx.Common.SystemInterop
         private const double StandardDpiScale = 96.0;
         private const double MaxScaleFactor = 1.25;
 
-        private static readonly ILogger _logger = 
+        private static readonly ILogger _logger =
             Logger.DefaultLoggerFactory.CreateLogger(typeof(ForceDpiAware));
 
         /// <summary>
@@ -94,12 +94,12 @@ namespace Hyjinx.Common.SystemInterop
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Couldn't determine monitor DPI. Wayland not yet supported.")]
         private static partial void LogWaylandNotYetSupported(ILogger logger);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Couldn't determine monitor DPI. Unrecognized session type '{sessionType}'.")]
         private static partial void LogUnrecognizedSessionType(ILogger logger, string sessionType);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Couldn't determine monitor DPI.")]

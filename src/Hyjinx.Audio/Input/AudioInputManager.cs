@@ -101,7 +101,7 @@ namespace Hyjinx.Audio.Input
                 return sessionId;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Registered new input ({sessionId})")]

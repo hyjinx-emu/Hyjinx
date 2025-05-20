@@ -231,7 +231,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             return true;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "AdvertiseData exceeds size limit.")]
@@ -274,7 +274,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "LanDiscovery InitTcp: IP: {address}, listening: {listening}")]
         private partial void LogLanDiscoveryInit(IPAddress address, bool listening);
-        
+
         public bool InitTcp(bool listening, IPAddress address = null, int port = DefaultPort)
         {
             LogLanDiscoveryInit(address, listening);
@@ -331,12 +331,12 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             return true;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Failed to create LdnProxyTcpServer.")]
         private partial void LogCreateLdnProxyTcpServerFailed(Exception ex);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Failed to create LdnProxyTcpClient.")]
@@ -367,7 +367,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             return true;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Failed to create LdnProxyUdpServer.")]
@@ -501,7 +501,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
                 _parent.InvokeNetworkChange(NetworkInfo, true);
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Failed to send {packet} to station {station}.")]
@@ -564,17 +564,17 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             ResetStations();
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Could not initialize TCPClient.")]
         private partial void LogCannotInitializeTcpClient();
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Failed to connect.")]
         private partial void LogFailedToConnect();
-        
+
         public NetworkError Connect(NetworkInfo networkInfo, UserConfig userConfig, uint localCommunicationVersion)
         {
             _apConnected.Reset();

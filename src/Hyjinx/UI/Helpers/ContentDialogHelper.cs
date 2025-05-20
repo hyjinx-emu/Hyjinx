@@ -18,9 +18,9 @@ namespace Hyjinx.Ava.UI.Helpers
 {
     public static class ContentDialogHelper
     {
-        private static readonly ILogger _logger = 
+        private static readonly ILogger _logger =
             Logger.DefaultLoggerFactory.CreateLogger(typeof(ContentDialogHelper));
-        
+
         private static bool _isChoiceDialogOpen;
         private static ContentDialogOverlayWindow _contentDialogOverlayWindow;
 

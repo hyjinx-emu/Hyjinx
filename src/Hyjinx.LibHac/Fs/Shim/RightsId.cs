@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.FsSrv.Sf;
 using LibHac.Ncm;
 using LibHac.Spl;
@@ -18,7 +18,8 @@ public static class RightsIdShim
 
         Result res = fileSystemProxy.Get.GetRightsId(out rightsId, programId, storageId);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -29,13 +30,15 @@ public static class RightsIdShim
 
         Result res = PathUtility.ConvertToFspPath(out FspPath sfPath, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
 
         res = fileSystemProxy.Get.GetRightsIdByPath(out rightsId, in sfPath);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -46,13 +49,15 @@ public static class RightsIdShim
 
         Result res = PathUtility.ConvertToFspPath(out FspPath sfPath, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
 
         res = fileSystemProxy.Get.GetRightsIdAndKeyGenerationByPath(out rightsId, out keyGeneration, in sfPath);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -63,7 +68,8 @@ public static class RightsIdShim
 
         Result res = fileSystemProxy.Get.RegisterExternalKey(in rightsId, in key);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -74,7 +80,8 @@ public static class RightsIdShim
 
         Result res = fileSystemProxy.Get.UnregisterExternalKey(in rightsId);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -85,7 +92,8 @@ public static class RightsIdShim
 
         Result res = fileSystemProxy.Get.UnregisterAllExternalKey();
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

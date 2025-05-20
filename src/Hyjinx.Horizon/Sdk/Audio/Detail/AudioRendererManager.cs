@@ -75,11 +75,11 @@ namespace Hyjinx.Horizon.Sdk.Audio.Detail
                 workBufferSize = 0;
 
                 LogLibraryVersionNotSupported(BehaviourContext.GetRevisionNumber(parameter.Configuration.Revision));
-                
+
                 return AudioResult.UnsupportedRevision;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAudio, EventName = nameof(LogClass.ServiceAudio),
             Message = "WorkBufferSize is 0x{size:x16}.")]

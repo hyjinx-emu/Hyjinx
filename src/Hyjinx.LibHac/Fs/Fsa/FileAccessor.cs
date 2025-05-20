@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
@@ -161,12 +161,14 @@ internal class FileAccessor : IDisposable
         {
             Result res = UpdateLastResult(Hos.Fs.Impl.WriteViaPathBasedFileDataCache(_file.Get, (int)GetOpenMode(),
                 _parentFileSystem, in _filePathHash.Value, _pathHashIndex, offset, source, in option));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
             Result res = UpdateLastResult(_file.Get.Write(offset, source, in option));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         setter.Set(option.HasFlushFlag() ? WriteState.None : WriteState.NeedsFlush);
@@ -182,7 +184,8 @@ internal class FileAccessor : IDisposable
             ScopedSetter<WriteState>.MakeScopedSetter(ref _writeState, WriteState.Failed);
 
         Result res = UpdateLastResult(_file.Get.Flush());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         setter.Set(WriteState.None);
         return Result.Success;
@@ -202,15 +205,18 @@ internal class FileAccessor : IDisposable
             using UniqueLock lk = Hos.Fs.Impl.LockPathBasedFileDataCacheEntries();
 
             Result res = UpdateLastResult(_file.Get.SetSize(size));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Hos.Fs.Impl.InvalidatePathBasedFileDataCacheEntry(_parentFileSystem, in _filePathHash.Value, _pathHashIndex);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
             Result res = UpdateLastResult(_file.Get.SetSize(size));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         setter.Set(originalWriteState);

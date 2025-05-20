@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
@@ -86,7 +86,8 @@ public class SaveDataResultConvertFileSystem : IResultConvertFileSystem<ISaveDat
     {
         using var file = new UniqueRef<IFile>();
         Result res = ConvertResult(GetFileSystem().OpenFile(ref file.Ref, in path, mode));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using UniqueRef<SaveDataResultConvertFile> resultConvertFile =
             new(new SaveDataResultConvertFile(ref file.Ref, _isReconstructible));
@@ -100,7 +101,8 @@ public class SaveDataResultConvertFileSystem : IResultConvertFileSystem<ISaveDat
     {
         using var directory = new UniqueRef<IDirectory>();
         Result res = ConvertResult(GetFileSystem().OpenDirectory(ref directory.Ref, in path, mode));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using UniqueRef<SaveDataResultConvertDirectory> resultConvertDirectory =
             new(new SaveDataResultConvertDirectory(ref directory.Ref, _isReconstructible));

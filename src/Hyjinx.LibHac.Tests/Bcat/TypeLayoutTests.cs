@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using LibHac.Bcat;
 using LibHac.Bcat.Impl.Service.Core;
 using Xunit;

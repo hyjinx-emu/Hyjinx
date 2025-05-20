@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using LibHac.Kernel;
 using Xunit;
 using static LibHac.Kernel.InitialProcessBinaryReader;

@@ -6,7 +6,7 @@ namespace Hyjinx.HLE.HOS.Tamper.Operations
     class OpLog<T> : IOperation where T : unmanaged
     {
         private static readonly ILogger<OpLog<T>> _logger = Logger.DefaultLoggerFactory.CreateLogger<OpLog<T>>();
-        
+
         readonly int _logId;
         readonly IOperand _source;
 

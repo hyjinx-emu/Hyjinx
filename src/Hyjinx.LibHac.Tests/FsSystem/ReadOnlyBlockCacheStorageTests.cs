@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers.Binary;
 using LibHac.Common;
 using LibHac.Fs;

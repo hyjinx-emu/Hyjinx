@@ -1,4 +1,4 @@
-﻿namespace LibHac.FsSrv.FsCreator;
+namespace LibHac.FsSrv.FsCreator;
 
 public class FileSystemCreatorInterfaces
 {

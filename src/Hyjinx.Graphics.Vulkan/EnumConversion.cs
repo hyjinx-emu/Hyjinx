@@ -18,7 +18,7 @@ namespace Hyjinx.Graphics.Vulkan
     static partial class EnumConversion
     {
         private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(EnumConversion));
-        
+
         public static ShaderStageFlags Convert(this ShaderStage stage)
         {
             return stage switch

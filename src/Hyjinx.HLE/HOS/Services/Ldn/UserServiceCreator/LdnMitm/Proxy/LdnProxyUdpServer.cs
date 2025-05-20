@@ -15,9 +15,9 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
     {
         private const long ScanFrequency = 1000;
 
-        private readonly ILogger<LdnProxyUdpServer> _logger = 
+        private readonly ILogger<LdnProxyUdpServer> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<LdnProxyUdpServer>();
-        
+
         private readonly LanProtocol _protocol;
         private byte[] _buffer;
         private int _bufferEnd;

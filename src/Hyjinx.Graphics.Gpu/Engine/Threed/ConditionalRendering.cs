@@ -12,7 +12,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed
     static partial class ConditionalRendering
     {
         private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(ConditionalRendering));
-        
+
         /// <summary>
         /// Checks if draws and clears should be performed, according
         /// to currently set conditional rendering conditions.

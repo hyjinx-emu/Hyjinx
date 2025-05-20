@@ -19,7 +19,7 @@ namespace Hyjinx.Input.HLE
     {
         private static readonly ILogger<NpadController> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<NpadController>();
-        
+
         private class HLEButtonMappingEntry
         {
             public readonly GamepadButtonInputId DriverInputId;
@@ -559,7 +559,7 @@ namespace Hyjinx.Input.HLE
                 }
             }
         }
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
             Message = "Effect for {playerIndex} " +

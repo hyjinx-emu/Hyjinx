@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -20,8 +20,10 @@ public class EmulatedBisFileSystemCreatorConfig
 
     public Result SetRootFileSystem(ref SharedRef<IFileSystem> fileSystem)
     {
-        if (!fileSystem.HasValue) return ResultFs.NullptrArgument.Log();
-        if (_rootFileSystem.HasValue) return ResultFs.PreconditionViolation.Log();
+        if (!fileSystem.HasValue)
+            return ResultFs.NullptrArgument.Log();
+        if (_rootFileSystem.HasValue)
+            return ResultFs.PreconditionViolation.Log();
 
         _rootFileSystem.SetByMove(ref fileSystem);
 
@@ -30,8 +32,10 @@ public class EmulatedBisFileSystemCreatorConfig
 
     public Result SetFileSystem(ref UniqueRef<IFileSystem> fileSystem, BisPartitionId partitionId)
     {
-        if (!fileSystem.HasValue) return ResultFs.NullptrArgument.Log();
-        if (!IsValidPartitionId(partitionId)) return ResultFs.InvalidArgument.Log();
+        if (!fileSystem.HasValue)
+            return ResultFs.NullptrArgument.Log();
+        if (!IsValidPartitionId(partitionId))
+            return ResultFs.InvalidArgument.Log();
 
         PartitionFileSystems[GetArrayIndex(partitionId)].Set(ref fileSystem);
 
@@ -40,8 +44,10 @@ public class EmulatedBisFileSystemCreatorConfig
 
     public Result SetPath(string path, BisPartitionId partitionId)
     {
-        if (path == null) return ResultFs.NullptrArgument.Log();
-        if (!IsValidPartitionId(partitionId)) return ResultFs.InvalidArgument.Log();
+        if (path == null)
+            return ResultFs.NullptrArgument.Log();
+        if (!IsValidPartitionId(partitionId))
+            return ResultFs.InvalidArgument.Log();
 
         PartitionPaths[GetArrayIndex(partitionId)] = path;
 

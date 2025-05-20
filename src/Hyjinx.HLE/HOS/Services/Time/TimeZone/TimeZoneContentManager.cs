@@ -122,7 +122,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
             else
             {
                 LocationNameCache = new[] { "UTC" };
-                
+
                 LogTimeZoneTitleMissing();
             }
         }
@@ -206,12 +206,12 @@ namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
             EventId = (int)LogClass.ServiceTime, EventName = nameof(LogClass.ServiceTime),
             Message = "Error opening /zoneinfo/{locName}")]
         private partial void LogErrorOpeningZoneInfo(string locName);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceTime, EventName = nameof(LogClass.ServiceTime),
             Message = "Couldn't find UTC offset for zone {locName}")]
         private partial void LogCannotFindUtcOffsetForZone(string locName);
-        
+
         private bool IsLocationNameValid(string locationName)
         {
             foreach (string cachedLocationName in LocationNameCache)

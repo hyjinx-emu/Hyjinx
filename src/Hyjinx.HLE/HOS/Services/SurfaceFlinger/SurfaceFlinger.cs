@@ -178,7 +178,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return Vi.ResultCode.Success;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
             Message = "Failed to close layer {layerId}.")]
@@ -214,12 +214,12 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return Vi.ResultCode.Success;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
             Message = "Failed to destroy managed layer {layerId} (not found).")]
         private partial void LogFailedToDestroyManagedLayerNotFound(long layerId);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
             Message = "Failed to destroy managed layer {layerId} (permission denied).")]
@@ -234,14 +234,14 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 if (layer == null)
                 {
                     LogFailedToDestroyStrayLayerNotFound(layerId);
-                    
+
                     return Vi.ResultCode.InvalidValue;
                 }
 
                 if (layer.State != LayerState.Stray)
                 {
                     LogFailedToDestroyStrayLayerPermissionDenied(layerId);
-                    
+
                     return Vi.ResultCode.PermissionDenied;
                 }
 
@@ -255,12 +255,12 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return Vi.ResultCode.Success;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
             Message = "Failed to destroy stray layer {layerId} (not found).")]
         private partial void LogFailedToDestroyStrayLayerNotFound(long layerId);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
             Message = "Failed to destroy stray layer {layerId} (permission denied).")]

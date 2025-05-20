@@ -117,12 +117,12 @@ namespace Hyjinx.SDL2.Common
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "SDL2 initialization failed with error: {errorMessage}")]
         private partial void LogSdlInitializationFailed(string errorMessage);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Couldn't change the state of game controller events.")]
         private partial void LogUnableToChangeStateOfGameControllerEvents();
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Failed to enable joystick event polling: {errorMessage}")]
@@ -153,7 +153,7 @@ namespace Hyjinx.SDL2.Common
                 }
 
                 LogAddedJoystickId(instanceId);
-                
+
                 OnJoyStickConnected?.Invoke(deviceId, instanceId);
             }
             else if (evnt.type == SDL_EventType.SDL_JOYDEVICEREMOVED)
@@ -175,7 +175,7 @@ namespace Hyjinx.SDL2.Common
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Added joystick instance id {instanceId}")]
         private partial void LogAddedJoystickId(int instanceId);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Removed joystick instance id {instanceId}")]

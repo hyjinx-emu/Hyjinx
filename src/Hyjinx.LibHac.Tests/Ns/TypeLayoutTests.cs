@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using LibHac.Ns;
 using Xunit;
 using static LibHac.Ns.ApplicationControlProperty;

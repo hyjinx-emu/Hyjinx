@@ -1,4 +1,4 @@
-﻿namespace Hyjinx.Logging.File;
+namespace Hyjinx.Logging.File;
 
 /// <summary>
 /// Reserved formatter names for the built-in file formatters.

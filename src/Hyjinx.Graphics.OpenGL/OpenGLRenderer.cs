@@ -21,9 +21,9 @@ namespace Hyjinx.Graphics.OpenGL
 
         public IWindow Window => _window;
 
-        private readonly ILogger<OpenGLRenderer> _logger = 
+        private readonly ILogger<OpenGLRenderer> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<OpenGLRenderer>();
-        
+
         private readonly TextureCopy _textureCopy;
         private readonly TextureCopy _backgroundTextureCopy;
         internal TextureCopy TextureCopy => BackgroundContextWorker.InBackground ? _backgroundTextureCopy : _textureCopy;

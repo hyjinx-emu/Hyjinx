@@ -70,7 +70,7 @@ namespace Hyjinx.HLE.HOS.Tamper
             EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
             Message = "Compiling instruction {rawInstruction}")]
         private partial void LogCompilingInstruction(string rawInstruction);
-        
+
         private ITamperProgram CompileImpl(string name, IEnumerable<string> rawInstructions)
         {
             CompilationContext context = new(_exeAddress, _heapAddress, _aliasAddress, _aslrAddress, _process);

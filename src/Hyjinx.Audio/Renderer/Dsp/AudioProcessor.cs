@@ -235,7 +235,7 @@ namespace Hyjinx.Audio.Renderer.Dsp
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Starting audio processor")]
         private partial void LogStartingProcessor();
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "DSP too slow (exceeded by {ms}ns)")]

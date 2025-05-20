@@ -72,7 +72,7 @@ namespace Hyjinx.Common.SystemInterop
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "timeGetDevCaps failed with result: {result}")]
         private partial void LogTimeGetDevCapsFailed(uint result);
-        
+
         [LoggerMessage(LogLevel.Critical,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Target resolution isn't supported by OS, using closest resolution: {supportedTargetResolutionInMilliseconds}ms")]
@@ -91,7 +91,7 @@ namespace Hyjinx.Common.SystemInterop
                 _isActive = true;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Critical,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "timeBeginPeriod failed with result: {result}")]
@@ -113,7 +113,7 @@ namespace Hyjinx.Common.SystemInterop
                 }
             }
         }
-        
+
         [LoggerMessage(LogLevel.Critical,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "timeEndPeriod failed with result: {result}")]

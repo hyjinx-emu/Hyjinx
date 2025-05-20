@@ -172,7 +172,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
 
             return result;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
             Message = "TimeZoneRule buffer size is 0x{size:x} (expected 0x4000)")]

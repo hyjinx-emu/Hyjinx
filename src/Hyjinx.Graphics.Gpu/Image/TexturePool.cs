@@ -694,7 +694,7 @@ namespace Hyjinx.Graphics.Gpu.Image
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Invalid texture format 0x{format:X} (sRGB: {srgb}).")]
         private static partial void LogInvalidTextureFormat(ILogger logger, uint format, bool srgb);
-        
+
         /// <summary>
         /// Clamps the amount of mipmap levels to the maximum allowed for the given texture dimensions.
         /// </summary>

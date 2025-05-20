@@ -15,22 +15,22 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Proxy
 
         private static readonly ILogger<DnsMitmResolver> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<DnsMitmResolver>();
-        
+
         private static DnsMitmResolver _instance;
         public static DnsMitmResolver Instance => _instance ??= new DnsMitmResolver();
 
         private readonly Dictionary<string, IPAddress> _mitmHostEntries = new();
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
             Message = "Invalid entry in hosts file: {line}")]
         private partial void LogInvalidEntryInHostsFile(string line);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
             Message = "Failed to parse IP address in hosts file: {line}")]
         private partial void LogFailedToParseIpAddress(string line);
-        
+
         public void ReloadEntries(ServiceCtx context)
         {
             string sdPath = FileSystem.VirtualFileSystem.GetSdCardPath();

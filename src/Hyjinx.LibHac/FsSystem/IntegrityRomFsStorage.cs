@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -66,7 +66,8 @@ public class IntegrityRomFsStorage : IStorage
         // Initialize our integrity storage.
         Result res = _integrityStorage.Initialize(in info, ref storageInfo, _bufferManagerSet, hashGeneratorFactory,
             false, _mutex, maxDataCacheEntries, maxHashCacheEntries, bufferLevel, false, false);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

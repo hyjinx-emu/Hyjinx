@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -58,10 +58,12 @@ public class FileStorage : IStorage
             return Result.Success;
 
         Result res = UpdateSize();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, destination.Length, _fileSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseFile.Read(out _, offset, destination, ReadOption.None);
     }
@@ -72,10 +74,12 @@ public class FileStorage : IStorage
             return Result.Success;
 
         Result res = UpdateSize();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, source.Length, _fileSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseFile.Write(offset, source, WriteOption.None);
     }
@@ -90,7 +94,8 @@ public class FileStorage : IStorage
         UnsafeHelpers.SkipParamInit(out size);
 
         Result res = UpdateSize();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         size = _fileSize;
         return Result.Success;
@@ -107,31 +112,34 @@ public class FileStorage : IStorage
         switch (operationId)
         {
             case OperationId.InvalidateCache:
-            {
-                Result res = _baseFile.OperateRange(OperationId.InvalidateCache, offset, size);
-                if (res.IsFailure()) return res.Miss();
-
-                return Result.Success;
-            }
-            case OperationId.QueryRange:
-            {
-                if (size == 0)
                 {
-                    if (outBuffer.Length != Unsafe.SizeOf<QueryRangeInfo>())
-                        return ResultFs.InvalidSize.Log();
+                    Result res = _baseFile.OperateRange(OperationId.InvalidateCache, offset, size);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                    SpanHelpers.AsStruct<QueryRangeInfo>(outBuffer).Clear();
                     return Result.Success;
                 }
+            case OperationId.QueryRange:
+                {
+                    if (size == 0)
+                    {
+                        if (outBuffer.Length != Unsafe.SizeOf<QueryRangeInfo>())
+                            return ResultFs.InvalidSize.Log();
 
-                Result res = UpdateSize();
-                if (res.IsFailure()) return res.Miss();
+                        SpanHelpers.AsStruct<QueryRangeInfo>(outBuffer).Clear();
+                        return Result.Success;
+                    }
 
-                res = CheckOffsetAndSize(offset, size);
-                if (res.IsFailure()) return res.Miss();
+                    Result res = UpdateSize();
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                return _baseFile.OperateRange(outBuffer, operationId, offset, size, inBuffer);
-            }
+                    res = CheckOffsetAndSize(offset, size);
+                    if (res.IsFailure())
+                        return res.Miss();
+
+                    return _baseFile.OperateRange(outBuffer, operationId, offset, size, inBuffer);
+                }
             default:
                 return ResultFs.UnsupportedOperateRangeForFileStorage.Log();
         }
@@ -143,7 +151,8 @@ public class FileStorage : IStorage
             return Result.Success;
 
         Result res = _baseFile.GetSize(out long size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _fileSize = size;
         return Result.Success;
@@ -184,7 +193,8 @@ public class FileStorageBasedFileSystem : FileStorage
         using var baseFile = new UniqueRef<IFile>();
 
         Result res = baseFileSystem.Get.OpenFile(ref baseFile.Ref, in path, mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         SetFile(baseFile.Get);
         _baseFileSystem.SetByMove(ref baseFileSystem);
@@ -255,10 +265,12 @@ public class FileHandleStorage : IStorage
             return Result.Success;
 
         Result res = UpdateSize();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, destination.Length, _size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _fsClient.ReadFile(_handle, offset, destination, ReadOption.None);
     }
@@ -271,10 +283,12 @@ public class FileHandleStorage : IStorage
             return Result.Success;
 
         Result res = UpdateSize();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, source.Length, _size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _fsClient.WriteFile(_handle, offset, source, WriteOption.None);
     }
@@ -289,7 +303,8 @@ public class FileHandleStorage : IStorage
         UnsafeHelpers.SkipParamInit(out size);
 
         Result res = UpdateSize();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         size = _size;
         return Result.Success;
@@ -310,7 +325,8 @@ public class FileHandleStorage : IStorage
             return ResultFs.InvalidSize.Log();
 
         Result res = _fsClient.QueryRange(out SpanHelpers.AsStruct<QueryRangeInfo>(outBuffer), _handle, offset, size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -321,7 +337,8 @@ public class FileHandleStorage : IStorage
             return Result.Success;
 
         Result res = _fsClient.GetFileSize(out long size, _handle);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _size = size;
         return Result.Success;

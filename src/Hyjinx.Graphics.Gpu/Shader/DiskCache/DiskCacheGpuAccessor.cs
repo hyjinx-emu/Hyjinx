@@ -15,7 +15,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
     {
         private readonly ILogger<DiskCacheGpuAccessor> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<DiskCacheGpuAccessor>();
-        
+
         private readonly ReadOnlyMemory<byte> _data;
         private readonly ReadOnlyMemory<byte> _cb1Data;
         private readonly ShaderSpecializationState _oldSpecState;

@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSrv.Storage.Sf;
@@ -41,29 +41,31 @@ internal class MmcDeviceOperator : IStorageDeviceOperator
 
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
         Result res = _storageDevice.Get.Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         switch (operation)
         {
             case MmcOperationIdValue.Erase:
-            {
-                Port port = _storageDevice.Get.GetPort();
-                MmcPartition partition = _storageDevice.Get.GetPartition();
-
-                Abort.DoAbortUnlessSuccess(_sdmmc.SelectMmcPartition(port, partition));
-
-                try
                 {
-                    res = GetFsResult(port, _sdmmc.EraseMmc(port));
-                    if (res.IsFailure()) return res.Miss();
+                    Port port = _storageDevice.Get.GetPort();
+                    MmcPartition partition = _storageDevice.Get.GetPartition();
 
-                    return Result.Success;
+                    Abort.DoAbortUnlessSuccess(_sdmmc.SelectMmcPartition(port, partition));
+
+                    try
+                    {
+                        res = GetFsResult(port, _sdmmc.EraseMmc(port));
+                        if (res.IsFailure())
+                            return res.Miss();
+
+                        return Result.Success;
+                    }
+                    finally
+                    {
+                        Abort.DoAbortUnlessSuccess(_sdmmc.SelectMmcPartition(port, MmcPartition.UserData));
+                    }
                 }
-                finally
-                {
-                    Abort.DoAbortUnlessSuccess(_sdmmc.SelectMmcPartition(port, MmcPartition.UserData));
-                }
-            }
             default:
                 return ResultFs.InvalidArgument.Log();
         }
@@ -81,64 +83,69 @@ internal class MmcDeviceOperator : IStorageDeviceOperator
 
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
         Result res = _storageDevice.Get.Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Port port = _storageDevice.Get.GetPort();
 
         switch (operation)
         {
             case MmcOperationIdValue.GetSpeedMode:
-            {
-                if (buffer.Size < sizeof(SpeedMode))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < sizeof(SpeedMode))
+                        return ResultFs.InvalidArgument.Log();
 
-                res = GetFsResult(port, _sdmmc.GetDeviceSpeedMode(out buffer.As<SpeedMode>(), port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, _sdmmc.GetDeviceSpeedMode(out buffer.As<SpeedMode>(), port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                bytesWritten = sizeof(SpeedMode);
-                return Result.Success;
-            }
+                    bytesWritten = sizeof(SpeedMode);
+                    return Result.Success;
+                }
             case MmcOperationIdValue.GetCid:
-            {
-                if (buffer.Size < DeviceCidSize)
-                    return ResultFs.InvalidSize.Log();
+                {
+                    if (buffer.Size < DeviceCidSize)
+                        return ResultFs.InvalidSize.Log();
 
-                res = GetFsResult(port, _sdmmc.GetDeviceCid(buffer.Buffer.Slice(0, DeviceCidSize), port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, _sdmmc.GetDeviceCid(buffer.Buffer.Slice(0, DeviceCidSize), port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                bytesWritten = DeviceCidSize;
-                return Result.Success;
-            }
+                    bytesWritten = DeviceCidSize;
+                    return Result.Success;
+                }
             case MmcOperationIdValue.GetPartitionSize:
-            {
-                if (buffer.Size < sizeof(long))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < sizeof(long))
+                        return ResultFs.InvalidArgument.Log();
 
-                res = GetFsResult(port, GetPartitionCapacity(out uint numSectors, port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, GetPartitionCapacity(out uint numSectors, port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                buffer.As<long>() = numSectors * SectorSize;
-                bytesWritten = sizeof(long);
+                    buffer.As<long>() = numSectors * SectorSize;
+                    bytesWritten = sizeof(long);
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             case MmcOperationIdValue.GetExtendedCsd:
-            {
-                if (buffer.Size < MmcExtendedCsdSize)
-                    return ResultFs.InvalidSize.Log();
+                {
+                    if (buffer.Size < MmcExtendedCsdSize)
+                        return ResultFs.InvalidSize.Log();
 
-                using var pooledBuffer = new PooledBuffer(MmcExtendedCsdSize, MmcExtendedCsdSize);
-                if (pooledBuffer.GetSize() < MmcExtendedCsdSize)
-                    return ResultFs.AllocationMemoryFailedInSdmmcStorageServiceB.Log();
+                    using var pooledBuffer = new PooledBuffer(MmcExtendedCsdSize, MmcExtendedCsdSize);
+                    if (pooledBuffer.GetSize() < MmcExtendedCsdSize)
+                        return ResultFs.AllocationMemoryFailedInSdmmcStorageServiceB.Log();
 
-                res = GetFsResult(port, _sdmmc.GetMmcExtendedCsd(pooledBuffer.GetBuffer(), port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, _sdmmc.GetMmcExtendedCsd(pooledBuffer.GetBuffer(), port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                pooledBuffer.GetBuffer().Slice(0, MmcExtendedCsdSize).CopyTo(buffer.Buffer);
-                bytesWritten = MmcExtendedCsdSize;
+                    pooledBuffer.GetBuffer().Slice(0, MmcExtendedCsdSize).CopyTo(buffer.Buffer);
+                    bytesWritten = MmcExtendedCsdSize;
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }
@@ -175,20 +182,22 @@ internal class MmcDeviceOperator : IStorageDeviceOperator
         switch (_storageDevice.Get.GetPartition())
         {
             case MmcPartition.UserData:
-            {
-                Result res = _sdmmc.GetDeviceMemoryCapacity(out outNumSectors, port);
-                if (res.IsFailure()) return res.Miss();
+                {
+                    Result res = _sdmmc.GetDeviceMemoryCapacity(out outNumSectors, port);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             case MmcPartition.BootPartition1:
             case MmcPartition.BootPartition2:
-            {
-                Result res = _sdmmc.GetMmcBootPartitionCapacity(out outNumSectors, port);
-                if (res.IsFailure()) return res.Miss();
+                {
+                    Result res = _sdmmc.GetMmcBootPartitionCapacity(out outNumSectors, port);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }

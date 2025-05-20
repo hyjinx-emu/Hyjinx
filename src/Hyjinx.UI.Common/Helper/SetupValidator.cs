@@ -10,9 +10,9 @@ namespace Hyjinx.UI.Common.Helper
     /// </summary>
     public static class SetupValidator
     {
-        private static readonly ILogger _logger = 
+        private static readonly ILogger _logger =
             Logger.DefaultLoggerFactory.CreateLogger(typeof(SetupValidator));
-        
+
         private static bool IsFirmwareValid(ContentManager contentManager, out UserError error)
         {
             bool hasFirmware = contentManager.GetCurrentFirmwareVersion() != null;
@@ -28,7 +28,7 @@ namespace Hyjinx.UI.Common.Helper
 
             return false;
         }
-        
+
         public static bool CanStartApplication(ContentManager contentManager, string baseApplicationPath, out UserError error)
         {
             if (Directory.Exists(baseApplicationPath) || File.Exists(baseApplicationPath))

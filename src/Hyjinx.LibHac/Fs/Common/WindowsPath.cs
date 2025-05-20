@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Util;
@@ -19,10 +19,14 @@ public static class WindowsPath
 
     public static int GetCodePointByteLength(byte firstCodeUnit)
     {
-        if ((firstCodeUnit & 0x80) == 0x00) return 1;
-        if ((firstCodeUnit & 0xE0) == 0xC0) return 2;
-        if ((firstCodeUnit & 0xF0) == 0xE0) return 3;
-        if ((firstCodeUnit & 0xF8) == 0xF0) return 4;
+        if ((firstCodeUnit & 0x80) == 0x00)
+            return 1;
+        if ((firstCodeUnit & 0xE0) == 0xC0)
+            return 2;
+        if ((firstCodeUnit & 0xF0) == 0xE0)
+            return 3;
+        if ((firstCodeUnit & 0xF8) == 0xF0)
+            return 4;
         return 0;
     }
 

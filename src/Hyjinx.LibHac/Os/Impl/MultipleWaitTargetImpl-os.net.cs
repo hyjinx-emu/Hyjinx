@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using LibHac.Common;
 using LibHac.Diag;
@@ -44,7 +44,8 @@ public class MultiWaitTargetImpl : IDisposable
         {
             Result res = WaitForAnyObjects(out int index, num, handles,
                 (int)timeoutHelper.GetTimeLeftOnTarget().GetMilliSeconds());
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (index == MultiWaitImpl.WaitTimedOut)
             {

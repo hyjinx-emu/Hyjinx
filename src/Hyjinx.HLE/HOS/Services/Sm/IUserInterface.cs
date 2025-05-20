@@ -121,7 +121,7 @@ namespace Hyjinx.HLE.HOS.Services.Sm
 
                 session.ServerSession.DecrementReferenceCount();
                 session.ClientSession.DecrementReferenceCount();
-                
+
                 context.Response.HandleDesc = IpcHandleDesc.MakeMove(handle);
             }
 

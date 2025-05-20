@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
@@ -132,7 +132,8 @@ public class SdCardManager : IStorageDeviceManager, IStorageDeviceOperator, ISdm
         InitializeSd();
 
         Result res = _detectionEventManager.Value.CreateDetectionEvent(ref outDetectionEvent);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -156,7 +157,8 @@ public class SdCardManager : IStorageDeviceManager, IStorageDeviceOperator, ISdm
         using var storageDevice = new SharedRef<IStorageDevice>();
 
         Result res = OpenDeviceImpl(ref storageDevice.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outStorageDevice.SetByMove(ref storageDevice.Ref);
 
@@ -168,7 +170,8 @@ public class SdCardManager : IStorageDeviceManager, IStorageDeviceOperator, ISdm
         using var storageDevice = new SharedRef<IStorageDevice>();
 
         Result res = OpenDeviceImpl(ref storageDevice.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outStorage.SetByMove(ref storageDevice.Ref);
 
@@ -180,7 +183,8 @@ public class SdCardManager : IStorageDeviceManager, IStorageDeviceOperator, ISdm
         InitializeSd();
 
         Result res = EnsureActivated(out SdmmcHandle handle);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using SharedRef<ISdmmcDeviceManager> manager = SharedRef<ISdmmcDeviceManager>.Create(in _selfReference);
 
@@ -213,7 +217,8 @@ public class SdCardManager : IStorageDeviceManager, IStorageDeviceOperator, ISdm
         if (_openCount == 0)
         {
             Result res = SdmmcResultConverter.GetFsResult(_port, _sdmmc.Activate(_port));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Increment the handle if this is the first time the device has been activated.
             if (_handle == 0)
@@ -371,18 +376,19 @@ public class SdCardManager : IStorageDeviceManager, IStorageDeviceOperator, ISdm
         switch (operation)
         {
             case SdCardManagerOperationIdValue.GetAndClearErrorInfo:
-            {
-                if (buffer1.Size < Unsafe.SizeOf<StorageErrorInfo>())
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer1.Size < Unsafe.SizeOf<StorageErrorInfo>())
+                        return ResultFs.InvalidArgument.Log();
 
-                Result res = GetAndClearSdCardErrorInfo(out buffer1.As<StorageErrorInfo>(), out bytesWrittenBuffer2,
-                    buffer2.Buffer);
-                if (res.IsFailure()) return res.Miss();
+                    Result res = GetAndClearSdCardErrorInfo(out buffer1.As<StorageErrorInfo>(), out bytesWrittenBuffer2,
+                        buffer2.Buffer);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                bytesWrittenBuffer1 = Unsafe.SizeOf<StorageErrorInfo>();
+                    bytesWrittenBuffer1 = Unsafe.SizeOf<StorageErrorInfo>();
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
 
             default:
                 return ResultFs.InvalidArgument.Log();
@@ -411,7 +417,8 @@ public class SdCardManager : IStorageDeviceManager, IStorageDeviceOperator, ISdm
         using ScopedLock<SdkMutexType> scopedLock = ScopedLock.Lock(ref _mutex);
 
         Result res = Common.GetAndClearSdmmcStorageErrorInfo(out outStorageErrorInfo, out outLogSize, logBuffer, _sdmmc);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

@@ -250,7 +250,7 @@ namespace Hyjinx.Graphics.OpenGL
 
             PostDraw();
         }
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Draw error, shader not linked.")]

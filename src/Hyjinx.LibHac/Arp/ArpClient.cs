@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Arp.Impl;
 using LibHac.Common;
 using LibHac.Ns;

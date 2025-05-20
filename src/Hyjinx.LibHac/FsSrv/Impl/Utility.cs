@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -27,7 +27,8 @@ internal static class Utility
         // Check if the directory exists
         using var dir = new UniqueRef<IDirectory>();
         Result res = baseFileSystem.Get.OpenDirectory(ref dir.Ref, rootPath, OpenDirectoryMode.Directory);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         dir.Reset();
 
@@ -36,7 +37,8 @@ internal static class Utility
             return ResultFs.AllocationMemoryFailedInSubDirectoryFileSystemCreatorA.Log();
 
         res = fs.Get.Initialize(in rootPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outSubDirFileSystem.SetByMove(ref fs.Ref);
 
@@ -50,12 +52,14 @@ internal static class Utility
         if (!createIfMissing)
         {
             Result result = baseFileSystem.Get.GetEntryType(out _, in rootPath);
-            if (result.IsFailure()) return result;
+            if (result.IsFailure())
+                return result;
         }
 
         // Ensure the path exists or check if it's a directory
         Result res = FsSystem.Utility.EnsureDirectory(baseFileSystem.Get, in rootPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return CreateSubDirectoryFileSystem(ref outFileSystem, ref baseFileSystem, rootPath);
     }

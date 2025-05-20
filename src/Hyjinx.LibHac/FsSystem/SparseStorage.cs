@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Diag;
 using LibHac.Fs;
 
@@ -99,7 +99,8 @@ public class SparseStorage : IndirectStorage
         if (GetEntryTable().IsEmpty())
         {
             Result res = GetEntryTable().GetOffsets(out BucketTree.Offsets offsets);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (!offsets.IsInclude(offset, destination.Length))
                 return ResultFs.OutOfRange.Log();
@@ -115,11 +116,13 @@ public class SparseStorage : IndirectStorage
                 {
                     int bufferPosition = (int)(virtualOffset - closure.Offset);
                     Result res = storage.Read(physicalOffset, closure.OutBuffer.Slice(bufferPosition, (int)size));
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     return Result.Success;
                 });
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;

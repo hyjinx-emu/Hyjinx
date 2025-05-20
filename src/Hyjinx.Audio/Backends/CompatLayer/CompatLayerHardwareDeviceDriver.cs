@@ -97,7 +97,7 @@ namespace Hyjinx.Audio.Backends.CompatLayer
 
             throw new ArgumentException("No valid sample format configuration found!");
         }
-        
+
         public IHardwareDeviceSession OpenDeviceSession(Direction direction, IVirtualMemoryManager memoryManager, SampleFormat sampleFormat, uint sampleRate, uint channelCount)
         {
             if (channelCount == 0)
@@ -160,12 +160,12 @@ namespace Hyjinx.Audio.Backends.CompatLayer
             // If we need to do post processing before sending to the hardware device, wrap around it.
             return new CompatLayerHardwareDeviceSession(realSessionOutputBase, sampleFormat, channelCount);
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
             Message = "The selected audio backend doesn't support audio input, fallback to dummy...")]
         private partial void LogAudioBackendDoesNotSupportInput();
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
             Message = "{hardwareFormat} has lower quality than {format}, expect some loss in audio fidelity.")]
@@ -175,12 +175,12 @@ namespace Hyjinx.Audio.Backends.CompatLayer
             EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
             Message = "{format} isn't supported by the audio device, conversion to {hardwareFormat} will happen.")]
         private partial void LogFormatNotSupportedByDevice(SampleFormat format, SampleFormat hardwareFormat);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
             Message = "The selected audio backend doesn't support the requested audio input configuration, fallback to dummy...")]
         private partial void LogAudioBackendDoesNotSupportRequestedConfiguration();
-        
+
         public bool SupportsChannelCount(uint channelCount)
         {
             return channelCount == 1 || channelCount == 2 || channelCount == 6;

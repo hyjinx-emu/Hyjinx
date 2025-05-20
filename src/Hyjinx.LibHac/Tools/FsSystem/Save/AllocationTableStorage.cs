@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using LibHac.Fs;
 using LibHac.Util;
@@ -48,7 +48,8 @@ public class AllocationTableStorage : IStorage
             int bytesToRead = Math.Min(remaining, remainingInSegment);
 
             Result res = BaseStorage.Read(physicalOffset, destination.Slice(outPos, bytesToRead));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outPos += bytesToRead;
             inPos += bytesToRead;
@@ -82,7 +83,8 @@ public class AllocationTableStorage : IStorage
             int bytesToWrite = Math.Min(remaining, remainingInSegment);
 
             Result res = BaseStorage.Write(physicalOffset, source.Slice(outPos, bytesToWrite));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outPos += bytesToWrite;
             inPos += bytesToWrite;
@@ -108,12 +110,14 @@ public class AllocationTableStorage : IStorage
         int oldBlockCount = (int)BitUtil.DivideUp(_length, BlockSize);
         int newBlockCount = (int)BitUtil.DivideUp(size, BlockSize);
 
-        if (oldBlockCount == newBlockCount) return Result.Success;
+        if (oldBlockCount == newBlockCount)
+            return Result.Success;
 
         if (oldBlockCount == 0)
         {
             InitialBlock = Fat.Allocate(newBlockCount);
-            if (InitialBlock == -1) throw new IOException("Not enough space to resize file.");
+            if (InitialBlock == -1)
+                throw new IOException("Not enough space to resize file.");
 
             _length = (long)newBlockCount * BlockSize;
 
@@ -133,7 +137,8 @@ public class AllocationTableStorage : IStorage
         if (newBlockCount > oldBlockCount)
         {
             int newBlocks = Fat.Allocate(newBlockCount - oldBlockCount);
-            if (newBlocks == -1) throw new IOException("Not enough space to resize file.");
+            if (newBlocks == -1)
+                throw new IOException("Not enough space to resize file.");
 
             Fat.Join(InitialBlock, newBlocks);
         }

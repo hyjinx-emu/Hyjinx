@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -76,12 +76,12 @@ internal class SaveDataIndexerManager : ISaveDataIndexerManager, IDisposable
         {
             case SaveDataSpaceId.SdSystem:
             case SaveDataSpaceId.SdUser:
-            {
-                // Note: Nintendo doesn't lock when doing this operation
-                using ScopedLock<SdkMutex> scopedLock = ScopedLock.Lock(ref _sdIndexerMutex);
-                InvalidateIndexerImpl(ref _sdIndexer);
-                break;
-            }
+                {
+                    // Note: Nintendo doesn't lock when doing this operation
+                    using ScopedLock<SdkMutex> scopedLock = ScopedLock.Lock(ref _sdIndexerMutex);
+                    InvalidateIndexerImpl(ref _sdIndexer);
+                    break;
+                }
 
             default:
                 Abort.UnexpectedDefault();
@@ -144,82 +144,82 @@ internal class SaveDataIndexerManager : ISaveDataIndexerManager, IDisposable
         {
             case SaveDataSpaceId.System:
             case SaveDataSpaceId.User:
-            {
-                indexerLock.Reset(_bisIndexerMutex);
-
-                if (!_bisIndexer.HasValue)
                 {
-                    _bisIndexer.Set(new SaveDataIndexer(_fsClient, new U8Span(BisIndexerMountName),
-                        SaveDataSpaceId.System, _indexerSaveDataId, _memoryResource));
-                    wasIndexerInitialized = true;
-                }
+                    indexerLock.Reset(_bisIndexerMutex);
 
-                indexer = _bisIndexer.Value;
-                break;
-            }
+                    if (!_bisIndexer.HasValue)
+                    {
+                        _bisIndexer.Set(new SaveDataIndexer(_fsClient, new U8Span(BisIndexerMountName),
+                            SaveDataSpaceId.System, _indexerSaveDataId, _memoryResource));
+                        wasIndexerInitialized = true;
+                    }
+
+                    indexer = _bisIndexer.Value;
+                    break;
+                }
             case SaveDataSpaceId.Temporary:
-            {
-                indexerLock.Reset(_tempIndexerMutex);
-                indexer = _tempIndexer;
-                break;
-            }
+                {
+                    indexerLock.Reset(_tempIndexerMutex);
+                    indexer = _tempIndexer;
+                    break;
+                }
             case SaveDataSpaceId.SdSystem:
             case SaveDataSpaceId.SdUser:
-            {
-                if (_sdHandleManager is null)
-                    return ResultFs.InvalidArgument.Log();
-
-                indexerLock.Reset(_sdIndexerMutex);
-
-                // We need to reinitialize the indexer if the SD card has changed
-                if (!_sdHandleManager.IsValid(in _sdCardHandle) && _sdIndexer.HasValue)
                 {
-                    _sdIndexer.Value.Dispose();
-                    _sdIndexer.Clear();
+                    if (_sdHandleManager is null)
+                        return ResultFs.InvalidArgument.Log();
+
+                    indexerLock.Reset(_sdIndexerMutex);
+
+                    // We need to reinitialize the indexer if the SD card has changed
+                    if (!_sdHandleManager.IsValid(in _sdCardHandle) && _sdIndexer.HasValue)
+                    {
+                        _sdIndexer.Value.Dispose();
+                        _sdIndexer.Clear();
+                    }
+
+                    if (!_sdIndexer.HasValue)
+                    {
+                        _sdIndexer.Set(new SaveDataIndexer(_fsClient, new U8Span(SdCardIndexerMountName),
+                            SaveDataSpaceId.SdSystem, _indexerSaveDataId, _memoryResource));
+
+                        _sdHandleManager.GetHandle(out _sdCardHandle).IgnoreResult();
+                        wasIndexerInitialized = true;
+                    }
+
+                    indexer = _sdIndexer.Value;
+                    break;
                 }
-
-                if (!_sdIndexer.HasValue)
-                {
-                    _sdIndexer.Set(new SaveDataIndexer(_fsClient, new U8Span(SdCardIndexerMountName),
-                        SaveDataSpaceId.SdSystem, _indexerSaveDataId, _memoryResource));
-
-                    _sdHandleManager.GetHandle(out _sdCardHandle).IgnoreResult();
-                    wasIndexerInitialized = true;
-                }
-
-                indexer = _sdIndexer.Value;
-                break;
-            }
             case SaveDataSpaceId.ProperSystem:
-            {
-                indexerLock.Reset(_properBisIndexerMutex);
-
-                if (!_properBisIndexer.HasValue)
                 {
-                    _properBisIndexer.Set(new SaveDataIndexer(_fsClient, new U8Span(ProperBisIndexerMountName),
-                        SaveDataSpaceId.ProperSystem, _indexerSaveDataId, _memoryResource));
+                    indexerLock.Reset(_properBisIndexerMutex);
 
-                    wasIndexerInitialized = true;
+                    if (!_properBisIndexer.HasValue)
+                    {
+                        _properBisIndexer.Set(new SaveDataIndexer(_fsClient, new U8Span(ProperBisIndexerMountName),
+                            SaveDataSpaceId.ProperSystem, _indexerSaveDataId, _memoryResource));
+
+                        wasIndexerInitialized = true;
+                    }
+
+                    indexer = _properBisIndexer.Value;
+                    break;
                 }
-
-                indexer = _properBisIndexer.Value;
-                break;
-            }
             case SaveDataSpaceId.SafeMode:
-            {
-                indexerLock.Reset(_safeIndexerMutex);
-
-                if (!_safeIndexer.HasValue)
                 {
-                    _safeIndexer.Set(new SaveDataIndexer(_fsClient, new U8Span(SafeModeIndexerMountName),
-                        SaveDataSpaceId.SafeMode, _indexerSaveDataId, _memoryResource));
+                    indexerLock.Reset(_safeIndexerMutex);
 
-                    wasIndexerInitialized = true;
+                    if (!_safeIndexer.HasValue)
+                    {
+                        _safeIndexer.Set(new SaveDataIndexer(_fsClient, new U8Span(SafeModeIndexerMountName),
+                            SaveDataSpaceId.SafeMode, _indexerSaveDataId, _memoryResource));
+
+                        wasIndexerInitialized = true;
+                    }
+
+                    indexer = _safeIndexer.Value;
+                    break;
                 }
-
-                indexer = _safeIndexer.Value;
-                break;
-            }
 
             default:
                 return ResultFs.InvalidArgument.Log();

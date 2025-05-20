@@ -27,7 +27,7 @@ namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
         private SKImageInfo _imageInfo;
         private SKSurface _surface = null;
         private byte[] _bufferData = null;
-        
+
         private readonly SKBitmap _padAcceptIcon = null;
         private readonly SKBitmap _padCancelIcon = null;
         private readonly SKBitmap _keyModeIcon = null;
@@ -289,7 +289,7 @@ namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
 
             _messagePositionY = panelPositionY + 60;
         }
-        
+
         private static SKRect MeasureString(string text, SKPaint paint)
         {
             SKRect bounds = SKRect.Empty;

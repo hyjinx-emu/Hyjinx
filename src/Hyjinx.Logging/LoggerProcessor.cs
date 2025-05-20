@@ -15,7 +15,7 @@ internal sealed class LoggerProcessor : IDisposable
     private readonly CancellationTokenSource _cancellationSource = new();
     private readonly ConcurrentQueue<LogMessageEntry> _messageQueue;
     private readonly int _maxQueuedMessages;
-    
+
     private int _messagesDropped;
 
     private readonly Task _outputTask;
@@ -29,7 +29,7 @@ internal sealed class LoggerProcessor : IDisposable
         _maxQueuedMessages = maxQueueLength;
         Output = output;
         ErrorOutput = errorOutput;
-        
+
         // Start message queue processor
         _outputTask = Task.Factory.StartNew(ProcessLogQueueAsync, TaskCreationOptions.LongRunning);
     }
@@ -65,7 +65,7 @@ internal sealed class LoggerProcessor : IDisposable
             {
                 // The queue has been emptied, let the thread pause.
                 _pending.Reset();
-                
+
                 // Nothing there, wait till something comes in.
                 _pending.WaitOne();
             }
@@ -83,7 +83,7 @@ internal sealed class LoggerProcessor : IDisposable
 
         _messageQueue.Enqueue(item);
         _pending.Set(); // Notify the read thread something is there to do.
-        
+
         return true;
     }
 

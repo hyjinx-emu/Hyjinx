@@ -14,7 +14,7 @@ namespace Hyjinx.Ava.Common.Locale
     class LocaleManager : BaseModel
     {
         private const string DefaultLanguageCode = "en_US";
-        
+
         private readonly Dictionary<LocaleKeys, string> _localeStrings;
         private Dictionary<LocaleKeys, string> _localeDefaultStrings;
         private readonly ConcurrentDictionary<LocaleKeys, object[]> _dynamicValues;

@@ -159,7 +159,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl.SslService
             context.ResponseData.Write((uint)_hostName.Length);
 
             LogHostName(_hostName);
-            
+
             return ResultCode.Success;
         }
 

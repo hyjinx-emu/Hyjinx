@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Util;

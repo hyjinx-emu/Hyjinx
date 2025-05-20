@@ -1297,7 +1297,7 @@ namespace Hyjinx.HLE.HOS.Services.Fs
             string message = ReadUtf8StringSend(context).TrimEnd('\n');
 
             Log(message);
-            
+
             return ResultCode.Success;
         }
 

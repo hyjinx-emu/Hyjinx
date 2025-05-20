@@ -20,7 +20,7 @@ namespace Hyjinx.Graphics.Gpu.Image
     partial class Texture : IMultiRangeItem, IDisposable
     {
         private readonly ILogger<Texture> _logger = Logger.DefaultLoggerFactory.CreateLogger<Texture>();
-        
+
         // How many updates we need before switching to the byte-by-byte comparison
         // modification check method.
         // This method uses much more memory so we want to avoid it if possible.
@@ -503,7 +503,7 @@ namespace Hyjinx.Graphics.Gpu.Image
 
             return storage;
         }
-        
+
         /// <summary>
         /// Sets the Scale Factor on this texture, and immediately recreates it at the correct size.
         /// When a texture is resized, a scaled copy is performed from the old texture to the new one, to ensure no data is lost.
@@ -531,8 +531,9 @@ namespace Hyjinx.Graphics.Gpu.Image
                 ScaleFactor = scale;
 
                 ITexture newStorage = GetScaledHostTexture(ScaleFactor, true);
-                LogCopyPerformed(HostTexture.Width, HostTexture.Height, newStorage.Width, newStorage.Height);;
-                
+                LogCopyPerformed(HostTexture.Width, HostTexture.Height, newStorage.Width, newStorage.Height);
+                ;
+
                 ReplaceStorage(newStorage);
 
                 // All views must be recreated against the new storage.
@@ -560,12 +561,12 @@ namespace Hyjinx.Graphics.Gpu.Image
                 }
             }
         }
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Rescaling {width}x{height} {format} to ({scaleFactor} to {scale}).")]
         private partial void LogRescalingTexture(int width, int height, Format format, float scaleFactor, float scale);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Copy performed: {width}x{height} to {newWidth}x{newHeight}")]
@@ -575,7 +576,7 @@ namespace Hyjinx.Graphics.Gpu.Image
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Recreating view {width}x{height} {format}.")]
         private partial void LogRecreatingView(int width, int height, Format format);
-        
+
         /// <summary>
         /// Checks if the memory for this texture was modified, and returns true if it was.
         /// The modified flags are optionally consumed as a result.
@@ -747,7 +748,7 @@ namespace Hyjinx.Graphics.Gpu.Image
 
             _hasData = true;
         }
-        
+
         /// <summary>
         /// Converts texture data to a format and layout that is supported by the host GPU.
         /// </summary>
@@ -972,7 +973,7 @@ namespace Hyjinx.Graphics.Gpu.Image
 
             return result;
         }
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Invalid ASTC texture at 0x{address:X} ({texInfo}).")]

@@ -19,7 +19,7 @@ namespace Hyjinx.Ava.UI.Renderer
     {
         private static readonly ILogger<EmbeddedWindowOpenGL> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<EmbeddedWindowOpenGL>();
-        
+
         private SwappableNativeWindowBase _window;
 
         public OpenGLContextBase Context { get; set; }

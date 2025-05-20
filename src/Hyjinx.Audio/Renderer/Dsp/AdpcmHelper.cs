@@ -11,7 +11,7 @@ namespace Hyjinx.Audio.Renderer.Dsp
     {
         private static readonly ILogger<AdpcmHelper> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<AdpcmHelper>();
-        
+
         private const int FixedPointPrecision = 11;
         private const int SamplesPerFrame = 14;
         private const int NibblesPerFrame = SamplesPerFrame + 2;

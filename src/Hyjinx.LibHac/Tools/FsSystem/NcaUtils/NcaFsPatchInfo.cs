@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -26,9 +26,9 @@ public struct NcaFsPatchInfo
         get => Data.RelocationTreeSize;
         set => Data.RelocationTreeSize = value;
     }
-    
+
     public Span<byte> RelocationTreeHeader => _data.Span.Slice(0x10, 0x10);
-    
+
     [StructLayout(LayoutKind.Explicit)]
     private struct PatchInfoStruct
     {

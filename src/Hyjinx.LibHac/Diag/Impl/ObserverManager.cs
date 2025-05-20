@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using LibHac.Os;
 
 namespace LibHac.Diag.Impl;

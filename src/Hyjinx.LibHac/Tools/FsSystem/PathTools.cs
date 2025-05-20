@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO.Enumeration;
 using System.Runtime.CompilerServices;
@@ -18,7 +18,8 @@ public static class PathTools
 
     public static string Normalize(string inPath)
     {
-        if (IsNormalized(inPath.AsSpan())) return inPath;
+        if (IsNormalized(inPath.AsSpan()))
+            return inPath;
 
         Span<char> initialBuffer = stackalloc char[0x200];
         var sb = new ValueStringBuilder(initialBuffer);
@@ -156,7 +157,8 @@ public static class PathTools
                         {
                             separators++;
 
-                            if (separators == 2) break;
+                            if (separators == 2)
+                                break;
                         }
                     }
 
@@ -189,7 +191,8 @@ public static class PathTools
                     {
                         separators++;
 
-                        if (separators == 2) break;
+                        if (separators == 2)
+                            break;
                     }
                 }
 
@@ -215,18 +218,23 @@ public static class PathTools
         int i = path.Length - 1;
 
         // Handles non-mounted root paths
-        if (i == 0) return string.Empty;
+        if (i == 0)
+            return string.Empty;
 
         // A trailing separator should be ignored
-        if (path[i] == '/') i--;
+        if (path[i] == '/')
+            i--;
 
         // Handles mounted root paths
-        if (i >= 0 && path[i] == ':') return string.Empty;
+        if (i >= 0 && path[i] == ':')
+            return string.Empty;
 
-        while (i >= 0 && path[i] != '/') i--;
+        while (i >= 0 && path[i] != '/')
+            i--;
 
         // Leave the '/' if the parent is the root directory
-        if (i == 0 || i > 0 && path[i - 1] == ':') i++;
+        if (i == 0 || i > 0 && path[i - 1] == ':')
+            i++;
 
         return path.Substring(0, i);
     }
@@ -238,9 +246,11 @@ public static class PathTools
         int i = StringUtils.GetLength(path) - 1;
 
         // A trailing separator should be ignored
-        if (path[i] == '/') i--;
+        if (path[i] == '/')
+            i--;
 
-        while (i >= 1 && path[i] != '/') i--;
+        while (i >= 1 && path[i] != '/')
+            i--;
 
         i = Math.Max(i, 1);
         return path.Slice(0, i);
@@ -256,7 +266,8 @@ public static class PathTools
 
         int i = path.Length;
 
-        while (i >= 1 && path[i - 1] != '/') i--;
+        while (i >= 1 && path[i - 1] != '/')
+            i--;
 
         i = Math.Max(i, 0);
         return path.Slice(i, path.Length - i);
@@ -274,7 +285,8 @@ public static class PathTools
         int endIndex = path[pathLength - 1] == DirectorySeparator ? pathLength - 1 : pathLength;
         int i = endIndex;
 
-        while (i >= 1 && path[i - 1] != '/') i--;
+        while (i >= 1 && path[i - 1] != '/')
+            i--;
 
         i = Math.Max(i, 0);
         return path.Slice(i, endIndex - i);
@@ -291,29 +303,56 @@ public static class PathTools
 
             switch (state)
             {
-                case NormalizeState.Initial when c == '/': state = NormalizeState.Delimiter; break;
-                case NormalizeState.Initial when IsValidMountNameChar(c): state = NormalizeState.MountName; break;
-                case NormalizeState.Initial: return false;
+                case NormalizeState.Initial when c == '/':
+                    state = NormalizeState.Delimiter;
+                    break;
+                case NormalizeState.Initial when IsValidMountNameChar(c):
+                    state = NormalizeState.MountName;
+                    break;
+                case NormalizeState.Initial:
+                    return false;
 
-                case NormalizeState.Normal when c == '/': state = NormalizeState.Delimiter; break;
+                case NormalizeState.Normal when c == '/':
+                    state = NormalizeState.Delimiter;
+                    break;
 
-                case NormalizeState.Delimiter when c == '/': return false;
-                case NormalizeState.Delimiter when c == '.': state = NormalizeState.Dot; break;
-                case NormalizeState.Delimiter: state = NormalizeState.Normal; break;
+                case NormalizeState.Delimiter when c == '/':
+                    return false;
+                case NormalizeState.Delimiter when c == '.':
+                    state = NormalizeState.Dot;
+                    break;
+                case NormalizeState.Delimiter:
+                    state = NormalizeState.Normal;
+                    break;
 
-                case NormalizeState.Dot when c == '/': return false;
-                case NormalizeState.Dot when c == '.': state = NormalizeState.DoubleDot; break;
-                case NormalizeState.Dot: state = NormalizeState.Normal; break;
+                case NormalizeState.Dot when c == '/':
+                    return false;
+                case NormalizeState.Dot when c == '.':
+                    state = NormalizeState.DoubleDot;
+                    break;
+                case NormalizeState.Dot:
+                    state = NormalizeState.Normal;
+                    break;
 
-                case NormalizeState.DoubleDot when c == '/': return false;
-                case NormalizeState.DoubleDot: state = NormalizeState.Normal; break;
+                case NormalizeState.DoubleDot when c == '/':
+                    return false;
+                case NormalizeState.DoubleDot:
+                    state = NormalizeState.Normal;
+                    break;
 
-                case NormalizeState.MountName when IsValidMountNameChar(c): break;
-                case NormalizeState.MountName when c == ':': state = NormalizeState.MountDelimiter; break;
-                case NormalizeState.MountName: return false;
+                case NormalizeState.MountName when IsValidMountNameChar(c):
+                    break;
+                case NormalizeState.MountName when c == ':':
+                    state = NormalizeState.MountDelimiter;
+                    break;
+                case NormalizeState.MountName:
+                    return false;
 
-                case NormalizeState.MountDelimiter when c == '/': state = NormalizeState.Delimiter; break;
-                case NormalizeState.MountDelimiter: return false;
+                case NormalizeState.MountDelimiter when c == '/':
+                    state = NormalizeState.Delimiter;
+                    break;
+                case NormalizeState.MountDelimiter:
+                    return false;
             }
         }
 
@@ -331,29 +370,56 @@ public static class PathTools
 
             switch (state)
             {
-                case NormalizeState.Initial when c == '/': state = NormalizeState.Delimiter; break;
-                case NormalizeState.Initial when IsValidMountNameChar(c): state = NormalizeState.MountName; break;
-                case NormalizeState.Initial: return false;
+                case NormalizeState.Initial when c == '/':
+                    state = NormalizeState.Delimiter;
+                    break;
+                case NormalizeState.Initial when IsValidMountNameChar(c):
+                    state = NormalizeState.MountName;
+                    break;
+                case NormalizeState.Initial:
+                    return false;
 
-                case NormalizeState.Normal when c == '/': state = NormalizeState.Delimiter; break;
+                case NormalizeState.Normal when c == '/':
+                    state = NormalizeState.Delimiter;
+                    break;
 
-                case NormalizeState.Delimiter when c == '/': return false;
-                case NormalizeState.Delimiter when c == '.': state = NormalizeState.Dot; break;
-                case NormalizeState.Delimiter: state = NormalizeState.Normal; break;
+                case NormalizeState.Delimiter when c == '/':
+                    return false;
+                case NormalizeState.Delimiter when c == '.':
+                    state = NormalizeState.Dot;
+                    break;
+                case NormalizeState.Delimiter:
+                    state = NormalizeState.Normal;
+                    break;
 
-                case NormalizeState.Dot when c == '/': return false;
-                case NormalizeState.Dot when c == '.': state = NormalizeState.DoubleDot; break;
-                case NormalizeState.Dot: state = NormalizeState.Normal; break;
+                case NormalizeState.Dot when c == '/':
+                    return false;
+                case NormalizeState.Dot when c == '.':
+                    state = NormalizeState.DoubleDot;
+                    break;
+                case NormalizeState.Dot:
+                    state = NormalizeState.Normal;
+                    break;
 
-                case NormalizeState.DoubleDot when c == '/': return false;
-                case NormalizeState.DoubleDot: state = NormalizeState.Normal; break;
+                case NormalizeState.DoubleDot when c == '/':
+                    return false;
+                case NormalizeState.DoubleDot:
+                    state = NormalizeState.Normal;
+                    break;
 
-                case NormalizeState.MountName when IsValidMountNameChar(c): break;
-                case NormalizeState.MountName when c == ':': state = NormalizeState.MountDelimiter; break;
-                case NormalizeState.MountName: return false;
+                case NormalizeState.MountName when IsValidMountNameChar(c):
+                    break;
+                case NormalizeState.MountName when c == ':':
+                    state = NormalizeState.MountDelimiter;
+                    break;
+                case NormalizeState.MountName:
+                    return false;
 
-                case NormalizeState.MountDelimiter when c == '/': state = NormalizeState.Delimiter; break;
-                case NormalizeState.MountDelimiter: return false;
+                case NormalizeState.MountDelimiter when c == '/':
+                    state = NormalizeState.Delimiter;
+                    break;
+                case NormalizeState.MountDelimiter:
+                    return false;
             }
         }
 
@@ -371,7 +437,8 @@ public static class PathTools
         Debug.Assert(IsNormalized(path1));
         Debug.Assert(IsNormalized(path2));
 
-        if (path1.Length == 0 || path2.Length == 0) return true;
+        if (path1.Length == 0 || path2.Length == 0)
+            return true;
 
         //Ignore any trailing slashes
         if (path1[path1.Length - 1] == DirectorySeparator)
@@ -406,7 +473,8 @@ public static class PathTools
         Debug.Assert(IsNormalized(path1));
         Debug.Assert(IsNormalized(path2));
 
-        if (path1.Length == 0 || path2.Length == 0) return true;
+        if (path1.Length == 0 || path2.Length == 0)
+            return true;
 
         //Ignore any trailing slashes
         if (path1[path1.Length - 1] == DirectorySeparator)
@@ -432,10 +500,13 @@ public static class PathTools
 
     public static string Combine(string path1, string path2)
     {
-        if (path1 == null || path2 == null) throw new NullReferenceException();
+        if (path1 == null || path2 == null)
+            throw new NullReferenceException();
 
-        if (string.IsNullOrEmpty(path1)) return path2;
-        if (string.IsNullOrEmpty(path2)) return path1;
+        if (string.IsNullOrEmpty(path1))
+            return path2;
+        if (string.IsNullOrEmpty(path2))
+            return path1;
 
         bool hasSeparator = IsDirectorySeparator(path1[path1.Length - 1]) || IsDirectorySeparator(path2[0]);
 

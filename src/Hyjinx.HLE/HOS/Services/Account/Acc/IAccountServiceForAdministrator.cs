@@ -126,7 +126,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
 
             return ResultCode.Success;
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceAcc, EventName = nameof(LogClass.ServiceAcc),
             Message = "User 0x{userId} not found!")]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Diag;
@@ -47,7 +47,7 @@ internal class CardDeviceDetectionEventManager : IDisposable
             return ResultFs.AllocationMemoryFailedInDeviceDetectionEventManagerA.Log();
 
         _events.AddLast(detectionEventImpl);
-        outDetectionEvent.SetByMove(ref detectionEvent.Ref );
+        outDetectionEvent.SetByMove(ref detectionEvent.Ref);
 
         return Result.Success;
     }

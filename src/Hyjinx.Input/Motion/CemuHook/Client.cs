@@ -26,7 +26,7 @@ namespace Hyjinx.Input.Motion.CemuHook
         private bool _active;
 
         private readonly ILogger<Client> _logger = Logger.DefaultLoggerFactory.CreateLogger<Client>();
-        
+
         private readonly Dictionary<int, IPEndPoint> _hosts;
         private readonly Dictionary<int, Dictionary<int, MotionInput>> _motionData;
         private readonly Dictionary<int, UdpClient> _clients;
@@ -111,7 +111,7 @@ namespace Hyjinx.Input.Motion.CemuHook
                     if (!_clientErrorStatus[player])
                     {
                         LogUnableToConnectToMotionSource(host, port, formatException);
-                        
+
                         _clientErrorStatus[player] = true;
                     }
                 }
@@ -144,12 +144,12 @@ namespace Hyjinx.Input.Motion.CemuHook
                 }
             }
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
             Message = "Unable to connect to motion source at {host}:{port}.")]
         private partial void LogUnableToConnectToMotionSource(string host, int port, Exception exception);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
             Message = "Unable to register motion client.")]
@@ -218,7 +218,7 @@ namespace Hyjinx.Input.Motion.CemuHook
                 }
             }
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
             Message = "Unable to send request to motion source at {remoteEndpoint}. Error Code: {errorCode}")]
@@ -311,7 +311,7 @@ namespace Hyjinx.Input.Motion.CemuHook
                 }
             }
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
             Message = "Unable to receive data from motion source at {remoteEndpoint}. Error Code: {errorCode}")]

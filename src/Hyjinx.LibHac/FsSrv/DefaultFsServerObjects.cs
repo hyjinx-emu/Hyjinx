@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.FsSrv.FsCreator;
 using LibHac.FsSrv.Storage;

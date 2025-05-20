@@ -1,4 +1,4 @@
-﻿using LibHac.Arp;
+using LibHac.Arp;
 using LibHac.Bcat.Impl.Ipc;
 using LibHac.Common;
 
@@ -47,7 +47,8 @@ internal class ServiceCreator : IServiceCreator
         ApplicationId applicationId)
     {
         Result res = Server.GetStorageManager().Open(applicationId.Value);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // todo: Check if network account required
 

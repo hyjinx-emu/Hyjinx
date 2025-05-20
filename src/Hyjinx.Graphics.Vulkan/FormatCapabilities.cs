@@ -12,7 +12,7 @@ namespace Hyjinx.Graphics.Vulkan
     {
         private readonly ILogger<FormatCapabilities> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<FormatCapabilities>();
-        
+
         private static readonly Format[] _scaledFormats = {
             Format.R8Uscaled,
             Format.R8Sscaled,
@@ -193,7 +193,7 @@ namespace Hyjinx.Graphics.Vulkan
 
             return format;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Format {format} is not supported by the host.")]

@@ -34,7 +34,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
             EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
             Message = "No ExeFS found in NCA")]
         private static partial void LogExeFsNotFound(ILogger logger);
-        
+
         public static ProcessResult Load(this Nca nca, Switch device, Nca patchNca, Nca controlNca)
         {
             // Extract RomFs and ExeFs from NCA.
@@ -268,7 +268,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
 
             return null;
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
             Message = "Failed get CNMT for '{titleId:x16}' from NCA.")]

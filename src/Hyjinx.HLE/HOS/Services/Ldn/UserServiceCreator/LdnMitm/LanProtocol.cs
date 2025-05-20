@@ -83,12 +83,12 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Decode error, unhandled type {type}.")]
         private partial void LogDecodeErrorUnhandledType(LanPacketType type);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Invalid magic number received in packet. [magic: {magic}] [EP: {endpoint}]")]
         private partial void LogInvalidMagicNumberReceived(uint magic, EndPoint endpoint);
-        
+
         public void Read(scoped ref byte[] buffer, scoped ref int bufferEnd, byte[] data, int offset, int size, EndPoint endPoint = null)
         {
             if (endPoint != null && _discovery.LocalAddr.Equals(((IPEndPoint)endPoint).Address))
@@ -172,7 +172,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Max packet size {size} exceeded.")]
         private partial void LogMaxPacketSizeExceeded(int size);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Decompress error ({header}, {headerSize}, {length}) {data}")]
@@ -182,7 +182,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Decompress error {header} length does not match Expected: {expected}, Actual: {actual}.")]
         private partial void LogDecompressErrorLengthDoesNotMatch(LanPacketHeader header, int expected, int actual);
-        
+
         public int SendBroadcast(ILdnSocket s, LanPacketType type, int port)
         {
             return SendPacket(s, type, Array.Empty<byte>(), new IPEndPoint(_discovery.LocalBroadcastAddr, port));
@@ -251,7 +251,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
 
             return buf;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "Compressing packet data failed.")]

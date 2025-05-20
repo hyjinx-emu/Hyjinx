@@ -16,7 +16,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
 
         private static readonly ILogger<NvMemoryAllocator> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<NvMemoryAllocator>();
-        
+
         private const ulong PageSize = MemoryManager.PageSize;
         private const ulong PageMask = MemoryManager.PageMask;
 
@@ -40,14 +40,14 @@ namespace Hyjinx.HLE.HOS.Services.Nv
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Allocating range from 0x{start:X} to 0x{end:X}.")]
         private partial void LogAllocatingMemoryRange(ulong start, ulong end);
-        
-            // $"Created smaller address range from 0x{referenceAddress:X} to 0x{leftEndAddress:X}.");
-        
+
+        // $"Created smaller address range from 0x{referenceAddress:X} to 0x{leftEndAddress:X}.");
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Created smaller address range from 0x{referenceAddress:X} to 0x{leftEndAddress:X}.")]
         private partial void LogAllocatedSmallerAddressRange(ulong referenceAddress, ulong leftEndAddress);
-        
+
         /// <summary>
         /// Marks a range of memory as consumed by removing it from the tree.
         /// This function will split memory regions if there is available space.
@@ -87,7 +87,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
                         if (rightSize > 0)
                         {
                             LogAllocatedSmallerAddressRange(endAddress, referenceEndAddress);
-                            
+
                             _tree.Add(endAddress, referenceEndAddress);
 
                             LinkedListNode<ulong> node = _list.AddAfter(_dictionary[referenceAddress], endAddress);
@@ -206,42 +206,42 @@ namespace Hyjinx.HLE.HOS.Services.Nv
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Target address set to start of the last available range: 0x{start:X}.")]
         private partial void LogTargetAddressStartAtLastAvailableRange(ulong start);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Target address set to floor of 0x{address:X}, resulted in 0x{targetAddress:X}.")]
         private partial void LogAddressSetToFloor(ulong address, ulong targetAddress);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Target address was invalid, set to ceiling of 0x{address:X}, resulted in 0x{targetAddress:X}.")]
         private partial void LogAddressSetToCeiling(ulong address, ulong targetAddress);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Found a suitable free address range from 0x{targetAddress:X} to 0x{endAddress:X} for 0x{address:X}.")]
         private partial void LogFoundSuitableFreeAddressRange(ulong targetAddress, ulong endAddress, ulong address);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Address requirements exceeded the available space in the target range.")]
         private partial void LogAddressRequirementsExceededSpaceAvailable();
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Moved search to successor range starting at 0x{targetAddress:X}.")]
         private partial void LogMovedSearchToSuccessorRange(ulong targetAddress);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Exiting loop, a full pass has already been completed with no suitable free address range.")]
         private partial void LogNoSuitableFreeAddressRange();
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Reached the end of the available free ranges, restarting loop at 0x{targetAddress:X} for 0x{address:X}.")]
         private partial void LogReachedEndOfFreeRangeRestartingLoop(ulong targetAddress, ulong address);
-        
+
         /// <summary>
         /// Gets the address of an unused (free) region of the specified size.
         /// </summary>
@@ -257,7 +257,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
             lock (_tree)
             {
                 LogSearchingForFreeAddress(start, size);
-                
+
                 ulong address = start;
 
                 if (alignment == 0)
@@ -279,7 +279,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
                     {
                         targetAddress = _tree.Floor(address);
                         LogAddressSetToFloor(address, targetAddress);
-                        
+
                         if (targetAddress == InvalidAddress)
                         {
                             targetAddress = _tree.Ceiling(address);
@@ -295,14 +295,14 @@ namespace Hyjinx.HLE.HOS.Services.Nv
                                 if (address + size <= _tree.Get(targetAddress))
                                 {
                                     LogFoundSuitableFreeAddressRange(targetAddress, _tree.Get(targetAddress), address);
-                                    
+
                                     freeAddressStartPosition = targetAddress;
                                     return address;
                                 }
                                 else
                                 {
                                     LogAddressRequirementsExceededSpaceAvailable();
-                                    
+
                                     LinkedListNode<ulong> nextPtr = _dictionary[targetAddress];
                                     if (nextPtr.Next != null)
                                     {
@@ -321,7 +321,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv
                                             reachedEndOfAddresses = true;
                                             address = start;
                                             targetAddress = _tree.Floor(address);
-                                            
+
                                             LogReachedEndOfFreeRangeRestartingLoop(targetAddress, address);
                                         }
                                     }
@@ -358,28 +358,28 @@ namespace Hyjinx.HLE.HOS.Services.Nv
                 }
 
                 LogNoSuitableRangeFoundReturningInvalidAddress(InvalidAddress);
-                
+
                 freeAddressStartPosition = InvalidAddress;
             }
 
             return PteUnmapped;
         }
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Reset and aligned address to 0x{address:X}.")]
         private partial void LogResetAndAlignedToAddress(ulong address);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Address requirements exceeded the capacity of available address space. Restarting the loop at 0x{targetAddress:X} for 0x{address:X}.")]
         private partial void LogAddressRequirementsExceededCapacityRestartingLoop(ulong targetAddress, ulong address);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "No suitable address range found; returning 0x{invalidAddress:X}.")]
         private partial void LogNoSuitableRangeFoundReturningInvalidAddress(ulong invalidAddress);
-        
+
         /// <summary>
         /// Checks if a given memory region is mapped or reserved.
         /// </summary>

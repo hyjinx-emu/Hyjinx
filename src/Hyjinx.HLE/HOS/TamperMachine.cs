@@ -18,12 +18,12 @@ namespace Hyjinx.HLE.HOS
         private const int TamperMachineSleepMs = 1000 / 12;
 
         private static readonly ILogger<TamperMachine> _logger = Logger.DefaultLoggerFactory.CreateLogger<TamperMachine>();
-        
+
         private Thread _tamperThread = null;
         private readonly ConcurrentQueue<ITamperProgram> _programs = new();
         private long _pressedKeys = 0;
         private readonly Dictionary<string, ITamperProgram> _programDictionary = new();
-        
+
         private void Activate()
         {
             if (_tamperThread == null || !_tamperThread.IsAlive)
@@ -101,7 +101,7 @@ namespace Hyjinx.HLE.HOS
             EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
             Message = "TamperMachine thread running")]
         private partial void LogThreadStarted();
-        
+
         private void TamperRunner()
         {
             LogThreadStarted();
@@ -130,7 +130,7 @@ namespace Hyjinx.HLE.HOS
                 }
             }
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.TamperMachine, EventName = nameof(LogClass.TamperMachine),
             Message = "TamperMachine thread exiting")]

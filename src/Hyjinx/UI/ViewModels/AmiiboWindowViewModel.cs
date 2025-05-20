@@ -30,7 +30,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
         private static readonly ILogger<AmiiboWindowViewModel> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<AmiiboWindowViewModel>();
-        
+
         private readonly string _amiiboJsonPath;
         private readonly byte[] _amiiboLogoBytes;
         private readonly HttpClient _httpClient;
@@ -258,7 +258,7 @@ namespace Hyjinx.Ava.UI.ViewModels
                 }
                 else if (!remoteIsValid)
                 {
-                    _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)), exception, 
+                    _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)), exception,
                     "Couldn't update amiibo data.");
 
                     // Only the local file is valid, the local one should be used
@@ -461,7 +461,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
                     return amiiboJsonString;
                 }
-                
+
                 _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                     "Failed to download amiibo data. Response status code: {statusCode}.", response.StatusCode);
             }

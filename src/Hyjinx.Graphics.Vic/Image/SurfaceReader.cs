@@ -16,7 +16,7 @@ namespace Hyjinx.Graphics.Vic.Image
     {
         private static readonly ILogger<SurfaceReader> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<SurfaceReader>();
-        
+
         public static Surface Read(
             ResourceManager rm,
             ref SlotConfig config,
@@ -418,8 +418,8 @@ namespace Hyjinx.Graphics.Vic.Image
 
             return buffer;
         }
-        
-        
+
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Vic, EventName = nameof(LogClass.Vic),
             Message = "Unsupported deinterlace mode '{mode}'.")]

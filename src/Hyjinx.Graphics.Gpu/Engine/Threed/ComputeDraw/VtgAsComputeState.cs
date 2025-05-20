@@ -114,7 +114,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.Threed.ComputeDraw
                 _geometryIndexDataCount = geometryIbDataCount;
             }
         }
-        
+
         /// <summary>
         /// Emulates the vertex stage using compute.
         /// </summary>

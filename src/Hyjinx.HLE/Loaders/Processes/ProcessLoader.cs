@@ -33,7 +33,7 @@ namespace Hyjinx.HLE.Loaders.Processes
             _device = device;
             _processesByPid = new ConcurrentDictionary<ulong, ProcessResult>();
         }
-        
+
         public bool LoadXci(string path, ulong applicationId)
         {
             FileStream stream = new(path, FileMode.Open, FileAccess.Read);
@@ -65,12 +65,12 @@ namespace Hyjinx.HLE.Loaders.Processes
 
             return false;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
             Message = "Unable to load XCI: Could not find XCI Secure partition")]
         private partial void LogCannotFindSecurePartition();
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
             Message = nameof(PartitionFileSystemExtensions.TryLoad) + ": {message}")]

@@ -15,7 +15,7 @@ namespace Hyjinx.Ava.UI.Windows
         {
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
             TransparencyLevelHint = new[] { WindowTransparencyLevel.None };
-            
+
             LocaleManager.Instance.LocaleChanged += LocaleChanged;
             LocaleChanged();
         }

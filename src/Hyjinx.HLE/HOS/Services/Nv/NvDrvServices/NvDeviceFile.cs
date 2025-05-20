@@ -28,14 +28,14 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
 
             return NvInternalResult.NotImplemented;
         }
-        
+
         public virtual NvInternalResult QueryEvent(out int eventHandle, uint eventId)
         {
             eventHandle = 0;
 
             return NvInternalResult.NotImplemented;
         }
-        
+
         public virtual NvInternalResult Ioctl(NvIoctl command, Span<byte> arguments)
         {
             return NvInternalResult.NotImplemented;
@@ -50,15 +50,15 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
         {
             return NvInternalResult.NotImplemented;
         }
-        
+
         public abstract void Close();
     }
-    
-    abstract partial class NvDeviceFile<T> : NvDeviceFile where T: NvDeviceFile<T>
+
+    abstract partial class NvDeviceFile<T> : NvDeviceFile where T : NvDeviceFile<T>
     {
         protected static readonly ILogger<NvDeviceFile> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<NvDeviceFile>();
-        
+
         protected NvDeviceFile(ServiceCtx context, ulong owner)
           : base(context, owner)
         { }
@@ -74,7 +74,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices
 
             return result;
         }
-        
+
         [LoggerMessage(LogLevel.Trace,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "{name} returned result {result}")]

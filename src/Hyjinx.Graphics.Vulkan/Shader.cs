@@ -18,7 +18,7 @@ namespace Hyjinx.Graphics.Vulkan
 
         private static readonly IntPtr _ptrMainEntryPointName = Marshal.StringToHGlobalAnsi("main");
         private static readonly ILogger<Shader> _logger = Logger.DefaultLoggerFactory.CreateLogger<Shader>();
-        
+
         private readonly Vk _api;
         private readonly Device _device;
         private readonly ShaderStageFlags _stage;

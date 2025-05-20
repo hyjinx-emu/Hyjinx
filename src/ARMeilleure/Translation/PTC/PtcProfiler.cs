@@ -231,7 +231,7 @@ namespace ARMeilleure.Translation.PTC
                         break;
                     default:
                         LogNoMigrationPathFound(outerHeader.InfoFileVersion);
-                        
+
                         InvalidateCompressedStream(compressedStream);
                         return false;
                 }
@@ -258,7 +258,7 @@ namespace ARMeilleure.Translation.PTC
         [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
             Message = "Loaded Profiling Info (size: {fileSize} bytes, profiled functions: {functionsCount}).")]
         protected partial void LogLoadedProfilingInfo(long fileSize, int functionsCount);
-        
+
         [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
             Message = "Loaded Backup Profiling Info (size: {fileSize} bytes, profiled functions: {functionsCount}).")]
         protected partial void LogLoadedBackupProfilingInfo(long fileSize, int functionsCount);

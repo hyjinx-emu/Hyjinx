@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -43,7 +43,7 @@ public class MountUtilityTests
         public Result GenerateCommonMountName(Span<byte> nameBuffer)
         {
             ReadOnlySpan<byte> mountName = "@Test"u8;
-            
+
             // Add 2 for the mount name separator and null terminator
             int requiredNameBufferSize = StringUtils.GetLength(mountName, PathTool.MountNameLengthMax) + 2;
 
@@ -66,7 +66,7 @@ public class MountUtilityTests
         using var fileSystem = new UniqueRef<IFileSystem>(new InMemoryFileSystem());
         using var mountNameGenerator = new UniqueRef<ICommonMountNameGenerator>(new TestCommonMountNameGenerator());
         Assert.Success(fs.Register("mount"u8, ref fileSystem.Ref, ref mountNameGenerator.Ref));
-        
+
         byte[] outputPath = new byte[100];
         Assert.Success(fs.ConvertToFsCommonPath(new U8SpanMutable(outputPath), "mount:/entry1/entry2"u8));
 

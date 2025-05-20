@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using LibHac.Common;
@@ -26,7 +26,8 @@ public class MetaLoader
 
         // Validate the meta
         Result res = GetNpdmFromBuffer(out _, npdmBuffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         npdmBuffer.CopyTo(_npdmBuffer);
         _isValid = true;
@@ -39,18 +40,21 @@ public class MetaLoader
 
         // Get file size
         Result res = hos.Fs.GetFileSize(out long npdmSize, file);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (npdmSize > MetaCacheBufferSize)
             return ResultLoader.TooLargeMeta.Log();
 
         // Read data into cache buffer
         res = hos.Fs.ReadFile(file, 0, _npdmBuffer.AsSpan(0, (int)npdmSize));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Validate the meta
         res = GetNpdmFromBuffer(out _, _npdmBuffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _isValid = true;
         return Result.Success;
@@ -81,7 +85,8 @@ public class MetaLoader
             return ResultLoader.TooLargeMeta.Log();
 
         Result res = ValidateMeta(npdmBuffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         ref readonly Meta meta = ref Unsafe.As<byte, Meta>(ref MemoryMarshal.GetReference(npdmBuffer));
 
@@ -92,10 +97,12 @@ public class MetaLoader
         ref readonly AciHeader aci = ref Unsafe.As<byte, AciHeader>(ref MemoryMarshal.GetReference(aciBuffer));
 
         res = ValidateAcid(acidBuffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = ValidateAci(aciBuffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Set Npdm members.
         npdm.Meta = ref meta;
@@ -141,10 +148,14 @@ public class MetaLoader
 
     private static Result ValidateSubregion(int allowedStart, int allowedEnd, int start, int size, int minSize = 0)
     {
-        if (size < minSize) return ResultLoader.InvalidMeta.Log();
-        if (allowedStart > start) return ResultLoader.InvalidMeta.Log();
-        if (start > allowedEnd) return ResultLoader.InvalidMeta.Log();
-        if (start + size > allowedEnd) return ResultLoader.InvalidMeta.Log();
+        if (size < minSize)
+            return ResultLoader.InvalidMeta.Log();
+        if (allowedStart > start)
+            return ResultLoader.InvalidMeta.Log();
+        if (start > allowedEnd)
+            return ResultLoader.InvalidMeta.Log();
+        if (start + size > allowedEnd)
+            return ResultLoader.InvalidMeta.Log();
         return Result.Success;
     }
 
@@ -169,11 +180,13 @@ public class MetaLoader
         // Validate Acid extents.
         Result res = ValidateSubregion(Unsafe.SizeOf<Meta>(), metaBuffer.Length, meta.AcidOffset,
             Unsafe.SizeOf<AcidHeaderData>());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Validate Aci extends.
         res = ValidateSubregion(Unsafe.SizeOf<Meta>(), metaBuffer.Length, meta.AciOffset, Unsafe.SizeOf<AciHeader>());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -193,15 +206,18 @@ public class MetaLoader
         // Validate Fac, Sac, Kac.
         Result res = ValidateSubregion(Unsafe.SizeOf<AcidHeaderData>(), acidBuffer.Length, acid.FsAccessControlOffset,
             acid.FsAccessControlSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = ValidateSubregion(Unsafe.SizeOf<AcidHeaderData>(), acidBuffer.Length, acid.ServiceAccessControlOffset,
             acid.ServiceAccessControlSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = ValidateSubregion(Unsafe.SizeOf<AcidHeaderData>(), acidBuffer.Length, acid.KernelCapabilityOffset,
             acid.KernelCapabilitySize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -221,15 +237,18 @@ public class MetaLoader
         // Validate Fac, Sac, Kac.
         Result res = ValidateSubregion(Unsafe.SizeOf<AciHeader>(), aciBuffer.Length, aci.FsAccessControlOffset,
             aci.FsAccessControlSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = ValidateSubregion(Unsafe.SizeOf<AciHeader>(), aciBuffer.Length, aci.ServiceAccessControlOffset,
             aci.ServiceAccessControlSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = ValidateSubregion(Unsafe.SizeOf<AciHeader>(), aciBuffer.Length, aci.KernelCapabilityOffset,
             aci.KernelCapabilitySize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

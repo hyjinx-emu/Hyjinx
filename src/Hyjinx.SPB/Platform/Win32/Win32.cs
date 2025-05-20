@@ -175,7 +175,8 @@ namespace SPB.Platform.Win32
                 {
                     Size = (ushort)Marshal.SizeOf<PixelFormatDescriptor>(),
                     Version = 1
-                }; ;
+                };
+                ;
             }
         }
 

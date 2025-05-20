@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Impl;
@@ -41,7 +41,8 @@ public static class ImageDirectory
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -51,13 +52,15 @@ public static class ImageDirectory
         static Result Mount(FileSystemClient fs, U8Span mountName, ImageDirectoryId directoryId)
         {
             Result res = fs.Impl.CheckMountName(mountName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
             using var fileSystem = new SharedRef<IFileSystemSf>();
 
             res = fileSystemProxy.Get.OpenImageDirectoryFileSystem(ref fileSystem.Ref, directoryId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var fileSystemAdapter =
                 new UniqueRef<IFileSystem>(new FileSystemServiceObjectAdapter(ref fileSystem.Ref));
@@ -66,7 +69,8 @@ public static class ImageDirectory
                 return ResultFs.AllocationMemoryFailedInImageDirectoryA.Log();
 
             res = fs.Impl.Fs.Register(mountName, ref fileSystemAdapter.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }

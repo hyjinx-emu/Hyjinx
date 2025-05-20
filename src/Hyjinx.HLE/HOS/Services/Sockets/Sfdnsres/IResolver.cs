@@ -285,7 +285,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
             EventId = (int)LogClass.ServiceSfdnsres, EventName = nameof(LogClass.ServiceSfdnsres),
             Message = "Guest network access disabled, DNS Blocked: {host}")]
         private static partial void LogGuestNetworkAccessDisabled(ILogger logger, string host);
-        
+
         private static ResultCode GetHostByNameRequestImpl(
             ServiceCtx context,
             ulong inputBufferPosition,
@@ -389,17 +389,17 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
             EventId = (int)LogClass.ServiceSfdnsres, EventName = nameof(LogClass.ServiceSfdnsres),
             Message = "DNS Blocked: {host}")]
         private static partial void LogDnsBlockedForHost(ILogger logger, string host);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.ServiceSfdnsres, EventName = nameof(LogClass.ServiceSfdnsres),
             Message = "Trying to resolve {host}")]
         private static partial void LogTryingToResolveHost(ILogger logger, string host);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.ServiceSfdnsres, EventName = nameof(LogClass.ServiceSfdnsres),
             Message = "Guest network access disabled, DNS Blocked.")]
         private static partial void LogGuestNetworkAccessDisabled(ILogger logger);
-        
+
         private static ResultCode GetHostByAddrRequestImpl(
             ServiceCtx context,
             ulong inputBufferPosition,

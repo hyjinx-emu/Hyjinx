@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -175,8 +175,10 @@ internal class RomFsDictionary<T> where T : unmanaged
 
     private void EnsureCapacityBytes(int value)
     {
-        if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
-        if (value <= _capacity) return;
+        if (value < 0)
+            throw new ArgumentOutOfRangeException(nameof(value));
+        if (value <= _capacity)
+            return;
 
         long newCapacity = Math.Max(value, 256);
         newCapacity = Math.Max(newCapacity, _capacity * 2);

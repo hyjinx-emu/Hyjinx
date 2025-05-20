@@ -67,7 +67,7 @@ namespace Hyjinx.Ava
         private const float MaxResolutionScale = 4.0f; // Max resolution hotkeys can scale to before wrapping.
         private const int TargetFps = 60;
         private const float VolumeDelta = 0.05f;
-        
+
         private static readonly Cursor _invisibleCursor = new(StandardCursorType.None);
         private readonly IntPtr _invisibleCursorWin;
         private readonly IntPtr _defaultCursorWin;
@@ -76,9 +76,9 @@ namespace Hyjinx.Ava
         private readonly Stopwatch _chrono;
         private long _ticks;
 
-        private static readonly ILogger<AppHost> _logger = 
+        private static readonly ILogger<AppHost> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<AppHost>();
-        
+
         private readonly AccountManager _accountManager;
         private readonly UserChannelPersistence _userChannelPersistence;
         private readonly InputManager _inputManager;
@@ -341,7 +341,7 @@ namespace Hyjinx.Ava
             var reservedChars = new HashSet<char>(Path.GetInvalidFileNameChars());
             return string.Concat(fileName.Select(c => reservedChars.Contains(c) ? '_' : c));
         }
-        
+
         private void Renderer_ScreenCaptured(object sender, ScreenCaptureImageInfo e)
         {
             if (e.Data.Length > 0 && e.Height > 0 && e.Width > 0)
@@ -691,7 +691,7 @@ namespace Hyjinx.Ava
                         }
                     case ".nca":
                         {
-                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),"Loading as NCA.");
+                            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NCA.");
 
                             if (!Device.LoadNca(ApplicationPath))
                             {
@@ -769,7 +769,7 @@ namespace Hyjinx.Ava
 
             _viewModel.IsPaused = false;
             _viewModel.Title = TitleHelper.ActiveApplicationTitle(Device?.Processes.ActiveApplication, Program.Version);
-            
+
             Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Emulation was resumed");
         }
 
@@ -779,7 +779,7 @@ namespace Hyjinx.Ava
 
             _viewModel.IsPaused = true;
             _viewModel.Title = TitleHelper.ActiveApplicationTitle(Device?.Processes.ActiveApplication, Program.Version, LocaleManager.Instance[LocaleKeys.Paused]);
-            
+
             Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Emulation was paused");
         }
 
@@ -873,8 +873,8 @@ namespace Hyjinx.Ava
                 {
                     return new T();
                 }
-                
-                _logger.LogWarning(new EventId((int)LogClass.Audio, nameof(LogClass.Audio)), 
+
+                _logger.LogWarning(new EventId((int)LogClass.Audio, nameof(LogClass.Audio)),
                     "{backend} is not supported, falling back to {nextBackend}.", backend, nextBackend);
 
                 return null;

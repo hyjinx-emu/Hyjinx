@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -249,7 +249,8 @@ public static class PathFormatter
                     {
                         res = CheckSharedName(
                             currentPath.Slice(currentComponentOffset, pos - currentComponentOffset));
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
 
                         finalPath = currentPath.Slice(pos);
                         break;
@@ -259,7 +260,8 @@ public static class PathFormatter
                         return ResultFs.InvalidPathFormat.Log();
 
                     res = CheckHostName(currentPath.Slice(2, pos - 2));
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     currentComponentOffset = pos + 1;
                 }
@@ -271,7 +273,8 @@ public static class PathFormatter
             if (currentComponentOffset != 0 && finalPath == currentPath)
             {
                 res = CheckSharedName(currentPath.Slice(currentComponentOffset, pos - currentComponentOffset));
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 finalPath = currentPath.Slice(pos);
             }
@@ -391,7 +394,8 @@ public static class PathFormatter
         UnsafeHelpers.SkipParamInit(out isNormalized, out normalizedLength);
 
         Result res = PathUtility.CheckUtf8(path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         ReadOnlySpan<byte> buffer = path;
         int totalLength = 0;
@@ -420,7 +424,8 @@ public static class PathFormatter
         bool hasMountName = false;
 
         res = SkipMountName(out buffer, out int mountNameLength, buffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (mountNameLength != 0)
         {
@@ -444,7 +449,8 @@ public static class PathFormatter
         bool isRelativePath = false;
 
         res = SkipRelativeDotPath(out buffer, out int relativePathLength, buffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (relativePathLength != 0)
         {
@@ -464,7 +470,8 @@ public static class PathFormatter
         }
 
         res = SkipWindowsPath(out buffer, out int windowsPathLength, out bool isNormalizedWin, buffer, hasMountName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!isNormalizedWin)
         {
@@ -509,7 +516,8 @@ public static class PathFormatter
 
         res = PathUtility.CheckInvalidBackslash(out bool isBackslashContained, buffer,
             flags.IsWindowsPathAllowed() || flags.IsBackslashAllowed());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (isBackslashContained && !flags.IsBackslashAllowed())
         {
@@ -518,7 +526,8 @@ public static class PathFormatter
         }
 
         res = PathNormalizer.IsNormalized(out isNormalized, out int length, buffer, flags.AreAllCharactersAllowed());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         totalLength += length;
         normalizedLength = totalLength;
@@ -549,7 +558,8 @@ public static class PathFormatter
         if (flags.IsMountNameAllowed())
         {
             res = ParseMountName(out src, out int mountNameLength, outputBuffer.Slice(currentPos), src);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             currentPos += mountNameLength;
             hasMountName = mountNameLength != 0;
@@ -573,7 +583,8 @@ public static class PathFormatter
                 return ResultFs.TooLongPath.Log();
 
             res = ParseRelativeDotPath(out src, out int relativePathLength, outputBuffer.Slice(currentPos), src);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             currentPos += relativePathLength;
 
@@ -596,7 +607,8 @@ public static class PathFormatter
 
             res = ParseWindowsPath(out src, out int windowsPathLength, outputBuffer.Slice(currentPos), src,
                 hasMountName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             currentPos += windowsPathLength;
 
@@ -620,7 +632,8 @@ public static class PathFormatter
 
         res = PathUtility.CheckInvalidBackslash(out bool isBackslashContained, src,
             flags.IsWindowsPathAllowed() || flags.IsBackslashAllowed());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         byte[] srcBufferSlashReplaced = null;
         try
@@ -640,7 +653,8 @@ public static class PathFormatter
 
             res = PathNormalizer.Normalize(outputBuffer.Slice(currentPos), out _, src, isWindowsPath, isDriveRelative,
                 flags.AreAllCharactersAllowed());
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }

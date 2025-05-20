@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -71,7 +71,8 @@ public static class AlignmentMatchingStorageImpl
         if (coreSize > 0)
         {
             Result res = storage.Read(coreOffset, destination.Slice((int)offsetRoundUpDifference, (int)coreSize));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         // Read any partial block at the head of the requested range
@@ -83,7 +84,8 @@ public static class AlignmentMatchingStorageImpl
             Assert.SdkAssert(GetRoundDownDifference(offset, dataAlignment) + headSize <= workBuffer.Length);
 
             Result res = storage.Read(headOffset, workBuffer.Slice(0, (int)dataAlignment));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             workBuffer.Slice((int)GetRoundDownDifference(offset, dataAlignment), headSize).CopyTo(destination);
         }
@@ -98,7 +100,8 @@ public static class AlignmentMatchingStorageImpl
             long copySize = Math.Min(alignedTailOffset + dataAlignment - tailOffset, remainingTailSize);
 
             Result res = storage.Read(alignedTailOffset, workBuffer.Slice(0, (int)dataAlignment));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Assert.SdkAssert(tailOffset - offset + copySize <= destination.Length);
             Assert.SdkAssert(tailOffset - alignedTailOffset + copySize <= dataAlignment);
@@ -138,7 +141,8 @@ public static class AlignmentMatchingStorageImpl
         if (coreSize > 0)
         {
             Result res = storage.Write(coreOffset, source.Slice((int)offsetRoundUpDifference, (int)coreSize));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         // Write any partial block at the head of the specified range
@@ -152,12 +156,14 @@ public static class AlignmentMatchingStorageImpl
             // Read the existing block, copy the partial block to the appropriate portion,
             // and write the modified block back to the base storage.
             Result res = storage.Read(headOffset, workBuffer.Slice(0, (int)dataAlignment));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             source.Slice(0, headSize).CopyTo(workBuffer.Slice((int)(offset - headOffset)));
 
             res = storage.Write(headOffset, workBuffer.Slice(0, (int)dataAlignment));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         long tailOffset = coveredOffset + coreSize;
@@ -174,13 +180,15 @@ public static class AlignmentMatchingStorageImpl
             // Read the existing block, copy the partial block to the appropriate portion,
             // and write the modified block back to the base storage.
             Result res = storage.Read(alignedTailOffset, workBuffer.Slice(0, (int)dataAlignment));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             source.Slice((int)(tailOffset - offset), (int)copySize)
                 .CopyTo(workBuffer.Slice((int)GetRoundDownDifference(tailOffset, dataAlignment)));
 
             res = storage.Write(alignedTailOffset, workBuffer.Slice(0, (int)dataAlignment));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             remainingTailSize -= copySize;
             tailOffset += copySize;

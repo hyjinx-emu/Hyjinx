@@ -136,7 +136,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
             EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
             Message = "No available buffer slots.")]
         private partial void LogNoAvailableBufferSlots();
-        
+
         public override Status DequeueBuffer(out int slot,
                                              out AndroidFence fence,
                                              bool async,
@@ -212,7 +212,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                     {
                         LogPreallocatedBufferMismatch(slot, graphicBuffer.Width, graphicBuffer.Height,
                             graphicBuffer.Format, graphicBuffer.Usage, width, height, format, usage);
-                        
+
                         slot = BufferSlotArray.InvalidBufferSlot;
                         fence = AndroidFence.NoFence;
 
@@ -246,7 +246,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
             Message = "Preallocated buffer mismatch - slot {slot}\n" +
                       "available: Width = {graphicBufferWidth} Height = {graphicBufferHeight} Format = {graphicBufferFormat} Usage = {graphicBufferUsage:x} " +
                       "requested: Width = {width} Height = {height} Format = {format} Usage = {usage:x}")]
-        private partial void LogPreallocatedBufferMismatch(int slot, int graphicBufferWidth, int graphicBufferHeight, 
+        private partial void LogPreallocatedBufferMismatch(int slot, int graphicBufferWidth, int graphicBufferHeight,
             PixelFormat graphicBufferFormat, int graphicBufferUsage, uint width, uint height, PixelFormat format, uint usage);
 
         public override Status DetachBuffer(int slot)
@@ -357,7 +357,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return returnFlags;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
             Message = "Slot {slot} was queued without requesting a buffer.")]
@@ -867,7 +867,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             return Status.Success;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.SurfaceFlinger, EventName = nameof(LogClass.SurfaceFlinger),
             Message = "Min pending buffer count ({minPendingCount}) exceeded (dequeued = {dequeuedCount} undequeued = {newUndequeuedCount}).")]

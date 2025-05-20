@@ -24,7 +24,7 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions
     {
         private static readonly ILogger _logger =
             Logger.DefaultLoggerFactory.CreateLogger(typeof(PartitionFileSystemExtensions));
-        
+
         private static readonly DownloadableContentJsonSerializerContext _contentSerializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
         public static Dictionary<ulong, ContentMetaData> GetContentData(this IFileSystem partitionFileSystem,

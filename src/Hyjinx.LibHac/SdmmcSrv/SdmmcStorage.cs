@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -83,13 +83,15 @@ internal class SdmmcStorage : IStorage
             res = GetFsResult(_port,
                 _sdmmc.Read(pooledBuffer.GetBuffer().Slice(0, paddingSize), _port,
                     BytesToSectors(alignedUpOffset - alignment), BytesToSectors(paddingSize)));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Write the aligned buffer.
             res = GetFsResult(_port,
                 _sdmmc.Write(_port, BytesToSectors(alignedUpOffset - alignment), BytesToSectors(writeSize),
                     pooledBuffer.GetBuffer().Slice(0, writeSize)));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             remainingSize -= unalignedSize;
         }
@@ -100,7 +102,8 @@ internal class SdmmcStorage : IStorage
             res = GetFsResult(_port,
                 _sdmmc.Write(_port, BytesToSectors(alignedUpOffset), BytesToSectors(remainingSize),
                     source.Slice(unalignedHeadSize, remainingSize)));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -121,7 +124,8 @@ internal class SdmmcStorage : IStorage
         UnsafeHelpers.SkipParamInit(out size);
 
         Result res = GetFsResult(_port, _sdmmc.GetDeviceMemoryCapacity(out uint numSectors, _port));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         size = numSectors * SectorSize;
         return Result.Success;

@@ -8,9 +8,9 @@ namespace Hyjinx.UI.Common.Helper
 {
     public static partial class ConsoleHelper
     {
-        private static readonly ILogger _logger = 
+        private static readonly ILogger _logger =
             Logger.DefaultLoggerFactory.CreateLogger(typeof(ConsoleHelper));
-        
+
         public static bool SetConsoleWindowStateSupported => OperatingSystem.IsWindows();
 
         public static void SetConsoleWindowState(bool show)
@@ -51,7 +51,7 @@ namespace Hyjinx.UI.Common.Helper
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Attempted to show/hide console window but console window does not exist")]
         private static partial void LogConsoleWindowDoesNotExist(ILogger logger);
-        
+
         [SupportedOSPlatform("windows")]
         [LibraryImport("kernel32")]
         private static partial IntPtr GetConsoleWindow();

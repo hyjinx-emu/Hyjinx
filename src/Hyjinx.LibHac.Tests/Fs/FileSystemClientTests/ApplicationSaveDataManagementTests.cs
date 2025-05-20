@@ -1,4 +1,4 @@
-﻿using LibHac.Account;
+using LibHac.Account;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Shim;
@@ -45,7 +45,7 @@ public class ApplicationSaveDataManagementTests
             Assert.Equal(SaveDataType.Account, info[0].Type);
         }
     }
-    
+
     [Fact]
     public static void EnsureApplicationSaveData_CreatesMultipleAccountSaveData_AllSavesExist()
     {

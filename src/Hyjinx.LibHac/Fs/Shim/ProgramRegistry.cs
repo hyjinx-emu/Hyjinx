@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.FsSrv;
@@ -23,13 +23,15 @@ public static class ProgramRegistry
 
         Result res = programRegistry.Get.SetCurrentProcess(fs.Hos.Os.GetCurrentProcessId().Value);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = programRegistry.Get.RegisterProgram(processId, programId, storageId, new InBuffer(accessControlData),
             accessControlData.Length, new InBuffer(accessControlDescriptor), accessControlDescriptor.Length);
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

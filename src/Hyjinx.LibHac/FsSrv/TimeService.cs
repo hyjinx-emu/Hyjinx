@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Impl;
@@ -27,7 +27,8 @@ public readonly struct TimeService
     {
         using var programRegistry = new ProgramRegistryImpl(_serviceImpl.FsServer);
         Result res = programRegistry.GetProgramInfo(out ProgramInfo programInfo, _processId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.SetCurrentPosixTime))
             return ResultFs.PermissionDenied.Log();

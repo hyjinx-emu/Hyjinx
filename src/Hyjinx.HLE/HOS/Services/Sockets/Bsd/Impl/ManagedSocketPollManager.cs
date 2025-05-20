@@ -68,7 +68,7 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
                 if (!isValidEvent)
                 {
                     LogUnsupportedPollEventType(evnt.Data.InputEvents);
-                    
+
                     return LinuxError.EINVAL;
                 }
             }
@@ -120,12 +120,12 @@ namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Impl
 
             return LinuxError.SUCCESS;
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
             Message = "Unsupported Poll input event type: {eventType}")]
         private partial void LogUnsupportedPollEventType(PollEventTypeMask eventType);
-        
+
         public LinuxError Select(List<PollEvent> events, int timeout, out int updatedCount)
         {
             List<Socket> readEvents = new();

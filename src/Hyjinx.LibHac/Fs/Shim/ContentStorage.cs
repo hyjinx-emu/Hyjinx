@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -79,7 +79,8 @@ public static class ContentStorage
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -94,7 +95,8 @@ public static class ContentStorage
             const int retryInterval = 1000;
 
             Result res = fs.Impl.CheckMountNameAcceptingReservedMountName(mountName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
             using var fileSystem = new SharedRef<IFileSystemSf>();
@@ -130,7 +132,8 @@ public static class ContentStorage
                 return ResultFs.AllocationMemoryFailedInContentStorageB.Log();
 
             res = fs.Register(mountName, ref fileSystemAdapter.Ref, ref mountNameGenerator.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }

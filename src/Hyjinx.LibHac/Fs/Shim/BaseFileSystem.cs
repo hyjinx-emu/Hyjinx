@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Impl;
 using LibHac.FsSrv.Sf;
@@ -19,7 +19,8 @@ public static class BaseFileSystem
         using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
 
         Result res = fileSystemProxy.Get.OpenBaseFileSystem(ref outFileSystem, fileSystemId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -31,7 +32,8 @@ public static class BaseFileSystem
             new UniqueRef<IFileSystem>(new FileSystemServiceObjectAdapter(ref fileSystem.Ref));
 
         Result res = fs.Register(mountName, ref fileSystemAdapter.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -40,16 +42,19 @@ public static class BaseFileSystem
     {
         Result res = fs.Impl.CheckMountName(mountName);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var fileSystem = new SharedRef<IFileSystemSf>();
         res = OpenBaseFileSystem(fs, ref fileSystem.Ref, fileSystemId);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = RegisterFileSystem(fs, mountName, ref fileSystem.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -60,7 +65,8 @@ public static class BaseFileSystem
 
         Result res = fileSystemProxy.Get.FormatBaseFileSystem(fileSystemId);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

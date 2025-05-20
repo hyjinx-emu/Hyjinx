@@ -1,4 +1,4 @@
-﻿// Adapted from https://gist.github.com/0ab6a96899cc5377bf54
+// Adapted from https://gist.github.com/0ab6a96899cc5377bf54
 
 using System;
 using System.Diagnostics;
@@ -41,7 +41,8 @@ public class ProgressBar : IDisposable, IProgressReport
     public void ReportAdd(long value)
     {
         Interlocked.Add(ref _progress, value);
-        if (_isMeasuringSpeed) Interlocked.Add(ref _timedBytes, value);
+        if (_isMeasuringSpeed)
+            Interlocked.Add(ref _timedBytes, value);
     }
 
     public void LogMessage(string message)
@@ -94,7 +95,8 @@ public class ProgressBar : IDisposable, IProgressReport
     {
         lock (_timer)
         {
-            if (_disposed) return;
+            if (_disposed)
+                return;
 
             string text = string.Empty;
             string speed = string.Empty;

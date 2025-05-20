@@ -27,7 +27,7 @@ namespace ARMeilleure.Translation.PTC
     partial class Ptc : IPtcLoadState
     {
         private readonly ILogger<Ptc>? _logger;
-        
+
         private const string OuterHeaderMagicString = "PTCohd\0\0";
         private const string InnerHeaderMagicString = "PTCihd\0\0";
 
@@ -393,19 +393,19 @@ namespace ARMeilleure.Translation.PTC
             {
                 LogLoadedTranslationCache(fileSize, GetEntriesCount());
             }
-            
+
             return true;
         }
-        
+
         [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
             Message = "Initializing Profiled Persistent Translation Cache (enabled: {enabled}).")]
         protected partial void LogInitializingTranslationCache(bool enabled);
 
-        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc), 
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
             Message = "Loaded Translation Cache (size: {fileSize} bytes, translated functions {entriesCount}).")]
         protected partial void LogLoadedTranslationCache(long fileSize, int entriesCount);
-        
-        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc), 
+
+        [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Ptc, EventName = nameof(LogClass.Ptc),
             Message = "Loaded Backup Translation Cache (size: {fileSize} bytes, translated functions {entriesCount}).")]
         protected partial void LogLoadedBackupTranslationCache(long fileSize, int entriesCount);
 
@@ -927,7 +927,7 @@ namespace ARMeilleure.Translation.PTC
             Message = "{translatedCount} of {totalCount} functions translated | Thread count: {degreesOfParallelism} in {numberOfSeconds} s")]
         protected partial void LogNumberOfFunctionsTranslated(int translatedCount, int totalCount,
             int degreesOfParallelism, int numberOfSeconds);
-        
+
         private void ReportProgress(object state)
         {
             const int RefreshRate = 50; // ms.

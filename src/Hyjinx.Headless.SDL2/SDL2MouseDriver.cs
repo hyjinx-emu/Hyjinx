@@ -16,9 +16,9 @@ namespace Hyjinx.Headless.SDL2
     {
         private const int CursorHideIdleTime = 5; // seconds
 
-        private readonly ILogger<SDL2MouseDriver> _logger = 
+        private readonly ILogger<SDL2MouseDriver> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<SDL2MouseDriver>();
-        
+
         private bool _isDisposed;
         private readonly HideCursorMode _hideCursorMode;
         private bool _isHidden;

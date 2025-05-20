@@ -9,9 +9,9 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 {
     internal partial class LdnProxyTcpServer : TcpServer, ILdnTcpSocket
     {
-        private readonly ILogger<LdnProxyTcpServer> _logger = 
+        private readonly ILogger<LdnProxyTcpServer> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpServer>();
-        
+
         private readonly LanProtocol _protocol;
 
         public LdnProxyTcpServer(LanProtocol protocol, IPAddress address, int port) : base(address, port)
@@ -34,7 +34,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
         {
             LogErrorOccurred(nameof(LdnProxyTcpServer), error);
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "{client} caught an error with code {error}")]

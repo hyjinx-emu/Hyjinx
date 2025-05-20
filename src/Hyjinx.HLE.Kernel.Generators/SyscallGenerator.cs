@@ -154,7 +154,7 @@ namespace Hyjinx.HLE.Kernel.Generators
                 generator.AppendLine($"private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof({ClassName}));");
                 generator.AppendLine();
             }
-            
+
             GenerateResultCheckHelper(generator);
             generator.AppendLine();
 

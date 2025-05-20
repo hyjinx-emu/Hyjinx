@@ -31,7 +31,7 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
         : base(options)
     {
         SetFormatters(formatters);
-        
+
         IOutput? console;
         IOutput? errorConsole;
         if (DoesConsoleSupportAnsi())
@@ -44,12 +44,12 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
             console = new AnsiParsingLogConsole();
             errorConsole = new AnsiParsingLogConsole(stdErr: true);
         }
-        
+
         _messageQueue = new LoggerProcessor(
             console,
             errorConsole,
             options.CurrentValue.MaxQueueLength);
-    
+
         ReloadLoggerOptions(options.CurrentValue);
     }
 
@@ -88,7 +88,7 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
     private void SetFormatters(IEnumerable<IFormatter>? formatters = null)
     {
         var cd = new ConcurrentDictionary<string, IFormatter>(StringComparer.OrdinalIgnoreCase);
-    
+
         bool added = false;
         if (formatters != null)
         {
@@ -98,13 +98,13 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
                 added = true;
             }
         }
-    
+
         if (!added)
         {
             cd.TryAdd(ConsoleFormatterNames.Simple, new SimpleConsoleFormatter(new FormatterOptionsMonitor<SimpleConsoleFormatterOptions>(
                 new SimpleConsoleFormatterOptions())));
         }
-    
+
         _formatters = cd;
     }
 
@@ -115,34 +115,34 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
         {
             logFormatter = _formatters[ConsoleFormatterNames.Simple];
         }
-        
+
         // _messageQueue.FullMode = options.QueueFullMode;
         // _messageQueue.MaxQueueLength = options.MaxQueueLength;
-    
+
         foreach (KeyValuePair<string, ConsoleLogger> logger in _loggers)
         {
             logger.Value.Options = options;
             logger.Value.Formatter = logFormatter;
         }
     }
-    
+
     public override ILogger CreateLogger(string name)
     {
         if (_options.CurrentValue.FormatterName == null || !_formatters.TryGetValue(_options.CurrentValue.FormatterName, out IFormatter? logFormatter))
         {
             logFormatter = _formatters[ConsoleFormatterNames.Simple];
-    
+
             if (_options.CurrentValue.FormatterName == null)
             {
                 UpdateFormatterOptions(logFormatter);
             }
         }
-    
+
         return _loggers.TryGetValue(name, out ConsoleLogger? logger) ?
             logger :
             _loggers.GetOrAdd(name, new ConsoleLogger(name, _messageQueue, logFormatter, _scopeProvider, _options.CurrentValue));
     }
-    
+
     private static void UpdateFormatterOptions(IFormatter formatter)
     {
         if (formatter is SimpleConsoleFormatter defaultFormatter)
@@ -162,7 +162,7 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
         {
             _messageQueue.Dispose();
         }
-        
+
         base.Dispose(disposing);
     }
 }

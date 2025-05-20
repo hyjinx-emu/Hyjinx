@@ -12,7 +12,7 @@ namespace Hyjinx.Graphics.Gpu.Shader
     /// </summary>
     partial class GpuAccessorBase
     {
-        private readonly ILogger<GpuAccessorBase> _logger = Logger.DefaultLoggerFactory.CreateLogger<GpuAccessorBase>(); 
+        private readonly ILogger<GpuAccessorBase> _logger = Logger.DefaultLoggerFactory.CreateLogger<GpuAccessorBase>();
         private readonly GpuContext _context;
         private readonly ResourceCounts _resourceCounts;
         private readonly int _stageIndex;

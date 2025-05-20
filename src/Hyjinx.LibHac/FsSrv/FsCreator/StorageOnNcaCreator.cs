@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Fs;
@@ -28,16 +28,19 @@ public class StorageOnNcaCreator : IStorageOnNcaCreator
         UnsafeHelpers.SkipParamInit(out fsHeader);
 
         Result res = OpenStorage(out IStorage storageTemp, nca, fsIndex);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (isCodeFs)
         {
             using var codeFs = new PartitionFileSystem();
             res = codeFs.Initialize(storageTemp);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = VerifyAcidSignature(codeFs, nca);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         outStorage.Reset(storageTemp);

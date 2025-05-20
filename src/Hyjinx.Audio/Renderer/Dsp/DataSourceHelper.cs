@@ -17,7 +17,7 @@ namespace Hyjinx.Audio.Renderer.Dsp
 {
     public partial class DataSourceHelper
     {
-        private static ILogger<DataSourceHelper> _logger = Logger.DefaultLoggerFactory.CreateLogger<DataSourceHelper>();  
+        private static ILogger<DataSourceHelper> _logger = Logger.DefaultLoggerFactory.CreateLogger<DataSourceHelper>();
         private const int FixedPointPrecision = 15;
 
         public struct WaveBufferInformation

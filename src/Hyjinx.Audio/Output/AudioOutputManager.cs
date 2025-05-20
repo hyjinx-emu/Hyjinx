@@ -101,7 +101,7 @@ namespace Hyjinx.Audio.Output
                 return sessionId;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Registered new output ({sessionId})")]
@@ -128,7 +128,7 @@ namespace Hyjinx.Audio.Output
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Unregistered output ({sessionId})")]
         private partial void LogUnregisteredOutput(int sessionId);
-        
+
         /// <summary>
         /// Used to update audio output system.
         /// </summary>

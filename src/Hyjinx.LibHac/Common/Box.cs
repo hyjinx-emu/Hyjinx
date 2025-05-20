@@ -1,4 +1,4 @@
-﻿namespace LibHac.Common;
+namespace LibHac.Common;
 
 public class Box<T> where T : struct
 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
@@ -45,10 +45,14 @@ public static class Assert
     {
         switch (assertionType)
         {
-            case AssertionType.SdkAssert: return AbortReason.SdkAssert;
-            case AssertionType.SdkRequires: return AbortReason.SdkRequires;
-            case AssertionType.UserAssert: return AbortReason.UserAssert;
-            default: return AbortReason.Abort;
+            case AssertionType.SdkAssert:
+                return AbortReason.SdkAssert;
+            case AssertionType.SdkRequires:
+                return AbortReason.SdkRequires;
+            case AssertionType.UserAssert:
+                return AbortReason.UserAssert;
+            default:
+                return AbortReason.Abort;
         }
     }
 

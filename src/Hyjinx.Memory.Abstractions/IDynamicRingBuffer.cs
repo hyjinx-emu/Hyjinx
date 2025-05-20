@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Hyjinx.Audio.Backends.Common;
 

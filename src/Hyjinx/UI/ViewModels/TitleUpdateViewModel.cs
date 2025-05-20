@@ -46,9 +46,9 @@ namespace Hyjinx.Ava.UI.ViewModels
         private object _selectedUpdate;
 
         private static readonly TitleUpdateMetadataJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
-        private static readonly ILogger<TitleUpdateViewModel> _logger = 
+        private static readonly ILogger<TitleUpdateViewModel> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<TitleUpdateViewModel>();
-        
+
         public AvaloniaList<TitleUpdateModel> TitleUpdates
         {
             get => _titleUpdates;

@@ -36,7 +36,7 @@ namespace Hyjinx.Ava.Common
     {
         private static readonly ILogger _logger =
             Logger.DefaultLoggerFactory.CreateLogger(typeof(ApplicationHelper));
-        
+
         private static HorizonClient _horizonClient;
         private static AccountManager _accountManager;
         private static VirtualFileSystem _virtualFileSystem;
@@ -47,12 +47,12 @@ namespace Hyjinx.Ava.Common
             _horizonClient = horizonClient;
             _accountManager = accountManager;
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "No control file was found for this game. Using a dummy one instead. This may cause inaccuracies in some games.")]
         private static partial void LogNoControlFileFound(ILogger logger);
-        
+
         private static bool TryFindSaveData(string titleName, ulong titleId, BlitStruct<ApplicationControlProperty> controlHolder, in SaveDataFilter filter, out ulong saveDataId)
         {
             saveDataId = default;

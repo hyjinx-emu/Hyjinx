@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
@@ -38,36 +38,43 @@ public class FileSystemProxyCoreImpl
         if (storageId == CustomStorageId.System)
         {
             Result res = _baseFileSystemService.OpenBisFileSystem(ref fileSystem.Ref, BisPartitionId.User);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using scoped var path = new Path();
             res = PathFunctions.SetUpFixedPathSingleEntry(ref path.Ref(), pathBuffer.Items,
                 CustomStorage.GetCustomStorageDirectoryName(CustomStorageId.System));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystem> tempFs = SharedRef<IFileSystem>.CreateMove(ref fileSystem.Ref);
             res = Utility.WrapSubDirectory(ref fileSystem.Ref, ref tempFs.Ref, in path, createIfMissing: true);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else if (storageId == CustomStorageId.SdCard)
         {
             Result res = _baseFileSystemService.OpenSdCardProxyFileSystem(ref fileSystem.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using scoped var path = new Path();
             res = PathFunctions.SetUpFixedPathDoubleEntry(ref path.Ref(), pathBuffer.Items,
                 CommonDirNames.SdCardNintendoRootDirectoryName,
                 CustomStorage.GetCustomStorageDirectoryName(CustomStorageId.System));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystem> tempFs = SharedRef<IFileSystem>.CreateMove(ref fileSystem.Ref);
             res = Utility.WrapSubDirectory(ref fileSystem.Ref, ref tempFs.Ref, in path, createIfMissing: true);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             tempFs.SetByMove(ref fileSystem.Ref);
             res = _fsCreators.EncryptedFileSystemCreator.Create(ref fileSystem.Ref, ref tempFs.Ref,
                 IEncryptedFileSystemCreator.KeyId.CustomStorage, in _sdEncryptionSeed);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
@@ -82,14 +89,17 @@ public class FileSystemProxyCoreImpl
     {
         using var pathHost = new Path();
         Result res = pathHost.Initialize(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fsCreators.TargetManagerFileSystemCreator.NormalizeCaseOfPath(out bool isSupported, ref pathHost.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fsCreators.TargetManagerFileSystemCreator.Create(ref outFileSystem, in pathHost, isSupported,
             ensureRootPathExists: false, Result.Success);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -100,13 +110,15 @@ public class FileSystemProxyCoreImpl
         if (!path.IsEmpty() && openCaseSensitive)
         {
             Result res = OpenHostFileSystem(ref outFileSystem, in path);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
             Result res = _fsCreators.TargetManagerFileSystemCreator.Create(ref outFileSystem, in path,
                 openCaseSensitive, ensureRootPathExists: false, Result.Success);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;

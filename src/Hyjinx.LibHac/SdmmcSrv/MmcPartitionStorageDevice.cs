@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -168,10 +168,12 @@ internal class MmcUserDataPartitionStorageDevice : MmcPartitionStorageDeviceInte
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
 
         Result res = Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         base.Read(offset, destination, size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -181,10 +183,12 @@ internal class MmcUserDataPartitionStorageDevice : MmcPartitionStorageDeviceInte
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
 
         Result res = Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = base.Write(offset, source, size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -196,10 +200,12 @@ internal class MmcUserDataPartitionStorageDevice : MmcPartitionStorageDeviceInte
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
 
         Result res = Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = base.GetSize(out size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -248,14 +254,16 @@ internal class MmcBootPartitionStorageDevice : MmcPartitionStorageDeviceInterfac
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
 
         Result res = Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Abort.DoAbortUnlessSuccess(Sdmmc.SelectMmcPartition(GetPort(), GetPartition()));
 
         try
         {
             base.Read(offset, destination, size);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -270,14 +278,16 @@ internal class MmcBootPartitionStorageDevice : MmcPartitionStorageDeviceInterfac
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
 
         Result res = Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Abort.DoAbortUnlessSuccess(Sdmmc.SelectMmcPartition(GetPort(), GetPartition()));
 
         try
         {
             base.Write(offset, source, size);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -294,7 +304,8 @@ internal class MmcBootPartitionStorageDevice : MmcPartitionStorageDeviceInterfac
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
 
         Result res = Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Port port = GetPort();
 
@@ -303,7 +314,8 @@ internal class MmcBootPartitionStorageDevice : MmcPartitionStorageDeviceInterfac
         try
         {
             res = SdmmcResultConverter.GetFsResult(port, Sdmmc.GetMmcBootPartitionCapacity(out uint numSectors, port));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             size = numSectors * SdmmcApi.SectorSize;
 

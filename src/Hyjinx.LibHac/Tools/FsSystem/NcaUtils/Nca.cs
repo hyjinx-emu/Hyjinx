@@ -18,7 +18,7 @@ public partial class Nca
     private KeySet KeySet { get; }
     public IStorage BaseStorage { get; }
     public NcaHeader Header { get; }
-    
+
     public Nca(KeySet keySet, IStorage storage)
     {
         KeySet = keySet;
@@ -38,12 +38,14 @@ public partial class Nca
 
     public bool CanOpenSection(int index)
     {
-        if (!SectionExists(index)) return false;
-        if (GetFsHeader(index).EncryptionType == NcaEncryptionType.None) return true;
+        if (!SectionExists(index))
+            return false;
+        if (GetFsHeader(index).EncryptionType == NcaEncryptionType.None)
+            return true;
 
         return false;
     }
-    
+
     public bool SectionExists(NcaSectionType type)
     {
         if (!TryGetSectionIndexFromType(type, Header.ContentType, out int index))
@@ -66,10 +68,11 @@ public partial class Nca
 
         return Header.GetFsHeader(index);
     }
-    
+
     private IStorage OpenSectionStorage(int index)
     {
-        if (!SectionExists(index)) throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
+        if (!SectionExists(index))
+            throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
 
         long offset = Header.GetSectionStartOffset(index);
         long size = Header.GetSectionSize(index);
@@ -89,10 +92,10 @@ public partial class Nca
     {
         if (Header.IsNca0())
             return OpenNca0RawStorage(index);
-        
+
         return OpenSectionStorage(index);
     }
-    
+
     private IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
     {
         IStorage patchStorage = patchNca.OpenRawStorage(index);
@@ -143,7 +146,7 @@ public partial class Nca
 
         return returnStorage;
     }
-    
+
     public IStorage OpenStorageWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
     {
         IStorage rawStorage = OpenRawStorageWithPatch(patchNca, index);
@@ -364,7 +367,8 @@ public partial class Nca
 
     private IStorage OpenNca0RawStorage(int index)
     {
-        if (!SectionExists(index)) throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
+        if (!SectionExists(index))
+            throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
 
         long offset = Header.GetSectionStartOffset(index) - 0x400;
         long size = Header.GetSectionSize(index);

@@ -161,7 +161,7 @@ namespace Hyjinx.Audio.Renderer.Server
 
             LogUnregisteredRenderer(sessionId);
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Unregistered renderer ({sessionId})")]
@@ -214,7 +214,7 @@ namespace Hyjinx.Audio.Renderer.Server
 
             LogStoppedRenderer();
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Stopped audio renderer")]
@@ -264,7 +264,7 @@ namespace Hyjinx.Audio.Renderer.Server
                 Processor.Wait();
             }
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Starting audio renderer")]

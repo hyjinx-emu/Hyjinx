@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.IO;
 using LibHac.Common;
@@ -84,7 +84,8 @@ public class IntegrityVerificationStorage : SectorStorage
             BaseStorage.Read(offset, destination);
             destination.CopyTo(dataBuffer);
 
-            if (BlockValidities[blockIndex] != Validity.Unchecked) return Result.Success;
+            if (BlockValidities[blockIndex] != Validity.Unchecked)
+                return Result.Success;
 
             int bytesToHash = SectorSize;
 
@@ -135,7 +136,8 @@ public class IntegrityVerificationStorage : SectorStorage
         long hashPos = blockIndex * DigestSize;
 
         Result res = GetSize(out long storageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         int toWrite = (int)Math.Min(source.Length, storageSize - offset);
 
@@ -192,14 +194,16 @@ public class IntegrityVerificationStorage : SectorStorage
     public override Result Flush()
     {
         Result res = HashStorage.Flush();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return base.Flush();
     }
 
     public void FsTrim()
     {
-        if (Type != IntegrityStorageType.Save) return;
+        if (Type != IntegrityStorageType.Save)
+            return;
 
         Span<byte> digest = stackalloc byte[DigestSize];
 
@@ -208,7 +212,8 @@ public class IntegrityVerificationStorage : SectorStorage
             long hashPos = i * DigestSize;
             HashStorage.Read(hashPos, digest).ThrowIfFailure();
 
-            if (!Utilities.IsZeros(digest)) continue;
+            if (!Utilities.IsZeros(digest))
+                continue;
 
             int dataOffset = i * SectorSize;
             BaseStorage.Fill(SaveDataFileSystem.TrimFillValue, dataOffset, SectorSize);

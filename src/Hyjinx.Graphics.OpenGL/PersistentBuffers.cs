@@ -54,7 +54,7 @@ namespace Hyjinx.Graphics.OpenGL
     {
         private static readonly ILogger<PersistentBuffers> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<PersistentBuffers>();
-        
+
         private IntPtr _bufferMap;
         private int _copyBufferHandle;
         private int _copyBufferSize;

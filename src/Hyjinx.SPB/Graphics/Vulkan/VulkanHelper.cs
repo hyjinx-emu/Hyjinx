@@ -129,10 +129,11 @@ namespace SPB.Graphics.Vulkan
             return _extensions.Contains(extensionName);
         }
 
-        private static unsafe string GetStringFromUtf8Byte(byte *start)
+        private static unsafe string GetStringFromUtf8Byte(byte* start)
         {
             byte* end = start;
-            while (*end != 0) end++;
+            while (*end != 0)
+                end++;
 
             return Encoding.UTF8.GetString(start, (int)(end - start));
         }
@@ -161,7 +162,7 @@ namespace SPB.Graphics.Vulkan
 
                     VkExtensionProperty[] extensions = new VkExtensionProperty[layerCount];
 
-                    fixed (VkExtensionProperty *extensionsPtr = extensions)
+                    fixed (VkExtensionProperty* extensionsPtr = extensions)
                     {
                         res = _vkEnumerateInstanceExtensionProperties(null, out layerCount, extensionsPtr);
                     }
@@ -274,7 +275,7 @@ namespace SPB.Graphics.Vulkan
                     StructType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
                     Next = IntPtr.Zero,
                     Flags = 0,
-// Broken warning here there is no platform issues here...
+                    // Broken warning here there is no platform issues here...
 #pragma warning disable CA1416
                     HInstance = Win32.GetWindowLong(window.WindowHandle.RawHandle, Win32.GetWindowLongIndex.GWL_HINSTANCE),
 #pragma warning restore CA1416

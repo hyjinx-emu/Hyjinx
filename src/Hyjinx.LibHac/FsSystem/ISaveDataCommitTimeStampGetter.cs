@@ -1,4 +1,4 @@
-﻿namespace LibHac.FsSystem;
+namespace LibHac.FsSystem;
 
 /// <summary>
 /// Gets Unix timestamps used to update a save data's commit time. 

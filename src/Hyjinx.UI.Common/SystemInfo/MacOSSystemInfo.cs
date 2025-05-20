@@ -70,12 +70,12 @@ namespace Hyjinx.UI.Common.SystemInfo
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Failed to query Available RAM. host_page_size() error = {result}")]
         private static partial void LogHostPageSizeError(ILogger logger, int result);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Failed to query Available RAM. host_statistics64() error = {result}")]
         private static partial void LogHostStatisticsError(ILogger logger, int result);
-        
+
         private const string SystemLibraryName = "libSystem.dylib";
 
         [LibraryImport(SystemLibraryName, SetLastError = true)]
@@ -93,7 +93,7 @@ namespace Hyjinx.UI.Common.SystemInfo
 
             return 0;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Cannot retrieve '{name}'. Error Code {err}")]

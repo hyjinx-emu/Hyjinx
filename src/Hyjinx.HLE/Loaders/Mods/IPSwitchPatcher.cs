@@ -18,9 +18,9 @@ namespace Hyjinx.HLE.Loaders.Mods
             Comment,
         }
 
-        private readonly static ILogger<IPSwitchPatcher> _logger = 
+        private readonly static ILogger<IPSwitchPatcher> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<IPSwitchPatcher>();
-        
+
         private readonly StreamReader _reader;
         public string BuildId { get; }
 
@@ -161,7 +161,7 @@ namespace Hyjinx.HLE.Loaders.Mods
             EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
             Message = "IPSwitch: Parse error at line {lineNumber} for bid={buildId}")]
         private static partial void LogParseError(ILogger logger, int lineNumber, string buildId);
-        
+
         private MemPatch Parse()
         {
             if (_reader == null)
@@ -180,7 +180,7 @@ namespace Hyjinx.HLE.Loaders.Mods
 
             static void Print(string s) => LogIPSwitch(_logger, s);
 
-            void ParseWarn() => LogParseError(_logger, lineNum, BuildId); 
+            void ParseWarn() => LogParseError(_logger, lineNum, BuildId);
 
             while ((line = _reader.ReadLine()) != null)
             {

@@ -1,4 +1,4 @@
-﻿using LibHac.FsSystem;
+using LibHac.FsSystem;
 using LibHac.Gc;
 
 namespace LibHac.GcSrv;

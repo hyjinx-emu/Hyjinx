@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs.Fsa;
@@ -44,7 +44,8 @@ public static class Code
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -57,23 +58,27 @@ public static class Code
             UnsafeHelpers.SkipParamInit(out verificationData);
 
             Result res = fs.Impl.CheckMountName(mountName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = PathUtility.ConvertToFspPath(out FspPath sfPath, path);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystemProxyForLoader> fileSystemProxy =
                 fs.Impl.GetFileSystemProxyForLoaderServiceObject();
 
             // Todo: IPC code should automatically set process ID
             res = fileSystemProxy.Get.SetCurrentProcess(fs.Hos.Os.GetCurrentProcessId().Value);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var fileSystem = new SharedRef<IFileSystemSf>();
 
             res = fileSystemProxy.Get.OpenCodeFileSystem(ref fileSystem.Ref, out verificationData, in sfPath,
                 programId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var fileSystemAdapter =
                 new UniqueRef<IFileSystem>(new FileSystemServiceObjectAdapter(ref fileSystem.Ref));
@@ -82,7 +87,8 @@ public static class Code
                 return ResultFs.AllocationMemoryFailedInCodeA.Log();
 
             res = fs.Register(mountName, ref fileSystemAdapter.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }

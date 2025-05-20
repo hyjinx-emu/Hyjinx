@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using LibHac.Kvdb;
 using Xunit;
 using static LibHac.Tests.Common.Layout;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -132,7 +132,8 @@ public static class MountUtility
         }
 
         Result res = GetMountNameAndSubPath(out MountName mountName, out subPath, path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fs.Find(out fileSystem, new U8Span(mountName.Name));
     }
@@ -165,7 +166,8 @@ public static class MountUtility
     public static Result Unmount(this FileSystemClientImpl fs, U8Span mountName)
     {
         Result res = fs.Find(out FileSystemAccessor fileSystem, mountName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fileSystem.IsFileDataCacheAttachable())
         {
@@ -276,15 +278,18 @@ public static class MountUtility
 
         res = GetMountNameAndSubPath(out MountName mountName, out U8Span subPath, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fs.Impl.Find(out FileSystemAccessor fileSystem, new U8Span(mountName.Name));
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fileSystem.GetCommonMountName(commonPathBuffer.Value);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         int mountNameLength = StringUtils.GetLength(commonPathBuffer);
         int commonPathLength = StringUtils.GetLength(subPath);

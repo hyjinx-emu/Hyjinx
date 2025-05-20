@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -40,7 +40,8 @@ namespace LibHac.Fs
         private Result ReadSaveDataInfoImpl(out long readCount, Span<SaveDataInfo> buffer)
         {
             Result res = _reader.Get.Read(out readCount, OutBuffer.FromSpan(buffer));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -68,7 +69,8 @@ namespace LibHac.Fs
             }
 
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -137,7 +139,8 @@ namespace LibHac.Fs.Shim
             using SharedRef<IFileSystemProxy> fileSystemProxy = fs.GetFileSystemProxyServiceObject();
 
             Result res = fileSystemProxy.Get.ReadSaveDataFileSystemExtraData(OutBuffer.FromStruct(ref extraData), saveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -151,7 +154,8 @@ namespace LibHac.Fs.Shim
 
             Result res = fileSystemProxy.Get.ReadSaveDataFileSystemExtraDataBySaveDataSpaceId(
                 OutBuffer.FromStruct(ref extraData), spaceId, saveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -165,7 +169,8 @@ namespace LibHac.Fs.Shim
 
             Result res = fileSystemProxy.Get.ReadSaveDataFileSystemExtraDataBySaveDataAttribute(
                 OutBuffer.FromStruct(ref extraData), spaceId, in attribute);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -180,7 +185,8 @@ namespace LibHac.Fs.Shim
 
             Result res = fileSystemProxy.Get.ReadSaveDataFileSystemExtraDataWithMaskBySaveDataAttribute(
                 OutBuffer.FromStruct(ref extraData), spaceId, in attribute, InBuffer.FromStruct(in extraDataMask));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -204,7 +210,8 @@ namespace LibHac.Fs.Shim
             Result res = fileSystemProxy.Get.WriteSaveDataFileSystemExtraData(saveDataId, spaceId,
                 InBuffer.FromStruct(in extraData));
             fs.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -235,7 +242,8 @@ namespace LibHac.Fs.Shim
             Result res = fileSystemProxy.Get.WriteSaveDataFileSystemExtraDataWithMask(saveDataId, spaceId,
                 InBuffer.FromStruct(in extraData), InBuffer.FromStruct(in extraDataMask));
             fs.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -269,7 +277,8 @@ namespace LibHac.Fs.Shim
             Result res = fileSystemProxy.Get.WriteSaveDataFileSystemExtraDataWithMaskBySaveDataAttribute(in attribute,
                 spaceId, InBuffer.FromStruct(in extraData), InBuffer.FromStruct(in extraDataMask));
             fs.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -285,7 +294,8 @@ namespace LibHac.Fs.Shim
             OutBuffer saveInfoBuffer = OutBuffer.FromStruct(ref tempInfo);
 
             Result res = fileSystemProxy.Get.FindSaveDataWithFilter(out long count, saveInfoBuffer, spaceId, in filter);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (count == 0)
                 return ResultFs.TargetNotFound.Log();
@@ -301,17 +311,20 @@ namespace LibHac.Fs.Shim
 
             Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, applicationId, SaveDataType.Account,
                 userId, InvalidSystemSaveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = SaveDataCreationInfo.Make(out SaveDataCreationInfo creationInfo, size, journalSize, ownerId, flags,
                 SaveDataSpaceId.User);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             var metaPolicy = new SaveDataMetaPolicy(SaveDataType.Account);
             metaPolicy.GenerateMetaInfo(out SaveDataMetaInfo metaInfo);
 
             res = fileSystemProxy.Get.CreateSaveDataFileSystem(in attribute, in creationInfo, in metaInfo);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -323,12 +336,14 @@ namespace LibHac.Fs.Shim
 
             Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, applicationId, SaveDataType.Bcat,
                 InvalidUserId, InvalidSystemSaveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = SaveDataCreationInfo.Make(out SaveDataCreationInfo creationInfo, size,
                 SaveDataProperties.BcatSaveDataJournalSize, SystemProgramId.Bcat.Value, SaveDataFlags.None,
                 SaveDataSpaceId.User);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             var metaInfo = new SaveDataMetaInfo
             {
@@ -337,7 +352,8 @@ namespace LibHac.Fs.Shim
             };
 
             res = fileSystemProxy.Get.CreateSaveDataFileSystem(in attribute, in creationInfo, in metaInfo);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -349,17 +365,20 @@ namespace LibHac.Fs.Shim
 
             Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, applicationId, SaveDataType.Device,
                 InvalidUserId, InvalidSystemSaveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = SaveDataCreationInfo.Make(out SaveDataCreationInfo creationInfo, size, journalSize, ownerId, flags,
                 SaveDataSpaceId.User);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             var metaPolicy = new SaveDataMetaPolicy(SaveDataType.Device);
             metaPolicy.GenerateMetaInfo(out SaveDataMetaInfo metaInfo);
 
             res = fileSystemProxy.Get.CreateSaveDataFileSystem(in attribute, in creationInfo, in metaInfo);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -371,11 +390,13 @@ namespace LibHac.Fs.Shim
 
             Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, applicationId, SaveDataType.Cache,
                 InvalidUserId, InvalidSystemSaveDataId, index);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = SaveDataCreationInfo.Make(out SaveDataCreationInfo creationInfo, size, journalSize, ownerId, flags,
                 spaceId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             var metaInfo = new SaveDataMetaInfo
             {
@@ -384,7 +405,8 @@ namespace LibHac.Fs.Shim
             };
 
             res = fileSystemProxy.Get.CreateSaveDataFileSystem(in attribute, in creationInfo, in metaInfo);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -497,7 +519,8 @@ namespace LibHac.Fs.Shim
 
                 Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, InvalidProgramId,
                     SaveDataType.System, userId, saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 return fileSystemProxy.Get.DeleteSaveDataFileSystemBySaveDataAttribute(spaceId, in attribute);
             }
@@ -533,7 +556,8 @@ namespace LibHac.Fs.Shim
 
                 Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, new ProgramId(applicationId.Value),
                     SaveDataType.Device, InvalidUserId, InvalidSystemSaveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 return fileSystemProxy.Get.DeleteSaveDataFileSystemBySaveDataAttribute(SaveDataSpaceId.User, in attribute);
             }
@@ -546,7 +570,8 @@ namespace LibHac.Fs.Shim
 
             Result res = fileSystemProxy.Get.RegisterSaveDataFileSystemAtomicDeletion(InBuffer.FromSpan(saveDataIdList));
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -558,7 +583,8 @@ namespace LibHac.Fs.Shim
             using var reader = new SharedRef<ISaveDataInfoReader>();
 
             Result res = fileSystemProxy.Get.OpenSaveDataInfoReaderBySaveDataSpaceId(ref reader.Ref, spaceId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var iterator = new UniqueRef<SaveDataIterator>(new SaveDataIterator(fs.Fs, ref reader.Ref));
 
@@ -577,7 +603,8 @@ namespace LibHac.Fs.Shim
             using var reader = new SharedRef<ISaveDataInfoReader>();
 
             Result res = fileSystemProxy.Get.OpenSaveDataInfoReaderWithFilter(ref reader.Ref, spaceId, in filter);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var iterator = new UniqueRef<SaveDataIterator>(new SaveDataIterator(fs.Fs, ref reader.Ref));
 
@@ -593,7 +620,8 @@ namespace LibHac.Fs.Shim
             Span<SaveDataInfo> buffer, SaveDataIterator iterator)
         {
             Result res = iterator.ReadSaveDataInfo(out readCount, buffer);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -747,11 +775,13 @@ namespace LibHac.Fs.Shim
 
                 Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, applicationId, SaveDataType.Account,
                     userId, InvalidSystemSaveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = SaveDataCreationInfo.Make(out SaveDataCreationInfo creationInfo, size, journalSize, ownerId, flags,
                     SaveDataSpaceId.User);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 var metaPolicy = new SaveDataMetaPolicy(SaveDataType.Account);
                 metaPolicy.GenerateMetaInfo(out SaveDataMetaInfo metaInfo);
@@ -824,11 +854,13 @@ namespace LibHac.Fs.Shim
 
             Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, applicationId, SaveDataType.Temporary,
                 InvalidUserId, InvalidSystemSaveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = SaveDataCreationInfo.Make(out SaveDataCreationInfo creationInfo, size, journalSize: 0, ownerId, flags,
                 SaveDataSpaceId.Temporary);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             var metaInfo = new SaveDataMetaInfo
             {
@@ -951,11 +983,13 @@ namespace LibHac.Fs.Shim
 
                 Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, InvalidProgramId,
                     SaveDataType.System, userId, saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = SaveDataCreationInfo.Make(out SaveDataCreationInfo creationInfo, size, journalSize, ownerId, flags,
                     spaceId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 return fileSystemProxy.Get.CreateSaveDataFileSystemBySystemSaveDataId(in attribute, in creationInfo);
             }
@@ -1002,11 +1036,13 @@ namespace LibHac.Fs.Shim
 
             Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, InvalidProgramId, SaveDataType.System,
                 userId, saveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = SaveDataCreationInfo2.Make(out SaveDataCreationInfo2 creationInfo, in attribute, size, journalSize,
                 SaveDataBlockSize, ownerId, flags, spaceId, formatType);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             creationInfo.MetaType = SaveDataMetaType.None;
             creationInfo.MetaSize = 0;
@@ -1131,7 +1167,8 @@ namespace LibHac.Fs.Shim
 
             Result res = fileSystemProxy.Get.QuerySaveDataTotalSize(out long tempTotalSize, saveDataSize,
                 saveDataJournalSize);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             totalSize = tempTotalSize;
             return Result.Success;
@@ -1195,7 +1232,8 @@ namespace LibHac.Fs.Shim
                 UnsafeHelpers.SkipParamInit(out ownerId);
 
                 Result res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 ownerId = extraData.OwnerId;
                 return Result.Success;
@@ -1236,7 +1274,8 @@ namespace LibHac.Fs.Shim
 
                 Result res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, spaceId,
                     saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 ownerId = extraData.OwnerId;
                 return Result.Success;
@@ -1272,7 +1311,8 @@ namespace LibHac.Fs.Shim
                 UnsafeHelpers.SkipParamInit(out flags);
 
                 Result res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 flags = extraData.Flags;
                 return Result.Success;
@@ -1314,7 +1354,8 @@ namespace LibHac.Fs.Shim
 
                 Result res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, spaceId,
                     saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 flags = extraData.Flags;
                 return Result.Success;
@@ -1357,10 +1398,12 @@ namespace LibHac.Fs.Shim
 
                 Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, InvalidProgramId,
                     SaveDataType.System, userId, saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, spaceId, in attribute);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 flags = extraData.Flags;
                 return Result.Success;
@@ -1405,7 +1448,8 @@ namespace LibHac.Fs.Shim
             {
                 Result res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, spaceId,
                     saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 extraData.Flags = flags;
 
@@ -1454,7 +1498,8 @@ namespace LibHac.Fs.Shim
 
                 Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, InvalidProgramId,
                     SaveDataType.System, userId, saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 return fs.Impl.WriteSaveDataFileSystemExtraData(spaceId, in attribute, in extraData, in extraDataMask);
             }
@@ -1489,7 +1534,8 @@ namespace LibHac.Fs.Shim
                 UnsafeHelpers.SkipParamInit(out timeStamp);
 
                 Result res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 timeStamp = new PosixTime(extraData.TimeStamp);
                 return Result.Success;
@@ -1573,7 +1619,8 @@ namespace LibHac.Fs.Shim
 
                 Result res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, spaceId,
                     saveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 timeStamp = new PosixTime(extraData.TimeStamp);
                 return Result.Success;
@@ -1586,7 +1633,8 @@ namespace LibHac.Fs.Shim
             UnsafeHelpers.SkipParamInit(out availableSize);
 
             Result res = fs.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, saveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             availableSize = extraData.DataSize;
             return Result.Success;
@@ -1598,7 +1646,8 @@ namespace LibHac.Fs.Shim
             UnsafeHelpers.SkipParamInit(out availableSize);
 
             Result res = fs.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, spaceId, saveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             availableSize = extraData.DataSize;
             return Result.Success;
@@ -1665,7 +1714,8 @@ namespace LibHac.Fs.Shim
             UnsafeHelpers.SkipParamInit(out journalSize);
 
             Result res = fs.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, saveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             journalSize = extraData.JournalSize;
             return Result.Success;
@@ -1677,7 +1727,8 @@ namespace LibHac.Fs.Shim
             UnsafeHelpers.SkipParamInit(out journalSize);
 
             Result res = fs.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, spaceId, saveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             journalSize = extraData.JournalSize;
             return Result.Success;
@@ -2028,7 +2079,8 @@ namespace LibHac.Fs.Shim
             }
 
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             handle = new CacheStorageListHandle(listCache);
             return Result.Success;
@@ -2050,26 +2102,30 @@ namespace LibHac.Fs.Shim
                     using var reader = new SharedRef<ISaveDataInfoReader>();
 
                     Result result = fileSystemProxy.Get.OpenSaveDataInfoReaderOnlyCacheStorage(ref reader.Ref);
-                    if (result.IsFailure()) return result.Miss();
+                    if (result.IsFailure())
+                        return result.Miss();
 
                     while (true)
                     {
                         Unsafe.SkipInit(out SaveDataInfo info);
 
                         result = reader.Get.Read(out long readCount, new OutBuffer(SpanHelpers.AsByteSpan(ref info)));
-                        if (result.IsFailure()) return result.Miss();
+                        if (result.IsFailure())
+                            return result.Miss();
 
                         if (readCount == 0)
                             break;
 
                         var cacheEntry = new CacheStorageListCache.CacheEntry(info.Index);
                         result = tempListCache.PushBack(in cacheEntry);
-                        if (result.IsFailure()) return result.Miss();
+                        if (result.IsFailure())
+                            return result.Miss();
                     }
 
                     return Result.Success;
                 });
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 Assert.SdkRequiresNotNull(tempListCache);
 
@@ -2105,7 +2161,8 @@ namespace LibHac.Fs.Shim
             }
 
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
 
@@ -2209,7 +2266,8 @@ namespace LibHac.Fs.Shim
             }
 
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
             {
@@ -2244,7 +2302,8 @@ namespace LibHac.Fs.Shim
                     return ResultFs.NullptrArgument.Log();
 
                 Result res = fileSystem.GetSaveDataAttribute(out SaveDataAttribute attribute);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 if (attribute.ProgramId == InvalidProgramId)
                     attribute.ProgramId = AutoResolveCallerProgramId;
@@ -2254,7 +2313,8 @@ namespace LibHac.Fs.Shim
 
                 res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, SaveDataSpaceId.User,
                     in attribute, in extraDataMask);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 isRestoreFlagSet = extraData.Flags.HasFlag(SaveDataFlags.Restore);
                 return Result.Success;
@@ -2300,11 +2360,13 @@ namespace LibHac.Fs.Shim
 
                 Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, new ProgramId(applicationId.Value),
                     SaveDataType.Device, InvalidUserId, InvalidSystemSaveDataId);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = fs.Impl.ReadSaveDataFileSystemExtraData(out SaveDataExtraData extraData, SaveDataSpaceId.User,
                     in attribute, in extraDataMask);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 saveSize = extraData.DataSize;
                 journalSize = extraData.JournalSize;

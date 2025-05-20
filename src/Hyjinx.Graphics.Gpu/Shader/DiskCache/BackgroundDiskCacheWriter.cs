@@ -13,7 +13,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
     {
         private readonly ILogger<BackgroundDiskCacheWriter> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<BackgroundDiskCacheWriter>();
-        
+
         /// <summary>
         /// Possible operation to do on the <see cref="_fileWriterWorkerQueue"/>.
         /// </summary>

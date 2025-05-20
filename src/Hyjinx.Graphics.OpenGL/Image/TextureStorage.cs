@@ -12,9 +12,9 @@ namespace Hyjinx.Graphics.OpenGL.Image
 
         public TextureCreateInfo Info { get; }
 
-        private readonly ILogger<TextureStorage> _logger = 
+        private readonly ILogger<TextureStorage> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<TextureStorage>();
-        
+
         private readonly OpenGLRenderer _renderer;
 
         private int _viewsCount;

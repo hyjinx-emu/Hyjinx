@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using LibHac.Common;
 using LibHac.Fs;
@@ -36,7 +36,8 @@ internal class DeliveryCacheStorageManager
         {
             // Find an existing storage entry for this application ID or get an empty one
             Result res = FindOrGetUnusedEntry(out int index, applicationId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             ref Entry entry = ref Entries[index];
 

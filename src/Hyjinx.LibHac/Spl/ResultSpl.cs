@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // This file was automatically generated.
 // Changes to this file will be lost when the file is regenerated.
 //
@@ -17,20 +17,20 @@ public static class ResultSpl
 
     /// <summary>Error code: 2026-0000; Range: 0-99; Inner value: 0x1a</summary>
     public static Result.Base SecureMonitorError => new Result.Base(ModuleSpl, 0, 99);
-        /// <summary>Error code: 2026-0001; Inner value: 0x21a</summary>
-        public static Result.Base SecureMonitorNotImplemented => new Result.Base(ModuleSpl, 1);
-        /// <summary>Error code: 2026-0002; Inner value: 0x41a</summary>
-        public static Result.Base SecureMonitorInvalidArgument => new Result.Base(ModuleSpl, 2);
-        /// <summary>Error code: 2026-0003; Inner value: 0x61a</summary>
-        public static Result.Base SecureMonitorBusy => new Result.Base(ModuleSpl, 3);
-        /// <summary>Error code: 2026-0004; Inner value: 0x81a</summary>
-        public static Result.Base SecureMonitorNoAsyncOperation => new Result.Base(ModuleSpl, 4);
-        /// <summary>Error code: 2026-0005; Inner value: 0xa1a</summary>
-        public static Result.Base SecureMonitorInvalidAsyncOperation => new Result.Base(ModuleSpl, 5);
-        /// <summary>Error code: 2026-0006; Inner value: 0xc1a</summary>
-        public static Result.Base SecureMonitorNotPermitted => new Result.Base(ModuleSpl, 6);
-        /// <summary>Error code: 2026-0007; Inner value: 0xe1a</summary>
-        public static Result.Base SecureMonitorNotInitialized => new Result.Base(ModuleSpl, 7);
+    /// <summary>Error code: 2026-0001; Inner value: 0x21a</summary>
+    public static Result.Base SecureMonitorNotImplemented => new Result.Base(ModuleSpl, 1);
+    /// <summary>Error code: 2026-0002; Inner value: 0x41a</summary>
+    public static Result.Base SecureMonitorInvalidArgument => new Result.Base(ModuleSpl, 2);
+    /// <summary>Error code: 2026-0003; Inner value: 0x61a</summary>
+    public static Result.Base SecureMonitorBusy => new Result.Base(ModuleSpl, 3);
+    /// <summary>Error code: 2026-0004; Inner value: 0x81a</summary>
+    public static Result.Base SecureMonitorNoAsyncOperation => new Result.Base(ModuleSpl, 4);
+    /// <summary>Error code: 2026-0005; Inner value: 0xa1a</summary>
+    public static Result.Base SecureMonitorInvalidAsyncOperation => new Result.Base(ModuleSpl, 5);
+    /// <summary>Error code: 2026-0006; Inner value: 0xc1a</summary>
+    public static Result.Base SecureMonitorNotPermitted => new Result.Base(ModuleSpl, 6);
+    /// <summary>Error code: 2026-0007; Inner value: 0xe1a</summary>
+    public static Result.Base SecureMonitorNotInitialized => new Result.Base(ModuleSpl, 7);
 
     /// <summary>Error code: 2026-0100; Inner value: 0xc81a</summary>
     public static Result.Base InvalidSize => new Result.Base(ModuleSpl, 100);

@@ -36,9 +36,9 @@ namespace Hyjinx.Ava.UI.ViewModels.Input
 {
     public class InputViewModel : BaseModel, IDisposable
     {
-        private readonly ILogger<InputViewModel> _logger = 
+        private readonly ILogger<InputViewModel> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<InputViewModel>();
-        
+
         private const string Disabled = "disabled";
         private const string ProControllerResource = "Hyjinx.UI.Common/Resources/Controller_ProCon.svg";
         private const string JoyConPairResource = "Hyjinx.UI.Common/Resources/Controller_JoyConPair.svg";

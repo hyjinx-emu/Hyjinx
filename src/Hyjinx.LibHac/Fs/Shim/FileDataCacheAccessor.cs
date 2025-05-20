@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Fs.Fsa;
 
 // ReSharper disable once CheckNamespace

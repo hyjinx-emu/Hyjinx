@@ -32,8 +32,8 @@ namespace Hyjinx.UI.App.Common
         public long FileSize { get; set; }
         public string Path { get; set; }
         public BlitStruct<ApplicationControlProperty> ControlHolder { get; set; }
-        
-        [JsonIgnore] 
+
+        [JsonIgnore]
         private static readonly ILogger<ApplicationData> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<ApplicationData>();
 
@@ -53,7 +53,7 @@ namespace Hyjinx.UI.App.Common
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "File '{file}' does not exist.")]
         private static partial void LogFileDoesNotExist(ILogger logger, string file);
-        
+
         public static string GetBuildId(VirtualFileSystem virtualFileSystem, IntegrityCheckLevel checkLevel, string titleFilePath)
         {
             using FileStream file = new(titleFilePath, FileMode.Open, FileAccess.Read);
@@ -171,17 +171,17 @@ namespace Hyjinx.UI.App.Common
 
             return BitConverter.ToString(reader.Header.ModuleId.ItemsRo.ToArray()).Replace("-", "").ToUpper()[..16];
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
             Message = "Extraction failure. The main NCA was not present in the selected file.")]
         private static partial void LogExtractionFailure(ILogger logger);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
             Message = "No ExeFS found in NCA.")]
         private static partial void LogExeFsNotFound(ILogger logger);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
             Message = "No main binary ExeFS found in ExeFS.")]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -59,18 +59,21 @@ public class EmulatedSdCardFileSystemCreator : ISdCardProxyFileSystemCreator, ID
 
         using var sdCardPath = new Path();
         Result res = sdCardPath.Initialize(StringUtils.StringToUtf8(path));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var pathFlags = new PathFlags();
         pathFlags.AllowEmptyPath();
         res = sdCardPath.Normalize(pathFlags);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Todo: Add ProxyFileSystem?
 
         using SharedRef<IFileSystem> fileSystem = SharedRef<IFileSystem>.CreateCopy(in _rootFileSystem);
         res = Utility.WrapSubDirectory(ref _sdCardFileSystem, ref fileSystem.Ref, in sdCardPath, true);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outFileSystem.SetByCopy(in _sdCardFileSystem);
 

@@ -1,4 +1,4 @@
-﻿global using OsNativeHandle = System.Threading.WaitHandle;
+global using OsNativeHandle = System.Threading.WaitHandle;
 
 namespace LibHac.Os;
 

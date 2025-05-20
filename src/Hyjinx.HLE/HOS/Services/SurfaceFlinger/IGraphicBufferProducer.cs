@@ -12,7 +12,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
     {
         protected readonly ILogger<IGraphicBufferProducer> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<IGraphicBufferProducer>();
-        
+
         public string InterfaceToken => "android.gui.IGraphicBufferProducer";
 
         enum TransactionCode : uint

@@ -188,7 +188,7 @@ namespace Hyjinx.HLE.HOS.Services.Ssl
             EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
             Message = CertStoreTitleMissingErrorMessage)]
         private partial void LogCertStoreTitleMissing();
-        
+
         public bool TryGetCertificates(
             ReadOnlySpan<CaCertificateId> ids,
             out CertStoreEntry[] entries,

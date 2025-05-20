@@ -30,7 +30,7 @@ namespace Hyjinx.Headless.SDL2
     abstract partial class WindowBase : IHostUIHandler, IDisposable
     {
         private ILogger<WindowBase> _logger = Logger.DefaultLoggerFactory.CreateLogger<WindowBase>();
-        
+
         protected const int DefaultWidth = 1280;
         protected const int DefaultHeight = 720;
         private const int TargetFps = 60;

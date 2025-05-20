@@ -18,7 +18,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
         public KEvent Event;
         public int EventHandle;
 
-        private static readonly ILogger<NvHostEvent> _logger = 
+        private static readonly ILogger<NvHostEvent> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<NvHostEvent>();
 
         private readonly uint _eventId;
@@ -29,7 +29,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
 
         private NvFence _previousFailingFence;
         private uint _failingCount;
-        
+
         public readonly object Lock = new();
 
         /// <summary>

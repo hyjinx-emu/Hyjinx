@@ -17,7 +17,7 @@ namespace Hyjinx.Audio.Backends.SDL2
     {
         private readonly ILogger<SDL2HardwareDeviceSession> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<SDL2HardwareDeviceSession>();
-        
+
         private readonly SDL2HardwareDeviceDriver _driver;
         private readonly ConcurrentQueue<SDL2AudioBuffer> _queuedBuffers;
         private readonly IDynamicRingBuffer _ringBuffer;

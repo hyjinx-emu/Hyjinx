@@ -1,4 +1,4 @@
-﻿using LibHac;
+using LibHac;
 using Xunit.Sdk;
 
 // ReSharper disable once CheckNamespace

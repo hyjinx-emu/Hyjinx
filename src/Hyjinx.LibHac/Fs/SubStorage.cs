@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 
@@ -156,52 +156,66 @@ public class SubStorage : IStorage
 
     public override Result Read(long offset, Span<byte> destination)
     {
-        if (!IsValid()) return ResultFs.NotInitialized.Log();
-        if (destination.Length == 0) return Result.Success;
+        if (!IsValid())
+            return ResultFs.NotInitialized.Log();
+        if (destination.Length == 0)
+            return Result.Success;
 
         Result res = CheckAccessRange(offset, destination.Length, _size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = BaseStorage.Read(_offset + offset, destination);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
 
     public override Result Write(long offset, ReadOnlySpan<byte> source)
     {
-        if (!IsValid()) return ResultFs.NotInitialized.Log();
-        if (source.Length == 0) return Result.Success;
+        if (!IsValid())
+            return ResultFs.NotInitialized.Log();
+        if (source.Length == 0)
+            return Result.Success;
 
         Result res = CheckAccessRange(offset, source.Length, _size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = BaseStorage.Write(_offset + offset, source);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
 
     public override Result Flush()
     {
-        if (!IsValid()) return ResultFs.NotInitialized.Log();
+        if (!IsValid())
+            return ResultFs.NotInitialized.Log();
 
         Result res = BaseStorage.Flush();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
 
     public override Result SetSize(long size)
     {
-        if (!IsValid()) return ResultFs.NotInitialized.Log();
-        if (!_isResizable) return ResultFs.UnsupportedSetSizeForNotResizableSubStorage.Log();
+        if (!IsValid())
+            return ResultFs.NotInitialized.Log();
+        if (!_isResizable)
+            return ResultFs.UnsupportedSetSizeForNotResizableSubStorage.Log();
 
         Result res = CheckOffsetAndSize(_offset, size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = BaseStorage.GetSize(out long currentSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (currentSize != _offset + _size)
         {
@@ -210,7 +224,8 @@ public class SubStorage : IStorage
         }
 
         res = BaseStorage.SetSize(_offset + size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _size = size;
 
@@ -221,7 +236,8 @@ public class SubStorage : IStorage
     {
         UnsafeHelpers.SkipParamInit(out size);
 
-        if (!IsValid()) return ResultFs.NotInitialized.Log();
+        if (!IsValid())
+            return ResultFs.NotInitialized.Log();
 
         size = _size;
         return Result.Success;
@@ -229,14 +245,17 @@ public class SubStorage : IStorage
 
     public override Result OperateRange(Span<byte> outBuffer, OperationId operationId, long offset, long size, ReadOnlySpan<byte> inBuffer)
     {
-        if (!IsValid()) return ResultFs.NotInitialized.Log();
+        if (!IsValid())
+            return ResultFs.NotInitialized.Log();
 
         if (operationId != OperationId.InvalidateCache)
         {
-            if (size == 0) return Result.Success;
+            if (size == 0)
+                return Result.Success;
 
             Result res = CheckOffsetAndSize(_offset, size);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return BaseStorage.OperateRange(outBuffer, operationId, _offset + offset, size, inBuffer);

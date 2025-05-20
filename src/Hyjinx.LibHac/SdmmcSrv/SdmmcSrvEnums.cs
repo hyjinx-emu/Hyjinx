@@ -1,4 +1,4 @@
-﻿namespace LibHac.SdmmcSrv;
+namespace LibHac.SdmmcSrv;
 
 /// <summary>
 /// The operations that <see cref="SdCardManager"/> can perform on the SD card device.

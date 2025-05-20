@@ -228,7 +228,7 @@ namespace Hyjinx.HLE.HOS.Services.Hid
             EventId = (int)LogClass.Hid, EventName = nameof(LogClass.Hid),
             Message = "Disconnected controller {type} from {player}")]
         private partial void LogDisconnectedControllerFromPlayer(ControllerType type, PlayerIndex player);
-        
+
         private void SetupNpad(PlayerIndex player, ControllerType type)
         {
             ref NpadInternalState controller = ref _device.Hid.SharedMemory.Npads[(int)player].InternalState;

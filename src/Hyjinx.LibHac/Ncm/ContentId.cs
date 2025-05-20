@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using LibHac.Common;
@@ -31,7 +31,8 @@ public struct ContentId : IEquatable<ContentId>, IComparable<ContentId>, ICompar
 
     public int CompareTo(object obj)
     {
-        if (obj is null) return 1;
+        if (obj is null)
+            return 1;
         return obj is ContentId other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(ContentId)}");
     }
 

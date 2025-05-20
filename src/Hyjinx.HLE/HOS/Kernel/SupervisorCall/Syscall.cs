@@ -1915,8 +1915,8 @@ namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
         public void OutputDebugString([PointerSized] ulong strPtr, [PointerSized] ulong size)
         {
             KProcess process = KernelStatic.GetCurrentProcess();
-            
-            _logger.LogWarning(new EventId((int)LogClass.KernelSvc, nameof(LogClass.KernelSvc)), 
+
+            _logger.LogWarning(new EventId((int)LogClass.KernelSvc, nameof(LogClass.KernelSvc)),
                 MemoryHelper.ReadAsciiString(process.CpuMemory, strPtr, (long)size));
         }
 

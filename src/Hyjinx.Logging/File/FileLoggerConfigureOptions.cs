@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.Options;
 using System.Runtime.Versioning;
@@ -24,4 +24,3 @@ internal sealed class FileLoggerConfigureOptions : IConfigureOptions<FileLoggerO
 
     public void Configure(FileLoggerOptions options) => _configuration.Bind(options);
 }
-

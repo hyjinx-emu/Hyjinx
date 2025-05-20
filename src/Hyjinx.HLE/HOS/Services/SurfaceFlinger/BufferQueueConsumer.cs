@@ -17,7 +17,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
         {
             Core = core;
         }
-        
+
         public Status AcquireBuffer(out BufferItem bufferItem, ulong expectedPresent)
         {
             lock (Core.Lock)
@@ -35,9 +35,9 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 if (numAcquiredBuffers > Core.MaxAcquiredBufferCount)
                 {
                     bufferItem = null;
-                    
+
                     LogMaxBufferCountReached(numAcquiredBuffers, Core.MaxAcquiredBufferCount);
-                    
+
                     return Status.InvalidOperation;
                 }
 
@@ -116,7 +116,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
                 return Status.Success;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
             Message = "Slot {slot} was detached without requesting a buffer")]
@@ -177,7 +177,7 @@ namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
 
             return Status.Success;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
             Message = "Max acquired buffer count reached: {numAcquiredBuffers} (max: {maxAcquiredBufferCount})")]

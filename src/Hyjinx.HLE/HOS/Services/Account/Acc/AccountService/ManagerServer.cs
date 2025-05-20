@@ -28,7 +28,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc.AccountService
         private DateTime _cachedTokenExpiry;
 
         private ILogger<ManagerServer> _logger;
-        
+
         public ManagerServer(UserId userId)
         {
             _logger = Logger.DefaultLoggerFactory.CreateLogger<ManagerServer>();

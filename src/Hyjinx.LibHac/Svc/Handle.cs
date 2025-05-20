@@ -1,4 +1,4 @@
-﻿namespace LibHac.Svc;
+namespace LibHac.Svc;
 
 public readonly struct Handle
 {

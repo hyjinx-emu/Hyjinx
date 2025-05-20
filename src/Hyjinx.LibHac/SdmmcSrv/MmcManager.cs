@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Sf;
@@ -78,7 +78,8 @@ internal class MmcManager : IStorageDeviceManager, IStorageDeviceOperator, ISdmm
             return Result.Success;
 
         Result res = SdmmcResultConverter.GetFsResult(_port, _sdmmc.Activate(_port));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _patrolReader.Start();
         _isActivated = true;
@@ -134,7 +135,8 @@ internal class MmcManager : IStorageDeviceManager, IStorageDeviceOperator, ISdmm
     public Result OpenOperator(ref SharedRef<IStorageDeviceOperator> outDeviceOperator)
     {
         Result res = ActivateMmc();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using SharedRef<MmcManager> deviceOperator = SharedRef<MmcManager>.Create(in _selfReference);
 
@@ -151,7 +153,8 @@ internal class MmcManager : IStorageDeviceManager, IStorageDeviceOperator, ISdmm
         using var storageDevice = new SharedRef<IStorageDevice>();
 
         Result res = OpenDeviceImpl(ref storageDevice.Ref, attribute);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outStorageDevice.SetByMove(ref storageDevice.Ref);
 
@@ -163,7 +166,8 @@ internal class MmcManager : IStorageDeviceManager, IStorageDeviceOperator, ISdmm
         using var storageDevice = new SharedRef<IStorageDevice>();
 
         Result res = OpenDeviceImpl(ref storageDevice.Ref, attribute);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outStorage.SetByMove(ref storageDevice.Ref);
 
@@ -173,27 +177,28 @@ internal class MmcManager : IStorageDeviceManager, IStorageDeviceOperator, ISdmm
     private Result OpenDeviceImpl(ref SharedRef<IStorageDevice> outStorageDevice, ulong attribute)
     {
         Result res = ActivateMmc();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var storageDevice = new SharedRef<IStorageDevice>();
 
         switch ((MmcPartition)attribute)
         {
             case MmcPartition.UserData:
-            {
-                OpenDeviceUserDataPartition(ref storageDevice.Ref);
-                break;
-            }
+                {
+                    OpenDeviceUserDataPartition(ref storageDevice.Ref);
+                    break;
+                }
             case MmcPartition.BootPartition1:
-            {
-                OpenDeviceBootPartition(MmcPartition.BootPartition1, ref storageDevice.Ref);
-                break;
-            }
+                {
+                    OpenDeviceBootPartition(MmcPartition.BootPartition1, ref storageDevice.Ref);
+                    break;
+                }
             case MmcPartition.BootPartition2:
-            {
-                OpenDeviceBootPartition(MmcPartition.BootPartition2, ref storageDevice.Ref);
-                break;
-            }
+                {
+                    OpenDeviceBootPartition(MmcPartition.BootPartition2, ref storageDevice.Ref);
+                    break;
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }
@@ -302,17 +307,17 @@ internal class MmcManager : IStorageDeviceManager, IStorageDeviceOperator, ISdmm
                 return ResultFs.StorageDeviceInvalidOperation.Log();
 
             case MmcManagerOperationIdValue.SuspendPatrol:
-            {
-                _patrolReader.Sleep();
-                return Result.Success;
-            }
+                {
+                    _patrolReader.Sleep();
+                    return Result.Success;
+                }
             case MmcManagerOperationIdValue.ResumePatrol:
-            {
-                using ScopedLock<SdkMutex> scopedLock = ScopedLock.Lock(ref _mutex);
+                {
+                    using ScopedLock<SdkMutex> scopedLock = ScopedLock.Lock(ref _mutex);
 
-                _patrolReader.Resume();
-                return Result.Success;
-            }
+                    _patrolReader.Resume();
+                    return Result.Success;
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }
@@ -331,16 +336,17 @@ internal class MmcManager : IStorageDeviceManager, IStorageDeviceOperator, ISdmm
         switch (operation)
         {
             case MmcManagerOperationIdValue.GetPatrolCount:
-            {
-                if (buffer.Size < sizeof(uint))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < sizeof(uint))
+                        return ResultFs.InvalidArgument.Log();
 
-                Result res = _patrolReader.GetPatrolCount(out buffer.As<uint>());
-                if (res.IsFailure()) return res.Miss();
+                    Result res = _patrolReader.GetPatrolCount(out buffer.As<uint>());
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                bytesWritten = sizeof(uint);
-                return Result.Success;
-            }
+                    bytesWritten = sizeof(uint);
+                    return Result.Success;
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }
@@ -356,34 +362,35 @@ internal class MmcManager : IStorageDeviceManager, IStorageDeviceOperator, ISdmm
         switch (operation)
         {
             case MmcManagerOperationIdValue.GetAndClearErrorInfo:
-            {
-                if (buffer1.Size < Unsafe.SizeOf<StorageErrorInfo>())
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer1.Size < Unsafe.SizeOf<StorageErrorInfo>())
+                        return ResultFs.InvalidArgument.Log();
 
-                using ScopedLock<SdkMutex> scopedLock = ScopedLock.Lock(ref _mutex);
+                    using ScopedLock<SdkMutex> scopedLock = ScopedLock.Lock(ref _mutex);
 
-                Result res = Common.GetAndClearSdmmcStorageErrorInfo(out buffer1.As<StorageErrorInfo>(),
-                    out bytesWrittenBuffer2, buffer2.Buffer, _sdmmc);
-                if (res.IsFailure()) return res.Miss();
+                    Result res = Common.GetAndClearSdmmcStorageErrorInfo(out buffer1.As<StorageErrorInfo>(),
+                        out bytesWrittenBuffer2, buffer2.Buffer, _sdmmc);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                bytesWrittenBuffer1 = Unsafe.SizeOf<StorageErrorInfo>();
-                return Result.Success;
-            }
+                    bytesWrittenBuffer1 = Unsafe.SizeOf<StorageErrorInfo>();
+                    return Result.Success;
+                }
             case MmcManagerOperationIdValue.GetAndClearPatrolReadAllocateBufferCount:
-            {
-                if (buffer1.Size < sizeof(long))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer1.Size < sizeof(long))
+                        return ResultFs.InvalidArgument.Log();
 
-                if (buffer2.Size < sizeof(long))
-                    return ResultFs.InvalidArgument.Log();
+                    if (buffer2.Size < sizeof(long))
+                        return ResultFs.InvalidArgument.Log();
 
-                _patrolReader.GetAndClearAllocateCount(out buffer1.As<ulong>(), out buffer2.As<ulong>());
+                    _patrolReader.GetAndClearAllocateCount(out buffer1.As<ulong>(), out buffer2.As<ulong>());
 
-                bytesWrittenBuffer1 = sizeof(long);
-                bytesWrittenBuffer2 = sizeof(long);
+                    bytesWrittenBuffer1 = sizeof(long);
+                    bytesWrittenBuffer2 = sizeof(long);
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }

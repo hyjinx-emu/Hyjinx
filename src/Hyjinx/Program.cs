@@ -30,16 +30,16 @@ internal partial class Program : IDisposable
     /// Monitors the duration of time the application has been active.
     /// </summary>
     public static readonly Stopwatch UpTime = Stopwatch.StartNew();
-    
+
     public static double WindowScaleFactor { get; set; }
     public static double DesktopScaleFactor { get; set; } = 1.0;
     public static string Version { get; private set; }
     public static bool PreviewerDetached { get; private set; }
     public static string[] Arguments { get; private set; }
-    
+
     [LibraryImport("user32.dll", SetLastError = true)]
     public static partial int MessageBoxA(IntPtr hWnd, [MarshalAs(UnmanagedType.LPStr)] string text, [MarshalAs(UnmanagedType.LPStr)] string caption, uint type);
-    
+
     private const uint MbIconwarning = 0x30;
 
     public static int Main(string[] args)
@@ -52,18 +52,18 @@ internal partial class Program : IDisposable
         Initialize(services, args);
 
         using var applicationServices = services.BuildServiceProvider();
-        
+
         using var program = new Program(
-            applicationServices.GetRequiredService<ILogger<Program>>(), 
+            applicationServices.GetRequiredService<ILogger<Program>>(),
             applicationServices);
-        
+
         program.AttachGlobalEventListeners();
         return program.Run(args);
     }
 
     private readonly ILogger<Program> _logger;
     private readonly IServiceProvider _applicationServices;
-   
+
     private Program(ILogger<Program> logger, IServiceProvider applicationServices)
     {
         _logger = logger;
@@ -120,9 +120,9 @@ internal partial class Program : IDisposable
             _ = MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nHyjinx supports Windows 10 version 1803 and newer.\n", $"Hyjinx {Version}", MbIconwarning);
             return -1;
         }
-        
+
         Logger.Initialize(
-            _applicationServices.GetRequiredService<ILoggerFactory>(), 
+            _applicationServices.GetRequiredService<ILoggerFactory>(),
             _logger);
 
         var opts = _applicationServices.GetRequiredService<IOptions<ConfigurationFileFormat>>();
@@ -135,12 +135,12 @@ internal partial class Program : IDisposable
         {
             MVKInitialization.InitializeResolver();
         }
-        
+
         // Initialize SDL2 driver
         SDL2Driver.MainThreadDispatcher = action => Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Input);
 
         WindowScaleFactor = ForceDpiAware.GetWindowScaleFactor();
-        
+
         // Enable OGL multithreading on the driver, and some other flags.
         DriverUtilities.InitDriverConfig(ConfigurationState.Instance.Graphics.BackendThreading == BackendThreading.Off);
 
@@ -148,10 +148,10 @@ internal partial class Program : IDisposable
         {
             MainWindow.DeferLoadApplication(CommandLineState.LaunchPathArg, CommandLineState.LaunchApplicationId, CommandLineState.StartFullscreenArg);
         }
-        
+
         // Initialize Discord integration.
         DiscordIntegrationModule.Initialize();
-        
+
         var app = BuildAvaloniaApp();
         return app.StartWithClassicDesktopLifetime(args);
     }
@@ -159,7 +159,7 @@ internal partial class Program : IDisposable
     private void PrepareForLaunch()
     {
         ConfigurationModule.UseHardwareAcceleration = ConfigurationState.Instance.EnableHardwareAcceleration.Value;
-        
+
         // Check if graphics backend was overridden
         if (CommandLineState.OverrideGraphicsBackend != null)
         {
@@ -172,13 +172,13 @@ internal partial class Program : IDisposable
                 ConfigurationState.Instance.Graphics.GraphicsBackend.Value = GraphicsBackend.Vulkan;
             }
         }
-        
+
         // Check if docked mode was overriden.
         if (CommandLineState.OverrideDockedMode.HasValue)
         {
             ConfigurationState.Instance.System.EnableDockedMode.Value = CommandLineState.OverrideDockedMode.Value;
         }
-        
+
         // Check if HideCursor was overridden.
         if (CommandLineState.OverrideHideCursor is not null)
         {
@@ -190,14 +190,14 @@ internal partial class Program : IDisposable
                 _ => ConfigurationState.Instance.HideCursor.Value,
             };
         }
-        
+
         // Check if hardware-acceleration was overridden.
         if (CommandLineState.OverrideHardwareAcceleration != null)
         {
             ConfigurationModule.UseHardwareAcceleration = CommandLineState.OverrideHardwareAcceleration.Value;
         }
     }
-    
+
     private static AppBuilder BuildAvaloniaApp()
     {
         return AppBuilder.Configure<App>()
@@ -229,15 +229,15 @@ internal partial class Program : IDisposable
 
         // Parse arguments
         CommandLineState.ParseArguments(launchConfig);
-        
+
         Console.Title = $"Hyjinx Console {Version}";
-        
+
         // Initialize the logger system.
         LoggerModule.Initialize(services, UpTime);
-        
+
         // TODO: Viper - Fix this so it's configuration driven (it's too noisy).
         // LoggerAdapter.Register();
-        
+
         // Initialize the configuration.
         AppDataManager.Initialize(launchConfig.BaseDirPathArg);
         ConfigurationModule.Initialize(services, launchConfig);
@@ -245,10 +245,10 @@ internal partial class Program : IDisposable
 
     private void PrintSystemInfo()
     {
-        _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+        _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
             "Hyjinx Version: {Version}", Version);
         SystemInfo.Gather().Print();
-        
+
         if (AppDataManager.Mode == AppDataManager.LaunchMode.Custom)
         {
             _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),

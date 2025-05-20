@@ -1,4 +1,4 @@
-﻿using LibHac.Fs.Fsa;
+using LibHac.Fs.Fsa;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 

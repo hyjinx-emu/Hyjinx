@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -33,7 +33,8 @@ public class FileReader
         Debug.Assert(count <= BufferSize);
 
         _file.Read(out long _, _start + offset, _buffer.AsSpan(0, count)).ThrowIfFailure();
-        if (updatePosition) Position = offset + count;
+        if (updatePosition)
+            Position = offset + count;
     }
 
     public byte ReadUInt8(long offset, bool updatePosition)
@@ -125,7 +126,8 @@ public class FileReader
         byte[] bytes = new byte[length];
         _file.Read(out long _, offset, bytes).ThrowIfFailure();
 
-        if (updatePosition) Position = offset + length;
+        if (updatePosition)
+            Position = offset + length;
         return bytes;
     }
 
@@ -133,7 +135,8 @@ public class FileReader
     {
         _file.Read(out long _, offset, destination).ThrowIfFailure();
 
-        if (updatePosition) Position = offset + destination.Length;
+        if (updatePosition)
+            Position = offset + destination.Length;
     }
 
     public string ReadAscii(long offset, int length, bool updatePosition)
@@ -141,7 +144,8 @@ public class FileReader
         byte[] bytes = new byte[length];
         _file.Read(out long _, offset, bytes).ThrowIfFailure();
 
-        if (updatePosition) Position = offset + length;
+        if (updatePosition)
+            Position = offset + length;
         return Encoding.ASCII.GetString(bytes);
     }
 

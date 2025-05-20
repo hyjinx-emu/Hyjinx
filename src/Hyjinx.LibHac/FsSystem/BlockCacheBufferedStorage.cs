@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem.Impl;
@@ -102,7 +102,8 @@ public class BlockCacheBufferedStorage : IStorage
         Assert.SdkGreater(maxCacheEntries, 0);
 
         Result res = _cacheManager.Initialize(bufferManager, maxCacheEntries);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _mutex = mutex;
         _storageData = data;

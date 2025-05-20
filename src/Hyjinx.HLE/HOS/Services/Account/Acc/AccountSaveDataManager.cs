@@ -14,7 +14,7 @@ namespace Hyjinx.HLE.HOS.Services.Account.Acc
     {
         private readonly ILogger<AccountSaveDataManager> _logger = Logger.DefaultLoggerFactory.CreateLogger<AccountSaveDataManager>();
         private readonly string _profilesJsonPath = Path.Join(AppDataManager.KeysDirPath, "Profiles.json");
-        
+
         private static readonly ProfilesJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
         public UserId LastOpened { get; set; }

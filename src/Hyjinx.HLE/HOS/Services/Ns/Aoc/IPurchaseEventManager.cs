@@ -59,7 +59,7 @@ namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
             // NOTE: Service finds info using internal array then convert it into nn::ec::detail::PurchasedProductInfo.
             //       Returns 0x320A4 if the internal array size is null.
             //       Since we don't support purchase from eShop, we can stub it.
-            
+
             return ResultCode.Success;
         }
     }

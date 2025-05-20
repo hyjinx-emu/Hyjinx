@@ -1,4 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
+// ReSharper disable InconsistentNaming
 using System.Runtime.CompilerServices;
 using LibHac.Spl;
 using Xunit;

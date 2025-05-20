@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Bcat.Impl.Ipc;
 using LibHac.Bcat.Impl.Service.Core;
 using LibHac.Common;
@@ -44,16 +44,19 @@ internal class DeliveryCacheFileService : IDeliveryCacheFileService
 
             var metaReader = new DeliveryCacheFileMetaAccessor(Server);
             Result res = metaReader.ReadApplicationFileMeta(ApplicationId, ref directoryName, true);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = metaReader.FindEntry(out DeliveryCacheFileMetaEntry entry, ref fileName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Span<byte> filePath = stackalloc byte[0x80];
             Server.GetStorageManager().GetFilePath(filePath, ApplicationId, ref directoryName, ref fileName);
 
             res = Server.GetFsClient().OpenFile(out _handle, new U8Span(filePath), OpenMode.Read);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _metaEntry = entry;
             IsFileOpen = true;
@@ -72,7 +75,8 @@ internal class DeliveryCacheFileService : IDeliveryCacheFileService
                 return ResultBcat.NotOpen.Log();
 
             Result res = Server.GetFsClient().ReadFile(out long read, _handle, offset, destination);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             bytesRead = read;
             return Result.Success;

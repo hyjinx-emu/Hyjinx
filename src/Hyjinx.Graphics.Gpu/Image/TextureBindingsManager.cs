@@ -21,7 +21,7 @@ namespace Hyjinx.Graphics.Gpu.Image
 
         private readonly ILogger<TextureBindingsManager> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<TextureBindingsManager>();
-        
+
         private readonly GpuContext _context;
 
         private readonly bool _isCompute;
@@ -418,7 +418,7 @@ namespace Hyjinx.Graphics.Gpu.Image
                 cachedSamplerBufferIndex = samplerBufferIndex;
             }
         }
-        
+
         /// <summary>
         /// Ensures that the texture bindings are visible to the host GPU.
         /// Note: this actually performs the binding using the host graphics API.
@@ -560,7 +560,7 @@ namespace Hyjinx.Graphics.Gpu.Image
 
             return specStateMatches;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Shader stage '{stage}' uses textures, but texture pool was not set.")]
@@ -700,7 +700,7 @@ namespace Hyjinx.Graphics.Gpu.Image
 
             return specStateMatches;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Shader stage '{stage}' uses images, but texture pool was not set.")]

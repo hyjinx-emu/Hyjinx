@@ -34,7 +34,7 @@ namespace Hyjinx.Ava.UI.ViewModels
     {
         private readonly ILogger<DownloadableContentManagerViewModel> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<DownloadableContentManagerViewModel>();
-        
+
         private readonly List<DownloadableContentContainer> _downloadableContentContainerList;
         private readonly string _downloadableContentJsonPath;
 
@@ -125,7 +125,7 @@ namespace Hyjinx.Ava.UI.ViewModels
             {
                 _logger.LogError(new EventId((int)LogClass.Configuration, nameof(LogClass.Configuration)),
                     "Downloadable Content JSON failed to deserialize.");
-                
+
                 _downloadableContentContainerList = new List<DownloadableContentContainer>();
             }
 

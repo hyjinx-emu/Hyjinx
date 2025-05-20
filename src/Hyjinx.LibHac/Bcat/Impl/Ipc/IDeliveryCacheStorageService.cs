@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 
 namespace LibHac.Bcat.Impl.Ipc;

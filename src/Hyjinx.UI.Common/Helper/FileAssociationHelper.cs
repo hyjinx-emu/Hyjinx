@@ -13,7 +13,7 @@ namespace Hyjinx.UI.Common.Helper
     public static partial class FileAssociationHelper
     {
         private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(FileAssociationHelper));
-        
+
         private static readonly string[] _fileExtensions = { ".nca", ".nro", ".nso", ".nsp", ".xci" };
 
         [SupportedOSPlatform("linux")]
@@ -81,7 +81,7 @@ namespace Hyjinx.UI.Common.Helper
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Could not update local mime database. Process exited with code: {exitCode}")]
         private static partial void LogUnableToUpdateMimeDatabase(ILogger logger, int exitCode);
-        
+
         [SupportedOSPlatform("windows")]
         private static bool AreMimeTypesRegisteredWindows()
         {
@@ -125,7 +125,7 @@ namespace Hyjinx.UI.Common.Helper
                     {
                         return true;
                     }
-                    
+
                     _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Removing type association {ext}", ext);
                     Registry.CurrentUser.DeleteSubKeyTree(keyString);
                     _logger.LogDebug(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Removed type association {ext}", ext);

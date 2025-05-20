@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using LibHac.Common;
 using LibHac.Diag;
@@ -70,10 +70,14 @@ public class GameCardRootPartition : IDisposable
     {
         switch (partitionType)
         {
-            case GameCardPartition.Update: return UpdatePartitionName;
-            case GameCardPartition.Normal: return NormalPartitionName;
-            case GameCardPartition.Secure: return SecurePartitionName;
-            case GameCardPartition.Logo: return LogoPartitionName;
+            case GameCardPartition.Update:
+                return UpdatePartitionName;
+            case GameCardPartition.Normal:
+                return NormalPartitionName;
+            case GameCardPartition.Secure:
+                return SecurePartitionName;
+            case GameCardPartition.Logo:
+                return LogoPartitionName;
             default:
                 Abort.UnexpectedDefault();
                 return default;
@@ -114,47 +118,48 @@ public class GameCardRootPartition : IDisposable
         {
             case GameCardPartition.Update:
             case GameCardPartition.Normal:
-            {
-                // The root partition contains the entire non-secure section of the game card, so we just need to make
-                // a SubStorage of the appropriate range.
-                outStorage.Reset(new SubStorage(in _alignedRootStorage, _metaDataSize + entry.Offset, entry.Size));
+                {
+                    // The root partition contains the entire non-secure section of the game card, so we just need to make
+                    // a SubStorage of the appropriate range.
+                    outStorage.Reset(new SubStorage(in _alignedRootStorage, _metaDataSize + entry.Offset, entry.Size));
 
-                if (!outStorage.HasValue)
-                    return ResultFs.AllocationMemoryFailedInGameCardFileSystemCreatorA.Log();
+                    if (!outStorage.HasValue)
+                        return ResultFs.AllocationMemoryFailedInGameCardFileSystemCreatorA.Log();
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             case GameCardPartition.Secure:
-            {
-                Result res = EnsureLogoDataCached();
-                if (res.IsFailure() && !ResultFs.PartitionNotFound.Includes(res))
-                    return res.Miss();
+                {
+                    Result res = EnsureLogoDataCached();
+                    if (res.IsFailure() && !ResultFs.PartitionNotFound.Includes(res))
+                        return res.Miss();
 
-                using var secureStorage = new SharedRef<IStorage>();
-                res = _gameCardStorageCreator.CreateSecureReadOnly(handle, ref secureStorage.Ref);
-                if (res.IsFailure()) return res.Miss();
+                    using var secureStorage = new SharedRef<IStorage>();
+                    res = _gameCardStorageCreator.CreateSecureReadOnly(handle, ref secureStorage.Ref);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                const int dataAlignment = 512;
+                    const int dataAlignment = 512;
 
-                using var alignedStorage = new SharedRef<IStorage>(
-                    new AlignmentMatchingStorageInBulkRead<AlignmentMatchingStorageSize1>(in secureStorage,
-                        dataAlignment));
+                    using var alignedStorage = new SharedRef<IStorage>(
+                        new AlignmentMatchingStorageInBulkRead<AlignmentMatchingStorageSize1>(in secureStorage,
+                            dataAlignment));
 
-                if (!alignedStorage.HasValue)
-                    return ResultFs.AllocationMemoryFailedInGameCardFileSystemCreatorB.Log();
+                    if (!alignedStorage.HasValue)
+                        return ResultFs.AllocationMemoryFailedInGameCardFileSystemCreatorB.Log();
 
-                outStorage.SetByMove(ref alignedStorage.Ref);
-                return Result.Success;
-            }
+                    outStorage.SetByMove(ref alignedStorage.Ref);
+                    return Result.Success;
+                }
             case GameCardPartition.Logo:
-            {
-                Result res = EnsureLogoDataCached();
-                if (res.IsFailure() && !ResultFs.PartitionNotFound.Includes(res))
-                    return res.Miss();
+                {
+                    Result res = EnsureLogoDataCached();
+                    if (res.IsFailure() && !ResultFs.PartitionNotFound.Includes(res))
+                        return res.Miss();
 
-                outStorage.SetByCopy(in _logoPartitionStorage);
-                return Result.Success;
-            }
+                    outStorage.SetByCopy(in _logoPartitionStorage);
+                    return Result.Success;
+                }
         }
 
         return ResultFs.PartitionNotFound.Log();
@@ -177,16 +182,19 @@ public class GameCardRootPartition : IDisposable
 
         using var rootPartitionFs = new Sha256PartitionFileSystem();
         Result res = rootPartitionFs.Initialize(_partitionFsMeta.Get, in _alignedRootStorage);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var file = new UniqueRef<IFile>();
 
         using var pathLogo = new Path();
         res = PathFunctions.SetUpFixedPath(ref pathLogo.Ref(), LogoPartitionPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = rootPartitionFs.OpenFile(ref file.Ref, in pathLogo, OpenMode.Read);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _logoPartitionData = ArrayPool<byte>.Shared.Rent(LogoPartitionSizeMax);
 
@@ -195,7 +203,8 @@ public class GameCardRootPartition : IDisposable
         if (ResultFs.DataCorrupted.Includes(res))
             return ResultFs.GameCardLogoDataCorrupted.LogConverted(res);
 
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (readSize != logoEntry.Size)
             return ResultFs.GameCardLogoDataSizeInvalid.Log();
@@ -248,7 +257,8 @@ public class GameCardFileSystemCreator : IGameCardFileSystemCreator
                 // Open an IStorage of the game card's normal area.
                 using var rootStorage = new SharedRef<IStorage>();
                 res = _gameCardStorageCreator.CreateReadOnly(handle, ref rootStorage.Ref);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 // Make sure reads to the game card are aligned to the game card's sector size.
                 const int dataAlignment = 512;
@@ -259,7 +269,8 @@ public class GameCardFileSystemCreator : IGameCardFileSystemCreator
                     return ResultFs.AllocationMemoryFailedInGameCardFileSystemCreatorC.Log();
 
                 res = _fsServer.Storage.GetGameCardStatus(out GameCardStatus status, handle);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 // Get an IStorage of the start of the root partition to the start of the secure area.
                 long updateAndNormalPartitionSize = status.NormalAreaSize - status.PartitionFsHeaderAddress;
@@ -275,10 +286,12 @@ public class GameCardFileSystemCreator : IGameCardFileSystemCreator
                     return ResultFs.AllocationMemoryFailedInGameCardFileSystemCreatorG.Log();
 
                 res = GetSaltFromCompatibilityType(out Optional<byte> salt, status.CompatibilityType);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = rootPartitionFsMeta.Get.Initialize(rootFsStorage.Get, _allocator, status.PartitionFsHeaderHash, salt);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 _rootPartition.Reset(new GameCardRootPartition(handle, ref rootFsStorage.Ref, _gameCardStorageCreator,
                     ref rootPartitionFsMeta.Ref, _fsServer));
@@ -292,7 +305,8 @@ public class GameCardFileSystemCreator : IGameCardFileSystemCreator
         using var partitionStorage = new SharedRef<IStorage>();
         res = _rootPartition.Get.OpenPartition(ref partitionStorage.Ref, out ReadOnlyRef<PartitionEntry> refEntry,
             handle, partitionType);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Initialize a Sha256PartitionFileSystem for reading the partition's file system.
         using var partitionFsMeta = new UniqueRef<Sha256PartitionFileSystemMeta>(new Sha256PartitionFileSystemMeta());
@@ -302,23 +316,27 @@ public class GameCardFileSystemCreator : IGameCardFileSystemCreator
         if (partitionType == GameCardPartition.Logo)
         {
             res = partitionFsMeta.Get.Initialize(partitionStorage.Get, _allocator);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
             res = partitionFsMeta.Get.Initialize(partitionStorage.Get, _allocator, refEntry.Value.Hash);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         res = Sha256PartitionFileSystemMeta.QueryMetaDataSize(out _, partitionStorage.Get);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var fs = new SharedRef<Sha256PartitionFileSystem>(new Sha256PartitionFileSystem());
         if (!fs.HasValue)
             return ResultFs.AllocationMemoryFailedInGameCardFileSystemCreatorF.Log();
 
         res = fs.Get.Initialize(ref partitionFsMeta.Ref, in partitionStorage);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outFileSystem.SetByMove(ref fs.Ref);
         return Result.Success;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Impl;
@@ -38,7 +38,8 @@ public static class UserFileSystemPrivate
             res = fs.Impl.FindFileSystem(out fileSystem, out subPath, path);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
         {
@@ -66,7 +67,8 @@ public static class UserFileSystemPrivate
 
         Result res = fs.Impl.FindFileSystem(out FileSystemAccessor fileSystem, out U8Span subPath, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fileSystem.GetTotalSpaceSize(out totalSpace, subPath);
         fs.Impl.AbortIfNeeded(res);
@@ -77,7 +79,8 @@ public static class UserFileSystemPrivate
     {
         Result res = fs.Impl.FindFileSystem(out FileSystemAccessor fileSystem, out U8Span subPath, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fileSystem.QueryEntry(Span<byte>.Empty, ReadOnlySpan<byte>.Empty, QueryId.SetConcatenationFileAttribute,
             subPath);
@@ -92,7 +95,8 @@ public static class UserFileSystemPrivate
 
         Result res = fs.Impl.FindFileSystem(out FileSystemAccessor fileSystem, out _, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fileSystem.QueryEntry(SpanHelpers.AsByteSpan(ref info), ReadOnlySpan<byte>.Empty,
             QueryId.QueryUnpreparedFileInformation, new U8Span("/"u8));
@@ -124,11 +128,13 @@ public static class UserFileSystemPrivate
 
         Result res = fs.Impl.FindFileSystem(out FileSystemAccessor fileSystem, out _, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fileSystem.GetFileSystemAttribute(out FileSystemAttribute attribute);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         int retValue = 0;
         bool hasRetValue = false;
@@ -148,11 +154,13 @@ public static class UserFileSystemPrivate
 
         Result res = fs.Impl.FindFileSystem(out FileSystemAccessor fileSystem, out _, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fileSystem.GetFileSystemAttribute(out FileSystemAttribute attribute);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         int retValue = 0;
         bool hasRetValue = false;
@@ -172,11 +180,13 @@ public static class UserFileSystemPrivate
 
         Result res = fs.Impl.FindFileSystem(out FileSystemAccessor fileSystem, out _, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fileSystem.GetFileSystemAttribute(out FileSystemAttribute attribute);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         int retValue = 0;
         bool hasRetValue = false;
@@ -199,11 +209,13 @@ public static class UserFileSystemPrivate
 
         Result res = fs.Impl.FindFileSystem(out FileSystemAccessor fileSystem, out _, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fileSystem.GetFileSystemAttribute(out FileSystemAttribute attribute);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         int retValue = 0;
         bool hasRetValue = false;
@@ -221,11 +233,13 @@ public static class UserFileSystemPrivate
 
         Result res = fs.Impl.FindFileSystem(out FileSystemAccessor fileSystem, out _, path);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fileSystem.GetFileSystemAttribute(out outAttribute);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

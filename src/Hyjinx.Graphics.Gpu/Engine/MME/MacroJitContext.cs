@@ -11,7 +11,7 @@ namespace Hyjinx.Graphics.Gpu.Engine.MME
     partial class MacroJitContext
     {
         private readonly ILogger<MacroJitContext> _logger = Logger.DefaultLoggerFactory.CreateLogger<MacroJitContext>();
-        
+
         /// <summary>
         /// Arguments FIFO.
         /// </summary>

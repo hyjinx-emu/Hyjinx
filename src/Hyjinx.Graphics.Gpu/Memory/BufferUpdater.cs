@@ -76,7 +76,8 @@ namespace Hyjinx.Graphics.Gpu.Memory
                         var range = new BufferRange(_handle, 0, data.Length);
                         _renderer.Pipeline.SetUniformBuffers(stackalloc[] { new BufferAssignment(0, range) });
                     }
-                };
+                }
+                ;
 
                 _renderer.SetBufferData(_handle, _startOffset, data[_startOffset.._endOffset]);
 

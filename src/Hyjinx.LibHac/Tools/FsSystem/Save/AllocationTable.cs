@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -99,7 +99,8 @@ public class AllocationTable
         int freeList = GetFreeListBlockIndex();
 
         int newFreeList = Trim(freeList, blockCount);
-        if (newFreeList == -1) return -1;
+        if (newFreeList == -1)
+            return -1;
 
         SetFreeListBlockIndex(newFreeList);
 
@@ -194,7 +195,8 @@ public class AllocationTable
             blocksRemaining -= segmentLength;
         }
 
-        if (listAIndex == -1 || listBIndex == -1) return -1;
+        if (listAIndex == -1 || listBIndex == -1)
+            return -1;
 
         AllocationTableEntry listANode = ReadEntry(listAIndex);
         AllocationTableEntry listBNode = ReadEntry(listBIndex);
@@ -220,7 +222,8 @@ public class AllocationTable
         int segAIndex = BlockToEntryIndex(segmentBlockIndex);
 
         AllocationTableEntry segA = ReadEntry(segAIndex);
-        if (!segA.IsMultiBlockSegment()) throw new ArgumentException("Cannot split a single-entry segment.");
+        if (!segA.IsMultiBlockSegment())
+            throw new ArgumentException("Cannot split a single-entry segment.");
 
         AllocationTableEntry segARange = ReadEntry(segAIndex + 1);
         int originalLength = segARange.GetNext() - segARange.GetPrev() + 1;
@@ -283,7 +286,8 @@ public class AllocationTable
     {
         int freeListStart = GetFreeListBlockIndex();
 
-        if (freeListStart == -1) return 0;
+        if (freeListStart == -1)
+            return 0;
 
         return GetListLength(freeListStart);
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -30,14 +30,16 @@ public class InitialProcessBinaryReader : IDisposable
 
         // Verify there's enough data to read the header
         Result res = binaryStorage.Get.GetSize(out long iniSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (iniSize < Unsafe.SizeOf<IniHeader>())
             return ResultLibHac.InvalidIniFileSize.Log();
 
         // Read the INI file header and validate some of its values.
         res = binaryStorage.Get.Read(0, SpanHelpers.AsByteSpan(ref _header));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (_header.Magic != ExpectedMagic)
             return ResultLibHac.InvalidIniMagic.Log();
@@ -48,7 +50,8 @@ public class InitialProcessBinaryReader : IDisposable
         // There's no metadata with the offsets of each KIP; they're all stored sequentially in the file.
         // Read the size of each KIP to get their offsets.
         res = GetKipOffsets(out _offsets, binaryStorage, _header.ProcessCount);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _storage.SetByCopy(in binaryStorage);
         return Result.Success;
@@ -72,7 +75,8 @@ public class InitialProcessBinaryReader : IDisposable
         UnsafeHelpers.SkipParamInit(out kipOffsets);
 
         Result res = iniStorage.Get.GetSize(out long iniStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var offsets = new (int offset, int size)[processCount];
         int offset = Unsafe.SizeOf<IniHeader>();
@@ -84,7 +88,8 @@ public class InitialProcessBinaryReader : IDisposable
                 new SharedRef<IStorage>(new SubStorage(in iniStorage, offset, iniStorageSize - offset));
 
             res = kipReader.Initialize(in kipStorage);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             int kipSize = kipReader.GetFileSize();
             offsets[i] = (offset, kipSize);

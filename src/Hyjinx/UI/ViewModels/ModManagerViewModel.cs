@@ -222,7 +222,7 @@ namespace Hyjinx.Ava.UI.ViewModels
 
             Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                 "Deleting mod at '{pathToDelete}'", pathToDelete);
-            
+
             Directory.Delete(pathToDelete, true);
 
             Mods.Remove(model);

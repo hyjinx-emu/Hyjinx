@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Crypto.Impl;
 
 namespace LibHac.Crypto;

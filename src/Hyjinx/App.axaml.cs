@@ -20,9 +20,9 @@ namespace Hyjinx.Ava
 {
     public partial class App : Application
     {
-        private static readonly ILogger<App> _logger = 
+        private static readonly ILogger<App> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<App>();
-        
+
         public override void Initialize()
         {
             Name = $"Hyjinx {Program.Version}";

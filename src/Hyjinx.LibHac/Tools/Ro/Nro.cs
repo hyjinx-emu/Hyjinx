@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Tools.FsSystem;
@@ -40,7 +40,8 @@ public class Nro
     {
         NroSegment segment = Header.NroSegments[(int)type];
 
-        if (segment.Size <= 0) return new NullStorage(0);
+        if (segment.Size <= 0)
+            return new NullStorage(0);
 
         return Storage.Slice(segment.FileOffset, segment.Size, leaveOpen);
     }
@@ -49,7 +50,8 @@ public class Nro
     {
         NroAssetSection header = AssetHeader.NroAssetSections[(int)type];
 
-        if (header.Size <= 0) return new NullStorage(0);
+        if (header.Size <= 0)
+            return new NullStorage(0);
 
         return AssetStorage.Slice(header.FileOffset, header.Size, leaveOpen);
     }

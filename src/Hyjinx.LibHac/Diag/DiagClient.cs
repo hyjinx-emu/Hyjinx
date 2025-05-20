@@ -1,4 +1,4 @@
-﻿namespace LibHac.Diag;
+namespace LibHac.Diag;
 
 public class DiagClient
 {

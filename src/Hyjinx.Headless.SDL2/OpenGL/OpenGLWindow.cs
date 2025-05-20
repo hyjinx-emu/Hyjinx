@@ -15,9 +15,9 @@ namespace Hyjinx.Headless.SDL2.OpenGL
 {
     internal partial class OpenGLWindow : WindowBase
     {
-        private static readonly ILogger<OpenGLWindow> _logger = 
+        private static readonly ILogger<OpenGLWindow> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<OpenGLWindow>();
-        
+
         private static void CheckResult(int result)
         {
             if (result < 0)

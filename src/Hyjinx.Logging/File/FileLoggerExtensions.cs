@@ -29,7 +29,7 @@ public static class FileLoggerExtensions
     public static ILoggingBuilder AddFile(this ILoggingBuilder builder)
     {
         builder.AddConfiguration();
-        
+
         builder.AddFileFormatter<SimpleFileFormatter, SimpleFileFormatterOptions, SimpleFileFormatterConfigureOptions>();
 
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, FileLoggerProvider>());

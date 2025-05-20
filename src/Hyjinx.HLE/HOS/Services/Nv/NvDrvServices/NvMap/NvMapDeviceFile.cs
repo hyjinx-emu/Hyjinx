@@ -78,12 +78,12 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
 
             return NvInternalResult.Success;
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Invalid size 0x{size:x8}!")]
         private partial void LogInvalidSizeArgument(uint size);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Created map {handle} with size 0x{size:x8}!")]
@@ -106,7 +106,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
 
             return NvInternalResult.Success;
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Invalid handle 0x{handle:x8}!")]
@@ -170,7 +170,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Invalid alignment 0x{align:x8}!")]
         private partial void LogInvalidAlignment(int align);
-        
+
         private NvInternalResult Free(ref NvMapFree arguments)
         {
             NvMapHandle map = GetMapFromHandle(Owner, arguments.Handle);
@@ -295,7 +295,7 @@ namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
                 return false;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
             Message = "Deleted map {handle}!")]

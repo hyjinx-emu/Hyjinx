@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Account;
 using LibHac.Os;
 

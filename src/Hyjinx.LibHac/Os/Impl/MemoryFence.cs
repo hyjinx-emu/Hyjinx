@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.X86;
 
 namespace LibHac.Os.Impl;

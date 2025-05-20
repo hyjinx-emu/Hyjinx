@@ -17,9 +17,9 @@ namespace Hyjinx.HLE.HOS
 {
     partial class ArmProcessContextFactory : IProcessContextFactory
     {
-        private static readonly ILogger<ArmProcessContextFactory> _logger = 
+        private static readonly ILogger<ArmProcessContextFactory> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<ArmProcessContextFactory>();
-        
+
         private readonly ITickSource _tickSource;
         private readonly GpuContext _gpu;
         private readonly string _titleIdText;
@@ -52,17 +52,17 @@ namespace Hyjinx.HLE.HOS
             EventId = (int)LogClass.Cpu, EventName = nameof(LogClass.Cpu),
             Message = "Host system doesn't support views, falling back to software page table.")]
         private partial void LogHostSystemUnsupportedViews();
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Cpu, EventName = nameof(LogClass.Cpu),
             Message = "Address space creation failed, falling back to software page table.")]
         private partial void LogAddressSpaceCreationFailed();
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Emulation, EventName = nameof(LogClass.Emulation),
             Message = "Allocated address space (0x{size:X}) is smaller than guest application requirements (0x{expected:X})")]
         private partial void LogAllocatedSpaceSmallerThanExpected(ulong size, ulong expected);
-        
+
         public IProcessContext Create(KernelContext context, ulong pid, ulong addressSpaceSize, InvalidAccessHandler invalidAccessHandler, bool for64Bit)
         {
             IArmProcessContext processContext;

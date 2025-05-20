@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
@@ -78,7 +78,8 @@ public ref struct U8StringBuilder
     internal void AppendInternal(scoped ReadOnlySpan<byte> value)
     {
         // Once in the Overflowed state, nothing else is written to the buffer.
-        if (Overflowed) return;
+        if (Overflowed)
+            return;
 
         int valueLength = StringUtils.GetLength(value);
 
@@ -110,7 +111,8 @@ public ref struct U8StringBuilder
 
     internal void AppendInternal(byte value)
     {
-        if (Overflowed) return;
+        if (Overflowed)
+            return;
 
         if (!TryEnsureAdditionalCapacity(1))
         {
@@ -135,7 +137,8 @@ public ref struct U8StringBuilder
 
     private void AppendFormatInt64(long value, ulong mask, char format, byte precision)
     {
-        if (Overflowed) return;
+        if (Overflowed)
+            return;
 
         // Check if we have enough remaining buffer to fit the required padding.
         if (!TryEnsureAdditionalCapacity(0))
@@ -186,7 +189,8 @@ public ref struct U8StringBuilder
 
     private void AppendFormatUInt64(ulong value, char format, byte precision)
     {
-        if (Overflowed) return;
+        if (Overflowed)
+            return;
 
         if (!TryEnsureAdditionalCapacity(0))
         {
@@ -225,7 +229,8 @@ public ref struct U8StringBuilder
 
     private void AppendFormatFloat(float value, char format, byte precision)
     {
-        if (Overflowed) return;
+        if (Overflowed)
+            return;
 
         if (!TryEnsureAdditionalCapacity(0))
         {
@@ -264,7 +269,8 @@ public ref struct U8StringBuilder
 
     private void AppendFormatDouble(double value, char format, byte precision)
     {
-        if (Overflowed) return;
+        if (Overflowed)
+            return;
 
         if (!TryEnsureAdditionalCapacity(0))
         {
@@ -401,7 +407,8 @@ public ref struct U8StringBuilder
 
     private readonly void ThrowIfBufferLengthIsZero()
     {
-        if (Buffer.Length == 0) throw new ArgumentException("Buffer length must be greater than 0.");
+        if (Buffer.Length == 0)
+            throw new ArgumentException("Buffer length must be greater than 0.");
     }
 
     /// <summary>

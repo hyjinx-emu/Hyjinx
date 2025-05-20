@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Storage.Sf;
 using LibHac.Os;
@@ -86,7 +86,8 @@ internal class SdCardStorageDevice : SdmmcStorageInterfaceAdapter, IStorageDevic
     public Result Lock(ref UniqueLockRef<SdkMutexType> outLock)
     {
         Result res = _manager.Get.Lock(ref outLock, _handle);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -96,7 +97,8 @@ internal class SdCardStorageDevice : SdmmcStorageInterfaceAdapter, IStorageDevic
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
 
         Result res = Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return base.Read(offset, destination, size).Ret();
     }
@@ -106,7 +108,8 @@ internal class SdCardStorageDevice : SdmmcStorageInterfaceAdapter, IStorageDevic
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
 
         Result res = Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return base.Write(offset, source, size).Ret();
     }
@@ -118,7 +121,8 @@ internal class SdCardStorageDevice : SdmmcStorageInterfaceAdapter, IStorageDevic
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
 
         Result res = Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return base.GetSize(out size).Ret();
     }

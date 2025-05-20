@@ -160,16 +160,19 @@ internal class FileSystemAccessor : IDisposable
             if (_pathFlags.IsWindowsPathAllowed())
             {
                 res = path.InitializeWithReplaceForwardSlashes(pathBuffer.Value);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
             else
             {
                 res = path.InitializeWithReplaceBackslash(pathBuffer.Value);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             res = path.Normalize(_pathFlags);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         if (path.GetLength() > PathTool.EntryNameLengthMax)
@@ -182,21 +185,24 @@ internal class FileSystemAccessor : IDisposable
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (_isPathCacheAttached)
         {
             using UniqueLock lk = Hos.Fs.Impl.LockPathBasedFileDataCacheEntries();
 
             res = _fileSystem.Get.CreateFile(in pathNormalized, size, option);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Hos.Fs.Impl.InvalidatePathBasedFileDataCacheEntry(this, in pathNormalized);
         }
         else
         {
             res = _fileSystem.Get.CreateFile(in pathNormalized, size, option);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -206,10 +212,12 @@ internal class FileSystemAccessor : IDisposable
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.DeleteFile(in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -218,10 +226,12 @@ internal class FileSystemAccessor : IDisposable
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.CreateDirectory(in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -230,10 +240,12 @@ internal class FileSystemAccessor : IDisposable
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.CreateDirectory(in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -242,10 +254,12 @@ internal class FileSystemAccessor : IDisposable
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.DeleteDirectoryRecursively(in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -254,10 +268,12 @@ internal class FileSystemAccessor : IDisposable
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.CleanDirectoryRecursively(in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -266,25 +282,29 @@ internal class FileSystemAccessor : IDisposable
     {
         using var currentPathNormalized = new Path();
         Result res = SetUpPath(ref currentPathNormalized.Ref(), currentPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var newPathNormalized = new Path();
         res = SetUpPath(ref newPathNormalized.Ref(), newPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (_isPathCacheAttached)
         {
             using UniqueLock lk = Hos.Fs.Impl.LockPathBasedFileDataCacheEntries();
 
             res = _fileSystem.Get.RenameFile(in currentPathNormalized, in newPathNormalized);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Hos.Fs.Impl.InvalidatePathBasedFileDataCacheEntry(this, in newPathNormalized);
         }
         else
         {
             res = _fileSystem.Get.RenameFile(in currentPathNormalized, in newPathNormalized);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -294,25 +314,29 @@ internal class FileSystemAccessor : IDisposable
     {
         using var currentPathNormalized = new Path();
         Result res = SetUpPath(ref currentPathNormalized.Ref(), currentPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var newPathNormalized = new Path();
         res = SetUpPath(ref newPathNormalized.Ref(), newPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (_isPathCacheAttached)
         {
             using UniqueLock lk = Hos.Fs.Impl.LockPathBasedFileDataCacheEntries();
 
             res = _fileSystem.Get.RenameDirectory(in currentPathNormalized, in newPathNormalized);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Hos.Fs.Impl.InvalidatePathBasedFileDataCacheEntries(this);
         }
         else
         {
             res = _fileSystem.Get.RenameDirectory(in currentPathNormalized, in newPathNormalized);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -324,10 +348,12 @@ internal class FileSystemAccessor : IDisposable
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.GetEntryType(out entryType, in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -338,10 +364,12 @@ internal class FileSystemAccessor : IDisposable
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.GetFreeSpaceSize(out freeSpace, in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -352,10 +380,12 @@ internal class FileSystemAccessor : IDisposable
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.GetTotalSpaceSize(out totalSpace, in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -364,11 +394,13 @@ internal class FileSystemAccessor : IDisposable
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var file = new UniqueRef<IFile>();
         res = _fileSystem.Get.OpenFile(ref file.Ref, in pathNormalized, mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var accessor = new FileAccessor(Hos, ref file.Ref, this, mode);
 
@@ -403,11 +435,13 @@ internal class FileSystemAccessor : IDisposable
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var directory = new UniqueRef<IDirectory>();
         res = _fileSystem.Get.OpenDirectory(ref directory.Ref, in pathNormalized, mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var accessor = new DirectoryAccessor(ref directory.Ref, this);
 
@@ -452,10 +486,12 @@ internal class FileSystemAccessor : IDisposable
 
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.GetFileTimeStampRaw(out timeStamp, in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -471,7 +507,8 @@ internal class FileSystemAccessor : IDisposable
         else
         {
             Result res = _fileSystem.Get.GetFileSystemAttribute(out outAttribute);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _fsAttribute.Set(in outAttribute);
         }
@@ -483,10 +520,12 @@ internal class FileSystemAccessor : IDisposable
     {
         using var pathNormalized = new Path();
         Result res = SetUpPath(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _fileSystem.Get.QueryEntry(outBuffer, inBuffer, queryId, in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -519,7 +558,8 @@ internal class FileSystemAccessor : IDisposable
             return ResultFs.PreconditionViolation.Log();
 
         Result res = _saveDataAttributeGetter.Get.GetSaveDataAttribute(out attribute);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

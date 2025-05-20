@@ -218,7 +218,7 @@ namespace Hyjinx.HLE.HOS.Services.Settings
             {
                 LogSettingNotFound(askedSetting);
             }
-            
+
             return ResultCode.Success;
         }
 
@@ -231,12 +231,12 @@ namespace Hyjinx.HLE.HOS.Services.Settings
             EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
             Message = "{setting} String value size is too big!")]
         private partial void LogSettingTooLarge(string setting);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceSet, EventName = nameof(LogClass.ServiceSet),
             Message = "{setting} not found!")]
         private partial void LogSettingNotFound(string setting);
-        
+
         [CommandCmif(60)]
         // IsUserSystemClockAutomaticCorrectionEnabled() -> bool
         public ResultCode IsUserSystemClockAutomaticCorrectionEnabled(ServiceCtx context)

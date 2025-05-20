@@ -29,7 +29,7 @@ public static class ConsoleLoggerExtensions
     public static ILoggingBuilder AddConsole(this ILoggingBuilder builder)
     {
         builder.AddConfiguration();
-        
+
         builder.AddConsoleFormatter<SimpleConsoleFormatter, SimpleConsoleFormatterOptions, SimpleConsoleFormatterConfigureOptions>();
 
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, ConsoleLoggerProvider>());
@@ -142,8 +142,9 @@ internal sealed class ConsoleLoggerFormatterConfigureOptions<TFormatter, [Dynami
 {
     [RequiresDynamicCode(ConsoleLoggerExtensions.RequiresDynamicCodeMessage)]
     [RequiresUnreferencedCode(ConsoleLoggerExtensions.TrimmingRequiresUnreferencedCodeMessage)]
-    public  ConsoleLoggerFormatterConfigureOptions(ILoggerProviderConfiguration<ConsoleLoggerProvider> providerConfiguration) :
-        base(providerConfiguration.GetFormatterOptionsSection()) { }
+    public ConsoleLoggerFormatterConfigureOptions(ILoggerProviderConfiguration<ConsoleLoggerProvider> providerConfiguration) :
+        base(providerConfiguration.GetFormatterOptionsSection())
+    { }
 }
 
 internal sealed class ConsoleLoggerFormatterOptionsChangeTokenSource<TFormatter, TOptions> : ConfigurationChangeTokenSource<TOptions>

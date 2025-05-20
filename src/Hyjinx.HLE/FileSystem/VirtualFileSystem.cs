@@ -30,10 +30,10 @@ namespace Hyjinx.HLE.FileSystem
     {
         public static readonly string SystemNandPath = Path.Combine(AppDataManager.DefaultNandDir, "system");
         public static readonly string UserNandPath = Path.Combine(AppDataManager.DefaultNandDir, "user");
-        
+
         private static readonly ILogger<VirtualFileSystem> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<VirtualFileSystem>();
-        
+
         private static bool _isInitialized = false;
 
         public KeySet KeySet { get; private set; }
@@ -41,7 +41,7 @@ namespace Hyjinx.HLE.FileSystem
         public ModLoader ModLoader { get; } = new();
 
         private readonly ConcurrentDictionary<ulong, Stream> _romFsByPid = new();
-        
+
         public static VirtualFileSystem CreateInstance()
         {
             if (_isInitialized)
@@ -52,9 +52,9 @@ namespace Hyjinx.HLE.FileSystem
             _isInitialized = true;
 
             var result = new VirtualFileSystem();
-            
+
             result.ReloadKeySet();
-            
+
             return result;
         }
 
@@ -62,7 +62,7 @@ namespace Hyjinx.HLE.FileSystem
         {
             KeySet ??= KeySet.CreateDefaultKeySet();
         }
-        
+
         public void LoadRomFs(ulong pid, string fileName)
         {
             var romfsStream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
@@ -325,27 +325,27 @@ namespace Hyjinx.HLE.FileSystem
                 }
             }
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Error {error} when creating save data 0x{id:X} in the {spaceId} save data space.")]
         private static partial void LogErrorWhenCreatingSaveData(ILogger logger, string error, ulong id, SaveDataSpaceId spaceId);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Recreated directory for save data 0x{saveDataId:x} in the {spaceId} save data space")]
         private static partial void LogRecreatedDirectoryForSaveData(ILogger logger, ulong saveDataId, SaveDataSpaceId spaceId);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Fixed extra data for save data 0x{saveDataId:x} in the {spaceId} save data space")]
         private static partial void LogFixedExtraDataForSaveData(ILogger logger, ulong saveDataId, SaveDataSpaceId spaceId);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Error '{message}' occurred while fixing extra data for save data 0x{saveDataId:x} in the {spaceId} save data space")]
         private static partial void LogErrorWhileFixExtraDataForSaveData(ILogger logger, string message, ulong saveDataId, SaveDataSpaceId spaceId);
-        
+
         private static Result CreateSaveDataDirectory(HorizonClient hos, in SaveDataInfo info)
         {
             if (info.SpaceId != SaveDataSpaceId.User && info.SpaceId != SaveDataSpaceId.System)
@@ -480,7 +480,7 @@ namespace Hyjinx.HLE.FileSystem
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Error {error} when fixing extra data for system save data 0x{saveDataId:X}")]
         private static partial void LogErrorWhenFixingExtraData(ILogger logger, string error, ulong saveDataId);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Tried to rebuild extra data for system save data 0x{staticSaveDataId:x}")]

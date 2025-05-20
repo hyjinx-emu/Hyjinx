@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
@@ -135,33 +135,33 @@ public class DummyGameCardManager : IStorageDeviceManager, IStorageDeviceOperato
         switch (operation)
         {
             case GameCardManagerOperationIdValue.GetHandle:
-            {
-                return ResultFs.GameCardCardNotInserted.Log();
-            }
+                {
+                    return ResultFs.GameCardCardNotInserted.Log();
+                }
             case GameCardManagerOperationIdValue.GetGameCardErrorInfo:
-            {
-                if (buffer.Size < Unsafe.SizeOf<GameCardErrorInfo>())
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < Unsafe.SizeOf<GameCardErrorInfo>())
+                        return ResultFs.InvalidArgument.Log();
 
-                buffer.As<GameCardErrorInfo>() = default;
-                bytesWritten = Unsafe.SizeOf<GameCardErrorInfo>();
+                    buffer.As<GameCardErrorInfo>() = default;
+                    bytesWritten = Unsafe.SizeOf<GameCardErrorInfo>();
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             case GameCardManagerOperationIdValue.GetGameCardErrorReportInfo:
-            {
-                if (buffer.Size < Unsafe.SizeOf<GameCardErrorReportInfo>())
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < Unsafe.SizeOf<GameCardErrorReportInfo>())
+                        return ResultFs.InvalidArgument.Log();
 
-                buffer.As<GameCardErrorReportInfo>() = default;
-                bytesWritten = Unsafe.SizeOf<GameCardErrorReportInfo>();
+                    buffer.As<GameCardErrorReportInfo>() = default;
+                    bytesWritten = Unsafe.SizeOf<GameCardErrorReportInfo>();
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             case GameCardManagerOperationIdValue.ReadParamDirectly:
-            {
-                return ResultFs.GameCardCardNotInserted.Log();
-            }
+                {
+                    return ResultFs.GameCardCardNotInserted.Log();
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }
@@ -185,15 +185,15 @@ public class DummyGameCardManager : IStorageDeviceManager, IStorageDeviceOperato
         switch (operation)
         {
             case GameCardManagerOperationIdValue.IsGameCardActivationValid:
-            {
-                if (outBuffer.Size < sizeof(bool))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (outBuffer.Size < sizeof(bool))
+                        return ResultFs.InvalidArgument.Log();
 
-                outBuffer.As<bool>() = false;
-                bytesWritten = sizeof(bool);
+                    outBuffer.As<bool>() = false;
+                    bytesWritten = sizeof(bool);
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             case GameCardManagerOperationIdValue.GetGameCardAsicInfo:
                 return ResultFs.GameCardAccessFailed.Log();
 

@@ -68,7 +68,7 @@ internal sealed class AnsiParser
                         {
                             _onParseWriteAsync(message, startIndex, length, background, foreground, cancellationToken)
                                 .ConfigureAwait(false).GetAwaiter().GetResult();
-                            
+
                             startIndex = -1;
                             length = 0;
                         }
@@ -88,7 +88,7 @@ internal sealed class AnsiParser
                         {
                             _onParseWriteAsync(message, startIndex, length, background, foreground, cancellationToken)
                                 .ConfigureAwait(false).GetAwaiter().GetResult();
-                            
+
                             startIndex = -1;
                             length = 0;
                         }
@@ -128,7 +128,7 @@ internal sealed class AnsiParser
             _onParseWriteAsync(message, startIndex, length, background, foreground, cancellationToken)
                 .ConfigureAwait(false).GetAwaiter().GetResult();
         }
-        
+
         return Task.CompletedTask;
     }
 

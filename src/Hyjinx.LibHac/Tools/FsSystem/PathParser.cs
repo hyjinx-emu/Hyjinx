@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 namespace LibHac.Tools.FsSystem;
@@ -52,7 +52,8 @@ public ref struct PathParser
     /// <see langword="false"/> if there are no remaining path segments.</returns>
     public bool MoveNext()
     {
-        if (_finished) return false;
+        if (_finished)
+            return false;
 
         _offset = _offset + _length + 1;
         int end = _offset;

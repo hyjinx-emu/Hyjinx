@@ -1,4 +1,4 @@
-﻿namespace LibHac.FsSrv;
+namespace LibHac.FsSrv;
 
 public abstract class MemoryReport
 {

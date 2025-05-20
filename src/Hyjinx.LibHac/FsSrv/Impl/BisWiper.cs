@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.FsSrv.Sf;
 using LibHac.Sf;

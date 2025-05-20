@@ -11,7 +11,7 @@ namespace Hyjinx.UI.Common.SystemInfo
     partial class WindowsSystemInfo : SystemInfo
     {
         private static readonly ILogger<WindowsSystemInfo> _logger = Logger.DefaultLoggerFactory.CreateLogger<WindowsSystemInfo>();
-        
+
         internal WindowsSystemInfo()
         {
             CpuName = $"{GetCpuidCpuName() ?? GetCpuNameWMI()} ; {LogicalCoreCount} logical"; // WMI is very slow
@@ -25,7 +25,7 @@ namespace Hyjinx.UI.Common.SystemInfo
             {
                 return (memStatus.TotalPhys, memStatus.AvailPhys); // Bytes
             }
-            
+
             LogFailedDueToError(_logger, nameof(GlobalMemoryStatusEx), Marshal.GetLastWin32Error());
 
             return (0, 0);
@@ -91,7 +91,7 @@ namespace Hyjinx.UI.Common.SystemInfo
 
             return null;
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "WMI is not available: {message}")]

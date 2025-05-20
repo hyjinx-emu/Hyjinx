@@ -14,7 +14,7 @@ namespace Hyjinx.Headless.SDL2.Vulkan
 {
     class VulkanWindow : WindowBase
     {
-        private readonly ILogger<VulkanWindow> _logger = 
+        private readonly ILogger<VulkanWindow> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<VulkanWindow>();
         private readonly GraphicsDebugLevel _glLogLevel;
 

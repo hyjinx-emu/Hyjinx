@@ -1,4 +1,4 @@
-﻿namespace Hyjinx.Logging.Console;
+namespace Hyjinx.Logging.Console;
 
 /// <summary>
 /// Options for a <see cref="ConsoleLoggerProvider"/>.

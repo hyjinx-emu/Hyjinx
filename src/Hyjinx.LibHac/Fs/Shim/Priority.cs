@@ -1,4 +1,4 @@
-﻿namespace LibHac.Fs
+namespace LibHac.Fs
 {
     public enum Priority
     {

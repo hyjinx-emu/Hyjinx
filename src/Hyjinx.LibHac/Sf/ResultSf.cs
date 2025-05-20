@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // This file was automatically generated.
 // Changes to this file will be lost when the file is regenerated.
 //
@@ -27,6 +27,6 @@ public static class ResultSf
 
     /// <summary>Error code: 2010-0811; Range: 811-819</summary>
     public static Result.Base.Abstract RequestDeferred { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Result.Base.Abstract(ModuleSf, 811, 819); }
-        /// <summary>Error code: 2010-0812; Inner value: 0x6580a</summary>
-        public static Result.Base RequestDeferredByUser => new Result.Base(ModuleSf, 812);
+    /// <summary>Error code: 2010-0812; Inner value: 0x6580a</summary>
+    public static Result.Base RequestDeferredByUser => new Result.Base(ModuleSf, 812);
 }

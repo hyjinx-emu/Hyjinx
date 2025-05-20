@@ -36,13 +36,13 @@ namespace Hyjinx.Ava.UI.Windows
     public partial class MainWindow : StyleableWindow
     {
         internal static MainWindowViewModel MainWindowViewModel { get; private set; }
-        
-        private static readonly ILogger<MainWindow> _logger = 
+
+        private static readonly ILogger<MainWindow> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<MainWindow>();
-        
+
         private bool _isLoading;
         private bool _applicationsLoadedOnce;
-        
+
         private UserChannelPersistence _userChannelPersistence;
         private static bool _deferLoad;
         private static string _launchPath;
@@ -322,7 +322,7 @@ namespace Hyjinx.Ava.UI.Windows
                     await Dispatcher.UIThread.InvokeAsync(ShowVmMaxMapCountWarning);
                 }
             }
-            
+
             if (_deferLoad)
             {
                 _deferLoad = false;
@@ -343,7 +343,7 @@ namespace Hyjinx.Ava.UI.Windows
                         {
                             _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                                 "Couldn't find requested application id '{launchApplicationId}' in '{launchPath}'.", _launchApplicationId, _launchPath);
-                            
+
                             await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
                         }
                     }
@@ -357,7 +357,7 @@ namespace Hyjinx.Ava.UI.Windows
                 {
                     _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "Couldn't find any application in '{launchPath}'.", _launchPath);
-                    
+
                     await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
                 }
             }
@@ -430,7 +430,7 @@ namespace Hyjinx.Ava.UI.Windows
 
             _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
             "Failed to find valid start-up coordinates. Defaulting to primary monitor center.");
-            
+
             return false;
         }
 

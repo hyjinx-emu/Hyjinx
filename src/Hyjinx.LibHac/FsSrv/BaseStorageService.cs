@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.FsCreator;
@@ -65,10 +65,12 @@ public readonly struct BaseStorageService
         using var scopedLayoutType = new ScopedStorageLayoutTypeSetter(storageFlag);
 
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = GetAccessibilityForOpenBisPartition(out Accessibility accessibility, programInfo, id);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         bool canAccess = accessibility.CanRead && accessibility.CanWrite;
 
@@ -77,7 +79,8 @@ public readonly struct BaseStorageService
 
         using var storage = new SharedRef<IStorage>();
         res = _serviceImpl.OpenBisStorage(ref storage.Ref, id);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var typeSetStorage =
             new SharedRef<IStorage>(new StorageLayoutTypeSetStorage(ref storage.Ref, storageFlag));
@@ -95,7 +98,8 @@ public readonly struct BaseStorageService
     public Result InvalidateBisCache()
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.InvalidateBisCache))
             return ResultFs.PermissionDenied.Log();
@@ -107,7 +111,8 @@ public readonly struct BaseStorageService
         GameCardPartitionRaw partitionId)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Accessibility accessibility =
             programInfo.AccessControl.GetAccessibilityFor(AccessibilityType.OpenGameCardStorage);
@@ -119,7 +124,8 @@ public readonly struct BaseStorageService
 
         using var storage = new SharedRef<IStorage>();
         res = _serviceImpl.OpenGameCardPartition(ref storage.Ref, handle, partitionId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Todo: Async storage
 
@@ -134,7 +140,8 @@ public readonly struct BaseStorageService
     public Result OpenDeviceOperator(ref SharedRef<IDeviceOperator> outDeviceOperator)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var deviceOperator =
             new SharedRef<IDeviceOperator>(new DeviceOperator(_serviceImpl.FsServer, programInfo.AccessControl,
@@ -148,7 +155,8 @@ public readonly struct BaseStorageService
     public Result OpenSdCardDetectionEventNotifier(ref SharedRef<IEventNotifier> outEventNotifier)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.OpenSdCardDetectionEventNotifier))
             return ResultFs.PermissionDenied.Log();
@@ -159,7 +167,8 @@ public readonly struct BaseStorageService
     public Result OpenGameCardDetectionEventNotifier(ref SharedRef<IEventNotifier> outEventNotifier)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.OpenGameCardDetectionEventNotifier))
             return ResultFs.PermissionDenied.Log();
@@ -170,7 +179,8 @@ public readonly struct BaseStorageService
     public Result SimulateDeviceDetectionEvent(SdmmcPort port, SimulatingDeviceDetectionMode mode, bool signalEvent)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.SimulateDevice))
             return ResultFs.PermissionDenied.Log();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -92,7 +92,8 @@ internal class GameCardStorageDevice : GameCardStorageInterfaceAdapter, IStorage
             ? _manager.Get.AcquireSecureLock(ref outLock, ref _handle, _cardDeviceId, _cardImageHash)
             : _manager.Get.AcquireReadLock(ref outLock, _handle);
 
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -114,7 +115,8 @@ internal class GameCardStorageDevice : GameCardStorageInterfaceAdapter, IStorage
 
         using var writeLock = new UniqueLock<ReaderWriterLock>();
         Result res = AcquireWriteLock(ref writeLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return HandleGameCardAccessResultImpl(result).Ret();
     }
@@ -139,7 +141,8 @@ internal class GameCardStorageDevice : GameCardStorageInterfaceAdapter, IStorage
         using var readLock = new SharedLock<ReaderWriterLock>();
 
         Result res = AcquireReadLock(ref readLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using SharedRef<GameCardStorageDevice> storageDevice =
             SharedRef<GameCardStorageDevice>.Create(in _selfReference);
@@ -160,10 +163,12 @@ internal class GameCardStorageDevice : GameCardStorageInterfaceAdapter, IStorage
         using var readLock = new SharedLock<ReaderWriterLock>();
 
         Result res = AcquireReadLock(ref readLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = base.Read(offset, destination, size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -173,10 +178,12 @@ internal class GameCardStorageDevice : GameCardStorageInterfaceAdapter, IStorage
         using var readLock = new SharedLock<ReaderWriterLock>();
 
         Result res = AcquireReadLock(ref readLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = base.Write(offset, source, size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -189,7 +196,8 @@ internal class GameCardStorageDevice : GameCardStorageInterfaceAdapter, IStorage
         using (var readLock = new SharedLock<ReaderWriterLock>())
         {
             Result res = AcquireReadLock(ref readLock.Ref());
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             resultGetSize = base.GetSize(out size);
         }

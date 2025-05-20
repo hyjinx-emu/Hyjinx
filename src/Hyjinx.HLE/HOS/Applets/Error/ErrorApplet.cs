@@ -23,9 +23,9 @@ namespace Hyjinx.HLE.HOS.Applets.Error
     {
         private const long ErrorMessageBinaryTitleId = 0x0100000000000801;
 
-        private static readonly ILogger<ErrorApplet> _logger = 
+        private static readonly ILogger<ErrorApplet> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<ErrorApplet>();
-        
+
         private readonly Horizon _horizon;
         private AppletSession _normalSession;
         private CommonArguments _commonArguments;

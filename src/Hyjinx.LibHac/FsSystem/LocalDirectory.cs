@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -30,11 +30,13 @@ public class LocalDirectory : IDirectory
         while (i < entryBuffer.Length && EntryEnumerator.MoveNext())
         {
             FileSystemInfo localEntry = EntryEnumerator.Current;
-            if (localEntry == null) break;
+            if (localEntry == null)
+                break;
 
             bool isDir = localEntry.Attributes.HasFlag(FileAttributes.Directory);
 
-            if (!CanReturnEntry(isDir, Mode)) continue;
+            if (!CanReturnEntry(isDir, Mode))
+                continue;
 
             ReadOnlySpan<byte> name = StringUtils.StringToUtf8(localEntry.Name);
             DirectoryEntryType type = isDir ? DirectoryEntryType.Directory : DirectoryEntryType.File;
@@ -62,7 +64,8 @@ public class LocalDirectory : IDirectory
         {
             bool isDir = (entry.Attributes & FileAttributes.Directory) != 0;
 
-            if (CanReturnEntry(isDir, Mode)) count++;
+            if (CanReturnEntry(isDir, Mode))
+                count++;
         }
 
         entryCount = count;

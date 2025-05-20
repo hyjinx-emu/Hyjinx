@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using LibHac.Common;
 using LibHac.Fs;
@@ -29,7 +29,8 @@ public class StreamFile : IFile
         UnsafeHelpers.SkipParamInit(out bytesRead);
 
         Result res = DryRead(out long toRead, offset, destination.Length, in option, Mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         lock (Locker)
         {
@@ -46,7 +47,8 @@ public class StreamFile : IFile
     protected override Result DoWrite(long offset, ReadOnlySpan<byte> source, in WriteOption option)
     {
         Result res = DryWrite(out _, offset, source.Length, in option, Mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         lock (Locker)
         {

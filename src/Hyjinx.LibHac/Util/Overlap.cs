@@ -1,4 +1,4 @@
-﻿namespace LibHac.Util;
+namespace LibHac.Util;
 
 public static class Overlap
 {

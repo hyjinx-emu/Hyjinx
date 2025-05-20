@@ -1,4 +1,4 @@
-﻿namespace LibHac.Fs.Fsa;
+namespace LibHac.Fs.Fsa;
 
 // ReSharper disable once InconsistentNaming
 public abstract class IAttributeFileSystem : IFileSystem

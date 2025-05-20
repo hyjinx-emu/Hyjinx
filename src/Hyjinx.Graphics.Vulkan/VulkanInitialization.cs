@@ -52,7 +52,7 @@ namespace Hyjinx.Graphics.Vulkan
         private static readonly string[] _requiredExtensions = {
             KhrSwapchain.ExtensionName,
         };
-        
+
         internal static VulkanInstance CreateInstance(Vk api, GraphicsDebugLevel logLevel, string[] requiredExtensions)
         {
             var enabledLayers = new List<string>();
@@ -141,7 +141,7 @@ namespace Hyjinx.Graphics.Vulkan
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Missing layer {layerName}")]
         private static partial void LogMissingLayer(ILogger logger, string layerName);
-        
+
         internal static VulkanPhysicalDevice FindSuitablePhysicalDevice(Vk api, VulkanInstance instance, SurfaceKHR surface, string preferredGpuId)
         {
             instance.EnumeratePhysicalDevices(out var physicalDevices).ThrowOnError();

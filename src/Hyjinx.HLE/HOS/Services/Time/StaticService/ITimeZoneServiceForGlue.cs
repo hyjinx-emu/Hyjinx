@@ -114,7 +114,7 @@ namespace Hyjinx.HLE.HOS.Services.Time.StaticService
             EventId = (int)LogClass.ServiceTime, EventName = nameof(LogClass.ServiceTime),
             Message = "TimeZoneRule buffer size is 0x{bufferSize:x} (expected 0x4000)")]
         private partial void LogBufferSizeMismatch(ulong bufferSize);
-        
+
         [CommandCmif(100)]
         // ToCalendarTime(nn::time::PosixTime time, buffer<nn::time::TimeZoneRule, 0x15> rules) -> (nn::time::CalendarTime, nn::time::sf::CalendarAdditionalInfo)
         public ResultCode ToCalendarTime(ServiceCtx context)

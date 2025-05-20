@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Bcat.Impl.Ipc;
 using LibHac.Bcat.Impl.Service.Core;
 using LibHac.Common;
@@ -39,7 +39,8 @@ internal class DeliveryCacheDirectoryService : IDeliveryCacheDirectoryService
 
             var metaReader = new DeliveryCacheFileMetaAccessor(Server);
             Result res = metaReader.ReadApplicationFileMeta(ApplicationId, ref name, false);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Count = metaReader.Count;
             _name = name;
@@ -60,7 +61,8 @@ internal class DeliveryCacheDirectoryService : IDeliveryCacheDirectoryService
 
             var metaReader = new DeliveryCacheFileMetaAccessor(Server);
             Result res = metaReader.ReadApplicationFileMeta(ApplicationId, ref _name, true);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             int i;
             for (i = 0; i < entryBuffer.Length; i++)

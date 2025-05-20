@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
@@ -17,7 +17,8 @@ public class NsoReader
     public Result Initialize(IFile nsoFile)
     {
         Result res = nsoFile.Read(out long bytesRead, 0, SpanHelpers.AsByteSpan(ref Header), ReadOption.None);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (bytesRead != Unsafe.SizeOf<NsoHeader>())
             return ResultLoader.InvalidNso.Log();
@@ -45,7 +46,8 @@ public class NsoReader
     public Result ReadSegment(SegmentType segment, Span<byte> buffer)
     {
         Result res = GetSegmentSize(segment, out uint segmentSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (buffer.Length < segmentSize)
             return ResultLibHac.BufferTooSmall.Log();
@@ -74,7 +76,8 @@ public class NsoReader
         uint loadAddress = isCompressed ? (uint)buffer.Length - fileSize : 0;
 
         Result res = NsoFile.Read(out long bytesRead, segment.FileOffset, buffer.Slice((int)loadAddress), ReadOption.None);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (bytesRead != fileSize)
             return ResultLoader.InvalidNso.Log();

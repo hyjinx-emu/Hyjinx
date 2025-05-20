@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Gc.Impl;
 
 namespace LibHac.Gc.Writer;

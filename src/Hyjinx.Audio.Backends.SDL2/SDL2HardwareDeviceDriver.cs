@@ -17,7 +17,7 @@ namespace Hyjinx.Audio.Backends.SDL2
     {
         private static readonly ILogger<SDL2HardwareDeviceDriver> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<SDL2HardwareDeviceDriver>();
-        
+
         private readonly ManualResetEvent _updateRequiredEvent;
         private readonly ManualResetEvent _pauseEvent;
         private readonly ConcurrentDictionary<SDL2HardwareDeviceSession, byte> _sessions;
@@ -168,7 +168,7 @@ namespace Hyjinx.Audio.Backends.SDL2
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "SDL2 open audio device initialization failed with error '{errorMessage}'.")]
         private static partial void LogDeviceInitializationFailed(ILogger logger, string errorMessage);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "SDL2 open audio device is not valid.")]

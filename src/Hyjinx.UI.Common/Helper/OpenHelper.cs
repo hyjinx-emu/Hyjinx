@@ -19,7 +19,7 @@ namespace Hyjinx.UI.Common.Helper
         private static partial IntPtr ILCreateFromPathW([MarshalAs(UnmanagedType.LPWStr)] string pszPath);
 
         private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(OpenHelper));
-        
+
         public static void OpenFolder(string path)
         {
             if (Directory.Exists(path))
@@ -89,7 +89,7 @@ namespace Hyjinx.UI.Common.Helper
                 LogFileDoesNotExist(_logger, path);
             }
         }
-        
+
         [LoggerMessage(LogLevel.Critical,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "File '{path}' does not exist!")]
@@ -121,7 +121,7 @@ namespace Hyjinx.UI.Common.Helper
                 LogCannotOpenUrl(_logger, url);
             }
         }
-        
+
         [LoggerMessage(LogLevel.Critical,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Cannot open url '{url}' on this platform!")]

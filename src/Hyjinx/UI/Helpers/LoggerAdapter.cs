@@ -12,12 +12,12 @@ namespace Hyjinx.Ava.UI.Helpers
     {
         private static readonly ILogger<LoggerAdapter> _logger =
             AppLogger.DefaultLoggerFactory.CreateLogger<LoggerAdapter>();
-        
+
         public static void Register()
         {
             AvaLogger.Sink = new LoggerAdapter();
         }
-        
+
         public bool IsEnabled(AvaLogLevel level, string area)
         {
             return _logger.IsEnabled(ConvertLevel(level));

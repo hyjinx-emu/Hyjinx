@@ -1,4 +1,4 @@
-﻿using Hyjinx.Logging.File.Internal;
+using Hyjinx.Logging.File.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -18,7 +18,7 @@ internal sealed class FileLoggerProvider : AbstractLoggerProvider<FileLoggerOpti
 {
     private ConcurrentDictionary<string, IFormatter> _formatters;
     private readonly LoggerProcessor _messageQueue;
-    
+
     /// <summary>
     /// Creates an instance of <see cref="FileLoggerProvider"/>.
     /// </summary>
@@ -29,9 +29,9 @@ internal sealed class FileLoggerProvider : AbstractLoggerProvider<FileLoggerOpti
     {
         SetFormatters(formatters);
 
-        var fileName = Path.Combine(options.CurrentValue.OutputDirectory!, 
+        var fileName = Path.Combine(options.CurrentValue.OutputDirectory!,
             $"app-{DateTime.Now:yyyyMMdd_HHmmss}.log");
-        
+
         var file = new FileOutput(new StreamWriter(fileName, Encoding.UTF8,
             new FileStreamOptions
             {
@@ -39,12 +39,12 @@ internal sealed class FileLoggerProvider : AbstractLoggerProvider<FileLoggerOpti
                 Access = FileAccess.Write,
                 Share = FileShare.Read
             }));
-        
+
         _messageQueue = new LoggerProcessor(
             file,
             file,
             options.CurrentValue.MaxQueueLength);
-        
+
         ReloadLoggerOptions(options.CurrentValue);
     }
 
@@ -54,17 +54,17 @@ internal sealed class FileLoggerProvider : AbstractLoggerProvider<FileLoggerOpti
         {
             logFormatter = _formatters[FileFormatterNames.Simple];
         }
-    
+
         return _loggers.TryGetValue(name, out FileLogger? logger) ?
             logger :
             _loggers.GetOrAdd(name, new FileLogger(name, _messageQueue, logFormatter, _scopeProvider, _options.CurrentValue));
     }
-    
+
     [MemberNotNull(nameof(_formatters))]
     private void SetFormatters(IEnumerable<IFormatter>? formatters = null)
     {
         var cd = new ConcurrentDictionary<string, IFormatter>(StringComparer.OrdinalIgnoreCase);
-    
+
         bool added = false;
         if (formatters != null)
         {
@@ -74,13 +74,13 @@ internal sealed class FileLoggerProvider : AbstractLoggerProvider<FileLoggerOpti
                 added = true;
             }
         }
-    
+
         if (!added)
         {
             cd.TryAdd(FileFormatterNames.Simple, new SimpleFileFormatter(new FormatterOptionsMonitor<SimpleFileFormatterOptions>(
                 new SimpleFileFormatterOptions())));
         }
-    
+
         _formatters = cd;
     }
 
@@ -90,10 +90,10 @@ internal sealed class FileLoggerProvider : AbstractLoggerProvider<FileLoggerOpti
         {
             logFormatter = _formatters[FileFormatterNames.Simple];
         }
-        
+
         // _messageQueue.FullMode = options.QueueFullMode;
         // _messageQueue.MaxQueueLength = options.MaxQueueLength;
-    
+
         foreach (KeyValuePair<string, FileLogger> logger in _loggers)
         {
             logger.Value.Options = options;
@@ -107,7 +107,7 @@ internal sealed class FileLoggerProvider : AbstractLoggerProvider<FileLoggerOpti
         {
             _messageQueue.Dispose();
         }
-        
+
         base.Dispose(disposing);
     }
 }

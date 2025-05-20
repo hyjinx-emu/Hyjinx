@@ -27,7 +27,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Process
             (KernelVersionRevision << 0);
 
         public KPageTableBase MemoryManager { get; private set; }
-        
+
         private readonly SortedDictionary<ulong, KTlsPageInfo> _fullTlsPages;
         private readonly SortedDictionary<ulong, KTlsPageInfo> _freeTlsPages;
 

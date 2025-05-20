@@ -48,7 +48,7 @@ internal abstract class AbstractLogger<TOptions> : ILogger
         }
 
         ArgumentNullException.ThrowIfNull(formatter);
-        
+
         t_stringWriter ??= new StringWriter();
         LogEntry<TState> logEntry = new(logLevel, _name, eventId, state, exception, Thread.CurrentThread.Name, _upTime.Elapsed, formatter);
         Formatter.Write(in logEntry, ScopeProvider, t_stringWriter);
@@ -58,14 +58,14 @@ internal abstract class AbstractLogger<TOptions> : ILogger
         {
             return;
         }
-        
+
         var computedAnsiString = sb.ToString();
         sb.Clear();
         if (sb.Capacity > 1024)
         {
             sb.Capacity = 1024;
         }
-        
+
         _queueProcessor.EnqueueMessage(new LogMessageEntry(computedAnsiString, logAsError: logLevel >= Options.LogToStandardErrorThreshold));
     }
 

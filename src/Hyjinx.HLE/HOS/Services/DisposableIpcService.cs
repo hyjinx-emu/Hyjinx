@@ -4,7 +4,7 @@ using System.Threading;
 namespace Hyjinx.HLE.HOS.Services
 {
     abstract class DisposableIpcService<T> : IpcService<T>, IDisposable
-        where T: DisposableIpcService<T>
+        where T : DisposableIpcService<T>
     {
         private int _disposeState;
 

@@ -224,7 +224,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
             _programList = new SortedList<int, (CachedShaderProgram, byte[])>();
             _backendParallelCompileThreads = Math.Min(Environment.ProcessorCount, 8); // Must be kept in sync with the backend code.
         }
-        
+
         /// <summary>
         /// Loads all shaders from the cache.
         /// </summary>
@@ -246,7 +246,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
             _totalCount = programCount;
 
             _stateChangeCallback(ShaderCacheState.Start, 0, programCount);
-            
+
             LogLoadingShadersFromCache(programCount);
 
             for (int index = 0; index < ThreadCount; index++)
@@ -330,7 +330,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
                         LogShaderCacheDeleted();
                     }
                 }
-                catch (Exception ex) when (ex is IOException or DiskCacheLoadException) 
+                catch (Exception ex) when (ex is IOException or DiskCacheLoadException)
                 {
                     LogErrorDeletingShaderCache(ex);
                 }
@@ -340,12 +340,12 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
 
             _stateChangeCallback(ShaderCacheState.Loaded, programCount, programCount);
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Loading {programCount} shaders from the cache...")]
         private partial void LogLoadingShadersFromCache(int programCount);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Error loading the shader cache.")]
@@ -355,37 +355,37 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Error decompressing the shader cache file.")]
         private partial void LogErrorDecompressingShaderCache(Exception exception);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Error reading the shader cache file.")]
         private partial void LogErrorReadingShaderCache(Exception exception);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Rebuilding {count} shaders...")]
         private partial void LogRebuildingShaders(int count);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Rebuilt {count} shaders successfully.")]
         private partial void LogRebuiltShadersSuccessful(int count);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Shader cache deleted due to corruption.")]
         private partial void LogShaderCacheDeleted();
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Error deleting the shader cache.")]
         private partial void LogErrorDeletingShaderCache(Exception exception);
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Shader cache loaded.")]
         private partial void LogShaderCacheLoaded();
-        
+
         /// <summary>
         /// Enqueues a host program for compilation.
         /// </summary>
@@ -622,7 +622,7 @@ namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
                 SignalCompiled();
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Error translating guest shader.")]

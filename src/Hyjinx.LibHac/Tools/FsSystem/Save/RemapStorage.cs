@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -51,7 +51,8 @@ public class RemapStorage : IStorage
 
     public override Result Read(long offset, Span<byte> destination)
     {
-        if (destination.Length == 0) return Result.Success;
+        if (destination.Length == 0)
+            return Result.Success;
 
         MapEntry entry = GetMapEntry(offset);
 
@@ -81,7 +82,8 @@ public class RemapStorage : IStorage
 
     public override Result Write(long offset, ReadOnlySpan<byte> source)
     {
-        if (source.Length == 0) return Result.Success;
+        if (source.Length == 0)
+            return Result.Success;
 
         MapEntry entry = GetMapEntry(offset);
 
@@ -96,7 +98,8 @@ public class RemapStorage : IStorage
             int bytesToWrite = (int)Math.Min(entry.VirtualOffsetEnd - inPos, remaining);
 
             Result res = BaseStorage.Write(entry.PhysicalOffset + entryPos, source.Slice(outPos, bytesToWrite));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outPos += bytesToWrite;
             inPos += bytesToWrite;
@@ -187,7 +190,8 @@ public class RemapStorage : IStorage
 
             foreach (MapEntry entry in segment.Entries)
             {
-                if (entry.VirtualOffsetEnd > offset) return entry;
+                if (entry.VirtualOffsetEnd > offset)
+                    return entry;
             }
         }
 

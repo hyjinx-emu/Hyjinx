@@ -16,7 +16,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
         private readonly ILogger<LdnProxyTcpSession> _logger =
             Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpSession>();
-        
+
         private byte[] _buffer;
         private int _bufferEnd;
 
@@ -53,7 +53,7 @@ namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
 
             _protocol.InvokeDisconnectStation(this);
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
             Message = "LdnProxyTCPSession disconnected!")]

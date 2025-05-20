@@ -34,7 +34,7 @@ namespace Hyjinx.Graphics.Vulkan
                 LogDebugInitializationFailed(result);
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Vulkan debug messenger initialization failed with error {result}")]

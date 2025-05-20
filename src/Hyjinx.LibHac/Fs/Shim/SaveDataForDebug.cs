@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -47,11 +47,13 @@ public static class SaveDataForDebug
         static Result SetRootPath(FileSystemClient fs, U8Span path)
         {
             Result res = PathUtility.ConvertToFspPath(out FspPath sfPath, path);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
             res = fileSystemProxy.Get.SetSaveDataRootPath(in sfPath);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -115,7 +117,8 @@ public static class SaveDataForDebug
             res = Ensure(fs, saveDataSize, saveDataJournalSize);
         }
 
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
 
@@ -125,7 +128,8 @@ public static class SaveDataForDebug
 
             Result res = fs.Impl.EnsureSaveDataImpl(userIdForDebug, saveDataSize, saveDataJournalSize,
                 extendIfNeeded: true);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -164,7 +168,8 @@ public static class SaveDataForDebug
             res = Mount(fs, mountName);
         }
 
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -177,10 +182,12 @@ public static class SaveDataForDebug
 
             Result res = fs.Impl.EnsureSaveDataImpl(userIdForDebug, SaveDataSizeForDebug, SaveDataJournalSizeForDebug,
                 extendIfNeeded: false);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = fs.Impl.MountSaveDataImpl(mountName, userIdForDebug);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }

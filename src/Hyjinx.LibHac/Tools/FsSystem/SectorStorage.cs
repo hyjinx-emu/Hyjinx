@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Fs;
 using LibHac.Util;
 
@@ -53,10 +53,12 @@ public class SectorStorage : IStorage
     public override Result SetSize(long size)
     {
         Result res = BaseStorage.SetSize(size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = BaseStorage.GetSize(out long newSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         SectorCount = (int)BitUtil.DivideUp(newSize, SectorSize);
         Length = newSize;

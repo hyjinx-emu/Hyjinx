@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;

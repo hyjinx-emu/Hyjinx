@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs.Fsa;
@@ -44,7 +44,8 @@ public static class BcatSaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -54,18 +55,21 @@ public static class BcatSaveData
         static Result Mount(FileSystemClient fs, U8Span mountName, Ncm.ApplicationId applicationId)
         {
             Result res = fs.Impl.CheckMountName(mountName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
 
             res = SaveDataAttribute.Make(out SaveDataAttribute attribute, applicationId, SaveDataType.Bcat,
                 InvalidUserId, InvalidSystemSaveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var fileSystem = new SharedRef<IFileSystemSf>();
 
             res = fileSystemProxy.Get.OpenSaveDataFileSystem(ref fileSystem.Ref, SaveDataSpaceId.User, in attribute);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var fileSystemAdapter =
                 new UniqueRef<IFileSystem>(new FileSystemServiceObjectAdapter(ref fileSystem.Ref));
@@ -74,7 +78,8 @@ public static class BcatSaveData
                 return ResultFs.AllocationMemoryFailedInBcatSaveDataA.Log();
 
             res = fs.Register(mountName, ref fileSystemAdapter.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }

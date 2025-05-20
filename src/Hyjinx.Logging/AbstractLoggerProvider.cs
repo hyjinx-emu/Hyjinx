@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Concurrent;
@@ -19,19 +19,19 @@ internal abstract class AbstractLoggerProvider<TOptions, TLogger> : ILoggerProvi
     {
         _options = options;
         _loggers = new ConcurrentDictionary<string, TLogger>();
-        
+
         _optionsReloadToken = _options.OnChange(ReloadLoggerOptions);
     }
-    
+
     ~AbstractLoggerProvider()
     {
         Dispose(false);
     }
 
     public abstract ILogger CreateLogger(string name);
-    
+
     protected abstract void ReloadLoggerOptions(TOptions options);
-    
+
     /// <inheritdoc />
     public void Dispose()
     {

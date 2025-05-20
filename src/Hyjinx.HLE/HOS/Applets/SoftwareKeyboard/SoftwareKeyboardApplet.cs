@@ -145,7 +145,7 @@ namespace Hyjinx.HLE.HOS.Applets
                 }
             }
         }
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "GUI Handler is not set, software keyboard applet will not work properly.")]
@@ -160,7 +160,7 @@ namespace Hyjinx.HLE.HOS.Applets
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "SoftwareKeyboardConfig size mismatch. Expected {expected:X}, got {actual:X}.")]
         private partial void LogSoftwareKeyboardConfigSizeMismatch(int expected, int actual);
-        
+
         public ResultCode GetResult()
         {
             return ResultCode.Success;
@@ -201,7 +201,7 @@ namespace Hyjinx.HLE.HOS.Applets
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "GUI Handler is not set, falling back to default!")]
         private partial void LogGuiHandlerIsNotSetFallingBackToDefault();
-        
+
         private void ExecuteForegroundKeyboard()
         {
             string initialText = null;
@@ -336,7 +336,7 @@ namespace Hyjinx.HLE.HOS.Applets
                 throw new InvalidOperationException("Software Keyboard is in an invalid state.");
             }
         }
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Keyboard received command {request} in state {state}")]
@@ -474,7 +474,7 @@ namespace Hyjinx.HLE.HOS.Applets
                         updateText = true;
 
                         LogInputTextChanged(_textValue!);
-                    } 
+                    }
 
                     if ((newCalc.Flags & KeyboardCalcFlags.SetUtf8Mode) != 0)
                     {
@@ -511,57 +511,57 @@ namespace Hyjinx.HLE.HOS.Applets
                 default:
                     // We shouldn't be able to get here through standard swkbd execution.
                     LogInvalidKeyboardRequest(request, _backgroundState);
-                    
+
                     _interactiveSession.Push(InlineResponses.Default(_backgroundState));
                     break;
             }
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Received invalid software keyboard user word info of {remaining} bytes")]
         private partial void LogInvalidKeyboardUserWordInfo(long remaining);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Received {wordsCount} user words but the maximum is {maxUserWords}")]
         private partial void LogExceededMaximumWords(int wordsCount, int maxUserWords);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Received invalid software keyboard user word info data of {remaining} bytes for {wordsCount} words.")]
         private partial void LogInvalidKeyboardUserWordInfo(long remaining, int wordsCount);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Received invalid software customize dic of {remaining} bytes")]
         private partial void LogInvalidKeyboardCustomizeDic(long remaining);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Received invalid software keyboard DictSet of {remaining} bytes")]
         private partial void LogInvalidKeyboardDictSet(long remaining);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Invalid software keyboard request {request} during state {state}")]
         private partial void LogInvalidKeyboardRequest(InlineKeyboardRequest request, InlineKeyboardState state);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Cursor position set to {pos}")]
         private partial void LogCursorPositionChanged(int pos);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Input text set to '{text}'.")]
         private partial void LogInputTextChanged(string text);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Encoding set to {encoding}.")]
         private partial void LogEncodingChanged(Encoding encoding);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Activating software keyboard frontend.")]
@@ -595,7 +595,7 @@ namespace Hyjinx.HLE.HOS.Applets
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Deactivating software keyboard frontend.")]
         private partial void LogDeactivatingSoftwareKeyboard();
-        
+
         private void DeactivateFrontend()
         {
             LogDeactivatingSoftwareKeyboard();
@@ -611,7 +611,7 @@ namespace Hyjinx.HLE.HOS.Applets
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Destroying software keyboard frontend.")]
         private partial void LogDestroyingSoftwareKeyboard();
-        
+
         private void DestroyFrontend()
         {
             LogDestroyingSoftwareKeyboard();
@@ -741,7 +741,7 @@ namespace Hyjinx.HLE.HOS.Applets
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Updating keyboard text to {text} and cursor position to {pos}")]
         private partial void LogSettingKeyboardAndCursor(string text, int pos);
-        
+
         private void PushUpdatedState(string text, int cursorBegin, KeyboardResult result)
         {
             _lastResult = result;
@@ -796,17 +796,17 @@ namespace Hyjinx.HLE.HOS.Applets
                 _interactiveSession.Push(InlineResponses.Default(_backgroundState));
             }
         }
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Sending keyboard OK with text '{text}'.")]
         private partial void LogSendingKeyboardOk(string text);
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Sending keyboard cancel.")]
         private partial void LogSendingKeyboardCancel();
-        
+
         [LoggerMessage(LogLevel.Debug,
             EventId = (int)LogClass.ServiceAm, EventName = nameof(LogClass.ServiceAm),
             Message = "Resetting state of the keyboard to '{state}'.")]

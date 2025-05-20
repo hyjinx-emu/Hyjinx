@@ -15,7 +15,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Threading
     internal partial class KThread : KSynchronizationObject, IKFutureSchedulerObject
     {
         private static readonly ILogger<KThread> _logger = Logger.DefaultLoggerFactory.CreateLogger<KThread>();
-        
+
         private const int TlsUserDisableCountOffset = 0x100;
         private const int TlsUserInterruptFlagOffset = 0x102;
 
@@ -1230,7 +1230,7 @@ namespace Hyjinx.HLE.HOS.Kernel.Threading
         {
             LogGuestCpuRegisters(GetGuestRegisterPrintout());
         }
-        
+
         [LoggerMessage(LogLevel.Information,
             EventId = (int)LogClass.Cpu, EventName = nameof(LogClass.Cpu),
             Message = "Guest CPU registers: {registers}")]

@@ -14,29 +14,29 @@ namespace Hyjinx.Horizon.Sdk.Sf.Cmif
         private const uint MaxCmifVersion = 1;
 
         private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger<ServiceDispatchTableBase>();
-        
+
         public abstract Result ProcessMessage(ref ServiceDispatchContext context, ReadOnlySpan<byte> inRawData);
 
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
             Message = "Request message size 0x{length:X} is invalid.")]
         private static partial void LogRequestSizeInvalid(ILogger logger, int length);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
             Message = "Request message header magic value 0x{magic:X} is invalid.")]
         private static partial void LogRequestMagicInvalid(ILogger logger, uint magic);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
             Message = "Missing service {objectName} (command ID: {commandId}) ignored")]
         private static partial void LogServiceNotFound(ILogger logger, string objectName, uint commandId);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
             Message = "{commandHandler} returned error {result}")]
         private static partial void LogCommandHandlerError(ILogger logger, string commandHandler, Result result);
-        
+
         protected static Result ProcessMessageImpl(ref ServiceDispatchContext context, ReadOnlySpan<byte> inRawData, IReadOnlyDictionary<int, CommandHandler> entries, string objectName)
         {
             if (inRawData.Length < Unsafe.SizeOf<CmifInHeader>())
@@ -109,7 +109,7 @@ namespace Hyjinx.Horizon.Sdk.Sf.Cmif
         }
 
         [LoggerMessage(LogLevel.Trace,
-            EventId= (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+            EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
             Message = "{objectName}.{methodName} called")]
         private static partial void LogMethodCalled(ILogger logger, string objectName, string methodName);
 

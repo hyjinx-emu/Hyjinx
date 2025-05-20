@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // This file was automatically generated.
 // Changes to this file will be lost when the file is regenerated.
 //
@@ -62,39 +62,39 @@ public static class ResultNcm
 
     /// <summary>Error code: 2005-0250; Range: 250-258; Inner value: 0x1f405</summary>
     public static Result.Base ContentStorageNotActive { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Result.Base(ModuleNcm, 250, 258); }
-        /// <summary>Error code: 2005-0251; Inner value: 0x1f605</summary>
-        public static Result.Base GameCardContentStorageNotActive => new Result.Base(ModuleNcm, 251);
-        /// <summary>Error code: 2005-0252; Inner value: 0x1f805</summary>
-        public static Result.Base BuiltInSystemContentStorageNotActive => new Result.Base(ModuleNcm, 252);
-        /// <summary>Error code: 2005-0253; Inner value: 0x1fa05</summary>
-        public static Result.Base BuiltInUserContentStorageNotActive => new Result.Base(ModuleNcm, 253);
-        /// <summary>Error code: 2005-0254; Inner value: 0x1fc05</summary>
-        public static Result.Base SdCardContentStorageNotActive => new Result.Base(ModuleNcm, 254);
-        /// <summary>Error code: 2005-0258; Inner value: 0x20405</summary>
-        public static Result.Base UnknownContentStorageNotActive => new Result.Base(ModuleNcm, 258);
+    /// <summary>Error code: 2005-0251; Inner value: 0x1f605</summary>
+    public static Result.Base GameCardContentStorageNotActive => new Result.Base(ModuleNcm, 251);
+    /// <summary>Error code: 2005-0252; Inner value: 0x1f805</summary>
+    public static Result.Base BuiltInSystemContentStorageNotActive => new Result.Base(ModuleNcm, 252);
+    /// <summary>Error code: 2005-0253; Inner value: 0x1fa05</summary>
+    public static Result.Base BuiltInUserContentStorageNotActive => new Result.Base(ModuleNcm, 253);
+    /// <summary>Error code: 2005-0254; Inner value: 0x1fc05</summary>
+    public static Result.Base SdCardContentStorageNotActive => new Result.Base(ModuleNcm, 254);
+    /// <summary>Error code: 2005-0258; Inner value: 0x20405</summary>
+    public static Result.Base UnknownContentStorageNotActive => new Result.Base(ModuleNcm, 258);
 
     /// <summary>Error code: 2005-0260; Range: 260-268; Inner value: 0x20805</summary>
     public static Result.Base ContentMetaDatabaseNotActive { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Result.Base(ModuleNcm, 260, 268); }
-        /// <summary>Error code: 2005-0261; Inner value: 0x20a05</summary>
-        public static Result.Base GameCardContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 261);
-        /// <summary>Error code: 2005-0262; Inner value: 0x20c05</summary>
-        public static Result.Base BuiltInSystemContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 262);
-        /// <summary>Error code: 2005-0263; Inner value: 0x20e05</summary>
-        public static Result.Base BuiltInUserContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 263);
-        /// <summary>Error code: 2005-0264; Inner value: 0x21005</summary>
-        public static Result.Base SdCardContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 264);
-        /// <summary>Error code: 2005-0268; Inner value: 0x21805</summary>
-        public static Result.Base UnknownContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 268);
+    /// <summary>Error code: 2005-0261; Inner value: 0x20a05</summary>
+    public static Result.Base GameCardContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 261);
+    /// <summary>Error code: 2005-0262; Inner value: 0x20c05</summary>
+    public static Result.Base BuiltInSystemContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 262);
+    /// <summary>Error code: 2005-0263; Inner value: 0x20e05</summary>
+    public static Result.Base BuiltInUserContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 263);
+    /// <summary>Error code: 2005-0264; Inner value: 0x21005</summary>
+    public static Result.Base SdCardContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 264);
+    /// <summary>Error code: 2005-0268; Inner value: 0x21805</summary>
+    public static Result.Base UnknownContentMetaDatabaseNotActive => new Result.Base(ModuleNcm, 268);
 
     /// <summary>Error code: 2005-0280; Inner value: 0x23005</summary>
     public static Result.Base IgnorableInstallTicketFailure => new Result.Base(ModuleNcm, 280);
 
     /// <summary>Error code: 2005-0290; Range: 290-299; Inner value: 0x24405</summary>
     public static Result.Base InstallTaskCancelled { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Result.Base(ModuleNcm, 290, 299); }
-        /// <summary>Error code: 2005-0291; Inner value: 0x24605</summary>
-        public static Result.Base CreatePlaceHolderCancelled => new Result.Base(ModuleNcm, 291);
-        /// <summary>Error code: 2005-0292; Inner value: 0x24805</summary>
-        public static Result.Base WritePlaceHolderCancelled => new Result.Base(ModuleNcm, 292);
+    /// <summary>Error code: 2005-0291; Inner value: 0x24605</summary>
+    public static Result.Base CreatePlaceHolderCancelled => new Result.Base(ModuleNcm, 291);
+    /// <summary>Error code: 2005-0292; Inner value: 0x24805</summary>
+    public static Result.Base WritePlaceHolderCancelled => new Result.Base(ModuleNcm, 292);
 
     /// <summary>Error code: 2005-0310; Inner value: 0x26c05</summary>
     public static Result.Base ContentStorageBaseNotFound => new Result.Base(ModuleNcm, 310);
@@ -107,6 +107,6 @@ public static class ResultNcm
 
     /// <summary>Error code: 2005-8181; Range: 8181-8191; Inner value: 0x3fea05</summary>
     public static Result.Base InvalidArgument { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Result.Base(ModuleNcm, 8181, 8191); }
-        /// <summary>Error code: 2005-8182; Inner value: 0x3fec05</summary>
-        public static Result.Base InvalidOffset => new Result.Base(ModuleNcm, 8182);
+    /// <summary>Error code: 2005-8182; Inner value: 0x3fec05</summary>
+    public static Result.Base InvalidOffset => new Result.Base(ModuleNcm, 8182);
 }

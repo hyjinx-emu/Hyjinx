@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -49,10 +49,12 @@ public class SubdirectoryFileSystem : IFileSystem
 
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.GetEntryType(out entryType, in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -63,10 +65,12 @@ public class SubdirectoryFileSystem : IFileSystem
 
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.GetFreeSpaceSize(out freeSpace, in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -77,10 +81,12 @@ public class SubdirectoryFileSystem : IFileSystem
 
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.GetTotalSpaceSize(out totalSpace, in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -91,10 +97,12 @@ public class SubdirectoryFileSystem : IFileSystem
 
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.GetFileTimeStampRaw(out timeStamp, in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -103,10 +111,12 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.OpenFile(ref outFile, in fullPath, mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -116,10 +126,12 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.OpenDirectory(ref outDirectory, in fullPath, mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -128,10 +140,12 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.CreateFile(in fullPath, size, option);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -140,10 +154,12 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.DeleteFile(in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -152,10 +168,12 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.CreateDirectory(in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -164,10 +182,12 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.DeleteDirectory(in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -176,10 +196,12 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.DeleteDirectoryRecursively(in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -188,10 +210,12 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.CleanDirectoryRecursively(in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -200,14 +224,17 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var currentFullPath = new Path();
         Result res = ResolveFullPath(ref currentFullPath.Ref(), in currentPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var newFullPath = new Path();
         res = ResolveFullPath(ref newFullPath.Ref(), in newPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.RenameFile(in currentFullPath, in newFullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -216,14 +243,17 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var currentFullPath = new Path();
         Result res = ResolveFullPath(ref currentFullPath.Ref(), in currentPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var newFullPath = new Path();
         res = ResolveFullPath(ref newFullPath.Ref(), in newPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.RenameDirectory(in currentFullPath, in newFullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -233,10 +263,12 @@ public class SubdirectoryFileSystem : IFileSystem
     {
         using var fullPath = new Path();
         Result res = ResolveFullPath(ref fullPath.Ref(), in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _baseFileSystem.QueryEntry(outBuffer, inBuffer, queryId, in fullPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -261,10 +293,12 @@ public class SubdirectoryFileSystem : IFileSystem
         int rootPathCount = _rootPath.GetLength();
 
         Result res = _baseFileSystem.GetFileSystemAttribute(out outAttribute);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = Utility.CountUtf16CharacterForUtf8String(out ulong rootPathUtf16Count, _rootPath.GetString());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Utility.SubtractAllPathLengthMax(ref outAttribute, rootPathCount);
         Utility.SubtractAllUtf16CountMax(ref outAttribute, (int)rootPathUtf16Count);

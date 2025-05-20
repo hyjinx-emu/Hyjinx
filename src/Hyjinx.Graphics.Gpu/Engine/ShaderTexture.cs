@@ -12,7 +12,7 @@ namespace Hyjinx.Graphics.Gpu.Engine
     static partial class ShaderTexture
     {
         private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(ShaderTexture));
-        
+
         /// <summary>
         /// Gets a texture target from a sampler type.
         /// </summary>
@@ -64,7 +64,7 @@ namespace Hyjinx.Graphics.Gpu.Engine
             EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
             Message = "Invalid sampler type '{type}'.")]
         private static partial void LogInvalidSamplerType(ILogger logger, SamplerType type);
-        
+
         /// <summary>
         /// Gets a texture format from a shader image format.
         /// </summary>

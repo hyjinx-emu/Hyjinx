@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Diagnostics.CodeAnalysis;
@@ -181,10 +181,14 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case Priority.Realtime: return "Realtime"u8;
-                case Priority.Normal: return "Normal"u8;
-                case Priority.Low: return "Low"u8;
-                default: return ToValueString((int)value);
+                case Priority.Realtime:
+                    return "Realtime"u8;
+                case Priority.Normal:
+                    return "Normal"u8;
+                case Priority.Low:
+                    return "Low"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -193,11 +197,16 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case PriorityRaw.Realtime: return "Realtime"u8;
-                case PriorityRaw.Normal: return "Normal"u8;
-                case PriorityRaw.Low: return "Low"u8;
-                case PriorityRaw.Background: return "Background"u8;
-                default: return ToValueString((int)value);
+                case PriorityRaw.Realtime:
+                    return "Realtime"u8;
+                case PriorityRaw.Normal:
+                    return "Normal"u8;
+                case PriorityRaw.Low:
+                    return "Low"u8;
+                case PriorityRaw.Background:
+                    return "Background"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -206,9 +215,12 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case ImageDirectoryId.Nand: return "Nand"u8;
-                case ImageDirectoryId.SdCard: return "SdCard"u8;
-                default: return ToValueString((int)value);
+                case ImageDirectoryId.Nand:
+                    return "Nand"u8;
+                case ImageDirectoryId.SdCard:
+                    return "SdCard"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -217,10 +229,14 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case ContentStorageId.System: return "System"u8;
-                case ContentStorageId.User: return "User"u8;
-                case ContentStorageId.SdCard: return "SdCard"u8;
-                default: return ToValueString((int)value);
+                case ContentStorageId.System:
+                    return "System"u8;
+                case ContentStorageId.User:
+                    return "User"u8;
+                case ContentStorageId.SdCard:
+                    return "SdCard"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -229,11 +245,16 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case GameCardPartition.Update: return "Update"u8;
-                case GameCardPartition.Normal: return "Normal"u8;
-                case GameCardPartition.Secure: return "Secure"u8;
-                case GameCardPartition.Logo: return "Logo"u8;
-                default: return ToValueString((int)value);
+                case GameCardPartition.Update:
+                    return "Update"u8;
+                case GameCardPartition.Normal:
+                    return "Normal"u8;
+                case GameCardPartition.Secure:
+                    return "Secure"u8;
+                case GameCardPartition.Logo:
+                    return "Logo"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -242,11 +263,16 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case SaveDataSpaceId.System: return "System"u8;
-                case SaveDataSpaceId.User: return "User"u8;
-                case SaveDataSpaceId.SdSystem: return "SdSystem"u8;
-                case SaveDataSpaceId.ProperSystem: return "ProperSystem"u8;
-                default: return ToValueString((int)value);
+                case SaveDataSpaceId.System:
+                    return "System"u8;
+                case SaveDataSpaceId.User:
+                    return "User"u8;
+                case SaveDataSpaceId.SdSystem:
+                    return "SdSystem"u8;
+                case SaveDataSpaceId.ProperSystem:
+                    return "ProperSystem"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -255,9 +281,12 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case SaveDataFormatType.Normal: return "Normal"u8;
-                case SaveDataFormatType.NoJournal: return "NoJournal"u8;
-                default: return ToValueString((int)value);
+                case SaveDataFormatType.Normal:
+                    return "Normal"u8;
+                case SaveDataFormatType.NoJournal:
+                    return "NoJournal"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -266,12 +295,18 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case ContentType.Meta: return "Meta"u8;
-                case ContentType.Control: return "Control"u8;
-                case ContentType.Manual: return "Manual"u8;
-                case ContentType.Logo: return "Logo"u8;
-                case ContentType.Data: return "Data"u8;
-                default: return ToValueString((int)value);
+                case ContentType.Meta:
+                    return "Meta"u8;
+                case ContentType.Control:
+                    return "Control"u8;
+                case ContentType.Manual:
+                    return "Manual"u8;
+                case ContentType.Logo:
+                    return "Logo"u8;
+                case ContentType.Data:
+                    return "Data"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -280,24 +315,42 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case BisPartitionId.BootPartition1Root: return "BootPartition1Root"u8;
-                case BisPartitionId.BootPartition2Root: return "BootPartition2Root"u8;
-                case BisPartitionId.UserDataRoot: return "UserDataRoot"u8;
-                case BisPartitionId.BootConfigAndPackage2Part1: return "BootConfigAndPackage2Part1"u8;
-                case BisPartitionId.BootConfigAndPackage2Part2: return "BootConfigAndPackage2Part2"u8;
-                case BisPartitionId.BootConfigAndPackage2Part3: return "BootConfigAndPackage2Part3"u8;
-                case BisPartitionId.BootConfigAndPackage2Part4: return "BootConfigAndPackage2Part4"u8;
-                case BisPartitionId.BootConfigAndPackage2Part5: return "BootConfigAndPackage2Part5"u8;
-                case BisPartitionId.BootConfigAndPackage2Part6: return "BootConfigAndPackage2Part6"u8;
-                case BisPartitionId.CalibrationBinary: return "CalibrationBinary"u8;
-                case BisPartitionId.CalibrationFile: return "CalibrationFile"u8;
-                case BisPartitionId.SafeMode: return "SafeMode"u8;
-                case BisPartitionId.User: return "User"u8;
-                case BisPartitionId.System: return "System"u8;
-                case BisPartitionId.SystemProperEncryption: return "SystemProperEncryption"u8;
-                case BisPartitionId.SystemProperPartition: return "SystemProperPartition"u8;
-                case (BisPartitionId)35: return "Invalid"u8;
-                default: return ToValueString((int)value);
+                case BisPartitionId.BootPartition1Root:
+                    return "BootPartition1Root"u8;
+                case BisPartitionId.BootPartition2Root:
+                    return "BootPartition2Root"u8;
+                case BisPartitionId.UserDataRoot:
+                    return "UserDataRoot"u8;
+                case BisPartitionId.BootConfigAndPackage2Part1:
+                    return "BootConfigAndPackage2Part1"u8;
+                case BisPartitionId.BootConfigAndPackage2Part2:
+                    return "BootConfigAndPackage2Part2"u8;
+                case BisPartitionId.BootConfigAndPackage2Part3:
+                    return "BootConfigAndPackage2Part3"u8;
+                case BisPartitionId.BootConfigAndPackage2Part4:
+                    return "BootConfigAndPackage2Part4"u8;
+                case BisPartitionId.BootConfigAndPackage2Part5:
+                    return "BootConfigAndPackage2Part5"u8;
+                case BisPartitionId.BootConfigAndPackage2Part6:
+                    return "BootConfigAndPackage2Part6"u8;
+                case BisPartitionId.CalibrationBinary:
+                    return "CalibrationBinary"u8;
+                case BisPartitionId.CalibrationFile:
+                    return "CalibrationFile"u8;
+                case BisPartitionId.SafeMode:
+                    return "SafeMode"u8;
+                case BisPartitionId.User:
+                    return "User"u8;
+                case BisPartitionId.System:
+                    return "System"u8;
+                case BisPartitionId.SystemProperEncryption:
+                    return "SystemProperEncryption"u8;
+                case BisPartitionId.SystemProperPartition:
+                    return "SystemProperPartition"u8;
+                case (BisPartitionId)35:
+                    return "Invalid"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -306,9 +359,12 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case DirectoryEntryType.Directory: return "Directory"u8;
-                case DirectoryEntryType.File: return "File"u8;
-                default: return ToValueString((int)value);
+                case DirectoryEntryType.Directory:
+                    return "Directory"u8;
+                case DirectoryEntryType.File:
+                    return "File"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -317,8 +373,10 @@ namespace LibHac.Fs.Impl
         {
             switch (value.Flags)
             {
-                case MountHostOptionFlag.PseudoCaseSensitive: return "MountHostOptionFlag_PseudoCaseSensitive"u8;
-                default: return ToValueString((int)value.Flags);
+                case MountHostOptionFlag.PseudoCaseSensitive:
+                    return "MountHostOptionFlag_PseudoCaseSensitive"u8;
+                default:
+                    return ToValueString((int)value.Flags);
             }
         }
 
@@ -327,13 +385,20 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case MemoryCapacity.Capacity1GB: return "1GB"u8;
-                case MemoryCapacity.Capacity2GB: return "2GB"u8;
-                case MemoryCapacity.Capacity4GB: return "4GB"u8;
-                case MemoryCapacity.Capacity8GB: return "8GB"u8;
-                case MemoryCapacity.Capacity16GB: return "16GB"u8;
-                case MemoryCapacity.Capacity32GB: return "32GB"u8;
-                default: return ToValueString((int)value);
+                case MemoryCapacity.Capacity1GB:
+                    return "1GB"u8;
+                case MemoryCapacity.Capacity2GB:
+                    return "2GB"u8;
+                case MemoryCapacity.Capacity4GB:
+                    return "4GB"u8;
+                case MemoryCapacity.Capacity8GB:
+                    return "8GB"u8;
+                case MemoryCapacity.Capacity16GB:
+                    return "16GB"u8;
+                case MemoryCapacity.Capacity32GB:
+                    return "32GB"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -342,9 +407,12 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case SelSec.T1: return "T1"u8;
-                case SelSec.T2: return "T2"u8;
-                default: return ToValueString((int)value);
+                case SelSec.T1:
+                    return "T1"u8;
+                case SelSec.T2:
+                    return "T2"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -353,9 +421,12 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case KekIndex.Version0: return "Version0"u8;
-                case KekIndex.ForDev: return "VersionForDev"u8;
-                default: return ToValueString((int)value);
+                case KekIndex.Version0:
+                    return "Version0"u8;
+                case KekIndex.ForDev:
+                    return "VersionForDev"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -364,9 +435,12 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case AccessControl1ClockRate.ClockRate25MHz: return "25 MHz"u8;
-                case AccessControl1ClockRate.ClockRate50MHz: return "50 MHz"u8;
-                default: return ToValueString((int)value);
+                case AccessControl1ClockRate.ClockRate25MHz:
+                    return "25 MHz"u8;
+                case AccessControl1ClockRate.ClockRate50MHz:
+                    return "50 MHz"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -375,13 +449,20 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case FwVersion.ForDev: return "ForDev"u8;
-                case FwVersion.Since1_0_0: return "1.0.0"u8;
-                case FwVersion.Since4_0_0: return "4.0.0"u8;
-                case FwVersion.Since9_0_0: return "9.0.0"u8;
-                case FwVersion.Since11_0_0: return "11.0.0"u8;
-                case FwVersion.Since12_0_0: return "12.0.0"u8;
-                default: return ToValueString((int)value);
+                case FwVersion.ForDev:
+                    return "ForDev"u8;
+                case FwVersion.Since1_0_0:
+                    return "1.0.0"u8;
+                case FwVersion.Since4_0_0:
+                    return "4.0.0"u8;
+                case FwVersion.Since9_0_0:
+                    return "9.0.0"u8;
+                case FwVersion.Since11_0_0:
+                    return "11.0.0"u8;
+                case FwVersion.Since12_0_0:
+                    return "12.0.0"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
 
@@ -390,9 +471,12 @@ namespace LibHac.Fs.Impl
         {
             switch (value)
             {
-                case GameCardCompatibilityType.Normal: return "Normal"u8;
-                case GameCardCompatibilityType.Terra: return "Terra"u8;
-                default: return ToValueString((int)value);
+                case GameCardCompatibilityType.Normal:
+                    return "Normal"u8;
+                case GameCardCompatibilityType.Terra:
+                    return "Terra"u8;
+                default:
+                    return ToValueString((int)value);
             }
         }
     }
@@ -734,7 +818,8 @@ namespace LibHac.Fs.Impl
                 {
                     Result res = fs.Fs.GetGlobalAccessLogMode(out g.GlobalAccessLogMode);
                     fs.LogResultErrorMessage(res);
-                    if (res.IsFailure()) Abort.DoAbort(res);
+                    if (res.IsFailure())
+                        Abort.DoAbort(res);
 
                     if (g.GlobalAccessLogMode != GlobalAccessLogMode.None)
                     {

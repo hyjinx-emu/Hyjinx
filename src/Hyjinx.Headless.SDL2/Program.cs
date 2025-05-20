@@ -114,7 +114,7 @@ namespace Hyjinx.Headless.SDL2
                 }
                 else
                 {
-                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "{index} not configured", index);
 
                     return null;
@@ -134,7 +134,7 @@ namespace Hyjinx.Headless.SDL2
 
                 if (gamepad == null)
                 {
-                    Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                    Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "{index} gamepad not found ('{inputId}')", index, inputId);
 
                     return null;
@@ -294,7 +294,7 @@ namespace Hyjinx.Headless.SDL2
 
                 if (!File.Exists(path))
                 {
-                    Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                    Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "Input profile '{inputProfileName}' not found for '{inputId}'", inputProfileName, inputId);
 
                     return null;
@@ -307,7 +307,7 @@ namespace Hyjinx.Headless.SDL2
                 }
                 catch (JsonException)
                 {
-                    Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                    Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "Input profile '{inputProfileName}' parsing failed for '{inputId}'", inputProfileName, inputId);
 
                     return null;
@@ -319,7 +319,7 @@ namespace Hyjinx.Headless.SDL2
 
             string inputTypeName = isKeyboard ? "Keyboard" : "Gamepad";
 
-            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                 "{playerIndex} configured with {inputTypeName} \"{configId}\"", config.PlayerIndex, inputTypeName, config.Id);
 
             // If both stick ranges are 0 (usually indicative of an outdated profile load) then both sticks will be set to 1.0.
@@ -329,7 +329,7 @@ namespace Hyjinx.Headless.SDL2
                 {
                     controllerConfig.RangeLeft = 1.0f;
                     controllerConfig.RangeRight = 1.0f;
-                    
+
                     Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "{playerIndex} stick range reset. Save the profile now to update your configuration", config.PlayerIndex);
                 }
@@ -372,14 +372,14 @@ namespace Hyjinx.Headless.SDL2
 
             if (option.ListInputIds)
             {
-                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                     "Input Ids:");
 
                 foreach (string id in _inputManager.KeyboardDriver.GamepadsIds)
                 {
                     gamepad = _inputManager.KeyboardDriver.GetGamepad(id);
 
-                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "- {id} (\"{gamepad}\")", id, gamepad.Name);
 
                     gamepad.Dispose();
@@ -400,7 +400,7 @@ namespace Hyjinx.Headless.SDL2
 
             if (option.InputPath == null)
             {
-                Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                     "Please provide a file to load");
 
                 return;
@@ -447,7 +447,7 @@ namespace Hyjinx.Headless.SDL2
             {
                 string logDir = AppDataManager.LogsDirPath;
                 // FileStream logFile = null;
-                
+
                 // TODO: Fix this.
                 // if (!string.IsNullOrEmpty(logDir))
                 // {
@@ -727,7 +727,7 @@ namespace Hyjinx.Headless.SDL2
                         }
                         catch (ArgumentOutOfRangeException)
                         {
-                            Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), 
+                            Logger.DefaultLogger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                                 "The specified file is not supported by Hyjinx.");
 
                             _emulationContext.Dispose();

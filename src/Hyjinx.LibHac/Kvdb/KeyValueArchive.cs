@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -78,7 +78,8 @@ internal ref struct KeyValueArchiveBufferReader
         var header = new KeyValueArchiveHeader();
 
         Result res = Read(SpanHelpers.AsByteSpan(ref header));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!header.IsValid())
             return ResultKvdb.InvalidKeyValue.Log();
@@ -98,7 +99,8 @@ internal ref struct KeyValueArchiveBufferReader
         Unsafe.SkipInit(out KeyValueArchiveEntryHeader header);
 
         Result res = Peek(SpanHelpers.AsByteSpan(ref header));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!header.IsValid())
             return ResultKvdb.InvalidKeyValue.Log();
@@ -118,7 +120,8 @@ internal ref struct KeyValueArchiveBufferReader
         Unsafe.SkipInit(out KeyValueArchiveEntryHeader header);
 
         Result res = Read(SpanHelpers.AsByteSpan(ref header));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!header.IsValid())
             return ResultKvdb.InvalidKeyValue.Log();
@@ -128,10 +131,12 @@ internal ref struct KeyValueArchiveBufferReader
         Assert.SdkEqual(valueBuffer.Length, header.ValueSize);
 
         res = Read(keyBuffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = Read(valueBuffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -152,7 +157,8 @@ internal ref struct KeyValueArchiveBufferReader
     private Result Read(scoped Span<byte> destBuffer)
     {
         Result res = Peek(destBuffer);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _offset += destBuffer.Length;
         return Result.Success;

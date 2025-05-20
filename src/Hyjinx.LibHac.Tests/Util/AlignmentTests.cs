@@ -1,4 +1,4 @@
-﻿using LibHac.Util;
+using LibHac.Util;
 using Xunit;
 
 namespace LibHac.Tests.Util
@@ -28,7 +28,7 @@ namespace LibHac.Tests.Util
             var actualValue = Alignment.AlignUp(value, alignment);
             Assert.Equal(expectedValue, actualValue);
         }
-        
+
         [Theory]
         [InlineData(0, 0x40, 0)]
         [InlineData(0x3F, 0x40, 0x40)]

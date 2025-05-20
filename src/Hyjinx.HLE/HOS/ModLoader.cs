@@ -39,7 +39,7 @@ namespace Hyjinx.HLE.HOS
         private const string AmsNsoPatchDir = "exefs_patches";
         private const string AmsNroPatchDir = "nro_patches";
         private const string AmsKipPatchDir = "kip_patches";
-        
+
         private static readonly ModMetadataJsonSerializerContext _serializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
         public readonly struct Mod<T> where T : FileSystemInfo
@@ -200,7 +200,7 @@ namespace Hyjinx.HLE.HOS
 
                 if (types.Length > 0)
                 {
-                    _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)), 
+                    _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
                         "Found Enabled? {enabled} mod '{name}' [{types}]", mod.Enabled, mod.Name, types);
                 }
             }
@@ -215,7 +215,7 @@ namespace Hyjinx.HLE.HOS
             {
                 _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
                 "Creating mods directory for Application {applicationId}", applicationId.ToUpper());
-                
+
                 applicationModsPath = contentsDir.CreateSubdirectory(applicationId);
             }
 
@@ -256,8 +256,8 @@ namespace Hyjinx.HLE.HOS
             foreach (var modDir in patchDir.EnumerateDirectories())
             {
                 patches.Add(new Mod<DirectoryInfo>(modDir.Name, modDir, true));
-                
-                _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)), 
+
+                _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
                     "Found {type} patch '{modDir}'", type, modDir.Name);
             }
         }
@@ -266,7 +266,7 @@ namespace Hyjinx.HLE.HOS
             EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
             Message = "Failed to deserialize mod data for {applicationId:X16} at {path}")]
         private static partial void LogFailedToDeserializeMod(ILogger logger, ulong applicationId, string path);
-        
+
         private static void QueryApplicationDir(ModCache mods, DirectoryInfo applicationDir, ulong applicationId)
         {
             if (!applicationDir.Exists)
@@ -376,7 +376,7 @@ namespace Hyjinx.HLE.HOS
             EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
             Message = "Ignoring cheat '{filename} because it is malformed.")]
         private static partial void LogIgnoringMalformedCheat(ILogger logger, string filename);
-        
+
         private static IEnumerable<Cheat> GetCheatsInFile(FileInfo cheatFile)
         {
             string cheatName = DefaultCheatName;
@@ -532,7 +532,7 @@ namespace Hyjinx.HLE.HOS
 
                 _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
                     "Found 'romfs.bin' for Application {applicationId:X16}", applicationId);
-                
+
                 using (IFileSystem fs = new RomFsFileSystem(mod.Path.OpenRead().AsStorage()))
                 {
                     AddFiles(fs, mod.Name, mod.Path.FullName, fileSet, builder);
@@ -594,7 +594,7 @@ namespace Hyjinx.HLE.HOS
             EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
             Message = "Skipped duplicate file '{path}' from '{modName}'.")]
         private static partial void LogSkippedDuplicateFileFromMod(ILogger logger, string path, string modName);
-        
+
         internal bool ReplaceExefsPartition(ulong applicationId, ref IFileSystem exefs)
         {
             if (!_appMods.TryGetValue(applicationId, out ModCache mods) || mods.ExefsContainers.Count == 0)
@@ -625,7 +625,7 @@ namespace Hyjinx.HLE.HOS
             EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
             Message = "Using replacement ExeFS partition.")]
         private partial void LogUsingReplacementExeFsPartition();
-        
+
         public struct ModLoadResult
         {
             public BitVector32 Stubs;
@@ -678,7 +678,7 @@ namespace Hyjinx.HLE.HOS
                         modLoadResult.Replaces[1 << i] = true;
 
                         nsos[i] = new NsoExecutable(nsoFile.OpenRead().AsStorage(), nsoName);
-                        
+
                         _logger.LogInformation(new EventId((int)LogClass.ModLoader, nameof(LogClass.ModLoader)),
                             "NSO '{nsoName}' replaced", nsoName);
                     }
@@ -715,12 +715,12 @@ namespace Hyjinx.HLE.HOS
 
             return modLoadResult;
         }
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
             Message = "Multiple replacements to '{name}'.")]
         private static partial void LogMultipleReplacementsDetected(ILogger logger, string name);
-        
+
         internal void ApplyNroPatches(NroExecutable nro)
         {
             var nroPatches = _patches.NroPatches;
@@ -753,7 +753,7 @@ namespace Hyjinx.HLE.HOS
             EventId = (int)LogClass.ModLoader, EventName = nameof(LogClass.ModLoader),
             Message = "Unable to install cheat because the associated process is invalid.")]
         private partial void LogAssociatedProcessIsInvalid();
-        
+
         internal void LoadCheats(ulong applicationId, ProcessTamperInfo tamperInfo, TamperMachine tamperMachine)
         {
             if (tamperInfo?.BuildIds == null || tamperInfo.CodeAddresses == null)
@@ -800,7 +800,7 @@ namespace Hyjinx.HLE.HOS
             Message =
                 "Skipping cheat '{name}' because no executable matches its build id {cheatId}. Check if the game title and version are correct.")]
         private partial void LogSkippingCheatDueToNoMatch(string name, string cheatId);
-        
+
         internal static void EnableCheats(ulong applicationId, TamperMachine tamperMachine)
         {
             var contentDirectory = FindApplicationDir(new DirectoryInfo(Path.Combine(GetModsBasePath(), AmsContentsDir)), $"{applicationId:x16}");

@@ -11,7 +11,7 @@ namespace Hyjinx.Common.Configuration
     {
         private const string DefaultBaseDir = "Hyjinx";
         private const string DefaultPortableDir = "portable";
-        
+
         private const string GamesDir = "games";
         private const string ProfilesDir = "profiles";
         private const string KeysDir = "system";
@@ -112,7 +112,7 @@ namespace Hyjinx.Common.Configuration
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Custom Data Directory '{baseDirPath}' does not exist. Falling back to {mode}...")]
         private static partial void LogCustomDataDirectoryDoesNotExist(ILogger logger, string baseDirPath, LaunchMode mode);
-        
+
         [LoggerMessage(LogLevel.Warning,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Application data directory is a symlink. This may be unintended.")]
@@ -287,7 +287,7 @@ namespace Hyjinx.Common.Configuration
                 catch (Exception exception)
                 {
                     LogErrorCopyingApplicationDataIntoTemp(_logger, tempPath, exception);
-                    
+
                     try
                     {
                         var resolvedDirectoryInfo = Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
@@ -311,7 +311,7 @@ namespace Hyjinx.Common.Configuration
                 catch (Exception exception)
                 {
                     LogErrorDeletingSymlink(_logger, correctApplicationDataDirectoryPath, exception);
-                    
+
                     try
                     {
                         var resolvedDirectoryInfo = Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
@@ -342,31 +342,31 @@ namespace Hyjinx.Common.Configuration
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "An error while copying your application data into the {tempPath} folder.")]
         private static partial void LogErrorCopyingApplicationDataIntoTemp(ILogger logger, string tempPath, Exception ex);
-        
+
         [LoggerMessage(LogLevel.Critical,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Please manually move your Hyjinx data from {resolvedPath} to {correctApplicationDataDirectoryPath}, and remove the symlink.")]
         private static partial void LogMoveYourDataNotification(ILogger logger, string resolvedPath, string correctApplicationDataDirectoryPath);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "An error occurred while deleting the Hyjinx application data folder symlink at {correctApplicationDataDirectoryPath}.")]
         private static partial void LogErrorDeletingSymlink(ILogger logger, string correctApplicationDataDirectoryPath, Exception ex);
-        
+
         [LoggerMessage(LogLevel.Critical,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "Unable to resolve the symlink for Hyjinx application data: Follow the symlink at {correctApplicationDataDirectoryPath} and move your data back to the Application Support folder.")]
         private static partial void LogErrorResolvingSymlink(ILogger logger, string correctApplicationDataDirectoryPath, Exception ex);
-        
+
         [LoggerMessage(LogLevel.Critical,
             EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
             Message = "An error occurred copying Hyjinx application data into the correct location. Please manually move your application data from {tempPath} to {correctApplicationDataDirectoryPath}.")]
         private static partial void LogErrorCopyingApplicationData(ILogger logger, string tempPath, string correctApplicationDataDirectoryPath, Exception ex);
 
-        public static string GetModsPath() => 
+        public static string GetModsPath() =>
             CustomModsPath ?? Directory.CreateDirectory(Path.Combine(BaseDirPath, DefaultModsDir)).FullName;
-        
-        public static string GetSdModsPath() => 
+
+        public static string GetSdModsPath() =>
             CustomSdModsPath ?? Directory.CreateDirectory(Path.Combine(BaseDirPath, DefaultSdcardDir, "atmosphere")).FullName;
     }
 }

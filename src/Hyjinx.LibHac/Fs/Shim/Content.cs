@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -24,10 +24,14 @@ public static class Content
     {
         switch (type)
         {
-            case ContentType.Meta: return FileSystemProxyType.Meta;
-            case ContentType.Control: return FileSystemProxyType.Control;
-            case ContentType.Manual: return FileSystemProxyType.Manual;
-            case ContentType.Data: return FileSystemProxyType.Data;
+            case ContentType.Meta:
+                return FileSystemProxyType.Meta;
+            case ContentType.Control:
+                return FileSystemProxyType.Control;
+            case ContentType.Manual:
+                return FileSystemProxyType.Manual;
+            case ContentType.Data:
+                return FileSystemProxyType.Data;
             default:
                 Abort.UnexpectedDefault();
                 return default;
@@ -38,18 +42,21 @@ public static class Content
         ContentType contentType)
     {
         Result res = fs.Impl.CheckMountNameAcceptingReservedMountName(mountName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         FileSystemProxyType fsType = ConvertToFileSystemProxyType(contentType);
 
         res = PathUtility.ConvertToFspPath(out FspPath sfPath, path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
         using var fileSystem = new SharedRef<IFileSystemSf>();
 
         res = fileSystemProxy.Get.OpenFileSystemWithId(ref fileSystem.Ref, in sfPath, id, fsType);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var fileSystemAdapter =
             new UniqueRef<IFileSystem>(new FileSystemServiceObjectAdapter(ref fileSystem.Ref));
@@ -58,7 +65,8 @@ public static class Content
             return ResultFs.AllocationMemoryFailedInContentA.Log();
 
         res = fs.Register(mountName, ref fileSystemAdapter.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -89,7 +97,8 @@ public static class Content
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         ProgramId programId = default;
 
@@ -115,7 +124,8 @@ public static class Content
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -161,7 +171,8 @@ public static class Content
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -197,7 +208,8 @@ public static class Content
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -232,7 +244,8 @@ public static class Content
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -242,7 +255,8 @@ public static class Content
         static Result Mount(FileSystemClient fs, U8Span mountName, ProgramId programId, ContentType contentType)
         {
             Result res = fs.Impl.CheckMountNameAcceptingReservedMountName(mountName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             FileSystemProxyType fsType = ConvertToFileSystemProxyType(contentType);
 
@@ -250,7 +264,8 @@ public static class Content
             using var fileSystem = new SharedRef<IFileSystemSf>();
 
             res = fileSystemProxy.Get.OpenFileSystemWithPatch(ref fileSystem.Ref, programId, fsType);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var fileSystemAdapter =
                 new UniqueRef<IFileSystem>(new FileSystemServiceObjectAdapter(ref fileSystem.Ref));
@@ -259,7 +274,8 @@ public static class Content
                 return ResultFs.AllocationMemoryFailedInContentA.Log();
 
             res = fs.Register(mountName, ref fileSystemAdapter.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }

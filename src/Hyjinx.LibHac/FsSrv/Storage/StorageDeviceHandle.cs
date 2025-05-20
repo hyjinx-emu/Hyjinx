@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common.FixedArrays;
 
 namespace LibHac.FsSrv.Storage;

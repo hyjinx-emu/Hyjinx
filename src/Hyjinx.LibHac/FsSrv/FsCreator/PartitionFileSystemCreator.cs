@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
@@ -12,7 +12,8 @@ public class PartitionFileSystemCreator : IPartitionFileSystemCreator
         using var partitionFs = new SharedRef<PartitionFileSystem>(new PartitionFileSystem());
 
         Result res = partitionFs.Get.Initialize(in baseStorage);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outFileSystem.SetByMove(ref partitionFs.Ref);
         return Result.Success;

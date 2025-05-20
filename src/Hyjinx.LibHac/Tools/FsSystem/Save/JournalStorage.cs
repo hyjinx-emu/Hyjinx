@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.IO;
 using LibHac.Common;
@@ -41,7 +41,8 @@ public class JournalStorage : IStorage
         int remaining = destination.Length;
 
         Result res = CheckAccessRange(offset, destination.Length, Length);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         while (remaining > 0)
         {
@@ -53,7 +54,8 @@ public class JournalStorage : IStorage
             int bytesToRead = Math.Min(remaining, BlockSize - blockPos);
 
             res = BaseStorage.Read(physicalOffset, destination.Slice(outPos, bytesToRead));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outPos += bytesToRead;
             inPos += bytesToRead;
@@ -70,7 +72,8 @@ public class JournalStorage : IStorage
         int remaining = source.Length;
 
         Result res = CheckAccessRange(offset, source.Length, Length);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         while (remaining > 0)
         {
@@ -82,7 +85,8 @@ public class JournalStorage : IStorage
             int bytesToWrite = Math.Min(remaining, BlockSize - blockPos);
 
             res = BaseStorage.Write(physicalOffset, source.Slice(outPos, bytesToWrite));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outPos += bytesToWrite;
             inPos += bytesToWrite;
@@ -135,7 +139,8 @@ public class JournalStorage : IStorage
 
         for (int i = 0; i < bitmap.Length; i++)
         {
-            if (!bitmap[i]) continue;
+            if (!bitmap[i])
+                continue;
 
             BaseStorage.Fill(SaveDataFileSystem.TrimFillValue, i * BlockSize, BlockSize);
         }

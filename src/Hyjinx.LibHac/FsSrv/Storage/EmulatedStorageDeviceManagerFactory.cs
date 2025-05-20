@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Storage.Sf;
 using LibHac.Gc;
@@ -55,33 +55,33 @@ public class EmulatedStorageDeviceManagerFactory : IStorageDeviceManagerFactory
                 outDeviceManager.SetByCopy(in _mmcDeviceManager);
                 break;
             case StorageDevicePortId.SdCard:
-            {
-                using ScopedLock<SdkMutexType> scopedLock = ScopedLock.Lock(ref _sdCardDeviceMutex);
+                {
+                    using ScopedLock<SdkMutexType> scopedLock = ScopedLock.Lock(ref _sdCardDeviceMutex);
 
-                if (!_sdCardDeviceManager.HasValue)
-                    return ResultFs.StorageDeviceNotReady.Log();
+                    if (!_sdCardDeviceManager.HasValue)
+                        return ResultFs.StorageDeviceNotReady.Log();
 
-                outDeviceManager.SetByCopy(in _sdCardDeviceManager);
-                break;
-            }
+                    outDeviceManager.SetByCopy(in _sdCardDeviceManager);
+                    break;
+                }
             case StorageDevicePortId.GameCard:
-            {
-                using ScopedLock<SdkMutexType> scopedLock = ScopedLock.Lock(ref _gameCardDeviceMutex);
-
-                if (!_dummyGameCardDeviceManager.HasValue && !_gameCardDeviceManager.HasValue)
-                    return ResultFs.StorageDeviceNotReady.Log();
-
-                if (_hasGameCard)
                 {
-                    outDeviceManager.SetByCopy(in _gameCardDeviceManager);
-                }
-                else
-                {
-                    outDeviceManager.SetByCopy(in _dummyGameCardDeviceManager);
-                }
+                    using ScopedLock<SdkMutexType> scopedLock = ScopedLock.Lock(ref _gameCardDeviceMutex);
 
-                break;
-            }
+                    if (!_dummyGameCardDeviceManager.HasValue && !_gameCardDeviceManager.HasValue)
+                        return ResultFs.StorageDeviceNotReady.Log();
+
+                    if (_hasGameCard)
+                    {
+                        outDeviceManager.SetByCopy(in _gameCardDeviceManager);
+                    }
+                    else
+                    {
+                        outDeviceManager.SetByCopy(in _dummyGameCardDeviceManager);
+                    }
+
+                    break;
+                }
             default:
                 return ResultFs.StorageDeviceInvalidOperation.Log();
         }

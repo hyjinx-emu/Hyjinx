@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using LibHac.Common;
 
 namespace LibHac.Sm;
@@ -17,7 +17,8 @@ public class ServiceManagerClient
         using var service = new SharedRef<IDisposable>();
 
         Result res = Server.GetService(ref service.Ref, ServiceName.Encode(name));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (serviceObject.TryCastSet(ref service.Ref))
         {

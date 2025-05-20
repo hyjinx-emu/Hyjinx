@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.Versioning;
 using System.Runtime.InteropServices;
 

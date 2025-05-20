@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using LibHac.Common;
@@ -91,14 +91,16 @@ public class HierarchicalSaveFileTable
 
     public void AddFile(U8Span path, ref SaveFileInfo fileInfo)
     {
-        if (path.Length == 1 && path[0] == '/') throw new ArgumentException("Path cannot be empty");
+        if (path.Length == 1 && path[0] == '/')
+            throw new ArgumentException("Path cannot be empty");
 
         CreateFileRecursive(path, ref fileInfo);
     }
 
     public void AddDirectory(U8Span path)
     {
-        if (path.Length == 1 && path[0] == '/') throw new ArgumentException("Path cannot be empty");
+        if (path.Length == 1 && path[0] == '/')
+            throw new ArgumentException("Path cannot be empty");
 
         CreateDirectoryRecursive(path);
     }
@@ -139,7 +141,8 @@ public class HierarchicalSaveFileTable
         var dirEntry = new TableEntry<SaveFindPosition>();
 
         // Directory already exists. Do nothing.
-        if (index >= 0) return;
+        if (index >= 0)
+            return;
 
         index = DirectoryTable.Add(ref key, ref dirEntry);
 
@@ -269,7 +272,8 @@ public class HierarchicalSaveFileTable
         int parentIndex = key.Parent;
 
         int toDeleteIndex = FileTable.GetIndexFromKey(ref key).Index;
-        if (toDeleteIndex < 0) throw new FileNotFoundException();
+        if (toDeleteIndex < 0)
+            throw new FileNotFoundException();
 
         UnlinkFileFromParent(parentIndex, toDeleteIndex);
 
@@ -282,7 +286,8 @@ public class HierarchicalSaveFileTable
         int parentIndex = key.Parent;
 
         int toDeleteIndex = DirectoryTable.GetIndexFromKey(ref key).Index;
-        if (toDeleteIndex < 0) throw new DirectoryNotFoundException();
+        if (toDeleteIndex < 0)
+            throw new DirectoryNotFoundException();
 
         DirectoryTable.GetValue(toDeleteIndex, out TableEntry<SaveFindPosition> toDeleteEntry);
 
@@ -386,7 +391,8 @@ public class HierarchicalSaveFileTable
         {
             key.Parent = DirectoryTable.GetIndexFromKey(ref key).Index;
 
-            if (key.Parent < 0) return false;
+            if (key.Parent < 0)
+                return false;
 
             parser.TryGetNext(out key.Name);
         }

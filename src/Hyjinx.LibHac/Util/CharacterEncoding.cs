@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Diag;
@@ -938,16 +938,21 @@ public static class CharacterEncoding
                 return CharacterEncodingResult.Success;
 
             case 2:
-                if (source.Length < 2) break;
-                if ((source[0] & 0x1E) == 0) break;
-                if (Utf8NBytesTable[source[1]] != 0) break;
+                if (source.Length < 2)
+                    break;
+                if ((source[0] & 0x1E) == 0)
+                    break;
+                if (Utf8NBytesTable[source[1]] != 0)
+                    break;
 
                 destination = ((source[0] & 0x1Fu) << 6) | ((source[1] & 0x3Fu) << 0);
                 return CharacterEncodingResult.Success;
 
             case 3:
-                if (source.Length < 3) break;
-                if (Utf8NBytesTable[source[1]] != 0 || Utf8NBytesTable[source[2]] != 0) break;
+                if (source.Length < 3)
+                    break;
+                if (Utf8NBytesTable[source[1]] != 0 || Utf8NBytesTable[source[2]] != 0)
+                    break;
 
                 uint codePoint3 = ((source[0] & 0xFu) << 12) | ((source[1] & 0x3Fu) << 6) | ((source[2] & 0x3Fu) << 0);
 
@@ -958,8 +963,10 @@ public static class CharacterEncoding
                 return CharacterEncodingResult.Success;
 
             case 4:
-                if (source.Length < 4) break;
-                if (Utf8NBytesTable[source[1]] != 0 || Utf8NBytesTable[source[2]] != 0 || Utf8NBytesTable[source[3]] != 0) break;
+                if (source.Length < 4)
+                    break;
+                if (Utf8NBytesTable[source[1]] != 0 || Utf8NBytesTable[source[2]] != 0 || Utf8NBytesTable[source[3]] != 0)
+                    break;
 
                 uint codePoint4 = ((source[0] & 7u) << 18) | ((source[1] & 0x3Fu) << 12) | ((source[2] & 0x3Fu) << 6) | ((source[3] & 0x3Fu) << 0);
 

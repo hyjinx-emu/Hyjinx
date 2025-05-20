@@ -1,4 +1,4 @@
-﻿using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.Exceptions;
 using System.IO;
 
 namespace Hyjinx.HLE.FileSystem;

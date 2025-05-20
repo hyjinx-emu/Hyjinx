@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using LibHac.FsSrv;
 using LibHac.FsSrv.Impl;
 using LibHac.FsSrv.Sf;

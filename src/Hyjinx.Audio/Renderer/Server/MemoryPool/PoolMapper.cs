@@ -313,7 +313,7 @@ namespace Hyjinx.Audio.Renderer.Server.MemoryPool
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Map of memory pool (address: 0x{cpuAddress:x}, size 0x{size:x}) failed!")]
         private partial void LogMapFailed(ulong cpuAddress, ulong size);
-        
+
         [LoggerMessage(LogLevel.Error,
             EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
             Message = "Unmap of memory pool (address: 0x{cpuAddress:x}, size 0x{size:x}) failed!")]
