@@ -26,7 +26,13 @@ jobs:
            ref: main
 
       - name: Update labels based on changes in PR
+        id: apply_labels
         uses: actions/labeler@v5
         with:
           sync-labels: true
           dot: true
+
+      - name: Output new labels
+        if: always()
+        run: |
+          echo "${{ steps.apply_labels.outputs.new-labels }}"
