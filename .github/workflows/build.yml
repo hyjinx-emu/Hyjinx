@@ -42,8 +42,8 @@ jobs:
 
       - name: Install SonarQube Cloud Scanner
         run: |
-          mkdir ./.sonar ./.sonar/scanner
-          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+          mkdir ./.sonar
+          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar
           
       - name: Determine Git Hash
         id: git_short_hash
@@ -54,7 +54,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner begin /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          ./.sonar/dotnet-sonarscanner begin /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           
       - name: Build
         run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}"
@@ -67,4 +67,4 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          ./.sonar/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
