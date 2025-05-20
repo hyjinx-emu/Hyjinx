@@ -110,7 +110,7 @@ class HipcGenerator : ISourceGenerator
         {
             return string.Empty;
         }
-        
+
         return ((BaseNamespaceDeclarationSyntax)syntaxNode).Name.ToString();
     }
 
