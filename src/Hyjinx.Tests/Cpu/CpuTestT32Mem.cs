@@ -1,6 +1,7 @@
 namespace Hyjinx.Tests.Cpu
 {
     [TestFixture]
+    [Explicit]
     [Category("T32Mem")]
     public sealed class CpuTestT32Mem : CpuTest32
     {

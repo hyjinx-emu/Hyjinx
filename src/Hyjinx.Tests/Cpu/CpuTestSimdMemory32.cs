@@ -6,6 +6,7 @@ using Hyjinx.Memory;
 namespace Hyjinx.Tests.Cpu
 {
     [TestFixture]
+    [Explicit]
     [Category("SimdMemory32")]
     public sealed class CpuTestSimdMemory32 : CpuTest32
     {

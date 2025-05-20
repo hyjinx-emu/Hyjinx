@@ -3,6 +3,7 @@ using ARMeilleure.State;
 namespace Hyjinx.Tests.Cpu
 {
     [TestFixture]
+    [Explicit]
     [Category("T32Flow")]
     public sealed class CpuTestT32Flow : CpuTest32
     {

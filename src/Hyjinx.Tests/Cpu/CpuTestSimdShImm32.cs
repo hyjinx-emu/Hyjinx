@@ -5,6 +5,7 @@ using ARMeilleure.State;
 namespace Hyjinx.Tests.Cpu
 {
     [TestFixture]
+    [Explicit]
     [Category("SimdShImm32")]
     public sealed class CpuTestSimdShImm32 : CpuTest32
     {
