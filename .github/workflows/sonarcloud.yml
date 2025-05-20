@@ -2,9 +2,11 @@ name: sonarcloud
 
 on:
   pull_request:
-    branches: [ main ]
-    types: [opened, reopened]
-
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      
 permissions:
   contents: read
   pull-requests: write
