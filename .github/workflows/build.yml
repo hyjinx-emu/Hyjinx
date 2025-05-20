@@ -52,8 +52,8 @@ jobs:
         
       - name: Prepare Analysis
         run: |
-          ./.sonar/dotnet-sonarscanner begin /k:"hyjinx-emu_Hyjinx" /o:"hyjinx-emu" /d:sonar.verbose=true /d:sonar.projectBaseDir="${{ github.workspace }}/src" /d:sonar.analysis.platform="${{ matrix.platform.name }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          
+          ./.sonar/dotnet-sonarscanner begin /k:"hyjinx-emu_Hyjinx" /o:"hyjinx-emu" /d:sonar.verbose=true /d:sonar.projectBaseDir="${{ github.workspace }}/src" /d:sonar.analysis.platform="${{ matrix.platform.name }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.c.file.suffixes=- /d:sonar.cpp.file.suffixes=- /d:sonar.objc.file.suffixes=-
+                  
       - name: Build
         run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}"
 
