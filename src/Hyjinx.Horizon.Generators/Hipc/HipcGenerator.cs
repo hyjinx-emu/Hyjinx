@@ -81,7 +81,7 @@ class HipcGenerator : ISourceGenerator
             generator.AppendLine("using System.Runtime.CompilerServices;");
             generator.AppendLine("using System.Runtime.InteropServices;");
             generator.AppendLine();
-            generator.EnterScope($"namespace {GetNamespaceName(commandInterface.ClassDeclarationSyntax)}");
+            generator.AppendLine($"namespace {GetNamespaceName(commandInterface.ClassDeclarationSyntax)};");
             generator.EnterScope($"partial class {className}");
 
             GenerateMethodTable(generator, context.Compilation, commandInterface);
@@ -94,7 +94,6 @@ class HipcGenerator : ISourceGenerator
             }
 
             generator.LeaveScope();
-            generator.LeaveScope();
 
             context.AddSource($"{GetNamespaceName(commandInterface.ClassDeclarationSyntax)}.{className}.g.cs", generator.ToString());
         }
@@ -102,7 +101,7 @@ class HipcGenerator : ISourceGenerator
 
     private static string GetNamespaceName(SyntaxNode syntaxNode)
     {
-        while (syntaxNode != null && !(syntaxNode is NamespaceDeclarationSyntax))
+        while (syntaxNode != null && !(syntaxNode is BaseNamespaceDeclarationSyntax))
         {
             syntaxNode = syntaxNode.Parent;
         }
@@ -111,8 +110,8 @@ class HipcGenerator : ISourceGenerator
         {
             return string.Empty;
         }
-
-        return ((NamespaceDeclarationSyntax)syntaxNode).Name.ToString();
+        
+        return ((BaseNamespaceDeclarationSyntax)syntaxNode).Name.ToString();
     }
 
     private static void GenerateMethodTable(CodeGenerator generator, Compilation compilation, CommandInterface commandInterface)
