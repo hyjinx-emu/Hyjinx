@@ -1,7 +1,7 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Kvdb;
 

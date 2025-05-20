@@ -1,12 +1,11 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types;
+
+[Flags]
+enum NodeLatestUpdateFlags : byte
 {
-    [Flags]
-    enum NodeLatestUpdateFlags : byte
-    {
-        None = 0,
-        Connect = 1 << 0,
-        Disconnect = 1 << 1,
-    }
+    None = 0,
+    Connect = 1 << 0,
+    Disconnect = 1 << 1,
 }

@@ -2,31 +2,30 @@ using Hyjinx.Graphics.Gpu.Memory;
 using Hyjinx.Graphics.Gpu.Shader.HashTable;
 using System;
 
-namespace Hyjinx.Graphics.Gpu.Shader
+namespace Hyjinx.Graphics.Gpu.Shader;
+
+/// <summary>
+/// Shader code accessor.
+/// </summary>
+readonly struct ShaderCodeAccessor : IDataAccessor
 {
+    private readonly MemoryManager _memoryManager;
+    private readonly ulong _baseAddress;
+
     /// <summary>
-    /// Shader code accessor.
+    /// Creates a new shader code accessor.
     /// </summary>
-    readonly struct ShaderCodeAccessor : IDataAccessor
+    /// <param name="memoryManager">Memory manager used to access the shader code</param>
+    /// <param name="baseAddress">Base address of the shader in memory</param>
+    public ShaderCodeAccessor(MemoryManager memoryManager, ulong baseAddress)
     {
-        private readonly MemoryManager _memoryManager;
-        private readonly ulong _baseAddress;
+        _memoryManager = memoryManager;
+        _baseAddress = baseAddress;
+    }
 
-        /// <summary>
-        /// Creates a new shader code accessor.
-        /// </summary>
-        /// <param name="memoryManager">Memory manager used to access the shader code</param>
-        /// <param name="baseAddress">Base address of the shader in memory</param>
-        public ShaderCodeAccessor(MemoryManager memoryManager, ulong baseAddress)
-        {
-            _memoryManager = memoryManager;
-            _baseAddress = baseAddress;
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlySpan<byte> GetSpan(int offset, int length)
-        {
-            return _memoryManager.GetSpanMapped(_baseAddress + (ulong)offset, length);
-        }
+    /// <inheritdoc/>
+    public ReadOnlySpan<byte> GetSpan(int offset, int length)
+    {
+        return _memoryManager.GetSpanMapped(_baseAddress + (ulong)offset, length);
     }
 }

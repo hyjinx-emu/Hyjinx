@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Caps
+namespace Hyjinx.HLE.HOS.Services.Caps;
+
+[Service("caps:a")]
+class IAlbumAccessorService : IpcService<IAlbumAccessorService>
 {
-    [Service("caps:a")]
-    class IAlbumAccessorService : IpcService<IAlbumAccessorService>
-    {
-        public IAlbumAccessorService(ServiceCtx context) { }
-    }
+    public IAlbumAccessorService(ServiceCtx context) { }
 }

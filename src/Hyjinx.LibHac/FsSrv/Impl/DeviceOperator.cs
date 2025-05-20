@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -10,6 +8,8 @@ using LibHac.Gc;
 using LibHac.Sdmmc;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using MmcPartition = LibHac.Fs.MmcPartition;
 
 namespace LibHac.FsSrv.Impl;

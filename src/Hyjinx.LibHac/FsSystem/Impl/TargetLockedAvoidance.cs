@@ -1,7 +1,7 @@
 #nullable enable
-using System;
 using LibHac.Fs;
 using LibHac.Os;
+using System;
 
 namespace LibHac.FsSystem.Impl;
 

@@ -1,5 +1,5 @@
-using System.Runtime.CompilerServices;
 using LibHac.Kernel;
+using System.Runtime.CompilerServices;
 using Xunit;
 using static LibHac.Kernel.InitialProcessBinaryReader;
 using static LibHac.Kernel.KipHeader;

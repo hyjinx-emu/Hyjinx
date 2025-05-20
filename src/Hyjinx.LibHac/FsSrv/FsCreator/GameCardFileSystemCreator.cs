@@ -1,5 +1,3 @@
-using System;
-using System.Buffers;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -9,6 +7,8 @@ using LibHac.FsSystem;
 using LibHac.Gc;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Buffers;
 using PartitionEntry = LibHac.FsSystem.Impl.Sha256PartitionFileSystemFormat.PartitionEntry;
 
 namespace LibHac.FsSrv.FsCreator;

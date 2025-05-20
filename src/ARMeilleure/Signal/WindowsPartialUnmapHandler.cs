@@ -5,193 +5,192 @@ using System;
 using System.Runtime.InteropServices;
 using static ARMeilleure.IntermediateRepresentation.Operand.Factory;
 
-namespace ARMeilleure.Signal
+namespace ARMeilleure.Signal;
+
+/// <summary>
+/// Methods to handle signals caused by partial unmaps. See the structs for C# implementations of the methods.
+/// </summary>
+internal static partial class WindowsPartialUnmapHandler
 {
-    /// <summary>
-    /// Methods to handle signals caused by partial unmaps. See the structs for C# implementations of the methods.
-    /// </summary>
-    internal static partial class WindowsPartialUnmapHandler
+    [LibraryImport("kernel32.dll", SetLastError = true, EntryPoint = "LoadLibraryA")]
+    private static partial IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string lpFileName);
+
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    private static partial IntPtr GetProcAddress(IntPtr hModule, [MarshalAs(UnmanagedType.LPStr)] string procName);
+
+    private static IntPtr _getCurrentThreadIdPtr;
+
+    public static IntPtr GetCurrentThreadIdFunc()
     {
-        [LibraryImport("kernel32.dll", SetLastError = true, EntryPoint = "LoadLibraryA")]
-        private static partial IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string lpFileName);
-
-        [LibraryImport("kernel32.dll", SetLastError = true)]
-        private static partial IntPtr GetProcAddress(IntPtr hModule, [MarshalAs(UnmanagedType.LPStr)] string procName);
-
-        private static IntPtr _getCurrentThreadIdPtr;
-
-        public static IntPtr GetCurrentThreadIdFunc()
+        if (_getCurrentThreadIdPtr == IntPtr.Zero)
         {
-            if (_getCurrentThreadIdPtr == IntPtr.Zero)
-            {
-                IntPtr handle = LoadLibrary("kernel32.dll");
+            IntPtr handle = LoadLibrary("kernel32.dll");
 
-                _getCurrentThreadIdPtr = GetProcAddress(handle, "GetCurrentThreadId");
-            }
-
-            return _getCurrentThreadIdPtr;
+            _getCurrentThreadIdPtr = GetProcAddress(handle, "GetCurrentThreadId");
         }
 
-        public static Operand EmitRetryFromAccessViolation(EmitterContext context)
-        {
-            IntPtr partialRemapStatePtr = PartialUnmapState.GlobalState;
-            IntPtr localCountsPtr = IntPtr.Add(partialRemapStatePtr, PartialUnmapState.LocalCountsOffset);
+        return _getCurrentThreadIdPtr;
+    }
 
-            // Get the lock first.
-            EmitNativeReaderLockAcquire(context, IntPtr.Add(partialRemapStatePtr, PartialUnmapState.PartialUnmapLockOffset));
+    public static Operand EmitRetryFromAccessViolation(EmitterContext context)
+    {
+        IntPtr partialRemapStatePtr = PartialUnmapState.GlobalState;
+        IntPtr localCountsPtr = IntPtr.Add(partialRemapStatePtr, PartialUnmapState.LocalCountsOffset);
 
-            IntPtr getCurrentThreadId = GetCurrentThreadIdFunc();
-            Operand threadId = context.Call(Const((ulong)getCurrentThreadId), OperandType.I32);
-            Operand threadIndex = EmitThreadLocalMapIntGetOrReserve(context, localCountsPtr, threadId, Const(0));
+        // Get the lock first.
+        EmitNativeReaderLockAcquire(context, IntPtr.Add(partialRemapStatePtr, PartialUnmapState.PartialUnmapLockOffset));
 
-            Operand endLabel = Label();
-            Operand retry = context.AllocateLocal(OperandType.I32);
-            Operand threadIndexValidLabel = Label();
+        IntPtr getCurrentThreadId = GetCurrentThreadIdFunc();
+        Operand threadId = context.Call(Const((ulong)getCurrentThreadId), OperandType.I32);
+        Operand threadIndex = EmitThreadLocalMapIntGetOrReserve(context, localCountsPtr, threadId, Const(0));
 
-            context.BranchIfFalse(threadIndexValidLabel, context.ICompareEqual(threadIndex, Const(-1)));
+        Operand endLabel = Label();
+        Operand retry = context.AllocateLocal(OperandType.I32);
+        Operand threadIndexValidLabel = Label();
 
-            context.Copy(retry, Const(1)); // Always retry when thread local cannot be allocated.
+        context.BranchIfFalse(threadIndexValidLabel, context.ICompareEqual(threadIndex, Const(-1)));
 
-            context.Branch(endLabel);
+        context.Copy(retry, Const(1)); // Always retry when thread local cannot be allocated.
 
-            context.MarkLabel(threadIndexValidLabel);
+        context.Branch(endLabel);
 
-            Operand threadLocalPartialUnmapsPtr = EmitThreadLocalMapIntGetValuePtr(context, localCountsPtr, threadIndex);
-            Operand threadLocalPartialUnmaps = context.Load(OperandType.I32, threadLocalPartialUnmapsPtr);
-            Operand partialUnmapsCount = context.Load(OperandType.I32, Const((ulong)IntPtr.Add(partialRemapStatePtr, PartialUnmapState.PartialUnmapsCountOffset)));
+        context.MarkLabel(threadIndexValidLabel);
 
-            context.Copy(retry, context.ICompareNotEqual(threadLocalPartialUnmaps, partialUnmapsCount));
+        Operand threadLocalPartialUnmapsPtr = EmitThreadLocalMapIntGetValuePtr(context, localCountsPtr, threadIndex);
+        Operand threadLocalPartialUnmaps = context.Load(OperandType.I32, threadLocalPartialUnmapsPtr);
+        Operand partialUnmapsCount = context.Load(OperandType.I32, Const((ulong)IntPtr.Add(partialRemapStatePtr, PartialUnmapState.PartialUnmapsCountOffset)));
 
-            Operand noRetryLabel = Label();
+        context.Copy(retry, context.ICompareNotEqual(threadLocalPartialUnmaps, partialUnmapsCount));
 
-            context.BranchIfFalse(noRetryLabel, retry);
+        Operand noRetryLabel = Label();
 
-            // if (retry) {
+        context.BranchIfFalse(noRetryLabel, retry);
 
-            context.Store(threadLocalPartialUnmapsPtr, partialUnmapsCount);
+        // if (retry) {
 
-            context.Branch(endLabel);
+        context.Store(threadLocalPartialUnmapsPtr, partialUnmapsCount);
 
-            context.MarkLabel(noRetryLabel);
+        context.Branch(endLabel);
 
-            // }
+        context.MarkLabel(noRetryLabel);
 
-            context.MarkLabel(endLabel);
+        // }
 
-            // Finally, release the lock and return the retry value.
-            EmitNativeReaderLockRelease(context, IntPtr.Add(partialRemapStatePtr, PartialUnmapState.PartialUnmapLockOffset));
+        context.MarkLabel(endLabel);
 
-            return retry;
-        }
+        // Finally, release the lock and return the retry value.
+        EmitNativeReaderLockRelease(context, IntPtr.Add(partialRemapStatePtr, PartialUnmapState.PartialUnmapLockOffset));
 
-        public static Operand EmitThreadLocalMapIntGetOrReserve(EmitterContext context, IntPtr threadLocalMapPtr, Operand threadId, Operand initialState)
-        {
-            Operand idsPtr = Const((ulong)IntPtr.Add(threadLocalMapPtr, ThreadLocalMap<int>.ThreadIdsOffset));
+        return retry;
+    }
 
-            Operand i = context.AllocateLocal(OperandType.I32);
+    public static Operand EmitThreadLocalMapIntGetOrReserve(EmitterContext context, IntPtr threadLocalMapPtr, Operand threadId, Operand initialState)
+    {
+        Operand idsPtr = Const((ulong)IntPtr.Add(threadLocalMapPtr, ThreadLocalMap<int>.ThreadIdsOffset));
 
-            context.Copy(i, Const(0));
+        Operand i = context.AllocateLocal(OperandType.I32);
 
-            // (Loop 1) Check all slots for a matching Thread ID (while also trying to allocate)
+        context.Copy(i, Const(0));
 
-            Operand endLabel = Label();
+        // (Loop 1) Check all slots for a matching Thread ID (while also trying to allocate)
 
-            Operand loopLabel = Label();
-            context.MarkLabel(loopLabel);
+        Operand endLabel = Label();
 
-            Operand offset = context.Multiply(i, Const(sizeof(int)));
-            Operand idPtr = context.Add(idsPtr, context.SignExtend32(OperandType.I64, offset));
+        Operand loopLabel = Label();
+        context.MarkLabel(loopLabel);
 
-            // Check that this slot has the thread ID.
-            Operand existingId = context.CompareAndSwap(idPtr, threadId, threadId);
+        Operand offset = context.Multiply(i, Const(sizeof(int)));
+        Operand idPtr = context.Add(idsPtr, context.SignExtend32(OperandType.I64, offset));
 
-            // If it was already the thread ID, then we just need to return i.
-            context.BranchIfTrue(endLabel, context.ICompareEqual(existingId, threadId));
+        // Check that this slot has the thread ID.
+        Operand existingId = context.CompareAndSwap(idPtr, threadId, threadId);
 
-            context.Copy(i, context.Add(i, Const(1)));
+        // If it was already the thread ID, then we just need to return i.
+        context.BranchIfTrue(endLabel, context.ICompareEqual(existingId, threadId));
 
-            context.BranchIfTrue(loopLabel, context.ICompareLess(i, Const(ThreadLocalMap<int>.MapSize)));
+        context.Copy(i, context.Add(i, Const(1)));
 
-            // (Loop 2) Try take a slot that is 0 with our Thread ID.
+        context.BranchIfTrue(loopLabel, context.ICompareLess(i, Const(ThreadLocalMap<int>.MapSize)));
 
-            context.Copy(i, Const(0)); // Reset i.
+        // (Loop 2) Try take a slot that is 0 with our Thread ID.
 
-            Operand loop2Label = Label();
-            context.MarkLabel(loop2Label);
+        context.Copy(i, Const(0)); // Reset i.
 
-            Operand offset2 = context.Multiply(i, Const(sizeof(int)));
-            Operand idPtr2 = context.Add(idsPtr, context.SignExtend32(OperandType.I64, offset2));
+        Operand loop2Label = Label();
+        context.MarkLabel(loop2Label);
 
-            // Try and swap in the thread id on top of 0.
-            Operand existingId2 = context.CompareAndSwap(idPtr2, Const(0), threadId);
+        Operand offset2 = context.Multiply(i, Const(sizeof(int)));
+        Operand idPtr2 = context.Add(idsPtr, context.SignExtend32(OperandType.I64, offset2));
 
-            Operand idNot0Label = Label();
+        // Try and swap in the thread id on top of 0.
+        Operand existingId2 = context.CompareAndSwap(idPtr2, Const(0), threadId);
 
-            // If it was 0, then we need to initialize the struct entry and return i.
-            context.BranchIfFalse(idNot0Label, context.ICompareEqual(existingId2, Const(0)));
+        Operand idNot0Label = Label();
 
-            Operand structsPtr = Const((ulong)IntPtr.Add(threadLocalMapPtr, ThreadLocalMap<int>.StructsOffset));
-            Operand structPtr = context.Add(structsPtr, context.SignExtend32(OperandType.I64, offset2));
-            context.Store(structPtr, initialState);
+        // If it was 0, then we need to initialize the struct entry and return i.
+        context.BranchIfFalse(idNot0Label, context.ICompareEqual(existingId2, Const(0)));
 
-            context.Branch(endLabel);
+        Operand structsPtr = Const((ulong)IntPtr.Add(threadLocalMapPtr, ThreadLocalMap<int>.StructsOffset));
+        Operand structPtr = context.Add(structsPtr, context.SignExtend32(OperandType.I64, offset2));
+        context.Store(structPtr, initialState);
 
-            context.MarkLabel(idNot0Label);
+        context.Branch(endLabel);
 
-            context.Copy(i, context.Add(i, Const(1)));
+        context.MarkLabel(idNot0Label);
 
-            context.BranchIfTrue(loop2Label, context.ICompareLess(i, Const(ThreadLocalMap<int>.MapSize)));
+        context.Copy(i, context.Add(i, Const(1)));
 
-            context.Copy(i, Const(-1)); // Could not place the thread in the list.
+        context.BranchIfTrue(loop2Label, context.ICompareLess(i, Const(ThreadLocalMap<int>.MapSize)));
 
-            context.MarkLabel(endLabel);
+        context.Copy(i, Const(-1)); // Could not place the thread in the list.
 
-            return context.Copy(i);
-        }
+        context.MarkLabel(endLabel);
 
-        private static Operand EmitThreadLocalMapIntGetValuePtr(EmitterContext context, IntPtr threadLocalMapPtr, Operand index)
-        {
-            Operand offset = context.Multiply(index, Const(sizeof(int)));
-            Operand structsPtr = Const((ulong)IntPtr.Add(threadLocalMapPtr, ThreadLocalMap<int>.StructsOffset));
+        return context.Copy(i);
+    }
 
-            return context.Add(structsPtr, context.SignExtend32(OperandType.I64, offset));
-        }
+    private static Operand EmitThreadLocalMapIntGetValuePtr(EmitterContext context, IntPtr threadLocalMapPtr, Operand index)
+    {
+        Operand offset = context.Multiply(index, Const(sizeof(int)));
+        Operand structsPtr = Const((ulong)IntPtr.Add(threadLocalMapPtr, ThreadLocalMap<int>.StructsOffset));
 
-        private static void EmitAtomicAddI32(EmitterContext context, Operand ptr, Operand additive)
-        {
-            Operand loop = Label();
-            context.MarkLabel(loop);
+        return context.Add(structsPtr, context.SignExtend32(OperandType.I64, offset));
+    }
 
-            Operand initial = context.Load(OperandType.I32, ptr);
-            Operand newValue = context.Add(initial, additive);
+    private static void EmitAtomicAddI32(EmitterContext context, Operand ptr, Operand additive)
+    {
+        Operand loop = Label();
+        context.MarkLabel(loop);
 
-            Operand replaced = context.CompareAndSwap(ptr, initial, newValue);
+        Operand initial = context.Load(OperandType.I32, ptr);
+        Operand newValue = context.Add(initial, additive);
 
-            context.BranchIfFalse(loop, context.ICompareEqual(initial, replaced));
-        }
+        Operand replaced = context.CompareAndSwap(ptr, initial, newValue);
 
-        private static void EmitNativeReaderLockAcquire(EmitterContext context, IntPtr nativeReaderLockPtr)
-        {
-            Operand writeLockPtr = Const((ulong)IntPtr.Add(nativeReaderLockPtr, NativeReaderWriterLock.WriteLockOffset));
+        context.BranchIfFalse(loop, context.ICompareEqual(initial, replaced));
+    }
 
-            // Spin until we can acquire the write lock.
-            Operand spinLabel = Label();
-            context.MarkLabel(spinLabel);
+    private static void EmitNativeReaderLockAcquire(EmitterContext context, IntPtr nativeReaderLockPtr)
+    {
+        Operand writeLockPtr = Const((ulong)IntPtr.Add(nativeReaderLockPtr, NativeReaderWriterLock.WriteLockOffset));
 
-            // Old value must be 0 to continue (we gained the write lock)
-            context.BranchIfTrue(spinLabel, context.CompareAndSwap(writeLockPtr, Const(0), Const(1)));
+        // Spin until we can acquire the write lock.
+        Operand spinLabel = Label();
+        context.MarkLabel(spinLabel);
 
-            // Increment reader count.
-            EmitAtomicAddI32(context, Const((ulong)IntPtr.Add(nativeReaderLockPtr, NativeReaderWriterLock.ReaderCountOffset)), Const(1));
+        // Old value must be 0 to continue (we gained the write lock)
+        context.BranchIfTrue(spinLabel, context.CompareAndSwap(writeLockPtr, Const(0), Const(1)));
 
-            // Release write lock.
-            context.CompareAndSwap(writeLockPtr, Const(1), Const(0));
-        }
+        // Increment reader count.
+        EmitAtomicAddI32(context, Const((ulong)IntPtr.Add(nativeReaderLockPtr, NativeReaderWriterLock.ReaderCountOffset)), Const(1));
 
-        private static void EmitNativeReaderLockRelease(EmitterContext context, IntPtr nativeReaderLockPtr)
-        {
-            // Decrement reader count.
-            EmitAtomicAddI32(context, Const((ulong)IntPtr.Add(nativeReaderLockPtr, NativeReaderWriterLock.ReaderCountOffset)), Const(-1));
-        }
+        // Release write lock.
+        context.CompareAndSwap(writeLockPtr, Const(1), Const(0));
+    }
+
+    private static void EmitNativeReaderLockRelease(EmitterContext context, IntPtr nativeReaderLockPtr)
+    {
+        // Decrement reader count.
+        EmitAtomicAddI32(context, Const((ulong)IntPtr.Add(nativeReaderLockPtr, NativeReaderWriterLock.ReaderCountOffset)), Const(-1));
     }
 }

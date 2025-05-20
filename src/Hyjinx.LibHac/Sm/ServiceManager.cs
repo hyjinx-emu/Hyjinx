@@ -1,8 +1,8 @@
+using LibHac.Common;
+using LibHac.Svc;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using LibHac.Common;
-using LibHac.Svc;
 
 namespace LibHac.Sm;
 

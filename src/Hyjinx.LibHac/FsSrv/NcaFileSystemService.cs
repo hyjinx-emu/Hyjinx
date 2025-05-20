@@ -1,4 +1,3 @@
-using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Impl;
@@ -7,9 +6,10 @@ using LibHac.FsSystem;
 using LibHac.Lr;
 using LibHac.Ncm;
 using LibHac.Spl;
+using System;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
-using IStorage = LibHac.Fs.IStorage;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
+using IStorage = LibHac.Fs.IStorage;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;
 using Path = LibHac.Fs.Path;
 using Utility = LibHac.FsSrv.Impl.Utility;

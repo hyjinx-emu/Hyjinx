@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
-{
-    enum HairFlip : byte
-    {
-        Left,
-        Right,
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
 
-        Min = Left,
-        Max = Right,
-    }
+enum HairFlip : byte
+{
+    Left,
+    Right,
+
+    Min = Left,
+    Max = Right,
 }

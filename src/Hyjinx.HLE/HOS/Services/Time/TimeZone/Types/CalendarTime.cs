@@ -1,15 +1,14 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
+namespace Hyjinx.HLE.HOS.Services.Time.TimeZone;
+
+[StructLayout(LayoutKind.Sequential, Pack = 0x4, Size = 0x8)]
+struct CalendarTime
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 0x4, Size = 0x8)]
-    struct CalendarTime
-    {
-        public short Year;
-        public sbyte Month;
-        public sbyte Day;
-        public sbyte Hour;
-        public sbyte Minute;
-        public sbyte Second;
-    }
+    public short Year;
+    public sbyte Month;
+    public sbyte Day;
+    public sbyte Hour;
+    public sbyte Minute;
+    public sbyte Second;
 }

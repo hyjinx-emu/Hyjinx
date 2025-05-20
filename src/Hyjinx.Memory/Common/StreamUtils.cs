@@ -1,89 +1,88 @@
-using Microsoft.IO;
 using Hyjinx.Common.Memory;
+using Microsoft.IO;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Common.Utilities
+namespace Hyjinx.Common.Utilities;
+
+public static class StreamUtils
 {
-    public static class StreamUtils
+    public static byte[] StreamToBytes(Stream input)
     {
-        public static byte[] StreamToBytes(Stream input)
-        {
-            using RecyclableMemoryStream output = StreamToRecyclableMemoryStream(input);
+        using RecyclableMemoryStream output = StreamToRecyclableMemoryStream(input);
 
-            return output.ToArray();
+        return output.ToArray();
+    }
+
+    public static MemoryOwner<byte> StreamToRentedMemory(Stream input)
+    {
+        if (input is MemoryStream inputMemoryStream)
+        {
+            return MemoryStreamToRentedMemory(inputMemoryStream);
         }
-
-        public static MemoryOwner<byte> StreamToRentedMemory(Stream input)
+        else if (input.CanSeek)
         {
-            if (input is MemoryStream inputMemoryStream)
+            long bytesExpected = input.Length;
+
+            MemoryOwner<byte> ownedMemory = MemoryOwner<byte>.Rent(checked((int)bytesExpected));
+
+            var destSpan = ownedMemory.Span;
+
+            int totalBytesRead = 0;
+
+            while (totalBytesRead < bytesExpected)
             {
-                return MemoryStreamToRentedMemory(inputMemoryStream);
-            }
-            else if (input.CanSeek)
-            {
-                long bytesExpected = input.Length;
+                int bytesRead = input.Read(destSpan[totalBytesRead..]);
 
-                MemoryOwner<byte> ownedMemory = MemoryOwner<byte>.Rent(checked((int)bytesExpected));
-
-                var destSpan = ownedMemory.Span;
-
-                int totalBytesRead = 0;
-
-                while (totalBytesRead < bytesExpected)
+                if (bytesRead == 0)
                 {
-                    int bytesRead = input.Read(destSpan[totalBytesRead..]);
+                    ownedMemory.Dispose();
 
-                    if (bytesRead == 0)
-                    {
-                        ownedMemory.Dispose();
-
-                        throw new IOException($"Tried reading {bytesExpected} but the stream closed after reading {totalBytesRead}.");
-                    }
-
-                    totalBytesRead += bytesRead;
+                    throw new IOException($"Tried reading {bytesExpected} but the stream closed after reading {totalBytesRead}.");
                 }
 
-                return ownedMemory;
+                totalBytesRead += bytesRead;
             }
-            else
-            {
-                // If input is (non-seekable) then copy twice: first into a RecyclableMemoryStream, then to a rented IMemoryOwner<byte>.
-                using RecyclableMemoryStream output = StreamToRecyclableMemoryStream(input);
-
-                return MemoryStreamToRentedMemory(output);
-            }
-        }
-
-        public static async Task<byte[]> StreamToBytesAsync(Stream input, CancellationToken cancellationToken = default)
-        {
-            using MemoryStream stream = MemoryStreamManager.Shared.GetStream();
-
-            await input.CopyToAsync(stream, cancellationToken);
-
-            return stream.ToArray();
-        }
-
-        private static MemoryOwner<byte> MemoryStreamToRentedMemory(MemoryStream input)
-        {
-            input.Position = 0;
-
-            MemoryOwner<byte> ownedMemory = MemoryOwner<byte>.Rent(checked((int)input.Length));
-
-            // Discard the return value because we assume reading a MemoryStream always succeeds completely.
-            _ = input.Read(ownedMemory.Span);
 
             return ownedMemory;
         }
-
-        private static RecyclableMemoryStream StreamToRecyclableMemoryStream(Stream input)
+        else
         {
-            RecyclableMemoryStream stream = MemoryStreamManager.Shared.GetStream();
+            // If input is (non-seekable) then copy twice: first into a RecyclableMemoryStream, then to a rented IMemoryOwner<byte>.
+            using RecyclableMemoryStream output = StreamToRecyclableMemoryStream(input);
 
-            input.CopyTo(stream);
-
-            return stream;
+            return MemoryStreamToRentedMemory(output);
         }
+    }
+
+    public static async Task<byte[]> StreamToBytesAsync(Stream input, CancellationToken cancellationToken = default)
+    {
+        using MemoryStream stream = MemoryStreamManager.Shared.GetStream();
+
+        await input.CopyToAsync(stream, cancellationToken);
+
+        return stream.ToArray();
+    }
+
+    private static MemoryOwner<byte> MemoryStreamToRentedMemory(MemoryStream input)
+    {
+        input.Position = 0;
+
+        MemoryOwner<byte> ownedMemory = MemoryOwner<byte>.Rent(checked((int)input.Length));
+
+        // Discard the return value because we assume reading a MemoryStream always succeeds completely.
+        _ = input.Read(ownedMemory.Span);
+
+        return ownedMemory;
+    }
+
+    private static RecyclableMemoryStream StreamToRecyclableMemoryStream(Stream input)
+    {
+        RecyclableMemoryStream stream = MemoryStreamManager.Shared.GetStream();
+
+        input.CopyTo(stream);
+
+        return stream;
     }
 }

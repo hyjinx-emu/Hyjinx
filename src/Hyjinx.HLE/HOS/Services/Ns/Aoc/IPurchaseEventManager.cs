@@ -1,66 +1,65 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
+using Hyjinx.Logging.Abstractions;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
+namespace Hyjinx.HLE.HOS.Services.Ns.Aoc;
+
+class IPurchaseEventManager : IpcService<IPurchaseEventManager>
 {
-    class IPurchaseEventManager : IpcService<IPurchaseEventManager>
+    private readonly KEvent _purchasedEvent;
+
+    public IPurchaseEventManager(Horizon system)
     {
-        private readonly KEvent _purchasedEvent;
+        _purchasedEvent = new KEvent(system.KernelContext);
+    }
 
-        public IPurchaseEventManager(Horizon system)
+    [CommandCmif(0)]
+    // SetDefaultDeliveryTarget(pid, buffer<bytes, 5> unknown)
+    public ResultCode SetDefaultDeliveryTarget(ServiceCtx context)
+    {
+        ulong inBufferPosition = context.Request.SendBuff[0].Position;
+        ulong inBufferSize = context.Request.SendBuff[0].Size;
+        byte[] buffer = new byte[inBufferSize];
+
+        context.Memory.Read(inBufferPosition, buffer);
+
+        // NOTE: Service uses the pid to call arp:r GetApplicationLaunchProperty and store it in internal field.
+        //       Then it seems to use the buffer content and compare it with a stored linked instrusive list.
+        //       Since we don't support purchase from eShop, we can stub it.
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceNs);
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(2)]
+    // GetPurchasedEventReadableHandle() -> handle<copy, event>
+    public ResultCode GetPurchasedEventReadableHandle(ServiceCtx context)
+    {
+        if (context.Process.HandleTable.GenerateHandle(_purchasedEvent.ReadableEvent, out int purchasedEventReadableHandle) != Result.Success)
         {
-            _purchasedEvent = new KEvent(system.KernelContext);
+            throw new InvalidOperationException("Out of handles!");
         }
 
-        [CommandCmif(0)]
-        // SetDefaultDeliveryTarget(pid, buffer<bytes, 5> unknown)
-        public ResultCode SetDefaultDeliveryTarget(ServiceCtx context)
-        {
-            ulong inBufferPosition = context.Request.SendBuff[0].Position;
-            ulong inBufferSize = context.Request.SendBuff[0].Size;
-            byte[] buffer = new byte[inBufferSize];
+        context.Response.HandleDesc = IpcHandleDesc.MakeCopy(purchasedEventReadableHandle);
 
-            context.Memory.Read(inBufferPosition, buffer);
+        return ResultCode.Success;
+    }
 
-            // NOTE: Service uses the pid to call arp:r GetApplicationLaunchProperty and store it in internal field.
-            //       Then it seems to use the buffer content and compare it with a stored linked instrusive list.
-            //       Since we don't support purchase from eShop, we can stub it.
+    [CommandCmif(3)]
+    // PopPurchasedProductInfo(nn::ec::detail::PurchasedProductInfo)
+    public ResultCode PopPurchasedProductInfo(ServiceCtx context)
+    {
+        byte[] purchasedProductInfo = new byte[0x80];
 
-            // Logger.Stub?.PrintStub(LogClass.ServiceNs);
+        context.ResponseData.Write(purchasedProductInfo);
 
-            return ResultCode.Success;
-        }
+        // NOTE: Service finds info using internal array then convert it into nn::ec::detail::PurchasedProductInfo.
+        //       Returns 0x320A4 if the internal array size is null.
+        //       Since we don't support purchase from eShop, we can stub it.
 
-        [CommandCmif(2)]
-        // GetPurchasedEventReadableHandle() -> handle<copy, event>
-        public ResultCode GetPurchasedEventReadableHandle(ServiceCtx context)
-        {
-            if (context.Process.HandleTable.GenerateHandle(_purchasedEvent.ReadableEvent, out int purchasedEventReadableHandle) != Result.Success)
-            {
-                throw new InvalidOperationException("Out of handles!");
-            }
-
-            context.Response.HandleDesc = IpcHandleDesc.MakeCopy(purchasedEventReadableHandle);
-
-            return ResultCode.Success;
-        }
-
-        [CommandCmif(3)]
-        // PopPurchasedProductInfo(nn::ec::detail::PurchasedProductInfo)
-        public ResultCode PopPurchasedProductInfo(ServiceCtx context)
-        {
-            byte[] purchasedProductInfo = new byte[0x80];
-
-            context.ResponseData.Write(purchasedProductInfo);
-
-            // NOTE: Service finds info using internal array then convert it into nn::ec::detail::PurchasedProductInfo.
-            //       Returns 0x320A4 if the internal array size is null.
-            //       Since we don't support purchase from eShop, we can stub it.
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

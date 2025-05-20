@@ -1,25 +1,24 @@
-namespace Hyjinx.HLE.HOS.Services.Apm
+namespace Hyjinx.HLE.HOS.Services.Apm;
+
+class PerformanceState
 {
-    class PerformanceState
+    public PerformanceState() { }
+
+    public bool CpuOverclockEnabled = false;
+
+    public PerformanceMode PerformanceMode = PerformanceMode.Default;
+    public CpuBoostMode CpuBoostMode = CpuBoostMode.Disabled;
+
+    public PerformanceConfiguration DefaultPerformanceConfiguration = PerformanceConfiguration.PerformanceConfiguration7;
+    public PerformanceConfiguration BoostPerformanceConfiguration = PerformanceConfiguration.PerformanceConfiguration8;
+
+    public PerformanceConfiguration GetCurrentPerformanceConfiguration(PerformanceMode performanceMode)
     {
-        public PerformanceState() { }
-
-        public bool CpuOverclockEnabled = false;
-
-        public PerformanceMode PerformanceMode = PerformanceMode.Default;
-        public CpuBoostMode CpuBoostMode = CpuBoostMode.Disabled;
-
-        public PerformanceConfiguration DefaultPerformanceConfiguration = PerformanceConfiguration.PerformanceConfiguration7;
-        public PerformanceConfiguration BoostPerformanceConfiguration = PerformanceConfiguration.PerformanceConfiguration8;
-
-        public PerformanceConfiguration GetCurrentPerformanceConfiguration(PerformanceMode performanceMode)
+        return performanceMode switch
         {
-            return performanceMode switch
-            {
-                PerformanceMode.Default => DefaultPerformanceConfiguration,
-                PerformanceMode.Boost => BoostPerformanceConfiguration,
-                _ => PerformanceConfiguration.PerformanceConfiguration7,
-            };
-        }
+            PerformanceMode.Default => DefaultPerformanceConfiguration,
+            PerformanceMode.Boost => BoostPerformanceConfiguration,
+            _ => PerformanceConfiguration.PerformanceConfiguration7,
+        };
     }
 }

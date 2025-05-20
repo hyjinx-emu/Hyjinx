@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Nfc
+namespace Hyjinx.HLE.HOS.Services.Nfc;
+
+[Service("nfc:am")]
+class IAmManager : IpcService<IAmManager>
 {
-    [Service("nfc:am")]
-    class IAmManager : IpcService<IAmManager>
-    {
-        public IAmManager(ServiceCtx context) { }
-    }
+    public IAmManager(ServiceCtx context) { }
 }

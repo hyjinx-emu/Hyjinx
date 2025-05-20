@@ -1,25 +1,24 @@
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 using Hyjinx.Graphics.GAL.Multithreading.Resources;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Texture
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Texture;
+
+struct TextureGetDataCommand : IGALCommand, IGALCommand<TextureGetDataCommand>
 {
-    struct TextureGetDataCommand : IGALCommand, IGALCommand<TextureGetDataCommand>
+    public readonly CommandType CommandType => CommandType.TextureGetData;
+    private TableRef<ThreadedTexture> _texture;
+    private TableRef<ResultBox<PinnedSpan<byte>>> _result;
+
+    public void Set(TableRef<ThreadedTexture> texture, TableRef<ResultBox<PinnedSpan<byte>>> result)
     {
-        public readonly CommandType CommandType => CommandType.TextureGetData;
-        private TableRef<ThreadedTexture> _texture;
-        private TableRef<ResultBox<PinnedSpan<byte>>> _result;
+        _texture = texture;
+        _result = result;
+    }
 
-        public void Set(TableRef<ThreadedTexture> texture, TableRef<ResultBox<PinnedSpan<byte>>> result)
-        {
-            _texture = texture;
-            _result = result;
-        }
+    public static void Run(ref TextureGetDataCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        PinnedSpan<byte> result = command._texture.Get(threaded).Base.GetData();
 
-        public static void Run(ref TextureGetDataCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            PinnedSpan<byte> result = command._texture.Get(threaded).Base.GetData();
-
-            command._result.Get(threaded).Result = result;
-        }
+        command._result.Get(threaded).Result = result;
     }
 }

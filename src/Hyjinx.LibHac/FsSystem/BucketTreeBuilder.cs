@@ -1,10 +1,10 @@
-using System;
-using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Util;
+using System;
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.FsSystem;
 

@@ -1,42 +1,41 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Hyjinx.Common.GraphicsDriver.NVAPI
+namespace Hyjinx.Common.GraphicsDriver.NVAPI;
+
+[StructLayout(LayoutKind.Sequential, Pack = 4)]
+public unsafe struct NvapiUnicodeString
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public unsafe struct NvapiUnicodeString
+    private fixed byte _data[4096];
+
+    public NvapiUnicodeString(string text)
     {
-        private fixed byte _data[4096];
+        Set(text);
+    }
 
-        public NvapiUnicodeString(string text)
+    public readonly string Get()
+    {
+        fixed (byte* data = _data)
         {
-            Set(text);
-        }
+            string text = Encoding.Unicode.GetString(data, 4096);
 
-        public readonly string Get()
-        {
-            fixed (byte* data = _data)
+            int index = text.IndexOf('\0');
+            if (index > -1)
             {
-                string text = Encoding.Unicode.GetString(data, 4096);
-
-                int index = text.IndexOf('\0');
-                if (index > -1)
-                {
-                    text = text.Remove(index);
-                }
-
-                return text;
+                text = text.Remove(index);
             }
+
+            return text;
         }
+    }
 
-        public readonly void Set(string text)
+    public readonly void Set(string text)
+    {
+        text += '\0';
+        fixed (char* textPtr = text)
+        fixed (byte* data = _data)
         {
-            text += '\0';
-            fixed (char* textPtr = text)
-            fixed (byte* data = _data)
-            {
-                int written = Encoding.Unicode.GetBytes(textPtr, text.Length, data, 4096);
-            }
+            int written = Encoding.Unicode.GetBytes(textPtr, text.Length, data, 4096);
         }
     }
 }

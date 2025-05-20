@@ -1,30 +1,29 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Hid.Types
+namespace Hyjinx.HLE.HOS.Services.Hid.Types;
+
+[Flags]
+enum AppletFooterUiType : byte
 {
-    [Flags]
-    enum AppletFooterUiType : byte
-    {
-        None,
-        HandheldNone,
-        HandheldJoyConLeftOnly,
-        HandheldJoyConRightOnly,
-        HandheldJoyConLeftJoyConRight,
-        JoyDual,
-        JoyDualLeftOnly,
-        JoyDualRightOnly,
-        JoyLeftHorizontal,
-        JoyLeftVertical,
-        JoyRightHorizontal,
-        JoyRightVertical,
-        SwitchProController,
-        CompatibleProController,
-        CompatibleJoyCon,
-        LarkHvc1,
-        LarkHvc2,
-        LarkNesLeft,
-        LarkNesRight,
-        Lucia,
-        Verification,
-    }
+    None,
+    HandheldNone,
+    HandheldJoyConLeftOnly,
+    HandheldJoyConRightOnly,
+    HandheldJoyConLeftJoyConRight,
+    JoyDual,
+    JoyDualLeftOnly,
+    JoyDualRightOnly,
+    JoyLeftHorizontal,
+    JoyLeftVertical,
+    JoyRightHorizontal,
+    JoyRightVertical,
+    SwitchProController,
+    CompatibleProController,
+    CompatibleJoyCon,
+    LarkHvc1,
+    LarkHvc2,
+    LarkNesLeft,
+    LarkNesRight,
+    Lucia,
+    Verification,
 }

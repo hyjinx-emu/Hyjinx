@@ -1,26 +1,25 @@
-namespace Hyjinx.Tests.Unicorn
+namespace Hyjinx.Tests.Unicorn;
+
+public class IndexedProperty<TIndex, TValue>
 {
-    public class IndexedProperty<TIndex, TValue>
+    private readonly Func<TIndex, TValue> _getFunc;
+    private readonly Action<TIndex, TValue> _setAction;
+
+    public IndexedProperty(Func<TIndex, TValue> getFunc, Action<TIndex, TValue> setAction)
     {
-        private readonly Func<TIndex, TValue> _getFunc;
-        private readonly Action<TIndex, TValue> _setAction;
+        _getFunc = getFunc;
+        _setAction = setAction;
+    }
 
-        public IndexedProperty(Func<TIndex, TValue> getFunc, Action<TIndex, TValue> setAction)
+    public TValue this[TIndex index]
+    {
+        get
         {
-            _getFunc = getFunc;
-            _setAction = setAction;
+            return _getFunc(index);
         }
-
-        public TValue this[TIndex index]
+        set
         {
-            get
-            {
-                return _getFunc(index);
-            }
-            set
-            {
-                _setAction(index, value);
-            }
+            _setAction(index, value);
         }
     }
 }

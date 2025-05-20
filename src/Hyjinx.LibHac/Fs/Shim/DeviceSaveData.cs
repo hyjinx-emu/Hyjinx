@@ -1,4 +1,3 @@
-using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
@@ -6,10 +5,11 @@ using LibHac.Fs.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.Ncm;
 using LibHac.Os;
-using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
-using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
+using System;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using static LibHac.Fs.SaveData;
+using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
+using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 
 namespace LibHac.Fs.Shim;
 

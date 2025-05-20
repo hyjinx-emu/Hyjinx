@@ -2,74 +2,73 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Hyjinx.HLE.HOS
+namespace Hyjinx.HLE.HOS;
+
+class IdDictionary
 {
-    class IdDictionary
+    private readonly ConcurrentDictionary<int, object> _objs;
+
+    public ICollection<object> Values => _objs.Values;
+
+    public IdDictionary()
     {
-        private readonly ConcurrentDictionary<int, object> _objs;
+        _objs = new ConcurrentDictionary<int, object>();
+    }
 
-        public ICollection<object> Values => _objs.Values;
+    public bool Add(int id, object data)
+    {
+        return _objs.TryAdd(id, data);
+    }
 
-        public IdDictionary()
+    public int Add(object data)
+    {
+        for (int id = 1; id < int.MaxValue; id++)
         {
-            _objs = new ConcurrentDictionary<int, object>();
-        }
-
-        public bool Add(int id, object data)
-        {
-            return _objs.TryAdd(id, data);
-        }
-
-        public int Add(object data)
-        {
-            for (int id = 1; id < int.MaxValue; id++)
+            if (_objs.TryAdd(id, data))
             {
-                if (_objs.TryAdd(id, data))
-                {
-                    return id;
-                }
+                return id;
             }
-
-            throw new InvalidOperationException();
         }
 
-        public object GetData(int id)
+        throw new InvalidOperationException();
+    }
+
+    public object GetData(int id)
+    {
+        if (_objs.TryGetValue(id, out object data))
         {
-            if (_objs.TryGetValue(id, out object data))
-            {
-                return data;
-            }
-
-            return null;
+            return data;
         }
 
-        public T GetData<T>(int id)
+        return null;
+    }
+
+    public T GetData<T>(int id)
+    {
+        if (_objs.TryGetValue(id, out object dataObject) && dataObject is T data)
         {
-            if (_objs.TryGetValue(id, out object dataObject) && dataObject is T data)
-            {
-                return data;
-            }
-
-            return default;
+            return data;
         }
 
-        public object Delete(int id)
+        return default;
+    }
+
+    public object Delete(int id)
+    {
+        if (_objs.TryRemove(id, out object obj))
         {
-            if (_objs.TryRemove(id, out object obj))
-            {
-                return obj;
-            }
-
-            return null;
+            return obj;
         }
 
-        public ICollection<object> Clear()
-        {
-            ICollection<object> values = _objs.Values;
+        return null;
+    }
 
-            _objs.Clear();
+    public ICollection<object> Clear()
+    {
+        ICollection<object> values = _objs.Values;
 
-            return values;
-        }
+        _objs.Clear();
+
+        return values;
     }
 }

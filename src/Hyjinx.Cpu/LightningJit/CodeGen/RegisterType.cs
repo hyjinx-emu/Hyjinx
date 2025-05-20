@@ -1,8 +1,7 @@
-namespace Hyjinx.Cpu.LightningJit.CodeGen
+namespace Hyjinx.Cpu.LightningJit.CodeGen;
+
+enum RegisterType
 {
-    enum RegisterType
-    {
-        Integer,
-        Vector,
-    }
+    Integer,
+    Vector,
 }

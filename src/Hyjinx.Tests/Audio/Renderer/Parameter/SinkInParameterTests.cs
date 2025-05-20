@@ -1,14 +1,13 @@
 using Hyjinx.Audio.Renderer.Parameter;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Audio.Renderer.Parameter
+namespace Hyjinx.Tests.Audio.Renderer.Parameter;
+
+class SinkInParameterTests
 {
-    class SinkInParameterTests
+    [Test]
+    public void EnsureTypeSize()
     {
-        [Test]
-        public void EnsureTypeSize()
-        {
-            ClassicAssert.AreEqual(0x140, Unsafe.SizeOf<SinkInParameter>());
-        }
+        ClassicAssert.AreEqual(0x140, Unsafe.SizeOf<SinkInParameter>());
     }
 }

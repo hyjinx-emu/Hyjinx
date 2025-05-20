@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.Types
+namespace Hyjinx.HLE.HOS.Services.Hid.Types;
+
+struct HidVector
 {
-    struct HidVector
-    {
-        public float X;
-        public float Y;
-        public float Z;
-    }
+    public float X;
+    public float Y;
+    public float Z;
 }

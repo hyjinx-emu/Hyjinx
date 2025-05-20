@@ -1,8 +1,8 @@
+using LibHac.Diag;
+using LibHac.Fs;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using LibHac.Diag;
-using LibHac.Fs;
 using Buffer = LibHac.Mem.Buffer;
 
 namespace LibHac.FsSystem.Buffers;

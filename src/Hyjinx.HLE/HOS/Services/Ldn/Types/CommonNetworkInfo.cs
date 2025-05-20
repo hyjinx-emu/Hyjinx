@@ -1,16 +1,15 @@
 using Hyjinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x30)]
+struct CommonNetworkInfo
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x30)]
-    struct CommonNetworkInfo
-    {
-        public Array6<byte> MacAddress;
-        public Ssid Ssid;
-        public ushort Channel;
-        public byte LinkLevel;
-        public byte NetworkType;
-        public uint Reserved;
-    }
+    public Array6<byte> MacAddress;
+    public Ssid Ssid;
+    public ushort Channel;
+    public byte LinkLevel;
+    public byte NetworkType;
+    public uint Reserved;
 }

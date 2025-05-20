@@ -1,14 +1,13 @@
 using Hyjinx.Audio.Renderer.Parameter.Sink;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Audio.Renderer.Parameter.Sink
+namespace Hyjinx.Tests.Audio.Renderer.Parameter.Sink;
+
+class CircularBufferParameterTests
 {
-    class CircularBufferParameterTests
+    [Test]
+    public void EnsureTypeSize()
     {
-        [Test]
-        public void EnsureTypeSize()
-        {
-            ClassicAssert.AreEqual(0x24, Unsafe.SizeOf<CircularBufferParameter>());
-        }
+        ClassicAssert.AreEqual(0x24, Unsafe.SizeOf<CircularBufferParameter>());
     }
 }

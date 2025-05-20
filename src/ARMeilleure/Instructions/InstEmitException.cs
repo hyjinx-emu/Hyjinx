@@ -3,53 +3,52 @@ using ARMeilleure.Translation;
 
 using static ARMeilleure.IntermediateRepresentation.Operand.Factory;
 
-namespace ARMeilleure.Instructions
+namespace ARMeilleure.Instructions;
+
+static partial class InstEmit
 {
-    static partial class InstEmit
+    public static void Brk(ArmEmitterContext context)
     {
-        public static void Brk(ArmEmitterContext context)
-        {
-            OpCodeException op = (OpCodeException)context.CurrOp;
+        OpCodeException op = (OpCodeException)context.CurrOp;
 
-            string name = nameof(NativeInterface.Break);
+        string name = nameof(NativeInterface.Break);
 
-            context.StoreToContext();
+        context.StoreToContext();
 
-            context.Call(typeof(NativeInterface).GetMethod(name), Const(op.Address), Const(op.Id));
+        context.Call(typeof(NativeInterface).GetMethod(name), Const(op.Address), Const(op.Id));
 
-            context.LoadFromContext();
+        context.LoadFromContext();
 
-            context.Return(Const(op.Address));
-        }
+        context.Return(Const(op.Address));
+    }
 
-        public static void Svc(ArmEmitterContext context)
-        {
-            OpCodeException op = (OpCodeException)context.CurrOp;
+    public static void Svc(ArmEmitterContext context)
+    {
+        OpCodeException op = (OpCodeException)context.CurrOp;
 
-            string name = nameof(NativeInterface.SupervisorCall);
+        string name = nameof(NativeInterface.SupervisorCall);
 
-            context.StoreToContext();
+        context.StoreToContext();
 
-            context.Call(typeof(NativeInterface).GetMethod(name), Const(op.Address), Const(op.Id));
+        context.Call(typeof(NativeInterface).GetMethod(name), Const(op.Address), Const(op.Id));
 
-            context.LoadFromContext();
+        context.LoadFromContext();
 
-            Translator.EmitSynchronization(context);
-        }
+        Translator.EmitSynchronization(context);
+    }
 
-        public static void Und(ArmEmitterContext context)
-        {
-            OpCode op = context.CurrOp;
+    public static void Und(ArmEmitterContext context)
+    {
+        OpCode op = context.CurrOp;
 
-            string name = nameof(NativeInterface.Undefined);
+        string name = nameof(NativeInterface.Undefined);
 
-            context.StoreToContext();
+        context.StoreToContext();
 
-            context.Call(typeof(NativeInterface).GetMethod(name), Const(op.Address), Const(op.RawOpCode));
+        context.Call(typeof(NativeInterface).GetMethod(name), Const(op.Address), Const(op.RawOpCode));
 
-            context.LoadFromContext();
+        context.LoadFromContext();
 
-            context.Return(Const(op.Address));
-        }
+        context.Return(Const(op.Address));
     }
 }

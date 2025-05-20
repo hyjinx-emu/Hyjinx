@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public enum NpadHandheldActivationMode
 {
-    public enum NpadHandheldActivationMode
-    {
-        Dual,
-        Single,
-        None,
-    }
+    Dual,
+    Single,
+    None,
 }

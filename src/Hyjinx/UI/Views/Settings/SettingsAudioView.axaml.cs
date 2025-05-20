@@ -1,12 +1,11 @@
 using Avalonia.Controls;
 
-namespace Hyjinx.Ava.UI.Views.Settings
+namespace Hyjinx.Ava.UI.Views.Settings;
+
+public partial class SettingsAudioView : UserControl
 {
-    public partial class SettingsAudioView : UserControl
+    public SettingsAudioView()
     {
-        public SettingsAudioView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

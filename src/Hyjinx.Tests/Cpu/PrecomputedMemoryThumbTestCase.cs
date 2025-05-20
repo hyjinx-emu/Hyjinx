@@ -1,10 +1,9 @@
-namespace Hyjinx.Tests.Cpu
+namespace Hyjinx.Tests.Cpu;
+
+public struct PrecomputedMemoryThumbTestCase
 {
-    public struct PrecomputedMemoryThumbTestCase
-    {
-        public ushort[] Instructions;
-        public uint[] StartRegs;
-        public uint[] FinalRegs;
-        public (ulong Address, ushort Value)[] MemoryDelta;
-    }
+    public ushort[] Instructions;
+    public uint[] StartRegs;
+    public uint[] FinalRegs;
+    public (ulong Address, ushort Value)[] MemoryDelta;
 }

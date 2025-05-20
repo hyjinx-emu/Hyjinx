@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.SystemState
+namespace Hyjinx.HLE.HOS.SystemState;
+
+public enum ColorSet
 {
-    public enum ColorSet
-    {
-        BasicWhite = 0,
-        BasicBlack = 1,
-    }
+    BasicWhite = 0,
+    BasicBlack = 1,
 }

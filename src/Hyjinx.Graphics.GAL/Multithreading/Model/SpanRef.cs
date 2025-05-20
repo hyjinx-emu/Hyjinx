@@ -1,39 +1,38 @@
 using System;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Model
+namespace Hyjinx.Graphics.GAL.Multithreading.Model;
+
+readonly struct SpanRef<T> where T : unmanaged
 {
-    readonly struct SpanRef<T> where T : unmanaged
+    private readonly int _packedLengthId;
+
+    public SpanRef(ThreadedRenderer renderer, T[] data)
     {
-        private readonly int _packedLengthId;
+        _packedLengthId = -(renderer.AddTableRef(data) + 1);
+    }
 
-        public SpanRef(ThreadedRenderer renderer, T[] data)
+    public SpanRef(int length)
+    {
+        _packedLengthId = length;
+    }
+
+    public Span<T> Get(ThreadedRenderer renderer)
+    {
+        if (_packedLengthId >= 0)
         {
-            _packedLengthId = -(renderer.AddTableRef(data) + 1);
+            return renderer.SpanPool.Get<T>(_packedLengthId);
         }
-
-        public SpanRef(int length)
+        else
         {
-            _packedLengthId = length;
+            return new Span<T>((T[])renderer.RemoveTableRef(-(_packedLengthId + 1)));
         }
+    }
 
-        public Span<T> Get(ThreadedRenderer renderer)
+    public void Dispose(ThreadedRenderer renderer)
+    {
+        if (_packedLengthId > 0)
         {
-            if (_packedLengthId >= 0)
-            {
-                return renderer.SpanPool.Get<T>(_packedLengthId);
-            }
-            else
-            {
-                return new Span<T>((T[])renderer.RemoveTableRef(-(_packedLengthId + 1)));
-            }
-        }
-
-        public void Dispose(ThreadedRenderer renderer)
-        {
-            if (_packedLengthId > 0)
-            {
-                renderer.SpanPool.Dispose<T>(_packedLengthId);
-            }
+            renderer.SpanPool.Dispose<T>(_packedLengthId);
         }
     }
 }

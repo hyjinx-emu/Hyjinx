@@ -1,9 +1,9 @@
 using Hyjinx.Common.Configuration.Hid;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.Utilities;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using System;

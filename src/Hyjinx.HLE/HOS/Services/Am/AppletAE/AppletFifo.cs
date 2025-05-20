@@ -3,118 +3,117 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Hyjinx.HLE.HOS.Services.Am.AppletAE
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE;
+
+internal class AppletFifo<T> : IAppletFifo<T>
 {
-    internal class AppletFifo<T> : IAppletFifo<T>
+    private readonly ConcurrentQueue<T> _dataQueue;
+
+    public event EventHandler DataAvailable;
+
+    public bool IsSynchronized
     {
-        private readonly ConcurrentQueue<T> _dataQueue;
+        get { return ((ICollection)_dataQueue).IsSynchronized; }
+    }
 
-        public event EventHandler DataAvailable;
+    public object SyncRoot
+    {
+        get { return ((ICollection)_dataQueue).SyncRoot; }
+    }
 
-        public bool IsSynchronized
+    public int Count
+    {
+        get { return _dataQueue.Count; }
+    }
+
+    public AppletFifo()
+    {
+        _dataQueue = new ConcurrentQueue<T>();
+    }
+
+    public void Push(T item)
+    {
+        _dataQueue.Enqueue(item);
+
+        DataAvailable?.Invoke(this, null);
+    }
+
+    public bool TryAdd(T item)
+    {
+        try
         {
-            get { return ((ICollection)_dataQueue).IsSynchronized; }
+            this.Push(item);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public T Pop()
+    {
+        if (_dataQueue.TryDequeue(out T result))
+        {
+            return result;
         }
 
-        public object SyncRoot
+        throw new InvalidOperationException("FIFO empty.");
+    }
+
+    public bool TryPop(out T result)
+    {
+        return _dataQueue.TryDequeue(out result);
+    }
+
+    public bool TryTake(out T item)
+    {
+        return this.TryPop(out item);
+    }
+
+    public T Peek()
+    {
+        if (_dataQueue.TryPeek(out T result))
         {
-            get { return ((ICollection)_dataQueue).SyncRoot; }
+            return result;
         }
 
-        public int Count
-        {
-            get { return _dataQueue.Count; }
-        }
+        throw new InvalidOperationException("FIFO empty.");
+    }
 
-        public AppletFifo()
-        {
-            _dataQueue = new ConcurrentQueue<T>();
-        }
+    public bool TryPeek(out T result)
+    {
+        return _dataQueue.TryPeek(out result);
+    }
 
-        public void Push(T item)
-        {
-            _dataQueue.Enqueue(item);
+    public void Clear()
+    {
+        _dataQueue.Clear();
+    }
 
-            DataAvailable?.Invoke(this, null);
-        }
+    public T[] ToArray()
+    {
+        return _dataQueue.ToArray();
+    }
 
-        public bool TryAdd(T item)
-        {
-            try
-            {
-                this.Push(item);
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+        _dataQueue.CopyTo(array, arrayIndex);
+    }
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+    public void CopyTo(Array array, int index)
+    {
+        this.CopyTo((T[])array, index);
+    }
 
-        public T Pop()
-        {
-            if (_dataQueue.TryDequeue(out T result))
-            {
-                return result;
-            }
+    public IEnumerator<T> GetEnumerator()
+    {
+        return _dataQueue.GetEnumerator();
+    }
 
-            throw new InvalidOperationException("FIFO empty.");
-        }
-
-        public bool TryPop(out T result)
-        {
-            return _dataQueue.TryDequeue(out result);
-        }
-
-        public bool TryTake(out T item)
-        {
-            return this.TryPop(out item);
-        }
-
-        public T Peek()
-        {
-            if (_dataQueue.TryPeek(out T result))
-            {
-                return result;
-            }
-
-            throw new InvalidOperationException("FIFO empty.");
-        }
-
-        public bool TryPeek(out T result)
-        {
-            return _dataQueue.TryPeek(out result);
-        }
-
-        public void Clear()
-        {
-            _dataQueue.Clear();
-        }
-
-        public T[] ToArray()
-        {
-            return _dataQueue.ToArray();
-        }
-
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            _dataQueue.CopyTo(array, arrayIndex);
-        }
-
-        public void CopyTo(Array array, int index)
-        {
-            this.CopyTo((T[])array, index);
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _dataQueue.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _dataQueue.GetEnumerator();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return _dataQueue.GetEnumerator();
     }
 }

@@ -8,58 +8,57 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Hyjinx.Ava.UI.Views.Settings
+namespace Hyjinx.Ava.UI.Views.Settings;
+
+public partial class SettingsUiView : UserControl
 {
-    public partial class SettingsUiView : UserControl
+    public SettingsViewModel ViewModel;
+
+    public SettingsUiView()
     {
-        public SettingsViewModel ViewModel;
+        InitializeComponent();
+    }
 
-        public SettingsUiView()
+    private async void AddButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        string path = PathBox.Text;
+
+        if (!string.IsNullOrWhiteSpace(path) && Directory.Exists(path) && !ViewModel.GameDirectories.Contains(path))
         {
-            InitializeComponent();
+            ViewModel.GameDirectories.Add(path);
+            ViewModel.DirectoryChanged = true;
         }
-
-        private async void AddButton_OnClick(object sender, RoutedEventArgs e)
+        else
         {
-            string path = PathBox.Text;
-
-            if (!string.IsNullOrWhiteSpace(path) && Directory.Exists(path) && !ViewModel.GameDirectories.Contains(path))
+            if (this.GetVisualRoot() is Window window)
             {
-                ViewModel.GameDirectories.Add(path);
-                ViewModel.DirectoryChanged = true;
-            }
-            else
-            {
-                if (this.GetVisualRoot() is Window window)
+                var result = await window.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
                 {
-                    var result = await window.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
-                    {
-                        AllowMultiple = false,
-                    });
+                    AllowMultiple = false,
+                });
 
-                    if (result.Count > 0)
-                    {
-                        ViewModel.GameDirectories.Add(result[0].Path.LocalPath);
-                        ViewModel.DirectoryChanged = true;
-                    }
+                if (result.Count > 0)
+                {
+                    ViewModel.GameDirectories.Add(result[0].Path.LocalPath);
+                    ViewModel.DirectoryChanged = true;
                 }
             }
         }
+    }
 
-        private void RemoveButton_OnClick(object sender, RoutedEventArgs e)
+    private void RemoveButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        int oldIndex = GameList.SelectedIndex;
+
+        foreach (string path in new List<string>(GameList.SelectedItems.Cast<string>()))
         {
-            int oldIndex = GameList.SelectedIndex;
+            ViewModel.GameDirectories.Remove(path);
+            ViewModel.DirectoryChanged = true;
+        }
 
-            foreach (string path in new List<string>(GameList.SelectedItems.Cast<string>()))
-            {
-                ViewModel.GameDirectories.Remove(path);
-                ViewModel.DirectoryChanged = true;
-            }
-
-            if (GameList.ItemCount > 0)
-            {
-                GameList.SelectedIndex = oldIndex < GameList.ItemCount ? oldIndex : 0;
-            }
+        if (GameList.ItemCount > 0)
+        {
+            GameList.SelectedIndex = oldIndex < GameList.ItemCount ? oldIndex : 0;
         }
     }
 }

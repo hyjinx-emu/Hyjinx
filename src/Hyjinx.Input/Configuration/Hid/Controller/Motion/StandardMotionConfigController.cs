@@ -1,4 +1,3 @@
-namespace Hyjinx.Common.Configuration.Hid.Controller.Motion
-{
-    public class StandardMotionConfigController : MotionConfigController { }
-}
+namespace Hyjinx.Common.Configuration.Hid.Controller.Motion;
+
+public class StandardMotionConfigController : MotionConfigController { }

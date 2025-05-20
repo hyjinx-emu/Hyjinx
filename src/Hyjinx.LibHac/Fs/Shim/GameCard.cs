@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
@@ -9,6 +7,8 @@ using LibHac.Gc;
 using LibHac.Os;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using static LibHac.Gc.Values;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;

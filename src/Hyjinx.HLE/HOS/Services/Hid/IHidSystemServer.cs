@@ -1,76 +1,75 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Hid.HidServer;
 using Hyjinx.HLE.HOS.Services.Hid.Types;
+using Hyjinx.Logging.Abstractions;
 
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+[Service("hid:sys")]
+class IHidSystemServer : IpcService<IHidSystemServer>
 {
-    [Service("hid:sys")]
-    class IHidSystemServer : IpcService<IHidSystemServer>
+    public IHidSystemServer(ServiceCtx context) { }
+
+    [CommandCmif(303)]
+    // ApplyNpadSystemCommonPolicy(u64)
+    public ResultCode ApplyNpadSystemCommonPolicy(ServiceCtx context)
     {
-        public IHidSystemServer(ServiceCtx context) { }
+        ulong commonPolicy = context.RequestData.ReadUInt64();
 
-        [CommandCmif(303)]
-        // ApplyNpadSystemCommonPolicy(u64)
-        public ResultCode ApplyNpadSystemCommonPolicy(ServiceCtx context)
+        // Logger.Stub?.PrintStub(LogClass.ServiceHid, new { commonPolicy });
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(306)]
+    // GetLastActiveNpad(u32) -> u8, u8
+    public ResultCode GetLastActiveNpad(ServiceCtx context)
+    {
+        // TODO: RequestData seems to have garbage data, reading an extra uint seems to fix the issue.
+        context.RequestData.ReadUInt32();
+
+        ResultCode resultCode = GetAppletFooterUiTypeImpl(context, out AppletFooterUiType appletFooterUiType);
+
+        context.ResponseData.Write((byte)appletFooterUiType);
+        context.ResponseData.Write((byte)0);
+
+        return resultCode;
+    }
+
+    [CommandCmif(307)]
+    // GetNpadSystemExtStyle() -> u64
+    public ResultCode GetNpadSystemExtStyle(ServiceCtx context)
+    {
+        foreach (PlayerIndex playerIndex in context.Device.Hid.Npads.GetSupportedPlayers())
         {
-            ulong commonPolicy = context.RequestData.ReadUInt64();
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceHid, new { commonPolicy });
-
-            return ResultCode.Success;
-        }
-
-        [CommandCmif(306)]
-        // GetLastActiveNpad(u32) -> u8, u8
-        public ResultCode GetLastActiveNpad(ServiceCtx context)
-        {
-            // TODO: RequestData seems to have garbage data, reading an extra uint seems to fix the issue.
-            context.RequestData.ReadUInt32();
-
-            ResultCode resultCode = GetAppletFooterUiTypeImpl(context, out AppletFooterUiType appletFooterUiType);
-
-            context.ResponseData.Write((byte)appletFooterUiType);
-            context.ResponseData.Write((byte)0);
-
-            return resultCode;
-        }
-
-        [CommandCmif(307)]
-        // GetNpadSystemExtStyle() -> u64
-        public ResultCode GetNpadSystemExtStyle(ServiceCtx context)
-        {
-            foreach (PlayerIndex playerIndex in context.Device.Hid.Npads.GetSupportedPlayers())
+            if (HidUtils.GetNpadIdTypeFromIndex(playerIndex) > NpadIdType.Handheld)
             {
-                if (HidUtils.GetNpadIdTypeFromIndex(playerIndex) > NpadIdType.Handheld)
-                {
-                    return ResultCode.InvalidNpadIdType;
-                }
+                return ResultCode.InvalidNpadIdType;
             }
-
-            context.ResponseData.Write((ulong)context.Device.Hid.Npads.SupportedStyleSets);
-
-            return ResultCode.Success;
         }
 
-        [CommandCmif(314)] // 9.0.0+
-        // GetAppletFooterUiType(u32) -> u8
-        public ResultCode GetAppletFooterUiType(ServiceCtx context)
-        {
-            ResultCode resultCode = GetAppletFooterUiTypeImpl(context, out AppletFooterUiType appletFooterUiType);
+        context.ResponseData.Write((ulong)context.Device.Hid.Npads.SupportedStyleSets);
 
-            context.ResponseData.Write((byte)appletFooterUiType);
+        return ResultCode.Success;
+    }
 
-            return resultCode;
-        }
+    [CommandCmif(314)] // 9.0.0+
+    // GetAppletFooterUiType(u32) -> u8
+    public ResultCode GetAppletFooterUiType(ServiceCtx context)
+    {
+        ResultCode resultCode = GetAppletFooterUiTypeImpl(context, out AppletFooterUiType appletFooterUiType);
 
-        private ResultCode GetAppletFooterUiTypeImpl(ServiceCtx context, out AppletFooterUiType appletFooterUiType)
-        {
-            NpadIdType npadIdType = (NpadIdType)context.RequestData.ReadUInt32();
-            PlayerIndex playerIndex = HidUtils.GetIndexFromNpadIdType(npadIdType);
+        context.ResponseData.Write((byte)appletFooterUiType);
 
-            appletFooterUiType = context.Device.Hid.SharedMemory.Npads[(int)playerIndex].InternalState.AppletFooterUiType;
+        return resultCode;
+    }
 
-            return ResultCode.Success;
-        }
+    private ResultCode GetAppletFooterUiTypeImpl(ServiceCtx context, out AppletFooterUiType appletFooterUiType)
+    {
+        NpadIdType npadIdType = (NpadIdType)context.RequestData.ReadUInt32();
+        PlayerIndex playerIndex = HidUtils.GetIndexFromNpadIdType(npadIdType);
+
+        appletFooterUiType = context.Device.Hid.SharedMemory.Npads[(int)playerIndex].InternalState.AppletFooterUiType;
+
+        return ResultCode.Success;
     }
 }

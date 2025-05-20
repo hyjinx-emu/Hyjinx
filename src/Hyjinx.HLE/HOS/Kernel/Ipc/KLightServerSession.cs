@@ -1,16 +1,15 @@
 using Hyjinx.HLE.HOS.Kernel.Common;
 
-namespace Hyjinx.HLE.HOS.Kernel.Ipc
+namespace Hyjinx.HLE.HOS.Kernel.Ipc;
+
+class KLightServerSession : KAutoObject
 {
-    class KLightServerSession : KAutoObject
-    {
 #pragma warning disable IDE0052 // Remove unread private member
-        private readonly KLightSession _parent;
+    private readonly KLightSession _parent;
 #pragma warning restore IDE0052
 
-        public KLightServerSession(KernelContext context, KLightSession parent) : base(context)
-        {
-            _parent = parent;
-        }
+    public KLightServerSession(KernelContext context, KLightSession parent) : base(context)
+    {
+        _parent = parent;
     }
 }

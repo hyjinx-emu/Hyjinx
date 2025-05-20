@@ -1,18 +1,17 @@
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands;
+
+struct SetFrontFaceCommand : IGALCommand, IGALCommand<SetFrontFaceCommand>
 {
-    struct SetFrontFaceCommand : IGALCommand, IGALCommand<SetFrontFaceCommand>
+    public readonly CommandType CommandType => CommandType.SetFrontFace;
+    private FrontFace _frontFace;
+
+    public void Set(FrontFace frontFace)
     {
-        public readonly CommandType CommandType => CommandType.SetFrontFace;
-        private FrontFace _frontFace;
+        _frontFace = frontFace;
+    }
 
-        public void Set(FrontFace frontFace)
-        {
-            _frontFace = frontFace;
-        }
-
-        public static void Run(ref SetFrontFaceCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            renderer.Pipeline.SetFrontFace(command._frontFace);
-        }
+    public static void Run(ref SetFrontFaceCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        renderer.Pipeline.SetFrontFace(command._frontFace);
     }
 }

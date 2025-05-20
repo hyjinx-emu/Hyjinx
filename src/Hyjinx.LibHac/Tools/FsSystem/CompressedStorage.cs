@@ -1,12 +1,12 @@
-using System;
-using System.Buffers;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Util;
+using System;
+using System.Buffers;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace LibHac.Tools.FsSystem;
 

@@ -1,20 +1,19 @@
 using OpenTK;
 using System;
 
-namespace Hyjinx.Ava.UI.Renderer
+namespace Hyjinx.Ava.UI.Renderer;
+
+internal class OpenTKBindingsContext : IBindingsContext
 {
-    internal class OpenTKBindingsContext : IBindingsContext
+    private readonly Func<string, IntPtr> _getProcAddress;
+
+    public OpenTKBindingsContext(Func<string, IntPtr> getProcAddress)
     {
-        private readonly Func<string, IntPtr> _getProcAddress;
+        _getProcAddress = getProcAddress;
+    }
 
-        public OpenTKBindingsContext(Func<string, IntPtr> getProcAddress)
-        {
-            _getProcAddress = getProcAddress;
-        }
-
-        public IntPtr GetProcAddress(string procName)
-        {
-            return _getProcAddress(procName);
-        }
+    public IntPtr GetProcAddress(string procName)
+    {
+        return _getProcAddress(procName);
     }
 }

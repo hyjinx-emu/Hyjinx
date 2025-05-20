@@ -1,11 +1,11 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Crypto;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.FsSystem;
 

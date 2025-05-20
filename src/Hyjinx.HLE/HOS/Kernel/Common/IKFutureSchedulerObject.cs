@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Kernel.Common
+namespace Hyjinx.HLE.HOS.Kernel.Common;
+
+interface IKFutureSchedulerObject
 {
-    interface IKFutureSchedulerObject
-    {
-        void TimeUp();
-    }
+    void TimeUp();
 }

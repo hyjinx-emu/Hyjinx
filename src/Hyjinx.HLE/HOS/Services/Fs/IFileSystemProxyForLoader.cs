@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Fs
+namespace Hyjinx.HLE.HOS.Services.Fs;
+
+[Service("fsp-ldr")]
+class IFileSystemProxyForLoader : IpcService<IFileSystemProxyForLoader>
 {
-    [Service("fsp-ldr")]
-    class IFileSystemProxyForLoader : IpcService<IFileSystemProxyForLoader>
-    {
-        public IFileSystemProxyForLoader(ServiceCtx context) { }
-    }
+    public IFileSystemProxyForLoader(ServiceCtx context) { }
 }

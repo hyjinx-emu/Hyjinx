@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Crypto;
@@ -8,6 +6,8 @@ using LibHac.Fs;
 using LibHac.FsSrv;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.FsSystem.Constants;
 using static LibHac.FsSystem.HierarchicalIntegrityVerificationStorage;
 using static LibHac.Util.BitUtil;

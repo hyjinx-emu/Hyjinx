@@ -1,33 +1,32 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class DeleteExpression : ParentNode
 {
-    public class DeleteExpression : ParentNode
+    private readonly bool _isGlobal;
+    private readonly bool _isArrayExpression;
+
+    public DeleteExpression(BaseNode child, bool isGlobal, bool isArrayExpression) : base(NodeType.DeleteExpression, child)
     {
-        private readonly bool _isGlobal;
-        private readonly bool _isArrayExpression;
+        _isGlobal = isGlobal;
+        _isArrayExpression = isArrayExpression;
+    }
 
-        public DeleteExpression(BaseNode child, bool isGlobal, bool isArrayExpression) : base(NodeType.DeleteExpression, child)
+    public override void PrintLeft(TextWriter writer)
+    {
+        if (_isGlobal)
         {
-            _isGlobal = isGlobal;
-            _isArrayExpression = isArrayExpression;
+            writer.Write("::");
         }
 
-        public override void PrintLeft(TextWriter writer)
+        writer.Write("delete");
+
+        if (_isArrayExpression)
         {
-            if (_isGlobal)
-            {
-                writer.Write("::");
-            }
-
-            writer.Write("delete");
-
-            if (_isArrayExpression)
-            {
-                writer.Write("[] ");
-            }
-
-            Child.Print(writer);
+            writer.Write("[] ");
         }
+
+        Child.Print(writer);
     }
 }

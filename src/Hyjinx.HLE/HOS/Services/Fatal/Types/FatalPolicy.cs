@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Fatal.Types
+namespace Hyjinx.HLE.HOS.Services.Fatal.Types;
+
+enum FatalPolicy
 {
-    enum FatalPolicy
-    {
-        ErrorReportAndErrorScreen,
-        ErrorReport,
-        ErrorScreen,
-    }
+    ErrorReportAndErrorScreen,
+    ErrorReport,
+    ErrorScreen,
 }

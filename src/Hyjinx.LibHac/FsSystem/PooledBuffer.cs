@@ -1,9 +1,9 @@
-using System;
-using System.Buffers;
-using System.Runtime.InteropServices;
 using LibHac.Diag;
 using LibHac.FsSrv;
 using LibHac.Os;
+using System;
+using System.Buffers;
+using System.Runtime.InteropServices;
 
 namespace LibHac.FsSystem;
 

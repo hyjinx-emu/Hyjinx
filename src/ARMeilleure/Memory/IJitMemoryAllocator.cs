@@ -1,8 +1,7 @@
-namespace ARMeilleure.Memory
+namespace ARMeilleure.Memory;
+
+public interface IJitMemoryAllocator
 {
-    public interface IJitMemoryAllocator
-    {
-        IJitMemoryBlock Allocate(ulong size);
-        IJitMemoryBlock Reserve(ulong size);
-    }
+    IJitMemoryBlock Allocate(ulong size);
+    IJitMemoryBlock Reserve(ulong size);
 }

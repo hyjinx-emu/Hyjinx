@@ -1,10 +1,10 @@
-using System;
-using System.Linq;
-using System.Runtime.InteropServices;
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Tests.Common;
 using LibHac.Tests.Fs;
+using System;
+using System.Linq;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace LibHac.Tests.FsSystem;

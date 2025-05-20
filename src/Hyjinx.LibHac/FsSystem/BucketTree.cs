@@ -1,13 +1,13 @@
-using System;
-using System.Buffers.Binary;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Buffers.Binary;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Buffer = LibHac.Mem.Buffer;
 
 namespace LibHac.FsSystem;

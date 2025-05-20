@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public struct AccelerometerParameters
 {
-    public struct AccelerometerParameters
-    {
-        public float X;
-        public float Y;
-    }
+    public float X;
+    public float Y;
 }

@@ -1,16 +1,15 @@
 using Hyjinx.HLE.HOS.Kernel.Process;
 
-namespace Hyjinx.HLE.HOS.Tamper
+namespace Hyjinx.HLE.HOS.Tamper;
+
+interface ITamperedProcess
 {
-    interface ITamperedProcess
-    {
-        ProcessState State { get; }
+    ProcessState State { get; }
 
-        bool TamperedCodeMemory { get; set; }
+    bool TamperedCodeMemory { get; set; }
 
-        T ReadMemory<T>(ulong va) where T : unmanaged;
-        void WriteMemory<T>(ulong va, T value) where T : unmanaged;
-        void PauseProcess();
-        void ResumeProcess();
-    }
+    T ReadMemory<T>(ulong va) where T : unmanaged;
+    void WriteMemory<T>(ulong va, T value) where T : unmanaged;
+    void PauseProcess();
+    void ResumeProcess();
 }

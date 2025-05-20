@@ -1,14 +1,13 @@
-namespace Hyjinx.Graphics.Shader
+namespace Hyjinx.Graphics.Shader;
+
+public enum AlphaTestOp
 {
-    public enum AlphaTestOp
-    {
-        Never = 1,
-        Less,
-        Equal,
-        LessOrEqual,
-        Greater,
-        NotEqual,
-        GreaterOrEqual,
-        Always,
-    }
+    Never = 1,
+    Less,
+    Equal,
+    LessOrEqual,
+    Greater,
+    NotEqual,
+    GreaterOrEqual,
+    Always,
 }

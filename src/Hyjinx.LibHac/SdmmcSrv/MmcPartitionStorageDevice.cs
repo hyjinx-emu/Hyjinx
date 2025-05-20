@@ -1,4 +1,3 @@
-using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -6,8 +5,9 @@ using LibHac.FsSrv.Storage.Sf;
 using LibHac.Os;
 using LibHac.Sdmmc;
 using LibHac.Sf;
-using MmcPartition = LibHac.Sdmmc.MmcPartition;
+using System;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;
+using MmcPartition = LibHac.Sdmmc.MmcPartition;
 
 namespace LibHac.SdmmcSrv;
 

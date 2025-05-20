@@ -1,19 +1,18 @@
-namespace Hyjinx.HLE.HOS.Services.Apm
+namespace Hyjinx.HLE.HOS.Services.Apm;
+
+// NOTE: This service doesn’t exist anymore after firmware 7.0.1. But some outdated homebrew still uses it.
+
+[Service("apm:p")] // 1.0.0-7.0.1
+class IManagerPrivileged : IpcService<IManagerPrivileged>
 {
-    // NOTE: This service doesn’t exist anymore after firmware 7.0.1. But some outdated homebrew still uses it.
+    public IManagerPrivileged(ServiceCtx context) { }
 
-    [Service("apm:p")] // 1.0.0-7.0.1
-    class IManagerPrivileged : IpcService<IManagerPrivileged>
+    [CommandCmif(0)]
+    // OpenSession() -> object<nn::apm::ISession>
+    public ResultCode OpenSession(ServiceCtx context)
     {
-        public IManagerPrivileged(ServiceCtx context) { }
+        MakeObject(context, new SessionServer(context));
 
-        [CommandCmif(0)]
-        // OpenSession() -> object<nn::apm::ISession>
-        public ResultCode OpenSession(ServiceCtx context)
-        {
-            MakeObject(context, new SessionServer(context));
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

@@ -2,48 +2,47 @@ using Hyjinx.HLE.HOS.Kernel.Ipc;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Hyjinx.HLE.HOS.Services.Sm
+namespace Hyjinx.HLE.HOS.Services.Sm;
+
+class SmRegistry
 {
-    class SmRegistry
+    private readonly ConcurrentDictionary<string, KPort> _registeredServices;
+    private readonly AutoResetEvent _serviceRegistrationEvent;
+
+    public SmRegistry()
     {
-        private readonly ConcurrentDictionary<string, KPort> _registeredServices;
-        private readonly AutoResetEvent _serviceRegistrationEvent;
+        _registeredServices = new ConcurrentDictionary<string, KPort>();
+        _serviceRegistrationEvent = new AutoResetEvent(false);
+    }
 
-        public SmRegistry()
+    public bool TryGetService(string name, out KPort port)
+    {
+        return _registeredServices.TryGetValue(name, out port);
+    }
+
+    public bool TryRegister(string name, KPort port)
+    {
+        if (_registeredServices.TryAdd(name, port))
         {
-            _registeredServices = new ConcurrentDictionary<string, KPort>();
-            _serviceRegistrationEvent = new AutoResetEvent(false);
+            _serviceRegistrationEvent.Set();
+            return true;
         }
 
-        public bool TryGetService(string name, out KPort port)
-        {
-            return _registeredServices.TryGetValue(name, out port);
-        }
+        return false;
+    }
 
-        public bool TryRegister(string name, KPort port)
-        {
-            if (_registeredServices.TryAdd(name, port))
-            {
-                _serviceRegistrationEvent.Set();
-                return true;
-            }
+    public bool Unregister(string name)
+    {
+        return _registeredServices.TryRemove(name, out _);
+    }
 
-            return false;
-        }
+    public bool IsServiceRegistered(string name)
+    {
+        return _registeredServices.TryGetValue(name, out _);
+    }
 
-        public bool Unregister(string name)
-        {
-            return _registeredServices.TryRemove(name, out _);
-        }
-
-        public bool IsServiceRegistered(string name)
-        {
-            return _registeredServices.TryGetValue(name, out _);
-        }
-
-        public void WaitForServiceRegistration()
-        {
-            _serviceRegistrationEvent.WaitOne();
-        }
+    public void WaitForServiceRegistration()
+    {
+        _serviceRegistrationEvent.WaitOne();
     }
 }

@@ -1,6 +1,6 @@
+using LibHac.Diag;
 using System;
 using System.Threading;
-using LibHac.Diag;
 
 namespace LibHac.Os.Impl;
 

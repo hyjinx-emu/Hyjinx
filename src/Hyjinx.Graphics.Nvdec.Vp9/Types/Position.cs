@@ -1,14 +1,13 @@
-namespace Hyjinx.Graphics.Nvdec.Vp9.Types
-{
-    internal struct Position
-    {
-        public int Row;
-        public int Col;
+namespace Hyjinx.Graphics.Nvdec.Vp9.Types;
 
-        public Position(int row, int col)
-        {
-            Row = row;
-            Col = col;
-        }
+internal struct Position
+{
+    public int Row;
+    public int Col;
+
+    public Position(int row, int col)
+    {
+        Row = row;
+        Col = col;
     }
 }

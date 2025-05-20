@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Ectx
+namespace Hyjinx.HLE.HOS.Services.Ectx;
+
+[Service("ectx:r")] // 11.0.0+
+class IReaderForSystem : IpcService<IReaderForSystem>
 {
-    [Service("ectx:r")] // 11.0.0+
-    class IReaderForSystem : IpcService<IReaderForSystem>
-    {
-        public IReaderForSystem(ServiceCtx context) { }
-    }
+    public IReaderForSystem(ServiceCtx context) { }
 }

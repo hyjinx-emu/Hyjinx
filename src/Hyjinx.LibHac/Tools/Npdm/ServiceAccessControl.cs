@@ -1,7 +1,7 @@
+using LibHac.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using LibHac.Common;
 
 namespace LibHac.Tools.Npdm;
 

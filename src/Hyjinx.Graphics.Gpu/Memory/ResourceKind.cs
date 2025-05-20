@@ -1,13 +1,12 @@
-namespace Hyjinx.Graphics.Gpu.Memory
+namespace Hyjinx.Graphics.Gpu.Memory;
+
+/// <summary>
+/// Kind of a GPU resource.
+/// </summary>
+enum ResourceKind
 {
-    /// <summary>
-    /// Kind of a GPU resource.
-    /// </summary>
-    enum ResourceKind
-    {
-        None,
-        Buffer,
-        Texture,
-        Pool,
-    }
+    None,
+    Buffer,
+    Texture,
+    Pool,
 }

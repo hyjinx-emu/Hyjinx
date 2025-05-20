@@ -1,3 +1,8 @@
+using Hyjinx.Common.Memory;
+using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.FileSystem;
+using Hyjinx.HLE.HOS.Kernel.Memory;
+using Hyjinx.HLE.HOS.Services.Sdb.Pl.Types;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -5,178 +10,172 @@ using LibHac.FsSystem;
 using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
-using Hyjinx.Common.Memory;
-using Hyjinx.HLE.Exceptions;
-using Hyjinx.HLE.FileSystem;
-using Hyjinx.HLE.HOS.Kernel.Memory;
-using Hyjinx.HLE.HOS.Services.Sdb.Pl.Types;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Services.Sdb.Pl
+namespace Hyjinx.HLE.HOS.Services.Sdb.Pl;
+
+class SharedFontManager
 {
-    class SharedFontManager
+    private const uint FontKey = 0x06186249;
+    private const uint BFTTFMagic = 0x18029a7f;
+
+    private readonly Switch _device;
+    private readonly SharedMemoryStorage _storage;
+
+    private struct FontInfo
     {
-        private const uint FontKey = 0x06186249;
-        private const uint BFTTFMagic = 0x18029a7f;
+        public int Offset;
+        public int Size;
 
-        private readonly Switch _device;
-        private readonly SharedMemoryStorage _storage;
-
-        private struct FontInfo
+        public FontInfo(int offset, int size)
         {
-            public int Offset;
-            public int Size;
+            Offset = offset;
+            Size = size;
+        }
+    }
 
-            public FontInfo(int offset, int size)
+    private Dictionary<SharedFontType, FontInfo> _fontData;
+
+    public SharedFontManager(Switch device, SharedMemoryStorage storage)
+    {
+        _device = device;
+        _storage = storage;
+    }
+
+    public void Initialize()
+    {
+        _fontData?.Clear();
+        _fontData = null;
+
+    }
+
+    public void EnsureInitialized(ContentManager contentManager)
+    {
+        if (_fontData == null)
+        {
+            _storage.ZeroFill();
+
+            uint fontOffset = 0;
+
+            FontInfo CreateFont(string name)
             {
-                Offset = offset;
-                Size = size;
-            }
-        }
-
-        private Dictionary<SharedFontType, FontInfo> _fontData;
-
-        public SharedFontManager(Switch device, SharedMemoryStorage storage)
-        {
-            _device = device;
-            _storage = storage;
-        }
-
-        public void Initialize()
-        {
-            _fontData?.Clear();
-            _fontData = null;
-
-        }
-
-        public void EnsureInitialized(ContentManager contentManager)
-        {
-            if (_fontData == null)
-            {
-                _storage.ZeroFill();
-
-                uint fontOffset = 0;
-
-                FontInfo CreateFont(string name)
+                if (contentManager.TryGetFontTitle(name, out ulong fontTitle) && contentManager.TryGetFontFilename(name, out string fontFilename))
                 {
-                    if (contentManager.TryGetFontTitle(name, out ulong fontTitle) && contentManager.TryGetFontFilename(name, out string fontFilename))
+                    string contentPath = contentManager.GetInstalledContentPath(fontTitle, StorageId.BuiltInSystem, NcaContentType.Data);
+                    string fontPath = VirtualFileSystem.SwitchPathToSystemPath(contentPath);
+
+                    if (!string.IsNullOrWhiteSpace(fontPath))
                     {
-                        string contentPath = contentManager.GetInstalledContentPath(fontTitle, StorageId.BuiltInSystem, NcaContentType.Data);
-                        string fontPath = VirtualFileSystem.SwitchPathToSystemPath(contentPath);
+                        byte[] data;
 
-                        if (!string.IsNullOrWhiteSpace(fontPath))
+                        using (IStorage ncaFileStream = new LocalStorage(fontPath, FileAccess.Read, FileMode.Open))
                         {
-                            byte[] data;
+                            Nca nca = new(_device.System.KeySet, ncaFileStream);
+                            IFileSystem romfs = nca.OpenFileSystem(NcaSectionType.Data, _device.System.FsIntegrityCheckLevel);
 
-                            using (IStorage ncaFileStream = new LocalStorage(fontPath, FileAccess.Read, FileMode.Open))
-                            {
-                                Nca nca = new(_device.System.KeySet, ncaFileStream);
-                                IFileSystem romfs = nca.OpenFileSystem(NcaSectionType.Data, _device.System.FsIntegrityCheckLevel);
+                            using var fontFile = new UniqueRef<IFile>();
 
-                                using var fontFile = new UniqueRef<IFile>();
+                            romfs.OpenFile(ref fontFile.Ref, ("/" + fontFilename).ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-                                romfs.OpenFile(ref fontFile.Ref, ("/" + fontFilename).ToU8Span(), OpenMode.Read).ThrowIfFailure();
-
-                                data = DecryptFont(fontFile.Get.AsStream());
-                            }
-
-                            FontInfo info = new((int)fontOffset, data.Length);
-
-                            WriteMagicAndSize(fontOffset, data.Length);
-
-                            fontOffset += 8;
-
-                            uint start = fontOffset;
-
-                            for (; fontOffset - start < data.Length; fontOffset++)
-                            {
-                                _storage.GetRef<byte>(fontOffset) = data[fontOffset - start];
-                            }
-
-                            return info;
+                            data = DecryptFont(fontFile.Get.AsStream());
                         }
-                        else
+
+                        FontInfo info = new((int)fontOffset, data.Length);
+
+                        WriteMagicAndSize(fontOffset, data.Length);
+
+                        fontOffset += 8;
+
+                        uint start = fontOffset;
+
+                        for (; fontOffset - start < data.Length; fontOffset++)
                         {
-                            if (!contentManager.TryGetSystemTitlesName(fontTitle, out string titleName))
-                            {
-                                titleName = "Unknown";
-                            }
-
-                            throw new InvalidSystemResourceException($"{titleName} ({fontTitle:x8}) system title not found! This font will not work, provide the system archive to fix this error. (See https://github.com/hyjinx-emu/Hyjinx#requirements for more information)");
+                            _storage.GetRef<byte>(fontOffset) = data[fontOffset - start];
                         }
+
+                        return info;
                     }
                     else
                     {
-                        throw new ArgumentException($"Unknown font \"{name}\"!");
+                        if (!contentManager.TryGetSystemTitlesName(fontTitle, out string titleName))
+                        {
+                            titleName = "Unknown";
+                        }
+
+                        throw new InvalidSystemResourceException($"{titleName} ({fontTitle:x8}) system title not found! This font will not work, provide the system archive to fix this error. (See https://github.com/hyjinx-emu/Hyjinx#requirements for more information)");
                     }
                 }
-
-                _fontData = new Dictionary<SharedFontType, FontInfo>
+                else
                 {
-                    { SharedFontType.JapanUsEurope,       CreateFont("FontStandard")                  },
-                    { SharedFontType.SimplifiedChinese,   CreateFont("FontChineseSimplified")         },
-                    { SharedFontType.SimplifiedChineseEx, CreateFont("FontExtendedChineseSimplified") },
-                    { SharedFontType.TraditionalChinese,  CreateFont("FontChineseTraditional")        },
-                    { SharedFontType.Korean,              CreateFont("FontKorean")                    },
-                    { SharedFontType.NintendoEx,          CreateFont("FontNintendoExtended")          },
-                };
-
-                if (fontOffset > Horizon.FontSize)
-                {
-                    throw new InvalidSystemResourceException("The sum of all fonts size exceed the shared memory size. " +
-                                                             $"Please make sure that the fonts don't exceed {Horizon.FontSize} bytes in total. (actual size: {fontOffset} bytes).");
+                    throw new ArgumentException($"Unknown font \"{name}\"!");
                 }
             }
-        }
 
-        private void WriteMagicAndSize(ulong offset, int size)
-        {
-            const int Key = 0x49621806;
-
-            int encryptedSize = BinaryPrimitives.ReverseEndianness(size ^ Key);
-
-            _storage.GetRef<int>(offset + 0) = (int)BFTTFMagic;
-            _storage.GetRef<int>(offset + 4) = encryptedSize;
-        }
-
-        public int GetFontSize(SharedFontType fontType)
-        {
-            EnsureInitialized(_device.System.ContentManager);
-
-            return _fontData[fontType].Size;
-        }
-
-        public int GetSharedMemoryAddressOffset(SharedFontType fontType)
-        {
-            EnsureInitialized(_device.System.ContentManager);
-
-            return _fontData[fontType].Offset + 8;
-        }
-
-        private byte[] DecryptFont(Stream bfttfStream)
-        {
-            static uint KXor(uint data) => data ^ FontKey;
-
-            using BinaryReader reader = new(bfttfStream);
-            using MemoryStream ttfStream = MemoryStreamManager.Shared.GetStream();
-            using BinaryWriter output = new(ttfStream);
-
-            if (KXor(reader.ReadUInt32()) != BFTTFMagic)
+            _fontData = new Dictionary<SharedFontType, FontInfo>
             {
-                throw new InvalidDataException("Error: Input file is not in BFTTF format!");
-            }
+                { SharedFontType.JapanUsEurope,       CreateFont("FontStandard")                  },
+                { SharedFontType.SimplifiedChinese,   CreateFont("FontChineseSimplified")         },
+                { SharedFontType.SimplifiedChineseEx, CreateFont("FontExtendedChineseSimplified") },
+                { SharedFontType.TraditionalChinese,  CreateFont("FontChineseTraditional")        },
+                { SharedFontType.Korean,              CreateFont("FontKorean")                    },
+                { SharedFontType.NintendoEx,          CreateFont("FontNintendoExtended")          },
+            };
 
-            bfttfStream.Position += 4;
-
-            for (int i = 0; i < (bfttfStream.Length - 8) / 4; i++)
+            if (fontOffset > Horizon.FontSize)
             {
-                output.Write(KXor(reader.ReadUInt32()));
+                throw new InvalidSystemResourceException("The sum of all fonts size exceed the shared memory size. " +
+                                                         $"Please make sure that the fonts don't exceed {Horizon.FontSize} bytes in total. (actual size: {fontOffset} bytes).");
             }
-
-            return ttfStream.ToArray();
         }
+    }
+
+    private void WriteMagicAndSize(ulong offset, int size)
+    {
+        const int Key = 0x49621806;
+
+        int encryptedSize = BinaryPrimitives.ReverseEndianness(size ^ Key);
+
+        _storage.GetRef<int>(offset + 0) = (int)BFTTFMagic;
+        _storage.GetRef<int>(offset + 4) = encryptedSize;
+    }
+
+    public int GetFontSize(SharedFontType fontType)
+    {
+        EnsureInitialized(_device.System.ContentManager);
+
+        return _fontData[fontType].Size;
+    }
+
+    public int GetSharedMemoryAddressOffset(SharedFontType fontType)
+    {
+        EnsureInitialized(_device.System.ContentManager);
+
+        return _fontData[fontType].Offset + 8;
+    }
+
+    private byte[] DecryptFont(Stream bfttfStream)
+    {
+        static uint KXor(uint data) => data ^ FontKey;
+
+        using BinaryReader reader = new(bfttfStream);
+        using MemoryStream ttfStream = MemoryStreamManager.Shared.GetStream();
+        using BinaryWriter output = new(ttfStream);
+
+        if (KXor(reader.ReadUInt32()) != BFTTFMagic)
+        {
+            throw new InvalidDataException("Error: Input file is not in BFTTF format!");
+        }
+
+        bfttfStream.Position += 4;
+
+        for (int i = 0; i < (bfttfStream.Length - 8) / 4; i++)
+        {
+            output.Write(KXor(reader.ReadUInt32()));
+        }
+
+        return ttfStream.ToArray();
     }
 }

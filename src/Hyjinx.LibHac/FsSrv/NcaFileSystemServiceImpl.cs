@@ -1,6 +1,3 @@
-using System;
-using System.Buffers.Text;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Fs;
@@ -13,6 +10,9 @@ using LibHac.Os;
 using LibHac.Spl;
 using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Util;
+using System;
+using System.Buffers.Text;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.CommonMountNames;
 using NcaFsHeader = LibHac.Tools.FsSystem.NcaUtils.NcaFsHeader;
 using NcaHeader = LibHac.FsSystem.NcaHeader;

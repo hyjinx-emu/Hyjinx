@@ -1,10 +1,10 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Loader;
 

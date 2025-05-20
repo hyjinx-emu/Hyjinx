@@ -1,16 +1,15 @@
 using System;
 
-namespace Hyjinx.Ava.UI.Models
-{
-    internal class StatusInitEventArgs : EventArgs
-    {
-        public string GpuBackend { get; }
-        public string GpuName { get; }
+namespace Hyjinx.Ava.UI.Models;
 
-        public StatusInitEventArgs(string gpuBackend, string gpuName)
-        {
-            GpuBackend = gpuBackend;
-            GpuName = gpuName;
-        }
+internal class StatusInitEventArgs : EventArgs
+{
+    public string GpuBackend { get; }
+    public string GpuName { get; }
+
+    public StatusInitEventArgs(string gpuBackend, string gpuName)
+    {
+        GpuBackend = gpuBackend;
+        GpuName = gpuName;
     }
 }

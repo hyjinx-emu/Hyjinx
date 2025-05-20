@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy;
+
+enum FocusState
 {
-    enum FocusState
-    {
-        InFocus = 1,
-        OutOfFocus = 2,
-    }
+    InFocus = 1,
+    OutOfFocus = 2,
 }

@@ -1,101 +1,100 @@
 using Hyjinx.Memory.Tracking;
 using System;
 
-namespace Hyjinx.Graphics.Gpu.Memory
+namespace Hyjinx.Graphics.Gpu.Memory;
+
+/// <summary>
+/// A tracking handle for a region of GPU VA, represented by one or more tracking handles in CPU VA.
+/// </summary>
+class GpuRegionHandle : IRegionHandle
 {
-    /// <summary>
-    /// A tracking handle for a region of GPU VA, represented by one or more tracking handles in CPU VA.
-    /// </summary>
-    class GpuRegionHandle : IRegionHandle
+    private readonly RegionHandle[] _cpuRegionHandles;
+
+    public bool Dirty
     {
-        private readonly RegionHandle[] _cpuRegionHandles;
-
-        public bool Dirty
+        get
         {
-            get
+            foreach (var regionHandle in _cpuRegionHandles)
             {
-                foreach (var regionHandle in _cpuRegionHandles)
+                if (regionHandle.Dirty)
                 {
-                    if (regionHandle.Dirty)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-
-                return false;
             }
+
+            return false;
         }
+    }
 
-        public ulong Address => throw new NotSupportedException();
-        public ulong Size => throw new NotSupportedException();
-        public ulong EndAddress => throw new NotSupportedException();
+    public ulong Address => throw new NotSupportedException();
+    public ulong Size => throw new NotSupportedException();
+    public ulong EndAddress => throw new NotSupportedException();
 
-        /// <summary>
-        /// Create a new GpuRegionHandle, made up of mulitple CpuRegionHandles.
-        /// </summary>
-        /// <param name="cpuRegionHandles">The CpuRegionHandles that make up this handle</param>
-        public GpuRegionHandle(RegionHandle[] cpuRegionHandles)
+    /// <summary>
+    /// Create a new GpuRegionHandle, made up of mulitple CpuRegionHandles.
+    /// </summary>
+    /// <param name="cpuRegionHandles">The CpuRegionHandles that make up this handle</param>
+    public GpuRegionHandle(RegionHandle[] cpuRegionHandles)
+    {
+        _cpuRegionHandles = cpuRegionHandles;
+    }
+
+    /// <summary>
+    /// Dispose the child handles.
+    /// </summary>
+    public void Dispose()
+    {
+        foreach (var regionHandle in _cpuRegionHandles)
         {
-            _cpuRegionHandles = cpuRegionHandles;
+            regionHandle.Dispose();
         }
+    }
 
-        /// <summary>
-        /// Dispose the child handles.
-        /// </summary>
-        public void Dispose()
+    /// <summary>
+    /// Register an action to perform when the tracked region is read or written.
+    /// The action is automatically removed after it runs.
+    /// </summary>
+    /// <param name="action">Action to call on read or write</param>
+    public void RegisterAction(RegionSignal action)
+    {
+        foreach (var regionHandle in _cpuRegionHandles)
         {
-            foreach (var regionHandle in _cpuRegionHandles)
-            {
-                regionHandle.Dispose();
-            }
+            regionHandle.RegisterAction(action);
         }
+    }
 
-        /// <summary>
-        /// Register an action to perform when the tracked region is read or written.
-        /// The action is automatically removed after it runs.
-        /// </summary>
-        /// <param name="action">Action to call on read or write</param>
-        public void RegisterAction(RegionSignal action)
+    /// <summary>
+    /// Register an action to perform when a precise access occurs (one with exact address and size).
+    /// If the action returns true, read/write tracking are skipped.
+    /// </summary>
+    /// <param name="action">Action to call on read or write</param>
+    public void RegisterPreciseAction(PreciseRegionSignal action)
+    {
+        foreach (var regionHandle in _cpuRegionHandles)
         {
-            foreach (var regionHandle in _cpuRegionHandles)
-            {
-                regionHandle.RegisterAction(action);
-            }
+            regionHandle.RegisterPreciseAction(action);
         }
+    }
 
-        /// <summary>
-        /// Register an action to perform when a precise access occurs (one with exact address and size).
-        /// If the action returns true, read/write tracking are skipped.
-        /// </summary>
-        /// <param name="action">Action to call on read or write</param>
-        public void RegisterPreciseAction(PreciseRegionSignal action)
+    /// <summary>
+    /// Consume the dirty flag for the handles, and reprotect so it can be set on the next write.
+    /// </summary>
+    public void Reprotect(bool asDirty = false)
+    {
+        foreach (var regionHandle in _cpuRegionHandles)
         {
-            foreach (var regionHandle in _cpuRegionHandles)
-            {
-                regionHandle.RegisterPreciseAction(action);
-            }
+            regionHandle.Reprotect(asDirty);
         }
+    }
 
-        /// <summary>
-        /// Consume the dirty flag for the handles, and reprotect so it can be set on the next write.
-        /// </summary>
-        public void Reprotect(bool asDirty = false)
+    /// <summary>
+    /// Force the handles to be dirty, without reprotecting.
+    /// </summary>
+    public void ForceDirty()
+    {
+        foreach (var regionHandle in _cpuRegionHandles)
         {
-            foreach (var regionHandle in _cpuRegionHandles)
-            {
-                regionHandle.Reprotect(asDirty);
-            }
-        }
-
-        /// <summary>
-        /// Force the handles to be dirty, without reprotecting.
-        /// </summary>
-        public void ForceDirty()
-        {
-            foreach (var regionHandle in _cpuRegionHandles)
-            {
-                regionHandle.ForceDirty();
-            }
+            regionHandle.ForceDirty();
         }
     }
 }

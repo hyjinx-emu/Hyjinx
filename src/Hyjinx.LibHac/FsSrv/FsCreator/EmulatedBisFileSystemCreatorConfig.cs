@@ -1,7 +1,7 @@
-using System.Diagnostics;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System.Diagnostics;
 
 namespace LibHac.FsSrv.FsCreator;
 

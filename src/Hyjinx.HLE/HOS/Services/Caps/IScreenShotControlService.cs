@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Caps
+namespace Hyjinx.HLE.HOS.Services.Caps;
+
+[Service("caps:sc")]
+class IScreenShotControlService : IpcService<IScreenShotControlService>
 {
-    [Service("caps:sc")]
-    class IScreenShotControlService : IpcService<IScreenShotControlService>
-    {
-        public IScreenShotControlService(ServiceCtx context) { }
-    }
+    public IScreenShotControlService(ServiceCtx context) { }
 }

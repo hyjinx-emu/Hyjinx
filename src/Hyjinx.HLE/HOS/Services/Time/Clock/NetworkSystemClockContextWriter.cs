@@ -1,19 +1,18 @@
-namespace Hyjinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock;
+
+class NetworkSystemClockContextWriter : SystemClockContextUpdateCallback
 {
-    class NetworkSystemClockContextWriter : SystemClockContextUpdateCallback
+    private readonly TimeSharedMemory _sharedMemory;
+
+    public NetworkSystemClockContextWriter(TimeSharedMemory sharedMemory)
     {
-        private readonly TimeSharedMemory _sharedMemory;
+        _sharedMemory = sharedMemory;
+    }
 
-        public NetworkSystemClockContextWriter(TimeSharedMemory sharedMemory)
-        {
-            _sharedMemory = sharedMemory;
-        }
+    protected override ResultCode Update()
+    {
+        _sharedMemory.UpdateNetworkSystemClockContext(Context);
 
-        protected override ResultCode Update()
-        {
-            _sharedMemory.UpdateNetworkSystemClockContext(Context);
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

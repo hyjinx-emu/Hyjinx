@@ -2,25 +2,24 @@ using Hyjinx.Graphics.Texture;
 using Hyjinx.Graphics.Video;
 using System;
 
-namespace Hyjinx.Graphics.Nvdec.Image
+namespace Hyjinx.Graphics.Nvdec.Image;
+
+static class SurfaceCommon
 {
-    static class SurfaceCommon
+    public static int GetBlockLinearSize(int width, int height, int bytesPerPixel)
     {
-        public static int GetBlockLinearSize(int width, int height, int bytesPerPixel)
-        {
-            return SizeCalculator.GetBlockLinearTextureSize(width, height, 1, 1, 1, 1, 1, bytesPerPixel, 2, 1, 1).TotalSize;
-        }
+        return SizeCalculator.GetBlockLinearTextureSize(width, height, 1, 1, 1, 1, 1, bytesPerPixel, 2, 1, 1).TotalSize;
+    }
 
-        public static void Copy(ISurface src, ISurface dst)
-        {
-            src.YPlane.AsSpan().CopyTo(dst.YPlane.AsSpan());
-            src.UPlane.AsSpan().CopyTo(dst.UPlane.AsSpan());
-            src.VPlane.AsSpan().CopyTo(dst.VPlane.AsSpan());
-        }
+    public static void Copy(ISurface src, ISurface dst)
+    {
+        src.YPlane.AsSpan().CopyTo(dst.YPlane.AsSpan());
+        src.UPlane.AsSpan().CopyTo(dst.UPlane.AsSpan());
+        src.VPlane.AsSpan().CopyTo(dst.VPlane.AsSpan());
+    }
 
-        public unsafe static Span<byte> AsSpan(this Plane plane)
-        {
-            return new Span<byte>((void*)plane.Pointer, plane.Length);
-        }
+    public unsafe static Span<byte> AsSpan(this Plane plane)
+    {
+        return new Span<byte>((void*)plane.Pointer, plane.Length);
     }
 }

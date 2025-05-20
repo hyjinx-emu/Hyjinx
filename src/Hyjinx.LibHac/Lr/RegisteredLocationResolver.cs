@@ -1,6 +1,6 @@
-using System;
 using LibHac.Common;
 using LibHac.Ncm;
+using System;
 
 namespace LibHac.Lr;
 

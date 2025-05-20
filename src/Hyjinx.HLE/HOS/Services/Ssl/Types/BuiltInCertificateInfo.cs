@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Ssl.Types
+namespace Hyjinx.HLE.HOS.Services.Ssl.Types;
+
+struct BuiltInCertificateInfo
 {
-    struct BuiltInCertificateInfo
-    {
-        public CaCertificateId Id;
-        public TrustedCertStatus Status;
-        public ulong CertificateDataSize;
-        public ulong CertificateDataOffset;
-    }
+    public CaCertificateId Id;
+    public TrustedCertStatus Status;
+    public ulong CertificateDataSize;
+    public ulong CertificateDataOffset;
 }

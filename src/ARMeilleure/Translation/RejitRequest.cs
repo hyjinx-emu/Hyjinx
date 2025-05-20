@@ -1,16 +1,15 @@
 using ARMeilleure.State;
 
-namespace ARMeilleure.Translation
-{
-    struct RejitRequest
-    {
-        public ulong Address;
-        public ExecutionMode Mode;
+namespace ARMeilleure.Translation;
 
-        public RejitRequest(ulong address, ExecutionMode mode)
-        {
-            Address = address;
-            Mode = mode;
-        }
+struct RejitRequest
+{
+    public ulong Address;
+    public ExecutionMode Mode;
+
+    public RejitRequest(ulong address, ExecutionMode mode)
+    {
+        Address = address;
+        Mode = mode;
     }
 }

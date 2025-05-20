@@ -1,37 +1,36 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Audio.Renderer.Dsp.Effect
+namespace Hyjinx.Audio.Renderer.Dsp.Effect;
+
+public interface IDelayLine
 {
-    public interface IDelayLine
+    uint CurrentSampleCount { get; }
+    uint SampleCountMax { get; }
+
+    void SetDelay(float delayTime);
+    float Read();
+    float Update(float value);
+
+    float TapUnsafe(uint sampleIndex, int offset);
+    float Tap(uint sampleIndex);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float Tap(Span<float> workBuffer, int baseIndex, int sampleIndex, int delaySampleCount)
     {
-        uint CurrentSampleCount { get; }
-        uint SampleCountMax { get; }
+        int targetIndex = baseIndex - sampleIndex;
 
-        void SetDelay(float delayTime);
-        float Read();
-        float Update(float value);
-
-        float TapUnsafe(uint sampleIndex, int offset);
-        float Tap(uint sampleIndex);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Tap(Span<float> workBuffer, int baseIndex, int sampleIndex, int delaySampleCount)
+        if (targetIndex < 0)
         {
-            int targetIndex = baseIndex - sampleIndex;
-
-            if (targetIndex < 0)
-            {
-                targetIndex += delaySampleCount;
-            }
-
-            return workBuffer[targetIndex];
+            targetIndex += delaySampleCount;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint GetSampleCount(uint sampleRate, float delayTime)
-        {
-            return (uint)MathF.Round(sampleRate * delayTime);
-        }
+        return workBuffer[targetIndex];
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static uint GetSampleCount(uint sampleRate, float delayTime)
+    {
+        return (uint)MathF.Round(sampleRate * delayTime);
     }
 }

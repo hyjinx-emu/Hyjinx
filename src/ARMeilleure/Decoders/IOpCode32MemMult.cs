@@ -1,15 +1,14 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+interface IOpCode32MemMult : IOpCode32
 {
-    interface IOpCode32MemMult : IOpCode32
-    {
-        int Rn { get; }
+    int Rn { get; }
 
-        int RegisterMask { get; }
+    int RegisterMask { get; }
 
-        int PostOffset { get; }
+    int PostOffset { get; }
 
-        bool IsLoad { get; }
+    bool IsLoad { get; }
 
-        int Offset { get; }
-    }
+    int Offset { get; }
 }

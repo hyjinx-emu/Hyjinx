@@ -1,17 +1,16 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
+
+/// <summary>
+/// Identifies prohibited buttons.
+/// </summary>
+[Flags]
+enum InvalidButtonFlags : uint
 {
-    /// <summary>
-    /// Identifies prohibited buttons.
-    /// </summary>
-    [Flags]
-    enum InvalidButtonFlags : uint
-    {
-        None = 0,
-        AnalogStickL = 1 << 1,
-        AnalogStickR = 1 << 2,
-        ZL = 1 << 3,
-        ZR = 1 << 4,
-    }
+    None = 0,
+    AnalogStickL = 1 << 1,
+    AnalogStickR = 1 << 2,
+    ZL = 1 << 3,
+    ZR = 1 << 4,
 }

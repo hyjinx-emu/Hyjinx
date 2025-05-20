@@ -1,9 +1,8 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum CounterType
 {
-    public enum CounterType
-    {
-        SamplesPassed,
-        PrimitivesGenerated,
-        TransformFeedbackPrimitivesWritten,
-    }
+    SamplesPassed,
+    PrimitivesGenerated,
+    TransformFeedbackPrimitivesWritten,
 }

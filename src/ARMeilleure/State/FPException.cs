@@ -1,12 +1,11 @@
-namespace ARMeilleure.State
+namespace ARMeilleure.State;
+
+enum FPException
 {
-    enum FPException
-    {
-        InvalidOp = 0,
-        DivideByZero = 1,
-        Overflow = 2,
-        Underflow = 3,
-        Inexact = 4,
-        InputDenorm = 7,
-    }
+    InvalidOp = 0,
+    DivideByZero = 1,
+    Overflow = 2,
+    Underflow = 3,
+    Inexact = 4,
+    InputDenorm = 7,
 }

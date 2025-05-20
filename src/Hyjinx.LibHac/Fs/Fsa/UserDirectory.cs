@@ -1,8 +1,8 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs.Impl;
 using LibHac.Os;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 
 namespace LibHac.Fs.Fsa;

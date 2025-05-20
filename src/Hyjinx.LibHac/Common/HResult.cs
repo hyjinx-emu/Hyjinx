@@ -1,5 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 using LibHac.Fs;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LibHac.Common;
 

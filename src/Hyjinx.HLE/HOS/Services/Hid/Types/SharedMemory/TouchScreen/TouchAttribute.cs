@@ -1,12 +1,11 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
+
+[Flags]
+public enum TouchAttribute : uint
 {
-    [Flags]
-    public enum TouchAttribute : uint
-    {
-        None = 0,
-        Start = 1 << 0,
-        End = 1 << 1,
-    }
+    None = 0,
+    Start = 1 << 0,
+    End = 1 << 1,
 }

@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.Gpu.Engine
+namespace Hyjinx.Graphics.Gpu.Engine;
+
+/// <summary>
+/// Conditional rendering enable.
+/// </summary>
+enum ConditionalRenderEnabled
 {
-    /// <summary>
-    /// Conditional rendering enable.
-    /// </summary>
-    enum ConditionalRenderEnabled
-    {
-        False,
-        True,
-        Host,
-    }
+    False,
+    True,
+    Host,
 }

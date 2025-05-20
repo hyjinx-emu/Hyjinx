@@ -1,15 +1,15 @@
-using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Unicode;
-using System.Threading;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem.Impl;
 using LibHac.Tools.FsSystem;
 using LibHac.Util;
+using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Unicode;
+using System.Threading;
 using static LibHac.Fs.StringTraits;
 using Path = LibHac.Fs.Path;
 

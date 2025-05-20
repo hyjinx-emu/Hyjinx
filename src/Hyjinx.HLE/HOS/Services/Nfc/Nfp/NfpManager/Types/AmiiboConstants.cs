@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
+
+static class AmiiboConstants
 {
-    static class AmiiboConstants
-    {
-        public const int UuidMaxLength = 10;
-        public const int ApplicationAreaSize = 0xD8;
-    }
+    public const int UuidMaxLength = 10;
+    public const int ApplicationAreaSize = 0xD8;
 }

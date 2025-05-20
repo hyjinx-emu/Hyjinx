@@ -1,25 +1,24 @@
 using LibHac.Tools.FsSystem.NcaUtils;
 
-namespace Hyjinx.HLE.FileSystem
+namespace Hyjinx.HLE.FileSystem;
+
+public struct LocationEntry
 {
-    public struct LocationEntry
+    public string ContentPath { get; private set; }
+    public int Flag { get; private set; }
+    public ulong TitleId { get; private set; }
+    public NcaContentType ContentType { get; private set; }
+
+    public LocationEntry(string contentPath, int flag, ulong titleId, NcaContentType contentType)
     {
-        public string ContentPath { get; private set; }
-        public int Flag { get; private set; }
-        public ulong TitleId { get; private set; }
-        public NcaContentType ContentType { get; private set; }
+        ContentPath = contentPath;
+        Flag = flag;
+        TitleId = titleId;
+        ContentType = contentType;
+    }
 
-        public LocationEntry(string contentPath, int flag, ulong titleId, NcaContentType contentType)
-        {
-            ContentPath = contentPath;
-            Flag = flag;
-            TitleId = titleId;
-            ContentType = contentType;
-        }
-
-        public void SetFlag(int flag)
-        {
-            Flag = flag;
-        }
+    public void SetFlag(int flag)
+    {
+        Flag = flag;
     }
 }

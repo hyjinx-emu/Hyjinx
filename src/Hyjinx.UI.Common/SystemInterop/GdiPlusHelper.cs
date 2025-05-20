@@ -2,75 +2,74 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.Common.SystemInterop
+namespace Hyjinx.Common.SystemInterop;
+
+[SupportedOSPlatform("windows")]
+public static partial class GdiPlusHelper
 {
-    [SupportedOSPlatform("windows")]
-    public static partial class GdiPlusHelper
+    private const string LibraryName = "gdiplus.dll";
+
+    private static readonly IntPtr _initToken;
+
+    static GdiPlusHelper()
     {
-        private const string LibraryName = "gdiplus.dll";
+        CheckStatus(GdiplusStartup(out _initToken, StartupInputEx.Default, out _));
+    }
 
-        private static readonly IntPtr _initToken;
-
-        static GdiPlusHelper()
+    private static void CheckStatus(int gdiStatus)
+    {
+        if (gdiStatus != 0)
         {
-            CheckStatus(GdiplusStartup(out _initToken, StartupInputEx.Default, out _));
+            throw new Exception($"GDI Status Error: {gdiStatus}");
         }
+    }
 
-        private static void CheckStatus(int gdiStatus)
-        {
-            if (gdiStatus != 0)
-            {
-                throw new Exception($"GDI Status Error: {gdiStatus}");
-            }
-        }
-
-        private struct StartupInputEx
-        {
-            public int GdiplusVersion;
+    private struct StartupInputEx
+    {
+        public int GdiplusVersion;
 
 #pragma warning disable CS0649 // Field is never assigned to
-            public IntPtr DebugEventCallback;
-            public int SuppressBackgroundThread;
-            public int SuppressExternalCodecs;
-            public int StartupParameters;
+        public IntPtr DebugEventCallback;
+        public int SuppressBackgroundThread;
+        public int SuppressExternalCodecs;
+        public int StartupParameters;
 #pragma warning restore CS0649
 
-            public static StartupInputEx Default => new()
-            {
-                // We assume Windows 8 and upper
-                GdiplusVersion = 2,
-                DebugEventCallback = IntPtr.Zero,
-                SuppressBackgroundThread = 0,
-                SuppressExternalCodecs = 0,
-                StartupParameters = 0,
-            };
-        }
-
-        private struct StartupOutput
+        public static StartupInputEx Default => new()
         {
-            public IntPtr NotificationHook;
-            public IntPtr NotificationUnhook;
-        }
+            // We assume Windows 8 and upper
+            GdiplusVersion = 2,
+            DebugEventCallback = IntPtr.Zero,
+            SuppressBackgroundThread = 0,
+            SuppressExternalCodecs = 0,
+            StartupParameters = 0,
+        };
+    }
 
-        [LibraryImport(LibraryName)]
-        private static partial int GdiplusStartup(out IntPtr token, in StartupInputEx input, out StartupOutput output);
+    private struct StartupOutput
+    {
+        public IntPtr NotificationHook;
+        public IntPtr NotificationUnhook;
+    }
 
-        [LibraryImport(LibraryName)]
-        private static partial int GdipCreateFromHWND(IntPtr hwnd, out IntPtr graphics);
+    [LibraryImport(LibraryName)]
+    private static partial int GdiplusStartup(out IntPtr token, in StartupInputEx input, out StartupOutput output);
 
-        [LibraryImport(LibraryName)]
-        private static partial int GdipDeleteGraphics(IntPtr graphics);
+    [LibraryImport(LibraryName)]
+    private static partial int GdipCreateFromHWND(IntPtr hwnd, out IntPtr graphics);
 
-        [LibraryImport(LibraryName)]
-        private static partial int GdipGetDpiX(IntPtr graphics, out float dpi);
+    [LibraryImport(LibraryName)]
+    private static partial int GdipDeleteGraphics(IntPtr graphics);
 
-        public static float GetDpiX(IntPtr hwnd)
-        {
-            CheckStatus(GdipCreateFromHWND(hwnd, out IntPtr graphicsHandle));
-            CheckStatus(GdipGetDpiX(graphicsHandle, out float result));
-            CheckStatus(GdipDeleteGraphics(graphicsHandle));
+    [LibraryImport(LibraryName)]
+    private static partial int GdipGetDpiX(IntPtr graphics, out float dpi);
 
-            return result;
-        }
+    public static float GetDpiX(IntPtr hwnd)
+    {
+        CheckStatus(GdipCreateFromHWND(hwnd, out IntPtr graphicsHandle));
+        CheckStatus(GdipGetDpiX(graphicsHandle, out float result));
+        CheckStatus(GdipDeleteGraphics(graphicsHandle));
+
+        return result;
     }
 }

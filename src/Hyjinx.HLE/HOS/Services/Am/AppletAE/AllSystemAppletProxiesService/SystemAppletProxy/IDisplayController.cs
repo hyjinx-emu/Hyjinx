@@ -1,106 +1,105 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Memory;
 using Hyjinx.Horizon.Common;
+using Hyjinx.Logging.Abstractions;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy;
+
+class IDisplayController : IpcService<IDisplayController>
 {
-    class IDisplayController : IpcService<IDisplayController>
+    private readonly KTransferMemory _transferMem;
+    private bool _lastApplicationCaptureBufferAcquired;
+    private bool _callerAppletCaptureBufferAcquired;
+
+    public IDisplayController(ServiceCtx context)
     {
-        private readonly KTransferMemory _transferMem;
-        private bool _lastApplicationCaptureBufferAcquired;
-        private bool _callerAppletCaptureBufferAcquired;
+        _transferMem = context.Device.System.AppletCaptureBufferTransfer;
+    }
 
-        public IDisplayController(ServiceCtx context)
+    [CommandCmif(8)] // 2.0.0+
+    // TakeScreenShotOfOwnLayer(b8, s32)
+    public ResultCode TakeScreenShotOfOwnLayer(ServiceCtx context)
+    {
+        bool unknown1 = context.RequestData.ReadBoolean();
+        int unknown2 = context.RequestData.ReadInt32();
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { unknown1, unknown2 });
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(11)]
+    // ReleaseLastApplicationCaptureBuffer()
+    public ResultCode ReleaseLastApplicationCaptureBuffer(ServiceCtx context)
+    {
+        if (!_lastApplicationCaptureBufferAcquired)
         {
-            _transferMem = context.Device.System.AppletCaptureBufferTransfer;
+            return ResultCode.BufferNotAcquired;
         }
 
-        [CommandCmif(8)] // 2.0.0+
-        // TakeScreenShotOfOwnLayer(b8, s32)
-        public ResultCode TakeScreenShotOfOwnLayer(ServiceCtx context)
+        _lastApplicationCaptureBufferAcquired = false;
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(15)]
+    // ReleaseCallerAppletCaptureBuffer()
+    public ResultCode ReleaseCallerAppletCaptureBuffer(ServiceCtx context)
+    {
+        if (!_callerAppletCaptureBufferAcquired)
         {
-            bool unknown1 = context.RequestData.ReadBoolean();
-            int unknown2 = context.RequestData.ReadInt32();
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceAm, new { unknown1, unknown2 });
-
-            return ResultCode.Success;
+            return ResultCode.BufferNotAcquired;
         }
 
-        [CommandCmif(11)]
-        // ReleaseLastApplicationCaptureBuffer()
-        public ResultCode ReleaseLastApplicationCaptureBuffer(ServiceCtx context)
+        _callerAppletCaptureBufferAcquired = false;
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(16)]
+    // AcquireLastApplicationCaptureBufferEx() -> (b8, handle<copy>)
+    public ResultCode AcquireLastApplicationCaptureBufferEx(ServiceCtx context)
+    {
+        if (_lastApplicationCaptureBufferAcquired)
         {
-            if (!_lastApplicationCaptureBufferAcquired)
-            {
-                return ResultCode.BufferNotAcquired;
-            }
-
-            _lastApplicationCaptureBufferAcquired = false;
-
-            return ResultCode.Success;
+            return ResultCode.BufferAlreadyAcquired;
         }
 
-        [CommandCmif(15)]
-        // ReleaseCallerAppletCaptureBuffer()
-        public ResultCode ReleaseCallerAppletCaptureBuffer(ServiceCtx context)
+        if (context.Process.HandleTable.GenerateHandle(_transferMem, out int handle) != Result.Success)
         {
-            if (!_callerAppletCaptureBufferAcquired)
-            {
-                return ResultCode.BufferNotAcquired;
-            }
-
-            _callerAppletCaptureBufferAcquired = false;
-
-            return ResultCode.Success;
+            throw new InvalidOperationException("Out of handles!");
         }
 
-        [CommandCmif(16)]
-        // AcquireLastApplicationCaptureBufferEx() -> (b8, handle<copy>)
-        public ResultCode AcquireLastApplicationCaptureBufferEx(ServiceCtx context)
+        context.Response.HandleDesc = IpcHandleDesc.MakeCopy(handle);
+
+        _lastApplicationCaptureBufferAcquired = true;
+
+        context.ResponseData.Write(_lastApplicationCaptureBufferAcquired);
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(18)]
+    // AcquireCallerAppletCaptureBufferEx() -> (b8, handle<copy>)
+    public ResultCode AcquireCallerAppletCaptureBufferEx(ServiceCtx context)
+    {
+        if (_callerAppletCaptureBufferAcquired)
         {
-            if (_lastApplicationCaptureBufferAcquired)
-            {
-                return ResultCode.BufferAlreadyAcquired;
-            }
-
-            if (context.Process.HandleTable.GenerateHandle(_transferMem, out int handle) != Result.Success)
-            {
-                throw new InvalidOperationException("Out of handles!");
-            }
-
-            context.Response.HandleDesc = IpcHandleDesc.MakeCopy(handle);
-
-            _lastApplicationCaptureBufferAcquired = true;
-
-            context.ResponseData.Write(_lastApplicationCaptureBufferAcquired);
-
-            return ResultCode.Success;
+            return ResultCode.BufferAlreadyAcquired;
         }
 
-        [CommandCmif(18)]
-        // AcquireCallerAppletCaptureBufferEx() -> (b8, handle<copy>)
-        public ResultCode AcquireCallerAppletCaptureBufferEx(ServiceCtx context)
+        if (context.Process.HandleTable.GenerateHandle(_transferMem, out int handle) != Result.Success)
         {
-            if (_callerAppletCaptureBufferAcquired)
-            {
-                return ResultCode.BufferAlreadyAcquired;
-            }
-
-            if (context.Process.HandleTable.GenerateHandle(_transferMem, out int handle) != Result.Success)
-            {
-                throw new InvalidOperationException("Out of handles!");
-            }
-
-            context.Response.HandleDesc = IpcHandleDesc.MakeCopy(handle);
-
-            _callerAppletCaptureBufferAcquired = true;
-
-            context.ResponseData.Write(_callerAppletCaptureBufferAcquired);
-
-            return ResultCode.Success;
+            throw new InvalidOperationException("Out of handles!");
         }
+
+        context.Response.HandleDesc = IpcHandleDesc.MakeCopy(handle);
+
+        _callerAppletCaptureBufferAcquired = true;
+
+        context.ResponseData.Write(_callerAppletCaptureBufferAcquired);
+
+        return ResultCode.Success;
     }
 }

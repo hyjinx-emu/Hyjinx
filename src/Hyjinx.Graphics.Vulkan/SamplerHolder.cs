@@ -2,119 +2,118 @@ using Hyjinx.Graphics.GAL;
 using Silk.NET.Vulkan;
 using SamplerCreateInfo = Hyjinx.Graphics.GAL.SamplerCreateInfo;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+class SamplerHolder : ISampler
 {
-    class SamplerHolder : ISampler
+    private readonly VulkanRenderer _gd;
+    private readonly Auto<DisposableSampler> _sampler;
+
+    public unsafe SamplerHolder(VulkanRenderer gd, Device device, SamplerCreateInfo info)
     {
-        private readonly VulkanRenderer _gd;
-        private readonly Auto<DisposableSampler> _sampler;
+        _gd = gd;
 
-        public unsafe SamplerHolder(VulkanRenderer gd, Device device, SamplerCreateInfo info)
+        gd.Samplers.Add(this);
+
+        (Filter minFilter, SamplerMipmapMode mipFilter) = info.MinFilter.Convert();
+
+        float minLod = info.MinLod;
+        float maxLod = info.MaxLod;
+
+        if (info.MinFilter == MinFilter.Nearest || info.MinFilter == MinFilter.Linear)
         {
-            _gd = gd;
+            minLod = 0;
+            maxLod = 0.25f;
+        }
 
-            gd.Samplers.Add(this);
+        var borderColor = GetConstrainedBorderColor(info.BorderColor, out var cantConstrain);
 
-            (Filter minFilter, SamplerMipmapMode mipFilter) = info.MinFilter.Convert();
+        var samplerCreateInfo = new Silk.NET.Vulkan.SamplerCreateInfo
+        {
+            SType = StructureType.SamplerCreateInfo,
+            MagFilter = info.MagFilter.Convert(),
+            MinFilter = minFilter,
+            MipmapMode = mipFilter,
+            AddressModeU = info.AddressU.Convert(),
+            AddressModeV = info.AddressV.Convert(),
+            AddressModeW = info.AddressP.Convert(),
+            MipLodBias = info.MipLodBias,
+            AnisotropyEnable = info.MaxAnisotropy != 1f,
+            MaxAnisotropy = info.MaxAnisotropy,
+            CompareEnable = info.CompareMode == CompareMode.CompareRToTexture,
+            CompareOp = info.CompareOp.Convert(),
+            MinLod = minLod,
+            MaxLod = maxLod,
+            BorderColor = borderColor,
+            UnnormalizedCoordinates = false, // TODO: Use unnormalized coordinates.
+        };
 
-            float minLod = info.MinLod;
-            float maxLod = info.MaxLod;
+        SamplerCustomBorderColorCreateInfoEXT customBorderColor;
 
-            if (info.MinFilter == MinFilter.Nearest || info.MinFilter == MinFilter.Linear)
+        if (cantConstrain && gd.Capabilities.SupportsCustomBorderColor)
+        {
+            var color = new ClearColorValue(
+                info.BorderColor.Red,
+                info.BorderColor.Green,
+                info.BorderColor.Blue,
+                info.BorderColor.Alpha);
+
+            customBorderColor = new SamplerCustomBorderColorCreateInfoEXT
             {
-                minLod = 0;
-                maxLod = 0.25f;
-            }
-
-            var borderColor = GetConstrainedBorderColor(info.BorderColor, out var cantConstrain);
-
-            var samplerCreateInfo = new Silk.NET.Vulkan.SamplerCreateInfo
-            {
-                SType = StructureType.SamplerCreateInfo,
-                MagFilter = info.MagFilter.Convert(),
-                MinFilter = minFilter,
-                MipmapMode = mipFilter,
-                AddressModeU = info.AddressU.Convert(),
-                AddressModeV = info.AddressV.Convert(),
-                AddressModeW = info.AddressP.Convert(),
-                MipLodBias = info.MipLodBias,
-                AnisotropyEnable = info.MaxAnisotropy != 1f,
-                MaxAnisotropy = info.MaxAnisotropy,
-                CompareEnable = info.CompareMode == CompareMode.CompareRToTexture,
-                CompareOp = info.CompareOp.Convert(),
-                MinLod = minLod,
-                MaxLod = maxLod,
-                BorderColor = borderColor,
-                UnnormalizedCoordinates = false, // TODO: Use unnormalized coordinates.
+                SType = StructureType.SamplerCustomBorderColorCreateInfoExt,
+                CustomBorderColor = color,
             };
 
-            SamplerCustomBorderColorCreateInfoEXT customBorderColor;
-
-            if (cantConstrain && gd.Capabilities.SupportsCustomBorderColor)
-            {
-                var color = new ClearColorValue(
-                    info.BorderColor.Red,
-                    info.BorderColor.Green,
-                    info.BorderColor.Blue,
-                    info.BorderColor.Alpha);
-
-                customBorderColor = new SamplerCustomBorderColorCreateInfoEXT
-                {
-                    SType = StructureType.SamplerCustomBorderColorCreateInfoExt,
-                    CustomBorderColor = color,
-                };
-
-                samplerCreateInfo.PNext = &customBorderColor;
-                samplerCreateInfo.BorderColor = BorderColor.FloatCustomExt;
-            }
-
-            gd.Api.CreateSampler(device, in samplerCreateInfo, null, out var sampler).ThrowOnError();
-
-            _sampler = new Auto<DisposableSampler>(new DisposableSampler(gd.Api, device, sampler));
+            samplerCreateInfo.PNext = &customBorderColor;
+            samplerCreateInfo.BorderColor = BorderColor.FloatCustomExt;
         }
 
-        private static BorderColor GetConstrainedBorderColor(ColorF arbitraryBorderColor, out bool cantConstrain)
+        gd.Api.CreateSampler(device, in samplerCreateInfo, null, out var sampler).ThrowOnError();
+
+        _sampler = new Auto<DisposableSampler>(new DisposableSampler(gd.Api, device, sampler));
+    }
+
+    private static BorderColor GetConstrainedBorderColor(ColorF arbitraryBorderColor, out bool cantConstrain)
+    {
+        float r = arbitraryBorderColor.Red;
+        float g = arbitraryBorderColor.Green;
+        float b = arbitraryBorderColor.Blue;
+        float a = arbitraryBorderColor.Alpha;
+
+        if (r == 0f && g == 0f && b == 0f)
         {
-            float r = arbitraryBorderColor.Red;
-            float g = arbitraryBorderColor.Green;
-            float b = arbitraryBorderColor.Blue;
-            float a = arbitraryBorderColor.Alpha;
-
-            if (r == 0f && g == 0f && b == 0f)
-            {
-                if (a == 1f)
-                {
-                    cantConstrain = false;
-                    return BorderColor.FloatOpaqueBlack;
-                }
-
-                if (a == 0f)
-                {
-                    cantConstrain = false;
-                    return BorderColor.FloatTransparentBlack;
-                }
-            }
-            else if (r == 1f && g == 1f && b == 1f && a == 1f)
+            if (a == 1f)
             {
                 cantConstrain = false;
-                return BorderColor.FloatOpaqueWhite;
+                return BorderColor.FloatOpaqueBlack;
             }
 
-            cantConstrain = true;
-            return BorderColor.FloatOpaqueBlack;
-        }
-
-        public Auto<DisposableSampler> GetSampler()
-        {
-            return _sampler;
-        }
-
-        public void Dispose()
-        {
-            if (_gd.Samplers.Remove(this))
+            if (a == 0f)
             {
-                _sampler.Dispose();
+                cantConstrain = false;
+                return BorderColor.FloatTransparentBlack;
             }
+        }
+        else if (r == 1f && g == 1f && b == 1f && a == 1f)
+        {
+            cantConstrain = false;
+            return BorderColor.FloatOpaqueWhite;
+        }
+
+        cantConstrain = true;
+        return BorderColor.FloatOpaqueBlack;
+    }
+
+    public Auto<DisposableSampler> GetSampler()
+    {
+        return _sampler;
+    }
+
+    public void Dispose()
+    {
+        if (_gd.Samplers.Remove(this))
+        {
+            _sampler.Dispose();
         }
     }
 }

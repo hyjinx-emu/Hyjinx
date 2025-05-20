@@ -1,10 +1,10 @@
-using System;
-using System.Buffers;
-using System.IO;
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Tools.FsSystem.Save;
+using System;
+using System.Buffers;
+using System.IO;
 
 namespace LibHac.Tools.FsSystem;
 

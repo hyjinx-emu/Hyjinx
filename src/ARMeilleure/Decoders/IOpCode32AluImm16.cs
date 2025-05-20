@@ -1,7 +1,6 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+interface IOpCode32AluImm16 : IOpCode32Alu
 {
-    interface IOpCode32AluImm16 : IOpCode32Alu
-    {
-        int Immediate { get; }
-    }
+    int Immediate { get; }
 }

@@ -1,12 +1,11 @@
 using System;
 
-namespace ARMeilleure.Common
+namespace ARMeilleure.Common;
+
+static class EnumUtils
 {
-    static class EnumUtils
+    public static int GetCount(Type enumType)
     {
-        public static int GetCount(Type enumType)
-        {
-            return Enum.GetNames(enumType).Length;
-        }
+        return Enum.GetNames(enumType).Length;
     }
 }

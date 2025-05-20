@@ -1,6 +1,6 @@
-using System;
 using LibHac.Common;
 using LibHac.FsSrv.Sf;
+using System;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;
 
 namespace LibHac.FsSrv.Storage.Sf;

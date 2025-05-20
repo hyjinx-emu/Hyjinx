@@ -1,9 +1,8 @@
-namespace Hyjinx.Graphics.Gpu.Image
+namespace Hyjinx.Graphics.Gpu.Image;
+
+enum TextureMatchQuality
 {
-    enum TextureMatchQuality
-    {
-        NoMatch,
-        FormatAlias,
-        Perfect,
-    }
+    NoMatch,
+    FormatAlias,
+    Perfect,
 }

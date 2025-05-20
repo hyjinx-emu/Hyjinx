@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock;
+
+class EphemeralNetworkSystemClockContextWriter : SystemClockContextUpdateCallback
 {
-    class EphemeralNetworkSystemClockContextWriter : SystemClockContextUpdateCallback
+    protected override ResultCode Update()
     {
-        protected override ResultCode Update()
-        {
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

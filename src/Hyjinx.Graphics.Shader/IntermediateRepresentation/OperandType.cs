@@ -1,13 +1,12 @@
-namespace Hyjinx.Graphics.Shader.IntermediateRepresentation
+namespace Hyjinx.Graphics.Shader.IntermediateRepresentation;
+
+enum OperandType
 {
-    enum OperandType
-    {
-        Argument,
-        Constant,
-        ConstantBuffer,
-        Label,
-        LocalVariable,
-        Register,
-        Undefined,
-    }
+    Argument,
+    Constant,
+    ConstantBuffer,
+    Label,
+    LocalVariable,
+    Register,
+    Undefined,
 }

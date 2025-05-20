@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+
+enum LayerState
 {
-    enum LayerState
-    {
-        NotInitialized,
-        ManagedClosed,
-        ManagedOpened,
-        Stray,
-    }
+    NotInitialized,
+    ManagedClosed,
+    ManagedOpened,
+    Stray,
 }

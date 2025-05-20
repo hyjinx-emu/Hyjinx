@@ -1,5 +1,5 @@
-using System.Runtime.CompilerServices;
 using LibHac.Common;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Os;
 

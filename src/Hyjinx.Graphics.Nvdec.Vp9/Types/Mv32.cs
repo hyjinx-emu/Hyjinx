@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.Nvdec.Vp9.Types
+namespace Hyjinx.Graphics.Nvdec.Vp9.Types;
+
+internal struct Mv32
 {
-    internal struct Mv32
-    {
-        public int Row;
-        public int Col;
-    }
+    public int Row;
+    public int Col;
 }

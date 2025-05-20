@@ -1,15 +1,14 @@
-namespace Hyjinx.HLE.HOS.Services.Caps
-{
-    [Service("caps:c")]
-    class IAlbumControlService : IpcService<IAlbumControlService>
-    {
-        public IAlbumControlService(ServiceCtx context) { }
+namespace Hyjinx.HLE.HOS.Services.Caps;
 
-        [CommandCmif(33)] // 7.0.0+
-        // SetShimLibraryVersion(pid, u64, nn::applet::AppletResourceUserId)
-        public ResultCode SetShimLibraryVersion(ServiceCtx context)
-        {
-            return context.Device.System.CaptureManager.SetShimLibraryVersion(context);
-        }
+[Service("caps:c")]
+class IAlbumControlService : IpcService<IAlbumControlService>
+{
+    public IAlbumControlService(ServiceCtx context) { }
+
+    [CommandCmif(33)] // 7.0.0+
+    // SetShimLibraryVersion(pid, u64, nn::applet::AppletResourceUserId)
+    public ResultCode SetShimLibraryVersion(ServiceCtx context)
+    {
+        return context.Device.System.CaptureManager.SetShimLibraryVersion(context);
     }
 }

@@ -10,103 +10,102 @@ using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Helper;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Ava.UI.Windows
+namespace Hyjinx.Ava.UI.Windows;
+
+public partial class DownloadableContentManagerWindow : UserControl
 {
-    public partial class DownloadableContentManagerWindow : UserControl
+    public DownloadableContentManagerViewModel ViewModel;
+
+    public DownloadableContentManagerWindow()
     {
-        public DownloadableContentManagerViewModel ViewModel;
+        DataContext = this;
 
-        public DownloadableContentManagerWindow()
+        InitializeComponent();
+    }
+
+    public DownloadableContentManagerWindow(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
+    {
+        DataContext = ViewModel = new DownloadableContentManagerViewModel(virtualFileSystem, applicationData);
+
+        InitializeComponent();
+    }
+
+    public static async Task Show(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
+    {
+        ContentDialog contentDialog = new()
         {
-            DataContext = this;
+            PrimaryButtonText = "",
+            SecondaryButtonText = "",
+            CloseButtonText = "",
+            Content = new DownloadableContentManagerWindow(virtualFileSystem, applicationData),
+            Title = string.Format(LocaleManager.Instance[LocaleKeys.DlcWindowTitle], applicationData.Name, applicationData.IdBaseString),
+        };
 
-            InitializeComponent();
-        }
+        Style bottomBorder = new(x => x.OfType<Grid>().Name("DialogSpace").Child().OfType<Border>());
+        bottomBorder.Setters.Add(new Setter(IsVisibleProperty, false));
 
-        public DownloadableContentManagerWindow(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
+        contentDialog.Styles.Add(bottomBorder);
+
+        await contentDialog.ShowAsync();
+    }
+
+    private void SaveAndClose(object sender, RoutedEventArgs routedEventArgs)
+    {
+        ViewModel.Save();
+        ((ContentDialog)Parent).Hide();
+    }
+
+    private void Close(object sender, RoutedEventArgs e)
+    {
+        ((ContentDialog)Parent).Hide();
+    }
+
+    private void RemoveDLC(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
         {
-            DataContext = ViewModel = new DownloadableContentManagerViewModel(virtualFileSystem, applicationData);
-
-            InitializeComponent();
-        }
-
-        public static async Task Show(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
-        {
-            ContentDialog contentDialog = new()
+            if (button.DataContext is DownloadableContentModel model)
             {
-                PrimaryButtonText = "",
-                SecondaryButtonText = "",
-                CloseButtonText = "",
-                Content = new DownloadableContentManagerWindow(virtualFileSystem, applicationData),
-                Title = string.Format(LocaleManager.Instance[LocaleKeys.DlcWindowTitle], applicationData.Name, applicationData.IdBaseString),
-            };
-
-            Style bottomBorder = new(x => x.OfType<Grid>().Name("DialogSpace").Child().OfType<Border>());
-            bottomBorder.Setters.Add(new Setter(IsVisibleProperty, false));
-
-            contentDialog.Styles.Add(bottomBorder);
-
-            await contentDialog.ShowAsync();
+                ViewModel.Remove(model);
+            }
         }
+    }
 
-        private void SaveAndClose(object sender, RoutedEventArgs routedEventArgs)
+    private void OpenLocation(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
         {
-            ViewModel.Save();
-            ((ContentDialog)Parent).Hide();
-        }
-
-        private void Close(object sender, RoutedEventArgs e)
-        {
-            ((ContentDialog)Parent).Hide();
-        }
-
-        private void RemoveDLC(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button)
+            if (button.DataContext is DownloadableContentModel model)
             {
-                if (button.DataContext is DownloadableContentModel model)
+                OpenHelper.LocateFile(model.ContainerPath);
+            }
+        }
+    }
+
+    private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        foreach (var content in e.AddedItems)
+        {
+            if (content is DownloadableContentModel model)
+            {
+                var index = ViewModel.DownloadableContents.IndexOf(model);
+
+                if (index != -1)
                 {
-                    ViewModel.Remove(model);
+                    ViewModel.DownloadableContents[index].Enabled = true;
                 }
             }
         }
 
-        private void OpenLocation(object sender, RoutedEventArgs e)
+        foreach (var content in e.RemovedItems)
         {
-            if (sender is Button button)
+            if (content is DownloadableContentModel model)
             {
-                if (button.DataContext is DownloadableContentModel model)
+                var index = ViewModel.DownloadableContents.IndexOf(model);
+
+                if (index != -1)
                 {
-                    OpenHelper.LocateFile(model.ContainerPath);
-                }
-            }
-        }
-
-        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            foreach (var content in e.AddedItems)
-            {
-                if (content is DownloadableContentModel model)
-                {
-                    var index = ViewModel.DownloadableContents.IndexOf(model);
-
-                    if (index != -1)
-                    {
-                        ViewModel.DownloadableContents[index].Enabled = true;
-                    }
-                }
-            }
-
-            foreach (var content in e.RemovedItems)
-            {
-                if (content is DownloadableContentModel model)
-                {
-                    var index = ViewModel.DownloadableContents.IndexOf(model);
-
-                    if (index != -1)
-                    {
-                        ViewModel.DownloadableContents[index].Enabled = false;
-                    }
+                    ViewModel.DownloadableContents[index].Enabled = false;
                 }
             }
         }

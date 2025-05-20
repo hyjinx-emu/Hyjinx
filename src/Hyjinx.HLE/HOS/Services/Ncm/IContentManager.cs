@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Ncm
+namespace Hyjinx.HLE.HOS.Services.Ncm;
+
+[Service("ncm")]
+class IContentManager : IpcService<IContentManager>
 {
-    [Service("ncm")]
-    class IContentManager : IpcService<IContentManager>
-    {
-        public IContentManager(ServiceCtx context) { }
-    }
+    public IContentManager(ServiceCtx context) { }
 }

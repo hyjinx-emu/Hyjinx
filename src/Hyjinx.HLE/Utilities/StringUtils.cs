@@ -1,156 +1,155 @@
-using LibHac.Common;
-using Microsoft.IO;
 using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS;
+using LibHac.Common;
+using Microsoft.IO;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Hyjinx.HLE.Utilities
+namespace Hyjinx.HLE.Utilities;
+
+static class StringUtils
 {
-    static class StringUtils
+    public static byte[] GetFixedLengthBytes(string inputString, int size, Encoding encoding)
     {
-        public static byte[] GetFixedLengthBytes(string inputString, int size, Encoding encoding)
+        inputString += "\0";
+
+        int bytesCount = encoding.GetByteCount(inputString);
+
+        byte[] output = new byte[size];
+
+        if (bytesCount < size)
         {
-            inputString += "\0";
+            encoding.GetBytes(inputString, 0, inputString.Length, output, 0);
+        }
+        else
+        {
+            int nullSize = encoding.GetByteCount("\0");
 
-            int bytesCount = encoding.GetByteCount(inputString);
+            output = encoding.GetBytes(inputString);
 
-            byte[] output = new byte[size];
+            Array.Resize(ref output, size - nullSize);
 
-            if (bytesCount < size)
-            {
-                encoding.GetBytes(inputString, 0, inputString.Length, output, 0);
-            }
-            else
-            {
-                int nullSize = encoding.GetByteCount("\0");
-
-                output = encoding.GetBytes(inputString);
-
-                Array.Resize(ref output, size - nullSize);
-
-                output = output.Concat(encoding.GetBytes("\0")).ToArray();
-            }
-
-            return output;
+            output = output.Concat(encoding.GetBytes("\0")).ToArray();
         }
 
-        public static string ReadInlinedAsciiString(BinaryReader reader, int maxSize)
+        return output;
+    }
+
+    public static string ReadInlinedAsciiString(BinaryReader reader, int maxSize)
+    {
+        byte[] data = reader.ReadBytes(maxSize);
+
+        int stringSize = Array.IndexOf<byte>(data, 0);
+
+        return Encoding.ASCII.GetString(data, 0, stringSize < 0 ? maxSize : stringSize);
+    }
+
+    public static byte[] HexToBytes(string hexString)
+    {
+        // Ignore last character if HexLength % 2 != 0.
+        int bytesInHex = hexString.Length / 2;
+
+        byte[] output = new byte[bytesInHex];
+
+        for (int index = 0; index < bytesInHex; index++)
         {
-            byte[] data = reader.ReadBytes(maxSize);
-
-            int stringSize = Array.IndexOf<byte>(data, 0);
-
-            return Encoding.ASCII.GetString(data, 0, stringSize < 0 ? maxSize : stringSize);
+            output[index] = byte.Parse(hexString.AsSpan(index * 2, 2), NumberStyles.HexNumber);
         }
 
-        public static byte[] HexToBytes(string hexString)
+        return output;
+    }
+
+    public static string ReadUtf8String(ReadOnlySpan<byte> data, out int dataRead)
+    {
+        dataRead = data.IndexOf((byte)0) + 1;
+
+        if (dataRead <= 1)
         {
-            // Ignore last character if HexLength % 2 != 0.
-            int bytesInHex = hexString.Length / 2;
-
-            byte[] output = new byte[bytesInHex];
-
-            for (int index = 0; index < bytesInHex; index++)
-            {
-                output[index] = byte.Parse(hexString.AsSpan(index * 2, 2), NumberStyles.HexNumber);
-            }
-
-            return output;
+            return string.Empty;
         }
 
-        public static string ReadUtf8String(ReadOnlySpan<byte> data, out int dataRead)
+        return Encoding.UTF8.GetString(data[..dataRead]);
+    }
+
+    public static string ReadUtf8String(ServiceCtx context, int index = 0)
+    {
+        ulong position = context.Request.PtrBuff[index].Position;
+        ulong size = context.Request.PtrBuff[index].Size;
+
+        using RecyclableMemoryStream ms = MemoryStreamManager.Shared.GetStream();
+        while (size-- > 0)
         {
-            dataRead = data.IndexOf((byte)0) + 1;
+            byte value = context.Memory.Read<byte>(position++);
 
-            if (dataRead <= 1)
+            if (value == 0)
             {
-                return string.Empty;
-            }
-
-            return Encoding.UTF8.GetString(data[..dataRead]);
-        }
-
-        public static string ReadUtf8String(ServiceCtx context, int index = 0)
-        {
-            ulong position = context.Request.PtrBuff[index].Position;
-            ulong size = context.Request.PtrBuff[index].Size;
-
-            using RecyclableMemoryStream ms = MemoryStreamManager.Shared.GetStream();
-            while (size-- > 0)
-            {
-                byte value = context.Memory.Read<byte>(position++);
-
-                if (value == 0)
-                {
-                    break;
-                }
-
-                ms.WriteByte(value);
+                break;
             }
 
-            return Encoding.UTF8.GetString(ms.GetReadOnlySequence());
+            ms.WriteByte(value);
         }
 
-        public static U8Span ReadUtf8Span(ServiceCtx context, int index = 0)
+        return Encoding.UTF8.GetString(ms.GetReadOnlySequence());
+    }
+
+    public static U8Span ReadUtf8Span(ServiceCtx context, int index = 0)
+    {
+        ulong position = context.Request.PtrBuff[index].Position;
+        ulong size = context.Request.PtrBuff[index].Size;
+
+        ReadOnlySpan<byte> buffer = context.Memory.GetSpan(position, (int)size);
+
+        return new U8Span(buffer);
+    }
+
+    public static string ReadUtf8StringSend(ServiceCtx context, int index = 0)
+    {
+        ulong position = context.Request.SendBuff[index].Position;
+        ulong size = context.Request.SendBuff[index].Size;
+
+        using RecyclableMemoryStream ms = MemoryStreamManager.Shared.GetStream();
+
+        while (size-- > 0)
         {
-            ulong position = context.Request.PtrBuff[index].Position;
-            ulong size = context.Request.PtrBuff[index].Size;
+            byte value = context.Memory.Read<byte>(position++);
 
-            ReadOnlySpan<byte> buffer = context.Memory.GetSpan(position, (int)size);
-
-            return new U8Span(buffer);
-        }
-
-        public static string ReadUtf8StringSend(ServiceCtx context, int index = 0)
-        {
-            ulong position = context.Request.SendBuff[index].Position;
-            ulong size = context.Request.SendBuff[index].Size;
-
-            using RecyclableMemoryStream ms = MemoryStreamManager.Shared.GetStream();
-
-            while (size-- > 0)
+            if (value == 0)
             {
-                byte value = context.Memory.Read<byte>(position++);
-
-                if (value == 0)
-                {
-                    break;
-                }
-
-                ms.WriteByte(value);
+                break;
             }
 
-            return Encoding.UTF8.GetString(ms.GetReadOnlySequence());
+            ms.WriteByte(value);
         }
 
-        public static int CompareCStr(ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2)
+        return Encoding.UTF8.GetString(ms.GetReadOnlySequence());
+    }
+
+    public static int CompareCStr(ReadOnlySpan<byte> s1, ReadOnlySpan<byte> s2)
+    {
+        int s1Index = 0;
+        int s2Index = 0;
+
+        while (s1[s1Index] != 0 && s2[s2Index] != 0 && s1[s1Index] == s2[s2Index])
         {
-            int s1Index = 0;
-            int s2Index = 0;
-
-            while (s1[s1Index] != 0 && s2[s2Index] != 0 && s1[s1Index] == s2[s2Index])
-            {
-                s1Index += 1;
-                s2Index += 1;
-            }
-
-            return s2[s2Index] - s1[s1Index];
+            s1Index += 1;
+            s2Index += 1;
         }
 
-        public static int LengthCstr(ReadOnlySpan<byte> s)
+        return s2[s2Index] - s1[s1Index];
+    }
+
+    public static int LengthCstr(ReadOnlySpan<byte> s)
+    {
+        int i = 0;
+
+        while (s[i] != 0)
         {
-            int i = 0;
-
-            while (s[i] != 0)
-            {
-                i++;
-            }
-
-            return i;
+            i++;
         }
+
+        return i;
     }
 }

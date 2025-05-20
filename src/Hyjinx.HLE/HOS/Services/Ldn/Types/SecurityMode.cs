@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types;
+
+enum SecurityMode : ushort
 {
-    enum SecurityMode : ushort
-    {
-        All,
-        Retail,
-        Debug,
-    }
+    All,
+    Retail,
+    Debug,
 }

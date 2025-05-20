@@ -4,100 +4,99 @@ using Hyjinx.HLE.Utilities;
 using System;
 using System.Net.NetworkInformation;
 
-namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm;
+
+/// <summary>
+/// Client implementation for <a href="https://github.com/spacemeowx2/ldn_mitm">ldn_mitm</a>
+/// </summary>
+internal class LdnMitmClient : INetworkClient
 {
-    /// <summary>
-    /// Client implementation for <a href="https://github.com/spacemeowx2/ldn_mitm">ldn_mitm</a>
-    /// </summary>
-    internal class LdnMitmClient : INetworkClient
+    public bool NeedsRealId => false;
+
+    public event EventHandler<NetworkChangeEventArgs> NetworkChange;
+
+    private readonly LanDiscovery _lanDiscovery;
+
+    public LdnMitmClient(HLEConfiguration config)
     {
-        public bool NeedsRealId => false;
+        UnicastIPAddressInformation localIpInterface = NetworkHelpers.GetLocalInterface(config.MultiplayerLanInterfaceId).Item2;
 
-        public event EventHandler<NetworkChangeEventArgs> NetworkChange;
+        _lanDiscovery = new LanDiscovery(this, localIpInterface.Address, localIpInterface.IPv4Mask);
+    }
 
-        private readonly LanDiscovery _lanDiscovery;
+    internal void InvokeNetworkChange(NetworkInfo info, bool connected, DisconnectReason reason = DisconnectReason.None)
+    {
+        NetworkChange?.Invoke(this, new NetworkChangeEventArgs(info, connected: connected, disconnectReason: reason));
+    }
 
-        public LdnMitmClient(HLEConfiguration config)
-        {
-            UnicastIPAddressInformation localIpInterface = NetworkHelpers.GetLocalInterface(config.MultiplayerLanInterfaceId).Item2;
+    public NetworkError Connect(ConnectRequest request)
+    {
+        return _lanDiscovery.Connect(request.NetworkInfo, request.UserConfig, request.LocalCommunicationVersion);
+    }
 
-            _lanDiscovery = new LanDiscovery(this, localIpInterface.Address, localIpInterface.IPv4Mask);
-        }
+    public NetworkError ConnectPrivate(ConnectPrivateRequest request)
+    {
+        // NOTE: This method is not implemented in ldn_mitm
+        // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient ConnectPrivate");
 
-        internal void InvokeNetworkChange(NetworkInfo info, bool connected, DisconnectReason reason = DisconnectReason.None)
-        {
-            NetworkChange?.Invoke(this, new NetworkChangeEventArgs(info, connected: connected, disconnectReason: reason));
-        }
+        return NetworkError.None;
+    }
 
-        public NetworkError Connect(ConnectRequest request)
-        {
-            return _lanDiscovery.Connect(request.NetworkInfo, request.UserConfig, request.LocalCommunicationVersion);
-        }
+    public bool CreateNetwork(CreateAccessPointRequest request, byte[] advertiseData)
+    {
+        return _lanDiscovery.CreateNetwork(request.SecurityConfig, request.UserConfig, request.NetworkConfig);
+    }
 
-        public NetworkError ConnectPrivate(ConnectPrivateRequest request)
-        {
-            // NOTE: This method is not implemented in ldn_mitm
-            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient ConnectPrivate");
+    public bool CreateNetworkPrivate(CreateAccessPointPrivateRequest request, byte[] advertiseData)
+    {
+        // NOTE: This method is not implemented in ldn_mitm
+        // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient CreateNetworkPrivate");
 
-            return NetworkError.None;
-        }
+        return true;
+    }
 
-        public bool CreateNetwork(CreateAccessPointRequest request, byte[] advertiseData)
-        {
-            return _lanDiscovery.CreateNetwork(request.SecurityConfig, request.UserConfig, request.NetworkConfig);
-        }
+    public void DisconnectAndStop()
+    {
+        _lanDiscovery.DisconnectAndStop();
+    }
 
-        public bool CreateNetworkPrivate(CreateAccessPointPrivateRequest request, byte[] advertiseData)
-        {
-            // NOTE: This method is not implemented in ldn_mitm
-            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient CreateNetworkPrivate");
+    public void DisconnectNetwork()
+    {
+        _lanDiscovery.DestroyNetwork();
+    }
 
-            return true;
-        }
+    public ResultCode Reject(DisconnectReason disconnectReason, uint nodeId)
+    {
+        // NOTE: This method is not implemented in ldn_mitm
+        // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient Reject");
 
-        public void DisconnectAndStop()
-        {
-            _lanDiscovery.DisconnectAndStop();
-        }
+        return ResultCode.Success;
+    }
 
-        public void DisconnectNetwork()
-        {
-            _lanDiscovery.DestroyNetwork();
-        }
+    public NetworkInfo[] Scan(ushort channel, ScanFilter scanFilter)
+    {
+        return _lanDiscovery.Scan(channel, scanFilter);
+    }
 
-        public ResultCode Reject(DisconnectReason disconnectReason, uint nodeId)
-        {
-            // NOTE: This method is not implemented in ldn_mitm
-            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient Reject");
+    public void SetAdvertiseData(byte[] data)
+    {
+        _lanDiscovery.SetAdvertiseData(data);
+    }
 
-            return ResultCode.Success;
-        }
+    public void SetGameVersion(byte[] versionString)
+    {
+        // NOTE: This method is not implemented in ldn_mitm
+        // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient SetGameVersion");
+    }
 
-        public NetworkInfo[] Scan(ushort channel, ScanFilter scanFilter)
-        {
-            return _lanDiscovery.Scan(channel, scanFilter);
-        }
+    public void SetStationAcceptPolicy(AcceptPolicy acceptPolicy)
+    {
+        // NOTE: This method is not implemented in ldn_mitm
+        // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient SetStationAcceptPolicy");
+    }
 
-        public void SetAdvertiseData(byte[] data)
-        {
-            _lanDiscovery.SetAdvertiseData(data);
-        }
-
-        public void SetGameVersion(byte[] versionString)
-        {
-            // NOTE: This method is not implemented in ldn_mitm
-            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient SetGameVersion");
-        }
-
-        public void SetStationAcceptPolicy(AcceptPolicy acceptPolicy)
-        {
-            // NOTE: This method is not implemented in ldn_mitm
-            // Logger.Stub?.PrintMsg(LogClass.ServiceLdn, "LdnMitmClient SetStationAcceptPolicy");
-        }
-
-        public void Dispose()
-        {
-            _lanDiscovery.Dispose();
-        }
+    public void Dispose()
+    {
+        _lanDiscovery.Dispose();
     }
 }

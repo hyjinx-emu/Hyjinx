@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -7,6 +5,8 @@ using LibHac.FsSystem;
 using LibHac.Sdmmc;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Sdmmc.SdmmcApi;
 using static LibHac.SdmmcSrv.Common;
 using static LibHac.SdmmcSrv.SdmmcResultConverter;

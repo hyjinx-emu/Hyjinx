@@ -1,17 +1,16 @@
 using ARMeilleure.IntermediateRepresentation;
 
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+interface IOpCode
 {
-    interface IOpCode
-    {
-        ulong Address { get; }
+    ulong Address { get; }
 
-        InstDescriptor Instruction { get; }
+    InstDescriptor Instruction { get; }
 
-        RegisterSize RegisterSize { get; }
+    RegisterSize RegisterSize { get; }
 
-        int GetBitsCount();
+    int GetBitsCount();
 
-        OperandType GetOperandType();
-    }
+    OperandType GetOperandType();
 }

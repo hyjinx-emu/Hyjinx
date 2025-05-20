@@ -1,18 +1,17 @@
-namespace ARMeilleure.State
+namespace ARMeilleure.State;
+
+/// <summary>
+/// CPU Counter interface.
+/// </summary>
+public interface ICounter
 {
     /// <summary>
-    /// CPU Counter interface.
+    /// Counter frequency in Hertz.
     /// </summary>
-    public interface ICounter
-    {
-        /// <summary>
-        /// Counter frequency in Hertz.
-        /// </summary>
-        ulong Frequency { get; }
+    ulong Frequency { get; }
 
-        /// <summary>
-        /// Current counter value.
-        /// </summary>
-        ulong Counter { get; }
-    }
+    /// <summary>
+    /// Current counter value.
+    /// </summary>
+    ulong Counter { get; }
 }

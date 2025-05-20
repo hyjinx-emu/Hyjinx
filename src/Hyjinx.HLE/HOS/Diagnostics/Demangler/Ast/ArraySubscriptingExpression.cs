@@ -1,25 +1,24 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class ArraySubscriptingExpression : BaseNode
 {
-    public class ArraySubscriptingExpression : BaseNode
+    private readonly BaseNode _leftNode;
+    private readonly BaseNode _subscript;
+
+    public ArraySubscriptingExpression(BaseNode leftNode, BaseNode subscript) : base(NodeType.ArraySubscriptingExpression)
     {
-        private readonly BaseNode _leftNode;
-        private readonly BaseNode _subscript;
+        _leftNode = leftNode;
+        _subscript = subscript;
+    }
 
-        public ArraySubscriptingExpression(BaseNode leftNode, BaseNode subscript) : base(NodeType.ArraySubscriptingExpression)
-        {
-            _leftNode = leftNode;
-            _subscript = subscript;
-        }
-
-        public override void PrintLeft(TextWriter writer)
-        {
-            writer.Write("(");
-            _leftNode.Print(writer);
-            writer.Write(")[");
-            _subscript.Print(writer);
-            writer.Write("]");
-        }
+    public override void PrintLeft(TextWriter writer)
+    {
+        writer.Write("(");
+        _leftNode.Print(writer);
+        writer.Write(")[");
+        _subscript.Print(writer);
+        writer.Write("]");
     }
 }

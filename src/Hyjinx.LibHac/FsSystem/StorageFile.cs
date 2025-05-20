@@ -1,8 +1,8 @@
-using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System;
 
 namespace LibHac.FsSystem;
 

@@ -1,24 +1,23 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class CtorDtorNameType : ParentNode
 {
-    public class CtorDtorNameType : ParentNode
+    private readonly bool _isDestructor;
+
+    public CtorDtorNameType(BaseNode name, bool isDestructor) : base(NodeType.CtorDtorNameType, name)
     {
-        private readonly bool _isDestructor;
+        _isDestructor = isDestructor;
+    }
 
-        public CtorDtorNameType(BaseNode name, bool isDestructor) : base(NodeType.CtorDtorNameType, name)
+    public override void PrintLeft(TextWriter writer)
+    {
+        if (_isDestructor)
         {
-            _isDestructor = isDestructor;
+            writer.Write("~");
         }
 
-        public override void PrintLeft(TextWriter writer)
-        {
-            if (_isDestructor)
-            {
-                writer.Write("~");
-            }
-
-            writer.Write(Child.GetName());
-        }
+        writer.Write(Child.GetName());
     }
 }

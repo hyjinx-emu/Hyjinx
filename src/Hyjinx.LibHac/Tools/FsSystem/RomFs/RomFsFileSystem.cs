@@ -1,7 +1,7 @@
-using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System;
 
 namespace LibHac.Tools.FsSystem.RomFs;
 

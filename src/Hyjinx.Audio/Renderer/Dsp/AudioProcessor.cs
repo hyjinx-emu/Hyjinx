@@ -7,258 +7,257 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
-namespace Hyjinx.Audio.Renderer.Dsp
+namespace Hyjinx.Audio.Renderer.Dsp;
+
+public partial class AudioProcessor : IDisposable
 {
-    public partial class AudioProcessor : IDisposable
+    private const int MaxBufferedFrames = 5;
+    private const int TargetBufferedFrames = 3;
+
+    private enum MailboxMessage : uint
     {
-        private const int MaxBufferedFrames = 5;
-        private const int TargetBufferedFrames = 3;
+        Start,
+        Stop,
+        RenderStart,
+        RenderEnd,
+    }
 
-        private enum MailboxMessage : uint
+    private class RendererSession
+    {
+        public CommandList CommandList;
+        public int RenderingLimit;
+        public ulong AppletResourceId;
+    }
+
+    private Mailbox<MailboxMessage> _mailbox;
+    private RendererSession[] _sessionCommandList;
+    private Thread _workerThread;
+
+    public IHardwareDevice[] OutputDevices { get; private set; }
+
+    private long _lastTime;
+    private long _playbackEnds;
+    private readonly ManualResetEvent _event;
+    private readonly ILogger<AudioProcessor> _logger;
+
+    private ManualResetEvent _pauseEvent;
+
+    public AudioProcessor()
+    {
+        _event = new ManualResetEvent(false);
+        _logger = Logger.DefaultLoggerFactory.CreateLogger<AudioProcessor>();
+    }
+
+    private static uint GetHardwareChannelCount(IHardwareDeviceDriver deviceDriver)
+    {
+        // Get the real device driver (In case the compat layer is on top of it).
+        deviceDriver = deviceDriver.GetRealDeviceDriver();
+
+        if (deviceDriver.SupportsChannelCount(6))
         {
-            Start,
-            Stop,
-            RenderStart,
-            RenderEnd,
+            return 6;
         }
 
-        private class RendererSession
+        // NOTE: We default to stereo as this will get downmixed to mono by the compat layer if it's not compatible.
+        return 2;
+    }
+
+    public void Start(IHardwareDeviceDriver deviceDriver)
+    {
+        OutputDevices = new IHardwareDevice[Constants.AudioRendererSessionCountMax];
+
+        uint channelCount = GetHardwareChannelCount(deviceDriver);
+
+        for (int i = 0; i < OutputDevices.Length; i++)
         {
-            public CommandList CommandList;
-            public int RenderingLimit;
-            public ulong AppletResourceId;
+            // TODO: Don't hardcode sample rate.
+            OutputDevices[i] = new HardwareDeviceImpl(deviceDriver, channelCount, Constants.TargetSampleRate);
         }
 
-        private Mailbox<MailboxMessage> _mailbox;
-        private RendererSession[] _sessionCommandList;
-        private Thread _workerThread;
+        _mailbox = new Mailbox<MailboxMessage>();
+        _sessionCommandList = new RendererSession[Constants.AudioRendererSessionCountMax];
+        _event.Reset();
+        _lastTime = PerformanceCounter.ElapsedNanoseconds;
+        _pauseEvent = deviceDriver.GetPauseEvent();
 
-        public IHardwareDevice[] OutputDevices { get; private set; }
+        StartThread();
 
-        private long _lastTime;
-        private long _playbackEnds;
-        private readonly ManualResetEvent _event;
-        private readonly ILogger<AudioProcessor> _logger;
+        _mailbox.SendMessage(MailboxMessage.Start);
 
-        private ManualResetEvent _pauseEvent;
-
-        public AudioProcessor()
+        if (_mailbox.ReceiveResponse() != MailboxMessage.Start)
         {
-            _event = new ManualResetEvent(false);
-            _logger = Logger.DefaultLoggerFactory.CreateLogger<AudioProcessor>();
+            throw new InvalidOperationException("Audio Processor Start response was invalid!");
+        }
+    }
+
+    public void Stop()
+    {
+        _mailbox.SendMessage(MailboxMessage.Stop);
+
+        if (_mailbox.ReceiveResponse() != MailboxMessage.Stop)
+        {
+            throw new InvalidOperationException("Audio Processor Stop response was invalid!");
         }
 
-        private static uint GetHardwareChannelCount(IHardwareDeviceDriver deviceDriver)
+        foreach (IHardwareDevice device in OutputDevices)
         {
-            // Get the real device driver (In case the compat layer is on top of it).
-            deviceDriver = deviceDriver.GetRealDeviceDriver();
+            device.Dispose();
+        }
+    }
 
-            if (deviceDriver.SupportsChannelCount(6))
+    public void Send(int sessionId, CommandList commands, int renderingLimit, ulong appletResourceId)
+    {
+        _sessionCommandList[sessionId] = new RendererSession
+        {
+            CommandList = commands,
+            RenderingLimit = renderingLimit,
+            AppletResourceId = appletResourceId,
+        };
+    }
+
+    public bool HasRemainingCommands(int sessionId)
+    {
+        return _sessionCommandList[sessionId] != null;
+    }
+
+    public void Signal()
+    {
+        _mailbox.SendMessage(MailboxMessage.RenderStart);
+    }
+
+    public void Wait()
+    {
+        if (_mailbox.ReceiveResponse() != MailboxMessage.RenderEnd)
+        {
+            throw new InvalidOperationException("Audio Processor Wait response was invalid!");
+        }
+
+        long increment = Constants.AudioProcessorMaxUpdateTimeTarget;
+
+        long timeNow = PerformanceCounter.ElapsedNanoseconds;
+
+        if (timeNow > _playbackEnds)
+        {
+            // Playback has restarted.
+            _playbackEnds = timeNow;
+        }
+
+        _playbackEnds += increment;
+
+        // The number of frames we are behind where the timer says we should be.
+        long framesBehind = (timeNow - _lastTime) / increment;
+
+        // The number of frames yet to play on the backend.
+        long bufferedFrames = (_playbackEnds - timeNow) / increment + framesBehind;
+
+        // If we've entered a situation where a lot of buffers will be queued on the backend,
+        // Skip some audio frames so that playback can catch up.
+        if (bufferedFrames > MaxBufferedFrames)
+        {
+            // Skip a few frames so that we're not too far behind. (the target number of frames)
+            _lastTime += increment * (bufferedFrames - TargetBufferedFrames);
+        }
+
+        while (timeNow < _lastTime + increment)
+        {
+            _event.WaitOne(1);
+
+            timeNow = PerformanceCounter.ElapsedNanoseconds;
+        }
+
+        _lastTime += increment;
+    }
+
+    private void StartThread()
+    {
+        _workerThread = new Thread(Work)
+        {
+            Name = "AudioProcessor.Worker",
+        };
+
+        _workerThread.Start();
+    }
+
+    private void Work()
+    {
+        if (_mailbox.ReceiveMessage() != MailboxMessage.Start)
+        {
+            throw new InvalidOperationException("Audio Processor Start message was invalid!");
+        }
+
+        _mailbox.SendResponse(MailboxMessage.Start);
+        _mailbox.SendResponse(MailboxMessage.RenderEnd);
+
+        LogStartingProcessor();
+
+        while (true)
+        {
+            _pauseEvent?.WaitOne();
+
+            MailboxMessage message = _mailbox.ReceiveMessage();
+
+            if (message == MailboxMessage.Stop)
             {
-                return 6;
+                break;
             }
 
-            // NOTE: We default to stereo as this will get downmixed to mono by the compat layer if it's not compatible.
-            return 2;
-        }
-
-        public void Start(IHardwareDeviceDriver deviceDriver)
-        {
-            OutputDevices = new IHardwareDevice[Constants.AudioRendererSessionCountMax];
-
-            uint channelCount = GetHardwareChannelCount(deviceDriver);
-
-            for (int i = 0; i < OutputDevices.Length; i++)
+            if (message == MailboxMessage.RenderStart)
             {
-                // TODO: Don't hardcode sample rate.
-                OutputDevices[i] = new HardwareDeviceImpl(deviceDriver, channelCount, Constants.TargetSampleRate);
-            }
+                long startTicks = PerformanceCounter.ElapsedNanoseconds;
 
-            _mailbox = new Mailbox<MailboxMessage>();
-            _sessionCommandList = new RendererSession[Constants.AudioRendererSessionCountMax];
-            _event.Reset();
-            _lastTime = PerformanceCounter.ElapsedNanoseconds;
-            _pauseEvent = deviceDriver.GetPauseEvent();
-
-            StartThread();
-
-            _mailbox.SendMessage(MailboxMessage.Start);
-
-            if (_mailbox.ReceiveResponse() != MailboxMessage.Start)
-            {
-                throw new InvalidOperationException("Audio Processor Start response was invalid!");
-            }
-        }
-
-        public void Stop()
-        {
-            _mailbox.SendMessage(MailboxMessage.Stop);
-
-            if (_mailbox.ReceiveResponse() != MailboxMessage.Stop)
-            {
-                throw new InvalidOperationException("Audio Processor Stop response was invalid!");
-            }
-
-            foreach (IHardwareDevice device in OutputDevices)
-            {
-                device.Dispose();
-            }
-        }
-
-        public void Send(int sessionId, CommandList commands, int renderingLimit, ulong appletResourceId)
-        {
-            _sessionCommandList[sessionId] = new RendererSession
-            {
-                CommandList = commands,
-                RenderingLimit = renderingLimit,
-                AppletResourceId = appletResourceId,
-            };
-        }
-
-        public bool HasRemainingCommands(int sessionId)
-        {
-            return _sessionCommandList[sessionId] != null;
-        }
-
-        public void Signal()
-        {
-            _mailbox.SendMessage(MailboxMessage.RenderStart);
-        }
-
-        public void Wait()
-        {
-            if (_mailbox.ReceiveResponse() != MailboxMessage.RenderEnd)
-            {
-                throw new InvalidOperationException("Audio Processor Wait response was invalid!");
-            }
-
-            long increment = Constants.AudioProcessorMaxUpdateTimeTarget;
-
-            long timeNow = PerformanceCounter.ElapsedNanoseconds;
-
-            if (timeNow > _playbackEnds)
-            {
-                // Playback has restarted.
-                _playbackEnds = timeNow;
-            }
-
-            _playbackEnds += increment;
-
-            // The number of frames we are behind where the timer says we should be.
-            long framesBehind = (timeNow - _lastTime) / increment;
-
-            // The number of frames yet to play on the backend.
-            long bufferedFrames = (_playbackEnds - timeNow) / increment + framesBehind;
-
-            // If we've entered a situation where a lot of buffers will be queued on the backend,
-            // Skip some audio frames so that playback can catch up.
-            if (bufferedFrames > MaxBufferedFrames)
-            {
-                // Skip a few frames so that we're not too far behind. (the target number of frames)
-                _lastTime += increment * (bufferedFrames - TargetBufferedFrames);
-            }
-
-            while (timeNow < _lastTime + increment)
-            {
-                _event.WaitOne(1);
-
-                timeNow = PerformanceCounter.ElapsedNanoseconds;
-            }
-
-            _lastTime += increment;
-        }
-
-        private void StartThread()
-        {
-            _workerThread = new Thread(Work)
-            {
-                Name = "AudioProcessor.Worker",
-            };
-
-            _workerThread.Start();
-        }
-
-        private void Work()
-        {
-            if (_mailbox.ReceiveMessage() != MailboxMessage.Start)
-            {
-                throw new InvalidOperationException("Audio Processor Start message was invalid!");
-            }
-
-            _mailbox.SendResponse(MailboxMessage.Start);
-            _mailbox.SendResponse(MailboxMessage.RenderEnd);
-
-            LogStartingProcessor();
-
-            while (true)
-            {
-                _pauseEvent?.WaitOne();
-
-                MailboxMessage message = _mailbox.ReceiveMessage();
-
-                if (message == MailboxMessage.Stop)
+                for (int i = 0; i < _sessionCommandList.Length; i++)
                 {
-                    break;
+                    if (_sessionCommandList[i] != null)
+                    {
+                        _sessionCommandList[i].CommandList.Process(OutputDevices[i]);
+                        _sessionCommandList[i].CommandList.Dispose();
+                        _sessionCommandList[i] = null;
+                    }
                 }
 
-                if (message == MailboxMessage.RenderStart)
+                long endTicks = PerformanceCounter.ElapsedNanoseconds;
+                long elapsedTime = endTicks - startTicks;
+
+                if (Constants.AudioProcessorMaxUpdateTime < elapsedTime)
                 {
-                    long startTicks = PerformanceCounter.ElapsedNanoseconds;
-
-                    for (int i = 0; i < _sessionCommandList.Length; i++)
-                    {
-                        if (_sessionCommandList[i] != null)
-                        {
-                            _sessionCommandList[i].CommandList.Process(OutputDevices[i]);
-                            _sessionCommandList[i].CommandList.Dispose();
-                            _sessionCommandList[i] = null;
-                        }
-                    }
-
-                    long endTicks = PerformanceCounter.ElapsedNanoseconds;
-                    long elapsedTime = endTicks - startTicks;
-
-                    if (Constants.AudioProcessorMaxUpdateTime < elapsedTime)
-                    {
-                        LogDspTooSlow(elapsedTime - Constants.AudioProcessorMaxUpdateTime);
-                    }
-
-                    _mailbox.SendResponse(MailboxMessage.RenderEnd);
+                    LogDspTooSlow(elapsedTime - Constants.AudioProcessorMaxUpdateTime);
                 }
-            }
 
-            LogStoppingProcessor();
-            _mailbox.SendResponse(MailboxMessage.Stop);
+                _mailbox.SendResponse(MailboxMessage.RenderEnd);
+            }
         }
 
-        [LoggerMessage(LogLevel.Information,
-            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
-            Message = "Starting audio processor")]
-        private partial void LogStartingProcessor();
+        LogStoppingProcessor();
+        _mailbox.SendResponse(MailboxMessage.Stop);
+    }
 
-        [LoggerMessage(LogLevel.Debug,
-            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
-            Message = "DSP too slow (exceeded by {ms}ns)")]
-        private partial void LogDspTooSlow(long ms);
+    [LoggerMessage(LogLevel.Information,
+        EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+        Message = "Starting audio processor")]
+    private partial void LogStartingProcessor();
 
-        [LoggerMessage(LogLevel.Information,
-            EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
-            Message = "Stopping audio processor")]
-        private partial void LogStoppingProcessor();
+    [LoggerMessage(LogLevel.Debug,
+        EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+        Message = "DSP too slow (exceeded by {ms}ns)")]
+    private partial void LogDspTooSlow(long ms);
 
-        public void Dispose()
+    [LoggerMessage(LogLevel.Information,
+        EventId = (int)LogClass.AudioRenderer, EventName = nameof(LogClass.AudioRenderer),
+        Message = "Stopping audio processor")]
+    private partial void LogStoppingProcessor();
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        Dispose(true);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            GC.SuppressFinalize(this);
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _event.Dispose();
-                _mailbox?.Dispose();
-            }
+            _event.Dispose();
+            _mailbox?.Dispose();
         }
     }
 }

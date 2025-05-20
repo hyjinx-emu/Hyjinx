@@ -1,14 +1,13 @@
 using Hyjinx.Audio.Renderer.Common;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Audio.Renderer.Common
+namespace Hyjinx.Tests.Audio.Renderer.Common;
+
+class VoiceUpdateStateTests
 {
-    class VoiceUpdateStateTests
+    [Test]
+    public void EnsureTypeSize()
     {
-        [Test]
-        public void EnsureTypeSize()
-        {
-            ClassicAssert.LessOrEqual(Unsafe.SizeOf<VoiceUpdateState>(), 0x100);
-        }
+        ClassicAssert.LessOrEqual(Unsafe.SizeOf<VoiceUpdateState>(), 0x100);
     }
 }

@@ -1,58 +1,57 @@
 using System;
 
-namespace ARMeilleure.Memory
+namespace ARMeilleure.Memory;
+
+public class ReservedRegion
 {
-    public class ReservedRegion
+    public const int DefaultGranularity = 65536; // Mapping granularity in Windows.
+
+    public IJitMemoryBlock Block { get; }
+
+    public IntPtr Pointer => Block.Pointer;
+
+    private readonly ulong _maxSize;
+    private readonly ulong _sizeGranularity;
+    private ulong _currentSize;
+
+    public ReservedRegion(IJitMemoryAllocator allocator, ulong maxSize, ulong granularity = 0)
     {
-        public const int DefaultGranularity = 65536; // Mapping granularity in Windows.
-
-        public IJitMemoryBlock Block { get; }
-
-        public IntPtr Pointer => Block.Pointer;
-
-        private readonly ulong _maxSize;
-        private readonly ulong _sizeGranularity;
-        private ulong _currentSize;
-
-        public ReservedRegion(IJitMemoryAllocator allocator, ulong maxSize, ulong granularity = 0)
+        if (granularity == 0)
         {
-            if (granularity == 0)
-            {
-                granularity = DefaultGranularity;
-            }
-
-            Block = allocator.Reserve(maxSize);
-            _maxSize = maxSize;
-            _sizeGranularity = granularity;
-            _currentSize = 0;
+            granularity = DefaultGranularity;
         }
 
-        public void ExpandIfNeeded(ulong desiredSize)
-        {
-            if (desiredSize > _maxSize)
-            {
-                throw new OutOfMemoryException();
-            }
+        Block = allocator.Reserve(maxSize);
+        _maxSize = maxSize;
+        _sizeGranularity = granularity;
+        _currentSize = 0;
+    }
 
-            if (desiredSize > _currentSize)
+    public void ExpandIfNeeded(ulong desiredSize)
+    {
+        if (desiredSize > _maxSize)
+        {
+            throw new OutOfMemoryException();
+        }
+
+        if (desiredSize > _currentSize)
+        {
+            // Lock, and then check again. We only want to commit once.
+            lock (this)
             {
-                // Lock, and then check again. We only want to commit once.
-                lock (this)
+                if (desiredSize >= _currentSize)
                 {
-                    if (desiredSize >= _currentSize)
-                    {
-                        ulong overflowBytes = desiredSize - _currentSize;
-                        ulong moreToCommit = (((_sizeGranularity - 1) + overflowBytes) / _sizeGranularity) * _sizeGranularity; // Round up.
-                        Block.Commit(_currentSize, moreToCommit);
-                        _currentSize += moreToCommit;
-                    }
+                    ulong overflowBytes = desiredSize - _currentSize;
+                    ulong moreToCommit = (((_sizeGranularity - 1) + overflowBytes) / _sizeGranularity) * _sizeGranularity; // Round up.
+                    Block.Commit(_currentSize, moreToCommit);
+                    _currentSize += moreToCommit;
                 }
             }
         }
+    }
 
-        public void Dispose()
-        {
-            Block.Dispose();
-        }
+    public void Dispose()
+    {
+        Block.Dispose();
     }
 }

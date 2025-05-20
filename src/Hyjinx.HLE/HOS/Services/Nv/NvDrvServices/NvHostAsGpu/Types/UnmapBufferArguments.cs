@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types;
+
+struct UnmapBufferArguments
 {
-    struct UnmapBufferArguments
-    {
 #pragma warning disable CS0649 // Field is never assigned to
-        public ulong Offset;
+    public ulong Offset;
 #pragma warning restore CS0649
-    }
 }

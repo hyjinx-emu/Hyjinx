@@ -3,77 +3,76 @@ using Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc;
+
+class IAsyncContext : IpcService<IAsyncContext>
 {
-    class IAsyncContext : IpcService<IAsyncContext>
+    protected AsyncExecution AsyncExecution;
+
+    public IAsyncContext(AsyncExecution asyncExecution)
     {
-        protected AsyncExecution AsyncExecution;
+        AsyncExecution = asyncExecution;
+    }
 
-        public IAsyncContext(AsyncExecution asyncExecution)
+    [CommandCmif(0)]
+    // GetSystemEvent() -> handle<copy>
+    public ResultCode GetSystemEvent(ServiceCtx context)
+    {
+        if (context.Process.HandleTable.GenerateHandle(AsyncExecution.SystemEvent.ReadableEvent, out int systemEventHandle) != Result.Success)
         {
-            AsyncExecution = asyncExecution;
+            throw new InvalidOperationException("Out of handles!");
         }
 
-        [CommandCmif(0)]
-        // GetSystemEvent() -> handle<copy>
-        public ResultCode GetSystemEvent(ServiceCtx context)
+        context.Response.HandleDesc = IpcHandleDesc.MakeCopy(systemEventHandle);
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(1)]
+    // Cancel()
+    public ResultCode Cancel(ServiceCtx context)
+    {
+        if (!AsyncExecution.IsInitialized)
         {
-            if (context.Process.HandleTable.GenerateHandle(AsyncExecution.SystemEvent.ReadableEvent, out int systemEventHandle) != Result.Success)
-            {
-                throw new InvalidOperationException("Out of handles!");
-            }
-
-            context.Response.HandleDesc = IpcHandleDesc.MakeCopy(systemEventHandle);
-
-            return ResultCode.Success;
+            return ResultCode.AsyncExecutionNotInitialized;
         }
 
-        [CommandCmif(1)]
-        // Cancel()
-        public ResultCode Cancel(ServiceCtx context)
+        if (AsyncExecution.IsRunning)
         {
-            if (!AsyncExecution.IsInitialized)
-            {
-                return ResultCode.AsyncExecutionNotInitialized;
-            }
-
-            if (AsyncExecution.IsRunning)
-            {
-                AsyncExecution.Cancel();
-            }
-
-            return ResultCode.Success;
+            AsyncExecution.Cancel();
         }
 
-        [CommandCmif(2)]
-        // HasDone() -> b8
-        public ResultCode HasDone(ServiceCtx context)
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(2)]
+    // HasDone() -> b8
+    public ResultCode HasDone(ServiceCtx context)
+    {
+        if (!AsyncExecution.IsInitialized)
         {
-            if (!AsyncExecution.IsInitialized)
-            {
-                return ResultCode.AsyncExecutionNotInitialized;
-            }
-
-            context.ResponseData.Write(AsyncExecution.SystemEvent.ReadableEvent.IsSignaled());
-
-            return ResultCode.Success;
+            return ResultCode.AsyncExecutionNotInitialized;
         }
 
-        [CommandCmif(3)]
-        // GetResult()
-        public ResultCode GetResult(ServiceCtx context)
+        context.ResponseData.Write(AsyncExecution.SystemEvent.ReadableEvent.IsSignaled());
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(3)]
+    // GetResult()
+    public ResultCode GetResult(ServiceCtx context)
+    {
+        if (!AsyncExecution.IsInitialized)
         {
-            if (!AsyncExecution.IsInitialized)
-            {
-                return ResultCode.AsyncExecutionNotInitialized;
-            }
-
-            if (!AsyncExecution.SystemEvent.ReadableEvent.IsSignaled())
-            {
-                return ResultCode.Unknown41;
-            }
-
-            return ResultCode.Success;
+            return ResultCode.AsyncExecutionNotInitialized;
         }
+
+        if (!AsyncExecution.SystemEvent.ReadableEvent.IsSignaled())
+        {
+            return ResultCode.Unknown41;
+        }
+
+        return ResultCode.Success;
     }
 }

@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+
+enum NpadColorAttribute : uint
 {
-    enum NpadColorAttribute : uint
-    {
-        Ok,
-        ReadError,
-        NoController,
-    }
+    Ok,
+    ReadError,
+    NoController,
 }

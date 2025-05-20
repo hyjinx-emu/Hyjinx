@@ -1,13 +1,12 @@
-namespace Hyjinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types;
+
+enum DisconnectReason : uint
 {
-    enum DisconnectReason : uint
-    {
-        None,
-        DisconnectedByUser,
-        DisconnectedBySystem,
-        DestroyedByUser,
-        DestroyedBySystem,
-        Rejected,
-        SignalLost,
-    }
+    None,
+    DisconnectedByUser,
+    DisconnectedBySystem,
+    DestroyedByUser,
+    DestroyedBySystem,
+    Rejected,
+    SignalLost,
 }

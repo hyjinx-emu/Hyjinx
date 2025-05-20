@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
 
-namespace Hyjinx.Graphics.OpenGL.Image
+namespace Hyjinx.Graphics.OpenGL.Image;
+
+class TextureCopyIncompatible
 {
-    class TextureCopyIncompatible
-    {
-        private const string ComputeShaderShortening = @"#version 450 core
+    private const string ComputeShaderShortening = @"#version 450 core
 
 layout (binding = 0, $SRC_FORMAT$) uniform uimage2D src;
 layout (binding = 1, $DST_FORMAT$) uniform uimage2D dst;
@@ -40,7 +40,7 @@ void main()
     imageStore(dst, ivec2(dstCoords3), rgba.aaaa);
 }";
 
-        private const string ComputeShaderWidening = @"#version 450 core
+    private const string ComputeShaderWidening = @"#version 450 core
 
 layout (binding = 0, $SRC_FORMAT$) uniform uimage2D src;
 layout (binding = 1, $DST_FORMAT$) uniform uimage2D dst;
@@ -67,182 +67,181 @@ void main()
     imageStore(dst, ivec2(coords), uvec4(r, g, b, a));
 }";
 
-        private readonly OpenGLRenderer _renderer;
-        private readonly Dictionary<int, int> _shorteningProgramHandles;
-        private readonly Dictionary<int, int> _wideningProgramHandles;
+    private readonly OpenGLRenderer _renderer;
+    private readonly Dictionary<int, int> _shorteningProgramHandles;
+    private readonly Dictionary<int, int> _wideningProgramHandles;
 
-        public TextureCopyIncompatible(OpenGLRenderer renderer)
+    public TextureCopyIncompatible(OpenGLRenderer renderer)
+    {
+        _renderer = renderer;
+        _shorteningProgramHandles = new Dictionary<int, int>();
+        _wideningProgramHandles = new Dictionary<int, int>();
+    }
+
+    public void CopyIncompatibleFormats(ITextureInfo src, ITextureInfo dst, int srcLayer, int dstLayer, int srcLevel, int dstLevel, int depth, int levels)
+    {
+        int srcBpp = src.Info.BytesPerPixel;
+        int dstBpp = dst.Info.BytesPerPixel;
+
+        // Calculate ideal component size, given our constraints:
+        // - Component size must not exceed bytes per pixel of source and destination image formats.
+        // - Maximum component size is 4 (R32).
+        int componentSize = Math.Min(Math.Min(srcBpp, dstBpp), 4);
+
+        int srcComponentsCount = srcBpp / componentSize;
+        int dstComponentsCount = dstBpp / componentSize;
+
+        var srcFormat = GetFormat(componentSize, srcComponentsCount);
+        var dstFormat = GetFormat(componentSize, dstComponentsCount);
+
+        GL.UseProgram(srcBpp < dstBpp
+            ? GetWideningShader(componentSize, srcComponentsCount, dstComponentsCount)
+            : GetShorteningShader(componentSize, srcComponentsCount, dstComponentsCount));
+
+        for (int l = 0; l < levels; l++)
         {
-            _renderer = renderer;
-            _shorteningProgramHandles = new Dictionary<int, int>();
-            _wideningProgramHandles = new Dictionary<int, int>();
-        }
+            int srcWidth = Math.Max(1, src.Info.Width >> l);
+            int srcHeight = Math.Max(1, src.Info.Height >> l);
 
-        public void CopyIncompatibleFormats(ITextureInfo src, ITextureInfo dst, int srcLayer, int dstLayer, int srcLevel, int dstLevel, int depth, int levels)
-        {
-            int srcBpp = src.Info.BytesPerPixel;
-            int dstBpp = dst.Info.BytesPerPixel;
+            int dstWidth = Math.Max(1, dst.Info.Width >> l);
+            int dstHeight = Math.Max(1, dst.Info.Height >> l);
 
-            // Calculate ideal component size, given our constraints:
-            // - Component size must not exceed bytes per pixel of source and destination image formats.
-            // - Maximum component size is 4 (R32).
-            int componentSize = Math.Min(Math.Min(srcBpp, dstBpp), 4);
+            int width = Math.Min(srcWidth, dstWidth);
+            int height = Math.Min(srcHeight, dstHeight);
 
-            int srcComponentsCount = srcBpp / componentSize;
-            int dstComponentsCount = dstBpp / componentSize;
-
-            var srcFormat = GetFormat(componentSize, srcComponentsCount);
-            var dstFormat = GetFormat(componentSize, dstComponentsCount);
-
-            GL.UseProgram(srcBpp < dstBpp
-                ? GetWideningShader(componentSize, srcComponentsCount, dstComponentsCount)
-                : GetShorteningShader(componentSize, srcComponentsCount, dstComponentsCount));
-
-            for (int l = 0; l < levels; l++)
+            for (int z = 0; z < depth; z++)
             {
-                int srcWidth = Math.Max(1, src.Info.Width >> l);
-                int srcHeight = Math.Max(1, src.Info.Height >> l);
+                GL.BindImageTexture(0, src.Handle, srcLevel + l, false, srcLayer + z, TextureAccess.ReadOnly, srcFormat);
+                GL.BindImageTexture(1, dst.Handle, dstLevel + l, false, dstLayer + z, TextureAccess.WriteOnly, dstFormat);
 
-                int dstWidth = Math.Max(1, dst.Info.Width >> l);
-                int dstHeight = Math.Max(1, dst.Info.Height >> l);
-
-                int width = Math.Min(srcWidth, dstWidth);
-                int height = Math.Min(srcHeight, dstHeight);
-
-                for (int z = 0; z < depth; z++)
-                {
-                    GL.BindImageTexture(0, src.Handle, srcLevel + l, false, srcLayer + z, TextureAccess.ReadOnly, srcFormat);
-                    GL.BindImageTexture(1, dst.Handle, dstLevel + l, false, dstLayer + z, TextureAccess.WriteOnly, dstFormat);
-
-                    GL.DispatchCompute((width + 31) / 32, (height + 31) / 32, 1);
-                }
-            }
-
-            Pipeline pipeline = (Pipeline)_renderer.Pipeline;
-
-            pipeline.RestoreProgram();
-            pipeline.RestoreImages1And2();
-        }
-
-        private static SizedInternalFormat GetFormat(int componentSize, int componentsCount)
-        {
-            if (componentSize == 1)
-            {
-                return componentsCount switch
-                {
-                    1 => SizedInternalFormat.R8ui,
-                    2 => SizedInternalFormat.Rg8ui,
-                    4 => SizedInternalFormat.Rgba8ui,
-                    _ => throw new ArgumentException($"Invalid components count {componentsCount}."),
-                };
-            }
-            else if (componentSize == 2)
-            {
-                return componentsCount switch
-                {
-                    1 => SizedInternalFormat.R16ui,
-                    2 => SizedInternalFormat.Rg16ui,
-                    4 => SizedInternalFormat.Rgba16ui,
-                    _ => throw new ArgumentException($"Invalid components count {componentsCount}."),
-                };
-            }
-            else if (componentSize == 4)
-            {
-                return componentsCount switch
-                {
-                    1 => SizedInternalFormat.R32ui,
-                    2 => SizedInternalFormat.Rg32ui,
-                    4 => SizedInternalFormat.Rgba32ui,
-                    _ => throw new ArgumentException($"Invalid components count {componentsCount}."),
-                };
-            }
-            else
-            {
-                throw new ArgumentException($"Invalid component size {componentSize}.");
+                GL.DispatchCompute((width + 31) / 32, (height + 31) / 32, 1);
             }
         }
 
-        private int GetShorteningShader(int componentSize, int srcComponentsCount, int dstComponentsCount)
+        Pipeline pipeline = (Pipeline)_renderer.Pipeline;
+
+        pipeline.RestoreProgram();
+        pipeline.RestoreImages1And2();
+    }
+
+    private static SizedInternalFormat GetFormat(int componentSize, int componentsCount)
+    {
+        if (componentSize == 1)
         {
-            return GetShader(ComputeShaderShortening, _shorteningProgramHandles, componentSize, srcComponentsCount, dstComponentsCount);
-        }
-
-        private int GetWideningShader(int componentSize, int srcComponentsCount, int dstComponentsCount)
-        {
-            return GetShader(ComputeShaderWidening, _wideningProgramHandles, componentSize, srcComponentsCount, dstComponentsCount);
-        }
-
-        private static int GetShader(
-            string code,
-            Dictionary<int, int> programHandles,
-            int componentSize,
-            int srcComponentsCount,
-            int dstComponentsCount)
-        {
-            int componentSizeLog2 = BitOperations.Log2((uint)componentSize);
-
-            int srcIndex = componentSizeLog2 + BitOperations.Log2((uint)srcComponentsCount) * 3;
-            int dstIndex = componentSizeLog2 + BitOperations.Log2((uint)dstComponentsCount) * 3;
-
-            int key = srcIndex | (dstIndex << 8);
-
-            if (!programHandles.TryGetValue(key, out int programHandle))
+            return componentsCount switch
             {
-                int csHandle = GL.CreateShader(ShaderType.ComputeShader);
+                1 => SizedInternalFormat.R8ui,
+                2 => SizedInternalFormat.Rg8ui,
+                4 => SizedInternalFormat.Rgba8ui,
+                _ => throw new ArgumentException($"Invalid components count {componentsCount}."),
+            };
+        }
+        else if (componentSize == 2)
+        {
+            return componentsCount switch
+            {
+                1 => SizedInternalFormat.R16ui,
+                2 => SizedInternalFormat.Rg16ui,
+                4 => SizedInternalFormat.Rgba16ui,
+                _ => throw new ArgumentException($"Invalid components count {componentsCount}."),
+            };
+        }
+        else if (componentSize == 4)
+        {
+            return componentsCount switch
+            {
+                1 => SizedInternalFormat.R32ui,
+                2 => SizedInternalFormat.Rg32ui,
+                4 => SizedInternalFormat.Rgba32ui,
+                _ => throw new ArgumentException($"Invalid components count {componentsCount}."),
+            };
+        }
+        else
+        {
+            throw new ArgumentException($"Invalid component size {componentSize}.");
+        }
+    }
 
-                string[] formatTable = new[] { "r8ui", "r16ui", "r32ui", "rg8ui", "rg16ui", "rg32ui", "rgba8ui", "rgba16ui", "rgba32ui" };
+    private int GetShorteningShader(int componentSize, int srcComponentsCount, int dstComponentsCount)
+    {
+        return GetShader(ComputeShaderShortening, _shorteningProgramHandles, componentSize, srcComponentsCount, dstComponentsCount);
+    }
 
-                string srcFormat = formatTable[srcIndex];
-                string dstFormat = formatTable[dstIndex];
+    private int GetWideningShader(int componentSize, int srcComponentsCount, int dstComponentsCount)
+    {
+        return GetShader(ComputeShaderWidening, _wideningProgramHandles, componentSize, srcComponentsCount, dstComponentsCount);
+    }
 
-                int srcBpp = srcComponentsCount * componentSize;
-                int dstBpp = dstComponentsCount * componentSize;
+    private static int GetShader(
+        string code,
+        Dictionary<int, int> programHandles,
+        int componentSize,
+        int srcComponentsCount,
+        int dstComponentsCount)
+    {
+        int componentSizeLog2 = BitOperations.Log2((uint)componentSize);
 
-                int ratio = srcBpp < dstBpp ? dstBpp / srcBpp : srcBpp / dstBpp;
-                int ratioLog2 = BitOperations.Log2((uint)ratio);
+        int srcIndex = componentSizeLog2 + BitOperations.Log2((uint)srcComponentsCount) * 3;
+        int dstIndex = componentSizeLog2 + BitOperations.Log2((uint)dstComponentsCount) * 3;
 
-                GL.ShaderSource(csHandle, code
-                    .Replace("$SRC_FORMAT$", srcFormat)
-                    .Replace("$DST_FORMAT$", dstFormat)
-                    .Replace("$RATIO_LOG2$", ratioLog2.ToString(CultureInfo.InvariantCulture)));
+        int key = srcIndex | (dstIndex << 8);
 
-                GL.CompileShader(csHandle);
+        if (!programHandles.TryGetValue(key, out int programHandle))
+        {
+            int csHandle = GL.CreateShader(ShaderType.ComputeShader);
 
-                programHandle = GL.CreateProgram();
+            string[] formatTable = new[] { "r8ui", "r16ui", "r32ui", "rg8ui", "rg16ui", "rg32ui", "rgba8ui", "rgba16ui", "rgba32ui" };
 
-                GL.AttachShader(programHandle, csHandle);
-                GL.LinkProgram(programHandle);
-                GL.DetachShader(programHandle, csHandle);
-                GL.DeleteShader(csHandle);
+            string srcFormat = formatTable[srcIndex];
+            string dstFormat = formatTable[dstIndex];
 
-                GL.GetProgram(programHandle, GetProgramParameterName.LinkStatus, out int status);
+            int srcBpp = srcComponentsCount * componentSize;
+            int dstBpp = dstComponentsCount * componentSize;
 
-                if (status == 0)
-                {
-                    throw new Exception(GL.GetProgramInfoLog(programHandle));
-                }
+            int ratio = srcBpp < dstBpp ? dstBpp / srcBpp : srcBpp / dstBpp;
+            int ratioLog2 = BitOperations.Log2((uint)ratio);
 
-                programHandles.Add(key, programHandle);
+            GL.ShaderSource(csHandle, code
+                .Replace("$SRC_FORMAT$", srcFormat)
+                .Replace("$DST_FORMAT$", dstFormat)
+                .Replace("$RATIO_LOG2$", ratioLog2.ToString(CultureInfo.InvariantCulture)));
+
+            GL.CompileShader(csHandle);
+
+            programHandle = GL.CreateProgram();
+
+            GL.AttachShader(programHandle, csHandle);
+            GL.LinkProgram(programHandle);
+            GL.DetachShader(programHandle, csHandle);
+            GL.DeleteShader(csHandle);
+
+            GL.GetProgram(programHandle, GetProgramParameterName.LinkStatus, out int status);
+
+            if (status == 0)
+            {
+                throw new Exception(GL.GetProgramInfoLog(programHandle));
             }
 
-            return programHandle;
+            programHandles.Add(key, programHandle);
         }
 
-        public void Dispose()
+        return programHandle;
+    }
+
+    public void Dispose()
+    {
+        foreach (int handle in _shorteningProgramHandles.Values)
         {
-            foreach (int handle in _shorteningProgramHandles.Values)
-            {
-                GL.DeleteProgram(handle);
-            }
-
-            _shorteningProgramHandles.Clear();
-
-            foreach (int handle in _wideningProgramHandles.Values)
-            {
-                GL.DeleteProgram(handle);
-            }
-
-            _wideningProgramHandles.Clear();
+            GL.DeleteProgram(handle);
         }
+
+        _shorteningProgramHandles.Clear();
+
+        foreach (int handle in _wideningProgramHandles.Values)
+        {
+            GL.DeleteProgram(handle);
+        }
+
+        _wideningProgramHandles.Clear();
     }
 }

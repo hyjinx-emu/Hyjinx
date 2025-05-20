@@ -1,9 +1,8 @@
 using System;
 
-namespace Hyjinx.HLE.Exceptions
+namespace Hyjinx.HLE.Exceptions;
+
+class InvalidFirmwarePackageException : Exception
 {
-    class InvalidFirmwarePackageException : Exception
-    {
-        public InvalidFirmwarePackageException(string message) : base(message) { }
-    }
+    public InvalidFirmwarePackageException(string message) : base(message) { }
 }

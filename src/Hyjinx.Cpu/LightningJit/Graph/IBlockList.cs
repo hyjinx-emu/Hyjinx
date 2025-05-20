@@ -1,9 +1,8 @@
-namespace Hyjinx.Cpu.LightningJit.Graph
-{
-    interface IBlockList
-    {
-        int Count { get; }
+namespace Hyjinx.Cpu.LightningJit.Graph;
 
-        IBlock this[int index] { get; }
-    }
+interface IBlockList
+{
+    int Count { get; }
+
+    IBlock this[int index] { get; }
 }

@@ -7,12 +7,12 @@ using LibHac.Ncm;
 using LibHac.Sf;
 using LibHac.Spl;
 using LibHac.Util;
+using static LibHac.Fs.StringTraits;
+using IFileSf = LibHac.FsSrv.Sf.IFile;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
-using IFileSf = LibHac.FsSrv.Sf.IFile;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;
 using Path = LibHac.Fs.Path;
-using static LibHac.Fs.StringTraits;
 
 namespace LibHac.FsSrv;
 

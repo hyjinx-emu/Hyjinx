@@ -1,44 +1,43 @@
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 
-namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
+namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall;
+
+partial class SyscallHandler
 {
-    partial class SyscallHandler
+    private readonly KernelContext _context;
+
+    public SyscallHandler(KernelContext context)
     {
-        private readonly KernelContext _context;
+        _context = context;
+    }
 
-        public SyscallHandler(KernelContext context)
+    public void SvcCall(IExecutionContext context, ulong address, int id)
+    {
+        KThread currentThread = KernelStatic.GetCurrentThread();
+
+        if (currentThread.Owner != null &&
+            currentThread.GetUserDisableCount() != 0 &&
+            currentThread.Owner.PinnedThreads[currentThread.CurrentCore] == null)
         {
-            _context = context;
+            _context.CriticalSection.Enter();
+
+            currentThread.Owner.PinThread(currentThread);
+
+            currentThread.SetUserInterruptFlag();
+
+            _context.CriticalSection.Leave();
         }
 
-        public void SvcCall(IExecutionContext context, ulong address, int id)
+        if (context.IsAarch32)
         {
-            KThread currentThread = KernelStatic.GetCurrentThread();
-
-            if (currentThread.Owner != null &&
-                currentThread.GetUserDisableCount() != 0 &&
-                currentThread.Owner.PinnedThreads[currentThread.CurrentCore] == null)
-            {
-                _context.CriticalSection.Enter();
-
-                currentThread.Owner.PinThread(currentThread);
-
-                currentThread.SetUserInterruptFlag();
-
-                _context.CriticalSection.Leave();
-            }
-
-            if (context.IsAarch32)
-            {
-                SyscallDispatch.Dispatch32(_context.Syscall, context, id);
-            }
-            else
-            {
-                SyscallDispatch.Dispatch64(_context.Syscall, context, id);
-            }
-
-            currentThread.HandlePostSyscall();
+            SyscallDispatch.Dispatch32(_context.Syscall, context, id);
         }
+        else
+        {
+            SyscallDispatch.Dispatch64(_context.Syscall, context, id);
+        }
+
+        currentThread.HandlePostSyscall();
     }
 }

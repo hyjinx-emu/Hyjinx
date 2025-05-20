@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 // ReSharper disable once CheckNamespace
 namespace LibHac.Fs.Impl;

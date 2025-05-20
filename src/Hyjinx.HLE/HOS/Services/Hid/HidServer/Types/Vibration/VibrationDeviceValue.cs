@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public struct VibrationDeviceValue
 {
-    public struct VibrationDeviceValue
-    {
-        public VibrationDeviceType DeviceType;
-        public VibrationDevicePosition Position;
-    }
+    public VibrationDeviceType DeviceType;
+    public VibrationDevicePosition Position;
 }

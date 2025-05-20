@@ -1,6 +1,6 @@
-using System;
 using LibHac.Common;
 using LibHac.Diag;
+using System;
 using static LibHac.Fs.PathUtility;
 using static LibHac.Fs.StringTraits;
 

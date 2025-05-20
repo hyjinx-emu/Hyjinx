@@ -1,11 +1,10 @@
-namespace ARMeilleure.State
+namespace ARMeilleure.State;
+
+enum FPType
 {
-    enum FPType
-    {
-        Nonzero,
-        Zero,
-        Infinity,
-        QNaN,
-        SNaN,
-    }
+    Nonzero,
+    Zero,
+    Infinity,
+    QNaN,
+    SNaN,
 }

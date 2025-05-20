@@ -1,13 +1,12 @@
-namespace Hyjinx.HLE.HOS.Applets.Error
+namespace Hyjinx.HLE.HOS.Applets.Error;
+
+enum ErrorType : byte
 {
-    enum ErrorType : byte
-    {
-        ErrorCommonArg,
-        SystemErrorArg,
-        ApplicationErrorArg,
-        ErrorEulaArg,
-        ErrorPctlArg,
-        ErrorRecordArg,
-        SystemUpdateEulaArg = 8,
-    }
+    ErrorCommonArg,
+    SystemErrorArg,
+    ApplicationErrorArg,
+    ErrorEulaArg,
+    ErrorPctlArg,
+    ErrorRecordArg,
+    SystemUpdateEulaArg = 8,
 }

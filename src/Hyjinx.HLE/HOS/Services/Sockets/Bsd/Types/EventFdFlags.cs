@@ -1,12 +1,11 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
+
+[Flags]
+enum EventFdFlags : uint
 {
-    [Flags]
-    enum EventFdFlags : uint
-    {
-        None = 0,
-        Semaphore = 1 << 0,
-        NonBlocking = 1 << 2,
-    }
+    None = 0,
+    Semaphore = 1 << 0,
+    NonBlocking = 1 << 2,
 }

@@ -1,9 +1,9 @@
-using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Tests.Common;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace LibHac.Tests.FsSystem;

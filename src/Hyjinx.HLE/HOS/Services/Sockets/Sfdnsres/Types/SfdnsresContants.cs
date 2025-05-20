@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres.Types;
+
+class SfdnsresContants
 {
-    class SfdnsresContants
-    {
-        public const uint AddrInfoMagic = 0xBEEFCAFE;
-    }
+    public const uint AddrInfoMagic = 0xBEEFCAFE;
 }

@@ -1,20 +1,19 @@
 using System;
 
-namespace Hyjinx.Cpu
+namespace Hyjinx.Cpu;
+
+/// <summary>
+/// Disk cache load state report and management interface.
+/// </summary>
+public interface IDiskCacheLoadState
 {
     /// <summary>
-    /// Disk cache load state report and management interface.
+    /// Event used to report the cache load progress.
     /// </summary>
-    public interface IDiskCacheLoadState
-    {
-        /// <summary>
-        /// Event used to report the cache load progress.
-        /// </summary>
-        event Action<LoadState, int, int> StateChanged;
+    event Action<LoadState, int, int> StateChanged;
 
-        /// <summary>
-        /// Cancels the disk cache load process.
-        /// </summary>
-        void Cancel();
-    }
+    /// <summary>
+    /// Cancels the disk cache load process.
+    /// </summary>
+    void Cancel();
 }

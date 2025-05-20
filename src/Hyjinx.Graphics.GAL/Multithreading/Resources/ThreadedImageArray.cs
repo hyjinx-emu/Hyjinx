@@ -1,36 +1,35 @@
 using Hyjinx.Graphics.GAL.Multithreading.Commands.ImageArray;
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Resources
+namespace Hyjinx.Graphics.GAL.Multithreading.Resources;
+
+/// <summary>
+/// Threaded representation of a image array.
+/// </summary>
+class ThreadedImageArray : IImageArray
 {
-    /// <summary>
-    /// Threaded representation of a image array.
-    /// </summary>
-    class ThreadedImageArray : IImageArray
+    private readonly ThreadedRenderer _renderer;
+    public IImageArray Base;
+
+    public ThreadedImageArray(ThreadedRenderer renderer)
     {
-        private readonly ThreadedRenderer _renderer;
-        public IImageArray Base;
+        _renderer = renderer;
+    }
 
-        public ThreadedImageArray(ThreadedRenderer renderer)
-        {
-            _renderer = renderer;
-        }
+    private TableRef<T> Ref<T>(T reference)
+    {
+        return new TableRef<T>(_renderer, reference);
+    }
 
-        private TableRef<T> Ref<T>(T reference)
-        {
-            return new TableRef<T>(_renderer, reference);
-        }
+    public void Dispose()
+    {
+        _renderer.New<ImageArrayDisposeCommand>().Set(Ref(this));
+        _renderer.QueueCommand();
+    }
 
-        public void Dispose()
-        {
-            _renderer.New<ImageArrayDisposeCommand>().Set(Ref(this));
-            _renderer.QueueCommand();
-        }
-
-        public void SetImages(int index, ITexture[] images)
-        {
-            _renderer.New<ImageArraySetImagesCommand>().Set(Ref(this), index, Ref(images));
-            _renderer.QueueCommand();
-        }
+    public void SetImages(int index, ITexture[] images)
+    {
+        _renderer.New<ImageArraySetImagesCommand>().Set(Ref(this), index, Ref(images));
+        _renderer.QueueCommand();
     }
 }

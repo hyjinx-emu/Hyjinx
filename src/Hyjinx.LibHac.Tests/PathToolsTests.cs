@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using LibHac.Common;
 using LibHac.Tools.FsSystem;
 using LibHac.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace LibHac.Tests;

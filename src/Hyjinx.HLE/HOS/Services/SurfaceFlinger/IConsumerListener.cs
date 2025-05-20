@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+
+interface IConsumerListener
 {
-    interface IConsumerListener
-    {
-        void OnFrameAvailable(ref BufferItem item);
-        void OnFrameReplaced(ref BufferItem item);
-        void OnBuffersReleased();
-    }
+    void OnFrameAvailable(ref BufferItem item);
+    void OnFrameReplaced(ref BufferItem item);
+    void OnBuffersReleased();
 }

@@ -1,13 +1,12 @@
 using Hyjinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types;
+
+[StructLayout(LayoutKind.Sequential, Size = 0xC)]
+struct AddressEntry
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0xC)]
-    struct AddressEntry
-    {
-        public uint Ipv4Address;
-        public Array6<byte> MacAddress;
-        public ushort Reserved;
-    }
+    public uint Ipv4Address;
+    public Array6<byte> MacAddress;
+    public ushort Reserved;
 }

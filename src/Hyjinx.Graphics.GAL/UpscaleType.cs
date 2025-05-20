@@ -1,10 +1,9 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum ScalingFilter
 {
-    public enum ScalingFilter
-    {
-        Bilinear,
-        Nearest,
-        Fsr,
-        Area,
-    }
+    Bilinear,
+    Nearest,
+    Fsr,
+    Area,
 }

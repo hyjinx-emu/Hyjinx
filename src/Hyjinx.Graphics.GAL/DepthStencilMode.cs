@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum DepthStencilMode
 {
-    public enum DepthStencilMode
-    {
-        Depth,
-        Stencil,
-    }
+    Depth,
+    Stencil,
 }

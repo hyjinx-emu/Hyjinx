@@ -1,9 +1,8 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum AdvancedBlendOverlap
 {
-    public enum AdvancedBlendOverlap
-    {
-        Uncorrelated,
-        Disjoint,
-        Conjoint,
-    }
+    Uncorrelated,
+    Disjoint,
+    Conjoint,
 }

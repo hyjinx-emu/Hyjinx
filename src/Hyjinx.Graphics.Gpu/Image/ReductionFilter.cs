@@ -1,15 +1,14 @@
-namespace Hyjinx.Graphics.Gpu.Image
+namespace Hyjinx.Graphics.Gpu.Image;
+
+/// <summary>
+/// Represents a filter used with texture minification linear filtering.
+/// </summary>
+/// <remarks>
+/// This feature is only supported on NVIDIA GPUs.
+/// </remarks>
+enum ReductionFilter
 {
-    /// <summary>
-    /// Represents a filter used with texture minification linear filtering.
-    /// </summary>
-    /// <remarks>
-    /// This feature is only supported on NVIDIA GPUs.
-    /// </remarks>
-    enum ReductionFilter
-    {
-        Average,
-        Minimum,
-        Maximum,
-    }
+    Average,
+    Minimum,
+    Maximum,
 }

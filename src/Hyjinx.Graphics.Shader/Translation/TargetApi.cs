@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.Shader.Translation
+namespace Hyjinx.Graphics.Shader.Translation;
+
+public enum TargetApi
 {
-    public enum TargetApi
-    {
-        OpenGL,
-        Vulkan,
-    }
+    OpenGL,
+    Vulkan,
 }

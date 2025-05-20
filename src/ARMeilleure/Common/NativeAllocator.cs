@@ -1,27 +1,26 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace ARMeilleure.Common
+namespace ARMeilleure.Common;
+
+unsafe sealed class NativeAllocator : Allocator
 {
-    unsafe sealed class NativeAllocator : Allocator
+    public static NativeAllocator Instance { get; } = new();
+
+    public override void* Allocate(ulong size)
     {
-        public static NativeAllocator Instance { get; } = new();
+        void* result = (void*)Marshal.AllocHGlobal((IntPtr)size);
 
-        public override void* Allocate(ulong size)
+        if (result == null)
         {
-            void* result = (void*)Marshal.AllocHGlobal((IntPtr)size);
-
-            if (result == null)
-            {
-                throw new OutOfMemoryException();
-            }
-
-            return result;
+            throw new OutOfMemoryException();
         }
 
-        public override void Free(void* block)
-        {
-            Marshal.FreeHGlobal((IntPtr)block);
-        }
+        return result;
+    }
+
+    public override void Free(void* block)
+    {
+        Marshal.FreeHGlobal((IntPtr)block);
     }
 }

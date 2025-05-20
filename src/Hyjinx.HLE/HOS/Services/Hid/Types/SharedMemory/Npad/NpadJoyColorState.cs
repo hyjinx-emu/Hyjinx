@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+
+struct NpadJoyColorState
 {
-    struct NpadJoyColorState
-    {
-        public NpadColorAttribute Attribute;
-        public uint LeftBody;
-        public uint LeftButtons;
-        public uint RightBody;
-        public uint RightButtons;
-    }
+    public NpadColorAttribute Attribute;
+    public uint LeftBody;
+    public uint LeftButtons;
+    public uint RightBody;
+    public uint RightButtons;
 }

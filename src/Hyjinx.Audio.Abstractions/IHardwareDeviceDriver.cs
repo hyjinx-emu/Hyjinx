@@ -3,36 +3,35 @@ using Hyjinx.Memory;
 using System;
 using System.Threading;
 
-namespace Hyjinx.Audio.Integration
+namespace Hyjinx.Audio.Integration;
+
+/// <summary>
+/// Represent an hardware device driver used in <see cref="Output.AudioOutputSystem"/>.
+/// </summary>
+public interface IHardwareDeviceDriver : IDisposable
 {
-    /// <summary>
-    /// Represent an hardware device driver used in <see cref="Output.AudioOutputSystem"/>.
-    /// </summary>
-    public interface IHardwareDeviceDriver : IDisposable
+    public enum Direction
     {
-        public enum Direction
-        {
-            Input,
-            Output,
-        }
+        Input,
+        Output,
+    }
 
-        float Volume { get; set; }
+    float Volume { get; set; }
 
-        IHardwareDeviceSession OpenDeviceSession(Direction direction, IVirtualMemoryManager memoryManager, SampleFormat sampleFormat, uint sampleRate, uint channelCount);
+    IHardwareDeviceSession OpenDeviceSession(Direction direction, IVirtualMemoryManager memoryManager, SampleFormat sampleFormat, uint sampleRate, uint channelCount);
 
-        ManualResetEvent GetUpdateRequiredEvent();
-        ManualResetEvent GetPauseEvent();
+    ManualResetEvent GetUpdateRequiredEvent();
+    ManualResetEvent GetPauseEvent();
 
-        bool SupportsDirection(Direction direction);
-        bool SupportsSampleRate(uint sampleRate);
-        bool SupportsSampleFormat(SampleFormat sampleFormat);
-        bool SupportsChannelCount(uint channelCount);
+    bool SupportsDirection(Direction direction);
+    bool SupportsSampleRate(uint sampleRate);
+    bool SupportsSampleFormat(SampleFormat sampleFormat);
+    bool SupportsChannelCount(uint channelCount);
 
-        static abstract bool IsSupported { get; }
+    static abstract bool IsSupported { get; }
 
-        IHardwareDeviceDriver GetRealDeviceDriver()
-        {
-            return this;
-        }
+    IHardwareDeviceDriver GetRealDeviceDriver()
+    {
+        return this;
     }
 }

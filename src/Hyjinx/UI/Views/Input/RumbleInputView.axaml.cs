@@ -4,53 +4,52 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.ViewModels.Input;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Ava.UI.Views.Input
+namespace Hyjinx.Ava.UI.Views.Input;
+
+public partial class RumbleInputView : UserControl
 {
-    public partial class RumbleInputView : UserControl
+    private readonly RumbleInputViewModel _viewModel;
+
+    public RumbleInputView()
     {
-        private readonly RumbleInputViewModel _viewModel;
+        InitializeComponent();
+    }
 
-        public RumbleInputView()
+    public RumbleInputView(ControllerInputViewModel viewModel)
+    {
+        var config = viewModel.Config;
+
+        _viewModel = new RumbleInputViewModel
         {
-            InitializeComponent();
-        }
+            StrongRumble = config.StrongRumble,
+            WeakRumble = config.WeakRumble,
+        };
 
-        public RumbleInputView(ControllerInputViewModel viewModel)
+        InitializeComponent();
+
+        DataContext = _viewModel;
+    }
+
+    public static async Task Show(ControllerInputViewModel viewModel)
+    {
+        RumbleInputView content = new(viewModel);
+
+        ContentDialog contentDialog = new()
+        {
+            Title = LocaleManager.Instance[LocaleKeys.ControllerRumbleTitle],
+            PrimaryButtonText = LocaleManager.Instance[LocaleKeys.ControllerSettingsSave],
+            SecondaryButtonText = "",
+            CloseButtonText = LocaleManager.Instance[LocaleKeys.ControllerSettingsClose],
+            Content = content,
+        };
+
+        contentDialog.PrimaryButtonClick += (sender, args) =>
         {
             var config = viewModel.Config;
+            config.StrongRumble = content._viewModel.StrongRumble;
+            config.WeakRumble = content._viewModel.WeakRumble;
+        };
 
-            _viewModel = new RumbleInputViewModel
-            {
-                StrongRumble = config.StrongRumble,
-                WeakRumble = config.WeakRumble,
-            };
-
-            InitializeComponent();
-
-            DataContext = _viewModel;
-        }
-
-        public static async Task Show(ControllerInputViewModel viewModel)
-        {
-            RumbleInputView content = new(viewModel);
-
-            ContentDialog contentDialog = new()
-            {
-                Title = LocaleManager.Instance[LocaleKeys.ControllerRumbleTitle],
-                PrimaryButtonText = LocaleManager.Instance[LocaleKeys.ControllerSettingsSave],
-                SecondaryButtonText = "",
-                CloseButtonText = LocaleManager.Instance[LocaleKeys.ControllerSettingsClose],
-                Content = content,
-            };
-
-            contentDialog.PrimaryButtonClick += (sender, args) =>
-            {
-                var config = viewModel.Config;
-                config.StrongRumble = content._viewModel.StrongRumble;
-                config.WeakRumble = content._viewModel.WeakRumble;
-            };
-
-            await contentDialog.ShowAsync();
-        }
+        await contentDialog.ShowAsync();
     }
 }

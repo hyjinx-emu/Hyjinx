@@ -1,11 +1,11 @@
-using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Ncm;
 using LibHac.Sf;
 using LibHac.Spl;
-using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
+using System;
 using IFileSf = LibHac.FsSrv.Sf.IFile;
+using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;
 
 namespace LibHac.FsSrv.Sf;

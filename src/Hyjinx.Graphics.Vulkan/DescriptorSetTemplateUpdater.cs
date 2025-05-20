@@ -4,74 +4,73 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+ref struct DescriptorSetTemplateWriter
 {
-    ref struct DescriptorSetTemplateWriter
+    private Span<byte> _data;
+
+    public DescriptorSetTemplateWriter(Span<byte> data)
     {
-        private Span<byte> _data;
+        _data = data;
+    }
 
-        public DescriptorSetTemplateWriter(Span<byte> data)
+    public void Push<T>(ReadOnlySpan<T> values) where T : unmanaged
+    {
+        Span<T> target = MemoryMarshal.Cast<byte, T>(_data);
+
+        values.CopyTo(target);
+
+        _data = _data[(Unsafe.SizeOf<T>() * values.Length)..];
+    }
+}
+
+unsafe class DescriptorSetTemplateUpdater : IDisposable
+{
+    private const int SizeGranularity = 512;
+
+    private DescriptorSetTemplate _activeTemplate;
+    private NativeArray<byte> _data;
+
+    private void EnsureSize(int size)
+    {
+        if (_data == null || _data.Length < size)
         {
-            _data = data;
-        }
+            _data?.Dispose();
 
-        public void Push<T>(ReadOnlySpan<T> values) where T : unmanaged
-        {
-            Span<T> target = MemoryMarshal.Cast<byte, T>(_data);
-
-            values.CopyTo(target);
-
-            _data = _data[(Unsafe.SizeOf<T>() * values.Length)..];
+            int dataSize = BitUtils.AlignUp(size, SizeGranularity);
+            _data = new NativeArray<byte>(dataSize);
         }
     }
 
-    unsafe class DescriptorSetTemplateUpdater : IDisposable
+    public DescriptorSetTemplateWriter Begin(DescriptorSetTemplate template)
     {
-        private const int SizeGranularity = 512;
+        _activeTemplate = template;
 
-        private DescriptorSetTemplate _activeTemplate;
-        private NativeArray<byte> _data;
+        EnsureSize(template.Size);
 
-        private void EnsureSize(int size)
-        {
-            if (_data == null || _data.Length < size)
-            {
-                _data?.Dispose();
+        return new DescriptorSetTemplateWriter(new Span<byte>(_data.Pointer, template.Size));
+    }
 
-                int dataSize = BitUtils.AlignUp(size, SizeGranularity);
-                _data = new NativeArray<byte>(dataSize);
-            }
-        }
+    public DescriptorSetTemplateWriter Begin(int maxSize)
+    {
+        EnsureSize(maxSize);
 
-        public DescriptorSetTemplateWriter Begin(DescriptorSetTemplate template)
-        {
-            _activeTemplate = template;
+        return new DescriptorSetTemplateWriter(new Span<byte>(_data.Pointer, maxSize));
+    }
 
-            EnsureSize(template.Size);
+    public void Commit(VulkanRenderer gd, Device device, DescriptorSet set)
+    {
+        gd.Api.UpdateDescriptorSetWithTemplate(device, set, _activeTemplate.Template, _data.Pointer);
+    }
 
-            return new DescriptorSetTemplateWriter(new Span<byte>(_data.Pointer, template.Size));
-        }
+    public void CommitPushDescriptor(VulkanRenderer gd, CommandBufferScoped cbs, DescriptorSetTemplate template, PipelineLayout layout)
+    {
+        gd.PushDescriptorApi.CmdPushDescriptorSetWithTemplate(cbs.CommandBuffer, template.Template, layout, 0, _data.Pointer);
+    }
 
-        public DescriptorSetTemplateWriter Begin(int maxSize)
-        {
-            EnsureSize(maxSize);
-
-            return new DescriptorSetTemplateWriter(new Span<byte>(_data.Pointer, maxSize));
-        }
-
-        public void Commit(VulkanRenderer gd, Device device, DescriptorSet set)
-        {
-            gd.Api.UpdateDescriptorSetWithTemplate(device, set, _activeTemplate.Template, _data.Pointer);
-        }
-
-        public void CommitPushDescriptor(VulkanRenderer gd, CommandBufferScoped cbs, DescriptorSetTemplate template, PipelineLayout layout)
-        {
-            gd.PushDescriptorApi.CmdPushDescriptorSetWithTemplate(cbs.CommandBuffer, template.Template, layout, 0, _data.Pointer);
-        }
-
-        public void Dispose()
-        {
-            _data?.Dispose();
-        }
+    public void Dispose()
+    {
+        _data?.Dispose();
     }
 }

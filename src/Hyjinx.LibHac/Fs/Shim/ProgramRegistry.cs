@@ -1,10 +1,10 @@
-using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.FsSrv;
 using LibHac.FsSrv.Sf;
 using LibHac.Ncm;
 using LibHac.Sf;
+using System;
 
 namespace LibHac.Fs.Shim;
 

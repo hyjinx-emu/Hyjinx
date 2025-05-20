@@ -1,12 +1,11 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
+
+[Flags]
+enum SourceFlag
 {
-    [Flags]
-    enum SourceFlag
-    {
-        Database = 1 << Source.Database,
-        Default = 1 << Source.Default,
-        All = Database | Default,
-    }
+    Database = 1 << Source.Database,
+    Default = 1 << Source.Default,
+    All = Database | Default,
 }

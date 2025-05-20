@@ -2,47 +2,46 @@ using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.TouchScreen;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public class TouchDevice : BaseDevice
 {
-    public class TouchDevice : BaseDevice
+    public TouchDevice(Switch device, bool active) : base(device, active) { }
+
+    public void Update(params TouchPoint[] points)
     {
-        public TouchDevice(Switch device, bool active) : base(device, active) { }
+        ref RingLifo<TouchScreenState> lifo = ref _device.Hid.SharedMemory.TouchScreen;
 
-        public void Update(params TouchPoint[] points)
+        ref TouchScreenState previousEntry = ref lifo.GetCurrentEntryRef();
+
+        TouchScreenState newState = new()
         {
-            ref RingLifo<TouchScreenState> lifo = ref _device.Hid.SharedMemory.TouchScreen;
+            SamplingNumber = previousEntry.SamplingNumber + 1,
+        };
 
-            ref TouchScreenState previousEntry = ref lifo.GetCurrentEntryRef();
+        if (Active)
+        {
+            newState.TouchesCount = points.Length;
 
-            TouchScreenState newState = new()
+            int pointsLength = Math.Min(points.Length, newState.Touches.Length);
+
+            for (int i = 0; i < pointsLength; ++i)
             {
-                SamplingNumber = previousEntry.SamplingNumber + 1,
-            };
-
-            if (Active)
-            {
-                newState.TouchesCount = points.Length;
-
-                int pointsLength = Math.Min(points.Length, newState.Touches.Length);
-
-                for (int i = 0; i < pointsLength; ++i)
+                TouchPoint pi = points[i];
+                newState.Touches[i] = new TouchState
                 {
-                    TouchPoint pi = points[i];
-                    newState.Touches[i] = new TouchState
-                    {
-                        DeltaTime = newState.SamplingNumber,
-                        Attribute = pi.Attribute,
-                        X = pi.X,
-                        Y = pi.Y,
-                        FingerId = (uint)i,
-                        DiameterX = pi.DiameterX,
-                        DiameterY = pi.DiameterY,
-                        RotationAngle = pi.Angle,
-                    };
-                }
+                    DeltaTime = newState.SamplingNumber,
+                    Attribute = pi.Attribute,
+                    X = pi.X,
+                    Y = pi.Y,
+                    FingerId = (uint)i,
+                    DiameterX = pi.DiameterX,
+                    DiameterY = pi.DiameterY,
+                    RotationAngle = pi.Angle,
+                };
             }
-
-            lifo.Write(ref newState);
         }
+
+        lifo.Write(ref newState);
     }
 }

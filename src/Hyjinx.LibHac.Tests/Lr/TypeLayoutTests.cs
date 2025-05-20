@@ -1,5 +1,5 @@
-using System.Runtime.CompilerServices;
 using LibHac.Lr;
+using System.Runtime.CompilerServices;
 using Xunit;
 using static LibHac.Tests.Common.Layout;
 

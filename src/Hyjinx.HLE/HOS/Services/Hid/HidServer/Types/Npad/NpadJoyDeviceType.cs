@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public enum NpadJoyDeviceType
 {
-    public enum NpadJoyDeviceType
-    {
-        Left,
-        Right,
-    }
+    Left,
+    Right,
 }

@@ -1,10 +1,10 @@
-using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Kvdb;
 using LibHac.Tests.Fs.FileSystemClientTests;
 using LibHac.Tools.Fs;
+using System;
 using Xunit;
 using TTest = System.Int32;
 

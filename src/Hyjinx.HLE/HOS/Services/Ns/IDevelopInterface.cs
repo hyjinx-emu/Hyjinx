@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Ns
+namespace Hyjinx.HLE.HOS.Services.Ns;
+
+[Service("ns:dev")]
+class IDevelopInterface : IpcService<IDevelopInterface>
 {
-    [Service("ns:dev")]
-    class IDevelopInterface : IpcService<IDevelopInterface>
-    {
-        public IDevelopInterface(ServiceCtx context) { }
-    }
+    public IDevelopInterface(ServiceCtx context) { }
 }

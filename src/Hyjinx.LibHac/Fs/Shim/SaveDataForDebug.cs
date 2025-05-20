@@ -1,10 +1,10 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using static LibHac.Fs.SaveData;
 

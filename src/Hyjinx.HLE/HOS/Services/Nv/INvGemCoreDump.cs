@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Nv
+namespace Hyjinx.HLE.HOS.Services.Nv;
+
+[Service("nvgem:cd")]
+class INvGemCoreDump : IpcService<INvGemCoreDump>
 {
-    [Service("nvgem:cd")]
-    class INvGemCoreDump : IpcService<INvGemCoreDump>
-    {
-        public INvGemCoreDump(ServiceCtx context) { }
-    }
+    public INvGemCoreDump(ServiceCtx context) { }
 }

@@ -1,6 +1,6 @@
-using System;
 using LibHac.Os;
 using LibHac.Svc;
+using System;
 
 namespace LibHac.Sf;
 

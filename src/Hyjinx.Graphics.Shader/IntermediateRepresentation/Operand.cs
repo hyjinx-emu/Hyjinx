@@ -2,78 +2,77 @@ using Hyjinx.Graphics.Shader.Decoders;
 using System;
 using System.Collections.Generic;
 
-namespace Hyjinx.Graphics.Shader.IntermediateRepresentation
+namespace Hyjinx.Graphics.Shader.IntermediateRepresentation;
+
+class Operand
 {
-    class Operand
+    private const int CbufSlotBits = 5;
+    private const int CbufSlotLsb = 32 - CbufSlotBits;
+    private const int CbufSlotMask = (1 << CbufSlotBits) - 1;
+
+    public OperandType Type { get; }
+
+    public int Value { get; }
+
+    public INode AsgOp { get; set; }
+
+    public HashSet<INode> UseOps { get; }
+
+    private Operand()
     {
-        private const int CbufSlotBits = 5;
-        private const int CbufSlotLsb = 32 - CbufSlotBits;
-        private const int CbufSlotMask = (1 << CbufSlotBits) - 1;
+        UseOps = new HashSet<INode>();
+    }
 
-        public OperandType Type { get; }
+    public Operand(OperandType type) : this()
+    {
+        Type = type;
+    }
 
-        public int Value { get; }
+    public Operand(OperandType type, int value) : this()
+    {
+        Type = type;
+        Value = value;
+    }
 
-        public INode AsgOp { get; set; }
+    public Operand(Register reg) : this()
+    {
+        Type = OperandType.Register;
+        Value = PackRegInfo(reg.Index, reg.Type);
+    }
 
-        public HashSet<INode> UseOps { get; }
+    public Operand(int slot, int offset) : this()
+    {
+        Type = OperandType.ConstantBuffer;
+        Value = PackCbufInfo(slot, offset);
+    }
 
-        private Operand()
-        {
-            UseOps = new HashSet<INode>();
-        }
+    private static int PackCbufInfo(int slot, int offset)
+    {
+        return (slot << CbufSlotLsb) | offset;
+    }
 
-        public Operand(OperandType type) : this()
-        {
-            Type = type;
-        }
+    private static int PackRegInfo(int index, RegisterType type)
+    {
+        return ((int)type << 24) | index;
+    }
 
-        public Operand(OperandType type, int value) : this()
-        {
-            Type = type;
-            Value = value;
-        }
+    public int GetCbufSlot()
+    {
+        return (Value >> CbufSlotLsb) & CbufSlotMask;
+    }
 
-        public Operand(Register reg) : this()
-        {
-            Type = OperandType.Register;
-            Value = PackRegInfo(reg.Index, reg.Type);
-        }
+    public int GetCbufOffset()
+    {
+        return Value & ~(CbufSlotMask << CbufSlotLsb);
+    }
 
-        public Operand(int slot, int offset) : this()
-        {
-            Type = OperandType.ConstantBuffer;
-            Value = PackCbufInfo(slot, offset);
-        }
+    public Register GetRegister()
+    {
+        return new Register(Value & 0xffffff, (RegisterType)(Value >> 24));
+    }
 
-        private static int PackCbufInfo(int slot, int offset)
-        {
-            return (slot << CbufSlotLsb) | offset;
-        }
-
-        private static int PackRegInfo(int index, RegisterType type)
-        {
-            return ((int)type << 24) | index;
-        }
-
-        public int GetCbufSlot()
-        {
-            return (Value >> CbufSlotLsb) & CbufSlotMask;
-        }
-
-        public int GetCbufOffset()
-        {
-            return Value & ~(CbufSlotMask << CbufSlotLsb);
-        }
-
-        public Register GetRegister()
-        {
-            return new Register(Value & 0xffffff, (RegisterType)(Value >> 24));
-        }
-
-        public float AsFloat()
-        {
-            return BitConverter.Int32BitsToSingle(Value);
-        }
+    public float AsFloat()
+    {
+        return BitConverter.Int32BitsToSingle(Value);
     }
 }

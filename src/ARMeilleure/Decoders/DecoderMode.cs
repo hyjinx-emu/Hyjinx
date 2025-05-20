@@ -1,9 +1,8 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+enum DecoderMode
 {
-    enum DecoderMode
-    {
-        MultipleBlocks,
-        SingleBlock,
-        SingleInstruction,
-    }
+    MultipleBlocks,
+    SingleBlock,
+    SingleInstruction,
 }

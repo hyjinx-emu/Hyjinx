@@ -1,179 +1,178 @@
-using OpenTK.Graphics.OpenGL;
 using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hyjinx.Graphics.OpenGL
+namespace Hyjinx.Graphics.OpenGL;
+
+partial class Sync : IDisposable
 {
-    partial class Sync : IDisposable
+    private class SyncHandle
     {
-        private class SyncHandle
+        public ulong ID;
+        public IntPtr Handle;
+    }
+
+    private ulong _firstHandle = 0;
+    private static ClientWaitSyncFlags SyncFlags => HwCapabilities.RequiresSyncFlush ? ClientWaitSyncFlags.None : ClientWaitSyncFlags.SyncFlushCommandsBit;
+
+    private readonly ILogger<Sync> _logger = Logger.DefaultLoggerFactory.CreateLogger<Sync>();
+    private readonly List<SyncHandle> _handles = new();
+
+    public void Create(ulong id)
+    {
+        SyncHandle handle = new()
         {
-            public ulong ID;
-            public IntPtr Handle;
+            ID = id,
+            Handle = GL.FenceSync(SyncCondition.SyncGpuCommandsComplete, WaitSyncFlags.None),
+        };
+
+
+        if (HwCapabilities.RequiresSyncFlush)
+        {
+            // Force commands to flush up to the syncpoint.
+            GL.ClientWaitSync(handle.Handle, ClientWaitSyncFlags.SyncFlushCommandsBit, 0);
         }
 
-        private ulong _firstHandle = 0;
-        private static ClientWaitSyncFlags SyncFlags => HwCapabilities.RequiresSyncFlush ? ClientWaitSyncFlags.None : ClientWaitSyncFlags.SyncFlushCommandsBit;
-
-        private readonly ILogger<Sync> _logger = Logger.DefaultLoggerFactory.CreateLogger<Sync>();
-        private readonly List<SyncHandle> _handles = new();
-
-        public void Create(ulong id)
+        lock (_handles)
         {
-            SyncHandle handle = new()
-            {
-                ID = id,
-                Handle = GL.FenceSync(SyncCondition.SyncGpuCommandsComplete, WaitSyncFlags.None),
-            };
-
-
-            if (HwCapabilities.RequiresSyncFlush)
-            {
-                // Force commands to flush up to the syncpoint.
-                GL.ClientWaitSync(handle.Handle, ClientWaitSyncFlags.SyncFlushCommandsBit, 0);
-            }
-
-            lock (_handles)
-            {
-                _handles.Add(handle);
-            }
+            _handles.Add(handle);
         }
+    }
 
-        public ulong GetCurrent()
+    public ulong GetCurrent()
+    {
+        lock (_handles)
         {
-            lock (_handles)
-            {
-                ulong lastHandle = _firstHandle;
+            ulong lastHandle = _firstHandle;
 
-                foreach (SyncHandle handle in _handles)
+            foreach (SyncHandle handle in _handles)
+            {
+                lock (handle)
                 {
-                    lock (handle)
+                    if (handle.Handle == IntPtr.Zero)
                     {
-                        if (handle.Handle == IntPtr.Zero)
-                        {
-                            continue;
-                        }
+                        continue;
+                    }
 
-                        if (handle.ID > lastHandle)
-                        {
-                            WaitSyncStatus syncResult = GL.ClientWaitSync(handle.Handle, SyncFlags, 0);
+                    if (handle.ID > lastHandle)
+                    {
+                        WaitSyncStatus syncResult = GL.ClientWaitSync(handle.Handle, SyncFlags, 0);
 
-                            if (syncResult == WaitSyncStatus.AlreadySignaled)
-                            {
-                                lastHandle = handle.ID;
-                            }
+                        if (syncResult == WaitSyncStatus.AlreadySignaled)
+                        {
+                            lastHandle = handle.ID;
                         }
                     }
                 }
+            }
 
-                return lastHandle;
+            return lastHandle;
+        }
+    }
+
+    public void Wait(ulong id)
+    {
+        SyncHandle result = null;
+
+        lock (_handles)
+        {
+            if ((long)(_firstHandle - id) > 0)
+            {
+                return; // The handle has already been signalled or deleted.
+            }
+
+            foreach (SyncHandle handle in _handles)
+            {
+                if (handle.ID == id)
+                {
+                    result = handle;
+                    break;
+                }
             }
         }
 
-        public void Wait(ulong id)
+        if (result != null)
         {
-            SyncHandle result = null;
+            lock (result)
+            {
+                if (result.Handle == IntPtr.Zero)
+                {
+                    return;
+                }
 
+                WaitSyncStatus syncResult = GL.ClientWaitSync(result.Handle, SyncFlags, 1000000000);
+
+                if (syncResult == WaitSyncStatus.TimeoutExpired)
+                {
+                    LogGlSyncFailedToSignal(result.ID);
+                }
+            }
+        }
+    }
+
+    [LoggerMessage(LogLevel.Error,
+        EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+        Message = "GL Sync Object {id} failed to signal within 1000ms. Continuing...")]
+    private partial void LogGlSyncFailedToSignal(ulong id);
+
+    public void Cleanup()
+    {
+        // Iterate through handles and remove any that have already been signalled.
+
+        while (true)
+        {
+            SyncHandle first = null;
             lock (_handles)
             {
-                if ((long)(_firstHandle - id) > 0)
-                {
-                    return; // The handle has already been signalled or deleted.
-                }
-
-                foreach (SyncHandle handle in _handles)
-                {
-                    if (handle.ID == id)
-                    {
-                        result = handle;
-                        break;
-                    }
-                }
+                first = _handles.FirstOrDefault();
             }
 
-            if (result != null)
+            if (first == null)
             {
-                lock (result)
-                {
-                    if (result.Handle == IntPtr.Zero)
-                    {
-                        return;
-                    }
-
-                    WaitSyncStatus syncResult = GL.ClientWaitSync(result.Handle, SyncFlags, 1000000000);
-
-                    if (syncResult == WaitSyncStatus.TimeoutExpired)
-                    {
-                        LogGlSyncFailedToSignal(result.ID);
-                    }
-                }
+                break;
             }
-        }
 
-        [LoggerMessage(LogLevel.Error,
-            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
-            Message = "GL Sync Object {id} failed to signal within 1000ms. Continuing...")]
-        private partial void LogGlSyncFailedToSignal(ulong id);
+            WaitSyncStatus syncResult = GL.ClientWaitSync(first.Handle, SyncFlags, 0);
 
-        public void Cleanup()
-        {
-            // Iterate through handles and remove any that have already been signalled.
-
-            while (true)
+            if (syncResult == WaitSyncStatus.AlreadySignaled)
             {
-                SyncHandle first = null;
+                // Delete the sync object.
                 lock (_handles)
                 {
-                    first = _handles.FirstOrDefault();
-                }
-
-                if (first == null)
-                {
-                    break;
-                }
-
-                WaitSyncStatus syncResult = GL.ClientWaitSync(first.Handle, SyncFlags, 0);
-
-                if (syncResult == WaitSyncStatus.AlreadySignaled)
-                {
-                    // Delete the sync object.
-                    lock (_handles)
+                    lock (first)
                     {
-                        lock (first)
-                        {
-                            _firstHandle = first.ID + 1;
-                            _handles.RemoveAt(0);
-                            GL.DeleteSync(first.Handle);
-                            first.Handle = IntPtr.Zero;
-                        }
+                        _firstHandle = first.ID + 1;
+                        _handles.RemoveAt(0);
+                        GL.DeleteSync(first.Handle);
+                        first.Handle = IntPtr.Zero;
                     }
                 }
-                else
-                {
-                    // This sync handle and any following have not been reached yet.
-                    break;
-                }
+            }
+            else
+            {
+                // This sync handle and any following have not been reached yet.
+                break;
             }
         }
+    }
 
-        public void Dispose()
+    public void Dispose()
+    {
+        lock (_handles)
         {
-            lock (_handles)
+            foreach (SyncHandle handle in _handles)
             {
-                foreach (SyncHandle handle in _handles)
+                lock (handle)
                 {
-                    lock (handle)
-                    {
-                        GL.DeleteSync(handle.Handle);
-                        handle.Handle = IntPtr.Zero;
-                    }
+                    GL.DeleteSync(handle.Handle);
+                    handle.Handle = IntPtr.Zero;
                 }
-
-                _handles.Clear();
             }
+
+            _handles.Clear();
         }
     }
 }

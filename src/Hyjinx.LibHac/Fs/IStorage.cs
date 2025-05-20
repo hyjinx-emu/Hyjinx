@@ -1,6 +1,6 @@
+using LibHac.Util;
 using System;
 using System.Runtime.CompilerServices;
-using LibHac.Util;
 
 namespace LibHac.Fs;
 

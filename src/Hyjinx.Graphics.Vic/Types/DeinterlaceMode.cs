@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.Vic.Types
+namespace Hyjinx.Graphics.Vic.Types;
+
+enum DeinterlaceMode
 {
-    enum DeinterlaceMode
-    {
-        Weave,
-        BobField,
-        Bob,
-        NewBob,
-        Disi1,
-        WeaveLumaBobFieldChroma,
-    }
+    Weave,
+    BobField,
+    Bob,
+    NewBob,
+    Disi1,
+    WeaveLumaBobFieldChroma,
 }

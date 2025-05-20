@@ -1,21 +1,20 @@
-namespace Hyjinx.Graphics.Host1x
+namespace Hyjinx.Graphics.Host1x;
+
+enum OpCode
 {
-    enum OpCode
-    {
-        SetClass,
-        Incr,
-        NonIncr,
-        Mask,
-        Imm,
-        Restart,
-        Gather,
-        SetStrmId,
-        SetAppId,
-        SetPyld,
-        IncrW,
-        NonIncrW,
-        GatherW,
-        RestartW,
-        Extend,
-    }
+    SetClass,
+    Incr,
+    NonIncr,
+    Mask,
+    Imm,
+    Restart,
+    Gather,
+    SetStrmId,
+    SetAppId,
+    SetPyld,
+    IncrW,
+    NonIncrW,
+    GatherW,
+    RestartW,
+    Extend,
 }

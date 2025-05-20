@@ -1,12 +1,12 @@
-using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem.Buffers;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Buffer = LibHac.Mem.Buffer;
 using CacheHandle = System.UInt64;
 

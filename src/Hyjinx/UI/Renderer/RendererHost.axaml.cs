@@ -4,65 +4,64 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.UI.Common.Configuration;
 using System;
 
-namespace Hyjinx.Ava.UI.Renderer
+namespace Hyjinx.Ava.UI.Renderer;
+
+public partial class RendererHost : UserControl, IDisposable
 {
-    public partial class RendererHost : UserControl, IDisposable
+    public readonly EmbeddedWindow EmbeddedWindow;
+
+    public event EventHandler<EventArgs> WindowCreated;
+    public event Action<object, Size> BoundsChanged;
+
+    public RendererHost()
     {
-        public readonly EmbeddedWindow EmbeddedWindow;
+        InitializeComponent();
 
-        public event EventHandler<EventArgs> WindowCreated;
-        public event Action<object, Size> BoundsChanged;
-
-        public RendererHost()
+        if (ConfigurationState.Instance.Graphics.GraphicsBackend.Value == GraphicsBackend.OpenGl)
         {
-            InitializeComponent();
-
-            if (ConfigurationState.Instance.Graphics.GraphicsBackend.Value == GraphicsBackend.OpenGl)
-            {
-                EmbeddedWindow = new EmbeddedWindowOpenGL();
-            }
-            else
-            {
-                EmbeddedWindow = new EmbeddedWindowVulkan();
-            }
-
-            Initialize();
+            EmbeddedWindow = new EmbeddedWindowOpenGL();
+        }
+        else
+        {
+            EmbeddedWindow = new EmbeddedWindowVulkan();
         }
 
-        private void Initialize()
-        {
-            EmbeddedWindow.WindowCreated += CurrentWindow_WindowCreated;
-            EmbeddedWindow.BoundsChanged += CurrentWindow_BoundsChanged;
+        Initialize();
+    }
 
-            Content = EmbeddedWindow;
+    private void Initialize()
+    {
+        EmbeddedWindow.WindowCreated += CurrentWindow_WindowCreated;
+        EmbeddedWindow.BoundsChanged += CurrentWindow_BoundsChanged;
+
+        Content = EmbeddedWindow;
+    }
+
+    public void Dispose()
+    {
+        if (EmbeddedWindow != null)
+        {
+            EmbeddedWindow.WindowCreated -= CurrentWindow_WindowCreated;
+            EmbeddedWindow.BoundsChanged -= CurrentWindow_BoundsChanged;
         }
 
-        public void Dispose()
-        {
-            if (EmbeddedWindow != null)
-            {
-                EmbeddedWindow.WindowCreated -= CurrentWindow_WindowCreated;
-                EmbeddedWindow.BoundsChanged -= CurrentWindow_BoundsChanged;
-            }
+        GC.SuppressFinalize(this);
+    }
 
-            GC.SuppressFinalize(this);
-        }
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
 
-        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-        {
-            base.OnDetachedFromVisualTree(e);
+        Dispose();
+    }
 
-            Dispose();
-        }
+    private void CurrentWindow_BoundsChanged(object sender, Size e)
+    {
+        BoundsChanged?.Invoke(sender, e);
+    }
 
-        private void CurrentWindow_BoundsChanged(object sender, Size e)
-        {
-            BoundsChanged?.Invoke(sender, e);
-        }
-
-        private void CurrentWindow_WindowCreated(object sender, IntPtr e)
-        {
-            WindowCreated?.Invoke(this, EventArgs.Empty);
-        }
+    private void CurrentWindow_WindowCreated(object sender, IntPtr e)
+    {
+        WindowCreated?.Invoke(this, EventArgs.Empty);
     }
 }

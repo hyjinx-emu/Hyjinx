@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Storage.Sf;
@@ -6,6 +5,7 @@ using LibHac.Gc;
 using LibHac.Gc.Writer;
 using LibHac.Os;
 using LibHac.Sf;
+using System.Runtime.CompilerServices;
 using static LibHac.Gc.Values;
 
 namespace LibHac.GcSrv;

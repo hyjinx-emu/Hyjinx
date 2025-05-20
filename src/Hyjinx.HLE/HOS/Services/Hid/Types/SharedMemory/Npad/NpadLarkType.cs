@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+
+enum NpadLarkType : uint
 {
-    enum NpadLarkType : uint
-    {
-        Invalid,
-        H1,
-        H2,
-        NL,
-        NR
-    }
+    Invalid,
+    H1,
+    H2,
+    NL,
+    NR
 }

@@ -1,63 +1,62 @@
 using System.Text;
 
-namespace Hyjinx.HLE.Generators
+namespace Hyjinx.HLE.Generators;
+
+class CodeGenerator
 {
-    class CodeGenerator
+    private const int IndentLength = 4;
+
+    private readonly StringBuilder _sb;
+    private int _currentIndentCount;
+
+    public CodeGenerator()
     {
-        private const int IndentLength = 4;
+        _sb = new StringBuilder();
+    }
 
-        private readonly StringBuilder _sb;
-        private int _currentIndentCount;
-
-        public CodeGenerator()
+    public void EnterScope(string header = null)
+    {
+        if (header != null)
         {
-            _sb = new StringBuilder();
+            AppendLine(header);
         }
 
-        public void EnterScope(string header = null)
-        {
-            if (header != null)
-            {
-                AppendLine(header);
-            }
+        AppendLine("{");
+        IncreaseIndentation();
+    }
 
-            AppendLine("{");
-            IncreaseIndentation();
-        }
+    public void LeaveScope(string suffix = "")
+    {
+        DecreaseIndentation();
+        AppendLine($"}}{suffix}");
+    }
 
-        public void LeaveScope(string suffix = "")
-        {
-            DecreaseIndentation();
-            AppendLine($"}}{suffix}");
-        }
+    public void IncreaseIndentation()
+    {
+        _currentIndentCount++;
+    }
 
-        public void IncreaseIndentation()
+    public void DecreaseIndentation()
+    {
+        if (_currentIndentCount - 1 >= 0)
         {
-            _currentIndentCount++;
+            _currentIndentCount--;
         }
+    }
 
-        public void DecreaseIndentation()
-        {
-            if (_currentIndentCount - 1 >= 0)
-            {
-                _currentIndentCount--;
-            }
-        }
+    public void AppendLine()
+    {
+        _sb.AppendLine();
+    }
 
-        public void AppendLine()
-        {
-            _sb.AppendLine();
-        }
+    public void AppendLine(string text)
+    {
+        _sb.Append(' ', IndentLength * _currentIndentCount);
+        _sb.AppendLine(text);
+    }
 
-        public void AppendLine(string text)
-        {
-            _sb.Append(' ', IndentLength * _currentIndentCount);
-            _sb.AppendLine(text);
-        }
-
-        public override string ToString()
-        {
-            return _sb.ToString();
-        }
+    public override string ToString()
+    {
+        return _sb.ToString();
     }
 }

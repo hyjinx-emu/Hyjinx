@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum CompareMode
 {
-    public enum CompareMode
-    {
-        None,
-        CompareRToTexture,
-    }
+    None,
+    CompareRToTexture,
 }

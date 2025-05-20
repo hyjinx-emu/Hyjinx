@@ -2,41 +2,40 @@ using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy;
 using System.Collections.Concurrent;
 
-namespace Hyjinx.HLE.HOS.SystemState
+namespace Hyjinx.HLE.HOS.SystemState;
+
+class AppletStateMgr
 {
-    class AppletStateMgr
+    public ConcurrentQueue<AppletMessage> Messages { get; }
+
+    public FocusState FocusState { get; private set; }
+
+    public KEvent MessageEvent { get; }
+
+    public IdDictionary AppletResourceUserIds { get; }
+
+    public IdDictionary IndirectLayerHandles { get; }
+
+    public AppletStateMgr(Horizon system)
     {
-        public ConcurrentQueue<AppletMessage> Messages { get; }
+        Messages = new ConcurrentQueue<AppletMessage>();
+        MessageEvent = new KEvent(system.KernelContext);
 
-        public FocusState FocusState { get; private set; }
+        AppletResourceUserIds = new IdDictionary();
+        IndirectLayerHandles = new IdDictionary();
+    }
 
-        public KEvent MessageEvent { get; }
+    public void SetFocus(bool isFocused)
+    {
+        FocusState = isFocused ? FocusState.InFocus : FocusState.OutOfFocus;
 
-        public IdDictionary AppletResourceUserIds { get; }
+        Messages.Enqueue(AppletMessage.FocusStateChanged);
 
-        public IdDictionary IndirectLayerHandles { get; }
-
-        public AppletStateMgr(Horizon system)
+        if (isFocused)
         {
-            Messages = new ConcurrentQueue<AppletMessage>();
-            MessageEvent = new KEvent(system.KernelContext);
-
-            AppletResourceUserIds = new IdDictionary();
-            IndirectLayerHandles = new IdDictionary();
+            Messages.Enqueue(AppletMessage.ChangeIntoForeground);
         }
 
-        public void SetFocus(bool isFocused)
-        {
-            FocusState = isFocused ? FocusState.InFocus : FocusState.OutOfFocus;
-
-            Messages.Enqueue(AppletMessage.FocusStateChanged);
-
-            if (isFocused)
-            {
-                Messages.Enqueue(AppletMessage.ChangeIntoForeground);
-            }
-
-            MessageEvent.ReadableEvent.Signal();
-        }
+        MessageEvent.ReadableEvent.Signal();
     }
 }

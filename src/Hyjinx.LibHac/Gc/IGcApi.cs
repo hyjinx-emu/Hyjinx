@@ -1,7 +1,7 @@
-using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Gc.Writer;
+using System;
 
 namespace LibHac.Gc;
 

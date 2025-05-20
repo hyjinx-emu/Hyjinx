@@ -1,8 +1,8 @@
-using System;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Util;
+using System;
+using System.Runtime.InteropServices;
 
 namespace LibHac.Tools.FsSystem.RomFs;
 

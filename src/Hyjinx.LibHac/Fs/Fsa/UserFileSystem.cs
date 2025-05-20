@@ -1,11 +1,11 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs.Impl;
 using LibHac.Fs.Shim;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 

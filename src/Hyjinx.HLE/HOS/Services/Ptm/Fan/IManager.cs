@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Ptm.Fan
+namespace Hyjinx.HLE.HOS.Services.Ptm.Fan;
+
+[Service("fan")]
+class IManager : IpcService<IManager>
 {
-    [Service("fan")]
-    class IManager : IpcService<IManager>
-    {
-        public IManager(ServiceCtx context) { }
-    }
+    public IManager(ServiceCtx context) { }
 }

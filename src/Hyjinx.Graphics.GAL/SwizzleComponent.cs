@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum SwizzleComponent
 {
-    public enum SwizzleComponent
-    {
-        Zero,
-        One,
-        Red,
-        Green,
-        Blue,
-        Alpha,
-    }
+    Zero,
+    One,
+    Red,
+    Green,
+    Blue,
+    Alpha,
 }

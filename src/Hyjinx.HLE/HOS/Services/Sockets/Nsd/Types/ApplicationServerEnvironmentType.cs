@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd.Types;
+
+enum ApplicationServerEnvironmentType : byte
 {
-    enum ApplicationServerEnvironmentType : byte
-    {
-        None,
-        Lp,
-        Sd,
-        Sp,
-        Dp,
-    }
+    None,
+    Lp,
+    Sd,
+    Sp,
+    Dp,
 }

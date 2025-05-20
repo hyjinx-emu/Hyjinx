@@ -1,19 +1,18 @@
-namespace ARMeilleure.Diagnostics
-{
-    enum PassName
-    {
-        Decoding,
-        Translation,
-        RegisterUsage,
-        TailMerge,
-        Dominance,
-        SsaConstruction,
-        RegisterToLocal,
-        Optimization,
-        PreAllocation,
-        RegisterAllocation,
-        CodeGeneration,
+namespace ARMeilleure.Diagnostics;
 
-        Count,
-    }
+enum PassName
+{
+    Decoding,
+    Translation,
+    RegisterUsage,
+    TailMerge,
+    Dominance,
+    SsaConstruction,
+    RegisterToLocal,
+    Optimization,
+    PreAllocation,
+    RegisterAllocation,
+    CodeGeneration,
+
+    Count,
 }

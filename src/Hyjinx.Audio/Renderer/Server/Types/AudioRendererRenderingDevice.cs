@@ -1,24 +1,23 @@
-namespace Hyjinx.Audio.Renderer.Server.Types
+namespace Hyjinx.Audio.Renderer.Server.Types;
+
+/// <summary>
+/// The rendering device of an <see cref="AudioRenderSystem"/>.
+/// </summary>
+public enum AudioRendererRenderingDevice : byte
 {
     /// <summary>
-    /// The rendering device of an <see cref="AudioRenderSystem"/>.
+    /// Rendering is performed on the DSP.
     /// </summary>
-    public enum AudioRendererRenderingDevice : byte
-    {
-        /// <summary>
-        /// Rendering is performed on the DSP.
-        /// </summary>
-        /// <remarks>
-        /// Only supports <see cref="AudioRendererExecutionMode.Auto"/>.
-        /// </remarks>
-        Dsp,
+    /// <remarks>
+    /// Only supports <see cref="AudioRendererExecutionMode.Auto"/>.
+    /// </remarks>
+    Dsp,
 
-        /// <summary>
-        /// Rendering is performed on the CPU.
-        /// </summary>
-        /// <remarks>
-        /// Only supports <see cref="AudioRendererExecutionMode.Manual"/>.
-        /// </remarks>
-        Cpu,
-    }
+    /// <summary>
+    /// Rendering is performed on the CPU.
+    /// </summary>
+    /// <remarks>
+    /// Only supports <see cref="AudioRendererExecutionMode.Manual"/>.
+    /// </remarks>
+    Cpu,
 }

@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -8,6 +6,8 @@ using LibHac.Fs.Shim;
 using LibHac.FsSrv.Sf;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.SaveData;
 
 // ReSharper disable once CheckNamespace

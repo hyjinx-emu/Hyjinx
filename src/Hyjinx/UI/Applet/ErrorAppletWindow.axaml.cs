@@ -5,70 +5,69 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Windows;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Ava.UI.Applet
+namespace Hyjinx.Ava.UI.Applet;
+
+internal partial class ErrorAppletWindow : StyleableWindow
 {
-    internal partial class ErrorAppletWindow : StyleableWindow
+    private readonly Window _owner;
+    private object _buttonResponse;
+
+    public ErrorAppletWindow(Window owner, string[] buttons, string message)
     {
-        private readonly Window _owner;
-        private object _buttonResponse;
+        _owner = owner;
+        Message = message;
+        DataContext = this;
+        InitializeComponent();
 
-        public ErrorAppletWindow(Window owner, string[] buttons, string message)
+        int responseId = 0;
+
+        if (buttons != null)
         {
-            _owner = owner;
-            Message = message;
-            DataContext = this;
-            InitializeComponent();
-
-            int responseId = 0;
-
-            if (buttons != null)
+            foreach (string buttonText in buttons)
             {
-                foreach (string buttonText in buttons)
-                {
-                    AddButton(buttonText, responseId);
-                    responseId++;
-                }
-            }
-            else
-            {
-                AddButton(LocaleManager.Instance[LocaleKeys.InputDialogOk], 0);
+                AddButton(buttonText, responseId);
+                responseId++;
             }
         }
-
-        public ErrorAppletWindow()
+        else
         {
-            DataContext = this;
-            InitializeComponent();
+            AddButton(LocaleManager.Instance[LocaleKeys.InputDialogOk], 0);
+        }
+    }
+
+    public ErrorAppletWindow()
+    {
+        DataContext = this;
+        InitializeComponent();
+    }
+
+    public string Message { get; set; }
+
+    private void AddButton(string label, object tag)
+    {
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            Button button = new() { Content = label, Tag = tag };
+
+            button.Click += Button_Click;
+            ButtonStack.Children.Add(button);
+        });
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            _buttonResponse = button.Tag;
         }
 
-        public string Message { get; set; }
+        Close();
+    }
 
-        private void AddButton(string label, object tag)
-        {
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                Button button = new() { Content = label, Tag = tag };
+    public async Task<object> Run()
+    {
+        await ShowDialog(_owner);
 
-                button.Click += Button_Click;
-                ButtonStack.Children.Add(button);
-            });
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button)
-            {
-                _buttonResponse = button.Tag;
-            }
-
-            Close();
-        }
-
-        public async Task<object> Run()
-        {
-            await ShowDialog(_owner);
-
-            return _buttonResponse;
-        }
+        return _buttonResponse;
     }
 }

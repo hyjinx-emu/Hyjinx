@@ -1,8 +1,7 @@
-namespace ARMeilleure.CodeGen.X86
+namespace ARMeilleure.CodeGen.X86;
+
+enum CallConvName
 {
-    enum CallConvName
-    {
-        SystemV,
-        Windows,
-    }
+    SystemV,
+    Windows,
 }

@@ -2,8 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using LibHac.Ncm;
-using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
@@ -15,253 +13,254 @@ using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Hyjinx.UI.Common.Utilities;
+using LibHac.Ncm;
+using LibHac.Tools.FsSystem.NcaUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Hyjinx.Ava.UI.Views.Main
+namespace Hyjinx.Ava.UI.Views.Main;
+
+public partial class MainMenuBarView : UserControl
 {
-    public partial class MainMenuBarView : UserControl
+    public MainWindow Window { get; private set; }
+    public MainWindowViewModel ViewModel { get; private set; }
+
+    public MainMenuBarView()
     {
-        public MainWindow Window { get; private set; }
-        public MainWindowViewModel ViewModel { get; private set; }
+        InitializeComponent();
 
-        public MainMenuBarView()
+        ToggleFileTypesMenuItem.ItemsSource = GenerateToggleFileTypeItems();
+        ChangeLanguageMenuItem.ItemsSource = GenerateLanguageMenuItems();
+    }
+
+    private CheckBox[] GenerateToggleFileTypeItems()
+    {
+        List<CheckBox> checkBoxes = new();
+
+        foreach (var item in Enum.GetValues(typeof(FileTypes)))
         {
-            InitializeComponent();
-
-            ToggleFileTypesMenuItem.ItemsSource = GenerateToggleFileTypeItems();
-            ChangeLanguageMenuItem.ItemsSource = GenerateLanguageMenuItems();
+            string fileName = Enum.GetName(typeof(FileTypes), item);
+            checkBoxes.Add(new CheckBox
+            {
+                Content = $".{fileName}",
+                IsChecked = ((FileTypes)item).GetConfigValue(ConfigurationState.Instance.UI.ShownFileTypes),
+                Command = MiniCommand.Create(() => Window.ToggleFileType(fileName)),
+            });
         }
 
-        private CheckBox[] GenerateToggleFileTypeItems()
-        {
-            List<CheckBox> checkBoxes = new();
+        return checkBoxes.ToArray();
+    }
 
-            foreach (var item in Enum.GetValues(typeof(FileTypes)))
+    private static MenuItem[] GenerateLanguageMenuItems()
+    {
+        List<MenuItem> menuItems = new();
+
+        string localePath = "Hyjinx/Ava/Assets/Locales";
+        string localeExt = ".json";
+
+        string[] localesPath = EmbeddedResources.GetAllAvailableResources(localePath, localeExt);
+
+        Array.Sort(localesPath);
+
+        foreach (string locale in localesPath)
+        {
+            string languageCode = Path.GetFileNameWithoutExtension(locale).Split('.').Last();
+            string languageJson = EmbeddedResources.ReadAllText($"{localePath}/{languageCode}{localeExt}");
+            var strings = JsonHelper.Deserialize(languageJson, CommonJsonContext.Default.StringDictionary);
+
+            if (!strings.TryGetValue("Language", out string languageName))
             {
-                string fileName = Enum.GetName(typeof(FileTypes), item);
-                checkBoxes.Add(new CheckBox
+                languageName = languageCode;
+            }
+
+            MenuItem menuItem = new()
+            {
+                Header = languageName,
+                Command = MiniCommand.Create(() =>
                 {
-                    Content = $".{fileName}",
-                    IsChecked = ((FileTypes)item).GetConfigValue(ConfigurationState.Instance.UI.ShownFileTypes),
-                    Command = MiniCommand.Create(() => Window.ToggleFileType(fileName)),
-                });
-            }
+                    MainWindowViewModel.ChangeLanguage(languageCode);
+                }),
+            };
 
-            return checkBoxes.ToArray();
+            menuItems.Add(menuItem);
         }
 
-        private static MenuItem[] GenerateLanguageMenuItems()
+        return menuItems.ToArray();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        if (VisualRoot is MainWindow window)
         {
-            List<MenuItem> menuItems = new();
+            Window = window;
+        }
 
-            string localePath = "Hyjinx/Ava/Assets/Locales";
-            string localeExt = ".json";
+        ViewModel = Window.ViewModel;
+        DataContext = ViewModel;
+    }
 
-            string[] localesPath = EmbeddedResources.GetAllAvailableResources(localePath, localeExt);
+    private async void StopEmulation_Click(object sender, RoutedEventArgs e)
+    {
+        await Window.ViewModel.AppHost?.ShowExitPrompt();
+    }
 
-            Array.Sort(localesPath);
+    private void PauseEmulation_Click(object sender, RoutedEventArgs e)
+    {
+        Window.ViewModel.AppHost?.Pause();
+    }
 
-            foreach (string locale in localesPath)
+    private void ResumeEmulation_Click(object sender, RoutedEventArgs e)
+    {
+        Window.ViewModel.AppHost?.Resume();
+    }
+
+    public async void OpenSettings(object sender, RoutedEventArgs e)
+    {
+        Window.SettingsWindow = new(Window.VirtualFileSystem, Window.ContentManager);
+
+        await Window.SettingsWindow.ShowDialog(Window);
+
+        Window.SettingsWindow = null;
+
+        ViewModel.LoadConfigurableHotKeys();
+    }
+
+    public async void OpenMiiApplet(object sender, RoutedEventArgs e)
+    {
+        string contentPath = ViewModel.ContentManager.GetInstalledContentPath(0x0100000000001009, StorageId.BuiltInSystem, NcaContentType.Program);
+
+        if (!string.IsNullOrEmpty(contentPath))
+        {
+            ApplicationData applicationData = new()
             {
-                string languageCode = Path.GetFileNameWithoutExtension(locale).Split('.').Last();
-                string languageJson = EmbeddedResources.ReadAllText($"{localePath}/{languageCode}{localeExt}");
-                var strings = JsonHelper.Deserialize(languageJson, CommonJsonContext.Default.StringDictionary);
+                Name = "miiEdit",
+                Id = 0x0100000000001009,
+                Path = contentPath,
+            };
 
-                if (!strings.TryGetValue("Language", out string languageName))
-                {
-                    languageName = languageCode;
-                }
+            await ViewModel.LoadApplication(applicationData, ViewModel.IsFullScreen || ViewModel.StartGamesInFullscreen);
+        }
+    }
 
-                MenuItem menuItem = new()
-                {
-                    Header = languageName,
-                    Command = MiniCommand.Create(() =>
-                    {
-                        MainWindowViewModel.ChangeLanguage(languageCode);
-                    }),
-                };
-
-                menuItems.Add(menuItem);
-            }
-
-            return menuItems.ToArray();
+    public async void OpenAmiiboWindow(object sender, RoutedEventArgs e)
+    {
+        if (!ViewModel.IsAmiiboRequested)
+        {
+            return;
         }
 
-        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        if (ViewModel.AppHost.Device.System.SearchingForAmiibo(out int deviceId))
         {
-            base.OnAttachedToVisualTree(e);
+            string titleId = ViewModel.AppHost.Device.Processes.ActiveApplication.ProgramIdText.ToUpper();
+            AmiiboWindow window = new(ViewModel.ShowAll, ViewModel.LastScannedAmiiboId, titleId);
 
-            if (VisualRoot is MainWindow window)
+            await window.ShowDialog(Window);
+
+            if (window.IsScanned)
             {
-                Window = window;
+                ViewModel.ShowAll = window.ViewModel.ShowAllAmiibo;
+                ViewModel.LastScannedAmiiboId = window.ScannedAmiibo.GetId();
+
+                ViewModel.AppHost.Device.System.ScanAmiibo(deviceId, ViewModel.LastScannedAmiiboId, window.ViewModel.UseRandomUuid);
             }
+        }
+    }
 
-            ViewModel = Window.ViewModel;
-            DataContext = ViewModel;
+    public async void OpenCheatManagerForCurrentApp(object sender, RoutedEventArgs e)
+    {
+        if (!ViewModel.IsGameRunning)
+        {
+            return;
         }
 
-        private async void StopEmulation_Click(object sender, RoutedEventArgs e)
+        string name = ViewModel.AppHost.Device.Processes.ActiveApplication.ApplicationControlProperties.Title[(int)ViewModel.AppHost.Device.System.State.DesiredTitleLanguage].NameString.ToString();
+
+        await new CheatWindow(
+            Window.VirtualFileSystem,
+            ViewModel.AppHost.Device.Processes.ActiveApplication.ProgramIdText,
+            name,
+            Window.ViewModel.SelectedApplication.Path).ShowDialog(Window);
+
+        ViewModel.AppHost.Device.EnableCheats();
+    }
+
+    private void ScanAmiiboMenuItem_AttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (sender is MenuItem)
         {
-            await Window.ViewModel.AppHost?.ShowExitPrompt();
+            ViewModel.IsAmiiboRequested = Window.ViewModel.AppHost.Device.System.SearchingForAmiibo(out _);
         }
+    }
 
-        private void PauseEmulation_Click(object sender, RoutedEventArgs e)
+    private async void InstallFileTypes_Click(object sender, RoutedEventArgs e)
+    {
+        if (FileAssociationHelper.Install())
         {
-            Window.ViewModel.AppHost?.Pause();
+            await ContentDialogHelper.CreateInfoDialog(LocaleManager.Instance[LocaleKeys.DialogInstallFileTypesSuccessMessage], string.Empty, LocaleManager.Instance[LocaleKeys.InputDialogOk], string.Empty, string.Empty);
         }
-
-        private void ResumeEmulation_Click(object sender, RoutedEventArgs e)
+        else
         {
-            Window.ViewModel.AppHost?.Resume();
+            await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance[LocaleKeys.DialogInstallFileTypesErrorMessage]);
         }
+    }
 
-        public async void OpenSettings(object sender, RoutedEventArgs e)
+    private async void UninstallFileTypes_Click(object sender, RoutedEventArgs e)
+    {
+        if (FileAssociationHelper.Uninstall())
         {
-            Window.SettingsWindow = new(Window.VirtualFileSystem, Window.ContentManager);
-
-            await Window.SettingsWindow.ShowDialog(Window);
-
-            Window.SettingsWindow = null;
-
-            ViewModel.LoadConfigurableHotKeys();
+            await ContentDialogHelper.CreateInfoDialog(LocaleManager.Instance[LocaleKeys.DialogUninstallFileTypesSuccessMessage], string.Empty, LocaleManager.Instance[LocaleKeys.InputDialogOk], string.Empty, string.Empty);
         }
-
-        public async void OpenMiiApplet(object sender, RoutedEventArgs e)
+        else
         {
-            string contentPath = ViewModel.ContentManager.GetInstalledContentPath(0x0100000000001009, StorageId.BuiltInSystem, NcaContentType.Program);
+            await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance[LocaleKeys.DialogUninstallFileTypesErrorMessage]);
+        }
+    }
 
-            if (!string.IsNullOrEmpty(contentPath))
+    private async void ChangeWindowSize_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem item)
+        {
+            int height;
+            int width;
+
+            switch (item.Tag)
             {
-                ApplicationData applicationData = new()
-                {
-                    Name = "miiEdit",
-                    Id = 0x0100000000001009,
-                    Path = contentPath,
-                };
+                case "720":
+                    height = 720;
+                    width = 1280;
+                    break;
 
-                await ViewModel.LoadApplication(applicationData, ViewModel.IsFullScreen || ViewModel.StartGamesInFullscreen);
+                case "1080":
+                    height = 1080;
+                    width = 1920;
+                    break;
+
+                default:
+                    throw new ArgumentNullException($"Invalid Tag for {item}");
             }
-        }
 
-        public async void OpenAmiiboWindow(object sender, RoutedEventArgs e)
-        {
-            if (!ViewModel.IsAmiiboRequested)
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                return;
-            }
+                ViewModel.WindowState = WindowState.Normal;
 
-            if (ViewModel.AppHost.Device.System.SearchingForAmiibo(out int deviceId))
-            {
-                string titleId = ViewModel.AppHost.Device.Processes.ActiveApplication.ProgramIdText.ToUpper();
-                AmiiboWindow window = new(ViewModel.ShowAll, ViewModel.LastScannedAmiiboId, titleId);
+                height += (int)Window.StatusBarHeight + (int)Window.MenuBarHeight;
 
-                await window.ShowDialog(Window);
-
-                if (window.IsScanned)
-                {
-                    ViewModel.ShowAll = window.ViewModel.ShowAllAmiibo;
-                    ViewModel.LastScannedAmiiboId = window.ScannedAmiibo.GetId();
-
-                    ViewModel.AppHost.Device.System.ScanAmiibo(deviceId, ViewModel.LastScannedAmiiboId, window.ViewModel.UseRandomUuid);
-                }
-            }
+                Window.Arrange(new Rect(Window.Position.X, Window.Position.Y, width, height));
+            });
         }
+    }
 
-        public async void OpenCheatManagerForCurrentApp(object sender, RoutedEventArgs e)
-        {
-            if (!ViewModel.IsGameRunning)
-            {
-                return;
-            }
+    public async void OpenAboutWindow(object sender, RoutedEventArgs e)
+    {
+        await AboutWindow.Show();
+    }
 
-            string name = ViewModel.AppHost.Device.Processes.ActiveApplication.ApplicationControlProperties.Title[(int)ViewModel.AppHost.Device.System.State.DesiredTitleLanguage].NameString.ToString();
-
-            await new CheatWindow(
-                Window.VirtualFileSystem,
-                ViewModel.AppHost.Device.Processes.ActiveApplication.ProgramIdText,
-                name,
-                Window.ViewModel.SelectedApplication.Path).ShowDialog(Window);
-
-            ViewModel.AppHost.Device.EnableCheats();
-        }
-
-        private void ScanAmiiboMenuItem_AttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
-        {
-            if (sender is MenuItem)
-            {
-                ViewModel.IsAmiiboRequested = Window.ViewModel.AppHost.Device.System.SearchingForAmiibo(out _);
-            }
-        }
-
-        private async void InstallFileTypes_Click(object sender, RoutedEventArgs e)
-        {
-            if (FileAssociationHelper.Install())
-            {
-                await ContentDialogHelper.CreateInfoDialog(LocaleManager.Instance[LocaleKeys.DialogInstallFileTypesSuccessMessage], string.Empty, LocaleManager.Instance[LocaleKeys.InputDialogOk], string.Empty, string.Empty);
-            }
-            else
-            {
-                await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance[LocaleKeys.DialogInstallFileTypesErrorMessage]);
-            }
-        }
-
-        private async void UninstallFileTypes_Click(object sender, RoutedEventArgs e)
-        {
-            if (FileAssociationHelper.Uninstall())
-            {
-                await ContentDialogHelper.CreateInfoDialog(LocaleManager.Instance[LocaleKeys.DialogUninstallFileTypesSuccessMessage], string.Empty, LocaleManager.Instance[LocaleKeys.InputDialogOk], string.Empty, string.Empty);
-            }
-            else
-            {
-                await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance[LocaleKeys.DialogUninstallFileTypesErrorMessage]);
-            }
-        }
-
-        private async void ChangeWindowSize_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is MenuItem item)
-            {
-                int height;
-                int width;
-
-                switch (item.Tag)
-                {
-                    case "720":
-                        height = 720;
-                        width = 1280;
-                        break;
-
-                    case "1080":
-                        height = 1080;
-                        width = 1920;
-                        break;
-
-                    default:
-                        throw new ArgumentNullException($"Invalid Tag for {item}");
-                }
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    ViewModel.WindowState = WindowState.Normal;
-
-                    height += (int)Window.StatusBarHeight + (int)Window.MenuBarHeight;
-
-                    Window.Arrange(new Rect(Window.Position.X, Window.Position.Y, width, height));
-                });
-            }
-        }
-
-        public async void OpenAboutWindow(object sender, RoutedEventArgs e)
-        {
-            await AboutWindow.Show();
-        }
-
-        public void CloseWindow(object sender, RoutedEventArgs e)
-        {
-            Window.Close();
-        }
+    public void CloseWindow(object sender, RoutedEventArgs e)
+    {
+        Window.Close();
     }
 }

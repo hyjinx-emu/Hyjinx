@@ -2,83 +2,82 @@ using Avalonia.Svg.Skia;
 using Hyjinx.Ava.UI.Models.Input;
 using Hyjinx.Ava.UI.Views.Input;
 
-namespace Hyjinx.Ava.UI.ViewModels.Input
+namespace Hyjinx.Ava.UI.ViewModels.Input;
+
+public class ControllerInputViewModel : BaseModel
 {
-    public class ControllerInputViewModel : BaseModel
+    private GamepadInputConfig _config;
+    public GamepadInputConfig Config
     {
-        private GamepadInputConfig _config;
-        public GamepadInputConfig Config
+        get => _config;
+        set
         {
-            get => _config;
-            set
-            {
-                _config = value;
-                OnPropertyChanged();
-            }
+            _config = value;
+            OnPropertyChanged();
         }
+    }
 
-        private bool _isLeft;
-        public bool IsLeft
+    private bool _isLeft;
+    public bool IsLeft
+    {
+        get => _isLeft;
+        set
         {
-            get => _isLeft;
-            set
-            {
-                _isLeft = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(HasSides));
-            }
+            _isLeft = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasSides));
         }
+    }
 
-        private bool _isRight;
-        public bool IsRight
+    private bool _isRight;
+    public bool IsRight
+    {
+        get => _isRight;
+        set
         {
-            get => _isRight;
-            set
-            {
-                _isRight = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(HasSides));
-            }
+            _isRight = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasSides));
         }
+    }
 
-        public bool HasSides => IsLeft ^ IsRight;
+    public bool HasSides => IsLeft ^ IsRight;
 
-        private SvgImage _image;
-        public SvgImage Image
+    private SvgImage _image;
+    public SvgImage Image
+    {
+        get => _image;
+        set
         {
-            get => _image;
-            set
-            {
-                _image = value;
-                OnPropertyChanged();
-            }
+            _image = value;
+            OnPropertyChanged();
         }
+    }
 
-        public readonly InputViewModel ParentModel;
+    public readonly InputViewModel ParentModel;
 
-        public ControllerInputViewModel(InputViewModel model, GamepadInputConfig config)
-        {
-            ParentModel = model;
-            model.NotifyChangesEvent += OnParentModelChanged;
-            OnParentModelChanged();
-            Config = config;
-        }
+    public ControllerInputViewModel(InputViewModel model, GamepadInputConfig config)
+    {
+        ParentModel = model;
+        model.NotifyChangesEvent += OnParentModelChanged;
+        OnParentModelChanged();
+        Config = config;
+    }
 
-        public async void ShowMotionConfig()
-        {
-            await MotionInputView.Show(this);
-        }
+    public async void ShowMotionConfig()
+    {
+        await MotionInputView.Show(this);
+    }
 
-        public async void ShowRumbleConfig()
-        {
-            await RumbleInputView.Show(this);
-        }
+    public async void ShowRumbleConfig()
+    {
+        await RumbleInputView.Show(this);
+    }
 
-        public void OnParentModelChanged()
-        {
-            IsLeft = ParentModel.IsLeft;
-            IsRight = ParentModel.IsRight;
-            Image = ParentModel.Image;
-        }
+    public void OnParentModelChanged()
+    {
+        IsLeft = ParentModel.IsLeft;
+        IsRight = ParentModel.IsRight;
+        Image = ParentModel.Image;
     }
 }

@@ -1,14 +1,13 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
-{
-    class PollEvent
-    {
-        public PollEventData Data;
-        public IFileDescriptor FileDescriptor { get; }
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
 
-        public PollEvent(PollEventData data, IFileDescriptor fileDescriptor)
-        {
-            Data = data;
-            FileDescriptor = fileDescriptor;
-        }
+class PollEvent
+{
+    public PollEventData Data;
+    public IFileDescriptor FileDescriptor { get; }
+
+    public PollEvent(PollEventData data, IFileDescriptor fileDescriptor)
+    {
+        Data = data;
+        FileDescriptor = fileDescriptor;
     }
 }

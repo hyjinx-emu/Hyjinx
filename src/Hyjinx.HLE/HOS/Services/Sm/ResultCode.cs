@@ -1,15 +1,14 @@
-namespace Hyjinx.HLE.HOS.Services.Sm
+namespace Hyjinx.HLE.HOS.Services.Sm;
+
+enum ResultCode
 {
-    enum ResultCode
-    {
-        ModuleId = 21,
-        ErrorCodeShift = 9,
+    ModuleId = 21,
+    ErrorCodeShift = 9,
 
-        Success = 0,
+    Success = 0,
 
-        NotInitialized = (2 << ErrorCodeShift) | ModuleId,
-        AlreadyRegistered = (4 << ErrorCodeShift) | ModuleId,
-        InvalidName = (6 << ErrorCodeShift) | ModuleId,
-        NotRegistered = (7 << ErrorCodeShift) | ModuleId,
-    }
+    NotInitialized = (2 << ErrorCodeShift) | ModuleId,
+    AlreadyRegistered = (4 << ErrorCodeShift) | ModuleId,
+    InvalidName = (6 << ErrorCodeShift) | ModuleId,
+    NotRegistered = (7 << ErrorCodeShift) | ModuleId,
 }

@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 
-namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
+
+interface IPollManager
 {
-    interface IPollManager
-    {
-        bool IsCompatible(PollEvent evnt);
+    bool IsCompatible(PollEvent evnt);
 
-        LinuxError Poll(List<PollEvent> events, int timeoutMilliseconds, out int updatedCount);
+    LinuxError Poll(List<PollEvent> events, int timeoutMilliseconds, out int updatedCount);
 
-        LinuxError Select(List<PollEvent> events, int timeout, out int updatedCount);
-    }
+    LinuxError Select(List<PollEvent> events, int timeout, out int updatedCount);
 }

@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser;
+
+enum DocumentKind
 {
-    enum DocumentKind
-    {
-        OfflineHtmlPage = 1,
-        ApplicationLegalInformation,
-        SystemDataPage,
-    }
+    OfflineHtmlPage = 1,
+    ApplicationLegalInformation,
+    SystemDataPage,
 }

@@ -1,35 +1,34 @@
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using System.Collections.Generic;
 
-namespace Hyjinx.HLE.HOS.Kernel.Common
+namespace Hyjinx.HLE.HOS.Kernel.Common;
+
+class KSynchronizationObject : KAutoObject
 {
-    class KSynchronizationObject : KAutoObject
+    public LinkedList<KThread> WaitingThreads { get; }
+
+    public KSynchronizationObject(KernelContext context) : base(context)
     {
-        public LinkedList<KThread> WaitingThreads { get; }
+        WaitingThreads = new LinkedList<KThread>();
+    }
 
-        public KSynchronizationObject(KernelContext context) : base(context)
-        {
-            WaitingThreads = new LinkedList<KThread>();
-        }
+    public LinkedListNode<KThread> AddWaitingThread(KThread thread)
+    {
+        return WaitingThreads.AddLast(thread);
+    }
 
-        public LinkedListNode<KThread> AddWaitingThread(KThread thread)
-        {
-            return WaitingThreads.AddLast(thread);
-        }
+    public void RemoveWaitingThread(LinkedListNode<KThread> node)
+    {
+        WaitingThreads.Remove(node);
+    }
 
-        public void RemoveWaitingThread(LinkedListNode<KThread> node)
-        {
-            WaitingThreads.Remove(node);
-        }
+    public virtual void Signal()
+    {
+        KernelContext.Synchronization.SignalObject(this);
+    }
 
-        public virtual void Signal()
-        {
-            KernelContext.Synchronization.SignalObject(this);
-        }
-
-        public virtual bool IsSignaled()
-        {
-            return false;
-        }
+    public virtual bool IsSignaled()
+    {
+        return false;
     }
 }

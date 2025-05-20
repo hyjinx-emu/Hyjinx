@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy.Types
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy.Types;
+
+enum WirelessPriorityMode
 {
-    enum WirelessPriorityMode
-    {
-        Default,
-        OptimizedForWlan,
-        Unknown2,
-    }
+    Default,
+    OptimizedForWlan,
+    Unknown2,
 }

@@ -1,12 +1,11 @@
-namespace Hyjinx.HLE.HOS
+namespace Hyjinx.HLE.HOS;
+
+public enum ResultCode
 {
-    public enum ResultCode
-    {
-        OsModuleId = 3,
-        ErrorCodeShift = 9,
+    OsModuleId = 3,
+    ErrorCodeShift = 9,
 
-        Success = 0,
+    Success = 0,
 
-        NotAllocated = (1023 << ErrorCodeShift) | OsModuleId,
-    }
+    NotAllocated = (1023 << ErrorCodeShift) | OsModuleId,
 }

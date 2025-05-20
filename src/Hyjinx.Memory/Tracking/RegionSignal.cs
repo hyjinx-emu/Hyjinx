@@ -1,4 +1,3 @@
-namespace Hyjinx.Memory.Tracking
-{
-    public delegate void RegionSignal(ulong address, ulong size);
-}
+namespace Hyjinx.Memory.Tracking;
+
+public delegate void RegionSignal(ulong address, ulong size);

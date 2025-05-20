@@ -1,10 +1,10 @@
-using System;
-using System.Buffers;
-using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.FsSystem;
+using System;
+using System.Buffers;
+using System.Collections.Generic;
 
 namespace LibHac.Tools.Fs;
 

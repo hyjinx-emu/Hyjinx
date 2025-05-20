@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum Origin
 {
-    public enum Origin
-    {
-        UpperLeft,
-        LowerLeft,
-    }
+    UpperLeft,
+    LowerLeft,
 }

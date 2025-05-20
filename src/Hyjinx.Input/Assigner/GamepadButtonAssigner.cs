@@ -3,190 +3,189 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Hyjinx.Input.Assigner
+namespace Hyjinx.Input.Assigner;
+
+/// <summary>
+/// <see cref="IButtonAssigner"/> implementation for regular <see cref="IGamepad"/>.
+/// </summary>
+public class GamepadButtonAssigner : IButtonAssigner
 {
-    /// <summary>
-    /// <see cref="IButtonAssigner"/> implementation for regular <see cref="IGamepad"/>.
-    /// </summary>
-    public class GamepadButtonAssigner : IButtonAssigner
+    private readonly IGamepad _gamepad;
+
+    private GamepadStateSnapshot _currState;
+
+    private GamepadStateSnapshot _prevState;
+
+    private readonly JoystickButtonDetector _detector;
+
+    private readonly bool _forStick;
+
+    public GamepadButtonAssigner(IGamepad gamepad, float triggerThreshold, bool forStick)
     {
-        private readonly IGamepad _gamepad;
+        _gamepad = gamepad;
+        _detector = new JoystickButtonDetector();
+        _forStick = forStick;
 
-        private GamepadStateSnapshot _currState;
+        _gamepad?.SetTriggerThreshold(triggerThreshold);
+    }
 
-        private GamepadStateSnapshot _prevState;
-
-        private readonly JoystickButtonDetector _detector;
-
-        private readonly bool _forStick;
-
-        public GamepadButtonAssigner(IGamepad gamepad, float triggerThreshold, bool forStick)
+    public void Initialize()
+    {
+        if (_gamepad != null)
         {
-            _gamepad = gamepad;
-            _detector = new JoystickButtonDetector();
-            _forStick = forStick;
+            _currState = _gamepad.GetStateSnapshot();
+            _prevState = _currState;
+        }
+    }
 
-            _gamepad?.SetTriggerThreshold(triggerThreshold);
+    public void ReadInput()
+    {
+        if (_gamepad != null)
+        {
+            _prevState = _currState;
+            _currState = _gamepad.GetStateSnapshot();
         }
 
-        public void Initialize()
+        CollectButtonStats();
+    }
+
+    public bool IsAnyButtonPressed()
+    {
+        return _detector.IsAnyButtonPressed();
+    }
+
+    public bool ShouldCancel()
+    {
+        return _gamepad == null || !_gamepad.IsConnected;
+    }
+
+    public Button? GetPressedButton()
+    {
+        IEnumerable<GamepadButtonInputId> pressedButtons = _detector.GetPressedButtons();
+
+        return !_forStick ? new(pressedButtons.FirstOrDefault()) : new((StickInputId)pressedButtons.FirstOrDefault());
+    }
+
+    private void CollectButtonStats()
+    {
+        if (_forStick)
         {
-            if (_gamepad != null)
+            for (StickInputId inputId = StickInputId.Left; inputId < StickInputId.Count; inputId++)
             {
-                _currState = _gamepad.GetStateSnapshot();
-                _prevState = _currState;
+                (float x, float y) = _currState.GetStick(inputId);
+
+                float value;
+
+                if (x != 0.0f)
+                {
+                    value = x;
+                }
+                else if (y != 0.0f)
+                {
+                    value = y;
+                }
+                else
+                {
+                    continue;
+                }
+
+                _detector.AddInput((GamepadButtonInputId)inputId, value);
             }
         }
-
-        public void ReadInput()
+        else
         {
-            if (_gamepad != null)
+            for (GamepadButtonInputId inputId = GamepadButtonInputId.A; inputId < GamepadButtonInputId.Count; inputId++)
             {
-                _prevState = _currState;
-                _currState = _gamepad.GetStateSnapshot();
-            }
+                if (_currState.IsPressed(inputId) && !_prevState.IsPressed(inputId))
+                {
+                    _detector.AddInput(inputId, 1);
+                }
 
-            CollectButtonStats();
+                if (!_currState.IsPressed(inputId) && _prevState.IsPressed(inputId))
+                {
+                    _detector.AddInput(inputId, -1);
+                }
+            }
+        }
+    }
+
+    private class JoystickButtonDetector
+    {
+        private readonly Dictionary<GamepadButtonInputId, InputSummary> _stats;
+
+        public JoystickButtonDetector()
+        {
+            _stats = new Dictionary<GamepadButtonInputId, InputSummary>();
         }
 
         public bool IsAnyButtonPressed()
         {
-            return _detector.IsAnyButtonPressed();
+            return _stats.Values.Any(CheckButtonPressed);
         }
 
-        public bool ShouldCancel()
+        public IEnumerable<GamepadButtonInputId> GetPressedButtons()
         {
-            return _gamepad == null || !_gamepad.IsConnected;
+            return _stats.Where(kvp => CheckButtonPressed(kvp.Value)).Select(kvp => kvp.Key);
         }
 
-        public Button? GetPressedButton()
+        public void AddInput(GamepadButtonInputId button, float value)
         {
-            IEnumerable<GamepadButtonInputId> pressedButtons = _detector.GetPressedButtons();
 
-            return !_forStick ? new(pressedButtons.FirstOrDefault()) : new((StickInputId)pressedButtons.FirstOrDefault());
+            if (!_stats.TryGetValue(button, out InputSummary inputSummary))
+            {
+                inputSummary = new InputSummary();
+                _stats.Add(button, inputSummary);
+            }
+
+            inputSummary.AddInput(value);
         }
 
-        private void CollectButtonStats()
+        public override string ToString()
         {
-            if (_forStick)
+            StringWriter writer = new();
+
+            foreach (var kvp in _stats)
             {
-                for (StickInputId inputId = StickInputId.Left; inputId < StickInputId.Count; inputId++)
-                {
-                    (float x, float y) = _currState.GetStick(inputId);
-
-                    float value;
-
-                    if (x != 0.0f)
-                    {
-                        value = x;
-                    }
-                    else if (y != 0.0f)
-                    {
-                        value = y;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-
-                    _detector.AddInput((GamepadButtonInputId)inputId, value);
-                }
+                writer.WriteLine($"Button {kvp.Key} -> {kvp.Value}");
             }
-            else
-            {
-                for (GamepadButtonInputId inputId = GamepadButtonInputId.A; inputId < GamepadButtonInputId.Count; inputId++)
-                {
-                    if (_currState.IsPressed(inputId) && !_prevState.IsPressed(inputId))
-                    {
-                        _detector.AddInput(inputId, 1);
-                    }
 
-                    if (!_currState.IsPressed(inputId) && _prevState.IsPressed(inputId))
-                    {
-                        _detector.AddInput(inputId, -1);
-                    }
-                }
-            }
+            return writer.ToString();
         }
 
-        private class JoystickButtonDetector
+        private bool CheckButtonPressed(InputSummary sequence)
         {
-            private readonly Dictionary<GamepadButtonInputId, InputSummary> _stats;
+            float distance = Math.Abs(sequence.Min - sequence.Avg) + Math.Abs(sequence.Max - sequence.Avg);
+            return distance > 1.5; // distance range [0, 2]
+        }
+    }
 
-            public JoystickButtonDetector()
-            {
-                _stats = new Dictionary<GamepadButtonInputId, InputSummary>();
-            }
+    private class InputSummary
+    {
+        public float Min, Max, Sum, Avg;
 
-            public bool IsAnyButtonPressed()
-            {
-                return _stats.Values.Any(CheckButtonPressed);
-            }
+        public int NumSamples;
 
-            public IEnumerable<GamepadButtonInputId> GetPressedButtons()
-            {
-                return _stats.Where(kvp => CheckButtonPressed(kvp.Value)).Select(kvp => kvp.Key);
-            }
-
-            public void AddInput(GamepadButtonInputId button, float value)
-            {
-
-                if (!_stats.TryGetValue(button, out InputSummary inputSummary))
-                {
-                    inputSummary = new InputSummary();
-                    _stats.Add(button, inputSummary);
-                }
-
-                inputSummary.AddInput(value);
-            }
-
-            public override string ToString()
-            {
-                StringWriter writer = new();
-
-                foreach (var kvp in _stats)
-                {
-                    writer.WriteLine($"Button {kvp.Key} -> {kvp.Value}");
-                }
-
-                return writer.ToString();
-            }
-
-            private bool CheckButtonPressed(InputSummary sequence)
-            {
-                float distance = Math.Abs(sequence.Min - sequence.Avg) + Math.Abs(sequence.Max - sequence.Avg);
-                return distance > 1.5; // distance range [0, 2]
-            }
+        public InputSummary()
+        {
+            Min = float.MaxValue;
+            Max = float.MinValue;
+            Sum = 0;
+            NumSamples = 0;
+            Avg = 0;
         }
 
-        private class InputSummary
+        public void AddInput(float value)
         {
-            public float Min, Max, Sum, Avg;
+            Min = Math.Min(Min, value);
+            Max = Math.Max(Max, value);
+            Sum += value;
+            NumSamples += 1;
+            Avg = Sum / NumSamples;
+        }
 
-            public int NumSamples;
-
-            public InputSummary()
-            {
-                Min = float.MaxValue;
-                Max = float.MinValue;
-                Sum = 0;
-                NumSamples = 0;
-                Avg = 0;
-            }
-
-            public void AddInput(float value)
-            {
-                Min = Math.Min(Min, value);
-                Max = Math.Max(Max, value);
-                Sum += value;
-                NumSamples += 1;
-                Avg = Sum / NumSamples;
-            }
-
-            public override string ToString()
-            {
-                return $"Avg: {Avg} Min: {Min} Max: {Max} Sum: {Sum} NumSamples: {NumSamples}";
-            }
+        public override string ToString()
+        {
+            return $"Avg: {Avg} Min: {Min} Max: {Max} Sum: {Sum} NumSamples: {NumSamples}";
         }
     }
 }

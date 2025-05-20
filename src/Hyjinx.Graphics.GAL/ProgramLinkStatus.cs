@@ -1,9 +1,8 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum ProgramLinkStatus
 {
-    public enum ProgramLinkStatus
-    {
-        Incomplete,
-        Success,
-        Failure,
-    }
+    Incomplete,
+    Success,
+    Failure,
 }

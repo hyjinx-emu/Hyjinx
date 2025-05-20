@@ -1,32 +1,31 @@
 using Hyjinx.Ava.UI.ViewModels;
 using System.IO;
 
-namespace Hyjinx.Ava.UI.Models
+namespace Hyjinx.Ava.UI.Models;
+
+public class ModModel : BaseModel
 {
-    public class ModModel : BaseModel
+    private bool _enabled;
+
+    public bool Enabled
     {
-        private bool _enabled;
-
-        public bool Enabled
+        get => _enabled;
+        set
         {
-            get => _enabled;
-            set
-            {
-                _enabled = value;
-                OnPropertyChanged();
-            }
+            _enabled = value;
+            OnPropertyChanged();
         }
+    }
 
-        public bool InSd { get; }
-        public string Path { get; }
-        public string Name { get; }
+    public bool InSd { get; }
+    public string Path { get; }
+    public string Name { get; }
 
-        public ModModel(string path, string name, bool enabled, bool inSd)
-        {
-            Path = path;
-            Name = name;
-            Enabled = enabled;
-            InSd = inSd;
-        }
+    public ModModel(string path, string name, bool enabled, bool inSd)
+    {
+        Path = path;
+        Name = name;
+        Enabled = enabled;
+        InSd = inSd;
     }
 }

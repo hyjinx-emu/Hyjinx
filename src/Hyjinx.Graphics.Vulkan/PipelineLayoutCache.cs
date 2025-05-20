@@ -4,104 +4,103 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+class PipelineLayoutCache
 {
-    class PipelineLayoutCache
+    private readonly struct PlceKey : IEquatable<PlceKey>
     {
-        private readonly struct PlceKey : IEquatable<PlceKey>
+        public readonly ReadOnlyCollection<ResourceDescriptorCollection> SetDescriptors;
+        public readonly bool UsePushDescriptors;
+
+        public PlceKey(ReadOnlyCollection<ResourceDescriptorCollection> setDescriptors, bool usePushDescriptors)
         {
-            public readonly ReadOnlyCollection<ResourceDescriptorCollection> SetDescriptors;
-            public readonly bool UsePushDescriptors;
+            SetDescriptors = setDescriptors;
+            UsePushDescriptors = usePushDescriptors;
+        }
 
-            public PlceKey(ReadOnlyCollection<ResourceDescriptorCollection> setDescriptors, bool usePushDescriptors)
+        public override int GetHashCode()
+        {
+            HashCode hasher = new();
+
+            if (SetDescriptors != null)
             {
-                SetDescriptors = setDescriptors;
-                UsePushDescriptors = usePushDescriptors;
-            }
-
-            public override int GetHashCode()
-            {
-                HashCode hasher = new();
-
-                if (SetDescriptors != null)
+                foreach (var setDescriptor in SetDescriptors)
                 {
-                    foreach (var setDescriptor in SetDescriptors)
-                    {
-                        hasher.Add(setDescriptor);
-                    }
+                    hasher.Add(setDescriptor);
                 }
-
-                hasher.Add(UsePushDescriptors);
-
-                return hasher.ToHashCode();
             }
 
-            public override bool Equals(object obj)
+            hasher.Add(UsePushDescriptors);
+
+            return hasher.ToHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PlceKey other && Equals(other);
+        }
+
+        public bool Equals(PlceKey other)
+        {
+            if ((SetDescriptors == null) != (other.SetDescriptors == null))
             {
-                return obj is PlceKey other && Equals(other);
+                return false;
             }
 
-            public bool Equals(PlceKey other)
+            if (SetDescriptors != null)
             {
-                if ((SetDescriptors == null) != (other.SetDescriptors == null))
+                if (SetDescriptors.Count != other.SetDescriptors.Count)
                 {
                     return false;
                 }
 
-                if (SetDescriptors != null)
+                for (int index = 0; index < SetDescriptors.Count; index++)
                 {
-                    if (SetDescriptors.Count != other.SetDescriptors.Count)
+                    if (!SetDescriptors[index].Equals(other.SetDescriptors[index]))
                     {
                         return false;
                     }
-
-                    for (int index = 0; index < SetDescriptors.Count; index++)
-                    {
-                        if (!SetDescriptors[index].Equals(other.SetDescriptors[index]))
-                        {
-                            return false;
-                        }
-                    }
                 }
-
-                return UsePushDescriptors == other.UsePushDescriptors;
             }
+
+            return UsePushDescriptors == other.UsePushDescriptors;
         }
+    }
 
-        private readonly ConcurrentDictionary<PlceKey, PipelineLayoutCacheEntry> _plces;
+    private readonly ConcurrentDictionary<PlceKey, PipelineLayoutCacheEntry> _plces;
 
-        public PipelineLayoutCache()
+    public PipelineLayoutCache()
+    {
+        _plces = new ConcurrentDictionary<PlceKey, PipelineLayoutCacheEntry>();
+    }
+
+    public PipelineLayoutCacheEntry GetOrCreate(
+        VulkanRenderer gd,
+        Device device,
+        ReadOnlyCollection<ResourceDescriptorCollection> setDescriptors,
+        bool usePushDescriptors)
+    {
+        var key = new PlceKey(setDescriptors, usePushDescriptors);
+
+        return _plces.GetOrAdd(key, newKey => new PipelineLayoutCacheEntry(gd, device, setDescriptors, usePushDescriptors));
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            _plces = new ConcurrentDictionary<PlceKey, PipelineLayoutCacheEntry>();
-        }
-
-        public PipelineLayoutCacheEntry GetOrCreate(
-            VulkanRenderer gd,
-            Device device,
-            ReadOnlyCollection<ResourceDescriptorCollection> setDescriptors,
-            bool usePushDescriptors)
-        {
-            var key = new PlceKey(setDescriptors, usePushDescriptors);
-
-            return _plces.GetOrAdd(key, newKey => new PipelineLayoutCacheEntry(gd, device, setDescriptors, usePushDescriptors));
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
+            foreach (var plce in _plces.Values)
             {
-                foreach (var plce in _plces.Values)
-                {
-                    plce.Dispose();
-                }
-
-                _plces.Clear();
+                plce.Dispose();
             }
-        }
 
-        public void Dispose()
-        {
-            Dispose(true);
+            _plces.Clear();
         }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
     }
 }

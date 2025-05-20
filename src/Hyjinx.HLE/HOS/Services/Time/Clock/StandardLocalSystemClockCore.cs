@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock;
+
+class StandardLocalSystemClockCore : SystemClockCore
 {
-    class StandardLocalSystemClockCore : SystemClockCore
-    {
-        public StandardLocalSystemClockCore(StandardSteadyClockCore steadyClockCore) : base(steadyClockCore) { }
-    }
+    public StandardLocalSystemClockCore(StandardSteadyClockCore steadyClockCore) : base(steadyClockCore) { }
 }

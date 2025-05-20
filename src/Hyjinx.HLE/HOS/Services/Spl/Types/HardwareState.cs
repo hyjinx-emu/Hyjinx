@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Spl.Types
+namespace Hyjinx.HLE.HOS.Services.Spl.Types;
+
+enum HardwareState
 {
-    enum HardwareState
-    {
-        Development,
-        Production,
-    }
+    Development,
+    Production,
 }

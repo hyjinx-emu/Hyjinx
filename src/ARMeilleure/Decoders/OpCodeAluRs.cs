@@ -1,29 +1,28 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+class OpCodeAluRs : OpCodeAlu, IOpCodeAluRs
 {
-    class OpCodeAluRs : OpCodeAlu, IOpCodeAluRs
+    public int Shift { get; }
+    public int Rm { get; }
+
+    public ShiftType ShiftType { get; }
+
+    public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCodeAluRs(inst, address, opCode);
+
+    public OpCodeAluRs(InstDescriptor inst, ulong address, int opCode) : base(inst, address, opCode)
     {
-        public int Shift { get; }
-        public int Rm { get; }
+        int shift = (opCode >> 10) & 0x3f;
 
-        public ShiftType ShiftType { get; }
-
-        public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCodeAluRs(inst, address, opCode);
-
-        public OpCodeAluRs(InstDescriptor inst, ulong address, int opCode) : base(inst, address, opCode)
+        if (shift >= GetBitsCount())
         {
-            int shift = (opCode >> 10) & 0x3f;
+            Instruction = InstDescriptor.Undefined;
 
-            if (shift >= GetBitsCount())
-            {
-                Instruction = InstDescriptor.Undefined;
-
-                return;
-            }
-
-            Shift = shift;
-
-            Rm = (opCode >> 16) & 0x1f;
-            ShiftType = (ShiftType)((opCode >> 22) & 0x3);
+            return;
         }
+
+        Shift = shift;
+
+        Rm = (opCode >> 16) & 0x1f;
+        ShiftType = (ShiftType)((opCode >> 22) & 0x3);
     }
 }

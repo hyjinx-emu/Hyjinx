@@ -1,6 +1,6 @@
-using System;
 using LibHac.Common.FixedArrays;
 using LibHac.FsSystem;
+using System;
 
 namespace LibHac.FsSrv;
 

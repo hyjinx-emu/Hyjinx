@@ -1,11 +1,10 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Graphics.Texture
+namespace Hyjinx.Graphics.Texture;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1, Size = 12)]
+public readonly struct Bpp12Pixel
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 12)]
-    public readonly struct Bpp12Pixel
-    {
-        private readonly ulong _elem1;
-        private readonly uint _elem2;
-    }
+    private readonly ulong _elem1;
+    private readonly uint _elem2;
 }

@@ -1,43 +1,42 @@
 using System.Diagnostics;
 
-namespace Hyjinx.Cpu.LightningJit.Arm32.Target.Arm64
+namespace Hyjinx.Cpu.LightningJit.Arm32.Target.Arm64;
+
+static class InstEmitNeonCrypto
 {
-    static class InstEmitNeonCrypto
+    public static void Aesd(CodeGenContext context, uint rd, uint rm, uint size)
     {
-        public static void Aesd(CodeGenContext context, uint rd, uint rm, uint size)
-        {
-            // TODO: Feature check, emulation if not supported.
+        // TODO: Feature check, emulation if not supported.
 
-            Debug.Assert(size == 0);
+        Debug.Assert(size == 0);
 
-            InstEmitNeonCommon.EmitVectorUnary(context, rd, rm, context.Arm64Assembler.Aesd);
-        }
+        InstEmitNeonCommon.EmitVectorUnary(context, rd, rm, context.Arm64Assembler.Aesd);
+    }
 
-        public static void Aese(CodeGenContext context, uint rd, uint rm, uint size)
-        {
-            // TODO: Feature check, emulation if not supported.
+    public static void Aese(CodeGenContext context, uint rd, uint rm, uint size)
+    {
+        // TODO: Feature check, emulation if not supported.
 
-            Debug.Assert(size == 0);
+        Debug.Assert(size == 0);
 
-            InstEmitNeonCommon.EmitVectorUnary(context, rd, rm, context.Arm64Assembler.Aese);
-        }
+        InstEmitNeonCommon.EmitVectorUnary(context, rd, rm, context.Arm64Assembler.Aese);
+    }
 
-        public static void Aesimc(CodeGenContext context, uint rd, uint rm, uint size)
-        {
-            // TODO: Feature check, emulation if not supported.
+    public static void Aesimc(CodeGenContext context, uint rd, uint rm, uint size)
+    {
+        // TODO: Feature check, emulation if not supported.
 
-            Debug.Assert(size == 0);
+        Debug.Assert(size == 0);
 
-            InstEmitNeonCommon.EmitVectorUnary(context, rd, rm, context.Arm64Assembler.Aesimc);
-        }
+        InstEmitNeonCommon.EmitVectorUnary(context, rd, rm, context.Arm64Assembler.Aesimc);
+    }
 
-        public static void Aesmc(CodeGenContext context, uint rd, uint rm, uint size)
-        {
-            // TODO: Feature check, emulation if not supported.
+    public static void Aesmc(CodeGenContext context, uint rd, uint rm, uint size)
+    {
+        // TODO: Feature check, emulation if not supported.
 
-            Debug.Assert(size == 0);
+        Debug.Assert(size == 0);
 
-            InstEmitNeonCommon.EmitVectorUnary(context, rd, rm, context.Arm64Assembler.Aesmc);
-        }
+        InstEmitNeonCommon.EmitVectorUnary(context, rd, rm, context.Arm64Assembler.Aesmc);
     }
 }

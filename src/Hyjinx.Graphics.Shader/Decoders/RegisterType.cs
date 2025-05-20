@@ -1,9 +1,8 @@
-namespace Hyjinx.Graphics.Shader.Decoders
+namespace Hyjinx.Graphics.Shader.Decoders;
+
+enum RegisterType
 {
-    enum RegisterType
-    {
-        Flag,
-        Gpr,
-        Predicate,
-    }
+    Flag,
+    Gpr,
+    Predicate,
 }

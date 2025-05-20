@@ -4,40 +4,39 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings;
 using System;
 
-namespace Hyjinx.Ava.Common.Locale
+namespace Hyjinx.Ava.Common.Locale;
+
+internal class LocaleExtension : MarkupExtension
 {
-    internal class LocaleExtension : MarkupExtension
+    public LocaleExtension(LocaleKeys key)
     {
-        public LocaleExtension(LocaleKeys key)
-        {
-            Key = key;
-        }
+        Key = key;
+    }
 
-        public LocaleKeys Key { get; }
+    public LocaleKeys Key { get; }
 
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            LocaleKeys keyToUse = Key;
+    public override object ProvideValue(IServiceProvider serviceProvider)
+    {
+        LocaleKeys keyToUse = Key;
 
-            var builder = new CompiledBindingPathBuilder();
+        var builder = new CompiledBindingPathBuilder();
 
-            builder
-                .Property(new ClrPropertyInfo("Item",
-                obj => (LocaleManager.Instance[keyToUse]),
-                null,
-                typeof(string)), (weakRef, iPropInfo) =>
-                {
-                    return PropertyInfoAccessorFactory.CreateInpcPropertyAccessor(weakRef, iPropInfo);
-                });
-
-            var path = builder.Build();
-
-            var binding = new CompiledBindingExtension(path)
+        builder
+            .Property(new ClrPropertyInfo("Item",
+            obj => (LocaleManager.Instance[keyToUse]),
+            null,
+            typeof(string)), (weakRef, iPropInfo) =>
             {
-                Source = LocaleManager.Instance
-            };
+                return PropertyInfoAccessorFactory.CreateInpcPropertyAccessor(weakRef, iPropInfo);
+            });
 
-            return binding.ProvideValue(serviceProvider);
-        }
+        var path = builder.Build();
+
+        var binding = new CompiledBindingExtension(path)
+        {
+            Source = LocaleManager.Instance
+        };
+
+        return binding.ProvideValue(serviceProvider);
     }
 }

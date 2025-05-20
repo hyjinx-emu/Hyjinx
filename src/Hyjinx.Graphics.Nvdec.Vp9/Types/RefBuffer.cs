@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.Nvdec.Vp9.Types
+namespace Hyjinx.Graphics.Nvdec.Vp9.Types;
+
+internal struct RefBuffer
 {
-    internal struct RefBuffer
-    {
-        public Surface Buf;
-        public ScaleFactors Sf;
-    }
+    public Surface Buf;
+    public ScaleFactors Sf;
 }

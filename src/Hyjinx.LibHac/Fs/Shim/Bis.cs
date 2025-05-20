@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
@@ -7,8 +5,10 @@ using LibHac.Fs.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Util;
-using static LibHac.Fs.Impl.CommonMountNames;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
+using static LibHac.Fs.Impl.CommonMountNames;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;

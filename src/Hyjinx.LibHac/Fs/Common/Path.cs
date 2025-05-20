@@ -1,9 +1,9 @@
-using System;
-using System.Buffers;
-using System.Diagnostics;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Util;
+using System;
+using System.Buffers;
+using System.Diagnostics;
 using static LibHac.Fs.StringTraits;
 
 // ReSharper disable once CheckNamespace

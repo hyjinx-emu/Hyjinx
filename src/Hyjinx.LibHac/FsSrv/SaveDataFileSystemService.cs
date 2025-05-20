@@ -1,6 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -14,12 +11,15 @@ using LibHac.Ncm;
 using LibHac.Os;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using static LibHac.Fs.SaveData;
 using static LibHac.Fs.StringTraits;
-using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
-using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 using IFile = LibHac.Fs.Fsa.IFile;
 using IFileSf = LibHac.FsSrv.Sf.IFile;
+using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
+using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 using Path = LibHac.Fs.Path;
 using Utility = LibHac.FsSystem.Utility;
 

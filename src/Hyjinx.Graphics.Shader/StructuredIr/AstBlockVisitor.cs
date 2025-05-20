@@ -3,65 +3,64 @@ using System.Collections.Generic;
 
 using static Hyjinx.Graphics.Shader.StructuredIr.AstHelper;
 
-namespace Hyjinx.Graphics.Shader.StructuredIr
+namespace Hyjinx.Graphics.Shader.StructuredIr;
+
+class AstBlockVisitor
 {
-    class AstBlockVisitor
+    public AstBlock Block { get; private set; }
+
+    public class BlockVisitationEventArgs : EventArgs
     {
-        public AstBlock Block { get; private set; }
+        public AstBlock Block { get; }
 
-        public class BlockVisitationEventArgs : EventArgs
+        public BlockVisitationEventArgs(AstBlock block)
         {
-            public AstBlock Block { get; }
+            Block = block;
+        }
+    }
 
-            public BlockVisitationEventArgs(AstBlock block)
+    public event EventHandler<BlockVisitationEventArgs> BlockEntered;
+    public event EventHandler<BlockVisitationEventArgs> BlockLeft;
+
+    public AstBlockVisitor(AstBlock mainBlock)
+    {
+        Block = mainBlock;
+    }
+
+    public IEnumerable<IAstNode> Visit()
+    {
+        IAstNode node = Block.First;
+
+        while (node != null)
+        {
+            // We reached a child block, visit the nodes inside.
+            while (node is AstBlock childBlock)
             {
-                Block = block;
+                Block = childBlock;
+
+                node = childBlock.First;
+
+                BlockEntered?.Invoke(this, new BlockVisitationEventArgs(Block));
             }
-        }
 
-        public event EventHandler<BlockVisitationEventArgs> BlockEntered;
-        public event EventHandler<BlockVisitationEventArgs> BlockLeft;
-
-        public AstBlockVisitor(AstBlock mainBlock)
-        {
-            Block = mainBlock;
-        }
-
-        public IEnumerable<IAstNode> Visit()
-        {
-            IAstNode node = Block.First;
-
-            while (node != null)
+            // Node may be null, if the block is empty.
+            if (node != null)
             {
-                // We reached a child block, visit the nodes inside.
-                while (node is AstBlock childBlock)
-                {
-                    Block = childBlock;
+                IAstNode next = Next(node);
 
-                    node = childBlock.First;
+                yield return node;
 
-                    BlockEntered?.Invoke(this, new BlockVisitationEventArgs(Block));
-                }
+                node = next;
+            }
 
-                // Node may be null, if the block is empty.
-                if (node != null)
-                {
-                    IAstNode next = Next(node);
+            // We reached the end of the list, go up on tree to the parent blocks.
+            while (node == null && Block.Type != AstBlockType.Main)
+            {
+                BlockLeft?.Invoke(this, new BlockVisitationEventArgs(Block));
 
-                    yield return node;
+                node = Next(Block);
 
-                    node = next;
-                }
-
-                // We reached the end of the list, go up on tree to the parent blocks.
-                while (node == null && Block.Type != AstBlockType.Main)
-                {
-                    BlockLeft?.Invoke(this, new BlockVisitationEventArgs(Block));
-
-                    node = Next(Block);
-
-                    Block = Block.Parent;
-                }
+                Block = Block.Parent;
             }
         }
     }

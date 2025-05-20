@@ -1,15 +1,14 @@
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+struct DebugPadState : ISampledDataStruct
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct DebugPadState : ISampledDataStruct
-    {
-        public ulong SamplingNumber;
-        public DebugPadAttribute Attributes;
-        public DebugPadButton Buttons;
-        public AnalogStickState AnalogStickR;
-        public AnalogStickState AnalogStickL;
-    }
+    public ulong SamplingNumber;
+    public DebugPadAttribute Attributes;
+    public DebugPadButton Buttons;
+    public AnalogStickState AnalogStickR;
+    public AnalogStickState AnalogStickL;
 }

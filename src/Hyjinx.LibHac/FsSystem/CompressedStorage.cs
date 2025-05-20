@@ -1,10 +1,10 @@
 // ReSharper disable UnusedMember.Local NotAccessedField.Local
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem.Impl;
 using LibHac.Os;
+using System;
+using System.Runtime.CompilerServices;
 using Buffer = LibHac.Mem.Buffer;
 using CacheHandle = System.UInt64;
 

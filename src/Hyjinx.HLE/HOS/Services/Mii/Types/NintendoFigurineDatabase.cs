@@ -3,252 +3,251 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
+
+[StructLayout(LayoutKind.Sequential, Pack = 8, Size = 0x1A98)]
+struct NintendoFigurineDatabase
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 8, Size = 0x1A98)]
-    struct NintendoFigurineDatabase
+    private const int DatabaseMagic = ('N' << 0) | ('F' << 8) | ('D' << 16) | ('B' << 24);
+    private const byte MaxMii = 100;
+    private const byte CurrentVersion = 1;
+
+    private const int FigurineArraySize = MaxMii * StoreData.Size;
+
+    private uint _magic;
+
+    private FigurineStorageStruct _figurineStorage;
+
+    private byte _version;
+    private byte _figurineCount;
+    private ushort _crc;
+
+    // Set to true to allow fixing database with invalid storedata device crc instead of deleting them.
+    private const bool AcceptInvalidDeviceCrc = true;
+
+    public readonly int Length => _figurineCount;
+
+    [StructLayout(LayoutKind.Sequential, Size = FigurineArraySize)]
+    private struct FigurineStorageStruct { }
+
+    private Span<StoreData> Figurines => SpanHelpers.AsSpan<FigurineStorageStruct, StoreData>(ref _figurineStorage);
+
+    public StoreData Get(int index)
     {
-        private const int DatabaseMagic = ('N' << 0) | ('F' << 8) | ('D' << 16) | ('B' << 24);
-        private const byte MaxMii = 100;
-        private const byte CurrentVersion = 1;
+        return Figurines[index];
+    }
 
-        private const int FigurineArraySize = MaxMii * StoreData.Size;
+    public readonly bool IsFull()
+    {
+        return Length >= MaxMii;
+    }
 
-        private uint _magic;
-
-        private FigurineStorageStruct _figurineStorage;
-
-        private byte _version;
-        private byte _figurineCount;
-        private ushort _crc;
-
-        // Set to true to allow fixing database with invalid storedata device crc instead of deleting them.
-        private const bool AcceptInvalidDeviceCrc = true;
-
-        public readonly int Length => _figurineCount;
-
-        [StructLayout(LayoutKind.Sequential, Size = FigurineArraySize)]
-        private struct FigurineStorageStruct { }
-
-        private Span<StoreData> Figurines => SpanHelpers.AsSpan<FigurineStorageStruct, StoreData>(ref _figurineStorage);
-
-        public StoreData Get(int index)
+    public bool GetIndexByCreatorId(out int index, CreateId createId)
+    {
+        for (int i = 0; i < Length; i++)
         {
-            return Figurines[index];
+            if (Figurines[i].CreateId == createId)
+            {
+                index = i;
+
+                return true;
+            }
         }
 
-        public readonly bool IsFull()
+        index = -1;
+
+        return false;
+    }
+
+    public ResultCode Move(int newIndex, int oldIndex)
+    {
+        if (newIndex == oldIndex)
         {
-            return Length >= MaxMii;
+            return ResultCode.NotUpdated;
         }
 
-        public bool GetIndexByCreatorId(out int index, CreateId createId)
+        StoreData tmp = Figurines[oldIndex];
+
+        int targetLength;
+        int sourceIndex;
+        int destinationIndex;
+
+        if (newIndex < oldIndex)
         {
-            for (int i = 0; i < Length; i++)
-            {
-                if (Figurines[i].CreateId == createId)
-                {
-                    index = i;
-
-                    return true;
-                }
-            }
-
-            index = -1;
-
-            return false;
+            targetLength = oldIndex - newIndex;
+            sourceIndex = newIndex;
+            destinationIndex = newIndex + 1;
+        }
+        else
+        {
+            targetLength = newIndex - oldIndex;
+            sourceIndex = oldIndex + 1;
+            destinationIndex = oldIndex;
         }
 
-        public ResultCode Move(int newIndex, int oldIndex)
+        Figurines.Slice(sourceIndex, targetLength).CopyTo(Figurines.Slice(destinationIndex, targetLength));
+
+        Figurines[newIndex] = tmp;
+
+        UpdateCrc();
+
+        return ResultCode.Success;
+    }
+
+    public void Replace(int index, StoreData storeData)
+    {
+        Figurines[index] = storeData;
+
+        UpdateCrc();
+    }
+
+    public void Add(StoreData storeData)
+    {
+        Replace(_figurineCount++, storeData);
+    }
+
+    public void Delete(int index)
+    {
+        int newCount = _figurineCount - 1;
+
+        // If this isn't the only element in the list, move the data in it.
+        if (index < newCount)
         {
-            if (newIndex == oldIndex)
-            {
-                return ResultCode.NotUpdated;
-            }
-
-            StoreData tmp = Figurines[oldIndex];
-
-            int targetLength;
-            int sourceIndex;
-            int destinationIndex;
-
-            if (newIndex < oldIndex)
-            {
-                targetLength = oldIndex - newIndex;
-                sourceIndex = newIndex;
-                destinationIndex = newIndex + 1;
-            }
-            else
-            {
-                targetLength = newIndex - oldIndex;
-                sourceIndex = oldIndex + 1;
-                destinationIndex = oldIndex;
-            }
+            int targetLength = newCount - index;
+            int sourceIndex = index + 1;
+            int destinationIndex = index;
 
             Figurines.Slice(sourceIndex, targetLength).CopyTo(Figurines.Slice(destinationIndex, targetLength));
-
-            Figurines[newIndex] = tmp;
-
-            UpdateCrc();
-
-            return ResultCode.Success;
         }
 
-        public void Replace(int index, StoreData storeData)
+        _figurineCount = (byte)newCount;
+
+        UpdateCrc();
+    }
+
+    public bool FixDatabase()
+    {
+        bool isBroken = false;
+        int i = 0;
+
+        while (i < Length)
         {
-            Figurines[index] = storeData;
+            ref StoreData figurine = ref Figurines[i];
 
-            UpdateCrc();
-        }
-
-        public void Add(StoreData storeData)
-        {
-            Replace(_figurineCount++, storeData);
-        }
-
-        public void Delete(int index)
-        {
-            int newCount = _figurineCount - 1;
-
-            // If this isn't the only element in the list, move the data in it.
-            if (index < newCount)
+            if (!figurine.IsValid())
             {
-                int targetLength = newCount - index;
-                int sourceIndex = index + 1;
-                int destinationIndex = index;
-
-                Figurines.Slice(sourceIndex, targetLength).CopyTo(Figurines.Slice(destinationIndex, targetLength));
-            }
-
-            _figurineCount = (byte)newCount;
-
-            UpdateCrc();
-        }
-
-        public bool FixDatabase()
-        {
-            bool isBroken = false;
-            int i = 0;
-
-            while (i < Length)
-            {
-                ref StoreData figurine = ref Figurines[i];
-
-                if (!figurine.IsValid())
+                if (AcceptInvalidDeviceCrc && figurine.CoreData.IsValid() && figurine.IsValidDataCrc())
                 {
-                    if (AcceptInvalidDeviceCrc && figurine.CoreData.IsValid() && figurine.IsValidDataCrc())
-                    {
-                        figurine.UpdateCrc();
-                    }
-                    else
-                    {
-                        Delete(i);
-                        isBroken = true;
-                    }
+                    figurine.UpdateCrc();
                 }
                 else
                 {
-                    bool hasDuplicate = false;
-                    CreateId createId = figurine.CreateId;
-
-                    for (int j = 0; j < i; j++)
-                    {
-                        if (Figurines[j].CreateId == createId)
-                        {
-                            hasDuplicate = true;
-                            break;
-                        }
-                    }
-
-                    if (hasDuplicate)
-                    {
-                        Delete(i);
-                        isBroken = true;
-                    }
-                    else
-                    {
-                        i++;
-                    }
+                    Delete(i);
+                    isBroken = true;
                 }
             }
-
-            UpdateCrc();
-
-            return isBroken;
-        }
-
-        public ResultCode Verify()
-        {
-            if (_magic != DatabaseMagic)
+            else
             {
-                return ResultCode.InvalidDatabaseMagic;
+                bool hasDuplicate = false;
+                CreateId createId = figurine.CreateId;
+
+                for (int j = 0; j < i; j++)
+                {
+                    if (Figurines[j].CreateId == createId)
+                    {
+                        hasDuplicate = true;
+                        break;
+                    }
+                }
+
+                if (hasDuplicate)
+                {
+                    Delete(i);
+                    isBroken = true;
+                }
+                else
+                {
+                    i++;
+                }
             }
-
-            if (_version != CurrentVersion)
-            {
-                return ResultCode.InvalidDatabaseVersion;
-            }
-
-            if (!IsValidCrc())
-            {
-                return ResultCode.InvalidCrc;
-            }
-
-            if (_figurineCount > 100)
-            {
-                return ResultCode.InvalidDatabaseSize;
-            }
-
-            return ResultCode.Success;
         }
 
-        public void Format()
+        UpdateCrc();
+
+        return isBroken;
+    }
+
+    public ResultCode Verify()
+    {
+        if (_magic != DatabaseMagic)
         {
-            _magic = DatabaseMagic;
-            _version = CurrentVersion;
-            _figurineCount = 0;
-
-            // Fill with empty data
-            Figurines.Clear();
-
-            UpdateCrc();
+            return ResultCode.InvalidDatabaseMagic;
         }
 
-        public void CorruptDatabase()
+        if (_version != CurrentVersion)
         {
-            UpdateCrc();
-
-            _crc = (ushort)~_crc;
+            return ResultCode.InvalidDatabaseVersion;
         }
 
-        private void UpdateCrc()
+        if (!IsValidCrc())
         {
-            _crc = CalculateCrc();
+            return ResultCode.InvalidCrc;
         }
 
-        public bool IsValidCrc()
+        if (_figurineCount > 100)
         {
-            return _crc == CalculateCrc();
+            return ResultCode.InvalidDatabaseSize;
         }
 
-        private ushort CalculateCrc()
-        {
-            return Helper.CalculateCrc16(AsSpanWithoutCrc(), 0, true);
-        }
+        return ResultCode.Success;
+    }
 
-        public Span<byte> AsSpan()
-        {
-            return SpanHelpers.AsByteSpan(ref this);
-        }
+    public void Format()
+    {
+        _magic = DatabaseMagic;
+        _version = CurrentVersion;
+        _figurineCount = 0;
 
-        public ReadOnlySpan<byte> AsReadOnlySpan()
-        {
-            return SpanHelpers.AsReadOnlyByteSpan(ref this);
-        }
+        // Fill with empty data
+        Figurines.Clear();
 
-        private ReadOnlySpan<byte> AsSpanWithoutCrc()
-        {
-            return AsReadOnlySpan()[..(Unsafe.SizeOf<NintendoFigurineDatabase>() - 2)];
-        }
+        UpdateCrc();
+    }
+
+    public void CorruptDatabase()
+    {
+        UpdateCrc();
+
+        _crc = (ushort)~_crc;
+    }
+
+    private void UpdateCrc()
+    {
+        _crc = CalculateCrc();
+    }
+
+    public bool IsValidCrc()
+    {
+        return _crc == CalculateCrc();
+    }
+
+    private ushort CalculateCrc()
+    {
+        return Helper.CalculateCrc16(AsSpanWithoutCrc(), 0, true);
+    }
+
+    public Span<byte> AsSpan()
+    {
+        return SpanHelpers.AsByteSpan(ref this);
+    }
+
+    public ReadOnlySpan<byte> AsReadOnlySpan()
+    {
+        return SpanHelpers.AsReadOnlyByteSpan(ref this);
+    }
+
+    private ReadOnlySpan<byte> AsSpanWithoutCrc()
+    {
+        return AsReadOnlySpan()[..(Unsafe.SizeOf<NintendoFigurineDatabase>() - 2)];
     }
 }

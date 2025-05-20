@@ -1,9 +1,8 @@
-namespace Hyjinx.Input.Motion.CemuHook.Protocol
+namespace Hyjinx.Input.Motion.CemuHook.Protocol;
+
+public enum MessageType : uint
 {
-    public enum MessageType : uint
-    {
-        Protocol = 0x100000,
-        Info,
-        Data,
-    }
+    Protocol = 0x100000,
+    Info,
+    Data,
 }

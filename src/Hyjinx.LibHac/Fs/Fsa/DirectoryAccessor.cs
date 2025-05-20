@@ -1,6 +1,6 @@
-using System;
 using LibHac.Common;
 using LibHac.Fs.Fsa;
+using System;
 
 // ReSharper disable once CheckNamespace
 namespace LibHac.Fs.Impl;

@@ -1,17 +1,16 @@
 using System.Text.RegularExpressions;
 
-namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
+
+public static partial class NumericCharacterValidation
 {
-    public static partial class NumericCharacterValidation
+    public static bool IsNumeric(char value)
     {
-        public static bool IsNumeric(char value)
-        {
-            Regex regex = NumericRegex();
+        Regex regex = NumericRegex();
 
-            return regex.IsMatch(value.ToString());
-        }
-
-        [GeneratedRegex("[0-9]|.")]
-        private static partial Regex NumericRegex();
+        return regex.IsMatch(value.ToString());
     }
+
+    [GeneratedRegex("[0-9]|.")]
+    private static partial Regex NumericRegex();
 }

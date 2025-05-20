@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public struct VibrationDeviceHandle
 {
-    public struct VibrationDeviceHandle
-    {
-        public byte DeviceType;
-        public byte PlayerId;
-        public byte Position;
-        public byte Reserved;
-    }
+    public byte DeviceType;
+    public byte PlayerId;
+    public byte Position;
+    public byte Reserved;
 }

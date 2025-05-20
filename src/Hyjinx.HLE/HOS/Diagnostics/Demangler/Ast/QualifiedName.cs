@@ -1,23 +1,22 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class QualifiedName : BaseNode
 {
-    public class QualifiedName : BaseNode
+    private readonly BaseNode _qualifier;
+    private readonly BaseNode _name;
+
+    public QualifiedName(BaseNode qualifier, BaseNode name) : base(NodeType.QualifiedName)
     {
-        private readonly BaseNode _qualifier;
-        private readonly BaseNode _name;
+        _qualifier = qualifier;
+        _name = name;
+    }
 
-        public QualifiedName(BaseNode qualifier, BaseNode name) : base(NodeType.QualifiedName)
-        {
-            _qualifier = qualifier;
-            _name = name;
-        }
-
-        public override void PrintLeft(TextWriter writer)
-        {
-            _qualifier.Print(writer);
-            writer.Write("::");
-            _name.Print(writer);
-        }
+    public override void PrintLeft(TextWriter writer)
+    {
+        _qualifier.Print(writer);
+        writer.Write("::");
+        _name.Print(writer);
     }
 }

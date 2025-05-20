@@ -5,100 +5,99 @@ using Hyjinx.Ava.UI.Views.User;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Profile = Hyjinx.HLE.HOS.Services.Account.Acc.UserProfile;
 
-namespace Hyjinx.Ava.UI.Models
+namespace Hyjinx.Ava.UI.Models;
+
+public class UserProfile : BaseModel
 {
-    public class UserProfile : BaseModel
+    private readonly Profile _profile;
+    private readonly NavigationDialogHost _owner;
+    private byte[] _image;
+    private string _name;
+    private UserId _userId;
+    private bool _isPointerOver;
+    private IBrush _backgroundColor;
+
+    public byte[] Image
     {
-        private readonly Profile _profile;
-        private readonly NavigationDialogHost _owner;
-        private byte[] _image;
-        private string _name;
-        private UserId _userId;
-        private bool _isPointerOver;
-        private IBrush _backgroundColor;
-
-        public byte[] Image
+        get => _image;
+        set
         {
-            get => _image;
-            set
-            {
-                _image = value;
-                OnPropertyChanged();
-            }
+            _image = value;
+            OnPropertyChanged();
         }
+    }
 
-        public UserId UserId
+    public UserId UserId
+    {
+        get => _userId;
+        set
         {
-            get => _userId;
-            set
-            {
-                _userId = value;
-                OnPropertyChanged();
-            }
+            _userId = value;
+            OnPropertyChanged();
         }
+    }
 
-        public string Name
+    public string Name
+    {
+        get => _name;
+        set
         {
-            get => _name;
-            set
-            {
-                _name = value;
-                OnPropertyChanged();
-            }
+            _name = value;
+            OnPropertyChanged();
         }
+    }
 
-        public bool IsPointerOver
+    public bool IsPointerOver
+    {
+        get => _isPointerOver;
+        set
         {
-            get => _isPointerOver;
-            set
-            {
-                _isPointerOver = value;
-                OnPropertyChanged();
-            }
+            _isPointerOver = value;
+            OnPropertyChanged();
         }
+    }
 
-        public IBrush BackgroundColor
+    public IBrush BackgroundColor
+    {
+        get => _backgroundColor;
+        set
         {
-            get => _backgroundColor;
-            set
-            {
-                _backgroundColor = value;
-                OnPropertyChanged();
-            }
+            _backgroundColor = value;
+            OnPropertyChanged();
         }
+    }
 
-        public UserProfile(Profile profile, NavigationDialogHost owner)
+    public UserProfile(Profile profile, NavigationDialogHost owner)
+    {
+        _profile = profile;
+        _owner = owner;
+
+        UpdateBackground();
+
+        Image = profile.Image;
+        Name = profile.Name;
+        UserId = profile.UserId;
+    }
+
+    public void UpdateState()
+    {
+        UpdateBackground();
+        OnPropertyChanged(nameof(Name));
+    }
+
+    private void UpdateBackground()
+    {
+        var currentApplication = Avalonia.Application.Current;
+        currentApplication.Styles.TryGetResource("ControlFillColorSecondary", currentApplication.ActualThemeVariant, out object color);
+
+        if (color is not null)
         {
-            _profile = profile;
-            _owner = owner;
-
-            UpdateBackground();
-
-            Image = profile.Image;
-            Name = profile.Name;
-            UserId = profile.UserId;
+            BackgroundColor = _profile.AccountState == AccountState.Open ? new SolidColorBrush((Color)color) : Brushes.Transparent;
         }
+    }
 
-        public void UpdateState()
-        {
-            UpdateBackground();
-            OnPropertyChanged(nameof(Name));
-        }
-
-        private void UpdateBackground()
-        {
-            var currentApplication = Avalonia.Application.Current;
-            currentApplication.Styles.TryGetResource("ControlFillColorSecondary", currentApplication.ActualThemeVariant, out object color);
-
-            if (color is not null)
-            {
-                BackgroundColor = _profile.AccountState == AccountState.Open ? new SolidColorBrush((Color)color) : Brushes.Transparent;
-            }
-        }
-
-        public void Recover(UserProfile userProfile)
-        {
-            _owner.Navigate(typeof(UserEditorView), (_owner, userProfile, true));
-        }
+    public void Recover(UserProfile userProfile)
+    {
+        _owner.Navigate(typeof(UserEditorView), (_owner, userProfile, true));
     }
 }

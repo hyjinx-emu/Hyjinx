@@ -1,263 +1,262 @@
+using Hyjinx.Common;
+using Hyjinx.Horizon.Sdk.Account;
+using Hyjinx.Logging.Abstractions;
 using LibHac;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Shim;
-using Hyjinx.Common;
-using Hyjinx.Logging.Abstractions;
-using Hyjinx.Horizon.Sdk.Account;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hyjinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc;
+
+public partial class AccountManager : IEmulatorAccountManager
 {
-    public partial class AccountManager : IEmulatorAccountManager
+    public static readonly UserId DefaultUserId = new("00000000000000010000000000000000");
+
+    private static readonly ILogger<AccountManager> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<AccountManager>();
+
+    private readonly AccountSaveDataManager _accountSaveDataManager;
+
+    // Todo: The account service doesn't have the permissions to delete save data. Qlaunch takes care of deleting
+    // save data, so we're currently passing a client with full permissions. Consider moving save data deletion
+    // outside of the AccountManager.
+    private readonly HorizonClient _horizonClient;
+
+    private readonly ConcurrentDictionary<string, UserProfile> _profiles;
+    private UserProfile[] _storedOpenedUsers;
+
+    public UserProfile LastOpenedUser { get; private set; }
+
+    public AccountManager(HorizonClient horizonClient, string initialProfileName = null)
     {
-        public static readonly UserId DefaultUserId = new("00000000000000010000000000000000");
+        _horizonClient = horizonClient;
 
-        private static readonly ILogger<AccountManager> _logger =
-            Logger.DefaultLoggerFactory.CreateLogger<AccountManager>();
+        _profiles = new ConcurrentDictionary<string, UserProfile>();
+        _storedOpenedUsers = Array.Empty<UserProfile>();
 
-        private readonly AccountSaveDataManager _accountSaveDataManager;
+        _accountSaveDataManager = new AccountSaveDataManager(_profiles);
 
-        // Todo: The account service doesn't have the permissions to delete save data. Qlaunch takes care of deleting
-        // save data, so we're currently passing a client with full permissions. Consider moving save data deletion
-        // outside of the AccountManager.
-        private readonly HorizonClient _horizonClient;
-
-        private readonly ConcurrentDictionary<string, UserProfile> _profiles;
-        private UserProfile[] _storedOpenedUsers;
-
-        public UserProfile LastOpenedUser { get; private set; }
-
-        public AccountManager(HorizonClient horizonClient, string initialProfileName = null)
+        if (!_profiles.TryGetValue(DefaultUserId.ToString(), out _))
         {
-            _horizonClient = horizonClient;
+            byte[] defaultUserImage = EmbeddedResources.Read("Hyjinx.HLE/HOS/Services/Account/Acc/DefaultUserImage.jpg");
 
-            _profiles = new ConcurrentDictionary<string, UserProfile>();
-            _storedOpenedUsers = Array.Empty<UserProfile>();
-
-            _accountSaveDataManager = new AccountSaveDataManager(_profiles);
-
-            if (!_profiles.TryGetValue(DefaultUserId.ToString(), out _))
-            {
-                byte[] defaultUserImage = EmbeddedResources.Read("Hyjinx.HLE/HOS/Services/Account/Acc/DefaultUserImage.jpg");
-
-                AddUser("RyuPlayer", defaultUserImage, DefaultUserId);
-
-                OpenUser(DefaultUserId);
-            }
-            else
-            {
-                UserId commandLineUserProfileOverride = default;
-                if (!string.IsNullOrEmpty(initialProfileName))
-                {
-                    commandLineUserProfileOverride = _profiles.Values.FirstOrDefault(x => x.Name == initialProfileName)?.UserId ?? default;
-                    if (commandLineUserProfileOverride.IsNull)
-                    {
-                        LogProfileNotFound(initialProfileName);
-                    }
-                }
-                OpenUser(commandLineUserProfileOverride.IsNull ? _accountSaveDataManager.LastOpened : commandLineUserProfileOverride);
-            }
-        }
-
-        [LoggerMessage(LogLevel.Warning,
-            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-            Message = "The command line specified profile named '{name}' was not found.")]
-        private partial void LogProfileNotFound(string name);
-
-        public void AddUser(string name, byte[] image, UserId userId = new UserId())
-        {
-            if (userId.IsNull)
-            {
-                userId = new UserId(Guid.NewGuid().ToString().Replace("-", ""));
-            }
-
-            UserProfile profile = new(userId, name, image);
-
-            _profiles.AddOrUpdate(userId.ToString(), profile, (key, old) => profile);
-
-            _accountSaveDataManager.Save(_profiles);
-        }
-
-        public void OpenUser(UserId userId)
-        {
-            if (_profiles.TryGetValue(userId.ToString(), out UserProfile profile))
-            {
-                // TODO: Support multiple open users ?
-                foreach (UserProfile userProfile in GetAllUsers())
-                {
-                    if (userProfile == LastOpenedUser)
-                    {
-                        userProfile.AccountState = AccountState.Closed;
-
-                        break;
-                    }
-                }
-
-                (LastOpenedUser = profile).AccountState = AccountState.Open;
-
-                _accountSaveDataManager.LastOpened = userId;
-            }
-
-            _accountSaveDataManager.Save(_profiles);
-        }
-
-        public void CloseUser(UserId userId)
-        {
-            if (_profiles.TryGetValue(userId.ToString(), out UserProfile profile))
-            {
-                profile.AccountState = AccountState.Closed;
-            }
-
-            _accountSaveDataManager.Save(_profiles);
-        }
-
-        public void OpenUserOnlinePlay(Uid userId)
-        {
-            OpenUserOnlinePlay(new UserId((long)userId.Low, (long)userId.High));
-        }
-
-        public void OpenUserOnlinePlay(UserId userId)
-        {
-            if (_profiles.TryGetValue(userId.ToString(), out UserProfile profile))
-            {
-                // TODO: Support multiple open online users ?
-                foreach (UserProfile userProfile in GetAllUsers())
-                {
-                    if (userProfile == LastOpenedUser)
-                    {
-                        userProfile.OnlinePlayState = AccountState.Closed;
-
-                        break;
-                    }
-                }
-
-                profile.OnlinePlayState = AccountState.Open;
-            }
-
-            _accountSaveDataManager.Save(_profiles);
-        }
-
-        public void CloseUserOnlinePlay(Uid userId)
-        {
-            CloseUserOnlinePlay(new UserId((long)userId.Low, (long)userId.High));
-        }
-
-        public void CloseUserOnlinePlay(UserId userId)
-        {
-            if (_profiles.TryGetValue(userId.ToString(), out UserProfile profile))
-            {
-                profile.OnlinePlayState = AccountState.Closed;
-            }
-
-            _accountSaveDataManager.Save(_profiles);
-        }
-
-        public void SetUserImage(UserId userId, byte[] image)
-        {
-            foreach (UserProfile userProfile in GetAllUsers())
-            {
-                if (userProfile.UserId == userId)
-                {
-                    userProfile.Image = image;
-
-                    break;
-                }
-            }
-
-            _accountSaveDataManager.Save(_profiles);
-        }
-
-        public void SetUserName(UserId userId, string name)
-        {
-            foreach (UserProfile userProfile in GetAllUsers())
-            {
-                if (userProfile.UserId == userId)
-                {
-                    userProfile.Name = name;
-
-                    break;
-                }
-            }
-
-            _accountSaveDataManager.Save(_profiles);
-        }
-
-        public void DeleteUser(UserId userId)
-        {
-            DeleteSaveData(userId);
-
-            _profiles.Remove(userId.ToString(), out _);
+            AddUser("RyuPlayer", defaultUserImage, DefaultUserId);
 
             OpenUser(DefaultUserId);
+        }
+        else
+        {
+            UserId commandLineUserProfileOverride = default;
+            if (!string.IsNullOrEmpty(initialProfileName))
+            {
+                commandLineUserProfileOverride = _profiles.Values.FirstOrDefault(x => x.Name == initialProfileName)?.UserId ?? default;
+                if (commandLineUserProfileOverride.IsNull)
+                {
+                    LogProfileNotFound(initialProfileName);
+                }
+            }
+            OpenUser(commandLineUserProfileOverride.IsNull ? _accountSaveDataManager.LastOpened : commandLineUserProfileOverride);
+        }
+    }
 
-            _accountSaveDataManager.Save(_profiles);
+    [LoggerMessage(LogLevel.Warning,
+        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+        Message = "The command line specified profile named '{name}' was not found.")]
+    private partial void LogProfileNotFound(string name);
+
+    public void AddUser(string name, byte[] image, UserId userId = new UserId())
+    {
+        if (userId.IsNull)
+        {
+            userId = new UserId(Guid.NewGuid().ToString().Replace("-", ""));
         }
 
-        private void DeleteSaveData(UserId userId)
+        UserProfile profile = new(userId, name, image);
+
+        _profiles.AddOrUpdate(userId.ToString(), profile, (key, old) => profile);
+
+        _accountSaveDataManager.Save(_profiles);
+    }
+
+    public void OpenUser(UserId userId)
+    {
+        if (_profiles.TryGetValue(userId.ToString(), out UserProfile profile))
         {
-            var saveDataFilter = SaveDataFilter.Make(programId: default, saveType: default,
-                new LibHac.Fs.UserId((ulong)userId.High, (ulong)userId.Low), saveDataId: default, index: default);
-
-            using var saveDataIterator = new UniqueRef<SaveDataIterator>();
-
-            _horizonClient.Fs.OpenSaveDataIterator(ref saveDataIterator.Ref, SaveDataSpaceId.User, in saveDataFilter).ThrowIfFailure();
-
-            Span<SaveDataInfo> saveDataInfo = stackalloc SaveDataInfo[10];
-
-            while (true)
+            // TODO: Support multiple open users ?
+            foreach (UserProfile userProfile in GetAllUsers())
             {
-                saveDataIterator.Get.ReadSaveDataInfo(out long readCount, saveDataInfo).ThrowIfFailure();
-
-                if (readCount == 0)
+                if (userProfile == LastOpenedUser)
                 {
+                    userProfile.AccountState = AccountState.Closed;
+
                     break;
                 }
+            }
 
-                for (int i = 0; i < readCount; i++)
+            (LastOpenedUser = profile).AccountState = AccountState.Open;
+
+            _accountSaveDataManager.LastOpened = userId;
+        }
+
+        _accountSaveDataManager.Save(_profiles);
+    }
+
+    public void CloseUser(UserId userId)
+    {
+        if (_profiles.TryGetValue(userId.ToString(), out UserProfile profile))
+        {
+            profile.AccountState = AccountState.Closed;
+        }
+
+        _accountSaveDataManager.Save(_profiles);
+    }
+
+    public void OpenUserOnlinePlay(Uid userId)
+    {
+        OpenUserOnlinePlay(new UserId((long)userId.Low, (long)userId.High));
+    }
+
+    public void OpenUserOnlinePlay(UserId userId)
+    {
+        if (_profiles.TryGetValue(userId.ToString(), out UserProfile profile))
+        {
+            // TODO: Support multiple open online users ?
+            foreach (UserProfile userProfile in GetAllUsers())
+            {
+                if (userProfile == LastOpenedUser)
                 {
-                    _horizonClient.Fs.DeleteSaveData(SaveDataSpaceId.User, saveDataInfo[i].SaveDataId).ThrowIfFailure();
+                    userProfile.OnlinePlayState = AccountState.Closed;
+
+                    break;
                 }
+            }
+
+            profile.OnlinePlayState = AccountState.Open;
+        }
+
+        _accountSaveDataManager.Save(_profiles);
+    }
+
+    public void CloseUserOnlinePlay(Uid userId)
+    {
+        CloseUserOnlinePlay(new UserId((long)userId.Low, (long)userId.High));
+    }
+
+    public void CloseUserOnlinePlay(UserId userId)
+    {
+        if (_profiles.TryGetValue(userId.ToString(), out UserProfile profile))
+        {
+            profile.OnlinePlayState = AccountState.Closed;
+        }
+
+        _accountSaveDataManager.Save(_profiles);
+    }
+
+    public void SetUserImage(UserId userId, byte[] image)
+    {
+        foreach (UserProfile userProfile in GetAllUsers())
+        {
+            if (userProfile.UserId == userId)
+            {
+                userProfile.Image = image;
+
+                break;
             }
         }
 
-        internal int GetUserCount()
+        _accountSaveDataManager.Save(_profiles);
+    }
+
+    public void SetUserName(UserId userId, string name)
+    {
+        foreach (UserProfile userProfile in GetAllUsers())
         {
-            return _profiles.Count;
+            if (userProfile.UserId == userId)
+            {
+                userProfile.Name = name;
+
+                break;
+            }
         }
 
-        internal bool TryGetUser(UserId userId, out UserProfile profile)
-        {
-            return _profiles.TryGetValue(userId.ToString(), out profile);
-        }
+        _accountSaveDataManager.Save(_profiles);
+    }
 
-        public IEnumerable<UserProfile> GetAllUsers()
-        {
-            return _profiles.Values;
-        }
+    public void DeleteUser(UserId userId)
+    {
+        DeleteSaveData(userId);
 
-        internal IEnumerable<UserProfile> GetOpenedUsers()
-        {
-            return _profiles.Values.Where(x => x.AccountState == AccountState.Open);
-        }
+        _profiles.Remove(userId.ToString(), out _);
 
-        internal IEnumerable<UserProfile> GetStoredOpenedUsers()
-        {
-            return _storedOpenedUsers;
-        }
+        OpenUser(DefaultUserId);
 
-        internal void StoreOpenedUsers()
-        {
-            _storedOpenedUsers = _profiles.Values.Where(x => x.AccountState == AccountState.Open).ToArray();
-        }
+        _accountSaveDataManager.Save(_profiles);
+    }
 
-        internal UserProfile GetFirst()
+    private void DeleteSaveData(UserId userId)
+    {
+        var saveDataFilter = SaveDataFilter.Make(programId: default, saveType: default,
+            new LibHac.Fs.UserId((ulong)userId.High, (ulong)userId.Low), saveDataId: default, index: default);
+
+        using var saveDataIterator = new UniqueRef<SaveDataIterator>();
+
+        _horizonClient.Fs.OpenSaveDataIterator(ref saveDataIterator.Ref, SaveDataSpaceId.User, in saveDataFilter).ThrowIfFailure();
+
+        Span<SaveDataInfo> saveDataInfo = stackalloc SaveDataInfo[10];
+
+        while (true)
         {
-            return _profiles.First().Value;
+            saveDataIterator.Get.ReadSaveDataInfo(out long readCount, saveDataInfo).ThrowIfFailure();
+
+            if (readCount == 0)
+            {
+                break;
+            }
+
+            for (int i = 0; i < readCount; i++)
+            {
+                _horizonClient.Fs.DeleteSaveData(SaveDataSpaceId.User, saveDataInfo[i].SaveDataId).ThrowIfFailure();
+            }
         }
+    }
+
+    internal int GetUserCount()
+    {
+        return _profiles.Count;
+    }
+
+    internal bool TryGetUser(UserId userId, out UserProfile profile)
+    {
+        return _profiles.TryGetValue(userId.ToString(), out profile);
+    }
+
+    public IEnumerable<UserProfile> GetAllUsers()
+    {
+        return _profiles.Values;
+    }
+
+    internal IEnumerable<UserProfile> GetOpenedUsers()
+    {
+        return _profiles.Values.Where(x => x.AccountState == AccountState.Open);
+    }
+
+    internal IEnumerable<UserProfile> GetStoredOpenedUsers()
+    {
+        return _storedOpenedUsers;
+    }
+
+    internal void StoreOpenedUsers()
+    {
+        _storedOpenedUsers = _profiles.Values.Where(x => x.AccountState == AccountState.Open).ToArray();
+    }
+
+    internal UserProfile GetFirst()
+    {
+        return _profiles.First().Value;
     }
 }

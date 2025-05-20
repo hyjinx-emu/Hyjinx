@@ -1,8 +1,8 @@
-using System;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem.Impl;
 using LibHac.Os;
+using System;
 using Buffer = LibHac.Mem.Buffer;
 
 // Todo: Remove warning suppressions after implementing

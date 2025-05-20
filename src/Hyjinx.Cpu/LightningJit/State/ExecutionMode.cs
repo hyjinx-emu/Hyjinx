@@ -1,9 +1,8 @@
-namespace Hyjinx.Cpu.LightningJit.State
+namespace Hyjinx.Cpu.LightningJit.State;
+
+enum ExecutionMode
 {
-    enum ExecutionMode
-    {
-        Aarch32Arm = 0,
-        Aarch32Thumb = 1,
-        Aarch64 = 2,
-    }
+    Aarch32Arm = 0,
+    Aarch32Thumb = 1,
+    Aarch64 = 2,
 }

@@ -1,14 +1,13 @@
 using Hyjinx.Audio.Renderer.Parameter;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Audio.Renderer.Parameter
+namespace Hyjinx.Tests.Audio.Renderer.Parameter;
+
+class MixInParameterDirtyOnlyUpdateTests
 {
-    class MixInParameterDirtyOnlyUpdateTests
+    [Test]
+    public void EnsureTypeSize()
     {
-        [Test]
-        public void EnsureTypeSize()
-        {
-            ClassicAssert.AreEqual(0x20, Unsafe.SizeOf<MixInParameterDirtyOnlyUpdate>());
-        }
+        ClassicAssert.AreEqual(0x20, Unsafe.SizeOf<MixInParameterDirtyOnlyUpdate>());
     }
 }

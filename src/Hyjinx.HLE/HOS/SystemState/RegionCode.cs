@@ -1,17 +1,16 @@
-namespace Hyjinx.HLE.HOS.SystemState
-{
-    // nn::settings::RegionCode
-    public enum RegionCode
-    {
-        Japan,
-        USA,
-        Europe,
-        Australia,
-        China,
-        Korea,
-        Taiwan,
+namespace Hyjinx.HLE.HOS.SystemState;
 
-        Min = Japan,
-        Max = Taiwan,
-    }
+// nn::settings::RegionCode
+public enum RegionCode
+{
+    Japan,
+    USA,
+    Europe,
+    Australia,
+    China,
+    Korea,
+    Taiwan,
+
+    Min = Japan,
+    Max = Taiwan,
 }

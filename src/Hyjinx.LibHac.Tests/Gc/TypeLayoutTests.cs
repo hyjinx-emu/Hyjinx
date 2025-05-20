@@ -1,6 +1,6 @@
-using System.Runtime.CompilerServices;
 using LibHac.Gc;
 using LibHac.Gc.Impl;
+using System.Runtime.CompilerServices;
 using Xunit;
 using static LibHac.Tests.Common.Layout;
 

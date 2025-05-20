@@ -3,142 +3,141 @@ using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Horizon.Common;
 using System.Threading;
 
-namespace Hyjinx.HLE.HOS.Kernel.Ipc
+namespace Hyjinx.HLE.HOS.Kernel.Ipc;
+
+class KClientPort : KSynchronizationObject
 {
-    class KClientPort : KSynchronizationObject
+    private int _sessionsCount;
+    private readonly int _maxSessions;
+
+    private readonly KPort _parent;
+
+    public bool IsLight => _parent.IsLight;
+
+    public KClientPort(KernelContext context, KPort parent, int maxSessions) : base(context)
     {
-        private int _sessionsCount;
-        private readonly int _maxSessions;
+        _maxSessions = maxSessions;
+        _parent = parent;
+    }
 
-        private readonly KPort _parent;
+    public Result Connect(out KClientSession clientSession)
+    {
+        clientSession = null;
 
-        public bool IsLight => _parent.IsLight;
+        KProcess currentProcess = KernelStatic.GetCurrentProcess();
 
-        public KClientPort(KernelContext context, KPort parent, int maxSessions) : base(context)
+        if (currentProcess.ResourceLimit != null &&
+           !currentProcess.ResourceLimit.Reserve(LimitableResource.Session, 1))
         {
-            _maxSessions = maxSessions;
-            _parent = parent;
+            return KernelResult.ResLimitExceeded;
         }
 
-        public Result Connect(out KClientSession clientSession)
+        if (!IncrementSessionsCount())
         {
-            clientSession = null;
+            currentProcess.ResourceLimit?.Release(LimitableResource.Session, 1);
 
-            KProcess currentProcess = KernelStatic.GetCurrentProcess();
+            return KernelResult.SessionCountExceeded;
+        }
 
-            if (currentProcess.ResourceLimit != null &&
-               !currentProcess.ResourceLimit.Reserve(LimitableResource.Session, 1))
-            {
-                return KernelResult.ResLimitExceeded;
-            }
+        KSession session = new(KernelContext, this);
 
-            if (!IncrementSessionsCount())
-            {
-                currentProcess.ResourceLimit?.Release(LimitableResource.Session, 1);
+        Result result = _parent.EnqueueIncomingSession(session.ServerSession);
 
-                return KernelResult.SessionCountExceeded;
-            }
-
-            KSession session = new(KernelContext, this);
-
-            Result result = _parent.EnqueueIncomingSession(session.ServerSession);
-
-            if (result != Result.Success)
-            {
-                session.ClientSession.DecrementReferenceCount();
-                session.ServerSession.DecrementReferenceCount();
-
-                return result;
-            }
-
-            clientSession = session.ClientSession;
+        if (result != Result.Success)
+        {
+            session.ClientSession.DecrementReferenceCount();
+            session.ServerSession.DecrementReferenceCount();
 
             return result;
         }
 
-        public Result ConnectLight(out KLightClientSession clientSession)
+        clientSession = session.ClientSession;
+
+        return result;
+    }
+
+    public Result ConnectLight(out KLightClientSession clientSession)
+    {
+        clientSession = null;
+
+        KProcess currentProcess = KernelStatic.GetCurrentProcess();
+
+        if (currentProcess.ResourceLimit != null &&
+           !currentProcess.ResourceLimit.Reserve(LimitableResource.Session, 1))
         {
-            clientSession = null;
+            return KernelResult.ResLimitExceeded;
+        }
 
-            KProcess currentProcess = KernelStatic.GetCurrentProcess();
+        if (!IncrementSessionsCount())
+        {
+            currentProcess.ResourceLimit?.Release(LimitableResource.Session, 1);
 
-            if (currentProcess.ResourceLimit != null &&
-               !currentProcess.ResourceLimit.Reserve(LimitableResource.Session, 1))
-            {
-                return KernelResult.ResLimitExceeded;
-            }
+            return KernelResult.SessionCountExceeded;
+        }
 
-            if (!IncrementSessionsCount())
-            {
-                currentProcess.ResourceLimit?.Release(LimitableResource.Session, 1);
+        KLightSession session = new(KernelContext);
 
-                return KernelResult.SessionCountExceeded;
-            }
+        Result result = _parent.EnqueueIncomingLightSession(session.ServerSession);
 
-            KLightSession session = new(KernelContext);
-
-            Result result = _parent.EnqueueIncomingLightSession(session.ServerSession);
-
-            if (result != Result.Success)
-            {
-                session.ClientSession.DecrementReferenceCount();
-                session.ServerSession.DecrementReferenceCount();
-
-                return result;
-            }
-
-            clientSession = session.ClientSession;
+        if (result != Result.Success)
+        {
+            session.ClientSession.DecrementReferenceCount();
+            session.ServerSession.DecrementReferenceCount();
 
             return result;
         }
 
-        private bool IncrementSessionsCount()
-        {
-            while (true)
-            {
-                int currentCount = _sessionsCount;
+        clientSession = session.ClientSession;
 
-                if (currentCount < _maxSessions)
+        return result;
+    }
+
+    private bool IncrementSessionsCount()
+    {
+        while (true)
+        {
+            int currentCount = _sessionsCount;
+
+            if (currentCount < _maxSessions)
+            {
+                if (Interlocked.CompareExchange(ref _sessionsCount, currentCount + 1, currentCount) == currentCount)
                 {
-                    if (Interlocked.CompareExchange(ref _sessionsCount, currentCount + 1, currentCount) == currentCount)
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-                    return false;
+                    return true;
                 }
             }
-        }
-
-        public void Disconnect()
-        {
-            KernelContext.CriticalSection.Enter();
-
-            SignalIfMaximumReached(Interlocked.Decrement(ref _sessionsCount));
-
-            KernelContext.CriticalSection.Leave();
-        }
-
-        private void SignalIfMaximumReached(int value)
-        {
-            if (value == _maxSessions)
+            else
             {
-                Signal();
+                return false;
             }
         }
+    }
 
-        public new static Result RemoveName(KernelContext context, string name)
+    public void Disconnect()
+    {
+        KernelContext.CriticalSection.Enter();
+
+        SignalIfMaximumReached(Interlocked.Decrement(ref _sessionsCount));
+
+        KernelContext.CriticalSection.Leave();
+    }
+
+    private void SignalIfMaximumReached(int value)
+    {
+        if (value == _maxSessions)
         {
-            KAutoObject foundObj = FindNamedObject(context, name);
-
-            if (foundObj is not KClientPort)
-            {
-                return KernelResult.NotFound;
-            }
-
-            return KAutoObject.RemoveName(context, name);
+            Signal();
         }
+    }
+
+    public new static Result RemoveName(KernelContext context, string name)
+    {
+        KAutoObject foundObj = FindNamedObject(context, name);
+
+        if (foundObj is not KClientPort)
+        {
+            return KernelResult.NotFound;
+        }
+
+        return KAutoObject.RemoveName(context, name);
     }
 }

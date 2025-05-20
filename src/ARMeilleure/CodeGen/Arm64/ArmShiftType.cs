@@ -1,11 +1,10 @@
 
-namespace ARMeilleure.CodeGen.Arm64
+namespace ARMeilleure.CodeGen.Arm64;
+
+enum ArmShiftType
 {
-    enum ArmShiftType
-    {
-        Lsl = 0,
-        Lsr = 1,
-        Asr = 2,
-        Ror = 3,
-    }
+    Lsl = 0,
+    Lsr = 1,
+    Asr = 2,
+    Ror = 3,
 }

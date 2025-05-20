@@ -1,10 +1,9 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types;
+
+[StructLayout(LayoutKind.Sequential)]
+struct ZcullGetCtxSizeArguments
 {
-    [StructLayout(LayoutKind.Sequential)]
-    struct ZcullGetCtxSizeArguments
-    {
-        public int Size;
-    }
+    public int Size;
 }

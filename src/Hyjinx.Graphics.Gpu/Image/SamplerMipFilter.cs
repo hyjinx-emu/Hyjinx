@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.Gpu.Image
+namespace Hyjinx.Graphics.Gpu.Image;
+
+/// <summary>
+/// Sampler texture mipmap level filter.
+/// </summary>
+enum SamplerMipFilter
 {
-    /// <summary>
-    /// Sampler texture mipmap level filter.
-    /// </summary>
-    enum SamplerMipFilter
-    {
-        None = 1,
-        Nearest,
-        Linear,
-    }
+    None = 1,
+    Nearest,
+    Linear,
 }

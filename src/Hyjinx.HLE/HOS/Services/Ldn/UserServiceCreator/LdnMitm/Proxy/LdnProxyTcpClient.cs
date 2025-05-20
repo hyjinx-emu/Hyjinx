@@ -5,119 +5,118 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy;
+
+internal partial class LdnProxyTcpClient : NetCoreServer.TcpClient, ILdnTcpSocket
 {
-    internal partial class LdnProxyTcpClient : NetCoreServer.TcpClient, ILdnTcpSocket
+    private readonly ILogger<LdnProxyTcpClient> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpClient>();
+
+    private readonly LanProtocol _protocol;
+    private byte[] _buffer;
+    private int _bufferEnd;
+
+    public LdnProxyTcpClient(LanProtocol protocol, IPAddress address, int port) : base(address, port)
     {
-        private readonly ILogger<LdnProxyTcpClient> _logger =
-            Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpClient>();
+        _protocol = protocol;
+        _buffer = new byte[LanProtocol.BufferSize];
+        OptionSendBufferSize = LanProtocol.TcpTxBufferSize;
+        OptionReceiveBufferSize = LanProtocol.TcpRxBufferSize;
+        OptionSendBufferLimit = LanProtocol.TxBufferSizeMax;
+        OptionReceiveBufferLimit = LanProtocol.RxBufferSizeMax;
+    }
 
-        private readonly LanProtocol _protocol;
-        private byte[] _buffer;
-        private int _bufferEnd;
+    protected override void OnConnected()
+    {
+        LogClientConnected();
+    }
 
-        public LdnProxyTcpClient(LanProtocol protocol, IPAddress address, int port) : base(address, port)
+    [LoggerMessage(LogLevel.Information,
+        EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+        Message = "LdnProxyTCPClient connected!")]
+    private partial void LogClientConnected();
+
+    protected override void OnReceived(byte[] buffer, long offset, long size)
+    {
+        _protocol.Read(ref _buffer, ref _bufferEnd, buffer, (int)offset, (int)size);
+    }
+
+    public void DisconnectAndStop()
+    {
+        DisconnectAsync();
+
+        while (IsConnected)
         {
-            _protocol = protocol;
-            _buffer = new byte[LanProtocol.BufferSize];
-            OptionSendBufferSize = LanProtocol.TcpTxBufferSize;
-            OptionReceiveBufferSize = LanProtocol.TcpRxBufferSize;
-            OptionSendBufferLimit = LanProtocol.TxBufferSizeMax;
-            OptionReceiveBufferLimit = LanProtocol.RxBufferSizeMax;
+            Thread.Yield();
+        }
+    }
+
+    [LoggerMessage(LogLevel.Warning,
+        EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+        Message = "LdnProxyTcpClient is sending a packet but endpoint is not null.")]
+    private partial void LogLdnProxyTcpClientSendingPacketToEndpoint();
+
+    public bool SendPacketAsync(EndPoint endPoint, byte[] data)
+    {
+        if (endPoint != null)
+        {
+            LogLdnProxyTcpClientSendingPacketToEndpoint();
         }
 
-        protected override void OnConnected()
+        if (IsConnecting && !IsConnected)
         {
-            LogClientConnected();
-        }
+            LogConnectBeforeSendingPackets();
 
-        [LoggerMessage(LogLevel.Information,
-            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
-            Message = "LdnProxyTCPClient connected!")]
-        private partial void LogClientConnected();
-
-        protected override void OnReceived(byte[] buffer, long offset, long size)
-        {
-            _protocol.Read(ref _buffer, ref _bufferEnd, buffer, (int)offset, (int)size);
-        }
-
-        public void DisconnectAndStop()
-        {
-            DisconnectAsync();
-
-            while (IsConnected)
+            while (IsConnecting && !IsConnected)
             {
                 Thread.Yield();
             }
         }
 
-        [LoggerMessage(LogLevel.Warning,
-            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
-            Message = "LdnProxyTcpClient is sending a packet but endpoint is not null.")]
-        private partial void LogLdnProxyTcpClientSendingPacketToEndpoint();
+        return SendAsync(data);
+    }
 
-        public bool SendPacketAsync(EndPoint endPoint, byte[] data)
+    [LoggerMessage(LogLevel.Information,
+        EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+        Message = "LdnProxyTCPClient needs to connect before sending packets. Waiting...")]
+    private partial void LogConnectBeforeSendingPackets();
+
+    protected override void OnError(SocketError error)
+    {
+        LogErrorOccurred(nameof(LdnProxyTcpClient), error);
+    }
+
+    [LoggerMessage(LogLevel.Error,
+        EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+        Message = "{client} caught an error with code {error}")]
+    private partial void LogErrorOccurred(string client, SocketError error);
+
+    protected override void Dispose(bool disposingManagedResources)
+    {
+        DisconnectAndStop();
+        base.Dispose(disposingManagedResources);
+    }
+
+    public override bool Connect()
+    {
+        // TODO: NetCoreServer has a Connect() method, but it currently leads to weird issues.
+        base.ConnectAsync();
+
+        while (IsConnecting)
         {
-            if (endPoint != null)
-            {
-                LogLdnProxyTcpClientSendingPacketToEndpoint();
-            }
-
-            if (IsConnecting && !IsConnected)
-            {
-                LogConnectBeforeSendingPackets();
-
-                while (IsConnecting && !IsConnected)
-                {
-                    Thread.Yield();
-                }
-            }
-
-            return SendAsync(data);
+            Thread.Sleep(1);
         }
 
-        [LoggerMessage(LogLevel.Information,
-            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
-            Message = "LdnProxyTCPClient needs to connect before sending packets. Waiting...")]
-        private partial void LogConnectBeforeSendingPackets();
+        return IsConnected;
+    }
 
-        protected override void OnError(SocketError error)
-        {
-            LogErrorOccurred(nameof(LdnProxyTcpClient), error);
-        }
+    public bool Start()
+    {
+        throw new InvalidOperationException("Start was called.");
+    }
 
-        [LoggerMessage(LogLevel.Error,
-            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
-            Message = "{client} caught an error with code {error}")]
-        private partial void LogErrorOccurred(string client, SocketError error);
-
-        protected override void Dispose(bool disposingManagedResources)
-        {
-            DisconnectAndStop();
-            base.Dispose(disposingManagedResources);
-        }
-
-        public override bool Connect()
-        {
-            // TODO: NetCoreServer has a Connect() method, but it currently leads to weird issues.
-            base.ConnectAsync();
-
-            while (IsConnecting)
-            {
-                Thread.Sleep(1);
-            }
-
-            return IsConnected;
-        }
-
-        public bool Start()
-        {
-            throw new InvalidOperationException("Start was called.");
-        }
-
-        public bool Stop()
-        {
-            throw new InvalidOperationException("Stop was called.");
-        }
+    public bool Stop()
+    {
+        throw new InvalidOperationException("Stop was called.");
     }
 }

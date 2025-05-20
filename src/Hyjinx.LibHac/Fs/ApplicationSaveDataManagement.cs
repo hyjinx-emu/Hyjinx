@@ -1,11 +1,11 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Account;
 using LibHac.Common;
 using LibHac.Fs.Impl;
 using LibHac.Fs.Shim;
 using LibHac.Ns;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Fs;
 

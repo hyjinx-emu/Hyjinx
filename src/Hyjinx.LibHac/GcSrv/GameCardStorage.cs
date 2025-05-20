@@ -1,10 +1,10 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Gc;
 using LibHac.Sf;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Gc.Values;
 using static LibHac.GcSrv.GameCardDeviceOperator;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;

@@ -1,13 +1,12 @@
-namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
+namespace Hyjinx.HLE.HOS.Services.Ns.Aoc;
+
+enum ResultCode
 {
-    enum ResultCode
-    {
-        ModuleId = 166,
-        ErrorCodeShift = 9,
+    ModuleId = 166,
+    ErrorCodeShift = 9,
 
-        Success = 0,
+    Success = 0,
 
-        InvalidBufferSize = (200 << ErrorCodeShift) | ModuleId,
-        InvalidPid = (300 << ErrorCodeShift) | ModuleId,
-    }
+    InvalidBufferSize = (200 << ErrorCodeShift) | ModuleId,
+    InvalidPid = (300 << ErrorCodeShift) | ModuleId,
 }

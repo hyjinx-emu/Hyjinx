@@ -1,76 +1,75 @@
 using Hyjinx.Memory;
 using System;
 
-namespace Hyjinx.Cpu
+namespace Hyjinx.Cpu;
+
+public class AddressSpace : IDisposable
 {
-    public class AddressSpace : IDisposable
+    private readonly MemoryBlock _backingMemory;
+
+    public MemoryBlock Base { get; }
+    public MemoryBlock Mirror { get; }
+
+    public ulong AddressSpaceSize { get; }
+
+    public AddressSpace(MemoryBlock backingMemory, MemoryBlock baseMemory, MemoryBlock mirrorMemory, ulong addressSpaceSize)
     {
-        private readonly MemoryBlock _backingMemory;
+        _backingMemory = backingMemory;
 
-        public MemoryBlock Base { get; }
-        public MemoryBlock Mirror { get; }
+        Base = baseMemory;
+        Mirror = mirrorMemory;
+        AddressSpaceSize = addressSpaceSize;
+    }
 
-        public ulong AddressSpaceSize { get; }
+    public static bool TryCreate(MemoryBlock backingMemory, ulong asSize, out AddressSpace addressSpace)
+    {
+        addressSpace = null;
 
-        public AddressSpace(MemoryBlock backingMemory, MemoryBlock baseMemory, MemoryBlock mirrorMemory, ulong addressSpaceSize)
+        const MemoryAllocationFlags AsFlags = MemoryAllocationFlags.Reserve | MemoryAllocationFlags.ViewCompatible;
+
+        ulong minAddressSpaceSize = Math.Min(asSize, 1UL << 36);
+
+        // Attempt to create the address space with expected size or try to reduce it until it succeed.
+        for (ulong addressSpaceSize = asSize; addressSpaceSize >= minAddressSpaceSize; addressSpaceSize >>= 1)
         {
-            _backingMemory = backingMemory;
+            MemoryBlock baseMemory = null;
+            MemoryBlock mirrorMemory = null;
 
-            Base = baseMemory;
-            Mirror = mirrorMemory;
-            AddressSpaceSize = addressSpaceSize;
-        }
-
-        public static bool TryCreate(MemoryBlock backingMemory, ulong asSize, out AddressSpace addressSpace)
-        {
-            addressSpace = null;
-
-            const MemoryAllocationFlags AsFlags = MemoryAllocationFlags.Reserve | MemoryAllocationFlags.ViewCompatible;
-
-            ulong minAddressSpaceSize = Math.Min(asSize, 1UL << 36);
-
-            // Attempt to create the address space with expected size or try to reduce it until it succeed.
-            for (ulong addressSpaceSize = asSize; addressSpaceSize >= minAddressSpaceSize; addressSpaceSize >>= 1)
+            try
             {
-                MemoryBlock baseMemory = null;
-                MemoryBlock mirrorMemory = null;
+                baseMemory = new MemoryBlock(addressSpaceSize, AsFlags);
+                mirrorMemory = new MemoryBlock(addressSpaceSize, AsFlags);
+                addressSpace = new AddressSpace(backingMemory, baseMemory, mirrorMemory, addressSpaceSize);
 
-                try
-                {
-                    baseMemory = new MemoryBlock(addressSpaceSize, AsFlags);
-                    mirrorMemory = new MemoryBlock(addressSpaceSize, AsFlags);
-                    addressSpace = new AddressSpace(backingMemory, baseMemory, mirrorMemory, addressSpaceSize);
-
-                    break;
-                }
-                catch (SystemException)
-                {
-                    baseMemory?.Dispose();
-                    mirrorMemory?.Dispose();
-                }
+                break;
             }
-
-            return addressSpace != null;
+            catch (SystemException)
+            {
+                baseMemory?.Dispose();
+                mirrorMemory?.Dispose();
+            }
         }
 
-        public void Map(ulong va, ulong pa, ulong size, MemoryMapFlags flags)
-        {
-            Base.MapView(_backingMemory, pa, va, size);
-            Mirror.MapView(_backingMemory, pa, va, size);
-        }
+        return addressSpace != null;
+    }
 
-        public void Unmap(ulong va, ulong size)
-        {
-            Base.UnmapView(_backingMemory, va, size);
-            Mirror.UnmapView(_backingMemory, va, size);
-        }
+    public void Map(ulong va, ulong pa, ulong size, MemoryMapFlags flags)
+    {
+        Base.MapView(_backingMemory, pa, va, size);
+        Mirror.MapView(_backingMemory, pa, va, size);
+    }
 
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
+    public void Unmap(ulong va, ulong size)
+    {
+        Base.UnmapView(_backingMemory, va, size);
+        Mirror.UnmapView(_backingMemory, va, size);
+    }
 
-            Base.Dispose();
-            Mirror.Dispose();
-        }
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+
+        Base.Dispose();
+        Mirror.Dispose();
     }
 }

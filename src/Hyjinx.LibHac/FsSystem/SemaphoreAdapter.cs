@@ -1,6 +1,6 @@
+using LibHac.Os;
 using System;
 using System.Threading;
-using LibHac.Os;
 
 namespace LibHac.FsSystem;
 

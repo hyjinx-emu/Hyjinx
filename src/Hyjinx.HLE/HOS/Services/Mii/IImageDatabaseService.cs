@@ -1,41 +1,40 @@
 using Hyjinx.Logging.Abstractions;
 
-namespace Hyjinx.HLE.HOS.Services.Mii
+namespace Hyjinx.HLE.HOS.Services.Mii;
+
+[Service("miiimg")] // 5.0.0+
+class IImageDatabaseService : IpcService<IImageDatabaseService>
 {
-    [Service("miiimg")] // 5.0.0+
-    class IImageDatabaseService : IpcService<IImageDatabaseService>
+    private uint _imageCount;
+    private bool _isDirty;
+
+    public IImageDatabaseService(ServiceCtx context) { }
+
+    [CommandCmif(0)]
+    // Initialize(b8) -> b8
+    public ResultCode Initialize(ServiceCtx context)
     {
-        private uint _imageCount;
-        private bool _isDirty;
+        // TODO: Service uses MiiImage:/database.dat if true, seems to use hardcoded data if false.
+        bool useHardcodedData = context.RequestData.ReadBoolean();
 
-        public IImageDatabaseService(ServiceCtx context) { }
+        _imageCount = 0;
+        _isDirty = false;
 
-        [CommandCmif(0)]
-        // Initialize(b8) -> b8
-        public ResultCode Initialize(ServiceCtx context)
-        {
-            // TODO: Service uses MiiImage:/database.dat if true, seems to use hardcoded data if false.
-            bool useHardcodedData = context.RequestData.ReadBoolean();
+        context.ResponseData.Write(_isDirty);
 
-            _imageCount = 0;
-            _isDirty = false;
+        // Logger.Stub?.PrintStub(LogClass.ServiceMii, new { useHardcodedData });
 
-            context.ResponseData.Write(_isDirty);
+        return ResultCode.Success;
+    }
 
-            // Logger.Stub?.PrintStub(LogClass.ServiceMii, new { useHardcodedData });
+    [CommandCmif(11)]
+    // GetCount() -> u32
+    public ResultCode GetCount(ServiceCtx context)
+    {
+        context.ResponseData.Write(_imageCount);
 
-            return ResultCode.Success;
-        }
+        // Logger.Stub?.PrintStub(LogClass.ServiceMii);
 
-        [CommandCmif(11)]
-        // GetCount() -> u32
-        public ResultCode GetCount(ServiceCtx context)
-        {
-            context.ResponseData.Write(_imageCount);
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceMii);
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

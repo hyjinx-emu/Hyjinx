@@ -1,6 +1,6 @@
-using System.Runtime.CompilerServices;
 using LibHac.Bcat;
 using LibHac.Bcat.Impl.Service.Core;
+using System.Runtime.CompilerServices;
 using Xunit;
 using static LibHac.Tests.Common.Layout;
 

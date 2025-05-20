@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
+
+enum MemoryRegion
 {
-    enum MemoryRegion
-    {
-        Application = 0,
-        Applet = 1,
-        Service = 2,
-        NvServices = 3,
-    }
+    Application = 0,
+    Applet = 1,
+    Service = 2,
+    NvServices = 3,
 }

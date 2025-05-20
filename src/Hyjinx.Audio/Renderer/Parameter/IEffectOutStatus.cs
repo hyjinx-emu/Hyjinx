@@ -1,13 +1,12 @@
-namespace Hyjinx.Audio.Renderer.Parameter
+namespace Hyjinx.Audio.Renderer.Parameter;
+
+/// <summary>
+/// Generic interface to represent output information for an effect.
+/// </summary>
+public interface IEffectOutStatus
 {
     /// <summary>
-    /// Generic interface to represent output information for an effect.
+    /// Current effect state.
     /// </summary>
-    public interface IEffectOutStatus
-    {
-        /// <summary>
-        /// Current effect state.
-        /// </summary>
-        EffectState State { get; set; }
-    }
+    EffectState State { get; set; }
 }

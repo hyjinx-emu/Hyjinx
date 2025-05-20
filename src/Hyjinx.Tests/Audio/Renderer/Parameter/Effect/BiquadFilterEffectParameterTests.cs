@@ -1,14 +1,13 @@
 using Hyjinx.Audio.Renderer.Parameter.Effect;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Audio.Renderer.Parameter.Effect
+namespace Hyjinx.Tests.Audio.Renderer.Parameter.Effect;
+
+class BiquadFilterEffectParameterTests
 {
-    class BiquadFilterEffectParameterTests
+    [Test]
+    public void EnsureTypeSize()
     {
-        [Test]
-        public void EnsureTypeSize()
-        {
-            ClassicAssert.AreEqual(0x18, Unsafe.SizeOf<BiquadFilterEffectParameter>());
-        }
+        ClassicAssert.AreEqual(0x18, Unsafe.SizeOf<BiquadFilterEffectParameter>());
     }
 }

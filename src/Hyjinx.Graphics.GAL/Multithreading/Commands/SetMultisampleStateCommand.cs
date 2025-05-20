@@ -1,18 +1,17 @@
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands;
+
+struct SetMultisampleStateCommand : IGALCommand, IGALCommand<SetMultisampleStateCommand>
 {
-    struct SetMultisampleStateCommand : IGALCommand, IGALCommand<SetMultisampleStateCommand>
+    public readonly CommandType CommandType => CommandType.SetMultisampleState;
+    private MultisampleDescriptor _multisample;
+
+    public void Set(MultisampleDescriptor multisample)
     {
-        public readonly CommandType CommandType => CommandType.SetMultisampleState;
-        private MultisampleDescriptor _multisample;
+        _multisample = multisample;
+    }
 
-        public void Set(MultisampleDescriptor multisample)
-        {
-            _multisample = multisample;
-        }
-
-        public static void Run(ref SetMultisampleStateCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            renderer.Pipeline.SetMultisampleState(command._multisample);
-        }
+    public static void Run(ref SetMultisampleStateCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        renderer.Pipeline.SetMultisampleState(command._multisample);
     }
 }

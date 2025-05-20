@@ -1,51 +1,50 @@
 using System;
 using System.Threading;
 
-namespace Hyjinx.Common.PreciseSleep
+namespace Hyjinx.Common.PreciseSleep;
+
+/// <summary>
+/// A cross-platform precise sleep event that has millisecond granularity.
+/// </summary>
+internal class SleepEvent : IPreciseSleepEvent
 {
-    /// <summary>
-    /// A cross-platform precise sleep event that has millisecond granularity.
-    /// </summary>
-    internal class SleepEvent : IPreciseSleepEvent
+    private readonly AutoResetEvent _waitEvent = new(false);
+
+    public long AdjustTimePoint(long timePoint, long timeoutNs)
     {
-        private readonly AutoResetEvent _waitEvent = new(false);
+        // No adjustment
+        return timePoint;
+    }
 
-        public long AdjustTimePoint(long timePoint, long timeoutNs)
+    public bool SleepUntil(long timePoint)
+    {
+        long now = PerformanceCounter.ElapsedTicks;
+        long ms = Math.Min((timePoint - now) / PerformanceCounter.TicksPerMillisecond, int.MaxValue);
+
+        if (ms > 0)
         {
-            // No adjustment
-            return timePoint;
+            _waitEvent.WaitOne((int)ms);
+
+            return true;
         }
 
-        public bool SleepUntil(long timePoint)
-        {
-            long now = PerformanceCounter.ElapsedTicks;
-            long ms = Math.Min((timePoint - now) / PerformanceCounter.TicksPerMillisecond, int.MaxValue);
+        return false;
+    }
 
-            if (ms > 0)
-            {
-                _waitEvent.WaitOne((int)ms);
+    public void Sleep()
+    {
+        _waitEvent.WaitOne();
+    }
 
-                return true;
-            }
+    public void Signal()
+    {
+        _waitEvent.Set();
+    }
 
-            return false;
-        }
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
 
-        public void Sleep()
-        {
-            _waitEvent.WaitOne();
-        }
-
-        public void Signal()
-        {
-            _waitEvent.Set();
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-
-            _waitEvent.Dispose();
-        }
+        _waitEvent.Dispose();
     }
 }

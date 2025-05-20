@@ -1,14 +1,13 @@
-namespace Hyjinx.HLE.HOS.Kernel.Memory
-{
-    struct KPageNode
-    {
-        public ulong Address;
-        public ulong PagesCount;
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
 
-        public KPageNode(ulong address, ulong pagesCount)
-        {
-            Address = address;
-            PagesCount = pagesCount;
-        }
+struct KPageNode
+{
+    public ulong Address;
+    public ulong PagesCount;
+
+    public KPageNode(ulong address, ulong pagesCount)
+    {
+        Address = address;
+        PagesCount = pagesCount;
     }
 }

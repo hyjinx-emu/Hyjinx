@@ -1,57 +1,56 @@
 using Hyjinx.Graphics.GAL;
 using System;
 
-namespace Hyjinx.Graphics.OpenGL.Queries
+namespace Hyjinx.Graphics.OpenGL.Queries;
+
+class Counters : IDisposable
 {
-    class Counters : IDisposable
+    private readonly CounterQueue[] _counterQueues;
+
+    public Counters()
     {
-        private readonly CounterQueue[] _counterQueues;
+        int count = Enum.GetNames<CounterType>().Length;
 
-        public Counters()
+        _counterQueues = new CounterQueue[count];
+    }
+
+    public void Initialize()
+    {
+        for (int index = 0; index < _counterQueues.Length; index++)
         {
-            int count = Enum.GetNames<CounterType>().Length;
-
-            _counterQueues = new CounterQueue[count];
+            CounterType type = (CounterType)index;
+            _counterQueues[index] = new CounterQueue(type);
         }
+    }
 
-        public void Initialize()
+    public CounterQueueEvent QueueReport(CounterType type, EventHandler<ulong> resultHandler, float divisor, ulong lastDrawIndex, bool hostReserved)
+    {
+        return _counterQueues[(int)type].QueueReport(resultHandler, divisor, lastDrawIndex, hostReserved);
+    }
+
+    public void QueueReset(CounterType type)
+    {
+        _counterQueues[(int)type].QueueReset();
+    }
+
+    public void Update()
+    {
+        foreach (var queue in _counterQueues)
         {
-            for (int index = 0; index < _counterQueues.Length; index++)
-            {
-                CounterType type = (CounterType)index;
-                _counterQueues[index] = new CounterQueue(type);
-            }
+            queue.Flush(false);
         }
+    }
 
-        public CounterQueueEvent QueueReport(CounterType type, EventHandler<ulong> resultHandler, float divisor, ulong lastDrawIndex, bool hostReserved)
-        {
-            return _counterQueues[(int)type].QueueReport(resultHandler, divisor, lastDrawIndex, hostReserved);
-        }
+    public void Flush(CounterType type)
+    {
+        _counterQueues[(int)type].Flush(true);
+    }
 
-        public void QueueReset(CounterType type)
+    public void Dispose()
+    {
+        foreach (var queue in _counterQueues)
         {
-            _counterQueues[(int)type].QueueReset();
-        }
-
-        public void Update()
-        {
-            foreach (var queue in _counterQueues)
-            {
-                queue.Flush(false);
-            }
-        }
-
-        public void Flush(CounterType type)
-        {
-            _counterQueues[(int)type].Flush(true);
-        }
-
-        public void Dispose()
-        {
-            foreach (var queue in _counterQueues)
-            {
-                queue.Dispose();
-            }
+            queue.Dispose();
         }
     }
 }

@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Kernel.Ipc
+namespace Hyjinx.HLE.HOS.Kernel.Ipc;
+
+enum ChannelState
 {
-    enum ChannelState
-    {
-        NotInitialized,
-        Open,
-        ClientDisconnected,
-        ServerDisconnected,
-    }
+    NotInitialized,
+    Open,
+    ClientDisconnected,
+    ServerDisconnected,
 }

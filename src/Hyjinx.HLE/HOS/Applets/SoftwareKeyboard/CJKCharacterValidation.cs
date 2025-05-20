@@ -1,17 +1,16 @@
 using System.Text.RegularExpressions;
 
-namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
+
+public static partial class CJKCharacterValidation
 {
-    public static partial class CJKCharacterValidation
+    public static bool IsCJK(char value)
     {
-        public static bool IsCJK(char value)
-        {
-            Regex regex = CJKRegex();
+        Regex regex = CJKRegex();
 
-            return regex.IsMatch(value.ToString());
-        }
-
-        [GeneratedRegex("\\p{IsHangulJamo}|\\p{IsCJKRadicalsSupplement}|\\p{IsCJKSymbolsandPunctuation}|\\p{IsEnclosedCJKLettersandMonths}|\\p{IsCJKCompatibility}|\\p{IsCJKUnifiedIdeographsExtensionA}|\\p{IsCJKUnifiedIdeographs}|\\p{IsHangulSyllables}|\\p{IsCJKCompatibilityForms}")]
-        private static partial Regex CJKRegex();
+        return regex.IsMatch(value.ToString());
     }
+
+    [GeneratedRegex("\\p{IsHangulJamo}|\\p{IsCJKRadicalsSupplement}|\\p{IsCJKSymbolsandPunctuation}|\\p{IsEnclosedCJKLettersandMonths}|\\p{IsCJKCompatibility}|\\p{IsCJKUnifiedIdeographsExtensionA}|\\p{IsCJKUnifiedIdeographs}|\\p{IsHangulSyllables}|\\p{IsCJKCompatibilityForms}")]
+    private static partial Regex CJKRegex();
 }

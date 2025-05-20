@@ -1,13 +1,12 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types
+namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1, Size = 0xc2)]
+struct IpSettingData
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 0xc2)]
-    struct IpSettingData
-    {
-        public IpAddressSetting IpAddressSetting;
-        public DnsSetting DnsSetting;
-        public ProxySetting ProxySetting;
-        public short Mtu;
-    }
+    public IpAddressSetting IpAddressSetting;
+    public DnsSetting DnsSetting;
+    public ProxySetting ProxySetting;
+    public short Mtu;
 }

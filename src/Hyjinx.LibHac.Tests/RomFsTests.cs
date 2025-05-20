@@ -1,5 +1,5 @@
-using System;
 using LibHac.Tools.FsSystem.RomFs;
+using System;
 using Xunit;
 
 namespace LibHac.Tests;

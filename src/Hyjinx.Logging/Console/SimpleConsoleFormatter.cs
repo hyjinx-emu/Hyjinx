@@ -3,9 +3,9 @@
 
 using Hyjinx.Logging.Console.Internal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.IO;
-using Microsoft.Extensions.Options;
 
 namespace Hyjinx.Logging.Console;
 

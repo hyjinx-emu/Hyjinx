@@ -1,93 +1,92 @@
-using Microsoft.IO;
 using Hyjinx.Common;
 using Hyjinx.Common.Memory;
+using Microsoft.IO;
 using System;
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Ipc
+namespace Hyjinx.HLE.HOS.Ipc;
+
+class IpcHandleDesc
 {
-    class IpcHandleDesc
+    public bool HasPId { get; private set; }
+
+    public ulong PId { get; private set; }
+
+    public int[] ToCopy { get; private set; }
+    public int[] ToMove { get; private set; }
+
+    public IpcHandleDesc(BinaryReader reader)
     {
-        public bool HasPId { get; private set; }
+        int word = reader.ReadInt32();
 
-        public ulong PId { get; private set; }
+        HasPId = (word & 1) != 0;
 
-        public int[] ToCopy { get; private set; }
-        public int[] ToMove { get; private set; }
+        PId = HasPId ? reader.ReadUInt64() : 0;
 
-        public IpcHandleDesc(BinaryReader reader)
+        int toCopySize = (word >> 1) & 0xf;
+        int[] toCopy = toCopySize == 0 ? Array.Empty<int>() : new int[toCopySize];
+
+        for (int index = 0; index < toCopy.Length; index++)
         {
-            int word = reader.ReadInt32();
-
-            HasPId = (word & 1) != 0;
-
-            PId = HasPId ? reader.ReadUInt64() : 0;
-
-            int toCopySize = (word >> 1) & 0xf;
-            int[] toCopy = toCopySize == 0 ? Array.Empty<int>() : new int[toCopySize];
-
-            for (int index = 0; index < toCopy.Length; index++)
-            {
-                toCopy[index] = reader.ReadInt32();
-            }
-
-            ToCopy = toCopy;
-
-            int toMoveSize = (word >> 5) & 0xf;
-            int[] toMove = toMoveSize == 0 ? Array.Empty<int>() : new int[toMoveSize];
-
-            for (int index = 0; index < toMove.Length; index++)
-            {
-                toMove[index] = reader.ReadInt32();
-            }
-
-            ToMove = toMove;
+            toCopy[index] = reader.ReadInt32();
         }
 
-        public IpcHandleDesc(int[] copy, int[] move)
+        ToCopy = toCopy;
+
+        int toMoveSize = (word >> 5) & 0xf;
+        int[] toMove = toMoveSize == 0 ? Array.Empty<int>() : new int[toMoveSize];
+
+        for (int index = 0; index < toMove.Length; index++)
         {
-            ToCopy = copy ?? throw new ArgumentNullException(nameof(copy));
-            ToMove = move ?? throw new ArgumentNullException(nameof(move));
+            toMove[index] = reader.ReadInt32();
         }
 
-        public IpcHandleDesc(int[] copy, int[] move, ulong pId) : this(copy, move)
-        {
-            PId = pId;
+        ToMove = toMove;
+    }
 
-            HasPId = true;
+    public IpcHandleDesc(int[] copy, int[] move)
+    {
+        ToCopy = copy ?? throw new ArgumentNullException(nameof(copy));
+        ToMove = move ?? throw new ArgumentNullException(nameof(move));
+    }
+
+    public IpcHandleDesc(int[] copy, int[] move, ulong pId) : this(copy, move)
+    {
+        PId = pId;
+
+        HasPId = true;
+    }
+
+    public static IpcHandleDesc MakeCopy(params int[] handles)
+    {
+        return new IpcHandleDesc(handles, Array.Empty<int>());
+    }
+
+    public static IpcHandleDesc MakeMove(params int[] handles)
+    {
+        return new IpcHandleDesc(Array.Empty<int>(), handles);
+    }
+
+    public RecyclableMemoryStream GetStream()
+    {
+        RecyclableMemoryStream ms = MemoryStreamManager.Shared.GetStream();
+
+        int word = HasPId ? 1 : 0;
+
+        word |= (ToCopy.Length & 0xf) << 1;
+        word |= (ToMove.Length & 0xf) << 5;
+
+        ms.Write(word);
+
+        if (HasPId)
+        {
+            ms.Write(PId);
         }
 
-        public static IpcHandleDesc MakeCopy(params int[] handles)
-        {
-            return new IpcHandleDesc(handles, Array.Empty<int>());
-        }
+        ms.Write(ToCopy);
+        ms.Write(ToMove);
 
-        public static IpcHandleDesc MakeMove(params int[] handles)
-        {
-            return new IpcHandleDesc(Array.Empty<int>(), handles);
-        }
-
-        public RecyclableMemoryStream GetStream()
-        {
-            RecyclableMemoryStream ms = MemoryStreamManager.Shared.GetStream();
-
-            int word = HasPId ? 1 : 0;
-
-            word |= (ToCopy.Length & 0xf) << 1;
-            word |= (ToMove.Length & 0xf) << 5;
-
-            ms.Write(word);
-
-            if (HasPId)
-            {
-                ms.Write(PId);
-            }
-
-            ms.Write(ToCopy);
-            ms.Write(ToMove);
-
-            ms.Position = 0;
-            return ms;
-        }
+        ms.Position = 0;
+        return ms;
     }
 }

@@ -1,21 +1,20 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
+
+[Flags]
+enum MemoryAttribute : byte
 {
-    [Flags]
-    enum MemoryAttribute : byte
-    {
-        None = 0,
-        Mask = 0xff,
+    None = 0,
+    Mask = 0xff,
 
-        Borrowed = 1 << 0,
-        IpcMapped = 1 << 1,
-        DeviceMapped = 1 << 2,
-        Uncached = 1 << 3,
-        PermissionLocked = 1 << 4,
+    Borrowed = 1 << 0,
+    IpcMapped = 1 << 1,
+    DeviceMapped = 1 << 2,
+    Uncached = 1 << 3,
+    PermissionLocked = 1 << 4,
 
-        IpcAndDeviceMapped = IpcMapped | DeviceMapped,
-        BorrowedAndIpcMapped = Borrowed | IpcMapped,
-        DeviceMappedAndUncached = DeviceMapped | Uncached,
-    }
+    IpcAndDeviceMapped = IpcMapped | DeviceMapped,
+    BorrowedAndIpcMapped = Borrowed | IpcMapped,
+    DeviceMappedAndUncached = DeviceMapped | Uncached,
 }

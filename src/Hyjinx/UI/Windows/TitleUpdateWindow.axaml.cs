@@ -12,92 +12,91 @@ using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Helper;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Ava.UI.Windows
+namespace Hyjinx.Ava.UI.Windows;
+
+public partial class TitleUpdateWindow : UserControl
 {
-    public partial class TitleUpdateWindow : UserControl
+    public readonly TitleUpdateViewModel ViewModel;
+
+    public TitleUpdateWindow()
     {
-        public readonly TitleUpdateViewModel ViewModel;
+        DataContext = this;
 
-        public TitleUpdateWindow()
+        InitializeComponent();
+    }
+
+    public TitleUpdateWindow(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
+    {
+        DataContext = ViewModel = new TitleUpdateViewModel(virtualFileSystem, applicationData);
+
+        InitializeComponent();
+    }
+
+    public static async Task Show(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
+    {
+        ContentDialog contentDialog = new()
         {
-            DataContext = this;
+            PrimaryButtonText = "",
+            SecondaryButtonText = "",
+            CloseButtonText = "",
+            Content = new TitleUpdateWindow(virtualFileSystem, applicationData),
+            Title = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.GameUpdateWindowHeading, applicationData.Name, applicationData.IdBaseString),
+        };
 
-            InitializeComponent();
-        }
+        Style bottomBorder = new(x => x.OfType<Grid>().Name("DialogSpace").Child().OfType<Border>());
+        bottomBorder.Setters.Add(new Setter(IsVisibleProperty, false));
 
-        public TitleUpdateWindow(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
+        contentDialog.Styles.Add(bottomBorder);
+
+        await contentDialog.ShowAsync();
+    }
+
+    private void Close(object sender, RoutedEventArgs e)
+    {
+        ((ContentDialog)Parent).Hide();
+    }
+
+    public void Save(object sender, RoutedEventArgs e)
+    {
+        ViewModel.Save();
+
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime al)
         {
-            DataContext = ViewModel = new TitleUpdateViewModel(virtualFileSystem, applicationData);
-
-            InitializeComponent();
-        }
-
-        public static async Task Show(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
-        {
-            ContentDialog contentDialog = new()
+            foreach (Window window in al.Windows)
             {
-                PrimaryButtonText = "",
-                SecondaryButtonText = "",
-                CloseButtonText = "",
-                Content = new TitleUpdateWindow(virtualFileSystem, applicationData),
-                Title = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.GameUpdateWindowHeading, applicationData.Name, applicationData.IdBaseString),
-            };
-
-            Style bottomBorder = new(x => x.OfType<Grid>().Name("DialogSpace").Child().OfType<Border>());
-            bottomBorder.Setters.Add(new Setter(IsVisibleProperty, false));
-
-            contentDialog.Styles.Add(bottomBorder);
-
-            await contentDialog.ShowAsync();
-        }
-
-        private void Close(object sender, RoutedEventArgs e)
-        {
-            ((ContentDialog)Parent).Hide();
-        }
-
-        public void Save(object sender, RoutedEventArgs e)
-        {
-            ViewModel.Save();
-
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime al)
-            {
-                foreach (Window window in al.Windows)
+                if (window is MainWindow mainWindow)
                 {
-                    if (window is MainWindow mainWindow)
-                    {
-                        mainWindow.LoadApplications();
-                    }
-                }
-            }
-
-            ((ContentDialog)Parent).Hide();
-        }
-
-        private void OpenLocation(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button)
-            {
-                if (button.DataContext is TitleUpdateModel model)
-                {
-                    OpenHelper.LocateFile(model.Path);
+                    mainWindow.LoadApplications();
                 }
             }
         }
 
-        private void RemoveUpdate(object sender, RoutedEventArgs e)
+        ((ContentDialog)Parent).Hide();
+    }
+
+    private void OpenLocation(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
         {
-            if (sender is Button button)
+            if (button.DataContext is TitleUpdateModel model)
             {
-                ViewModel.RemoveUpdate((TitleUpdateModel)button.DataContext);
+                OpenHelper.LocateFile(model.Path);
             }
         }
+    }
 
-        private void RemoveAll(object sender, RoutedEventArgs e)
+    private void RemoveUpdate(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
         {
-            ViewModel.TitleUpdates.Clear();
-
-            ViewModel.SortUpdates();
+            ViewModel.RemoveUpdate((TitleUpdateModel)button.DataContext);
         }
+    }
+
+    private void RemoveAll(object sender, RoutedEventArgs e)
+    {
+        ViewModel.TitleUpdates.Clear();
+
+        ViewModel.SortUpdates();
     }
 }

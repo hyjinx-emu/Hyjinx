@@ -1,12 +1,11 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Shim;
 using LibHac.FsSrv.FsCreator;
-
+using System;
+using System.Runtime.CompilerServices;
 using Utility = LibHac.FsSrv.Impl.Utility;
 
 namespace LibHac.FsSrv;

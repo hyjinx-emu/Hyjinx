@@ -1,97 +1,96 @@
 using Hyjinx.Graphics.GAL;
 using System;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+internal class PersistentFlushBuffer : IDisposable
 {
-    internal class PersistentFlushBuffer : IDisposable
+    private readonly VulkanRenderer _gd;
+
+    private BufferHolder _flushStorage;
+
+    public PersistentFlushBuffer(VulkanRenderer gd)
     {
-        private readonly VulkanRenderer _gd;
+        _gd = gd;
+    }
 
-        private BufferHolder _flushStorage;
+    private BufferHolder ResizeIfNeeded(int size)
+    {
+        var flushStorage = _flushStorage;
 
-        public PersistentFlushBuffer(VulkanRenderer gd)
+        if (flushStorage == null || size > _flushStorage.Size)
         {
-            _gd = gd;
+            flushStorage?.Dispose();
+
+            flushStorage = _gd.BufferManager.Create(_gd, size);
+            _flushStorage = flushStorage;
         }
 
-        private BufferHolder ResizeIfNeeded(int size)
-        {
-            var flushStorage = _flushStorage;
+        return flushStorage;
+    }
 
-            if (flushStorage == null || size > _flushStorage.Size)
+    public Span<byte> GetBufferData(CommandBufferPool cbp, BufferHolder buffer, int offset, int size)
+    {
+        var flushStorage = ResizeIfNeeded(size);
+        Auto<DisposableBuffer> srcBuffer;
+
+        using (var cbs = cbp.Rent())
+        {
+            srcBuffer = buffer.GetBuffer(cbs.CommandBuffer);
+            var dstBuffer = flushStorage.GetBuffer(cbs.CommandBuffer);
+
+            if (srcBuffer.TryIncrementReferenceCount())
             {
-                flushStorage?.Dispose();
-
-                flushStorage = _gd.BufferManager.Create(_gd, size);
-                _flushStorage = flushStorage;
+                BufferHolder.Copy(_gd, cbs, srcBuffer, dstBuffer, offset, 0, size, registerSrcUsage: false);
             }
-
-            return flushStorage;
-        }
-
-        public Span<byte> GetBufferData(CommandBufferPool cbp, BufferHolder buffer, int offset, int size)
-        {
-            var flushStorage = ResizeIfNeeded(size);
-            Auto<DisposableBuffer> srcBuffer;
-
-            using (var cbs = cbp.Rent())
+            else
             {
-                srcBuffer = buffer.GetBuffer(cbs.CommandBuffer);
-                var dstBuffer = flushStorage.GetBuffer(cbs.CommandBuffer);
-
-                if (srcBuffer.TryIncrementReferenceCount())
-                {
-                    BufferHolder.Copy(_gd, cbs, srcBuffer, dstBuffer, offset, 0, size, registerSrcUsage: false);
-                }
-                else
-                {
-                    // Source buffer is no longer alive, don't copy anything to flush storage.
-                    srcBuffer = null;
-                }
+                // Source buffer is no longer alive, don't copy anything to flush storage.
+                srcBuffer = null;
             }
-
-            flushStorage.WaitForFences();
-            srcBuffer?.DecrementReferenceCount();
-            return flushStorage.GetDataStorage(0, size);
         }
 
-        public Span<byte> GetTextureData(CommandBufferPool cbp, TextureView view, int size)
+        flushStorage.WaitForFences();
+        srcBuffer?.DecrementReferenceCount();
+        return flushStorage.GetDataStorage(0, size);
+    }
+
+    public Span<byte> GetTextureData(CommandBufferPool cbp, TextureView view, int size)
+    {
+        TextureCreateInfo info = view.Info;
+
+        var flushStorage = ResizeIfNeeded(size);
+
+        using (var cbs = cbp.Rent())
         {
-            TextureCreateInfo info = view.Info;
+            var buffer = flushStorage.GetBuffer(cbs.CommandBuffer).Get(cbs).Value;
+            var image = view.GetImage().Get(cbs).Value;
 
-            var flushStorage = ResizeIfNeeded(size);
-
-            using (var cbs = cbp.Rent())
-            {
-                var buffer = flushStorage.GetBuffer(cbs.CommandBuffer).Get(cbs).Value;
-                var image = view.GetImage().Get(cbs).Value;
-
-                view.CopyFromOrToBuffer(cbs.CommandBuffer, buffer, image, size, true, 0, 0, info.GetLayers(), info.Levels, singleSlice: false);
-            }
-
-            flushStorage.WaitForFences();
-            return flushStorage.GetDataStorage(0, size);
+            view.CopyFromOrToBuffer(cbs.CommandBuffer, buffer, image, size, true, 0, 0, info.GetLayers(), info.Levels, singleSlice: false);
         }
 
-        public Span<byte> GetTextureData(CommandBufferPool cbp, TextureView view, int size, int layer, int level)
+        flushStorage.WaitForFences();
+        return flushStorage.GetDataStorage(0, size);
+    }
+
+    public Span<byte> GetTextureData(CommandBufferPool cbp, TextureView view, int size, int layer, int level)
+    {
+        var flushStorage = ResizeIfNeeded(size);
+
+        using (var cbs = cbp.Rent())
         {
-            var flushStorage = ResizeIfNeeded(size);
+            var buffer = flushStorage.GetBuffer(cbs.CommandBuffer).Get(cbs).Value;
+            var image = view.GetImage().Get(cbs).Value;
 
-            using (var cbs = cbp.Rent())
-            {
-                var buffer = flushStorage.GetBuffer(cbs.CommandBuffer).Get(cbs).Value;
-                var image = view.GetImage().Get(cbs).Value;
-
-                view.CopyFromOrToBuffer(cbs.CommandBuffer, buffer, image, size, true, layer, level, 1, 1, singleSlice: true);
-            }
-
-            flushStorage.WaitForFences();
-            return flushStorage.GetDataStorage(0, size);
+            view.CopyFromOrToBuffer(cbs.CommandBuffer, buffer, image, size, true, layer, level, 1, 1, singleSlice: true);
         }
 
-        public void Dispose()
-        {
-            _flushStorage.Dispose();
-        }
+        flushStorage.WaitForFences();
+        return flushStorage.GetDataStorage(0, size);
+    }
+
+    public void Dispose()
+    {
+        _flushStorage.Dispose();
     }
 }

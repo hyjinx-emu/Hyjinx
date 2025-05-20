@@ -1,10 +1,10 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.FsSrv.Impl;
 using LibHac.Ncm;
 using LibHac.Util;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 // ReSharper disable once CheckNamespace
 namespace LibHac.Fs;

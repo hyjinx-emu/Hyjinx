@@ -1,128 +1,127 @@
 using Avalonia.Collections;
-using LibHac.Tools.FsSystem;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Configuration;
+using LibHac.Tools.FsSystem;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace Hyjinx.Ava.UI.Windows
+namespace Hyjinx.Ava.UI.Windows;
+
+public partial class CheatWindow : StyleableWindow
 {
-    public partial class CheatWindow : StyleableWindow
+    private readonly string _enabledCheatsPath;
+    public bool NoCheatsFound { get; }
+
+    public AvaloniaList<CheatNode> LoadedCheats { get; }
+
+    public string Heading { get; }
+    public string BuildId { get; }
+
+    public CheatWindow()
     {
-        private readonly string _enabledCheatsPath;
-        public bool NoCheatsFound { get; }
+        DataContext = this;
 
-        public AvaloniaList<CheatNode> LoadedCheats { get; }
+        InitializeComponent();
 
-        public string Heading { get; }
-        public string BuildId { get; }
+        Title = $"Hyjinx {Program.Version} - " + LocaleManager.Instance[LocaleKeys.CheatWindowTitle];
+    }
 
-        public CheatWindow()
+    public CheatWindow(VirtualFileSystem virtualFileSystem, string titleId, string titleName, string titlePath)
+    {
+        LoadedCheats = new AvaloniaList<CheatNode>();
+        IntegrityCheckLevel checkLevel = ConfigurationState.Instance.System.EnableFsIntegrityChecks
+            ? IntegrityCheckLevel.ErrorOnInvalid
+            : IntegrityCheckLevel.None;
+
+        Heading = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.CheatWindowHeading, titleName, titleId.ToUpper());
+        BuildId = ApplicationData.GetBuildId(virtualFileSystem, checkLevel, titlePath);
+
+        InitializeComponent();
+
+        string modsBasePath = ModLoader.GetModsBasePath();
+        string titleModsPath = ModLoader.GetApplicationDir(modsBasePath, titleId);
+        ulong titleIdValue = ulong.Parse(titleId, NumberStyles.HexNumber);
+
+        _enabledCheatsPath = Path.Combine(titleModsPath, "cheats", "enabled.txt");
+
+        string[] enabled = Array.Empty<string>();
+
+        if (File.Exists(_enabledCheatsPath))
         {
-            DataContext = this;
-
-            InitializeComponent();
-
-            Title = $"Hyjinx {Program.Version} - " + LocaleManager.Instance[LocaleKeys.CheatWindowTitle];
+            enabled = File.ReadAllLines(_enabledCheatsPath);
         }
 
-        public CheatWindow(VirtualFileSystem virtualFileSystem, string titleId, string titleName, string titlePath)
+        int cheatAdded = 0;
+
+        var mods = new ModLoader.ModCache();
+
+        ModLoader.QueryContentsDir(mods, new DirectoryInfo(Path.Combine(modsBasePath, "contents")), titleIdValue);
+
+        string currentCheatFile = string.Empty;
+        string buildId = string.Empty;
+
+        CheatNode currentGroup = null;
+
+        foreach (var cheat in mods.Cheats)
         {
-            LoadedCheats = new AvaloniaList<CheatNode>();
-            IntegrityCheckLevel checkLevel = ConfigurationState.Instance.System.EnableFsIntegrityChecks
-                ? IntegrityCheckLevel.ErrorOnInvalid
-                : IntegrityCheckLevel.None;
-
-            Heading = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.CheatWindowHeading, titleName, titleId.ToUpper());
-            BuildId = ApplicationData.GetBuildId(virtualFileSystem, checkLevel, titlePath);
-
-            InitializeComponent();
-
-            string modsBasePath = ModLoader.GetModsBasePath();
-            string titleModsPath = ModLoader.GetApplicationDir(modsBasePath, titleId);
-            ulong titleIdValue = ulong.Parse(titleId, NumberStyles.HexNumber);
-
-            _enabledCheatsPath = Path.Combine(titleModsPath, "cheats", "enabled.txt");
-
-            string[] enabled = Array.Empty<string>();
-
-            if (File.Exists(_enabledCheatsPath))
+            if (cheat.Path.FullName != currentCheatFile)
             {
-                enabled = File.ReadAllLines(_enabledCheatsPath);
+                currentCheatFile = cheat.Path.FullName;
+                string parentPath = currentCheatFile.Replace(titleModsPath, "");
+
+                buildId = Path.GetFileNameWithoutExtension(currentCheatFile).ToUpper();
+                currentGroup = new CheatNode("", buildId, parentPath, true);
+
+                LoadedCheats.Add(currentGroup);
             }
 
-            int cheatAdded = 0;
+            var model = new CheatNode(cheat.Name, buildId, "", false, enabled.Contains($"{buildId}-{cheat.Name}"));
+            currentGroup?.SubNodes.Add(model);
 
-            var mods = new ModLoader.ModCache();
-
-            ModLoader.QueryContentsDir(mods, new DirectoryInfo(Path.Combine(modsBasePath, "contents")), titleIdValue);
-
-            string currentCheatFile = string.Empty;
-            string buildId = string.Empty;
-
-            CheatNode currentGroup = null;
-
-            foreach (var cheat in mods.Cheats)
-            {
-                if (cheat.Path.FullName != currentCheatFile)
-                {
-                    currentCheatFile = cheat.Path.FullName;
-                    string parentPath = currentCheatFile.Replace(titleModsPath, "");
-
-                    buildId = Path.GetFileNameWithoutExtension(currentCheatFile).ToUpper();
-                    currentGroup = new CheatNode("", buildId, parentPath, true);
-
-                    LoadedCheats.Add(currentGroup);
-                }
-
-                var model = new CheatNode(cheat.Name, buildId, "", false, enabled.Contains($"{buildId}-{cheat.Name}"));
-                currentGroup?.SubNodes.Add(model);
-
-                cheatAdded++;
-            }
-
-            if (cheatAdded == 0)
-            {
-                NoCheatsFound = true;
-            }
-
-            DataContext = this;
-
-            Title = $"Hyjinx {Program.Version} - " + LocaleManager.Instance[LocaleKeys.CheatWindowTitle];
+            cheatAdded++;
         }
 
-        public void Save()
+        if (cheatAdded == 0)
         {
-            if (NoCheatsFound)
-            {
-                return;
-            }
+            NoCheatsFound = true;
+        }
 
-            List<string> enabledCheats = new();
+        DataContext = this;
 
-            foreach (var cheats in LoadedCheats)
+        Title = $"Hyjinx {Program.Version} - " + LocaleManager.Instance[LocaleKeys.CheatWindowTitle];
+    }
+
+    public void Save()
+    {
+        if (NoCheatsFound)
+        {
+            return;
+        }
+
+        List<string> enabledCheats = new();
+
+        foreach (var cheats in LoadedCheats)
+        {
+            foreach (var cheat in cheats.SubNodes)
             {
-                foreach (var cheat in cheats.SubNodes)
+                if (cheat.IsEnabled)
                 {
-                    if (cheat.IsEnabled)
-                    {
-                        enabledCheats.Add(cheat.BuildIdKey);
-                    }
+                    enabledCheats.Add(cheat.BuildIdKey);
                 }
             }
-
-            Directory.CreateDirectory(Path.GetDirectoryName(_enabledCheatsPath));
-
-            File.WriteAllLines(_enabledCheatsPath, enabledCheats);
-
-            Close();
         }
+
+        Directory.CreateDirectory(Path.GetDirectoryName(_enabledCheatsPath));
+
+        File.WriteAllLines(_enabledCheatsPath, enabledCheats);
+
+        Close();
     }
 }

@@ -8,75 +8,74 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DspAddress = System.UInt64;
 
-namespace Hyjinx.Audio.Renderer.Server.Effect
+namespace Hyjinx.Audio.Renderer.Server.Effect;
+
+/// <summary>
+/// Server state for an capture buffer effect.
+/// </summary>
+public class CaptureBufferEffect : BaseEffect
 {
     /// <summary>
-    /// Server state for an capture buffer effect.
+    /// The capture buffer parameter.
     /// </summary>
-    public class CaptureBufferEffect : BaseEffect
+    public AuxiliaryBufferParameter Parameter;
+
+    /// <summary>
+    /// Capture buffer state.
+    /// </summary>
+    public AuxiliaryBufferAddresses State;
+
+    public override EffectType TargetEffectType => EffectType.CaptureBuffer;
+
+    public override DspAddress GetWorkBuffer(int index)
     {
-        /// <summary>
-        /// The capture buffer parameter.
-        /// </summary>
-        public AuxiliaryBufferParameter Parameter;
+        return WorkBuffers[index].GetReference(true);
+    }
 
-        /// <summary>
-        /// Capture buffer state.
-        /// </summary>
-        public AuxiliaryBufferAddresses State;
+    public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion1 parameter, PoolMapper mapper)
+    {
+        Update(out updateErrorInfo, in parameter, mapper);
+    }
 
-        public override EffectType TargetEffectType => EffectType.CaptureBuffer;
+    public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion2 parameter, PoolMapper mapper)
+    {
+        Update(out updateErrorInfo, in parameter, mapper);
+    }
 
-        public override DspAddress GetWorkBuffer(int index)
+    public void Update<T>(out BehaviourParameter.ErrorInfo updateErrorInfo, in T parameter, PoolMapper mapper) where T : unmanaged, IEffectInParameter
+    {
+        Debug.Assert(IsTypeValid(in parameter));
+
+        UpdateParameterBase(in parameter);
+
+        Parameter = MemoryMarshal.Cast<byte, AuxiliaryBufferParameter>(parameter.SpecificData)[0];
+        IsEnabled = parameter.IsEnabled;
+
+        updateErrorInfo = new BehaviourParameter.ErrorInfo();
+
+        if (BufferUnmapped || parameter.IsNew)
         {
-            return WorkBuffers[index].GetReference(true);
-        }
+            ulong bufferSize = (ulong)Unsafe.SizeOf<int>() * Parameter.BufferStorageSize + (ulong)Unsafe.SizeOf<AuxiliaryBufferHeader>();
 
-        public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion1 parameter, PoolMapper mapper)
-        {
-            Update(out updateErrorInfo, in parameter, mapper);
-        }
+            bool sendBufferUnmapped = !mapper.TryAttachBuffer(out updateErrorInfo, ref WorkBuffers[0], Parameter.SendBufferInfoAddress, bufferSize);
 
-        public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion2 parameter, PoolMapper mapper)
-        {
-            Update(out updateErrorInfo, in parameter, mapper);
-        }
+            BufferUnmapped = sendBufferUnmapped;
 
-        public void Update<T>(out BehaviourParameter.ErrorInfo updateErrorInfo, in T parameter, PoolMapper mapper) where T : unmanaged, IEffectInParameter
-        {
-            Debug.Assert(IsTypeValid(in parameter));
-
-            UpdateParameterBase(in parameter);
-
-            Parameter = MemoryMarshal.Cast<byte, AuxiliaryBufferParameter>(parameter.SpecificData)[0];
-            IsEnabled = parameter.IsEnabled;
-
-            updateErrorInfo = new BehaviourParameter.ErrorInfo();
-
-            if (BufferUnmapped || parameter.IsNew)
+            if (!BufferUnmapped)
             {
-                ulong bufferSize = (ulong)Unsafe.SizeOf<int>() * Parameter.BufferStorageSize + (ulong)Unsafe.SizeOf<AuxiliaryBufferHeader>();
+                DspAddress sendDspAddress = WorkBuffers[0].GetReference(false);
 
-                bool sendBufferUnmapped = !mapper.TryAttachBuffer(out updateErrorInfo, ref WorkBuffers[0], Parameter.SendBufferInfoAddress, bufferSize);
-
-                BufferUnmapped = sendBufferUnmapped;
-
-                if (!BufferUnmapped)
-                {
-                    DspAddress sendDspAddress = WorkBuffers[0].GetReference(false);
-
-                    // NOTE: Nintendo directly interact with the CPU side structure in the processing of the DSP command.
-                    State.SendBufferInfo = sendDspAddress;
-                    State.SendBufferInfoBase = sendDspAddress + (ulong)Unsafe.SizeOf<AuxiliaryBufferHeader>();
-                    State.ReturnBufferInfo = 0;
-                    State.ReturnBufferInfoBase = 0;
-                }
+                // NOTE: Nintendo directly interact with the CPU side structure in the processing of the DSP command.
+                State.SendBufferInfo = sendDspAddress;
+                State.SendBufferInfoBase = sendDspAddress + (ulong)Unsafe.SizeOf<AuxiliaryBufferHeader>();
+                State.ReturnBufferInfo = 0;
+                State.ReturnBufferInfoBase = 0;
             }
         }
+    }
 
-        public override void UpdateForCommandGeneration()
-        {
-            UpdateUsageStateForCommandGeneration();
-        }
+    public override void UpdateForCommandGeneration()
+    {
+        UpdateUsageStateForCommandGeneration();
     }
 }

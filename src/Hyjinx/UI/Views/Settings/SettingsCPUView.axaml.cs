@@ -1,12 +1,11 @@
 using Avalonia.Controls;
 
-namespace Hyjinx.Ava.UI.Views.Settings
+namespace Hyjinx.Ava.UI.Views.Settings;
+
+public partial class SettingsCPUView : UserControl
 {
-    public partial class SettingsCPUView : UserControl
+    public SettingsCPUView()
     {
-        public SettingsCPUView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

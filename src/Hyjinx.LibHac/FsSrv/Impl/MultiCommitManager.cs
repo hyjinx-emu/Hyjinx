@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -7,7 +5,8 @@ using LibHac.Fs.Shim;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Sf;
-
+using System;
+using System.Runtime.CompilerServices;
 using IFile = LibHac.Fs.Fsa.IFile;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;

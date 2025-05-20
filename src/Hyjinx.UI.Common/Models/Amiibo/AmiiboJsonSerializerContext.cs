@@ -1,9 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.UI.Common.Models.Amiibo
+namespace Hyjinx.UI.Common.Models.Amiibo;
+
+[JsonSerializable(typeof(AmiiboJson))]
+public partial class AmiiboJsonSerializerContext : JsonSerializerContext
 {
-    [JsonSerializable(typeof(AmiiboJson))]
-    public partial class AmiiboJsonSerializerContext : JsonSerializerContext
-    {
-    }
 }

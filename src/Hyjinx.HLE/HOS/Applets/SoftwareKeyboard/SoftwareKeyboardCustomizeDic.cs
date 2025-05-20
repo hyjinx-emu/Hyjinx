@@ -1,13 +1,12 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
+
+/// <summary>
+/// A structure used by SetCustomizeDic request to software keyboard.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Size = 0x70)]
+struct SoftwareKeyboardCustomizeDic
 {
-    /// <summary>
-    /// A structure used by SetCustomizeDic request to software keyboard.
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential, Size = 0x70)]
-    struct SoftwareKeyboardCustomizeDic
-    {
-        // Unknown
-    }
+    // Unknown
 }

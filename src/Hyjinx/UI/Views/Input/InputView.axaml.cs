@@ -4,58 +4,57 @@ using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.ViewModels.Input;
 
-namespace Hyjinx.Ava.UI.Views.Input
+namespace Hyjinx.Ava.UI.Views.Input;
+
+public partial class InputView : UserControl
 {
-    public partial class InputView : UserControl
+    private bool _dialogOpen;
+    private InputViewModel ViewModel { get; set; }
+
+    public InputView()
     {
-        private bool _dialogOpen;
-        private InputViewModel ViewModel { get; set; }
+        DataContext = ViewModel = new InputViewModel(this);
 
-        public InputView()
+        InitializeComponent();
+    }
+
+    public void SaveCurrentProfile()
+    {
+        ViewModel.Save();
+    }
+
+    private async void PlayerIndexBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (ViewModel.IsModified && !_dialogOpen)
         {
-            DataContext = ViewModel = new InputViewModel(this);
+            _dialogOpen = true;
 
-            InitializeComponent();
-        }
+            var result = await ContentDialogHelper.CreateConfirmationDialog(
+                LocaleManager.Instance[LocaleKeys.DialogControllerSettingsModifiedConfirmMessage],
+                LocaleManager.Instance[LocaleKeys.DialogControllerSettingsModifiedConfirmSubMessage],
+                LocaleManager.Instance[LocaleKeys.InputDialogYes],
+                LocaleManager.Instance[LocaleKeys.InputDialogNo],
+                LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
-        public void SaveCurrentProfile()
-        {
-            ViewModel.Save();
-        }
-
-        private async void PlayerIndexBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (ViewModel.IsModified && !_dialogOpen)
+            if (result == UserResult.Yes)
             {
-                _dialogOpen = true;
+                ViewModel.Save();
+            }
 
-                var result = await ContentDialogHelper.CreateConfirmationDialog(
-                    LocaleManager.Instance[LocaleKeys.DialogControllerSettingsModifiedConfirmMessage],
-                    LocaleManager.Instance[LocaleKeys.DialogControllerSettingsModifiedConfirmSubMessage],
-                    LocaleManager.Instance[LocaleKeys.InputDialogYes],
-                    LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
+            _dialogOpen = false;
 
-                if (result == UserResult.Yes)
-                {
-                    ViewModel.Save();
-                }
+            ViewModel.IsModified = false;
 
-                _dialogOpen = false;
-
-                ViewModel.IsModified = false;
-
-                if (e.AddedItems.Count > 0)
-                {
-                    var player = (PlayerModel)e.AddedItems[0];
-                    ViewModel.PlayerId = player.Id;
-                }
+            if (e.AddedItems.Count > 0)
+            {
+                var player = (PlayerModel)e.AddedItems[0];
+                ViewModel.PlayerId = player.Id;
             }
         }
+    }
 
-        public void Dispose()
-        {
-            ViewModel.Dispose();
-        }
+    public void Dispose()
+    {
+        ViewModel.Dispose();
     }
 }

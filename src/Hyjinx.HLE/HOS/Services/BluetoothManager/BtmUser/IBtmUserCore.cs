@@ -1,134 +1,133 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.Horizon.Common;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 
-namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser
+namespace Hyjinx.HLE.HOS.Services.BluetoothManager.BtmUser;
+
+partial class IBtmUserCore : IpcService<IBtmUserCore>
 {
-    partial class IBtmUserCore : IpcService<IBtmUserCore>
+    public KEvent _bleScanEvent;
+    public int _bleScanEventHandle;
+
+    public KEvent _bleConnectionEvent;
+    public int _bleConnectionEventHandle;
+
+    public KEvent _bleServiceDiscoveryEvent;
+    public int _bleServiceDiscoveryEventHandle;
+
+    public KEvent _bleMtuConfigEvent;
+    public int _bleMtuConfigEventHandle;
+
+    public IBtmUserCore() { }
+
+    [CommandCmif(0)] // 5.0.0+
+    // AcquireBleScanEvent() -> (byte<1>, handle<copy>)
+    public ResultCode AcquireBleScanEvent(ServiceCtx context)
     {
-        public KEvent _bleScanEvent;
-        public int _bleScanEventHandle;
+        Result result = Result.Success;
 
-        public KEvent _bleConnectionEvent;
-        public int _bleConnectionEventHandle;
-
-        public KEvent _bleServiceDiscoveryEvent;
-        public int _bleServiceDiscoveryEventHandle;
-
-        public KEvent _bleMtuConfigEvent;
-        public int _bleMtuConfigEventHandle;
-
-        public IBtmUserCore() { }
-
-        [CommandCmif(0)] // 5.0.0+
-        // AcquireBleScanEvent() -> (byte<1>, handle<copy>)
-        public ResultCode AcquireBleScanEvent(ServiceCtx context)
+        if (_bleScanEventHandle == 0)
         {
-            Result result = Result.Success;
+            _bleScanEvent = new KEvent(context.Device.System.KernelContext);
 
-            if (_bleScanEventHandle == 0)
+            result = context.Process.HandleTable.GenerateHandle(_bleScanEvent.ReadableEvent, out _bleScanEventHandle);
+
+            if (result != Result.Success)
             {
-                _bleScanEvent = new KEvent(context.Device.System.KernelContext);
-
-                result = context.Process.HandleTable.GenerateHandle(_bleScanEvent.ReadableEvent, out _bleScanEventHandle);
-
-                if (result != Result.Success)
-                {
-                    // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
-                    LogOutOfHandles();
-                }
+                // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
+                LogOutOfHandles();
             }
-
-            context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_bleScanEventHandle);
-
-            context.ResponseData.Write(result == Result.Success ? 1 : 0);
-
-            return ResultCode.Success;
         }
 
-        [LoggerMessage(LogLevel.Error,
-            EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
-            Message = "Out of handles!")]
-        private partial void LogOutOfHandles();
+        context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_bleScanEventHandle);
 
-        [CommandCmif(17)] // 5.0.0+
-        // AcquireBleConnectionEvent() -> (byte<1>, handle<copy>)
-        public ResultCode AcquireBleConnectionEvent(ServiceCtx context)
+        context.ResponseData.Write(result == Result.Success ? 1 : 0);
+
+        return ResultCode.Success;
+    }
+
+    [LoggerMessage(LogLevel.Error,
+        EventId = (int)LogClass.ServiceBsd, EventName = nameof(LogClass.ServiceBsd),
+        Message = "Out of handles!")]
+    private partial void LogOutOfHandles();
+
+    [CommandCmif(17)] // 5.0.0+
+    // AcquireBleConnectionEvent() -> (byte<1>, handle<copy>)
+    public ResultCode AcquireBleConnectionEvent(ServiceCtx context)
+    {
+        Result result = Result.Success;
+
+        if (_bleConnectionEventHandle == 0)
         {
-            Result result = Result.Success;
+            _bleConnectionEvent = new KEvent(context.Device.System.KernelContext);
 
-            if (_bleConnectionEventHandle == 0)
+            result = context.Process.HandleTable.GenerateHandle(_bleConnectionEvent.ReadableEvent, out _bleConnectionEventHandle);
+
+            if (result != Result.Success)
             {
-                _bleConnectionEvent = new KEvent(context.Device.System.KernelContext);
-
-                result = context.Process.HandleTable.GenerateHandle(_bleConnectionEvent.ReadableEvent, out _bleConnectionEventHandle);
-
-                if (result != Result.Success)
-                {
-                    // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
-                    LogOutOfHandles();
-                }
+                // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
+                LogOutOfHandles();
             }
-
-            context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_bleConnectionEventHandle);
-
-            context.ResponseData.Write(result == Result.Success ? 1 : 0);
-
-            return ResultCode.Success;
         }
 
-        [CommandCmif(26)] // 5.0.0+
-        // AcquireBleServiceDiscoveryEvent() -> (byte<1>, handle<copy>)
-        public ResultCode AcquireBleServiceDiscoveryEvent(ServiceCtx context)
+        context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_bleConnectionEventHandle);
+
+        context.ResponseData.Write(result == Result.Success ? 1 : 0);
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(26)] // 5.0.0+
+    // AcquireBleServiceDiscoveryEvent() -> (byte<1>, handle<copy>)
+    public ResultCode AcquireBleServiceDiscoveryEvent(ServiceCtx context)
+    {
+        Result result = Result.Success;
+
+        if (_bleServiceDiscoveryEventHandle == 0)
         {
-            Result result = Result.Success;
+            _bleServiceDiscoveryEvent = new KEvent(context.Device.System.KernelContext);
 
-            if (_bleServiceDiscoveryEventHandle == 0)
+            result = context.Process.HandleTable.GenerateHandle(_bleServiceDiscoveryEvent.ReadableEvent, out _bleServiceDiscoveryEventHandle);
+
+            if (result != Result.Success)
             {
-                _bleServiceDiscoveryEvent = new KEvent(context.Device.System.KernelContext);
-
-                result = context.Process.HandleTable.GenerateHandle(_bleServiceDiscoveryEvent.ReadableEvent, out _bleServiceDiscoveryEventHandle);
-
-                if (result != Result.Success)
-                {
-                    // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
-                    LogOutOfHandles();
-                }
+                // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
+                LogOutOfHandles();
             }
-
-            context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_bleServiceDiscoveryEventHandle);
-
-            context.ResponseData.Write(result == Result.Success ? 1 : 0);
-
-            return ResultCode.Success;
         }
 
-        [CommandCmif(33)] // 5.0.0+
-        // AcquireBleMtuConfigEvent() -> (byte<1>, handle<copy>)
-        public ResultCode AcquireBleMtuConfigEvent(ServiceCtx context)
+        context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_bleServiceDiscoveryEventHandle);
+
+        context.ResponseData.Write(result == Result.Success ? 1 : 0);
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(33)] // 5.0.0+
+    // AcquireBleMtuConfigEvent() -> (byte<1>, handle<copy>)
+    public ResultCode AcquireBleMtuConfigEvent(ServiceCtx context)
+    {
+        Result result = Result.Success;
+
+        if (_bleMtuConfigEventHandle == 0)
         {
-            Result result = Result.Success;
+            _bleMtuConfigEvent = new KEvent(context.Device.System.KernelContext);
 
-            if (_bleMtuConfigEventHandle == 0)
+            result = context.Process.HandleTable.GenerateHandle(_bleMtuConfigEvent.ReadableEvent, out _bleMtuConfigEventHandle);
+
+            if (result != Result.Success)
             {
-                _bleMtuConfigEvent = new KEvent(context.Device.System.KernelContext);
-
-                result = context.Process.HandleTable.GenerateHandle(_bleMtuConfigEvent.ReadableEvent, out _bleMtuConfigEventHandle);
-
-                if (result != Result.Success)
-                {
-                    // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
-                    LogOutOfHandles();
-                }
+                // NOTE: We use a Logging instead of an exception because the call return a boolean if succeed or not.
+                LogOutOfHandles();
             }
-
-            context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_bleMtuConfigEventHandle);
-
-            context.ResponseData.Write(result == Result.Success ? 1 : 0);
-
-            return ResultCode.Success;
         }
+
+        context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_bleMtuConfigEventHandle);
+
+        context.ResponseData.Write(result == Result.Success ? 1 : 0);
+
+        return ResultCode.Success;
     }
 }

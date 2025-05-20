@@ -1,93 +1,92 @@
-namespace Hyjinx.Ava.UI.ViewModels.Input
+namespace Hyjinx.Ava.UI.ViewModels.Input;
+
+public class MotionInputViewModel : BaseModel
 {
-    public class MotionInputViewModel : BaseModel
+    private int _slot;
+    public int Slot
     {
-        private int _slot;
-        public int Slot
+        get => _slot;
+        set
         {
-            get => _slot;
-            set
-            {
-                _slot = value;
-                OnPropertyChanged();
-            }
+            _slot = value;
+            OnPropertyChanged();
         }
+    }
 
-        private int _altSlot;
-        public int AltSlot
+    private int _altSlot;
+    public int AltSlot
+    {
+        get => _altSlot;
+        set
         {
-            get => _altSlot;
-            set
-            {
-                _altSlot = value;
-                OnPropertyChanged();
-            }
+            _altSlot = value;
+            OnPropertyChanged();
         }
+    }
 
-        private string _dsuServerHost;
-        public string DsuServerHost
+    private string _dsuServerHost;
+    public string DsuServerHost
+    {
+        get => _dsuServerHost;
+        set
         {
-            get => _dsuServerHost;
-            set
-            {
-                _dsuServerHost = value;
-                OnPropertyChanged();
-            }
+            _dsuServerHost = value;
+            OnPropertyChanged();
         }
+    }
 
-        private int _dsuServerPort;
-        public int DsuServerPort
+    private int _dsuServerPort;
+    public int DsuServerPort
+    {
+        get => _dsuServerPort;
+        set
         {
-            get => _dsuServerPort;
-            set
-            {
-                _dsuServerPort = value;
-                OnPropertyChanged();
-            }
+            _dsuServerPort = value;
+            OnPropertyChanged();
         }
+    }
 
-        private bool _mirrorInput;
-        public bool MirrorInput
+    private bool _mirrorInput;
+    public bool MirrorInput
+    {
+        get => _mirrorInput;
+        set
         {
-            get => _mirrorInput;
-            set
-            {
-                _mirrorInput = value;
-                OnPropertyChanged();
-            }
+            _mirrorInput = value;
+            OnPropertyChanged();
         }
+    }
 
-        private int _sensitivity;
-        public int Sensitivity
+    private int _sensitivity;
+    public int Sensitivity
+    {
+        get => _sensitivity;
+        set
         {
-            get => _sensitivity;
-            set
-            {
-                _sensitivity = value;
-                OnPropertyChanged();
-            }
+            _sensitivity = value;
+            OnPropertyChanged();
         }
+    }
 
-        private double _gryoDeadzone;
-        public double GyroDeadzone
+    private double _gryoDeadzone;
+    public double GyroDeadzone
+    {
+        get => _gryoDeadzone;
+        set
         {
-            get => _gryoDeadzone;
-            set
-            {
-                _gryoDeadzone = value;
-                OnPropertyChanged();
-            }
+            _gryoDeadzone = value;
+            OnPropertyChanged();
         }
+    }
 
-        private bool _enableCemuHookMotion;
-        public bool EnableCemuHookMotion
+    private bool _enableCemuHookMotion;
+    public bool EnableCemuHookMotion
+    {
+        get => _enableCemuHookMotion;
+        set
         {
-            get => _enableCemuHookMotion;
-            set
-            {
-                _enableCemuHookMotion = value;
-                OnPropertyChanged();
-            }
+            _enableCemuHookMotion = value;
+            OnPropertyChanged();
         }
     }
 }

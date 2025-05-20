@@ -1,9 +1,9 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Sf;
 using LibHac.Time;
+using System;
+using System.Runtime.CompilerServices;
 
 // ReSharper disable once CheckNamespace
 namespace LibHac.Fs.Impl;

@@ -1,11 +1,11 @@
-using System;
-using System.Diagnostics;
-using System.IO;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.FsSystem;
 using LibHac.Util;
+using System;
+using System.Diagnostics;
+using System.IO;
 using Path = LibHac.Fs.Path;
 
 namespace LibHac.Tools.Fs;

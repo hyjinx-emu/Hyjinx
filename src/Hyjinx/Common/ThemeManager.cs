@@ -1,14 +1,13 @@
 using System;
 
-namespace Hyjinx.Ava.Common
-{
-    public static class ThemeManager
-    {
-        public static event EventHandler ThemeChanged;
+namespace Hyjinx.Ava.Common;
 
-        public static void OnThemeChanged()
-        {
-            ThemeChanged?.Invoke(null, EventArgs.Empty);
-        }
+public static class ThemeManager
+{
+    public static event EventHandler ThemeChanged;
+
+    public static void OnThemeChanged()
+    {
+        ThemeChanged?.Invoke(null, EventArgs.Empty);
     }
 }

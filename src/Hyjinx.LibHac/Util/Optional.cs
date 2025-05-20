@@ -1,6 +1,6 @@
+using LibHac.Diag;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using LibHac.Diag;
 
 namespace LibHac.Util;
 

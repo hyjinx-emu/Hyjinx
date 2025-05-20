@@ -2,31 +2,30 @@ using Hyjinx.Graphics.GAL.Multithreading.Model;
 using Hyjinx.Graphics.GAL.Multithreading.Resources;
 using System;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer;
+
+struct ReportCounterCommand : IGALCommand, IGALCommand<ReportCounterCommand>
 {
-    struct ReportCounterCommand : IGALCommand, IGALCommand<ReportCounterCommand>
+    public readonly CommandType CommandType => CommandType.ReportCounter;
+    private TableRef<ThreadedCounterEvent> _event;
+    private CounterType _type;
+    private TableRef<EventHandler<ulong>> _resultHandler;
+    private float _divisor;
+    private bool _hostReserved;
+
+    public void Set(TableRef<ThreadedCounterEvent> evt, CounterType type, TableRef<EventHandler<ulong>> resultHandler, float divisor, bool hostReserved)
     {
-        public readonly CommandType CommandType => CommandType.ReportCounter;
-        private TableRef<ThreadedCounterEvent> _event;
-        private CounterType _type;
-        private TableRef<EventHandler<ulong>> _resultHandler;
-        private float _divisor;
-        private bool _hostReserved;
+        _event = evt;
+        _type = type;
+        _resultHandler = resultHandler;
+        _divisor = divisor;
+        _hostReserved = hostReserved;
+    }
 
-        public void Set(TableRef<ThreadedCounterEvent> evt, CounterType type, TableRef<EventHandler<ulong>> resultHandler, float divisor, bool hostReserved)
-        {
-            _event = evt;
-            _type = type;
-            _resultHandler = resultHandler;
-            _divisor = divisor;
-            _hostReserved = hostReserved;
-        }
+    public static void Run(ref ReportCounterCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        ThreadedCounterEvent evt = command._event.Get(threaded);
 
-        public static void Run(ref ReportCounterCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            ThreadedCounterEvent evt = command._event.Get(threaded);
-
-            evt.Create(renderer, command._type, command._resultHandler.Get(threaded), command._divisor, command._hostReserved);
-        }
+        evt.Create(renderer, command._type, command._resultHandler.Get(threaded), command._divisor, command._hostReserved);
     }
 }

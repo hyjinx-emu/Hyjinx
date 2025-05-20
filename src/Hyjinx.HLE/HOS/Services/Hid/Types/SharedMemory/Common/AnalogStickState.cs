@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+
+struct AnalogStickState
 {
-    struct AnalogStickState
-    {
-        public int X;
-        public int Y;
-    }
+    public int X;
+    public int Y;
 }

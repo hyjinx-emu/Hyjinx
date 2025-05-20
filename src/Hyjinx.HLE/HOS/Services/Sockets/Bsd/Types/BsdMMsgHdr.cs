@@ -1,56 +1,55 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
+
+class BsdMMsgHdr
 {
-    class BsdMMsgHdr
+    public BsdMsgHdr[] Messages { get; }
+
+    private BsdMMsgHdr(BsdMsgHdr[] messages)
     {
-        public BsdMsgHdr[] Messages { get; }
+        Messages = messages;
+    }
 
-        private BsdMMsgHdr(BsdMsgHdr[] messages)
+    public static LinuxError Serialize(Span<byte> rawData, BsdMMsgHdr message)
+    {
+        rawData[0] = 0x8;
+        rawData = rawData[1..];
+
+        for (int index = 0; index < message.Messages.Length; index++)
         {
-            Messages = messages;
-        }
+            LinuxError res = BsdMsgHdr.Serialize(ref rawData, message.Messages[index]);
 
-        public static LinuxError Serialize(Span<byte> rawData, BsdMMsgHdr message)
-        {
-            rawData[0] = 0x8;
-            rawData = rawData[1..];
-
-            for (int index = 0; index < message.Messages.Length; index++)
+            if (res != LinuxError.SUCCESS)
             {
-                LinuxError res = BsdMsgHdr.Serialize(ref rawData, message.Messages[index]);
-
-                if (res != LinuxError.SUCCESS)
-                {
-                    return res;
-                }
+                return res;
             }
-
-            return LinuxError.SUCCESS;
         }
 
-        public static LinuxError Deserialize(out BsdMMsgHdr message, ReadOnlySpan<byte> rawData, int vlen)
+        return LinuxError.SUCCESS;
+    }
+
+    public static LinuxError Deserialize(out BsdMMsgHdr message, ReadOnlySpan<byte> rawData, int vlen)
+    {
+        message = null;
+
+        BsdMsgHdr[] messages = new BsdMsgHdr[vlen];
+
+        // Skip "header" byte (Nintendo also ignore it)
+        rawData = rawData[1..];
+
+        for (int index = 0; index < messages.Length; index++)
         {
-            message = null;
+            LinuxError res = BsdMsgHdr.Deserialize(out messages[index], ref rawData);
 
-            BsdMsgHdr[] messages = new BsdMsgHdr[vlen];
-
-            // Skip "header" byte (Nintendo also ignore it)
-            rawData = rawData[1..];
-
-            for (int index = 0; index < messages.Length; index++)
+            if (res != LinuxError.SUCCESS)
             {
-                LinuxError res = BsdMsgHdr.Deserialize(out messages[index], ref rawData);
-
-                if (res != LinuxError.SUCCESS)
-                {
-                    return res;
-                }
+                return res;
             }
-
-            message = new BsdMMsgHdr(messages);
-
-            return LinuxError.SUCCESS;
         }
+
+        message = new BsdMMsgHdr(messages);
+
+        return LinuxError.SUCCESS;
     }
 }

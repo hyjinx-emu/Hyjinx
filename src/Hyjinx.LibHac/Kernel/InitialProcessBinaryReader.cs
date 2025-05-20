@@ -1,8 +1,8 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Kernel;
 

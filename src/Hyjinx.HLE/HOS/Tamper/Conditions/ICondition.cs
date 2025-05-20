@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Tamper.Conditions
+namespace Hyjinx.HLE.HOS.Tamper.Conditions;
+
+interface ICondition
 {
-    interface ICondition
-    {
-        bool Evaluate();
-    }
+    bool Evaluate();
 }

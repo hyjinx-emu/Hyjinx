@@ -1,65 +1,64 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Kernel.Threading;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext
+namespace Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
+
+internal partial class AsyncExecution
 {
-    internal partial class AsyncExecution
+    private static readonly ILogger<AsyncExecution> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<AsyncExecution>();
+
+    private readonly CancellationTokenSource _tokenSource;
+    private readonly CancellationToken _token;
+
+    public KEvent SystemEvent { get; }
+    public bool IsInitialized { get; private set; }
+    public bool IsRunning { get; private set; }
+
+    public AsyncExecution(KEvent asyncEvent)
     {
-        private static readonly ILogger<AsyncExecution> _logger =
-            Logger.DefaultLoggerFactory.CreateLogger<AsyncExecution>();
+        SystemEvent = asyncEvent;
 
-        private readonly CancellationTokenSource _tokenSource;
-        private readonly CancellationToken _token;
+        _tokenSource = new CancellationTokenSource();
+        _token = _tokenSource.Token;
+    }
 
-        public KEvent SystemEvent { get; }
-        public bool IsInitialized { get; private set; }
-        public bool IsRunning { get; private set; }
-
-        public AsyncExecution(KEvent asyncEvent)
+    public void Initialize(int timeout, Func<CancellationToken, Task> taskAsync)
+    {
+        Task.Run(async () =>
         {
-            SystemEvent = asyncEvent;
+            IsRunning = true;
 
-            _tokenSource = new CancellationTokenSource();
-            _token = _tokenSource.Token;
-        }
+            _tokenSource.CancelAfter(timeout);
 
-        public void Initialize(int timeout, Func<CancellationToken, Task> taskAsync)
-        {
-            Task.Run(async () =>
+            try
             {
-                IsRunning = true;
+                await taskAsync(_token);
+            }
+            catch (Exception ex)
+            {
+                LogUnexpectedErrorOccurred(ex);
+            }
 
-                _tokenSource.CancelAfter(timeout);
+            SystemEvent.ReadableEvent.Signal();
 
-                try
-                {
-                    await taskAsync(_token);
-                }
-                catch (Exception ex)
-                {
-                    LogUnexpectedErrorOccurred(ex);
-                }
+            IsRunning = false;
+        }, _token);
 
-                SystemEvent.ReadableEvent.Signal();
+        IsInitialized = true;
+    }
 
-                IsRunning = false;
-            }, _token);
+    [LoggerMessage(LogLevel.Warning,
+        EventId = (int)LogClass.ServiceAcc, EventName = nameof(LogClass.ServiceAcc),
+        Message = "An unexpected error occurred.")]
+    private partial void LogUnexpectedErrorOccurred(Exception exception);
 
-            IsInitialized = true;
-        }
-
-        [LoggerMessage(LogLevel.Warning,
-            EventId = (int)LogClass.ServiceAcc, EventName = nameof(LogClass.ServiceAcc),
-            Message = "An unexpected error occurred.")]
-        private partial void LogUnexpectedErrorOccurred(Exception exception);
-
-        public void Cancel()
-        {
-            _tokenSource.Cancel();
-        }
+    public void Cancel()
+    {
+        _tokenSource.Cancel();
     }
 }

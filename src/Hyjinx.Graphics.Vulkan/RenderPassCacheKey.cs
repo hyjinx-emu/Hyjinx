@@ -1,43 +1,42 @@
 using System;
 using System.Linq;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+internal readonly struct RenderPassCacheKey : IRefEquatable<RenderPassCacheKey>
 {
-    internal readonly struct RenderPassCacheKey : IRefEquatable<RenderPassCacheKey>
+    private readonly TextureView _depthStencil;
+    private readonly TextureView[] _colors;
+
+    public RenderPassCacheKey(TextureView depthStencil, TextureView[] colors)
     {
-        private readonly TextureView _depthStencil;
-        private readonly TextureView[] _colors;
+        _depthStencil = depthStencil;
+        _colors = colors;
+    }
 
-        public RenderPassCacheKey(TextureView depthStencil, TextureView[] colors)
+    public override int GetHashCode()
+    {
+        HashCode hc = new();
+
+        hc.Add(_depthStencil);
+
+        if (_colors != null)
         {
-            _depthStencil = depthStencil;
-            _colors = colors;
-        }
-
-        public override int GetHashCode()
-        {
-            HashCode hc = new();
-
-            hc.Add(_depthStencil);
-
-            if (_colors != null)
+            foreach (var color in _colors)
             {
-                foreach (var color in _colors)
-                {
-                    hc.Add(color);
-                }
+                hc.Add(color);
             }
-
-            return hc.ToHashCode();
         }
 
-        public bool Equals(ref RenderPassCacheKey other)
-        {
-            bool colorsNull = _colors == null;
-            bool otherNull = other._colors == null;
-            return other._depthStencil == _depthStencil &&
-                colorsNull == otherNull &&
-                (colorsNull || other._colors.SequenceEqual(_colors));
-        }
+        return hc.ToHashCode();
+    }
+
+    public bool Equals(ref RenderPassCacheKey other)
+    {
+        bool colorsNull = _colors == null;
+        bool otherNull = other._colors == null;
+        return other._depthStencil == _depthStencil &&
+            colorsNull == otherNull &&
+            (colorsNull || other._colors.SequenceEqual(_colors));
     }
 }

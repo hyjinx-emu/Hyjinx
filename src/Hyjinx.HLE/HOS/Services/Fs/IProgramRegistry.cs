@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Fs
+namespace Hyjinx.HLE.HOS.Services.Fs;
+
+[Service("fsp-pr")]
+class IProgramRegistry : IpcService<IProgramRegistry>
 {
-    [Service("fsp-pr")]
-    class IProgramRegistry : IpcService<IProgramRegistry>
-    {
-        public IProgramRegistry(ServiceCtx context) { }
-    }
+    public IProgramRegistry(ServiceCtx context) { }
 }

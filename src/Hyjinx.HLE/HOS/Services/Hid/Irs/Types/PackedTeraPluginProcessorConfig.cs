@@ -1,14 +1,13 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Hid.Irs.Types
+namespace Hyjinx.HLE.HOS.Services.Hid.Irs.Types;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x8)]
+struct PackedTeraPluginProcessorConfig
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x8)]
-    struct PackedTeraPluginProcessorConfig
-    {
-        public uint RequiredMcuVersion;
-        public byte Mode;
-        public byte Unknown1;
-        public byte Unknown2;
-        public byte Unknown3;
-    }
+    public uint RequiredMcuVersion;
+    public byte Mode;
+    public byte Unknown1;
+    public byte Unknown2;
+    public byte Unknown3;
 }

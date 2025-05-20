@@ -1,12 +1,11 @@
-namespace Hyjinx.HLE.HOS.Services.Ssl.Types
-{
-    enum TrustedCertStatus : uint
-    {
-        Removed,
-        EnabledTrusted,
-        EnabledNotTrusted,
-        Revoked,
+namespace Hyjinx.HLE.HOS.Services.Ssl.Types;
 
-        Invalid = uint.MaxValue,
-    }
+enum TrustedCertStatus : uint
+{
+    Removed,
+    EnabledTrusted,
+    EnabledNotTrusted,
+    Revoked,
+
+    Invalid = uint.MaxValue,
 }

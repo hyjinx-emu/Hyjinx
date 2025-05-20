@@ -1,8 +1,8 @@
+using LibHac.Common;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using LibHac.Common;
 
 namespace LibHac.Account;
 

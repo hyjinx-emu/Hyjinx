@@ -1,6 +1,6 @@
-using System;
 using LibHac.Ncm;
 using LibHac.Sf;
+using System;
 
 namespace LibHac.FsSrv.Sf;
 

@@ -3,119 +3,118 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
+
+[StructLayout(LayoutKind.Sequential, Pack = 2, Size = SizeConst)]
+struct Nickname : IEquatable<Nickname>
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 2, Size = SizeConst)]
-    struct Nickname : IEquatable<Nickname>
+    public const int CharCount = 10;
+    private const int SizeConst = (CharCount + 1) * 2;
+
+    private Array22<byte> _storage;
+
+    public static Nickname Default => FromString("no name");
+    public static Nickname Question => FromString("???");
+
+    public Span<byte> Raw => _storage.AsSpan();
+
+    private ReadOnlySpan<ushort> Characters => MemoryMarshal.Cast<byte, ushort>(Raw);
+
+    private int GetEndCharacterIndex()
     {
-        public const int CharCount = 10;
-        private const int SizeConst = (CharCount + 1) * 2;
-
-        private Array22<byte> _storage;
-
-        public static Nickname Default => FromString("no name");
-        public static Nickname Question => FromString("???");
-
-        public Span<byte> Raw => _storage.AsSpan();
-
-        private ReadOnlySpan<ushort> Characters => MemoryMarshal.Cast<byte, ushort>(Raw);
-
-        private int GetEndCharacterIndex()
+        for (int i = 0; i < Characters.Length; i++)
         {
-            for (int i = 0; i < Characters.Length; i++)
+            if (Characters[i] == 0)
             {
-                if (Characters[i] == 0)
-                {
-                    return i;
-                }
+                return i;
             }
-
-            return -1;
         }
 
-        public bool IsEmpty()
+        return -1;
+    }
+
+    public bool IsEmpty()
+    {
+        for (int i = 0; i < Characters.Length - 1; i++)
         {
-            for (int i = 0; i < Characters.Length - 1; i++)
-            {
-                if (Characters[i] != 0)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public bool IsValid()
-        {
-            // Create a new unicode encoding instance with error checking enabled
-            UnicodeEncoding unicodeEncoding = new(false, false, true);
-
-            try
-            {
-                unicodeEncoding.GetString(Raw);
-
-                return true;
-            }
-            catch (ArgumentException)
+            if (Characters[i] != 0)
             {
                 return false;
             }
         }
 
-        public bool IsValidForFontRegion(FontRegion fontRegion)
+        return true;
+    }
+
+    public bool IsValid()
+    {
+        // Create a new unicode encoding instance with error checking enabled
+        UnicodeEncoding unicodeEncoding = new(false, false, true);
+
+        try
         {
-            // TODO: We need to extract the character tables used here, for now just assume that if it's valid Unicode, it will be valid for any font.
-            return IsValid();
+            unicodeEncoding.GetString(Raw);
+
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
+
+    public bool IsValidForFontRegion(FontRegion fontRegion)
+    {
+        // TODO: We need to extract the character tables used here, for now just assume that if it's valid Unicode, it will be valid for any font.
+        return IsValid();
+    }
+
+    public override string ToString()
+    {
+        return Encoding.Unicode.GetString(Raw);
+    }
+
+    public static Nickname FromBytes(ReadOnlySpan<byte> data)
+    {
+        if (data.Length > SizeConst)
+        {
+            data = data[..SizeConst];
         }
 
-        public override string ToString()
-        {
-            return Encoding.Unicode.GetString(Raw);
-        }
+        Nickname result = new();
 
-        public static Nickname FromBytes(ReadOnlySpan<byte> data)
-        {
-            if (data.Length > SizeConst)
-            {
-                data = data[..SizeConst];
-            }
+        data.CopyTo(result.Raw);
 
-            Nickname result = new();
+        return result;
+    }
 
-            data.CopyTo(result.Raw);
+    public static Nickname FromString(string nickname)
+    {
+        return FromBytes(Encoding.Unicode.GetBytes(nickname));
+    }
 
-            return result;
-        }
+    public static bool operator ==(Nickname x, Nickname y)
+    {
+        return x.Equals(y);
+    }
 
-        public static Nickname FromString(string nickname)
-        {
-            return FromBytes(Encoding.Unicode.GetBytes(nickname));
-        }
+    public static bool operator !=(Nickname x, Nickname y)
+    {
+        return !x.Equals(y);
+    }
 
-        public static bool operator ==(Nickname x, Nickname y)
-        {
-            return x.Equals(y);
-        }
+    public override bool Equals(object obj)
+    {
+        return obj is Nickname nickname && Equals(nickname);
+    }
 
-        public static bool operator !=(Nickname x, Nickname y)
-        {
-            return !x.Equals(y);
-        }
+    public bool Equals(Nickname cmpObj)
+    {
+        return Raw.SequenceEqual(cmpObj.Raw);
+    }
 
-        public override bool Equals(object obj)
-        {
-            return obj is Nickname nickname && Equals(nickname);
-        }
-
-        public bool Equals(Nickname cmpObj)
-        {
-            return Raw.SequenceEqual(cmpObj.Raw);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Raw.ToArray());
-        }
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Raw.ToArray());
     }
 }

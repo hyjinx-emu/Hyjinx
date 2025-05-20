@@ -3,70 +3,69 @@ using ARMeilleure.Translation;
 using System.Diagnostics;
 using static ARMeilleure.IntermediateRepresentation.Operand.Factory;
 
-namespace ARMeilleure.CodeGen.Optimizations
+namespace ARMeilleure.CodeGen.Optimizations;
+
+static class BlockPlacement
 {
-    static class BlockPlacement
+    public static void RunPass(ControlFlowGraph cfg)
     {
-        public static void RunPass(ControlFlowGraph cfg)
+        bool update = false;
+
+        BasicBlock block;
+        BasicBlock nextBlock;
+
+        BasicBlock lastBlock = cfg.Blocks.Last;
+
+        // Move cold blocks at the end of the list, so that they are emitted away from hot code.
+        for (block = cfg.Blocks.First; block != null; block = nextBlock)
         {
-            bool update = false;
+            nextBlock = block.ListNext;
 
-            BasicBlock block;
-            BasicBlock nextBlock;
-
-            BasicBlock lastBlock = cfg.Blocks.Last;
-
-            // Move cold blocks at the end of the list, so that they are emitted away from hot code.
-            for (block = cfg.Blocks.First; block != null; block = nextBlock)
+            if (block.Frequency == BasicBlockFrequency.Cold)
             {
-                nextBlock = block.ListNext;
-
-                if (block.Frequency == BasicBlockFrequency.Cold)
-                {
-                    cfg.Blocks.Remove(block);
-                    cfg.Blocks.AddLast(block);
-                }
-
-                if (block == lastBlock)
-                {
-                    break;
-                }
+                cfg.Blocks.Remove(block);
+                cfg.Blocks.AddLast(block);
             }
 
-            for (block = cfg.Blocks.First; block != null; block = nextBlock)
+            if (block == lastBlock)
             {
-                nextBlock = block.ListNext;
+                break;
+            }
+        }
 
-                if (block.SuccessorsCount == 2)
+        for (block = cfg.Blocks.First; block != null; block = nextBlock)
+        {
+            nextBlock = block.ListNext;
+
+            if (block.SuccessorsCount == 2)
+            {
+                Operation branchOp = block.Operations.Last;
+
+                Debug.Assert(branchOp.Instruction == Instruction.BranchIf);
+
+                BasicBlock falseSucc = block.GetSuccessor(0);
+                BasicBlock trueSucc = block.GetSuccessor(1);
+
+                // If true successor is next block in list, invert the condition. We avoid extra branching by
+                // making the true side the fallthrough (i.e, convert it to the false side).
+                if (trueSucc == block.ListNext)
                 {
-                    Operation branchOp = block.Operations.Last;
+                    Comparison comp = (Comparison)branchOp.GetSource(2).AsInt32();
+                    Comparison compInv = comp.Invert();
 
-                    Debug.Assert(branchOp.Instruction == Instruction.BranchIf);
+                    branchOp.SetSource(2, Const((int)compInv));
 
-                    BasicBlock falseSucc = block.GetSuccessor(0);
-                    BasicBlock trueSucc = block.GetSuccessor(1);
+                    block.SetSuccessor(0, trueSucc);
+                    block.SetSuccessor(1, falseSucc);
 
-                    // If true successor is next block in list, invert the condition. We avoid extra branching by
-                    // making the true side the fallthrough (i.e, convert it to the false side).
-                    if (trueSucc == block.ListNext)
-                    {
-                        Comparison comp = (Comparison)branchOp.GetSource(2).AsInt32();
-                        Comparison compInv = comp.Invert();
-
-                        branchOp.SetSource(2, Const((int)compInv));
-
-                        block.SetSuccessor(0, trueSucc);
-                        block.SetSuccessor(1, falseSucc);
-
-                        update = true;
-                    }
+                    update = true;
                 }
             }
+        }
 
-            if (update)
-            {
-                cfg.Update();
-            }
+        if (update)
+        {
+            cfg.Update();
         }
     }
 }

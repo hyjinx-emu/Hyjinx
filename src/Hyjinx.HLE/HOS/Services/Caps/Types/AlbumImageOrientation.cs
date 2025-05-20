@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Caps.Types
+namespace Hyjinx.HLE.HOS.Services.Caps.Types;
+
+enum AlbumImageOrientation : uint
 {
-    enum AlbumImageOrientation : uint
-    {
-        Degrees0,
-        Degrees90,
-        Degrees180,
-        Degrees270,
-    }
+    Degrees0,
+    Degrees90,
+    Degrees180,
+    Degrees270,
 }

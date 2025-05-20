@@ -1,11 +1,10 @@
 using System;
 
-namespace Hyjinx.Graphics.GAL
-{
-    public interface IProgram : IDisposable
-    {
-        ProgramLinkStatus CheckProgramLink(bool blocking);
+namespace Hyjinx.Graphics.GAL;
 
-        byte[] GetBinary();
-    }
+public interface IProgram : IDisposable
+{
+    ProgramLinkStatus CheckProgramLink(bool blocking);
+
+    byte[] GetBinary();
 }

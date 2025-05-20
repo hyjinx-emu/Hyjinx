@@ -1,8 +1,8 @@
-using System;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Fs.Impl;
 using LibHac.Time;
+using System;
 
 namespace LibHac.Fs;
 

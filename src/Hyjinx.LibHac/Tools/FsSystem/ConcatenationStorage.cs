@@ -1,6 +1,6 @@
+using LibHac.Fs;
 using System;
 using System.Collections.Generic;
-using LibHac.Fs;
 
 namespace LibHac.Tools.FsSystem;
 

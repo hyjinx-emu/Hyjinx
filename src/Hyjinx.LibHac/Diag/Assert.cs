@@ -1,11 +1,11 @@
+using LibHac.Common;
+using LibHac.Diag.Impl;
+using LibHac.Os;
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using LibHac.Common;
-using LibHac.Diag.Impl;
-using LibHac.Os;
 
 namespace LibHac.Diag;
 

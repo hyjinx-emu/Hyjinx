@@ -4,84 +4,83 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-namespace Hyjinx.Ava.Input
+namespace Hyjinx.Ava.Input;
+
+internal class AvaloniaMouse : IMouse
 {
-    internal class AvaloniaMouse : IMouse
+    private AvaloniaMouseDriver _driver;
+
+    public string Id => "0";
+    public string Name => "AvaloniaMouse";
+
+    public bool IsConnected => true;
+    public GamepadFeaturesFlag Features => throw new NotImplementedException();
+    public bool[] Buttons => _driver.PressedButtons;
+
+    public AvaloniaMouse(AvaloniaMouseDriver driver)
     {
-        private AvaloniaMouseDriver _driver;
+        _driver = driver;
+    }
 
-        public string Id => "0";
-        public string Name => "AvaloniaMouse";
+    public Size ClientSize => _driver.GetClientSize();
 
-        public bool IsConnected => true;
-        public GamepadFeaturesFlag Features => throw new NotImplementedException();
-        public bool[] Buttons => _driver.PressedButtons;
+    public Vector2 GetPosition()
+    {
+        return _driver.CurrentPosition;
+    }
 
-        public AvaloniaMouse(AvaloniaMouseDriver driver)
-        {
-            _driver = driver;
-        }
+    public Vector2 GetScroll()
+    {
+        return _driver.Scroll;
+    }
 
-        public Size ClientSize => _driver.GetClientSize();
+    public GamepadStateSnapshot GetMappedStateSnapshot()
+    {
+        throw new NotImplementedException();
+    }
 
-        public Vector2 GetPosition()
-        {
-            return _driver.CurrentPosition;
-        }
+    public Vector3 GetMotionData(MotionInputId inputId)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Vector2 GetScroll()
-        {
-            return _driver.Scroll;
-        }
+    public GamepadStateSnapshot GetStateSnapshot()
+    {
+        throw new NotImplementedException();
+    }
 
-        public GamepadStateSnapshot GetMappedStateSnapshot()
-        {
-            throw new NotImplementedException();
-        }
+    public (float, float) GetStick(StickInputId inputId)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Vector3 GetMotionData(MotionInputId inputId)
-        {
-            throw new NotImplementedException();
-        }
+    public bool IsButtonPressed(MouseButton button)
+    {
+        return _driver.IsButtonPressed(button);
+    }
 
-        public GamepadStateSnapshot GetStateSnapshot()
-        {
-            throw new NotImplementedException();
-        }
+    public bool IsPressed(GamepadButtonInputId inputId)
+    {
+        throw new NotImplementedException();
+    }
 
-        public (float, float) GetStick(StickInputId inputId)
-        {
-            throw new NotImplementedException();
-        }
+    public void Rumble(float lowFrequency, float highFrequency, uint durationMs)
+    {
+        throw new NotImplementedException();
+    }
 
-        public bool IsButtonPressed(MouseButton button)
-        {
-            return _driver.IsButtonPressed(button);
-        }
+    public void SetConfiguration(InputConfig configuration)
+    {
+        throw new NotImplementedException();
+    }
 
-        public bool IsPressed(GamepadButtonInputId inputId)
-        {
-            throw new NotImplementedException();
-        }
+    public void SetTriggerThreshold(float triggerThreshold)
+    {
+        throw new NotImplementedException();
+    }
 
-        public void Rumble(float lowFrequency, float highFrequency, uint durationMs)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetConfiguration(InputConfig configuration)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetTriggerThreshold(float triggerThreshold)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            _driver = null;
-        }
+    public void Dispose()
+    {
+        _driver = null;
     }
 }

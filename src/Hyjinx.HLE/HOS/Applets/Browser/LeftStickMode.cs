@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser;
+
+enum LeftStickMode
 {
-    enum LeftStickMode
-    {
-        Pointer = 0,
-        Cursor,
-    }
+    Pointer = 0,
+    Cursor,
 }

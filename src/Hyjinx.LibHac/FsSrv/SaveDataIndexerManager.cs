@@ -1,10 +1,10 @@
-using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSrv.Storage;
 using LibHac.Os;
 using LibHac.Util;
+using System;
 
 namespace LibHac.FsSrv;
 

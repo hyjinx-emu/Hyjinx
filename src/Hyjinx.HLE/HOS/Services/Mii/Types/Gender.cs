@@ -1,12 +1,11 @@
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
-{
-    enum Gender : byte
-    {
-        Male,
-        Female,
-        All,
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
 
-        Min = Male,
-        Max = Female,
-    }
+enum Gender : byte
+{
+    Male,
+    Female,
+    All,
+
+    Min = Male,
+    Max = Female,
 }

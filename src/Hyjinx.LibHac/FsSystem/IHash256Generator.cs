@@ -1,7 +1,7 @@
 // ReSharper disable InconsistentNaming
-using System;
 using LibHac.Common;
 using LibHac.Diag;
+using System;
 
 namespace LibHac.FsSystem;
 

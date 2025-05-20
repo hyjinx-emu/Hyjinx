@@ -1,21 +1,20 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class ElaboratedType : ParentNode
 {
-    public class ElaboratedType : ParentNode
+    private readonly string _elaborated;
+
+    public ElaboratedType(string elaborated, BaseNode type) : base(NodeType.ElaboratedType, type)
     {
-        private readonly string _elaborated;
+        _elaborated = elaborated;
+    }
 
-        public ElaboratedType(string elaborated, BaseNode type) : base(NodeType.ElaboratedType, type)
-        {
-            _elaborated = elaborated;
-        }
-
-        public override void PrintLeft(TextWriter writer)
-        {
-            writer.Write(_elaborated);
-            writer.Write(" ");
-            Child.Print(writer);
-        }
+    public override void PrintLeft(TextWriter writer)
+    {
+        writer.Write(_elaborated);
+        writer.Write(" ");
+        Child.Print(writer);
     }
 }

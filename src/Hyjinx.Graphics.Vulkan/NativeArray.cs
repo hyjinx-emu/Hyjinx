@@ -2,47 +2,46 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+unsafe class NativeArray<T> : IDisposable where T : unmanaged
 {
-    unsafe class NativeArray<T> : IDisposable where T : unmanaged
+    public T* Pointer { get; private set; }
+    public int Length { get; }
+
+    public ref T this[int index]
     {
-        public T* Pointer { get; private set; }
-        public int Length { get; }
+        get => ref Pointer[Checked(index)];
+    }
 
-        public ref T this[int index]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int Checked(int index)
+    {
+        if ((uint)index >= (uint)Length)
         {
-            get => ref Pointer[Checked(index)];
+            throw new IndexOutOfRangeException();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int Checked(int index)
-        {
-            if ((uint)index >= (uint)Length)
-            {
-                throw new IndexOutOfRangeException();
-            }
+        return index;
+    }
 
-            return index;
-        }
+    public NativeArray(int length)
+    {
+        Pointer = (T*)Marshal.AllocHGlobal(checked(length * Unsafe.SizeOf<T>()));
+        Length = length;
+    }
 
-        public NativeArray(int length)
-        {
-            Pointer = (T*)Marshal.AllocHGlobal(checked(length * Unsafe.SizeOf<T>()));
-            Length = length;
-        }
+    public Span<T> AsSpan()
+    {
+        return new Span<T>(Pointer, Length);
+    }
 
-        public Span<T> AsSpan()
+    public void Dispose()
+    {
+        if (Pointer != null)
         {
-            return new Span<T>(Pointer, Length);
-        }
-
-        public void Dispose()
-        {
-            if (Pointer != null)
-            {
-                Marshal.FreeHGlobal((IntPtr)Pointer);
-                Pointer = null;
-            }
+            Marshal.FreeHGlobal((IntPtr)Pointer);
+            Pointer = null;
         }
     }
 }

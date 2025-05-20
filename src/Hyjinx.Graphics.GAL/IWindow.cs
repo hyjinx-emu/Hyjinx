@@ -1,18 +1,17 @@
 using System;
 
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public interface IWindow
 {
-    public interface IWindow
-    {
-        void Present(ITexture texture, ImageCrop crop, Action swapBuffersCallback);
+    void Present(ITexture texture, ImageCrop crop, Action swapBuffersCallback);
 
-        void SetSize(int width, int height);
+    void SetSize(int width, int height);
 
-        void ChangeVSyncMode(bool vsyncEnabled);
+    void ChangeVSyncMode(bool vsyncEnabled);
 
-        void SetAntiAliasing(AntiAliasing antialiasing);
-        void SetScalingFilter(ScalingFilter type);
-        void SetScalingFilterLevel(float level);
-        void SetColorSpacePassthrough(bool colorSpacePassThroughEnabled);
-    }
+    void SetAntiAliasing(AntiAliasing antialiasing);
+    void SetScalingFilter(ScalingFilter type);
+    void SetScalingFilterLevel(float level);
+    void SetColorSpacePassthrough(bool colorSpacePassThroughEnabled);
 }

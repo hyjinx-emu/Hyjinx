@@ -1,4 +1,3 @@
-using System;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -7,6 +6,7 @@ using LibHac.Lr;
 using LibHac.Ncm;
 using LibHac.Os;
 using LibHac.Util;
+using System;
 
 namespace LibHac.FsSrv.Impl;
 

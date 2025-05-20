@@ -1,7 +1,3 @@
-using System;
-using System.Buffers.Binary;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -12,6 +8,10 @@ using LibHac.Kvdb;
 using LibHac.Os;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Buffers.Binary;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using static LibHac.Fs.SaveData;
 
 namespace LibHac.FsSrv;

@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+
+struct NpadFullKeyColorState
 {
-    struct NpadFullKeyColorState
-    {
-        public NpadColorAttribute Attribute;
-        public uint FullKeyBody;
-        public uint FullKeyButtons;
-    }
+    public NpadColorAttribute Attribute;
+    public uint FullKeyBody;
+    public uint FullKeyButtons;
 }

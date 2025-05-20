@@ -12,195 +12,194 @@ using Hyjinx.HLE.UI;
 using System;
 using System.Threading;
 
-namespace Hyjinx.Ava.UI.Applet
+namespace Hyjinx.Ava.UI.Applet;
+
+internal class AvaHostUIHandler : IHostUIHandler
 {
-    internal class AvaHostUIHandler : IHostUIHandler
+    private readonly MainWindow _parent;
+
+    public IHostUITheme HostUITheme { get; }
+
+    public AvaHostUIHandler(MainWindow parent)
     {
-        private readonly MainWindow _parent;
+        _parent = parent;
 
-        public IHostUITheme HostUITheme { get; }
+        HostUITheme = new AvaloniaHostUITheme(parent);
+    }
 
-        public AvaHostUIHandler(MainWindow parent)
+    public bool DisplayMessageDialog(ControllerAppletUIArgs args)
+    {
+        ManualResetEvent dialogCloseEvent = new(false);
+
+        bool okPressed = false;
+
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            _parent = parent;
-
-            HostUITheme = new AvaloniaHostUITheme(parent);
-        }
-
-        public bool DisplayMessageDialog(ControllerAppletUIArgs args)
-        {
-            ManualResetEvent dialogCloseEvent = new(false);
-
-            bool okPressed = false;
-
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            var response = await ControllerAppletDialog.ShowControllerAppletDialog(_parent, args);
+            if (response == UserResult.Ok)
             {
-                var response = await ControllerAppletDialog.ShowControllerAppletDialog(_parent, args);
+                okPressed = true;
+            }
+
+            dialogCloseEvent.Set();
+        });
+
+        dialogCloseEvent.WaitOne();
+
+        return okPressed;
+    }
+
+    public bool DisplayMessageDialog(string title, string message)
+    {
+        ManualResetEvent dialogCloseEvent = new(false);
+
+        bool okPressed = false;
+
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            try
+            {
+                ManualResetEvent deferEvent = new(false);
+
+                bool opened = false;
+
+                UserResult response = await ContentDialogHelper.ShowDeferredContentDialog(_parent,
+                   title,
+                   message,
+                   "",
+                   LocaleManager.Instance[LocaleKeys.DialogOpenSettingsWindowLabel],
+                   "",
+                   LocaleManager.Instance[LocaleKeys.SettingsButtonClose],
+                   (int)Symbol.Important,
+                   deferEvent,
+                   async window =>
+                   {
+                       if (opened)
+                       {
+                           return;
+                       }
+
+                       opened = true;
+
+                       _parent.SettingsWindow = new SettingsWindow(_parent.VirtualFileSystem, _parent.ContentManager);
+
+                       await _parent.SettingsWindow.ShowDialog(window);
+
+                       _parent.SettingsWindow = null;
+
+                       opened = false;
+                   });
+
                 if (response == UserResult.Ok)
                 {
                     okPressed = true;
                 }
 
                 dialogCloseEvent.Set();
-            });
-
-            dialogCloseEvent.WaitOne();
-
-            return okPressed;
-        }
-
-        public bool DisplayMessageDialog(string title, string message)
-        {
-            ManualResetEvent dialogCloseEvent = new(false);
-
-            bool okPressed = false;
-
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            }
+            catch (Exception ex)
             {
-                try
-                {
-                    ManualResetEvent deferEvent = new(false);
+                await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogMessageDialogErrorExceptionMessage, ex));
 
-                    bool opened = false;
+                dialogCloseEvent.Set();
+            }
+        });
 
-                    UserResult response = await ContentDialogHelper.ShowDeferredContentDialog(_parent,
-                       title,
-                       message,
-                       "",
-                       LocaleManager.Instance[LocaleKeys.DialogOpenSettingsWindowLabel],
-                       "",
-                       LocaleManager.Instance[LocaleKeys.SettingsButtonClose],
-                       (int)Symbol.Important,
-                       deferEvent,
-                       async window =>
-                       {
-                           if (opened)
-                           {
-                               return;
-                           }
+        dialogCloseEvent.WaitOne();
 
-                           opened = true;
+        return okPressed;
+    }
 
-                           _parent.SettingsWindow = new SettingsWindow(_parent.VirtualFileSystem, _parent.ContentManager);
+    public bool DisplayInputDialog(SoftwareKeyboardUIArgs args, out string userText)
+    {
+        ManualResetEvent dialogCloseEvent = new(false);
 
-                           await _parent.SettingsWindow.ShowDialog(window);
+        bool okPressed = false;
+        bool error = false;
+        string inputText = args.InitialText ?? "";
 
-                           _parent.SettingsWindow = null;
-
-                           opened = false;
-                       });
-
-                    if (response == UserResult.Ok)
-                    {
-                        okPressed = true;
-                    }
-
-                    dialogCloseEvent.Set();
-                }
-                catch (Exception ex)
-                {
-                    await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogMessageDialogErrorExceptionMessage, ex));
-
-                    dialogCloseEvent.Set();
-                }
-            });
-
-            dialogCloseEvent.WaitOne();
-
-            return okPressed;
-        }
-
-        public bool DisplayInputDialog(SoftwareKeyboardUIArgs args, out string userText)
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            ManualResetEvent dialogCloseEvent = new(false);
-
-            bool okPressed = false;
-            bool error = false;
-            string inputText = args.InitialText ?? "";
-
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            try
             {
-                try
+                _parent.ViewModel.AppHost.NpadManager.BlockInputUpdates();
+                var response = await SwkbdAppletDialog.ShowInputDialog(LocaleManager.Instance[LocaleKeys.SoftwareKeyboard], args);
+
+                if (response.Result == UserResult.Ok)
                 {
-                    _parent.ViewModel.AppHost.NpadManager.BlockInputUpdates();
-                    var response = await SwkbdAppletDialog.ShowInputDialog(LocaleManager.Instance[LocaleKeys.SoftwareKeyboard], args);
-
-                    if (response.Result == UserResult.Ok)
-                    {
-                        inputText = response.Input;
-                        okPressed = true;
-                    }
+                    inputText = response.Input;
+                    okPressed = true;
                 }
-                catch (Exception ex)
-                {
-                    error = true;
-
-                    await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogSoftwareKeyboardErrorExceptionMessage, ex));
-                }
-                finally
-                {
-                    dialogCloseEvent.Set();
-                }
-            });
-
-            dialogCloseEvent.WaitOne();
-            _parent.ViewModel.AppHost.NpadManager.UnblockInputUpdates();
-
-            userText = error ? null : inputText;
-
-            return error || okPressed;
-        }
-
-        public void ExecuteProgram(Switch device, ProgramSpecifyKind kind, ulong value)
-        {
-            device.Configuration.UserChannelPersistence.ExecuteProgram(kind, value);
-            _parent.ViewModel.AppHost?.Stop();
-        }
-
-        public bool DisplayErrorAppletDialog(string title, string message, string[] buttons)
-        {
-            ManualResetEvent dialogCloseEvent = new(false);
-
-            bool showDetails = false;
-
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            }
+            catch (Exception ex)
             {
-                try
-                {
-                    ErrorAppletWindow msgDialog = new(_parent, buttons, message)
-                    {
-                        Title = title,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                        Width = 400,
-                    };
+                error = true;
 
-                    object response = await msgDialog.Run();
+                await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogSoftwareKeyboardErrorExceptionMessage, ex));
+            }
+            finally
+            {
+                dialogCloseEvent.Set();
+            }
+        });
 
-                    if (response != null && buttons != null && buttons.Length > 1 && (int)response != buttons.Length - 1)
-                    {
-                        showDetails = true;
-                    }
+        dialogCloseEvent.WaitOne();
+        _parent.ViewModel.AppHost.NpadManager.UnblockInputUpdates();
 
-                    dialogCloseEvent.Set();
+        userText = error ? null : inputText;
 
-                    msgDialog.Close();
-                }
-                catch (Exception ex)
-                {
-                    dialogCloseEvent.Set();
+        return error || okPressed;
+    }
 
-                    await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogErrorAppletErrorExceptionMessage, ex));
-                }
-            });
+    public void ExecuteProgram(Switch device, ProgramSpecifyKind kind, ulong value)
+    {
+        device.Configuration.UserChannelPersistence.ExecuteProgram(kind, value);
+        _parent.ViewModel.AppHost?.Stop();
+    }
 
-            dialogCloseEvent.WaitOne();
+    public bool DisplayErrorAppletDialog(string title, string message, string[] buttons)
+    {
+        ManualResetEvent dialogCloseEvent = new(false);
 
-            return showDetails;
-        }
+        bool showDetails = false;
 
-        public IDynamicTextInputHandler CreateDynamicTextInputHandler()
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            return new AvaloniaDynamicTextInputHandler(_parent);
-        }
+            try
+            {
+                ErrorAppletWindow msgDialog = new(_parent, buttons, message)
+                {
+                    Title = title,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    Width = 400,
+                };
+
+                object response = await msgDialog.Run();
+
+                if (response != null && buttons != null && buttons.Length > 1 && (int)response != buttons.Length - 1)
+                {
+                    showDetails = true;
+                }
+
+                dialogCloseEvent.Set();
+
+                msgDialog.Close();
+            }
+            catch (Exception ex)
+            {
+                dialogCloseEvent.Set();
+
+                await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogErrorAppletErrorExceptionMessage, ex));
+            }
+        });
+
+        dialogCloseEvent.WaitOne();
+
+        return showDetails;
+    }
+
+    public IDynamicTextInputHandler CreateDynamicTextInputHandler()
+    {
+        return new AvaloniaDynamicTextInputHandler(_parent);
     }
 }

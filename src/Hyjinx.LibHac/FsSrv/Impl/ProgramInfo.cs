@@ -1,8 +1,8 @@
-using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Ncm;
 using LibHac.Os;
+using System;
 
 namespace LibHac.FsSrv.Impl;
 

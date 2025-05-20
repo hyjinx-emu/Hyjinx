@@ -1,18 +1,17 @@
-namespace Hyjinx.Audio.Common
+namespace Hyjinx.Audio.Common;
+
+/// <summary>
+/// Audio device state.
+/// </summary>
+public enum AudioDeviceState : uint
 {
     /// <summary>
-    /// Audio device state.
+    /// The audio device is started.
     /// </summary>
-    public enum AudioDeviceState : uint
-    {
-        /// <summary>
-        /// The audio device is started.
-        /// </summary>
-        Started,
+    Started,
 
-        /// <summary>
-        /// The audio device is stopped.
-        /// </summary>
-        Stopped,
-    }
+    /// <summary>
+    /// The audio device is stopped.
+    /// </summary>
+    Stopped,
 }

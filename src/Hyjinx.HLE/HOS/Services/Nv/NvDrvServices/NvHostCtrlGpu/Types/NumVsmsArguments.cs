@@ -1,11 +1,10 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types;
+
+[StructLayout(LayoutKind.Sequential)]
+struct NumVsmsArguments
 {
-    [StructLayout(LayoutKind.Sequential)]
-    struct NumVsmsArguments
-    {
-        public uint NumVsms;
-        public uint Reserved;
-    }
+    public uint NumVsms;
+    public uint Reserved;
 }

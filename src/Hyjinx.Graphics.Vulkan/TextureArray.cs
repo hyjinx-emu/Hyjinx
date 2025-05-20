@@ -3,232 +3,231 @@ using Silk.NET.Vulkan;
 using System;
 using System.Collections.Generic;
 
-namespace Hyjinx.Graphics.Vulkan
-{
-    class TextureArray : ResourceArray, ITextureArray
-    {
-        private readonly VulkanRenderer _gd;
+namespace Hyjinx.Graphics.Vulkan;
 
-        private struct TextureRef
+class TextureArray : ResourceArray, ITextureArray
+{
+    private readonly VulkanRenderer _gd;
+
+    private struct TextureRef
+    {
+        public TextureStorage Storage;
+        public Auto<DisposableImageView> View;
+        public Auto<DisposableSampler> Sampler;
+    }
+
+    private readonly TextureRef[] _textureRefs;
+    private readonly TextureBuffer[] _bufferTextureRefs;
+
+    private readonly DescriptorImageInfo[] _textures;
+    private readonly BufferView[] _bufferTextures;
+
+    private HashSet<TextureStorage> _storages;
+
+    private int _cachedCommandBufferIndex;
+    private int _cachedSubmissionCount;
+
+    private readonly bool _isBuffer;
+
+    public TextureArray(VulkanRenderer gd, int size, bool isBuffer)
+    {
+        _gd = gd;
+
+        if (isBuffer)
         {
-            public TextureStorage Storage;
-            public Auto<DisposableImageView> View;
-            public Auto<DisposableSampler> Sampler;
+            _bufferTextureRefs = new TextureBuffer[size];
+            _bufferTextures = new BufferView[size];
+        }
+        else
+        {
+            _textureRefs = new TextureRef[size];
+            _textures = new DescriptorImageInfo[size];
         }
 
-        private readonly TextureRef[] _textureRefs;
-        private readonly TextureBuffer[] _bufferTextureRefs;
+        _storages = null;
 
-        private readonly DescriptorImageInfo[] _textures;
-        private readonly BufferView[] _bufferTextures;
+        _cachedCommandBufferIndex = -1;
+        _cachedSubmissionCount = 0;
 
-        private HashSet<TextureStorage> _storages;
+        _isBuffer = isBuffer;
+    }
 
-        private int _cachedCommandBufferIndex;
-        private int _cachedSubmissionCount;
-
-        private readonly bool _isBuffer;
-
-        public TextureArray(VulkanRenderer gd, int size, bool isBuffer)
+    public void SetSamplers(int index, ISampler[] samplers)
+    {
+        for (int i = 0; i < samplers.Length; i++)
         {
-            _gd = gd;
+            ISampler sampler = samplers[i];
 
-            if (isBuffer)
+            if (sampler is SamplerHolder samplerHolder)
             {
-                _bufferTextureRefs = new TextureBuffer[size];
-                _bufferTextures = new BufferView[size];
+                _textureRefs[index + i].Sampler = samplerHolder.GetSampler();
             }
             else
             {
-                _textureRefs = new TextureRef[size];
-                _textures = new DescriptorImageInfo[size];
-            }
-
-            _storages = null;
-
-            _cachedCommandBufferIndex = -1;
-            _cachedSubmissionCount = 0;
-
-            _isBuffer = isBuffer;
-        }
-
-        public void SetSamplers(int index, ISampler[] samplers)
-        {
-            for (int i = 0; i < samplers.Length; i++)
-            {
-                ISampler sampler = samplers[i];
-
-                if (sampler is SamplerHolder samplerHolder)
-                {
-                    _textureRefs[index + i].Sampler = samplerHolder.GetSampler();
-                }
-                else
-                {
-                    _textureRefs[index + i].Sampler = default;
-                }
-            }
-
-            SetDirty();
-        }
-
-        public void SetTextures(int index, ITexture[] textures)
-        {
-            for (int i = 0; i < textures.Length; i++)
-            {
-                ITexture texture = textures[i];
-
-                if (texture is TextureBuffer textureBuffer)
-                {
-                    _bufferTextureRefs[index + i] = textureBuffer;
-                }
-                else if (texture is TextureView view)
-                {
-                    _textureRefs[index + i].Storage = view.Storage;
-                    _textureRefs[index + i].View = view.GetImageView();
-                }
-                else if (!_isBuffer)
-                {
-                    _textureRefs[index + i].Storage = null;
-                    _textureRefs[index + i].View = default;
-                }
-                else
-                {
-                    _bufferTextureRefs[index + i] = null;
-                }
-            }
-
-            SetDirty();
-        }
-
-        private void SetDirty()
-        {
-            _cachedCommandBufferIndex = -1;
-            _storages = null;
-            SetDirty(_gd, isImage: false);
-        }
-
-        public void QueueWriteToReadBarriers(CommandBufferScoped cbs, PipelineStageFlags stageFlags)
-        {
-            HashSet<TextureStorage> storages = _storages;
-
-            if (storages == null)
-            {
-                storages = new HashSet<TextureStorage>();
-
-                for (int index = 0; index < _textureRefs.Length; index++)
-                {
-                    if (_textureRefs[index].Storage != null)
-                    {
-                        storages.Add(_textureRefs[index].Storage);
-                    }
-                }
-
-                _storages = storages;
-            }
-
-            foreach (TextureStorage storage in storages)
-            {
-                storage.QueueWriteToReadBarrier(cbs, AccessFlags.ShaderReadBit, stageFlags);
+                _textureRefs[index + i].Sampler = default;
             }
         }
 
-        public ReadOnlySpan<DescriptorImageInfo> GetImageInfos(VulkanRenderer gd, CommandBufferScoped cbs, TextureView dummyTexture, SamplerHolder dummySampler)
+        SetDirty();
+    }
+
+    public void SetTextures(int index, ITexture[] textures)
+    {
+        for (int i = 0; i < textures.Length; i++)
         {
-            int submissionCount = gd.CommandBufferPool.GetSubmissionCount(cbs.CommandBufferIndex);
+            ITexture texture = textures[i];
 
-            Span<DescriptorImageInfo> textures = _textures;
-
-            if (cbs.CommandBufferIndex == _cachedCommandBufferIndex && submissionCount == _cachedSubmissionCount)
+            if (texture is TextureBuffer textureBuffer)
             {
-                return textures;
+                _bufferTextureRefs[index + i] = textureBuffer;
+            }
+            else if (texture is TextureView view)
+            {
+                _textureRefs[index + i].Storage = view.Storage;
+                _textureRefs[index + i].View = view.GetImageView();
+            }
+            else if (!_isBuffer)
+            {
+                _textureRefs[index + i].Storage = null;
+                _textureRefs[index + i].View = default;
+            }
+            else
+            {
+                _bufferTextureRefs[index + i] = null;
+            }
+        }
+
+        SetDirty();
+    }
+
+    private void SetDirty()
+    {
+        _cachedCommandBufferIndex = -1;
+        _storages = null;
+        SetDirty(_gd, isImage: false);
+    }
+
+    public void QueueWriteToReadBarriers(CommandBufferScoped cbs, PipelineStageFlags stageFlags)
+    {
+        HashSet<TextureStorage> storages = _storages;
+
+        if (storages == null)
+        {
+            storages = new HashSet<TextureStorage>();
+
+            for (int index = 0; index < _textureRefs.Length; index++)
+            {
+                if (_textureRefs[index].Storage != null)
+                {
+                    storages.Add(_textureRefs[index].Storage);
+                }
             }
 
-            _cachedCommandBufferIndex = cbs.CommandBufferIndex;
-            _cachedSubmissionCount = submissionCount;
+            _storages = storages;
+        }
 
-            for (int i = 0; i < textures.Length; i++)
-            {
-                ref var texture = ref textures[i];
-                ref var refs = ref _textureRefs[i];
+        foreach (TextureStorage storage in storages)
+        {
+            storage.QueueWriteToReadBarrier(cbs, AccessFlags.ShaderReadBit, stageFlags);
+        }
+    }
 
-                if (i > 0 && _textureRefs[i - 1].View == refs.View && _textureRefs[i - 1].Sampler == refs.Sampler)
-                {
-                    texture = textures[i - 1];
+    public ReadOnlySpan<DescriptorImageInfo> GetImageInfos(VulkanRenderer gd, CommandBufferScoped cbs, TextureView dummyTexture, SamplerHolder dummySampler)
+    {
+        int submissionCount = gd.CommandBufferPool.GetSubmissionCount(cbs.CommandBufferIndex);
 
-                    continue;
-                }
+        Span<DescriptorImageInfo> textures = _textures;
 
-                texture.ImageLayout = ImageLayout.General;
-                texture.ImageView = refs.View?.Get(cbs).Value ?? default;
-                texture.Sampler = refs.Sampler?.Get(cbs).Value ?? default;
-
-                if (texture.ImageView.Handle == 0)
-                {
-                    texture.ImageView = dummyTexture.GetImageView().Get(cbs).Value;
-                }
-
-                if (texture.Sampler.Handle == 0)
-                {
-                    texture.Sampler = dummySampler.GetSampler().Get(cbs).Value;
-                }
-            }
-
+        if (cbs.CommandBufferIndex == _cachedCommandBufferIndex && submissionCount == _cachedSubmissionCount)
+        {
             return textures;
         }
 
-        public ReadOnlySpan<BufferView> GetBufferViews(CommandBufferScoped cbs)
-        {
-            Span<BufferView> bufferTextures = _bufferTextures;
+        _cachedCommandBufferIndex = cbs.CommandBufferIndex;
+        _cachedSubmissionCount = submissionCount;
 
-            for (int i = 0; i < bufferTextures.Length; i++)
+        for (int i = 0; i < textures.Length; i++)
+        {
+            ref var texture = ref textures[i];
+            ref var refs = ref _textureRefs[i];
+
+            if (i > 0 && _textureRefs[i - 1].View == refs.View && _textureRefs[i - 1].Sampler == refs.Sampler)
             {
-                bufferTextures[i] = _bufferTextureRefs[i]?.GetBufferView(cbs, false) ?? default;
+                texture = textures[i - 1];
+
+                continue;
             }
 
-            return bufferTextures;
+            texture.ImageLayout = ImageLayout.General;
+            texture.ImageView = refs.View?.Get(cbs).Value ?? default;
+            texture.Sampler = refs.Sampler?.Get(cbs).Value ?? default;
+
+            if (texture.ImageView.Handle == 0)
+            {
+                texture.ImageView = dummyTexture.GetImageView().Get(cbs).Value;
+            }
+
+            if (texture.Sampler.Handle == 0)
+            {
+                texture.Sampler = dummySampler.GetSampler().Get(cbs).Value;
+            }
         }
 
-        public DescriptorSet[] GetDescriptorSets(
-            Device device,
-            CommandBufferScoped cbs,
-            DescriptorSetTemplateUpdater templateUpdater,
-            ShaderCollection program,
-            int setIndex,
-            TextureView dummyTexture,
-            SamplerHolder dummySampler)
+        return textures;
+    }
+
+    public ReadOnlySpan<BufferView> GetBufferViews(CommandBufferScoped cbs)
+    {
+        Span<BufferView> bufferTextures = _bufferTextures;
+
+        for (int i = 0; i < bufferTextures.Length; i++)
         {
-            if (TryGetCachedDescriptorSets(cbs, program, setIndex, out DescriptorSet[] sets))
-            {
-                // We still need to ensure the current command buffer holds a reference to all used textures.
+            bufferTextures[i] = _bufferTextureRefs[i]?.GetBufferView(cbs, false) ?? default;
+        }
 
-                if (!_isBuffer)
-                {
-                    GetImageInfos(_gd, cbs, dummyTexture, dummySampler);
-                }
-                else
-                {
-                    GetBufferViews(cbs);
-                }
+        return bufferTextures;
+    }
 
-                return sets;
-            }
-
-            DescriptorSetTemplate template = program.Templates[setIndex];
-
-            DescriptorSetTemplateWriter tu = templateUpdater.Begin(template);
+    public DescriptorSet[] GetDescriptorSets(
+        Device device,
+        CommandBufferScoped cbs,
+        DescriptorSetTemplateUpdater templateUpdater,
+        ShaderCollection program,
+        int setIndex,
+        TextureView dummyTexture,
+        SamplerHolder dummySampler)
+    {
+        if (TryGetCachedDescriptorSets(cbs, program, setIndex, out DescriptorSet[] sets))
+        {
+            // We still need to ensure the current command buffer holds a reference to all used textures.
 
             if (!_isBuffer)
             {
-                tu.Push(GetImageInfos(_gd, cbs, dummyTexture, dummySampler));
+                GetImageInfos(_gd, cbs, dummyTexture, dummySampler);
             }
             else
             {
-                tu.Push(GetBufferViews(cbs));
+                GetBufferViews(cbs);
             }
-
-            templateUpdater.Commit(_gd, device, sets[0]);
 
             return sets;
         }
+
+        DescriptorSetTemplate template = program.Templates[setIndex];
+
+        DescriptorSetTemplateWriter tu = templateUpdater.Begin(template);
+
+        if (!_isBuffer)
+        {
+            tu.Push(GetImageInfos(_gd, cbs, dummyTexture, dummySampler));
+        }
+        else
+        {
+            tu.Push(GetBufferViews(cbs));
+        }
+
+        templateUpdater.Commit(_gd, device, sets[0]);
+
+        return sets;
     }
 }

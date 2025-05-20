@@ -1,6 +1,6 @@
+using LibHac.Util;
 using System;
 using System.Text;
-using LibHac.Util;
 
 namespace LibHac.Common;
 

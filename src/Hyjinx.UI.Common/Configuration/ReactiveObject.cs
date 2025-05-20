@@ -1,61 +1,60 @@
 using System;
 using System.Threading;
 
-namespace Hyjinx.UI.Common.Configuration
+namespace Hyjinx.UI.Common.Configuration;
+
+public class ReactiveObject<T>
 {
-    public class ReactiveObject<T>
+    private readonly ReaderWriterLockSlim _readerWriterLock = new();
+    private bool _isInitialized;
+    private T _value;
+
+    public event EventHandler<ReactiveEventArgs<T>> Event;
+
+    public T Value
     {
-        private readonly ReaderWriterLockSlim _readerWriterLock = new();
-        private bool _isInitialized;
-        private T _value;
-
-        public event EventHandler<ReactiveEventArgs<T>> Event;
-
-        public T Value
+        get
         {
-            get
-            {
-                _readerWriterLock.EnterReadLock();
-                T value = _value;
-                _readerWriterLock.ExitReadLock();
+            _readerWriterLock.EnterReadLock();
+            T value = _value;
+            _readerWriterLock.ExitReadLock();
 
-                return value;
-            }
-            set
-            {
-                _readerWriterLock.EnterWriteLock();
-
-                T oldValue = _value;
-
-                bool oldIsInitialized = _isInitialized;
-
-                _isInitialized = true;
-                _value = value;
-
-                _readerWriterLock.ExitWriteLock();
-
-                if (!oldIsInitialized || oldValue == null || !oldValue.Equals(_value))
-                {
-                    Event?.Invoke(this, new ReactiveEventArgs<T>(oldValue, value));
-                }
-            }
+            return value;
         }
-
-        public static implicit operator T(ReactiveObject<T> obj)
+        set
         {
-            return obj.Value;
+            _readerWriterLock.EnterWriteLock();
+
+            T oldValue = _value;
+
+            bool oldIsInitialized = _isInitialized;
+
+            _isInitialized = true;
+            _value = value;
+
+            _readerWriterLock.ExitWriteLock();
+
+            if (!oldIsInitialized || oldValue == null || !oldValue.Equals(_value))
+            {
+                Event?.Invoke(this, new ReactiveEventArgs<T>(oldValue, value));
+            }
         }
     }
 
-    public class ReactiveEventArgs<T>
+    public static implicit operator T(ReactiveObject<T> obj)
     {
-        public T OldValue { get; }
-        public T NewValue { get; }
+        return obj.Value;
+    }
+}
 
-        public ReactiveEventArgs(T oldValue, T newValue)
-        {
-            OldValue = oldValue;
-            NewValue = newValue;
-        }
+public class ReactiveEventArgs<T>
+{
+    public T OldValue { get; }
+    public T NewValue { get; }
+
+    public ReactiveEventArgs(T oldValue, T newValue)
+    {
+        OldValue = oldValue;
+        NewValue = newValue;
     }
 }

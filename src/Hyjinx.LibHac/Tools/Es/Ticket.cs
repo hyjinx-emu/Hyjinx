@@ -1,10 +1,10 @@
-using System;
-using System.IO;
-using System.Security.Cryptography;
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Util;
+using System;
+using System.IO;
+using System.Security.Cryptography;
 
 namespace LibHac.Tools.Es;
 

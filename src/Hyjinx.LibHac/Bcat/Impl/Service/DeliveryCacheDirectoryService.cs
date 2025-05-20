@@ -1,7 +1,7 @@
-using System;
 using LibHac.Bcat.Impl.Ipc;
 using LibHac.Bcat.Impl.Service.Core;
 using LibHac.Common;
+using System;
 
 namespace LibHac.Bcat.Impl.Service;
 

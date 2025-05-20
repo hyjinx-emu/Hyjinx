@@ -1,90 +1,89 @@
 using Hyjinx.Common;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
+using Hyjinx.Logging.Abstractions;
 using System.Collections.Generic;
 
-namespace Hyjinx.HLE.HOS.Services.Olsc
+namespace Hyjinx.HLE.HOS.Services.Olsc;
+
+[Service("olsc:u")] // 10.0.0+
+class IOlscServiceForApplication : IpcService<IOlscServiceForApplication>
 {
-    [Service("olsc:u")] // 10.0.0+
-    class IOlscServiceForApplication : IpcService<IOlscServiceForApplication>
+    private bool _initialized;
+    private Dictionary<UserId, bool> _saveDataBackupSettingDatabase;
+
+    public IOlscServiceForApplication(ServiceCtx context) { }
+
+    [CommandCmif(0)]
+    // Initialize(pid)
+    public ResultCode Initialize(ServiceCtx context)
     {
-        private bool _initialized;
-        private Dictionary<UserId, bool> _saveDataBackupSettingDatabase;
+        // NOTE: Service call arp:r GetApplicationInstanceUnregistrationNotifier with the pid and initialize some internal struct.
+        //       Since we will not support online savedata backup, it's fine to stub it for now.
 
-        public IOlscServiceForApplication(ServiceCtx context) { }
+        _saveDataBackupSettingDatabase = new Dictionary<UserId, bool>();
 
-        [CommandCmif(0)]
-        // Initialize(pid)
-        public ResultCode Initialize(ServiceCtx context)
+        _initialized = true;
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceOlsc);
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(13)]
+    // GetSaveDataBackupSetting(nn::account::Uid) -> u8
+    public ResultCode GetSaveDataBackupSetting(ServiceCtx context)
+    {
+        UserId userId = context.RequestData.ReadStruct<UserId>();
+
+        if (!_initialized)
         {
-            // NOTE: Service call arp:r GetApplicationInstanceUnregistrationNotifier with the pid and initialize some internal struct.
-            //       Since we will not support online savedata backup, it's fine to stub it for now.
-
-            _saveDataBackupSettingDatabase = new Dictionary<UserId, bool>();
-
-            _initialized = true;
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceOlsc);
-
-            return ResultCode.Success;
+            return ResultCode.NotInitialized;
         }
 
-        [CommandCmif(13)]
-        // GetSaveDataBackupSetting(nn::account::Uid) -> u8
-        public ResultCode GetSaveDataBackupSetting(ServiceCtx context)
+        if (userId.IsNull)
         {
-            UserId userId = context.RequestData.ReadStruct<UserId>();
-
-            if (!_initialized)
-            {
-                return ResultCode.NotInitialized;
-            }
-
-            if (userId.IsNull)
-            {
-                return ResultCode.NullArgument;
-            }
-
-            if (_saveDataBackupSettingDatabase.TryGetValue(userId, out bool enabled) && enabled)
-            {
-                context.ResponseData.Write((byte)1); // TODO: Determine value.
-            }
-            else
-            {
-                context.ResponseData.Write((byte)2); // TODO: Determine value.
-            }
-
-            // NOTE: Since we will not support online savedata backup, it's fine to stub it for now.
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceOlsc, new { userId });
-
-            return ResultCode.Success;
+            return ResultCode.NullArgument;
         }
 
-        [CommandCmif(14)]
-        // SetSaveDataBackupSettingEnabled(nn::account::Uid, bool)
-        public ResultCode SetSaveDataBackupSettingEnabled(ServiceCtx context)
+        if (_saveDataBackupSettingDatabase.TryGetValue(userId, out bool enabled) && enabled)
         {
-            bool saveDataBackupSettingEnabled = context.RequestData.ReadUInt64() != 0;
-            UserId userId = context.RequestData.ReadStruct<UserId>();
-
-            if (!_initialized)
-            {
-                return ResultCode.NotInitialized;
-            }
-
-            if (userId.IsNull)
-            {
-                return ResultCode.NullArgument;
-            }
-
-            _saveDataBackupSettingDatabase[userId] = saveDataBackupSettingEnabled;
-
-            // NOTE: Since we will not support online savedata backup, it's fine to stub it for now.
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceOlsc, new { userId, saveDataBackupSettingEnabled });
-
-            return ResultCode.Success;
+            context.ResponseData.Write((byte)1); // TODO: Determine value.
         }
+        else
+        {
+            context.ResponseData.Write((byte)2); // TODO: Determine value.
+        }
+
+        // NOTE: Since we will not support online savedata backup, it's fine to stub it for now.
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceOlsc, new { userId });
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(14)]
+    // SetSaveDataBackupSettingEnabled(nn::account::Uid, bool)
+    public ResultCode SetSaveDataBackupSettingEnabled(ServiceCtx context)
+    {
+        bool saveDataBackupSettingEnabled = context.RequestData.ReadUInt64() != 0;
+        UserId userId = context.RequestData.ReadStruct<UserId>();
+
+        if (!_initialized)
+        {
+            return ResultCode.NotInitialized;
+        }
+
+        if (userId.IsNull)
+        {
+            return ResultCode.NullArgument;
+        }
+
+        _saveDataBackupSettingDatabase[userId] = saveDataBackupSettingEnabled;
+
+        // NOTE: Since we will not support online savedata backup, it's fine to stub it for now.
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceOlsc, new { userId, saveDataBackupSettingEnabled });
+
+        return ResultCode.Success;
     }
 }

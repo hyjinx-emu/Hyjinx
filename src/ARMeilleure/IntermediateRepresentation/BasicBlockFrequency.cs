@@ -1,8 +1,7 @@
-namespace ARMeilleure.IntermediateRepresentation
+namespace ARMeilleure.IntermediateRepresentation;
+
+enum BasicBlockFrequency
 {
-    enum BasicBlockFrequency
-    {
-        Default,
-        Cold,
-    }
+    Default,
+    Cold,
 }

@@ -1,25 +1,24 @@
-namespace Hyjinx.Graphics.GAL.Multithreading.Resources.Programs
+namespace Hyjinx.Graphics.GAL.Multithreading.Resources.Programs;
+
+class BinaryProgramRequest : IProgramRequest
 {
-    class BinaryProgramRequest : IProgramRequest
+    public ThreadedProgram Threaded { get; set; }
+
+    private readonly byte[] _data;
+    private readonly bool _hasFragmentShader;
+    private ShaderInfo _info;
+
+    public BinaryProgramRequest(ThreadedProgram program, byte[] data, bool hasFragmentShader, ShaderInfo info)
     {
-        public ThreadedProgram Threaded { get; set; }
+        Threaded = program;
 
-        private readonly byte[] _data;
-        private readonly bool _hasFragmentShader;
-        private ShaderInfo _info;
+        _data = data;
+        _hasFragmentShader = hasFragmentShader;
+        _info = info;
+    }
 
-        public BinaryProgramRequest(ThreadedProgram program, byte[] data, bool hasFragmentShader, ShaderInfo info)
-        {
-            Threaded = program;
-
-            _data = data;
-            _hasFragmentShader = hasFragmentShader;
-            _info = info;
-        }
-
-        public IProgram Create(IRenderer renderer)
-        {
-            return renderer.LoadProgramBinary(_data, _hasFragmentShader, _info);
-        }
+    public IProgram Create(IRenderer renderer)
+    {
+        return renderer.LoadProgramBinary(_data, _hasFragmentShader, _info);
     }
 }

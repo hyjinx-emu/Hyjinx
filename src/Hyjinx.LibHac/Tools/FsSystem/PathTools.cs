@@ -1,12 +1,12 @@
-using System;
-using System.Diagnostics;
-using System.IO.Enumeration;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Util;
+using System;
+using System.Diagnostics;
+using System.IO.Enumeration;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Tools.FsSystem;
 

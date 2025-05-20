@@ -5,67 +5,66 @@ using Hyjinx.Graphics.Shader.Translation;
 using static Hyjinx.Graphics.Shader.Instructions.InstEmitAluHelper;
 using static Hyjinx.Graphics.Shader.Instructions.InstEmitHelper;
 
-namespace Hyjinx.Graphics.Shader.Instructions
+namespace Hyjinx.Graphics.Shader.Instructions;
+
+static partial class InstEmit
 {
-    static partial class InstEmit
+    public static void ImnmxR(EmitterContext context)
     {
-        public static void ImnmxR(EmitterContext context)
-        {
-            InstImnmxR op = context.GetOp<InstImnmxR>();
+        InstImnmxR op = context.GetOp<InstImnmxR>();
 
-            var srcA = GetSrcReg(context, op.SrcA);
-            var srcB = GetSrcReg(context, op.SrcB);
-            var srcPred = GetPredicate(context, op.SrcPred, op.SrcPredInv);
+        var srcA = GetSrcReg(context, op.SrcA);
+        var srcB = GetSrcReg(context, op.SrcB);
+        var srcPred = GetPredicate(context, op.SrcPred, op.SrcPredInv);
 
-            EmitImnmx(context, srcA, srcB, srcPred, op.Dest, op.Signed, op.WriteCC);
-        }
+        EmitImnmx(context, srcA, srcB, srcPred, op.Dest, op.Signed, op.WriteCC);
+    }
 
-        public static void ImnmxI(EmitterContext context)
-        {
-            InstImnmxI op = context.GetOp<InstImnmxI>();
+    public static void ImnmxI(EmitterContext context)
+    {
+        InstImnmxI op = context.GetOp<InstImnmxI>();
 
-            var srcA = GetSrcReg(context, op.SrcA);
-            var srcB = GetSrcImm(context, Imm20ToSInt(op.Imm20));
-            var srcPred = GetPredicate(context, op.SrcPred, op.SrcPredInv);
+        var srcA = GetSrcReg(context, op.SrcA);
+        var srcB = GetSrcImm(context, Imm20ToSInt(op.Imm20));
+        var srcPred = GetPredicate(context, op.SrcPred, op.SrcPredInv);
 
-            EmitImnmx(context, srcA, srcB, srcPred, op.Dest, op.Signed, op.WriteCC);
-        }
+        EmitImnmx(context, srcA, srcB, srcPred, op.Dest, op.Signed, op.WriteCC);
+    }
 
-        public static void ImnmxC(EmitterContext context)
-        {
-            InstImnmxC op = context.GetOp<InstImnmxC>();
+    public static void ImnmxC(EmitterContext context)
+    {
+        InstImnmxC op = context.GetOp<InstImnmxC>();
 
-            var srcA = GetSrcReg(context, op.SrcA);
-            var srcB = GetSrcCbuf(context, op.CbufSlot, op.CbufOffset);
-            var srcPred = GetPredicate(context, op.SrcPred, op.SrcPredInv);
+        var srcA = GetSrcReg(context, op.SrcA);
+        var srcB = GetSrcCbuf(context, op.CbufSlot, op.CbufOffset);
+        var srcPred = GetPredicate(context, op.SrcPred, op.SrcPredInv);
 
-            EmitImnmx(context, srcA, srcB, srcPred, op.Dest, op.Signed, op.WriteCC);
-        }
+        EmitImnmx(context, srcA, srcB, srcPred, op.Dest, op.Signed, op.WriteCC);
+    }
 
-        private static void EmitImnmx(
-            EmitterContext context,
-            Operand srcA,
-            Operand srcB,
-            Operand srcPred,
-            int rd,
-            bool isSignedInt,
-            bool writeCC)
-        {
-            Operand resMin = isSignedInt
-                ? context.IMinimumS32(srcA, srcB)
-                : context.IMinimumU32(srcA, srcB);
+    private static void EmitImnmx(
+        EmitterContext context,
+        Operand srcA,
+        Operand srcB,
+        Operand srcPred,
+        int rd,
+        bool isSignedInt,
+        bool writeCC)
+    {
+        Operand resMin = isSignedInt
+            ? context.IMinimumS32(srcA, srcB)
+            : context.IMinimumU32(srcA, srcB);
 
-            Operand resMax = isSignedInt
-                ? context.IMaximumS32(srcA, srcB)
-                : context.IMaximumU32(srcA, srcB);
+        Operand resMax = isSignedInt
+            ? context.IMaximumS32(srcA, srcB)
+            : context.IMaximumU32(srcA, srcB);
 
-            Operand res = context.ConditionalSelect(srcPred, resMin, resMax);
+        Operand res = context.ConditionalSelect(srcPred, resMin, resMax);
 
-            context.Copy(GetDest(rd), res);
+        context.Copy(GetDest(rd), res);
 
-            SetZnFlags(context, res, writeCC);
+        SetZnFlags(context, res, writeCC);
 
-            // TODO: X flags.
-        }
+        // TODO: X flags.
     }
 }

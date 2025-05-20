@@ -1,15 +1,14 @@
-namespace Hyjinx.Ava.Common
+namespace Hyjinx.Ava.Common;
+
+internal enum ApplicationSort
 {
-    internal enum ApplicationSort
-    {
-        Title,
-        TitleId,
-        Developer,
-        LastPlayed,
-        TotalTimePlayed,
-        FileType,
-        FileSize,
-        Path,
-        Favorite,
-    }
+    Title,
+    TitleId,
+    Developer,
+    LastPlayed,
+    TotalTimePlayed,
+    FileType,
+    FileSize,
+    Path,
+    Favorite,
 }

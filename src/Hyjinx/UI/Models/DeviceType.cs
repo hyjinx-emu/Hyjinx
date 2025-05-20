@@ -1,9 +1,8 @@
-namespace Hyjinx.Ava.UI.Models
+namespace Hyjinx.Ava.UI.Models;
+
+public enum DeviceType
 {
-    public enum DeviceType
-    {
-        None,
-        Keyboard,
-        Controller,
-    }
+    None,
+    Keyboard,
+    Controller,
 }

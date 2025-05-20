@@ -1,8 +1,8 @@
+using LibHac.Fs.Fsa;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using LibHac.Fs.Fsa;
 
 namespace LibHac.Tools.FsSystem;
 

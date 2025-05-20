@@ -8,86 +8,85 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using DspAddress = System.UInt64;
 
-namespace Hyjinx.Audio.Renderer.Server.Effect
+namespace Hyjinx.Audio.Renderer.Server.Effect;
+
+/// <summary>
+/// Server state for a delay effect.
+/// </summary>
+public class DelayEffect : BaseEffect
 {
     /// <summary>
-    /// Server state for a delay effect.
+    /// The delay parameter.
     /// </summary>
-    public class DelayEffect : BaseEffect
+    public DelayParameter Parameter;
+
+    /// <summary>
+    /// The delay state.
+    /// </summary>
+    public Memory<DelayState> State { get; }
+
+    public DelayEffect()
     {
-        /// <summary>
-        /// The delay parameter.
-        /// </summary>
-        public DelayParameter Parameter;
+        State = new DelayState[1];
+    }
 
-        /// <summary>
-        /// The delay state.
-        /// </summary>
-        public Memory<DelayState> State { get; }
+    public override EffectType TargetEffectType => EffectType.Delay;
 
-        public DelayEffect()
+    public override DspAddress GetWorkBuffer(int index)
+    {
+        return GetSingleBuffer();
+    }
+
+    public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion1 parameter, PoolMapper mapper)
+    {
+        Update(out updateErrorInfo, in parameter, mapper);
+    }
+
+    public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion2 parameter, PoolMapper mapper)
+    {
+        Update(out updateErrorInfo, in parameter, mapper);
+    }
+
+    public void Update<T>(out BehaviourParameter.ErrorInfo updateErrorInfo, in T parameter, PoolMapper mapper) where T : unmanaged, IEffectInParameter
+    {
+        Debug.Assert(IsTypeValid(in parameter));
+
+        ref DelayParameter delayParameter = ref MemoryMarshal.Cast<byte, DelayParameter>(parameter.SpecificData)[0];
+
+        updateErrorInfo = new BehaviourParameter.ErrorInfo();
+
+        if (delayParameter.IsChannelCountMaxValid())
         {
-            State = new DelayState[1];
-        }
+            UpdateParameterBase(in parameter);
 
-        public override EffectType TargetEffectType => EffectType.Delay;
+            UsageState oldParameterStatus = Parameter.Status;
 
-        public override DspAddress GetWorkBuffer(int index)
-        {
-            return GetSingleBuffer();
-        }
+            Parameter = delayParameter;
 
-        public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion1 parameter, PoolMapper mapper)
-        {
-            Update(out updateErrorInfo, in parameter, mapper);
-        }
-
-        public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion2 parameter, PoolMapper mapper)
-        {
-            Update(out updateErrorInfo, in parameter, mapper);
-        }
-
-        public void Update<T>(out BehaviourParameter.ErrorInfo updateErrorInfo, in T parameter, PoolMapper mapper) where T : unmanaged, IEffectInParameter
-        {
-            Debug.Assert(IsTypeValid(in parameter));
-
-            ref DelayParameter delayParameter = ref MemoryMarshal.Cast<byte, DelayParameter>(parameter.SpecificData)[0];
-
-            updateErrorInfo = new BehaviourParameter.ErrorInfo();
-
-            if (delayParameter.IsChannelCountMaxValid())
+            if (delayParameter.IsChannelCountValid())
             {
-                UpdateParameterBase(in parameter);
+                IsEnabled = parameter.IsEnabled;
 
-                UsageState oldParameterStatus = Parameter.Status;
-
-                Parameter = delayParameter;
-
-                if (delayParameter.IsChannelCountValid())
+                if (oldParameterStatus != UsageState.Enabled)
                 {
-                    IsEnabled = parameter.IsEnabled;
+                    Parameter.Status = oldParameterStatus;
+                }
 
-                    if (oldParameterStatus != UsageState.Enabled)
-                    {
-                        Parameter.Status = oldParameterStatus;
-                    }
+                if (BufferUnmapped || parameter.IsNew)
+                {
+                    UsageState = UsageState.New;
+                    Parameter.Status = UsageState.Invalid;
 
-                    if (BufferUnmapped || parameter.IsNew)
-                    {
-                        UsageState = UsageState.New;
-                        Parameter.Status = UsageState.Invalid;
-
-                        BufferUnmapped = !mapper.TryAttachBuffer(out updateErrorInfo, ref WorkBuffers[0], parameter.BufferBase, parameter.BufferSize);
-                    }
+                    BufferUnmapped = !mapper.TryAttachBuffer(out updateErrorInfo, ref WorkBuffers[0], parameter.BufferBase, parameter.BufferSize);
                 }
             }
         }
+    }
 
-        public override void UpdateForCommandGeneration()
-        {
-            UpdateUsageStateForCommandGeneration();
+    public override void UpdateForCommandGeneration()
+    {
+        UpdateUsageStateForCommandGeneration();
 
-            Parameter.Status = UsageState.Enabled;
-        }
+        Parameter.Status = UsageState.Enabled;
     }
 }

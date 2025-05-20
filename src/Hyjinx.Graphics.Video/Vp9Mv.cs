@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.Video
+namespace Hyjinx.Graphics.Video;
+
+public struct Vp9Mv
 {
-    public struct Vp9Mv
-    {
-        public short Row;
-        public short Col;
-    }
+    public short Row;
+    public short Col;
 }

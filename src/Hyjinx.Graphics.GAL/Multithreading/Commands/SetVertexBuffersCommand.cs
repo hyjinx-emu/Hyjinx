@@ -1,23 +1,22 @@
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 using System;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands;
+
+struct SetVertexBuffersCommand : IGALCommand, IGALCommand<SetVertexBuffersCommand>
 {
-    struct SetVertexBuffersCommand : IGALCommand, IGALCommand<SetVertexBuffersCommand>
+    public readonly CommandType CommandType => CommandType.SetVertexBuffers;
+    private SpanRef<VertexBufferDescriptor> _vertexBuffers;
+
+    public void Set(SpanRef<VertexBufferDescriptor> vertexBuffers)
     {
-        public readonly CommandType CommandType => CommandType.SetVertexBuffers;
-        private SpanRef<VertexBufferDescriptor> _vertexBuffers;
+        _vertexBuffers = vertexBuffers;
+    }
 
-        public void Set(SpanRef<VertexBufferDescriptor> vertexBuffers)
-        {
-            _vertexBuffers = vertexBuffers;
-        }
-
-        public static void Run(ref SetVertexBuffersCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            Span<VertexBufferDescriptor> vertexBuffers = command._vertexBuffers.Get(threaded);
-            renderer.Pipeline.SetVertexBuffers(threaded.Buffers.MapBufferRanges(vertexBuffers));
-            command._vertexBuffers.Dispose(threaded);
-        }
+    public static void Run(ref SetVertexBuffersCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        Span<VertexBufferDescriptor> vertexBuffers = command._vertexBuffers.Get(threaded);
+        renderer.Pipeline.SetVertexBuffers(threaded.Buffers.MapBufferRanges(vertexBuffers));
+        command._vertexBuffers.Dispose(threaded);
     }
 }

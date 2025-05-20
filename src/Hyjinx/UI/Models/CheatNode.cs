@@ -3,55 +3,54 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace Hyjinx.Ava.UI.Models
+namespace Hyjinx.Ava.UI.Models;
+
+public class CheatNode : BaseModel
 {
-    public class CheatNode : BaseModel
+    private bool _isEnabled = false;
+    public ObservableCollection<CheatNode> SubNodes { get; } = new();
+    public string CleanName => Name[1..^7];
+    public string BuildIdKey => $"{BuildId}-{Name}";
+    public bool IsRootNode { get; }
+    public string Name { get; }
+    public string BuildId { get; }
+    public string Path { get; }
+    public bool IsEnabled
     {
-        private bool _isEnabled = false;
-        public ObservableCollection<CheatNode> SubNodes { get; } = new();
-        public string CleanName => Name[1..^7];
-        public string BuildIdKey => $"{BuildId}-{Name}";
-        public bool IsRootNode { get; }
-        public string Name { get; }
-        public string BuildId { get; }
-        public string Path { get; }
-        public bool IsEnabled
+        get
         {
-            get
+            if (SubNodes.Count > 0)
             {
-                if (SubNodes.Count > 0)
-                {
-                    return SubNodes.ToList().TrueForAll(x => x.IsEnabled);
-                }
-
-                return _isEnabled;
+                return SubNodes.ToList().TrueForAll(x => x.IsEnabled);
             }
-            set
+
+            return _isEnabled;
+        }
+        set
+        {
+            foreach (var cheat in SubNodes)
             {
-                foreach (var cheat in SubNodes)
-                {
-                    cheat.IsEnabled = value;
-                    cheat.OnPropertyChanged();
-                }
-
-                _isEnabled = value;
+                cheat.IsEnabled = value;
+                cheat.OnPropertyChanged();
             }
-        }
 
-        public CheatNode(string name, string buildId, string path, bool isRootNode, bool isEnabled = false)
-        {
-            Name = name;
-            BuildId = buildId;
-            Path = path;
-            IsEnabled = isEnabled;
-            IsRootNode = isRootNode;
-
-            SubNodes.CollectionChanged += CheatsList_CollectionChanged;
+            _isEnabled = value;
         }
+    }
 
-        private void CheatsList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(IsEnabled));
-        }
+    public CheatNode(string name, string buildId, string path, bool isRootNode, bool isEnabled = false)
+    {
+        Name = name;
+        BuildId = buildId;
+        Path = path;
+        IsEnabled = isEnabled;
+        IsRootNode = isRootNode;
+
+        SubNodes.CollectionChanged += CheatsList_CollectionChanged;
+    }
+
+    private void CheatsList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(IsEnabled));
     }
 }

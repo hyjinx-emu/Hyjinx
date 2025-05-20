@@ -2,82 +2,81 @@ using System.Buffers.Binary;
 using System.Net;
 using System.Net.NetworkInformation;
 
-namespace Hyjinx.HLE.Utilities
-{
-    internal static class NetworkHelpers
-    {
-        private static (IPInterfaceProperties, UnicastIPAddressInformation) GetLocalInterface(NetworkInterface adapter, bool isPreferred)
-        {
-            IPInterfaceProperties properties = adapter.GetIPProperties();
+namespace Hyjinx.HLE.Utilities;
 
-            if (isPreferred || (properties.GatewayAddresses.Count > 0 && properties.DnsAddresses.Count > 0))
+internal static class NetworkHelpers
+{
+    private static (IPInterfaceProperties, UnicastIPAddressInformation) GetLocalInterface(NetworkInterface adapter, bool isPreferred)
+    {
+        IPInterfaceProperties properties = adapter.GetIPProperties();
+
+        if (isPreferred || (properties.GatewayAddresses.Count > 0 && properties.DnsAddresses.Count > 0))
+        {
+            foreach (UnicastIPAddressInformation info in properties.UnicastAddresses)
             {
-                foreach (UnicastIPAddressInformation info in properties.UnicastAddresses)
+                // Only accept an IPv4 address
+                if (info.Address.GetAddressBytes().Length == 4)
                 {
-                    // Only accept an IPv4 address
-                    if (info.Address.GetAddressBytes().Length == 4)
-                    {
-                        return (properties, info);
-                    }
+                    return (properties, info);
                 }
             }
+        }
 
+        return (null, null);
+    }
+
+    public static (IPInterfaceProperties, UnicastIPAddressInformation) GetLocalInterface(string lanInterfaceId = "0")
+    {
+        if (!NetworkInterface.GetIsNetworkAvailable())
+        {
             return (null, null);
         }
 
-        public static (IPInterfaceProperties, UnicastIPAddressInformation) GetLocalInterface(string lanInterfaceId = "0")
+        IPInterfaceProperties targetProperties = null;
+        UnicastIPAddressInformation targetAddressInfo = null;
+
+        NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+        string guid = lanInterfaceId;
+        bool hasPreference = guid != "0";
+
+        foreach (NetworkInterface adapter in interfaces)
         {
-            if (!NetworkInterface.GetIsNetworkAvailable())
+            bool isPreferred = adapter.Id == guid;
+
+            // Ignore loopback and non IPv4 capable interface.
+            if (isPreferred || (targetProperties == null && adapter.NetworkInterfaceType != NetworkInterfaceType.Loopback && adapter.Supports(NetworkInterfaceComponent.IPv4)))
             {
-                return (null, null);
-            }
+                (IPInterfaceProperties properties, UnicastIPAddressInformation info) = GetLocalInterface(adapter, isPreferred);
 
-            IPInterfaceProperties targetProperties = null;
-            UnicastIPAddressInformation targetAddressInfo = null;
-
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-
-            string guid = lanInterfaceId;
-            bool hasPreference = guid != "0";
-
-            foreach (NetworkInterface adapter in interfaces)
-            {
-                bool isPreferred = adapter.Id == guid;
-
-                // Ignore loopback and non IPv4 capable interface.
-                if (isPreferred || (targetProperties == null && adapter.NetworkInterfaceType != NetworkInterfaceType.Loopback && adapter.Supports(NetworkInterfaceComponent.IPv4)))
+                if (properties != null)
                 {
-                    (IPInterfaceProperties properties, UnicastIPAddressInformation info) = GetLocalInterface(adapter, isPreferred);
+                    targetProperties = properties;
+                    targetAddressInfo = info;
 
-                    if (properties != null)
+                    if (isPreferred || !hasPreference)
                     {
-                        targetProperties = properties;
-                        targetAddressInfo = info;
-
-                        if (isPreferred || !hasPreference)
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
             }
-
-            return (targetProperties, targetAddressInfo);
         }
 
-        public static uint ConvertIpv4Address(IPAddress ipAddress)
-        {
-            return BinaryPrimitives.ReadUInt32BigEndian(ipAddress.GetAddressBytes());
-        }
+        return (targetProperties, targetAddressInfo);
+    }
 
-        public static uint ConvertIpv4Address(string ipAddress)
-        {
-            return ConvertIpv4Address(IPAddress.Parse(ipAddress));
-        }
+    public static uint ConvertIpv4Address(IPAddress ipAddress)
+    {
+        return BinaryPrimitives.ReadUInt32BigEndian(ipAddress.GetAddressBytes());
+    }
 
-        public static IPAddress ConvertUint(uint ipAddress)
-        {
-            return new IPAddress(new byte[] { (byte)((ipAddress >> 24) & 0xFF), (byte)((ipAddress >> 16) & 0xFF), (byte)((ipAddress >> 8) & 0xFF), (byte)(ipAddress & 0xFF) });
-        }
+    public static uint ConvertIpv4Address(string ipAddress)
+    {
+        return ConvertIpv4Address(IPAddress.Parse(ipAddress));
+    }
+
+    public static IPAddress ConvertUint(uint ipAddress)
+    {
+        return new IPAddress(new byte[] { (byte)((ipAddress >> 24) & 0xFF), (byte)((ipAddress >> 16) & 0xFF), (byte)((ipAddress >> 8) & 0xFF), (byte)(ipAddress & 0xFF) });
     }
 }

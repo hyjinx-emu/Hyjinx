@@ -1,8 +1,8 @@
-using System;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
+using System;
 
 namespace LibHac.Fs.Impl;
 

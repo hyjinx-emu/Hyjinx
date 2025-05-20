@@ -1,9 +1,9 @@
-using System;
-using System.IO;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.FsSystem;
+using System;
+using System.IO;
 
 namespace LibHac.FsSystem;
 

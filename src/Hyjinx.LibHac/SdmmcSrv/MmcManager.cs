@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Sf;
@@ -6,6 +5,7 @@ using LibHac.FsSrv.Storage.Sf;
 using LibHac.Os;
 using LibHac.Sdmmc;
 using LibHac.Sf;
+using System.Runtime.CompilerServices;
 using IStorage = LibHac.FsSrv.Sf.IStorage;
 using MmcPartition = LibHac.Fs.MmcPartition;
 

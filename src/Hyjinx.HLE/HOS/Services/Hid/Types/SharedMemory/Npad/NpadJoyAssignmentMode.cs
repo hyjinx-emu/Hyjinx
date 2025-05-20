@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+
+enum NpadJoyAssignmentMode : uint
 {
-    enum NpadJoyAssignmentMode : uint
-    {
-        Dual,
-        Single,
-    }
+    Dual,
+    Single,
 }

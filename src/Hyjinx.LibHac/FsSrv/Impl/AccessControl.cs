@@ -1,11 +1,11 @@
+using LibHac.Common;
+using LibHac.Diag;
+using LibHac.Util;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.Common;
-using LibHac.Diag;
-using LibHac.Util;
 
 namespace LibHac.FsSrv.Impl;
 

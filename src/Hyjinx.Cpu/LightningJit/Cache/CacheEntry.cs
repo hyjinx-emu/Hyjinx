@@ -1,22 +1,21 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Hyjinx.Cpu.LightningJit.Cache
+namespace Hyjinx.Cpu.LightningJit.Cache;
+
+readonly struct CacheEntry : IComparable<CacheEntry>
 {
-    readonly struct CacheEntry : IComparable<CacheEntry>
+    public int Offset { get; }
+    public int Size { get; }
+
+    public CacheEntry(int offset, int size)
     {
-        public int Offset { get; }
-        public int Size { get; }
+        Offset = offset;
+        Size = size;
+    }
 
-        public CacheEntry(int offset, int size)
-        {
-            Offset = offset;
-            Size = size;
-        }
-
-        public int CompareTo([AllowNull] CacheEntry other)
-        {
-            return Offset.CompareTo(other.Offset);
-        }
+    public int CompareTo([AllowNull] CacheEntry other)
+    {
+        return Offset.CompareTo(other.Offset);
     }
 }

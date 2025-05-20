@@ -1,8 +1,8 @@
+using LibHac.Fs;
+using LibHac.Fs.Fsa;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using LibHac.Fs;
-using LibHac.Fs.Fsa;
 
 namespace LibHac.Tools.FsSystem;
 

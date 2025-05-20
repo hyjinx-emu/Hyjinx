@@ -1,28 +1,27 @@
 using Hyjinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Audio.Renderer.Parameter
+namespace Hyjinx.Audio.Renderer.Parameter;
+
+/// <summary>
+/// Input information for a voice channel resources.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Size = 0x70, Pack = 1)]
+public struct VoiceChannelResourceInParameter
 {
     /// <summary>
-    /// Input information for a voice channel resources.
+    /// The id of the voice channel resource.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Size = 0x70, Pack = 1)]
-    public struct VoiceChannelResourceInParameter
-    {
-        /// <summary>
-        /// The id of the voice channel resource.
-        /// </summary>
-        public uint Id;
+    public uint Id;
 
-        /// <summary>
-        /// Mix volumes for the voice channel resource.
-        /// </summary>
-        public Array24<float> Mix;
+    /// <summary>
+    /// Mix volumes for the voice channel resource.
+    /// </summary>
+    public Array24<float> Mix;
 
-        /// <summary>
-        /// Indicate if the voice channel resource is used.
-        /// </summary>
-        [MarshalAs(UnmanagedType.I1)]
-        public bool IsUsed;
-    }
+    /// <summary>
+    /// Indicate if the voice channel resource is used.
+    /// </summary>
+    [MarshalAs(UnmanagedType.I1)]
+    public bool IsUsed;
 }

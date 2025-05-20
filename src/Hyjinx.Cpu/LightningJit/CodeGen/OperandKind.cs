@@ -1,10 +1,9 @@
-namespace Hyjinx.Cpu.LightningJit.CodeGen
+namespace Hyjinx.Cpu.LightningJit.CodeGen;
+
+enum OperandKind
 {
-    enum OperandKind
-    {
-        None,
-        Constant,
-        Label,
-        Register,
-    }
+    None,
+    Constant,
+    Label,
+    Register,
 }

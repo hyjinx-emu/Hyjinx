@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.Shader.StructuredIr
+namespace Hyjinx.Graphics.Shader.StructuredIr;
+
+enum BufferLayout
 {
-    enum BufferLayout
-    {
-        Std140,
-        Std430,
-    }
+    Std140,
+    Std430,
 }

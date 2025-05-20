@@ -1,12 +1,11 @@
-namespace Hyjinx.HLE.HOS.Services.Pcv
+namespace Hyjinx.HLE.HOS.Services.Pcv;
+
+enum ResultCode
 {
-    enum ResultCode
-    {
-        ModuleId = 30,
-        ErrorCodeShift = 9,
+    ModuleId = 30,
+    ErrorCodeShift = 9,
 
-        Success = 0,
+    Success = 0,
 
-        InvalidArgument = (5 << ErrorCodeShift) | ModuleId,
-    }
+    InvalidArgument = (5 << ErrorCodeShift) | ModuleId,
 }

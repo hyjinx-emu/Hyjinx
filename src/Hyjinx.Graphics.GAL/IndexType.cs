@@ -1,9 +1,8 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum IndexType
 {
-    public enum IndexType
-    {
-        UByte,
-        UShort,
-        UInt,
-    }
+    UByte,
+    UShort,
+    UInt,
 }

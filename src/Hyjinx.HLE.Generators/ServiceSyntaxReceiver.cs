@@ -2,23 +2,22 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 
-namespace Hyjinx.HLE.Generators
+namespace Hyjinx.HLE.Generators;
+
+internal class ServiceSyntaxReceiver : ISyntaxReceiver
 {
-    internal class ServiceSyntaxReceiver : ISyntaxReceiver
+    public HashSet<ClassDeclarationSyntax> Types = new HashSet<ClassDeclarationSyntax>();
+
+    public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
-        public HashSet<ClassDeclarationSyntax> Types = new HashSet<ClassDeclarationSyntax>();
-
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+        if (syntaxNode is ClassDeclarationSyntax classDeclaration)
         {
-            if (syntaxNode is ClassDeclarationSyntax classDeclaration)
+            if (classDeclaration.BaseList == null)
             {
-                if (classDeclaration.BaseList == null)
-                {
-                    return;
-                }
-
-                Types.Add(classDeclaration);
+                return;
             }
+
+            Types.Add(classDeclaration);
         }
     }
 }

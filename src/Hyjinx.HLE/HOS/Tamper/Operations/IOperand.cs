@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Tamper.Operations
+namespace Hyjinx.HLE.HOS.Tamper.Operations;
+
+interface IOperand
 {
-    interface IOperand
-    {
-        public T Get<T>() where T : unmanaged;
-        public void Set<T>(T value) where T : unmanaged;
-    }
+    public T Get<T>() where T : unmanaged;
+    public void Set<T>(T value) where T : unmanaged;
 }

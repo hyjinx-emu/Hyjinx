@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum FrontFace
 {
-    public enum FrontFace
-    {
-        Clockwise = 0x900,
-        CounterClockwise = 0x901,
-    }
+    Clockwise = 0x900,
+    CounterClockwise = 0x901,
 }

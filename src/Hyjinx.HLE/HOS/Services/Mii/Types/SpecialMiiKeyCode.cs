@@ -1,17 +1,16 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
+
+[StructLayout(LayoutKind.Sequential, Pack = 4, Size = 4)]
+struct SpecialMiiKeyCode
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4, Size = 4)]
-    struct SpecialMiiKeyCode
+    private const uint SpecialMiiMagic = 0xA523B78F;
+
+    public uint RawValue;
+
+    public readonly bool IsEnabledSpecialMii()
     {
-        private const uint SpecialMiiMagic = 0xA523B78F;
-
-        public uint RawValue;
-
-        public readonly bool IsEnabledSpecialMii()
-        {
-            return RawValue == SpecialMiiMagic;
-        }
+        return RawValue == SpecialMiiMagic;
     }
 }

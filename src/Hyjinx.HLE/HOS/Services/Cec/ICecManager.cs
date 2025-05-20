@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Cec
+namespace Hyjinx.HLE.HOS.Services.Cec;
+
+[Service("cec-mgr")]
+class ICecManager : IpcService<ICecManager>
 {
-    [Service("cec-mgr")]
-    class ICecManager : IpcService<ICecManager>
-    {
-        public ICecManager(ServiceCtx context) { }
-    }
+    public ICecManager(ServiceCtx context) { }
 }

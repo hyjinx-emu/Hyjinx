@@ -1,15 +1,14 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
-{
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    class SvcAttribute : Attribute
-    {
-        public int Id { get; }
+namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall;
 
-        public SvcAttribute(int id)
-        {
-            Id = id;
-        }
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+class SvcAttribute : Attribute
+{
+    public int Id { get; }
+
+    public SvcAttribute(int id)
+    {
+        Id = id;
     }
 }

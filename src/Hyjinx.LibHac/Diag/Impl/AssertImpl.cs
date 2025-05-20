@@ -1,9 +1,9 @@
+using LibHac.Common;
+using LibHac.Util;
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.Common;
-using LibHac.Util;
 
 namespace LibHac.Diag.Impl;
 

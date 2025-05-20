@@ -1,10 +1,10 @@
-using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Impl;
 using LibHac.FsSystem;
 using LibHac.Util;
+using System;
 
 namespace LibHac.FsSrv.Impl;
 

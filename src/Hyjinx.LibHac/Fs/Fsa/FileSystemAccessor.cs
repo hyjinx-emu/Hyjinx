@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Shim;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Collections.Generic;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 
 // ReSharper disable once CheckNamespace

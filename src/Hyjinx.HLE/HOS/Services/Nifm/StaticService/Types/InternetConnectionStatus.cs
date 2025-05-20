@@ -1,12 +1,11 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types
+namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types;
+
+[StructLayout(LayoutKind.Sequential)]
+struct InternetConnectionStatus
 {
-    [StructLayout(LayoutKind.Sequential)]
-    struct InternetConnectionStatus
-    {
-        public InternetConnectionType Type;
-        public byte WifiStrength;
-        public InternetConnectionState State;
-    }
+    public InternetConnectionType Type;
+    public byte WifiStrength;
+    public InternetConnectionState State;
 }

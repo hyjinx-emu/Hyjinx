@@ -2,32 +2,31 @@ using Hyjinx.Cpu;
 using Hyjinx.Horizon.Common;
 using System.Threading;
 
-namespace Hyjinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading;
+
+class KThreadContext : IThreadContext
 {
-    class KThreadContext : IThreadContext
+    private readonly IExecutionContext _context;
+
+    public bool Running => _context.Running;
+    public ulong TlsAddress => (ulong)_context.TpidrroEl0;
+
+    public ulong GetX(int index) => _context.GetX(index);
+
+    private int _locked;
+
+    public KThreadContext(IExecutionContext context)
     {
-        private readonly IExecutionContext _context;
+        _context = context;
+    }
 
-        public bool Running => _context.Running;
-        public ulong TlsAddress => (ulong)_context.TpidrroEl0;
+    public bool Lock()
+    {
+        return Interlocked.Exchange(ref _locked, 1) == 0;
+    }
 
-        public ulong GetX(int index) => _context.GetX(index);
-
-        private int _locked;
-
-        public KThreadContext(IExecutionContext context)
-        {
-            _context = context;
-        }
-
-        public bool Lock()
-        {
-            return Interlocked.Exchange(ref _locked, 1) == 0;
-        }
-
-        public void Unlock()
-        {
-            Interlocked.Exchange(ref _locked, 0);
-        }
+    public void Unlock()
+    {
+        Interlocked.Exchange(ref _locked, 0);
     }
 }

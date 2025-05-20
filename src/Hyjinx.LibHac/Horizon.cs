@@ -1,5 +1,3 @@
-using System;
-using System.Threading;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Shim;
@@ -7,6 +5,8 @@ using LibHac.FsSrv.Impl;
 using LibHac.Ncm;
 using LibHac.Os;
 using LibHac.Sm;
+using System;
+using System.Threading;
 
 namespace LibHac;
 

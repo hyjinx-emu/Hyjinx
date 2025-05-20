@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Sf;
+using System;
+using System.Collections.Generic;
 
 namespace LibHac.FsSystem;
 

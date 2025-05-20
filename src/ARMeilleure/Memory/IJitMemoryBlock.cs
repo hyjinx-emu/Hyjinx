@@ -1,15 +1,14 @@
 using System;
 
-namespace ARMeilleure.Memory
+namespace ARMeilleure.Memory;
+
+public interface IJitMemoryBlock : IDisposable
 {
-    public interface IJitMemoryBlock : IDisposable
-    {
-        IntPtr Pointer { get; }
+    IntPtr Pointer { get; }
 
-        void Commit(ulong offset, ulong size);
+    void Commit(ulong offset, ulong size);
 
-        void MapAsRw(ulong offset, ulong size);
-        void MapAsRx(ulong offset, ulong size);
-        void MapAsRwx(ulong offset, ulong size);
-    }
+    void MapAsRw(ulong offset, ulong size);
+    void MapAsRx(ulong offset, ulong size);
+    void MapAsRwx(ulong offset, ulong size);
 }

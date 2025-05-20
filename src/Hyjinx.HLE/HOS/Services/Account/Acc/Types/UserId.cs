@@ -5,60 +5,59 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc;
+
+[StructLayout(LayoutKind.Sequential)]
+public readonly record struct UserId
 {
-    [StructLayout(LayoutKind.Sequential)]
-    public readonly record struct UserId
+    public readonly long High;
+    public readonly long Low;
+
+    public bool IsNull => (Low | High) == 0;
+
+    public static UserId Null => new(0, 0);
+
+    public UserId(long low, long high)
     {
-        public readonly long High;
-        public readonly long Low;
+        Low = low;
+        High = high;
+    }
 
-        public bool IsNull => (Low | High) == 0;
+    public UserId(byte[] bytes)
+    {
+        High = BitConverter.ToInt64(bytes, 0);
+        Low = BitConverter.ToInt64(bytes, 8);
+    }
 
-        public static UserId Null => new(0, 0);
-
-        public UserId(long low, long high)
+    public UserId(string hex)
+    {
+        if (hex == null || hex.Length != 32 || !hex.All("0123456789abcdefABCDEF".Contains))
         {
-            Low = low;
-            High = high;
+            throw new ArgumentException("Invalid Hex value!", nameof(hex));
         }
 
-        public UserId(byte[] bytes)
-        {
-            High = BitConverter.ToInt64(bytes, 0);
-            Low = BitConverter.ToInt64(bytes, 8);
-        }
+        Low = long.Parse(hex.AsSpan(16), NumberStyles.HexNumber);
+        High = long.Parse(hex.AsSpan(0, 16), NumberStyles.HexNumber);
+    }
 
-        public UserId(string hex)
-        {
-            if (hex == null || hex.Length != 32 || !hex.All("0123456789abcdefABCDEF".Contains))
-            {
-                throw new ArgumentException("Invalid Hex value!", nameof(hex));
-            }
+    public void Write(BinaryWriter binaryWriter)
+    {
+        binaryWriter.Write(High);
+        binaryWriter.Write(Low);
+    }
 
-            Low = long.Parse(hex.AsSpan(16), NumberStyles.HexNumber);
-            High = long.Parse(hex.AsSpan(0, 16), NumberStyles.HexNumber);
-        }
+    public override string ToString()
+    {
+        return High.ToString("x16") + Low.ToString("x16");
+    }
 
-        public void Write(BinaryWriter binaryWriter)
-        {
-            binaryWriter.Write(High);
-            binaryWriter.Write(Low);
-        }
+    public Uid ToLibHacUid()
+    {
+        return new Uid((ulong)High, (ulong)Low);
+    }
 
-        public override string ToString()
-        {
-            return High.ToString("x16") + Low.ToString("x16");
-        }
-
-        public Uid ToLibHacUid()
-        {
-            return new Uid((ulong)High, (ulong)Low);
-        }
-
-        public UInt128 ToUInt128()
-        {
-            return new UInt128((ulong)High, (ulong)Low);
-        }
+    public UInt128 ToUInt128()
+    {
+        return new UInt128((ulong)High, (ulong)Low);
     }
 }

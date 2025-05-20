@@ -1,8 +1,8 @@
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Impl;
 using LibHac.Os;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.FsSrv;
 

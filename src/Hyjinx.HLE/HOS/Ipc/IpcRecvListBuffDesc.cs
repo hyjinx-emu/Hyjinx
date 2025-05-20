@@ -1,21 +1,20 @@
-namespace Hyjinx.HLE.HOS.Ipc
+namespace Hyjinx.HLE.HOS.Ipc;
+
+struct IpcRecvListBuffDesc
 {
-    struct IpcRecvListBuffDesc
+    public ulong Position { get; private set; }
+    public ulong Size { get; private set; }
+
+    public IpcRecvListBuffDesc(ulong position, ulong size)
     {
-        public ulong Position { get; private set; }
-        public ulong Size { get; private set; }
+        Position = position;
+        Size = size;
+    }
 
-        public IpcRecvListBuffDesc(ulong position, ulong size)
-        {
-            Position = position;
-            Size = size;
-        }
+    public IpcRecvListBuffDesc(ulong packedValue)
+    {
+        Position = packedValue & 0xffffffffffff;
 
-        public IpcRecvListBuffDesc(ulong packedValue)
-        {
-            Position = packedValue & 0xffffffffffff;
-
-            Size = (ushort)(packedValue >> 48);
-        }
+        Size = (ushort)(packedValue >> 48);
     }
 }

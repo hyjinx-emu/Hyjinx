@@ -32,9 +32,6 @@ jobs:
       - name: Restore packages
         run: dotnet restore
 
-      - name: Print format version
-        run: dotnet format --version
-
       - name: Format whitespace
         run: |
           dotnet format whitespace --verify-no-changes --report ./whitespace-report.json -v d

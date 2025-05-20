@@ -1,9 +1,9 @@
+using LibHac.Common;
+using LibHac.Fs;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using LibHac.Common;
-using LibHac.Fs;
 
 namespace LibHac.Tools.FsSystem.Save;
 

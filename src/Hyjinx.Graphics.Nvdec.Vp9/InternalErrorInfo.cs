@@ -1,14 +1,13 @@
-namespace Hyjinx.Graphics.Nvdec.Vp9
+namespace Hyjinx.Graphics.Nvdec.Vp9;
+
+internal struct InternalErrorInfo
 {
-    internal struct InternalErrorInfo
+    public CodecErr ErrorCode;
+
+    public void InternalError(CodecErr error, string message)
     {
-        public CodecErr ErrorCode;
+        ErrorCode = error;
 
-        public void InternalError(CodecErr error, string message)
-        {
-            ErrorCode = error;
-
-            throw new InternalErrorException(message);
-        }
+        throw new InternalErrorException(message);
     }
 }

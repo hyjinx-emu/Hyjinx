@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets;
+
+enum ControllerSupportMode : byte
 {
-    enum ControllerSupportMode : byte
-    {
-        ShowControllerSupport = 0,
-        ShowControllerStrapGuide = 1,
-        ShowControllerFirmwareUpdate = 2,
-    }
+    ShowControllerSupport = 0,
+    ShowControllerStrapGuide = 1,
+    ShowControllerFirmwareUpdate = 2,
 }

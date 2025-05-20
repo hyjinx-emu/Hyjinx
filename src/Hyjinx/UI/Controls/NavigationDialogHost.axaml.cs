@@ -3,16 +3,16 @@ using Avalonia.Controls;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
-using LibHac;
-using LibHac.Common;
-using LibHac.Fs;
-using LibHac.Fs.Shim;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Views.User;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
+using LibHac;
+using LibHac.Common;
+using LibHac.Fs;
+using LibHac.Fs.Shim;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,198 +20,197 @@ using System.Threading.Tasks;
 using UserId = Hyjinx.HLE.HOS.Services.Account.Acc.UserId;
 using UserProfile = Hyjinx.Ava.UI.Models.UserProfile;
 
-namespace Hyjinx.Ava.UI.Controls
+namespace Hyjinx.Ava.UI.Controls;
+
+public partial class NavigationDialogHost : UserControl
 {
-    public partial class NavigationDialogHost : UserControl
+    public AccountManager AccountManager { get; }
+    public ContentManager ContentManager { get; }
+    public VirtualFileSystem VirtualFileSystem { get; }
+    public HorizonClient HorizonClient { get; }
+    public UserProfileViewModel ViewModel { get; set; }
+
+    public NavigationDialogHost()
     {
-        public AccountManager AccountManager { get; }
-        public ContentManager ContentManager { get; }
-        public VirtualFileSystem VirtualFileSystem { get; }
-        public HorizonClient HorizonClient { get; }
-        public UserProfileViewModel ViewModel { get; set; }
+        InitializeComponent();
+    }
 
-        public NavigationDialogHost()
+    public NavigationDialogHost(AccountManager accountManager, ContentManager contentManager,
+        VirtualFileSystem virtualFileSystem, HorizonClient horizonClient)
+    {
+        AccountManager = accountManager;
+        ContentManager = contentManager;
+        VirtualFileSystem = virtualFileSystem;
+        HorizonClient = horizonClient;
+        ViewModel = new UserProfileViewModel();
+        LoadProfiles();
+
+        if (contentManager.GetCurrentFirmwareVersion() != null)
         {
-            InitializeComponent();
+            Task.Run(() =>
+            {
+                UserFirmwareAvatarSelectorViewModel.PreloadAvatars(contentManager, virtualFileSystem);
+            });
+        }
+        InitializeComponent();
+    }
+
+    public void GoBack()
+    {
+        if (ContentFrame.BackStack.Count > 0)
+        {
+            ContentFrame.GoBack();
         }
 
-        public NavigationDialogHost(AccountManager accountManager, ContentManager contentManager,
-            VirtualFileSystem virtualFileSystem, HorizonClient horizonClient)
-        {
-            AccountManager = accountManager;
-            ContentManager = contentManager;
-            VirtualFileSystem = virtualFileSystem;
-            HorizonClient = horizonClient;
-            ViewModel = new UserProfileViewModel();
-            LoadProfiles();
+        LoadProfiles();
+    }
 
-            if (contentManager.GetCurrentFirmwareVersion() != null)
+    public void Navigate(Type sourcePageType, object parameter)
+    {
+        ContentFrame.Navigate(sourcePageType, parameter);
+    }
+
+    public static async Task Show(AccountManager ownerAccountManager, ContentManager ownerContentManager,
+        VirtualFileSystem ownerVirtualFileSystem, HorizonClient ownerHorizonClient)
+    {
+        var content = new NavigationDialogHost(ownerAccountManager, ownerContentManager, ownerVirtualFileSystem, ownerHorizonClient);
+        ContentDialog contentDialog = new()
+        {
+            Title = LocaleManager.Instance[LocaleKeys.UserProfileWindowTitle],
+            PrimaryButtonText = "",
+            SecondaryButtonText = "",
+            CloseButtonText = "",
+            Content = content,
+            Padding = new Thickness(0),
+        };
+
+        contentDialog.Closed += (sender, args) =>
+        {
+            content.ViewModel.Dispose();
+        };
+
+        Style footer = new(x => x.Name("DialogSpace").Child().OfType<Border>());
+        footer.Setters.Add(new Setter(IsVisibleProperty, false));
+
+        contentDialog.Styles.Add(footer);
+
+        await contentDialog.ShowAsync();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        Navigate(typeof(UserSelectorViews), this);
+    }
+
+    public void LoadProfiles()
+    {
+        ViewModel.Profiles.Clear();
+        ViewModel.LostProfiles.Clear();
+
+        var profiles = AccountManager.GetAllUsers().OrderBy(x => x.Name);
+
+        foreach (var profile in profiles)
+        {
+            ViewModel.Profiles.Add(new UserProfile(profile, this));
+        }
+
+        var saveDataFilter = SaveDataFilter.Make(programId: default, saveType: SaveDataType.Account, default, saveDataId: default, index: default);
+
+        using var saveDataIterator = new UniqueRef<SaveDataIterator>();
+
+        HorizonClient.Fs.OpenSaveDataIterator(ref saveDataIterator.Ref, SaveDataSpaceId.User, in saveDataFilter).ThrowIfFailure();
+
+        Span<SaveDataInfo> saveDataInfo = stackalloc SaveDataInfo[10];
+
+        HashSet<UserId> lostAccounts = new();
+
+        while (true)
+        {
+            saveDataIterator.Get.ReadSaveDataInfo(out long readCount, saveDataInfo).ThrowIfFailure();
+
+            if (readCount == 0)
             {
-                Task.Run(() =>
-                {
-                    UserFirmwareAvatarSelectorViewModel.PreloadAvatars(contentManager, virtualFileSystem);
-                });
+                break;
             }
-            InitializeComponent();
-        }
 
-        public void GoBack()
-        {
-            if (ContentFrame.BackStack.Count > 0)
+            for (int i = 0; i < readCount; i++)
             {
-                ContentFrame.GoBack();
-            }
-
-            LoadProfiles();
-        }
-
-        public void Navigate(Type sourcePageType, object parameter)
-        {
-            ContentFrame.Navigate(sourcePageType, parameter);
-        }
-
-        public static async Task Show(AccountManager ownerAccountManager, ContentManager ownerContentManager,
-            VirtualFileSystem ownerVirtualFileSystem, HorizonClient ownerHorizonClient)
-        {
-            var content = new NavigationDialogHost(ownerAccountManager, ownerContentManager, ownerVirtualFileSystem, ownerHorizonClient);
-            ContentDialog contentDialog = new()
-            {
-                Title = LocaleManager.Instance[LocaleKeys.UserProfileWindowTitle],
-                PrimaryButtonText = "",
-                SecondaryButtonText = "",
-                CloseButtonText = "",
-                Content = content,
-                Padding = new Thickness(0),
-            };
-
-            contentDialog.Closed += (sender, args) =>
-            {
-                content.ViewModel.Dispose();
-            };
-
-            Style footer = new(x => x.Name("DialogSpace").Child().OfType<Border>());
-            footer.Setters.Add(new Setter(IsVisibleProperty, false));
-
-            contentDialog.Styles.Add(footer);
-
-            await contentDialog.ShowAsync();
-        }
-
-        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-        {
-            base.OnAttachedToVisualTree(e);
-
-            Navigate(typeof(UserSelectorViews), this);
-        }
-
-        public void LoadProfiles()
-        {
-            ViewModel.Profiles.Clear();
-            ViewModel.LostProfiles.Clear();
-
-            var profiles = AccountManager.GetAllUsers().OrderBy(x => x.Name);
-
-            foreach (var profile in profiles)
-            {
-                ViewModel.Profiles.Add(new UserProfile(profile, this));
-            }
-
-            var saveDataFilter = SaveDataFilter.Make(programId: default, saveType: SaveDataType.Account, default, saveDataId: default, index: default);
-
-            using var saveDataIterator = new UniqueRef<SaveDataIterator>();
-
-            HorizonClient.Fs.OpenSaveDataIterator(ref saveDataIterator.Ref, SaveDataSpaceId.User, in saveDataFilter).ThrowIfFailure();
-
-            Span<SaveDataInfo> saveDataInfo = stackalloc SaveDataInfo[10];
-
-            HashSet<UserId> lostAccounts = new();
-
-            while (true)
-            {
-                saveDataIterator.Get.ReadSaveDataInfo(out long readCount, saveDataInfo).ThrowIfFailure();
-
-                if (readCount == 0)
+                var save = saveDataInfo[i];
+                var id = new UserId((long)save.UserId.Id.Low, (long)save.UserId.Id.High);
+                if (ViewModel.Profiles.Cast<UserProfile>().FirstOrDefault(x => x.UserId == id) == null)
                 {
-                    break;
-                }
-
-                for (int i = 0; i < readCount; i++)
-                {
-                    var save = saveDataInfo[i];
-                    var id = new UserId((long)save.UserId.Id.Low, (long)save.UserId.Id.High);
-                    if (ViewModel.Profiles.Cast<UserProfile>().FirstOrDefault(x => x.UserId == id) == null)
-                    {
-                        lostAccounts.Add(id);
-                    }
+                    lostAccounts.Add(id);
                 }
             }
-
-            foreach (var account in lostAccounts)
-            {
-                ViewModel.LostProfiles.Add(new UserProfile(new Hyjinx.HLE.HOS.Services.Account.Acc.UserProfile(account, "", null), this));
-            }
-
-            ViewModel.Profiles.Add(new BaseModel());
         }
 
-        public async void DeleteUser(UserProfile userProfile)
+        foreach (var account in lostAccounts)
         {
-            var lastUserId = AccountManager.LastOpenedUser.UserId;
+            ViewModel.LostProfiles.Add(new UserProfile(new Hyjinx.HLE.HOS.Services.Account.Acc.UserProfile(account, "", null), this));
+        }
 
-            if (userProfile.UserId == lastUserId)
+        ViewModel.Profiles.Add(new BaseModel());
+    }
+
+    public async void DeleteUser(UserProfile userProfile)
+    {
+        var lastUserId = AccountManager.LastOpenedUser.UserId;
+
+        if (userProfile.UserId == lastUserId)
+        {
+            // If we are deleting the currently open profile, then we must open something else before deleting.
+            var profile = ViewModel.Profiles.Cast<UserProfile>().FirstOrDefault(x => x.UserId != lastUserId);
+
+            if (profile == null)
             {
-                // If we are deleting the currently open profile, then we must open something else before deleting.
-                var profile = ViewModel.Profiles.Cast<UserProfile>().FirstOrDefault(x => x.UserId != lastUserId);
-
-                if (profile == null)
+                static async void Action()
                 {
-                    static async void Action()
-                    {
-                        await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance[LocaleKeys.DialogUserProfileDeletionWarningMessage]);
-                    }
-
-                    Dispatcher.UIThread.Post(Action);
-
-                    return;
+                    await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance[LocaleKeys.DialogUserProfileDeletionWarningMessage]);
                 }
 
-                AccountManager.OpenUser(profile.UserId);
+                Dispatcher.UIThread.Post(Action);
+
+                return;
             }
 
-            var result = await ContentDialogHelper.CreateConfirmationDialog(
-                LocaleManager.Instance[LocaleKeys.DialogUserProfileDeletionConfirmMessage],
-                "",
-                LocaleManager.Instance[LocaleKeys.InputDialogYes],
-                LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                "");
-
-            if (result == UserResult.Yes)
-            {
-                GoBack();
-                AccountManager.DeleteUser(userProfile.UserId);
-            }
-
-            LoadProfiles();
+            AccountManager.OpenUser(profile.UserId);
         }
 
-        public void AddUser()
+        var result = await ContentDialogHelper.CreateConfirmationDialog(
+            LocaleManager.Instance[LocaleKeys.DialogUserProfileDeletionConfirmMessage],
+            "",
+            LocaleManager.Instance[LocaleKeys.InputDialogYes],
+            LocaleManager.Instance[LocaleKeys.InputDialogNo],
+            "");
+
+        if (result == UserResult.Yes)
         {
-            Navigate(typeof(UserEditorView), (this, (UserProfile)null, true));
+            GoBack();
+            AccountManager.DeleteUser(userProfile.UserId);
         }
 
-        public void EditUser(UserProfile userProfile)
-        {
-            Navigate(typeof(UserEditorView), (this, userProfile, false));
-        }
+        LoadProfiles();
+    }
 
-        public void RecoverLostAccounts()
-        {
-            Navigate(typeof(UserRecovererView), this);
-        }
+    public void AddUser()
+    {
+        Navigate(typeof(UserEditorView), (this, (UserProfile)null, true));
+    }
 
-        public void ManageSaves()
-        {
-            Navigate(typeof(UserSaveManagerView), (this, AccountManager, HorizonClient, VirtualFileSystem));
-        }
+    public void EditUser(UserProfile userProfile)
+    {
+        Navigate(typeof(UserEditorView), (this, userProfile, false));
+    }
+
+    public void RecoverLostAccounts()
+    {
+        Navigate(typeof(UserRecovererView), this);
+    }
+
+    public void ManageSaves()
+    {
+        Navigate(typeof(UserSaveManagerView), (this, AccountManager, HorizonClient, VirtualFileSystem));
     }
 }

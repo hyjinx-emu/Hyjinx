@@ -1,18 +1,17 @@
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands;
+
+struct SetDepthClampCommand : IGALCommand, IGALCommand<SetDepthClampCommand>
 {
-    struct SetDepthClampCommand : IGALCommand, IGALCommand<SetDepthClampCommand>
+    public readonly CommandType CommandType => CommandType.SetDepthClamp;
+    private bool _clamp;
+
+    public void Set(bool clamp)
     {
-        public readonly CommandType CommandType => CommandType.SetDepthClamp;
-        private bool _clamp;
+        _clamp = clamp;
+    }
 
-        public void Set(bool clamp)
-        {
-            _clamp = clamp;
-        }
-
-        public static void Run(ref SetDepthClampCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            renderer.Pipeline.SetDepthClamp(command._clamp);
-        }
+    public static void Run(ref SetDepthClampCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        renderer.Pipeline.SetDepthClamp(command._clamp);
     }
 }

@@ -1,12 +1,11 @@
-namespace Hyjinx.Ava.UI.Helpers
+namespace Hyjinx.Ava.UI.Helpers;
+
+public enum UserResult
 {
-    public enum UserResult
-    {
-        Ok,
-        Yes,
-        No,
-        Abort,
-        Cancel,
-        None,
-    }
+    Ok,
+    Yes,
+    No,
+    Abort,
+    Cancel,
+    None,
 }

@@ -1,7 +1,7 @@
+using LibHac.Fs;
 using System;
 using System.IO;
 using System.Linq;
-using LibHac.Fs;
 
 namespace LibHac.Tests.Fs;
 

@@ -1,44 +1,43 @@
 using SPB.Windowing;
 using System.Runtime.Versioning;
 
-namespace SPB.Platform.X11
+namespace SPB.Platform.X11;
+
+[SupportedOSPlatform("linux")]
+public sealed class SimpleX11Window : NativeWindowBase
 {
-    [SupportedOSPlatform("linux")]
-    public sealed class SimpleX11Window : NativeWindowBase
+    public override NativeHandle DisplayHandle { get; }
+    public override NativeHandle WindowHandle { get; }
+
+    public bool IsDisposed { get; private set; }
+
+    public SimpleX11Window(NativeHandle displayHandle, NativeHandle windowHandle)
     {
-        public override NativeHandle DisplayHandle { get; }
-        public override NativeHandle WindowHandle { get; }
+        DisplayHandle = displayHandle;
+        WindowHandle = windowHandle;
+    }
 
-        public bool IsDisposed { get; private set; }
-
-        public SimpleX11Window(NativeHandle displayHandle, NativeHandle windowHandle)
+    protected override void Dispose(bool disposing)
+    {
+        if (!IsDisposed)
         {
-            DisplayHandle = displayHandle;
-            WindowHandle = windowHandle;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (!IsDisposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    X11.UnmapWindow(DisplayHandle.RawHandle, WindowHandle.RawHandle);
-                    X11.DestroyWindow(DisplayHandle.RawHandle, WindowHandle.RawHandle);
-                }
-
-                IsDisposed = true;
+                X11.UnmapWindow(DisplayHandle.RawHandle, WindowHandle.RawHandle);
+                X11.DestroyWindow(DisplayHandle.RawHandle, WindowHandle.RawHandle);
             }
-        }
 
-        public override void Show()
-        {
-            X11.MapWindow(DisplayHandle.RawHandle, WindowHandle.RawHandle);
+            IsDisposed = true;
         }
+    }
 
-        public override void Hide()
-        {
-            X11.UnmapWindow(DisplayHandle.RawHandle, WindowHandle.RawHandle);
-        }
+    public override void Show()
+    {
+        X11.MapWindow(DisplayHandle.RawHandle, WindowHandle.RawHandle);
+    }
+
+    public override void Hide()
+    {
+        X11.UnmapWindow(DisplayHandle.RawHandle, WindowHandle.RawHandle);
     }
 }

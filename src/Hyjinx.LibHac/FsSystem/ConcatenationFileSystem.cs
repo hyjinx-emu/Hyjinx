@@ -1,8 +1,3 @@
-using System;
-using System.Buffers;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -10,6 +5,11 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Buffers;
+using System.Buffers.Text;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using static LibHac.FsSystem.Utility;
 
 namespace LibHac.FsSystem;

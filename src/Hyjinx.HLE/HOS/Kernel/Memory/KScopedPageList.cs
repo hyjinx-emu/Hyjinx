@@ -1,27 +1,26 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
+
+struct KScopedPageList : IDisposable
 {
-    struct KScopedPageList : IDisposable
+    private readonly KMemoryManager _manager;
+    private KPageList _pageList;
+
+    public KScopedPageList(KMemoryManager manager, KPageList pageList)
     {
-        private readonly KMemoryManager _manager;
-        private KPageList _pageList;
+        _manager = manager;
+        _pageList = pageList;
+        pageList.IncrementPagesReferenceCount(manager);
+    }
 
-        public KScopedPageList(KMemoryManager manager, KPageList pageList)
-        {
-            _manager = manager;
-            _pageList = pageList;
-            pageList.IncrementPagesReferenceCount(manager);
-        }
+    public void SignalSuccess()
+    {
+        _pageList = null;
+    }
 
-        public void SignalSuccess()
-        {
-            _pageList = null;
-        }
-
-        public readonly void Dispose()
-        {
-            _pageList?.DecrementPagesReferenceCount(_manager);
-        }
+    public readonly void Dispose()
+    {
+        _pageList?.DecrementPagesReferenceCount(_manager);
     }
 }

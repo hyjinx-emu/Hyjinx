@@ -1,12 +1,11 @@
-namespace Hyjinx.HLE.HOS.Services.Spl.Types
+namespace Hyjinx.HLE.HOS.Services.Spl.Types;
+
+enum HardwareType
 {
-    enum HardwareType
-    {
-        Icosa,
-        Copper,
-        Hoag,
-        Iowa,
-        Calcio,
-        Aula
-    }
+    Icosa,
+    Copper,
+    Hoag,
+    Iowa,
+    Calcio,
+    Aula
 }

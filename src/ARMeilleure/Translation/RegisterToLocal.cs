@@ -3,47 +3,46 @@ using System.Collections.Generic;
 
 using static ARMeilleure.IntermediateRepresentation.Operand.Factory;
 
-namespace ARMeilleure.Translation
+namespace ARMeilleure.Translation;
+
+static class RegisterToLocal
 {
-    static class RegisterToLocal
+    public static void Rename(ControlFlowGraph cfg)
     {
-        public static void Rename(ControlFlowGraph cfg)
+        Dictionary<Register, Operand> registerToLocalMap = new();
+
+        Operand GetLocal(Operand op)
         {
-            Dictionary<Register, Operand> registerToLocalMap = new();
+            Register register = op.GetRegister();
 
-            Operand GetLocal(Operand op)
+            if (!registerToLocalMap.TryGetValue(register, out Operand local))
             {
-                Register register = op.GetRegister();
+                local = Local(op.Type);
 
-                if (!registerToLocalMap.TryGetValue(register, out Operand local))
-                {
-                    local = Local(op.Type);
-
-                    registerToLocalMap.Add(register, local);
-                }
-
-                return local;
+                registerToLocalMap.Add(register, local);
             }
 
-            for (BasicBlock block = cfg.Blocks.First; block != null; block = block.ListNext)
+            return local;
+        }
+
+        for (BasicBlock block = cfg.Blocks.First; block != null; block = block.ListNext)
+        {
+            for (Operation node = block.Operations.First; node != default; node = node.ListNext)
             {
-                for (Operation node = block.Operations.First; node != default; node = node.ListNext)
+                Operand dest = node.Destination;
+
+                if (dest != default && dest.Kind == OperandKind.Register)
                 {
-                    Operand dest = node.Destination;
+                    node.Destination = GetLocal(dest);
+                }
 
-                    if (dest != default && dest.Kind == OperandKind.Register)
+                for (int index = 0; index < node.SourcesCount; index++)
+                {
+                    Operand source = node.GetSource(index);
+
+                    if (source.Kind == OperandKind.Register)
                     {
-                        node.Destination = GetLocal(dest);
-                    }
-
-                    for (int index = 0; index < node.SourcesCount; index++)
-                    {
-                        Operand source = node.GetSource(index);
-
-                        if (source.Kind == OperandKind.Register)
-                        {
-                            node.SetSource(index, GetLocal(source));
-                        }
+                        node.SetSource(index, GetLocal(source));
                     }
                 }
             }

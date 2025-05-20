@@ -1,37 +1,36 @@
 using Hyjinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Audio.Common
+namespace Hyjinx.Audio.Common;
+
+/// <summary>
+/// Audio system output configuration.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct AudioOutputConfiguration
 {
     /// <summary>
-    /// Audio system output configuration.
+    /// The target sample rate of the system.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct AudioOutputConfiguration
-    {
-        /// <summary>
-        /// The target sample rate of the system.
-        /// </summary>
-        public uint SampleRate;
+    public uint SampleRate;
 
-        /// <summary>
-        /// The target channel count of the system.
-        /// </summary>
-        public uint ChannelCount;
+    /// <summary>
+    /// The target channel count of the system.
+    /// </summary>
+    public uint ChannelCount;
 
-        /// <summary>
-        /// Reserved/unused
-        /// </summary>
-        public SampleFormat SampleFormat;
+    /// <summary>
+    /// Reserved/unused
+    /// </summary>
+    public SampleFormat SampleFormat;
 
-        /// <summary>
-        /// Reserved/unused.
-        /// </summary>
-        private Array3<byte> _padding;
+    /// <summary>
+    /// Reserved/unused.
+    /// </summary>
+    private Array3<byte> _padding;
 
-        /// <summary>
-        /// The initial audio system state.
-        /// </summary>
-        public AudioDeviceState AudioOutState;
-    }
+    /// <summary>
+    /// The initial audio system state.
+    /// </summary>
+    public AudioDeviceState AudioOutState;
 }

@@ -1,6 +1,6 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Shader;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using shaderc;
 using Silk.NET.Vulkan;
@@ -8,164 +8,163 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+partial class Shader : IDisposable
 {
-    partial class Shader : IDisposable
+    // The shaderc.net dependency's Options constructor and dispose are not thread safe.
+    // Take this lock when using them.
+    private static readonly object _shaderOptionsLock = new();
+
+    private static readonly IntPtr _ptrMainEntryPointName = Marshal.StringToHGlobalAnsi("main");
+    private static readonly ILogger<Shader> _logger = Logger.DefaultLoggerFactory.CreateLogger<Shader>();
+
+    private readonly Vk _api;
+    private readonly Device _device;
+    private readonly ShaderStageFlags _stage;
+
+    private bool _disposed;
+    private ShaderModule _module;
+
+    public ShaderStageFlags StageFlags => _stage;
+
+    public ProgramLinkStatus CompileStatus { private set; get; }
+
+    public readonly Task CompileTask;
+
+    public unsafe Shader(Vk api, Device device, ShaderSource shaderSource)
     {
-        // The shaderc.net dependency's Options constructor and dispose are not thread safe.
-        // Take this lock when using them.
-        private static readonly object _shaderOptionsLock = new();
+        _api = api;
+        _device = device;
 
-        private static readonly IntPtr _ptrMainEntryPointName = Marshal.StringToHGlobalAnsi("main");
-        private static readonly ILogger<Shader> _logger = Logger.DefaultLoggerFactory.CreateLogger<Shader>();
+        CompileStatus = ProgramLinkStatus.Incomplete;
 
-        private readonly Vk _api;
-        private readonly Device _device;
-        private readonly ShaderStageFlags _stage;
+        _stage = shaderSource.Stage.Convert();
 
-        private bool _disposed;
-        private ShaderModule _module;
-
-        public ShaderStageFlags StageFlags => _stage;
-
-        public ProgramLinkStatus CompileStatus { private set; get; }
-
-        public readonly Task CompileTask;
-
-        public unsafe Shader(Vk api, Device device, ShaderSource shaderSource)
+        CompileTask = Task.Run(() =>
         {
-            _api = api;
-            _device = device;
+            byte[] spirv = shaderSource.BinaryCode;
 
-            CompileStatus = ProgramLinkStatus.Incomplete;
-
-            _stage = shaderSource.Stage.Convert();
-
-            CompileTask = Task.Run(() =>
+            if (spirv == null)
             {
-                byte[] spirv = shaderSource.BinaryCode;
+                spirv = GlslToSpirv(shaderSource.Code, shaderSource.Stage);
 
                 if (spirv == null)
                 {
-                    spirv = GlslToSpirv(shaderSource.Code, shaderSource.Stage);
+                    CompileStatus = ProgramLinkStatus.Failure;
 
-                    if (spirv == null)
-                    {
-                        CompileStatus = ProgramLinkStatus.Failure;
-
-                        return;
-                    }
+                    return;
                 }
+            }
 
-                fixed (byte* pCode = spirv)
-                {
-                    var shaderModuleCreateInfo = new ShaderModuleCreateInfo
-                    {
-                        SType = StructureType.ShaderModuleCreateInfo,
-                        CodeSize = (uint)spirv.Length,
-                        PCode = (uint*)pCode,
-                    };
-
-                    api.CreateShaderModule(device, in shaderModuleCreateInfo, null, out _module).ThrowOnError();
-                }
-
-                CompileStatus = ProgramLinkStatus.Success;
-            });
-        }
-
-        private unsafe static byte[] GlslToSpirv(string glsl, ShaderStage stage)
-        {
-            Options options;
-
-            lock (_shaderOptionsLock)
+            fixed (byte* pCode = spirv)
             {
-                options = new Options(false)
+                var shaderModuleCreateInfo = new ShaderModuleCreateInfo
                 {
-                    SourceLanguage = SourceLanguage.Glsl,
-                    TargetSpirVVersion = new SpirVVersion(1, 5),
+                    SType = StructureType.ShaderModuleCreateInfo,
+                    CodeSize = (uint)spirv.Length,
+                    PCode = (uint*)pCode,
                 };
+
+                api.CreateShaderModule(device, in shaderModuleCreateInfo, null, out _module).ThrowOnError();
             }
 
-            options.SetTargetEnvironment(TargetEnvironment.Vulkan, EnvironmentVersion.Vulkan_1_2);
-            Compiler compiler = new(options);
-            var scr = compiler.Compile(glsl, "Ryu", GetShaderCShaderStage(stage));
+            CompileStatus = ProgramLinkStatus.Success;
+        });
+    }
 
-            lock (_shaderOptionsLock)
-            {
-                options.Dispose();
-            }
+    private unsafe static byte[] GlslToSpirv(string glsl, ShaderStage stage)
+    {
+        Options options;
 
-            if (scr.Status != Status.Success)
-            {
-                LogShaderCompilationError(_logger, scr.Status, scr.ErrorMessage);
-                return null;
-            }
-
-            var spirvBytes = new Span<byte>((void*)scr.CodePointer, (int)scr.CodeLength);
-
-            byte[] code = new byte[(scr.CodeLength + 3) & ~3];
-
-            spirvBytes.CopyTo(code.AsSpan()[..(int)scr.CodeLength]);
-
-            return code;
-        }
-
-        [LoggerMessage(LogLevel.Error,
-            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
-            Message = "Shader compilation error: {status} {errorMessage}")]
-        private static partial void LogShaderCompilationError(ILogger logger, Status status, string errorMessage);
-
-        private static ShaderKind GetShaderCShaderStage(ShaderStage stage)
+        lock (_shaderOptionsLock)
         {
-            switch (stage)
+            options = new Options(false)
             {
-                case ShaderStage.Vertex:
-                    return ShaderKind.GlslVertexShader;
-                case ShaderStage.Geometry:
-                    return ShaderKind.GlslGeometryShader;
-                case ShaderStage.TessellationControl:
-                    return ShaderKind.GlslTessControlShader;
-                case ShaderStage.TessellationEvaluation:
-                    return ShaderKind.GlslTessEvaluationShader;
-                case ShaderStage.Fragment:
-                    return ShaderKind.GlslFragmentShader;
-                case ShaderStage.Compute:
-                    return ShaderKind.GlslComputeShader;
-            }
-
-            LogInvalidEnumValue(_logger, nameof(ShaderStage), stage);
-
-            return ShaderKind.GlslVertexShader;
-        }
-
-        [LoggerMessage(LogLevel.Debug,
-            EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
-            Message = "Invalid {enumType} enum value: {stage}")]
-        private static partial void LogInvalidEnumValue(ILogger logger, string enumType, ShaderStage stage);
-
-        public unsafe PipelineShaderStageCreateInfo GetInfo()
-        {
-            return new PipelineShaderStageCreateInfo
-            {
-                SType = StructureType.PipelineShaderStageCreateInfo,
-                Stage = _stage,
-                Module = _module,
-                PName = (byte*)_ptrMainEntryPointName,
+                SourceLanguage = SourceLanguage.Glsl,
+                TargetSpirVVersion = new SpirVVersion(1, 5),
             };
         }
 
-        public void WaitForCompile()
+        options.SetTargetEnvironment(TargetEnvironment.Vulkan, EnvironmentVersion.Vulkan_1_2);
+        Compiler compiler = new(options);
+        var scr = compiler.Compile(glsl, "Ryu", GetShaderCShaderStage(stage));
+
+        lock (_shaderOptionsLock)
         {
-            CompileTask.Wait();
+            options.Dispose();
         }
 
-        public unsafe void Dispose()
+        if (scr.Status != Status.Success)
         {
-            if (!_disposed)
-            {
-                _api.DestroyShaderModule(_device, _module, null);
-                _disposed = true;
-            }
+            LogShaderCompilationError(_logger, scr.Status, scr.ErrorMessage);
+            return null;
+        }
+
+        var spirvBytes = new Span<byte>((void*)scr.CodePointer, (int)scr.CodeLength);
+
+        byte[] code = new byte[(scr.CodeLength + 3) & ~3];
+
+        spirvBytes.CopyTo(code.AsSpan()[..(int)scr.CodeLength]);
+
+        return code;
+    }
+
+    [LoggerMessage(LogLevel.Error,
+        EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+        Message = "Shader compilation error: {status} {errorMessage}")]
+    private static partial void LogShaderCompilationError(ILogger logger, Status status, string errorMessage);
+
+    private static ShaderKind GetShaderCShaderStage(ShaderStage stage)
+    {
+        switch (stage)
+        {
+            case ShaderStage.Vertex:
+                return ShaderKind.GlslVertexShader;
+            case ShaderStage.Geometry:
+                return ShaderKind.GlslGeometryShader;
+            case ShaderStage.TessellationControl:
+                return ShaderKind.GlslTessControlShader;
+            case ShaderStage.TessellationEvaluation:
+                return ShaderKind.GlslTessEvaluationShader;
+            case ShaderStage.Fragment:
+                return ShaderKind.GlslFragmentShader;
+            case ShaderStage.Compute:
+                return ShaderKind.GlslComputeShader;
+        }
+
+        LogInvalidEnumValue(_logger, nameof(ShaderStage), stage);
+
+        return ShaderKind.GlslVertexShader;
+    }
+
+    [LoggerMessage(LogLevel.Debug,
+        EventId = (int)LogClass.Gpu, EventName = nameof(LogClass.Gpu),
+        Message = "Invalid {enumType} enum value: {stage}")]
+    private static partial void LogInvalidEnumValue(ILogger logger, string enumType, ShaderStage stage);
+
+    public unsafe PipelineShaderStageCreateInfo GetInfo()
+    {
+        return new PipelineShaderStageCreateInfo
+        {
+            SType = StructureType.PipelineShaderStageCreateInfo,
+            Stage = _stage,
+            Module = _module,
+            PName = (byte*)_ptrMainEntryPointName,
+        };
+    }
+
+    public void WaitForCompile()
+    {
+        CompileTask.Wait();
+    }
+
+    public unsafe void Dispose()
+    {
+        if (!_disposed)
+        {
+            _api.DestroyShaderModule(_device, _module, null);
+            _disposed = true;
         }
     }
 }

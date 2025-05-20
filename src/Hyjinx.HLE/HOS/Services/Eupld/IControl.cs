@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Eupld
+namespace Hyjinx.HLE.HOS.Services.Eupld;
+
+[Service("eupld:c")]
+class IControl : IpcService<IControl>
 {
-    [Service("eupld:c")]
-    class IControl : IpcService<IControl>
-    {
-        public IControl(ServiceCtx context) { }
-    }
+    public IControl(ServiceCtx context) { }
 }

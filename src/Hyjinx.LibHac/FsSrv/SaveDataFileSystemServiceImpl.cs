@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -12,6 +10,8 @@ using LibHac.FsSystem;
 using LibHac.Ncm;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using Utility = LibHac.FsSrv.Impl.Utility;
 
 namespace LibHac.FsSrv;

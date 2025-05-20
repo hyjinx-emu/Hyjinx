@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Notification
+namespace Hyjinx.HLE.HOS.Services.Notification;
+
+[Service("notif:s")] // 9.0.0+
+class INotificationServicesForSystem : IpcService<INotificationServicesForSystem>
 {
-    [Service("notif:s")] // 9.0.0+
-    class INotificationServicesForSystem : IpcService<INotificationServicesForSystem>
-    {
-        public INotificationServicesForSystem(ServiceCtx context) { }
-    }
+    public INotificationServicesForSystem(ServiceCtx context) { }
 }

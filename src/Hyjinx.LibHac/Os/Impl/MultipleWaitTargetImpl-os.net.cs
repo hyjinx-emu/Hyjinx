@@ -1,8 +1,8 @@
-using System;
-using System.Threading;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
+using System;
+using System.Threading;
 
 namespace LibHac.Os.Impl;
 

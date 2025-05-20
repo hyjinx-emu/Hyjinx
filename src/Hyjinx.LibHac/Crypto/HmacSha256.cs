@@ -1,6 +1,6 @@
+using LibHac.Diag;
 using System;
 using System.Security.Cryptography;
-using LibHac.Diag;
 
 namespace LibHac.Crypto;
 

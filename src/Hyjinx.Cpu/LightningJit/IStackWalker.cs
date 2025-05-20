@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Hyjinx.Cpu.LightningJit
+namespace Hyjinx.Cpu.LightningJit;
+
+interface IStackWalker
 {
-    interface IStackWalker
-    {
-        IEnumerable<ulong> GetCallStack(IntPtr framePointer, IntPtr codeRegionStart, int codeRegionSize, IntPtr codeRegion2Start, int codeRegion2Size);
-    }
+    IEnumerable<ulong> GetCallStack(IntPtr framePointer, IntPtr codeRegionStart, int codeRegionSize, IntPtr codeRegion2Start, int codeRegion2Size);
 }

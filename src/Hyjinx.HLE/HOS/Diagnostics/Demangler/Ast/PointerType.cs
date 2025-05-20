@@ -1,45 +1,44 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class PointerType : BaseNode
 {
-    public class PointerType : BaseNode
+    private readonly BaseNode _child;
+
+    public PointerType(BaseNode child) : base(NodeType.PointerType)
     {
-        private readonly BaseNode _child;
+        _child = child;
+    }
 
-        public PointerType(BaseNode child) : base(NodeType.PointerType)
+    public override bool HasRightPart()
+    {
+        return _child.HasRightPart();
+    }
+
+    public override void PrintLeft(TextWriter writer)
+    {
+        _child.PrintLeft(writer);
+        if (_child.IsArray())
         {
-            _child = child;
+            writer.Write(" ");
         }
 
-        public override bool HasRightPart()
+        if (_child.IsArray() || _child.HasFunctions())
         {
-            return _child.HasRightPart();
+            writer.Write("(");
         }
 
-        public override void PrintLeft(TextWriter writer)
+        writer.Write("*");
+    }
+
+    public override void PrintRight(TextWriter writer)
+    {
+        if (_child.IsArray() || _child.HasFunctions())
         {
-            _child.PrintLeft(writer);
-            if (_child.IsArray())
-            {
-                writer.Write(" ");
-            }
-
-            if (_child.IsArray() || _child.HasFunctions())
-            {
-                writer.Write("(");
-            }
-
-            writer.Write("*");
+            writer.Write(")");
         }
 
-        public override void PrintRight(TextWriter writer)
-        {
-            if (_child.IsArray() || _child.HasFunctions())
-            {
-                writer.Write(")");
-            }
-
-            _child.PrintRight(writer);
-        }
+        _child.PrintRight(writer);
     }
 }

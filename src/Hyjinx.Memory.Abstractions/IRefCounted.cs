@@ -1,8 +1,7 @@
-namespace Hyjinx.Memory
+namespace Hyjinx.Memory;
+
+public interface IRefCounted
 {
-    public interface IRefCounted
-    {
-        void IncrementReferenceCount();
-        void DecrementReferenceCount();
-    }
+    void IncrementReferenceCount();
+    void DecrementReferenceCount();
 }

@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Pcie
+namespace Hyjinx.HLE.HOS.Services.Pcie;
+
+[Service("pcie")]
+class IManager : IpcService<IManager>
 {
-    [Service("pcie")]
-    class IManager : IpcService<IManager>
-    {
-        public IManager(ServiceCtx context) { }
-    }
+    public IManager(ServiceCtx context) { }
 }

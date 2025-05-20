@@ -1,6 +1,6 @@
+using LibHac.Common;
 using System.IO;
 using System.Text;
-using LibHac.Common;
 
 namespace LibHac.Tools.Settings;
 

@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Pcie
+namespace Hyjinx.HLE.HOS.Services.Pcie;
+
+[Service("pcie:log")]
+class ILogManager : IpcService<ILogManager>
 {
-    [Service("pcie:log")]
-    class ILogManager : IpcService<ILogManager>
-    {
-        public ILogManager(ServiceCtx context) { }
-    }
+    public ILogManager(ServiceCtx context) { }
 }

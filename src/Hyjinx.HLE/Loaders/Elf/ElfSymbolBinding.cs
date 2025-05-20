@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.Loaders.Elf
+namespace Hyjinx.HLE.Loaders.Elf;
+
+enum ElfSymbolBinding
 {
-    enum ElfSymbolBinding
-    {
-        StbLocal = 0,
-        StbGlobal = 1,
-        StbWeak = 2,
-    }
+    StbLocal = 0,
+    StbGlobal = 1,
+    StbWeak = 2,
 }

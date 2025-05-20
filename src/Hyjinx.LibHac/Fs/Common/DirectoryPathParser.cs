@@ -1,7 +1,7 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
 using LibHac.Common;
 using LibHac.Diag;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using static LibHac.Fs.StringTraits;
 
 // ReSharper disable once CheckNamespace

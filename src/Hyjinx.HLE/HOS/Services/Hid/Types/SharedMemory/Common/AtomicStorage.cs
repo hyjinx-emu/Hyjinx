@@ -1,26 +1,25 @@
 using System.Threading;
 
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
+
+struct AtomicStorage<T> where T : unmanaged, ISampledDataStruct
 {
-    struct AtomicStorage<T> where T : unmanaged, ISampledDataStruct
+    public ulong SamplingNumber;
+    public T Object;
+
+    public ulong ReadSamplingNumberAtomic()
     {
-        public ulong SamplingNumber;
-        public T Object;
+        return Interlocked.Read(ref SamplingNumber);
+    }
 
-        public ulong ReadSamplingNumberAtomic()
-        {
-            return Interlocked.Read(ref SamplingNumber);
-        }
+    public void SetObject(ref T obj)
+    {
+        ulong samplingNumber = ISampledDataStruct.GetSamplingNumber(ref obj);
 
-        public void SetObject(ref T obj)
-        {
-            ulong samplingNumber = ISampledDataStruct.GetSamplingNumber(ref obj);
+        Interlocked.Exchange(ref SamplingNumber, samplingNumber);
 
-            Interlocked.Exchange(ref SamplingNumber, samplingNumber);
+        Thread.MemoryBarrier();
 
-            Thread.MemoryBarrier();
-
-            Object = obj;
-        }
+        Object = obj;
     }
 }

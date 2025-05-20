@@ -1,12 +1,12 @@
-using System;
-using System.Buffers;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Util;
+using System;
+using System.Buffers;
+using System.Runtime.CompilerServices;
 using Buffer = LibHac.Mem.Buffer;
 
 namespace LibHac.FsSystem;

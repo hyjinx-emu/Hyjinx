@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+
+enum NpadBatteryLevel
 {
-    enum NpadBatteryLevel
-    {
-        Percent0,
-        Percent25,
-        Percent50,
-        Percent75,
-        Percent100,
-    }
+    Percent0,
+    Percent25,
+    Percent50,
+    Percent75,
+    Percent100,
 }

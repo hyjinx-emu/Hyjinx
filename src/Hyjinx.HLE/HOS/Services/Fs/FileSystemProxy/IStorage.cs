@@ -2,61 +2,60 @@ using LibHac;
 using LibHac.Common;
 using LibHac.Sf;
 
-namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy
+namespace Hyjinx.HLE.HOS.Services.Fs.FileSystemProxy;
+
+class IStorage : DisposableIpcService<IStorage>
 {
-    class IStorage : DisposableIpcService<IStorage>
+    private SharedRef<LibHac.FsSrv.Sf.IStorage> _baseStorage;
+
+    public IStorage(ref SharedRef<LibHac.FsSrv.Sf.IStorage> baseStorage)
     {
-        private SharedRef<LibHac.FsSrv.Sf.IStorage> _baseStorage;
+        _baseStorage = SharedRef<LibHac.FsSrv.Sf.IStorage>.CreateMove(ref baseStorage);
+    }
 
-        public IStorage(ref SharedRef<LibHac.FsSrv.Sf.IStorage> baseStorage)
+    [CommandCmif(0)]
+    // Read(u64 offset, u64 length) -> buffer<u8, 0x46, 0> buffer
+    public ResultCode Read(ServiceCtx context)
+    {
+        ulong offset = context.RequestData.ReadUInt64();
+        ulong size = context.RequestData.ReadUInt64();
+
+        if (context.Request.ReceiveBuff.Count > 0)
         {
-            _baseStorage = SharedRef<LibHac.FsSrv.Sf.IStorage>.CreateMove(ref baseStorage);
-        }
+            ulong bufferAddress = context.Request.ReceiveBuff[0].Position;
+            ulong bufferLen = context.Request.ReceiveBuff[0].Size;
 
-        [CommandCmif(0)]
-        // Read(u64 offset, u64 length) -> buffer<u8, 0x46, 0> buffer
-        public ResultCode Read(ServiceCtx context)
-        {
-            ulong offset = context.RequestData.ReadUInt64();
-            ulong size = context.RequestData.ReadUInt64();
-
-            if (context.Request.ReceiveBuff.Count > 0)
+            // Use smaller length to avoid overflows.
+            if (size > bufferLen)
             {
-                ulong bufferAddress = context.Request.ReceiveBuff[0].Position;
-                ulong bufferLen = context.Request.ReceiveBuff[0].Size;
-
-                // Use smaller length to avoid overflows.
-                if (size > bufferLen)
-                {
-                    size = bufferLen;
-                }
-
-                using var region = context.Memory.GetWritableRegion(bufferAddress, (int)bufferLen, true);
-                Result result = _baseStorage.Get.Read((long)offset, new OutBuffer(region.Memory.Span), (long)size);
-
-                return (ResultCode)result.Value;
+                size = bufferLen;
             }
 
-            return ResultCode.Success;
-        }
-
-        [CommandCmif(4)]
-        // GetSize() -> u64 size
-        public ResultCode GetSize(ServiceCtx context)
-        {
-            Result result = _baseStorage.Get.GetSize(out long size);
-
-            context.ResponseData.Write(size);
+            using var region = context.Memory.GetWritableRegion(bufferAddress, (int)bufferLen, true);
+            Result result = _baseStorage.Get.Read((long)offset, new OutBuffer(region.Memory.Span), (long)size);
 
             return (ResultCode)result.Value;
         }
 
-        protected override void Dispose(bool isDisposing)
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(4)]
+    // GetSize() -> u64 size
+    public ResultCode GetSize(ServiceCtx context)
+    {
+        Result result = _baseStorage.Get.GetSize(out long size);
+
+        context.ResponseData.Write(size);
+
+        return (ResultCode)result.Value;
+    }
+
+    protected override void Dispose(bool isDisposing)
+    {
+        if (isDisposing)
         {
-            if (isDisposing)
-            {
-                _baseStorage.Destroy();
-            }
+            _baseStorage.Destroy();
         }
     }
 }

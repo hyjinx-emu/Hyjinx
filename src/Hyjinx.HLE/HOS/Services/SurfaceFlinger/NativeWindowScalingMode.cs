@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+
+enum NativeWindowScalingMode : uint
 {
-    enum NativeWindowScalingMode : uint
-    {
-        Freeze = 0,
-        ScaleToWindow = 1,
-        ScaleCrop = 2,
-        Unknown = 3,
-        NoScaleCrop = 4,
-    }
+    Freeze = 0,
+    ScaleToWindow = 1,
+    ScaleCrop = 2,
+    Unknown = 3,
+    NoScaleCrop = 4,
 }

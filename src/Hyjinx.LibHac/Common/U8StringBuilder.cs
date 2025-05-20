@@ -1,9 +1,9 @@
+using LibHac.Diag;
+using LibHac.Util;
 using System;
 using System.Buffers;
 using System.Buffers.Text;
 using System.Runtime.CompilerServices;
-using LibHac.Diag;
-using LibHac.Util;
 
 namespace LibHac.Common;
 

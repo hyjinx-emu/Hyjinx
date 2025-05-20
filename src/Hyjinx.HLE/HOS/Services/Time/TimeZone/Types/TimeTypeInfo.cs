@@ -1,28 +1,27 @@
 using Hyjinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Time.TimeZone
+namespace Hyjinx.HLE.HOS.Services.Time.TimeZone;
+
+[StructLayout(LayoutKind.Sequential, Size = Size, Pack = 4)]
+public struct TimeTypeInfo
 {
-    [StructLayout(LayoutKind.Sequential, Size = Size, Pack = 4)]
-    public struct TimeTypeInfo
-    {
-        public const int Size = 0x10;
+    public const int Size = 0x10;
 
-        public int GmtOffset;
+    public int GmtOffset;
 
-        [MarshalAs(UnmanagedType.I1)]
-        public bool IsDaySavingTime;
+    [MarshalAs(UnmanagedType.I1)]
+    public bool IsDaySavingTime;
 
-        public Array3<byte> Padding1;
+    public Array3<byte> Padding1;
 
-        public int AbbreviationListIndex;
+    public int AbbreviationListIndex;
 
-        [MarshalAs(UnmanagedType.I1)]
-        public bool IsStandardTimeDaylight;
+    [MarshalAs(UnmanagedType.I1)]
+    public bool IsStandardTimeDaylight;
 
-        [MarshalAs(UnmanagedType.I1)]
-        public bool IsGMT;
+    [MarshalAs(UnmanagedType.I1)]
+    public bool IsGMT;
 
-        public ushort Padding2;
-    }
+    public ushort Padding2;
 }

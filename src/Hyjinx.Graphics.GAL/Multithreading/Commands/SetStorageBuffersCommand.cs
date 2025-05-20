@@ -1,23 +1,22 @@
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 using System;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands;
+
+struct SetStorageBuffersCommand : IGALCommand, IGALCommand<SetStorageBuffersCommand>
 {
-    struct SetStorageBuffersCommand : IGALCommand, IGALCommand<SetStorageBuffersCommand>
+    public readonly CommandType CommandType => CommandType.SetStorageBuffers;
+    private SpanRef<BufferAssignment> _buffers;
+
+    public void Set(SpanRef<BufferAssignment> buffers)
     {
-        public readonly CommandType CommandType => CommandType.SetStorageBuffers;
-        private SpanRef<BufferAssignment> _buffers;
+        _buffers = buffers;
+    }
 
-        public void Set(SpanRef<BufferAssignment> buffers)
-        {
-            _buffers = buffers;
-        }
-
-        public static void Run(ref SetStorageBuffersCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            Span<BufferAssignment> buffers = command._buffers.Get(threaded);
-            renderer.Pipeline.SetStorageBuffers(threaded.Buffers.MapBufferRanges(buffers));
-            command._buffers.Dispose(threaded);
-        }
+    public static void Run(ref SetStorageBuffersCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        Span<BufferAssignment> buffers = command._buffers.Get(threaded);
+        renderer.Pipeline.SetStorageBuffers(threaded.Buffers.MapBufferRanges(buffers));
+        command._buffers.Dispose(threaded);
     }
 }

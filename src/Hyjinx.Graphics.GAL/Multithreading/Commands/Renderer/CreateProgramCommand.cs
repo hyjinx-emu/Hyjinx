@@ -1,28 +1,27 @@
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 using Hyjinx.Graphics.GAL.Multithreading.Resources.Programs;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer;
+
+struct CreateProgramCommand : IGALCommand, IGALCommand<CreateProgramCommand>
 {
-    struct CreateProgramCommand : IGALCommand, IGALCommand<CreateProgramCommand>
+    public readonly CommandType CommandType => CommandType.CreateProgram;
+    private TableRef<IProgramRequest> _request;
+
+    public void Set(TableRef<IProgramRequest> request)
     {
-        public readonly CommandType CommandType => CommandType.CreateProgram;
-        private TableRef<IProgramRequest> _request;
+        _request = request;
+    }
 
-        public void Set(TableRef<IProgramRequest> request)
+    public static void Run(ref CreateProgramCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        IProgramRequest request = command._request.Get(threaded);
+
+        if (request.Threaded.Base == null)
         {
-            _request = request;
+            request.Threaded.Base = request.Create(renderer);
         }
 
-        public static void Run(ref CreateProgramCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            IProgramRequest request = command._request.Get(threaded);
-
-            if (request.Threaded.Base == null)
-            {
-                request.Threaded.Base = request.Create(renderer);
-            }
-
-            threaded.Programs.ProcessQueue();
-        }
+        threaded.Programs.ProcessQueue();
     }
 }

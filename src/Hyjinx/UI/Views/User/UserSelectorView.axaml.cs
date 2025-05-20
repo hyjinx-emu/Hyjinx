@@ -9,121 +9,120 @@ using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.ViewModels;
 using Button = Avalonia.Controls.Button;
 
-namespace Hyjinx.Ava.UI.Views.User
+namespace Hyjinx.Ava.UI.Views.User;
+
+public partial class UserSelectorViews : UserControl
 {
-    public partial class UserSelectorViews : UserControl
+    private NavigationDialogHost _parent;
+
+    public UserProfileViewModel ViewModel { get; set; }
+
+    public UserSelectorViews()
     {
-        private NavigationDialogHost _parent;
+        InitializeComponent();
 
-        public UserProfileViewModel ViewModel { get; set; }
-
-        public UserSelectorViews()
+        if (Program.PreviewerDetached)
         {
-            InitializeComponent();
-
-            if (Program.PreviewerDetached)
+            AddHandler(Frame.NavigatedToEvent, (s, e) =>
             {
-                AddHandler(Frame.NavigatedToEvent, (s, e) =>
-                {
-                    NavigatedTo(e);
-                }, RoutingStrategies.Direct);
+                NavigatedTo(e);
+            }, RoutingStrategies.Direct);
+        }
+    }
+
+    private void NavigatedTo(NavigationEventArgs arg)
+    {
+        if (Program.PreviewerDetached)
+        {
+            if (arg.NavigationMode == NavigationMode.New)
+            {
+                _parent = (NavigationDialogHost)arg.Parameter;
+                ViewModel = _parent.ViewModel;
+            }
+
+            if (arg.NavigationMode == NavigationMode.Back)
+            {
+                ((ContentDialog)_parent.Parent).Title = LocaleManager.Instance[LocaleKeys.UserProfileWindowTitle];
+            }
+
+            DataContext = ViewModel;
+        }
+    }
+
+    private void Grid_PointerEntered(object sender, PointerEventArgs e)
+    {
+        if (sender is Grid grid)
+        {
+            if (grid.DataContext is UserProfile profile)
+            {
+                profile.IsPointerOver = true;
             }
         }
+    }
 
-        private void NavigatedTo(NavigationEventArgs arg)
+    private void Grid_OnPointerExited(object sender, PointerEventArgs e)
+    {
+        if (sender is Grid grid)
         {
-            if (Program.PreviewerDetached)
+            if (grid.DataContext is UserProfile profile)
             {
-                if (arg.NavigationMode == NavigationMode.New)
-                {
-                    _parent = (NavigationDialogHost)arg.Parameter;
-                    ViewModel = _parent.ViewModel;
-                }
-
-                if (arg.NavigationMode == NavigationMode.Back)
-                {
-                    ((ContentDialog)_parent.Parent).Title = LocaleManager.Instance[LocaleKeys.UserProfileWindowTitle];
-                }
-
-                DataContext = ViewModel;
+                profile.IsPointerOver = false;
             }
         }
+    }
 
-        private void Grid_PointerEntered(object sender, PointerEventArgs e)
+    private void ProfilesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is ListBox listBox)
         {
-            if (sender is Grid grid)
-            {
-                if (grid.DataContext is UserProfile profile)
-                {
-                    profile.IsPointerOver = true;
-                }
-            }
-        }
+            int selectedIndex = listBox.SelectedIndex;
 
-        private void Grid_OnPointerExited(object sender, PointerEventArgs e)
-        {
-            if (sender is Grid grid)
+            if (selectedIndex >= 0 && selectedIndex < ViewModel.Profiles.Count)
             {
-                if (grid.DataContext is UserProfile profile)
+                if (ViewModel.Profiles[selectedIndex] is UserProfile userProfile)
                 {
-                    profile.IsPointerOver = false;
-                }
-            }
-        }
+                    _parent?.AccountManager?.OpenUser(userProfile.UserId);
 
-        private void ProfilesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is ListBox listBox)
-            {
-                int selectedIndex = listBox.SelectedIndex;
-
-                if (selectedIndex >= 0 && selectedIndex < ViewModel.Profiles.Count)
-                {
-                    if (ViewModel.Profiles[selectedIndex] is UserProfile userProfile)
+                    foreach (BaseModel profile in ViewModel.Profiles)
                     {
-                        _parent?.AccountManager?.OpenUser(userProfile.UserId);
-
-                        foreach (BaseModel profile in ViewModel.Profiles)
+                        if (profile is UserProfile uProfile)
                         {
-                            if (profile is UserProfile uProfile)
-                            {
-                                uProfile.UpdateState();
-                            }
+                            uProfile.UpdateState();
                         }
                     }
                 }
             }
         }
+    }
 
-        private void AddUser(object sender, RoutedEventArgs e)
-        {
-            _parent.AddUser();
-        }
+    private void AddUser(object sender, RoutedEventArgs e)
+    {
+        _parent.AddUser();
+    }
 
-        private void EditUser(object sender, RoutedEventArgs e)
+    private void EditUser(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
         {
-            if (sender is Button button)
+            if (button.DataContext is UserProfile userProfile)
             {
-                if (button.DataContext is UserProfile userProfile)
-                {
-                    _parent.EditUser(userProfile);
-                }
+                _parent.EditUser(userProfile);
             }
         }
+    }
 
-        private void ManageSaves(object sender, RoutedEventArgs e)
-        {
-            _parent.ManageSaves();
-        }
+    private void ManageSaves(object sender, RoutedEventArgs e)
+    {
+        _parent.ManageSaves();
+    }
 
-        private void RecoverLostAccounts(object sender, RoutedEventArgs e)
-        {
-            _parent.RecoverLostAccounts();
-        }
+    private void RecoverLostAccounts(object sender, RoutedEventArgs e)
+    {
+        _parent.RecoverLostAccounts();
+    }
 
-        private void Close(object sender, RoutedEventArgs e)
-        {
-            ((ContentDialog)_parent.Parent).Hide();
-        }
+    private void Close(object sender, RoutedEventArgs e)
+    {
+        ((ContentDialog)_parent.Parent).Hide();
     }
 }

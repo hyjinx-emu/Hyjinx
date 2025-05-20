@@ -1,128 +1,127 @@
+using Hyjinx.Logging.Abstractions;
 using LibHac.Common.FixedArrays;
 using LibHac.Fs;
 using LibHac.Loader;
 using LibHac.Tools.FsSystem;
-using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Hyjinx.HLE.Loaders.Executables
+namespace Hyjinx.HLE.Loaders.Executables;
+
+partial class NsoExecutable : IExecutable
 {
-    partial class NsoExecutable : IExecutable
+    private static readonly ILogger<NsoExecutable> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<NsoExecutable>();
+
+    public byte[] Program { get; }
+    public Span<byte> Text => Program.AsSpan((int)TextOffset, (int)TextSize);
+    public Span<byte> Ro => Program.AsSpan((int)RoOffset, (int)RoSize);
+    public Span<byte> Data => Program.AsSpan((int)DataOffset, (int)DataSize);
+
+    public uint TextOffset { get; }
+    public uint RoOffset { get; }
+    public uint DataOffset { get; }
+    public uint BssOffset => DataOffset + (uint)Data.Length;
+
+    public uint TextSize { get; }
+    public uint RoSize { get; }
+    public uint DataSize { get; }
+    public uint BssSize { get; }
+
+    public string Name;
+    public Array32<byte> BuildId;
+
+    [GeneratedRegex(@"[a-z]:[\\/][ -~]{5,}\.nss", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex ModuleRegex();
+    [GeneratedRegex(@"sdk_version: ([0-9.]*)")]
+    private static partial Regex FsSdkRegex();
+    [GeneratedRegex(@"SDK MW[ -~]*")]
+    private static partial Regex SdkMwRegex();
+
+    public NsoExecutable(IStorage inStorage, string name = null)
     {
-        private static readonly ILogger<NsoExecutable> _logger =
-            Logger.DefaultLoggerFactory.CreateLogger<NsoExecutable>();
+        NsoReader reader = new();
 
-        public byte[] Program { get; }
-        public Span<byte> Text => Program.AsSpan((int)TextOffset, (int)TextSize);
-        public Span<byte> Ro => Program.AsSpan((int)RoOffset, (int)RoSize);
-        public Span<byte> Data => Program.AsSpan((int)DataOffset, (int)DataSize);
+        reader.Initialize(inStorage.AsFile(OpenMode.Read)).ThrowIfFailure();
 
-        public uint TextOffset { get; }
-        public uint RoOffset { get; }
-        public uint DataOffset { get; }
-        public uint BssOffset => DataOffset + (uint)Data.Length;
+        TextOffset = reader.Header.Segments[0].MemoryOffset;
+        RoOffset = reader.Header.Segments[1].MemoryOffset;
+        DataOffset = reader.Header.Segments[2].MemoryOffset;
+        BssSize = reader.Header.BssSize;
 
-        public uint TextSize { get; }
-        public uint RoSize { get; }
-        public uint DataSize { get; }
-        public uint BssSize { get; }
+        reader.GetSegmentSize(NsoReader.SegmentType.Data, out uint uncompressedSize).ThrowIfFailure();
 
-        public string Name;
-        public Array32<byte> BuildId;
+        Program = new byte[DataOffset + uncompressedSize];
 
-        [GeneratedRegex(@"[a-z]:[\\/][ -~]{5,}\.nss", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-        private static partial Regex ModuleRegex();
-        [GeneratedRegex(@"sdk_version: ([0-9.]*)")]
-        private static partial Regex FsSdkRegex();
-        [GeneratedRegex(@"SDK MW[ -~]*")]
-        private static partial Regex SdkMwRegex();
+        TextSize = DecompressSection(reader, NsoReader.SegmentType.Text, TextOffset);
+        RoSize = DecompressSection(reader, NsoReader.SegmentType.Ro, RoOffset);
+        DataSize = DecompressSection(reader, NsoReader.SegmentType.Data, DataOffset);
 
-        public NsoExecutable(IStorage inStorage, string name = null)
+        Name = name;
+        BuildId = reader.Header.ModuleId;
+
+        PrintRoSectionInfo();
+    }
+
+    private uint DecompressSection(NsoReader reader, NsoReader.SegmentType segmentType, uint offset)
+    {
+        reader.GetSegmentSize(segmentType, out uint uncompressedSize).ThrowIfFailure();
+
+        var span = Program.AsSpan((int)offset, (int)uncompressedSize);
+
+        reader.ReadSegment(segmentType, span).ThrowIfFailure();
+
+        return uncompressedSize;
+    }
+
+    private void PrintRoSectionInfo()
+    {
+        string rawTextBuffer = Encoding.ASCII.GetString(Ro);
+        StringBuilder stringBuilder = new();
+
+        string modulePath = null;
+
+        if (BitConverter.ToInt32(Ro[..4]) == 0)
         {
-            NsoReader reader = new();
-
-            reader.Initialize(inStorage.AsFile(OpenMode.Read)).ThrowIfFailure();
-
-            TextOffset = reader.Header.Segments[0].MemoryOffset;
-            RoOffset = reader.Header.Segments[1].MemoryOffset;
-            DataOffset = reader.Header.Segments[2].MemoryOffset;
-            BssSize = reader.Header.BssSize;
-
-            reader.GetSegmentSize(NsoReader.SegmentType.Data, out uint uncompressedSize).ThrowIfFailure();
-
-            Program = new byte[DataOffset + uncompressedSize];
-
-            TextSize = DecompressSection(reader, NsoReader.SegmentType.Text, TextOffset);
-            RoSize = DecompressSection(reader, NsoReader.SegmentType.Ro, RoOffset);
-            DataSize = DecompressSection(reader, NsoReader.SegmentType.Data, DataOffset);
-
-            Name = name;
-            BuildId = reader.Header.ModuleId;
-
-            PrintRoSectionInfo();
+            int length = BitConverter.ToInt32(Ro.Slice(4, 4));
+            if (length > 0)
+            {
+                modulePath = Encoding.UTF8.GetString(Ro.Slice(8, length));
+            }
         }
 
-        private uint DecompressSection(NsoReader reader, NsoReader.SegmentType segmentType, uint offset)
+        if (string.IsNullOrEmpty(modulePath))
         {
-            reader.GetSegmentSize(segmentType, out uint uncompressedSize).ThrowIfFailure();
-
-            var span = Program.AsSpan((int)offset, (int)uncompressedSize);
-
-            reader.ReadSegment(segmentType, span).ThrowIfFailure();
-
-            return uncompressedSize;
+            Match moduleMatch = ModuleRegex().Match(rawTextBuffer);
+            if (moduleMatch.Success)
+            {
+                modulePath = moduleMatch.Value;
+            }
         }
 
-        private void PrintRoSectionInfo()
+        stringBuilder.AppendLine($"    Module: {modulePath}");
+
+        Match fsSdkMatch = FsSdkRegex().Match(rawTextBuffer);
+        if (fsSdkMatch.Success)
         {
-            string rawTextBuffer = Encoding.ASCII.GetString(Ro);
-            StringBuilder stringBuilder = new();
+            stringBuilder.AppendLine($"    FS SDK Version: {fsSdkMatch.Value.Replace("sdk_version: ", "")}");
+        }
 
-            string modulePath = null;
+        MatchCollection sdkMwMatches = SdkMwRegex().Matches(rawTextBuffer);
+        if (sdkMwMatches.Count != 0)
+        {
+            string libHeader = "    SDK Libraries: ";
+            string libContent = string.Join($"\n{new string(' ', libHeader.Length)}", sdkMwMatches);
 
-            if (BitConverter.ToInt32(Ro[..4]) == 0)
-            {
-                int length = BitConverter.ToInt32(Ro.Slice(4, 4));
-                if (length > 0)
-                {
-                    modulePath = Encoding.UTF8.GetString(Ro.Slice(8, length));
-                }
-            }
+            stringBuilder.AppendLine($"{libHeader}{libContent}");
+        }
 
-            if (string.IsNullOrEmpty(modulePath))
-            {
-                Match moduleMatch = ModuleRegex().Match(rawTextBuffer);
-                if (moduleMatch.Success)
-                {
-                    modulePath = moduleMatch.Value;
-                }
-            }
-
-            stringBuilder.AppendLine($"    Module: {modulePath}");
-
-            Match fsSdkMatch = FsSdkRegex().Match(rawTextBuffer);
-            if (fsSdkMatch.Success)
-            {
-                stringBuilder.AppendLine($"    FS SDK Version: {fsSdkMatch.Value.Replace("sdk_version: ", "")}");
-            }
-
-            MatchCollection sdkMwMatches = SdkMwRegex().Matches(rawTextBuffer);
-            if (sdkMwMatches.Count != 0)
-            {
-                string libHeader = "    SDK Libraries: ";
-                string libContent = string.Join($"\n{new string(' ', libHeader.Length)}", sdkMwMatches);
-
-                stringBuilder.AppendLine($"{libHeader}{libContent}");
-            }
-
-            if (stringBuilder.Length > 0)
-            {
-                _logger.LogInformation(new EventId((int)LogClass.Loader, nameof(LogClass.Loader)),
-                    "{name}: {message}", Name, stringBuilder.ToString().TrimEnd('\r', '\n'));
-            }
+        if (stringBuilder.Length > 0)
+        {
+            _logger.LogInformation(new EventId((int)LogClass.Loader, nameof(LogClass.Loader)),
+                "{name}: {message}", Name, stringBuilder.ToString().TrimEnd('\r', '\n'));
         }
     }
 }

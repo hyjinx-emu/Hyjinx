@@ -1,10 +1,10 @@
+using LibHac.Common;
+using LibHac.Fs;
 using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.Common;
-using LibHac.Fs;
 
 namespace LibHac.Kernel;
 

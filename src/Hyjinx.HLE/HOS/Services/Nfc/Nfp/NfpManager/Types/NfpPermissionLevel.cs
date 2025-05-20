@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
+
+enum NfpPermissionLevel
 {
-    enum NfpPermissionLevel
-    {
-        Debug,
-        User,
-        System,
-    }
+    Debug,
+    User,
+    System,
 }

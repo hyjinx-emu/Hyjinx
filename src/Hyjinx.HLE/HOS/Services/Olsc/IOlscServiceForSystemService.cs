@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Olsc
+namespace Hyjinx.HLE.HOS.Services.Olsc;
+
+[Service("olsc:s")] // 4.0.0+
+class IOlscServiceForSystemService : IpcService<IOlscServiceForSystemService>
 {
-    [Service("olsc:s")] // 4.0.0+
-    class IOlscServiceForSystemService : IpcService<IOlscServiceForSystemService>
-    {
-        public IOlscServiceForSystemService(ServiceCtx context) { }
-    }
+    public IOlscServiceForSystemService(ServiceCtx context) { }
 }

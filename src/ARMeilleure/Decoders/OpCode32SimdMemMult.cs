@@ -1,76 +1,75 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+class OpCode32SimdMemMult : OpCode32
 {
-    class OpCode32SimdMemMult : OpCode32
+    public int Rn { get; }
+    public int Vd { get; }
+
+    public int RegisterRange { get; }
+    public int Offset { get; }
+    public int PostOffset { get; }
+    public bool IsLoad { get; }
+    public bool DoubleWidth { get; }
+    public bool Add { get; }
+
+    public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCode32SimdMemMult(inst, address, opCode, false);
+    public static OpCode CreateT32(InstDescriptor inst, ulong address, int opCode) => new OpCode32SimdMemMult(inst, address, opCode, true);
+
+    public OpCode32SimdMemMult(InstDescriptor inst, ulong address, int opCode, bool isThumb) : base(inst, address, opCode)
     {
-        public int Rn { get; }
-        public int Vd { get; }
+        IsThumb = isThumb;
 
-        public int RegisterRange { get; }
-        public int Offset { get; }
-        public int PostOffset { get; }
-        public bool IsLoad { get; }
-        public bool DoubleWidth { get; }
-        public bool Add { get; }
+        Rn = (opCode >> 16) & 0xf;
 
-        public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCode32SimdMemMult(inst, address, opCode, false);
-        public static OpCode CreateT32(InstDescriptor inst, ulong address, int opCode) => new OpCode32SimdMemMult(inst, address, opCode, true);
+        bool isLoad = (opCode & (1 << 20)) != 0;
+        bool w = (opCode & (1 << 21)) != 0;
+        bool u = (opCode & (1 << 23)) != 0;
+        bool p = (opCode & (1 << 24)) != 0;
 
-        public OpCode32SimdMemMult(InstDescriptor inst, ulong address, int opCode, bool isThumb) : base(inst, address, opCode)
+        if (p == u && w)
         {
-            IsThumb = isThumb;
+            Instruction = InstDescriptor.Undefined;
+            return;
+        }
 
-            Rn = (opCode >> 16) & 0xf;
+        DoubleWidth = (opCode & (1 << 8)) != 0;
 
-            bool isLoad = (opCode & (1 << 20)) != 0;
-            bool w = (opCode & (1 << 21)) != 0;
-            bool u = (opCode & (1 << 23)) != 0;
-            bool p = (opCode & (1 << 24)) != 0;
+        if (!DoubleWidth)
+        {
+            Vd = ((opCode >> 22) & 0x1) | ((opCode >> 11) & 0x1e);
+        }
+        else
+        {
+            Vd = ((opCode >> 18) & 0x10) | ((opCode >> 12) & 0xf);
+        }
 
-            if (p == u && w)
-            {
-                Instruction = InstDescriptor.Undefined;
-                return;
-            }
+        Add = u;
 
-            DoubleWidth = (opCode & (1 << 8)) != 0;
+        RegisterRange = opCode & 0xff;
 
-            if (!DoubleWidth)
-            {
-                Vd = ((opCode >> 22) & 0x1) | ((opCode >> 11) & 0x1e);
-            }
-            else
-            {
-                Vd = ((opCode >> 18) & 0x10) | ((opCode >> 12) & 0xf);
-            }
+        int regsSize = RegisterRange * 4; // Double mode is still measured in single register size.
 
-            Add = u;
+        if (!u)
+        {
+            Offset -= regsSize;
+        }
 
-            RegisterRange = opCode & 0xff;
+        if (w)
+        {
+            PostOffset = u ? regsSize : -regsSize;
+        }
+        else
+        {
+            PostOffset = 0;
+        }
 
-            int regsSize = RegisterRange * 4; // Double mode is still measured in single register size.
+        IsLoad = isLoad;
 
-            if (!u)
-            {
-                Offset -= regsSize;
-            }
+        int regs = DoubleWidth ? RegisterRange / 2 : RegisterRange;
 
-            if (w)
-            {
-                PostOffset = u ? regsSize : -regsSize;
-            }
-            else
-            {
-                PostOffset = 0;
-            }
-
-            IsLoad = isLoad;
-
-            int regs = DoubleWidth ? RegisterRange / 2 : RegisterRange;
-
-            if (RegisterRange == 0 || RegisterRange > 32 || Vd + regs > 32)
-            {
-                Instruction = InstDescriptor.Undefined;
-            }
+        if (RegisterRange == 0 || RegisterRange > 32 || Vd + regs > 32)
+        {
+            Instruction = InstDescriptor.Undefined;
         }
     }
 }

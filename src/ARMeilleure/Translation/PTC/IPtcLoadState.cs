@@ -1,10 +1,9 @@
 using System;
 
-namespace ARMeilleure.Translation.PTC
+namespace ARMeilleure.Translation.PTC;
+
+public interface IPtcLoadState
 {
-    public interface IPtcLoadState
-    {
-        event Action<PtcLoadingState, int, int> PtcStateChanged;
-        void Continue();
-    }
+    event Action<PtcLoadingState, int, int> PtcStateChanged;
+    void Continue();
 }

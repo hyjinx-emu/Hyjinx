@@ -1,14 +1,13 @@
 using System;
 using System.IO;
 
-namespace Spv.Generator
+namespace Spv.Generator;
+
+public interface IOperand : IEquatable<IOperand>
 {
-    public interface IOperand : IEquatable<IOperand>
-    {
-        OperandType Type { get; }
+    OperandType Type { get; }
 
-        ushort WordCount { get; }
+    ushort WordCount { get; }
 
-        void WriteOperand(BinaryWriter writer);
-    }
+    void WriteOperand(BinaryWriter writer);
 }

@@ -1,10 +1,10 @@
-using System;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Shim;
 using LibHac.FsSrv.Impl;
 using LibHac.Os;
+using System;
 
 namespace LibHac.FsSrv;
 

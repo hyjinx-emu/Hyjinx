@@ -1,7 +1,7 @@
-using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Util;
+using System;
 using static LibHac.Util.CharacterEncoding;
 
 // ReSharper disable once CheckNamespace

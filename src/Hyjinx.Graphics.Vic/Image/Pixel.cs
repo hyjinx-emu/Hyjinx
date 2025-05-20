@@ -1,10 +1,9 @@
-namespace Hyjinx.Graphics.Vic.Image
+namespace Hyjinx.Graphics.Vic.Image;
+
+struct Pixel
 {
-    struct Pixel
-    {
-        public ushort R;
-        public ushort G;
-        public ushort B;
-        public ushort A;
-    }
+    public ushort R;
+    public ushort G;
+    public ushort B;
+    public ushort A;
 }

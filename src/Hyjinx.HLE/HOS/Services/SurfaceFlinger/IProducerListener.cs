@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+
+interface IProducerListener
 {
-    interface IProducerListener
-    {
-        void OnBufferReleased();
-    }
+    void OnBufferReleased();
 }

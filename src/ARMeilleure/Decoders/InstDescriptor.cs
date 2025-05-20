@@ -1,18 +1,17 @@
 using ARMeilleure.Instructions;
 
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+readonly struct InstDescriptor
 {
-    readonly struct InstDescriptor
+    public static InstDescriptor Undefined => new(InstName.Und, InstEmit.Und);
+
+    public InstName Name { get; }
+    public InstEmitter Emitter { get; }
+
+    public InstDescriptor(InstName name, InstEmitter emitter)
     {
-        public static InstDescriptor Undefined => new(InstName.Und, InstEmit.Und);
-
-        public InstName Name { get; }
-        public InstEmitter Emitter { get; }
-
-        public InstDescriptor(InstName name, InstEmitter emitter)
-        {
-            Name = name;
-            Emitter = emitter;
-        }
+        Name = name;
+        Emitter = emitter;
     }
 }

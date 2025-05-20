@@ -1,11 +1,10 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostAsGpu.Types;
+
+[Flags]
+enum AddressSpaceFlags : uint
 {
-    [Flags]
-    enum AddressSpaceFlags : uint
-    {
-        FixedOffset = 1,
-        RemapSubRange = 0x100,
-    }
+    FixedOffset = 1,
+    RemapSubRange = 0x100,
 }

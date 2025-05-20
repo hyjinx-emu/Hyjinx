@@ -4,81 +4,80 @@ using System;
 using System.Runtime.InteropServices;
 using static ARMeilleure.IntermediateRepresentation.Operand.Factory;
 
-namespace ARMeilleure.Signal
+namespace ARMeilleure.Signal;
+
+public struct NativeWriteLoopState
 {
-    public struct NativeWriteLoopState
+    public int Running;
+    public int Error;
+}
+
+public static class TestMethods
+{
+    public delegate bool DebugPartialUnmap();
+    public delegate int DebugThreadLocalMapGetOrReserve(int threadId, int initialState);
+    public delegate void DebugNativeWriteLoop(IntPtr nativeWriteLoopPtr, IntPtr writePtr);
+
+    public static DebugPartialUnmap GenerateDebugPartialUnmap()
     {
-        public int Running;
-        public int Error;
+        EmitterContext context = new();
+
+        var result = WindowsPartialUnmapHandler.EmitRetryFromAccessViolation(context);
+
+        context.Return(result);
+
+        // Compile and return the function.
+
+        ControlFlowGraph cfg = context.GetControlFlowGraph();
+
+        OperandType[] argTypes = new OperandType[] { OperandType.I64 };
+
+        return Compiler.Compile(cfg, argTypes, OperandType.I32, CompilerOptions.HighCq, RuntimeInformation.ProcessArchitecture).Map<DebugPartialUnmap>();
     }
 
-    public static class TestMethods
+    public static DebugThreadLocalMapGetOrReserve GenerateDebugThreadLocalMapGetOrReserve(IntPtr structPtr)
     {
-        public delegate bool DebugPartialUnmap();
-        public delegate int DebugThreadLocalMapGetOrReserve(int threadId, int initialState);
-        public delegate void DebugNativeWriteLoop(IntPtr nativeWriteLoopPtr, IntPtr writePtr);
+        EmitterContext context = new();
 
-        public static DebugPartialUnmap GenerateDebugPartialUnmap()
-        {
-            EmitterContext context = new();
+        var result = WindowsPartialUnmapHandler.EmitThreadLocalMapIntGetOrReserve(context, structPtr, context.LoadArgument(OperandType.I32, 0), context.LoadArgument(OperandType.I32, 1));
 
-            var result = WindowsPartialUnmapHandler.EmitRetryFromAccessViolation(context);
+        context.Return(result);
 
-            context.Return(result);
+        // Compile and return the function.
 
-            // Compile and return the function.
+        ControlFlowGraph cfg = context.GetControlFlowGraph();
 
-            ControlFlowGraph cfg = context.GetControlFlowGraph();
+        OperandType[] argTypes = new OperandType[] { OperandType.I64 };
 
-            OperandType[] argTypes = new OperandType[] { OperandType.I64 };
+        return Compiler.Compile(cfg, argTypes, OperandType.I32, CompilerOptions.HighCq, RuntimeInformation.ProcessArchitecture).Map<DebugThreadLocalMapGetOrReserve>();
+    }
 
-            return Compiler.Compile(cfg, argTypes, OperandType.I32, CompilerOptions.HighCq, RuntimeInformation.ProcessArchitecture).Map<DebugPartialUnmap>();
-        }
+    public static DebugNativeWriteLoop GenerateDebugNativeWriteLoop()
+    {
+        EmitterContext context = new();
 
-        public static DebugThreadLocalMapGetOrReserve GenerateDebugThreadLocalMapGetOrReserve(IntPtr structPtr)
-        {
-            EmitterContext context = new();
+        // Loop a write to the target address until "running" is false.
 
-            var result = WindowsPartialUnmapHandler.EmitThreadLocalMapIntGetOrReserve(context, structPtr, context.LoadArgument(OperandType.I32, 0), context.LoadArgument(OperandType.I32, 1));
+        Operand structPtr = context.Copy(context.LoadArgument(OperandType.I64, 0));
+        Operand writePtr = context.Copy(context.LoadArgument(OperandType.I64, 1));
 
-            context.Return(result);
+        Operand loopLabel = Label();
+        context.MarkLabel(loopLabel);
 
-            // Compile and return the function.
+        context.Store(writePtr, Const(12345));
 
-            ControlFlowGraph cfg = context.GetControlFlowGraph();
+        Operand running = context.Load(OperandType.I32, structPtr);
 
-            OperandType[] argTypes = new OperandType[] { OperandType.I64 };
+        context.BranchIfTrue(loopLabel, running);
 
-            return Compiler.Compile(cfg, argTypes, OperandType.I32, CompilerOptions.HighCq, RuntimeInformation.ProcessArchitecture).Map<DebugThreadLocalMapGetOrReserve>();
-        }
+        context.Return();
 
-        public static DebugNativeWriteLoop GenerateDebugNativeWriteLoop()
-        {
-            EmitterContext context = new();
+        // Compile and return the function.
 
-            // Loop a write to the target address until "running" is false.
+        ControlFlowGraph cfg = context.GetControlFlowGraph();
 
-            Operand structPtr = context.Copy(context.LoadArgument(OperandType.I64, 0));
-            Operand writePtr = context.Copy(context.LoadArgument(OperandType.I64, 1));
+        OperandType[] argTypes = new OperandType[] { OperandType.I64 };
 
-            Operand loopLabel = Label();
-            context.MarkLabel(loopLabel);
-
-            context.Store(writePtr, Const(12345));
-
-            Operand running = context.Load(OperandType.I32, structPtr);
-
-            context.BranchIfTrue(loopLabel, running);
-
-            context.Return();
-
-            // Compile and return the function.
-
-            ControlFlowGraph cfg = context.GetControlFlowGraph();
-
-            OperandType[] argTypes = new OperandType[] { OperandType.I64 };
-
-            return Compiler.Compile(cfg, argTypes, OperandType.None, CompilerOptions.HighCq, RuntimeInformation.ProcessArchitecture).Map<DebugNativeWriteLoop>();
-        }
+        return Compiler.Compile(cfg, argTypes, OperandType.None, CompilerOptions.HighCq, RuntimeInformation.ProcessArchitecture).Map<DebugNativeWriteLoop>();
     }
 }

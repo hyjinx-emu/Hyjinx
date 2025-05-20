@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy;
+
+enum OperationMode
 {
-    enum OperationMode
-    {
-        Handheld = 0,
-        Docked = 1,
-    }
+    Handheld = 0,
+    Docked = 1,
 }

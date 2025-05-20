@@ -1,63 +1,62 @@
-using OpenTK.Graphics.OpenGL;
 using Hyjinx.Graphics.GAL;
+using OpenTK.Graphics.OpenGL;
 
-namespace Hyjinx.Graphics.OpenGL.Image
+namespace Hyjinx.Graphics.OpenGL.Image;
+
+class ImageArray : IImageArray
 {
-    class ImageArray : IImageArray
+    private record struct TextureRef
     {
-        private record struct TextureRef
-        {
-            public int Handle;
-            public Format Format;
-        }
+        public int Handle;
+        public Format Format;
+    }
 
-        private readonly TextureRef[] _images;
+    private readonly TextureRef[] _images;
 
-        public ImageArray(int size)
-        {
-            _images = new TextureRef[size];
-        }
+    public ImageArray(int size)
+    {
+        _images = new TextureRef[size];
+    }
 
-        public void SetImages(int index, ITexture[] images)
+    public void SetImages(int index, ITexture[] images)
+    {
+        for (int i = 0; i < images.Length; i++)
         {
-            for (int i = 0; i < images.Length; i++)
+            ITexture image = images[i];
+
+            if (image is TextureBase imageBase)
             {
-                ITexture image = images[i];
+                _images[index + i].Handle = imageBase.Handle;
+                _images[index + i].Format = imageBase.Format;
+            }
+            else
+            {
+                _images[index + i].Handle = 0;
+            }
+        }
+    }
 
-                if (image is TextureBase imageBase)
+    public void Bind(int baseBinding)
+    {
+        for (int i = 0; i < _images.Length; i++)
+        {
+            if (_images[i].Handle == 0)
+            {
+                GL.BindImageTexture(baseBinding + i, 0, 0, true, 0, TextureAccess.ReadWrite, SizedInternalFormat.Rgba8);
+            }
+            else
+            {
+                SizedInternalFormat format = FormatTable.GetImageFormat(_images[i].Format);
+
+                if (format != 0)
                 {
-                    _images[index + i].Handle = imageBase.Handle;
-                    _images[index + i].Format = imageBase.Format;
-                }
-                else
-                {
-                    _images[index + i].Handle = 0;
+                    GL.BindImageTexture(baseBinding + i, _images[i].Handle, 0, true, 0, TextureAccess.ReadWrite, format);
                 }
             }
         }
+    }
 
-        public void Bind(int baseBinding)
-        {
-            for (int i = 0; i < _images.Length; i++)
-            {
-                if (_images[i].Handle == 0)
-                {
-                    GL.BindImageTexture(baseBinding + i, 0, 0, true, 0, TextureAccess.ReadWrite, SizedInternalFormat.Rgba8);
-                }
-                else
-                {
-                    SizedInternalFormat format = FormatTable.GetImageFormat(_images[i].Format);
-
-                    if (format != 0)
-                    {
-                        GL.BindImageTexture(baseBinding + i, _images[i].Handle, 0, true, 0, TextureAccess.ReadWrite, format);
-                    }
-                }
-            }
-        }
-
-        public void Dispose()
-        {
-        }
+    public void Dispose()
+    {
     }
 }

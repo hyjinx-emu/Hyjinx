@@ -1,9 +1,8 @@
-namespace Hyjinx.Input
+namespace Hyjinx.Input;
+
+public enum ButtonType
 {
-    public enum ButtonType
-    {
-        Key,
-        GamepadButtonInputId,
-        StickId,
-    }
+    Key,
+    GamepadButtonInputId,
+    StickId,
 }

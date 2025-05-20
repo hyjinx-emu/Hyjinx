@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Nfc.NfcManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.NfcManager;
+
+enum State
 {
-    enum State
-    {
-        NonInitialized,
-        Initialized,
-    }
+    NonInitialized,
+    Initialized,
 }

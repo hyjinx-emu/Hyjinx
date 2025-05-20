@@ -1,6 +1,6 @@
-using System;
 using LibHac.Common;
 using LibHac.Fs;
+using System;
 
 namespace LibHac.FsSrv.FsCreator;
 

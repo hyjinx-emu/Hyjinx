@@ -1,11 +1,11 @@
-using System;
-using System.IO;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Util;
+using System;
+using System.IO;
+using System.Runtime.CompilerServices;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;

@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.Shader.StructuredIr
+namespace Hyjinx.Graphics.Shader.StructuredIr;
+
+enum AstBlockType
 {
-    enum AstBlockType
-    {
-        DoWhile,
-        If,
-        Else,
-        ElseIf,
-        Main,
-        While,
-    }
+    DoWhile,
+    If,
+    Else,
+    ElseIf,
+    Main,
+    While,
 }

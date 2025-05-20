@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Common.Keys;
@@ -7,6 +5,8 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using OpenType = LibHac.FsSrv.SaveDataOpenTypeSetFileStorage.OpenType;
 
 namespace LibHac.FsSrv.FsCreator;

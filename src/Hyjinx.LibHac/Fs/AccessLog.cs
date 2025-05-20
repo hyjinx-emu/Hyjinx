@@ -1,10 +1,3 @@
-using System;
-using System.Buffers;
-using System.Buffers.Text;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Unicode;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -15,6 +8,13 @@ using LibHac.FsSrv.Sf;
 using LibHac.Gc.Impl;
 using LibHac.Os;
 using LibHac.Sf;
+using System;
+using System.Buffers;
+using System.Buffers.Text;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Unicode;
 using static LibHac.Fs.Impl.AccessLogStrings;
 
 namespace LibHac.Fs

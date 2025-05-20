@@ -1,9 +1,8 @@
 
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
+
+enum CommonColor : byte
 {
-    enum CommonColor : byte
-    {
-        Min = 0,
-        Max = 99,
-    }
+    Min = 0,
+    Max = 99,
 }

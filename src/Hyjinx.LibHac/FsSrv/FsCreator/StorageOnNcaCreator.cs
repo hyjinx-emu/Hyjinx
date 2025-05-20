@@ -1,4 +1,3 @@
-using System;
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Fs;
@@ -6,6 +5,7 @@ using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
+using System;
 using NcaFsHeader = LibHac.Tools.FsSystem.NcaUtils.NcaFsHeader;
 
 namespace LibHac.FsSrv.FsCreator;

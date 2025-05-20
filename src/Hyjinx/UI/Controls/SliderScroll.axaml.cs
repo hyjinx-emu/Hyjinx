@@ -2,30 +2,29 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using System;
 
-namespace Hyjinx.Ava.UI.Controls
+namespace Hyjinx.Ava.UI.Controls;
+
+public class SliderScroll : Slider
 {
-    public class SliderScroll : Slider
+    protected override Type StyleKeyOverride => typeof(Slider);
+
+    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
     {
-        protected override Type StyleKeyOverride => typeof(Slider);
+        var newValue = Value + e.Delta.Y * TickFrequency;
 
-        protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+        if (newValue < Minimum)
         {
-            var newValue = Value + e.Delta.Y * TickFrequency;
-
-            if (newValue < Minimum)
-            {
-                Value = Minimum;
-            }
-            else if (newValue > Maximum)
-            {
-                Value = Maximum;
-            }
-            else
-            {
-                Value = newValue;
-            }
-
-            e.Handled = true;
+            Value = Minimum;
         }
+        else if (newValue > Maximum)
+        {
+            Value = Maximum;
+        }
+        else
+        {
+            Value = newValue;
+        }
+
+        e.Handled = true;
     }
 }

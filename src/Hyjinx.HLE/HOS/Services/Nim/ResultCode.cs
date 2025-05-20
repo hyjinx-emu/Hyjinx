@@ -1,12 +1,11 @@
-namespace Hyjinx.HLE.HOS.Services.Nim
+namespace Hyjinx.HLE.HOS.Services.Nim;
+
+enum ResultCode
 {
-    enum ResultCode
-    {
-        ModuleId = 137,
-        ErrorCodeShift = 9,
+    ModuleId = 137,
+    ErrorCodeShift = 9,
 
-        Success = 0,
+    Success = 0,
 
-        NullArgument = (90 << ErrorCodeShift) | ModuleId,
-    }
+    NullArgument = (90 << ErrorCodeShift) | ModuleId,
 }

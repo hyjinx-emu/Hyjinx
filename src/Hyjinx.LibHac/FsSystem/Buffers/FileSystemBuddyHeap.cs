@@ -1,10 +1,10 @@
+using LibHac.Diag;
+using LibHac.Fs;
+using LibHac.Util;
 using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.Diag;
-using LibHac.Fs;
-using LibHac.Util;
 using Buffer = LibHac.Mem.Buffer;
 
 // ReSharper disable once CheckNamespace

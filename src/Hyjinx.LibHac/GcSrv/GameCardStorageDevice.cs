@@ -1,4 +1,3 @@
-using System;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -7,6 +6,7 @@ using LibHac.FsSrv.Storage.Sf;
 using LibHac.Gc;
 using LibHac.Os;
 using LibHac.Sf;
+using System;
 
 namespace LibHac.GcSrv;
 

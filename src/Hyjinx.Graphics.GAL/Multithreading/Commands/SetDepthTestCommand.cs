@@ -1,18 +1,17 @@
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands;
+
+struct SetDepthTestCommand : IGALCommand, IGALCommand<SetDepthTestCommand>
 {
-    struct SetDepthTestCommand : IGALCommand, IGALCommand<SetDepthTestCommand>
+    public readonly CommandType CommandType => CommandType.SetDepthTest;
+    private DepthTestDescriptor _depthTest;
+
+    public void Set(DepthTestDescriptor depthTest)
     {
-        public readonly CommandType CommandType => CommandType.SetDepthTest;
-        private DepthTestDescriptor _depthTest;
+        _depthTest = depthTest;
+    }
 
-        public void Set(DepthTestDescriptor depthTest)
-        {
-            _depthTest = depthTest;
-        }
-
-        public static void Run(ref SetDepthTestCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            renderer.Pipeline.SetDepthTest(command._depthTest);
-        }
+    public static void Run(ref SetDepthTestCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        renderer.Pipeline.SetDepthTest(command._depthTest);
     }
 }

@@ -5,31 +5,30 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Hyjinx.Ava.Common.Locale;
 
-namespace Hyjinx.Ava.UI.Windows
+namespace Hyjinx.Ava.UI.Windows;
+
+public class StyleableWindow : Window
 {
-    public class StyleableWindow : Window
+    public Bitmap IconImage { get; set; }
+
+    public StyleableWindow()
     {
-        public Bitmap IconImage { get; set; }
+        WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        TransparencyLevelHint = new[] { WindowTransparencyLevel.None };
 
-        public StyleableWindow()
-        {
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            TransparencyLevelHint = new[] { WindowTransparencyLevel.None };
+        LocaleManager.Instance.LocaleChanged += LocaleChanged;
+        LocaleChanged();
+    }
 
-            LocaleManager.Instance.LocaleChanged += LocaleChanged;
-            LocaleChanged();
-        }
+    private void LocaleChanged()
+    {
+        FlowDirection = LocaleManager.Instance.IsRTL() ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+    }
 
-        private void LocaleChanged()
-        {
-            FlowDirection = LocaleManager.Instance.IsRTL() ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
-        }
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
 
-        protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-        {
-            base.OnApplyTemplate(e);
-
-            ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.SystemChrome | ExtendClientAreaChromeHints.OSXThickTitleBar;
-        }
+        ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.SystemChrome | ExtendClientAreaChromeHints.OSXThickTitleBar;
     }
 }

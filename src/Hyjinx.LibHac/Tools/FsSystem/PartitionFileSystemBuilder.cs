@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
@@ -11,6 +5,12 @@ using LibHac.Fs.Fsa;
 using LibHac.FsSystem.Impl;
 using LibHac.Tools.Fs;
 using LibHac.Util;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace LibHac.Tools.FsSystem;
 

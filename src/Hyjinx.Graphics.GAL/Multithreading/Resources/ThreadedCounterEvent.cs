@@ -2,79 +2,78 @@ using Hyjinx.Graphics.GAL.Multithreading.Commands.CounterEvent;
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 using System.Threading;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Resources
+namespace Hyjinx.Graphics.GAL.Multithreading.Resources;
+
+class ThreadedCounterEvent : ICounterEvent
 {
-    class ThreadedCounterEvent : ICounterEvent
+    private readonly ThreadedRenderer _renderer;
+    public ICounterEvent Base;
+
+    public bool Invalid { get; set; }
+
+    public CounterType Type { get; }
+    public bool ClearCounter { get; }
+
+    private bool _reserved;
+    private int _createLock;
+
+    public ThreadedCounterEvent(ThreadedRenderer renderer, CounterType type, bool clearCounter)
     {
-        private readonly ThreadedRenderer _renderer;
-        public ICounterEvent Base;
+        _renderer = renderer;
+        Type = type;
+        ClearCounter = clearCounter;
+    }
 
-        public bool Invalid { get; set; }
+    private TableRef<T> Ref<T>(T reference)
+    {
+        return new TableRef<T>(_renderer, reference);
+    }
 
-        public CounterType Type { get; }
-        public bool ClearCounter { get; }
+    public void Dispose()
+    {
+        _renderer.New<CounterEventDisposeCommand>().Set(Ref(this));
+        _renderer.QueueCommand();
+    }
 
-        private bool _reserved;
-        private int _createLock;
+    public void Flush()
+    {
+        ThreadedHelpers.SpinUntilNonNull(ref Base);
 
-        public ThreadedCounterEvent(ThreadedRenderer renderer, CounterType type, bool clearCounter)
+        Base.Flush();
+    }
+
+    public bool ReserveForHostAccess()
+    {
+        if (Base != null)
         {
-            _renderer = renderer;
-            Type = type;
-            ClearCounter = clearCounter;
+            return Base.ReserveForHostAccess();
         }
-
-        private TableRef<T> Ref<T>(T reference)
+        else
         {
-            return new TableRef<T>(_renderer, reference);
-        }
+            bool result = true;
 
-        public void Dispose()
-        {
-            _renderer.New<CounterEventDisposeCommand>().Set(Ref(this));
-            _renderer.QueueCommand();
-        }
+            // A very light lock, as this case is uncommon.
+            ThreadedHelpers.SpinUntilExchange(ref _createLock, 1, 0);
 
-        public void Flush()
-        {
-            ThreadedHelpers.SpinUntilNonNull(ref Base);
-
-            Base.Flush();
-        }
-
-        public bool ReserveForHostAccess()
-        {
             if (Base != null)
             {
-                return Base.ReserveForHostAccess();
+                result = Base.ReserveForHostAccess();
             }
             else
             {
-                bool result = true;
-
-                // A very light lock, as this case is uncommon.
-                ThreadedHelpers.SpinUntilExchange(ref _createLock, 1, 0);
-
-                if (Base != null)
-                {
-                    result = Base.ReserveForHostAccess();
-                }
-                else
-                {
-                    _reserved = true;
-                }
-
-                Volatile.Write(ref _createLock, 0);
-
-                return result;
+                _reserved = true;
             }
-        }
 
-        public void Create(IRenderer renderer, CounterType type, System.EventHandler<ulong> eventHandler, float divisor, bool hostReserved)
-        {
-            ThreadedHelpers.SpinUntilExchange(ref _createLock, 1, 0);
-            Base = renderer.ReportCounter(type, eventHandler, divisor, hostReserved || _reserved);
             Volatile.Write(ref _createLock, 0);
+
+            return result;
         }
+    }
+
+    public void Create(IRenderer renderer, CounterType type, System.EventHandler<ulong> eventHandler, float divisor, bool hostReserved)
+    {
+        ThreadedHelpers.SpinUntilExchange(ref _createLock, 1, 0);
+        Base = renderer.ReportCounter(type, eventHandler, divisor, hostReserved || _reserved);
+        Volatile.Write(ref _createLock, 0);
     }
 }

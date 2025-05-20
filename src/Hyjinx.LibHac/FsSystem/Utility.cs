@@ -1,4 +1,3 @@
-using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -7,6 +6,7 @@ using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
 using IDirectory = LibHac.Fs.Fsa.IDirectory;
 using IFile = LibHac.Fs.Fsa.IFile;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;

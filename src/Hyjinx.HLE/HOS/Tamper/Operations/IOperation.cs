@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Tamper.Operations
+namespace Hyjinx.HLE.HOS.Tamper.Operations;
+
+interface IOperation
 {
-    interface IOperation
-    {
-        void Execute();
-    }
+    void Execute();
 }

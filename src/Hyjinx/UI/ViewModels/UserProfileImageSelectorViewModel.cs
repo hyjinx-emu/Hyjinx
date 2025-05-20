@@ -1,18 +1,17 @@
-namespace Hyjinx.Ava.UI.ViewModels
+namespace Hyjinx.Ava.UI.ViewModels;
+
+internal class UserProfileImageSelectorViewModel : BaseModel
 {
-    internal class UserProfileImageSelectorViewModel : BaseModel
+    private bool _firmwareFound;
+
+    public bool FirmwareFound
     {
-        private bool _firmwareFound;
+        get => _firmwareFound;
 
-        public bool FirmwareFound
+        set
         {
-            get => _firmwareFound;
-
-            set
-            {
-                _firmwareFound = value;
-                OnPropertyChanged();
-            }
+            _firmwareFound = value;
+            OnPropertyChanged();
         }
     }
 }

@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Ssl.Types
+namespace Hyjinx.HLE.HOS.Services.Ssl.Types;
+
+enum SessionCacheMode : uint
 {
-    enum SessionCacheMode : uint
-    {
-        None,
-        SessionId,
-        SessionTicket,
-    }
+    None,
+    SessionId,
+    SessionTicket,
 }

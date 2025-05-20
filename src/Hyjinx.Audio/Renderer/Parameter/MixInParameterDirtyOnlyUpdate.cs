@@ -1,27 +1,26 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Audio.Renderer.Parameter
+namespace Hyjinx.Audio.Renderer.Parameter;
+
+/// <summary>
+/// Input information header for mix updates on REV7 and later
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct MixInParameterDirtyOnlyUpdate
 {
     /// <summary>
-    /// Input information header for mix updates on REV7 and later
+    /// Magic of the header
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct MixInParameterDirtyOnlyUpdate
-    {
-        /// <summary>
-        /// Magic of the header
-        /// </summary>
-        /// <remarks>Never checked on hardware.</remarks>
-        public uint Magic;
+    /// <remarks>Never checked on hardware.</remarks>
+    public uint Magic;
 
-        /// <summary>
-        /// The count of <see cref="MixParameter"/> following this header.
-        /// </summary>
-        public uint MixCount;
+    /// <summary>
+    /// The count of <see cref="MixParameter"/> following this header.
+    /// </summary>
+    public uint MixCount;
 
-        /// <summary>
-        /// Reserved/unused.
-        /// </summary>
-        private unsafe fixed byte _reserved[24];
-    }
+    /// <summary>
+    /// Reserved/unused.
+    /// </summary>
+    private unsafe fixed byte _reserved[24];
 }

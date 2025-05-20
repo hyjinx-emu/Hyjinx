@@ -1,13 +1,13 @@
-using System;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Gc.Impl;
 using LibHac.Tools.FsSystem;
+using System;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace LibHac.Tools.Fs;
 

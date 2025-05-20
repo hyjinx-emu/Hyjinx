@@ -1,27 +1,26 @@
 using Hyjinx.HLE.HOS.Kernel.Process;
 
-namespace Hyjinx.HLE.HOS.Services.Pm
+namespace Hyjinx.HLE.HOS.Services.Pm;
+
+[Service("pm:info")]
+class IInformationInterface : IpcService<IInformationInterface>
 {
-    [Service("pm:info")]
-    class IInformationInterface : IpcService<IInformationInterface>
+    public IInformationInterface(ServiceCtx context) { }
+
+    [CommandCmif(0)]
+    // GetProgramId(os::ProcessId process_id) -> sf::Out<ncm::ProgramId> out
+    public ResultCode GetProgramId(ServiceCtx context)
     {
-        public IInformationInterface(ServiceCtx context) { }
+        ulong pid = context.RequestData.ReadUInt64();
 
-        [CommandCmif(0)]
-        // GetProgramId(os::ProcessId process_id) -> sf::Out<ncm::ProgramId> out
-        public ResultCode GetProgramId(ServiceCtx context)
+        // TODO: Not correct as it shouldn't be directly using kernel objects here
+        if (context.Device.System.KernelContext.Processes.TryGetValue(pid, out KProcess process))
         {
-            ulong pid = context.RequestData.ReadUInt64();
+            context.ResponseData.Write(process.TitleId);
 
-            // TODO: Not correct as it shouldn't be directly using kernel objects here
-            if (context.Device.System.KernelContext.Processes.TryGetValue(pid, out KProcess process))
-            {
-                context.ResponseData.Write(process.TitleId);
-
-                return ResultCode.Success;
-            }
-
-            return ResultCode.ProcessNotFound;
+            return ResultCode.Success;
         }
+
+        return ResultCode.ProcessNotFound;
     }
 }

@@ -1,14 +1,13 @@
 using Hyjinx.Audio.Renderer.Server.Mix;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Audio.Renderer.Server
+namespace Hyjinx.Tests.Audio.Renderer.Server;
+
+class MixStateTests
 {
-    class MixStateTests
+    [Test]
+    public void EnsureTypeSize()
     {
-        [Test]
-        public void EnsureTypeSize()
-        {
-            ClassicAssert.AreEqual(0x940, Unsafe.SizeOf<MixState>());
-        }
+        ClassicAssert.AreEqual(0x940, Unsafe.SizeOf<MixState>());
     }
 }

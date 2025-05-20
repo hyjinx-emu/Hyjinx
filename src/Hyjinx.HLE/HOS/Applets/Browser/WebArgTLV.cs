@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser;
+
+public struct WebArgTLV
 {
-    public struct WebArgTLV
-    {
-        public ushort Type;
-        public ushort Size;
-        public uint Padding;
-    }
+    public ushort Type;
+    public ushort Size;
+    public uint Padding;
 }

@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Sf;
@@ -8,6 +6,8 @@ using LibHac.Os;
 using LibHac.Sdmmc;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using IStorage = LibHac.Fs.IStorage;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;
 

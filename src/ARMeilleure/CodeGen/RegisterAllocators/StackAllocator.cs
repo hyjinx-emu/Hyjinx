@@ -1,25 +1,24 @@
 using ARMeilleure.IntermediateRepresentation;
 
-namespace ARMeilleure.CodeGen.RegisterAllocators
+namespace ARMeilleure.CodeGen.RegisterAllocators;
+
+class StackAllocator
 {
-    class StackAllocator
+    private int _offset;
+
+    public int TotalSize => _offset;
+
+    public int Allocate(OperandType type)
     {
-        private int _offset;
+        return Allocate(type.GetSizeInBytes());
+    }
 
-        public int TotalSize => _offset;
+    public int Allocate(int sizeInBytes)
+    {
+        int offset = _offset;
 
-        public int Allocate(OperandType type)
-        {
-            return Allocate(type.GetSizeInBytes());
-        }
+        _offset += sizeInBytes;
 
-        public int Allocate(int sizeInBytes)
-        {
-            int offset = _offset;
-
-            _offset += sizeInBytes;
-
-            return offset;
-        }
+        return offset;
     }
 }

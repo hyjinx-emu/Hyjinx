@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types;
+
+enum AcceptPolicy : byte
 {
-    enum AcceptPolicy : byte
-    {
-        AcceptAll,
-        RejectAll,
-        BlackList,
-        WhiteList,
-    }
+    AcceptAll,
+    RejectAll,
+    BlackList,
+    WhiteList,
 }

@@ -1,24 +1,23 @@
 using Hyjinx.HLE.HOS.Services.Mii.Types;
 
-namespace Hyjinx.HLE.HOS.Services.Mii
+namespace Hyjinx.HLE.HOS.Services.Mii;
+
+class DatabaseSessionMetadata
 {
-    class DatabaseSessionMetadata
+    public uint InterfaceVersion;
+    public ulong UpdateCounter;
+
+    public SpecialMiiKeyCode MiiKeyCode { get; private set; }
+
+    public DatabaseSessionMetadata(ulong updateCounter, SpecialMiiKeyCode miiKeyCode)
     {
-        public uint InterfaceVersion;
-        public ulong UpdateCounter;
+        InterfaceVersion = 0;
+        UpdateCounter = updateCounter;
+        MiiKeyCode = miiKeyCode;
+    }
 
-        public SpecialMiiKeyCode MiiKeyCode { get; private set; }
-
-        public DatabaseSessionMetadata(ulong updateCounter, SpecialMiiKeyCode miiKeyCode)
-        {
-            InterfaceVersion = 0;
-            UpdateCounter = updateCounter;
-            MiiKeyCode = miiKeyCode;
-        }
-
-        public bool IsInterfaceVersionSupported(uint interfaceVersion)
-        {
-            return InterfaceVersion >= interfaceVersion;
-        }
+    public bool IsInterfaceVersionSupported(uint interfaceVersion)
+    {
+        return InterfaceVersion >= interfaceVersion;
     }
 }

@@ -1,20 +1,19 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class ThrowExpression : BaseNode
 {
-    public class ThrowExpression : BaseNode
+    private readonly BaseNode _expression;
+
+    public ThrowExpression(BaseNode expression) : base(NodeType.ThrowExpression)
     {
-        private readonly BaseNode _expression;
+        _expression = expression;
+    }
 
-        public ThrowExpression(BaseNode expression) : base(NodeType.ThrowExpression)
-        {
-            _expression = expression;
-        }
-
-        public override void PrintLeft(TextWriter writer)
-        {
-            writer.Write("throw ");
-            _expression.Print(writer);
-        }
+    public override void PrintLeft(TextWriter writer)
+    {
+        writer.Write("throw ");
+        _expression.Print(writer);
     }
 }
