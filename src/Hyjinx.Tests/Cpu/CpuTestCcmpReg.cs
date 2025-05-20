@@ -2,6 +2,7 @@
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("CcmpReg")]
     public sealed class CpuTestCcmpReg : CpuTest
     {

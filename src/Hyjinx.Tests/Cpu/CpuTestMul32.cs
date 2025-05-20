@@ -2,6 +2,7 @@
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("Mul32")]
     public sealed class CpuTestMul32 : CpuTest32
     {

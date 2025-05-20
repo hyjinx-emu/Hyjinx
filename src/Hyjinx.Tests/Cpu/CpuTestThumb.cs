@@ -2,6 +2,7 @@ using ARMeilleure.State;
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("Thumb")]
     public sealed class CpuTestThumb : CpuTest32
     {

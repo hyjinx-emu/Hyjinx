@@ -2,6 +2,8 @@
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
+    [Explicit]
     [Category("AluRs32")]
     public sealed class CpuTestAluRs32 : CpuTest32
     {

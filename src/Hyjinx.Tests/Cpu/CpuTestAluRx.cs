@@ -2,6 +2,7 @@
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("AluRx")]
     public sealed class CpuTestAluRx : CpuTest
     {

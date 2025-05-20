@@ -4,6 +4,7 @@ using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("AluBinary")]
     public sealed class CpuTestAluBinary : CpuTest
     {

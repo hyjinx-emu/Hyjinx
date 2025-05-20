@@ -8,7 +8,6 @@ using MemoryPermission = Hyjinx.Tests.Unicorn.MemoryPermission;
 
 namespace Hyjinx.Tests.Cpu
 {
-    [TestFixture]
     public class CpuTest
     {
         protected static readonly ulong Size = MemoryBlock.GetPageSize();

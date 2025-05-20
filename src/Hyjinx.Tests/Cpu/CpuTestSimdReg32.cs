@@ -6,6 +6,7 @@ using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("SimdReg32")]
     public sealed class CpuTestSimdReg32 : CpuTest32
     {

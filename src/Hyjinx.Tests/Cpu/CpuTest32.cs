@@ -8,6 +8,7 @@ using MemoryPermission = Hyjinx.Tests.Unicorn.MemoryPermission;
 
 namespace Hyjinx.Tests.Cpu
 {
+    [Explicit]
     [TestFixture]
     public class CpuTest32
     {

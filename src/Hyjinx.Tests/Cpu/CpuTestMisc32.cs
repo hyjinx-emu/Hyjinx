@@ -4,6 +4,7 @@ using ARMeilleure.State;
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("Misc32")]
     public sealed class CpuTestMisc32 : CpuTest32
     {

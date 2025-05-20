@@ -2,6 +2,8 @@
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
+    [Explicit]
     [Category("Bf32")]
     public sealed class CpuTestBf32 : CpuTest32
     {

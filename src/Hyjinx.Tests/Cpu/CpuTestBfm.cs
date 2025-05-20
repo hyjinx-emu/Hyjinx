@@ -2,6 +2,7 @@
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("Bfm")]
     public sealed class CpuTestBfm : CpuTest
     {

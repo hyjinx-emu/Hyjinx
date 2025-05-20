@@ -2,6 +2,7 @@
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("Csel")]
     public sealed class CpuTestCsel : CpuTest
     {

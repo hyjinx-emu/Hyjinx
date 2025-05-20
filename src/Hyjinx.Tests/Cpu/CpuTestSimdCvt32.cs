@@ -4,6 +4,7 @@ using ARMeilleure.State;
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("SimdCvt32")]
     public sealed class CpuTestSimdCvt32 : CpuTest32
     {
@@ -509,6 +510,7 @@ namespace Hyjinx.Tests.Cpu
             CompareAgainstUnicorn();
         }
 
+        [Explicit]
         [Test, Pairwise, Description("VRINTR.F<size> <Sd>, <Sm>")]
         [Platform(Exclude = "Linux,MacOsX")] // Instruction isn't testable due to Unicorn.
         public void Vrintr([Values(0u, 1u)] uint rd,

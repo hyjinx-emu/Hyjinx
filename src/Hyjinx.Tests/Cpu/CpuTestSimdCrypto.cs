@@ -5,6 +5,7 @@ using ExecutionContext = ARMeilleure.State.ExecutionContext;
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     public class CpuTestSimdCrypto : CpuTest
     {
         [Test, Description("AESD <Vd>.16B, <Vn>.16B")]

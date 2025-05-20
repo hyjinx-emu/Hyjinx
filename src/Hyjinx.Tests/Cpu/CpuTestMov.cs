@@ -2,6 +2,7 @@
 
 namespace Hyjinx.Tests.Cpu
 {
+    [TestFixture]
     [Category("Mov")]
     public sealed class CpuTestMov : CpuTest
     {
