@@ -108,7 +108,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{EEB9FB42
 		nuget.config = nuget.config
 		README.md = README.md
 		global.json = global.json
-		sonar-project.properties = sonar-project.properties
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.LibHac", "src\Hyjinx.LibHac\Hyjinx.LibHac.csproj", "{6B0A68D2-64F0-4792-8234-E38943C58A3E}"
