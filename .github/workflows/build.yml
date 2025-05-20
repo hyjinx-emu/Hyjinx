@@ -42,7 +42,7 @@ jobs:
 
       - name: Install SonarQube Cloud Scanner
         run: |
-          mkdir ./.sonar/scanner
+          mkdir ./.sonar ./.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
           
       - name: Determine Git Hash
