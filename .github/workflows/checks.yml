@@ -39,7 +39,7 @@ jobs:
 
       - name: Format style
         run: |
-          dotnet format style --severity info --verify-no-changes --report ./style-report.json -v d
+          dotnet format style --verify-no-changes --report ./style-report.json -v d
           
       - name: Upload report
         if: failure()
