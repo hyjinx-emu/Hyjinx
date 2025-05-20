@@ -1,4 +1,4 @@
-#name: Release job
+#name: publish
 #
 #on:
 #  workflow_dispatch:

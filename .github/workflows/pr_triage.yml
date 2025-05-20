@@ -1,4 +1,5 @@
-name: "Pull Request Triage"
+name: pr_triage
+
 on:
   pull_request_target:
     types: [opened, ready_for_review]
