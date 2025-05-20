@@ -2,8 +2,14 @@ name: sonarcloud
 
 on:
   pull_request:
+    branches: [ main ]
     types: [opened, reopened]
 
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  
 env:
   POWERSHELL_TELEMETRY_OPTOUT: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
