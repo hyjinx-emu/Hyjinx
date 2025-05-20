@@ -14,6 +14,8 @@
   It was written from scratch, and development on the project began in September 2017.
 </p>
 
+[![build](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml/badge.svg)](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx)
+
 ## Usage
 
 To run this emulator, your PC must be equipped with at least 8GiB of RAM;
