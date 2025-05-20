@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '.github/labeler.yml'
+      - '.github/workflows/triage.yml'
 
 permissions:
   contents: read

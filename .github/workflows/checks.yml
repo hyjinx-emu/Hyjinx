@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'src/**'
+      - '.github/workflows/checks.yml'
 
 permissions:
   contents: read
