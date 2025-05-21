@@ -33,7 +33,7 @@ jobs:
           
   build:
     name: build (${{ matrix.platform.name }})
-    runs-on: ${{ matrix.platform.os }}
+    runs-on: ${{ matrix.platform.builds-on }}
     timeout-minutes: 60
     needs: prepare
 
@@ -43,10 +43,10 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: win-x64,     os: windows-latest }
-          - { name: linux-x64,   os: ubuntu-latest  }
-#          - { name: linux-arm64, os: ubuntu-latest  }
-#          - { name: osx-x64,     os: macos-13       }
+          - { name: win-x64,     builds-on: windows-latest, packager: windows }
+          - { name: linux-x64,   builds-on: ubuntu-latest,  packager: linux   }
+#          - { name: linux-arm64, builds-on: ubuntu-latest,  packager: linux   }
+#          - { name: osx-x64,     builds-on: macos-13,       packager: macos   }
       fail-fast: false
 
     steps:
@@ -68,7 +68,7 @@ jobs:
       - name: Package
         uses: ./.github/actions/package-template
         with:
-          zip_os_name: ${{ matrix.platform.name }}
+          packager: ${{ matrix.platform.packager }}
           version: ${{ needs.prepare.outputs.version_number }}
           package_dir: ${{ env.STAGING_DIR }}
   
