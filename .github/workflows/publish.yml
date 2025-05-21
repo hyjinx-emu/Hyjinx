@@ -40,7 +40,7 @@ jobs:
       - name: Echo version
         shell: bash
         run: |
-          echo ${{ steps.prepared.outputs.version_number }}${{ steps.prepared.outputs.version_suffix }}
+          echo "${{ steps.prepared.outputs.version_number }}${{ steps.prepared.outputs.version_suffix }}"
           
       - name: Build
         uses: ./.github/actions/build-template
