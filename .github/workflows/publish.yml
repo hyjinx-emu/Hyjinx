@@ -66,6 +66,7 @@ jobs:
       - name: Package
         uses: ./.github/actions/package-template
         with:
+          runtime_identifier: ${{ matrix.platform.name }}
           packager: ${{ matrix.platform.target-os }}
           version: ${{ needs.prepare.outputs.version_number }}
           staging_dir: ${{ env.STAGING_DIR }}
