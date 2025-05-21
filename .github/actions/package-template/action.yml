@@ -8,8 +8,8 @@ inputs:
   version:
     description: "The version of the package."
     required: true
-  runtime_identifier:
-    description: "The target runtime identifier."
+  zip_os_name:
+    description: "The target file name for the host operating system."
     required: true
 
 runs:
@@ -18,5 +18,5 @@ runs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: "hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}"
+        name: "hyjinx-${{ inputs.version }}-${{ inputs.zip_os_name }}"
         path: ${{ inputs.package_dir }}

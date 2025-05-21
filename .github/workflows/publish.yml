@@ -18,6 +18,9 @@ jobs:
     runs-on: ${{ matrix.platform.os }}
     timeout-minutes: 60
 
+    env:
+      STAGING_DIR: dist
+      
     strategy:
       matrix:
         platform:
@@ -36,11 +39,6 @@ jobs:
         uses: ./.github/actions/prepare-version
         with:
           explicit_version: ${{ github.event.inputs.version }}
-        
-      - name: Echo version
-        shell: bash
-        run: |
-          echo "${{ steps.prepared.outputs.full_version }}"
           
       - name: Build
         uses: ./.github/actions/build-template
@@ -49,29 +47,17 @@ jobs:
         with:
           project: src/Hyjinx/Hyjinx.csproj
           runtime_identifier: ${{ matrix.platform.name }}
-          output_dir: dist
+          output_dir: ${{ env.STAGING_DIR }}
           version: ${{ steps.prepared.outputs.version_number }}
           version_suffix: ${{ steps.prepared.outputs.version_suffix }}
           run_tests: false
           
-#      - name: Build for Release
-#        if: env.IS_RELEASE_EVENT == 'true'
-#        uses: ./.github/actions/build-template
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        with:
-#          project: src/Hyjinx/Hyjinx.csproj
-#          runtime_identifier: ${{ matrix.platform.name }}
-#          output_dir: dist
-#          version: "0.1.0"
-#          run_tests: false
-          
       - name: Package
         uses: ./.github/actions/package-template
         with:
-          package_dir: dist
-          runtime_identifier: ${{ matrix.platform.name }}
-          version: "0.1.0"
+          zip_os_name: ${{ matrix.platform.zip_os_name }}
+          version: ${{ steps.prepared.outputs.version_number }}
+          package_dir: ${{ env.STAGING_DIR }}
           
 #      - name: Set up .NET SDK
 #        uses: actions/setup-dotnet@v4
