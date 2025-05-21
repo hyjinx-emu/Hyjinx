@@ -32,7 +32,7 @@ jobs:
           explicit_version: ${{ github.event.inputs.version }}
           
   build:
-    name: ${{ matrix.platform.name }}
+    name: build (${{ matrix.platform.name }})
     runs-on: ${{ matrix.platform.os }}
     timeout-minutes: 60
     needs: prepare
