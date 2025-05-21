@@ -1,3 +1,58 @@
+name: publish
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
+
+env:
+  POWERSHELL_TELEMETRY_OPTOUT: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  
+jobs:
+  build:
+    name: ${{ matrix.platform.name }} (${{ matrix.configuration }})
+    runs-on: ${{ matrix.platform.os }}
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        platform:
+          - { name: win-x64,     os: windows-latest, zip_os_name: win_x64     }
+          - { name: linux-x64,   os: ubuntu-latest,  zip_os_name: linux_x64   }
+          - { name: linux-arm64, os: ubuntu-latest,  zip_os_name: linux_arm64 }
+#          - { name: osx-x64,     os: macos-13,       zip_os_name: osx_x64     }
+
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Determine git hash
+        id: git_short_hash
+        run: echo "result=$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Build as Preview
+        run: dotnet build -c "Release" --version-suffix "${{ steps.git_short_hash.outputs.result }}"
+
+      - name: Run tests
+        run: dotnet test --no-build -c "Release"
+        timeout-minutes: 30
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ matrix.platform.name }}-Release"
+          path: "src/Hyjinx/bin/Release/${{ matrix.platform.name }}/"
+
 #name: publish
 #
 #on:

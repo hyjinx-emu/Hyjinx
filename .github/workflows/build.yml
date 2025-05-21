@@ -5,6 +5,11 @@ on:
     types: [opened, reopened]
   push:
 
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
 env:
   POWERSHELL_TELEMETRY_OPTOUT: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -13,7 +18,7 @@ jobs:
   build:
     name: ${{ matrix.platform.name }} (${{ matrix.configuration }})
     runs-on: ${{ matrix.platform.os }}
-    timeout-minutes: 45
+    timeout-minutes: 60
     strategy:
       matrix:
         configuration: [Release]
@@ -25,6 +30,12 @@ jobs:
 
       fail-fast: false
     steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+          
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -32,16 +43,29 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+
+      - name: Install SonarScanner
+        run: |
+          mkdir ./.sonar
+          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar
           
       - name: Determine git hash
         id: git_short_hash
         run: echo "result=$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
         shell: bash
+
+      - name: Prepare analysis
+        run: |
+          ./.sonar/dotnet-sonarscanner begin /k:"hyjinx-emu_Hyjinx" /o:"hyjinx-emu" /d:sonar.verbose=true /d:sonar.projectBaseDir="${{ github.workspace }}/src" /d:sonar.analysis.platform="${{ matrix.platform.name }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.c.file.suffixes=- /d:sonar.cpp.file.suffixes=- /d:sonar.objc.file.suffixes=-
                           
       - name: Build
         run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}"
 
       - name: Run tests
         run: dotnet test --no-build -c "${{ matrix.configuration }}"
-        timeout-minutes: 10
+        timeout-minutes: 30
+
+      - name: Publish analysis
+        run: |
+          ./.sonar/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
       
