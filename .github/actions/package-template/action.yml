@@ -25,6 +25,7 @@ runs:
         archive_name="hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.zip"
         echo "ARCHIVE_NAME=$archive_name" >> $GITHUB_ENV
         
+        mkdir out
         pushd "${{ inputs.staging_dir }}"
         7z a "../out/$archive_name" .
         popd
@@ -35,6 +36,7 @@ runs:
         archive_name="hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.tar.gz"
         echo "ARCHIVE_NAME=$archive_name" >> $GITHUB_ENV
         
+        mkdir out
         pushd "${{ inputs.staging_dir }}"
         tar -czvf "../out/$archive_name" .
         popd
