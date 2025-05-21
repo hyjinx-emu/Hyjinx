@@ -9,11 +9,14 @@ inputs:
 outputs:
   version_number:
     description: "The version number used."
-    value: ""
+    value: ${{ steps.exports.outputs.version_number }}
   version_suffix:
     description: "The hash identifier of the commit."
-    value: ""
-    
+    value: ${{ steps.exports.outputs.version_suffix }}
+  short_hash:
+    description: "The short hash identifier of the commit."
+    value: ${{ steps.get_git_hash.outputs.short_hash }}
+
 runs:
   using: "composite"
   steps:
@@ -31,11 +34,12 @@ runs:
         version: bump-minor
         
     - name: Set preview version
+      id: set_preview_version
       if: inputs.explicit_version == ''
       shell: bash
       run: |
-        echo "version_number=${{ steps.bump_preview_version.outputs.newVersion }}" >> $GITHUB_OUTPUT
-        echo "version_suffix=preview.${{ github.run_number }}+${{ steps.get_git_hash.outputs.short_hash }}" >> $GITHUB_OUTPUT
+        echo "VERSION_NUMBER=${{ steps.bump_preview_version.outputs.newVersion }}" >> $GITHUB_ENV
+        echo "VERSION_SUFFIX=preview.${{ github.run_number }}+${{ steps.get_git_hash.outputs.short_hash }}" >> $GITHUB_ENV
 
     - id: update_version
       name: Update version
@@ -49,4 +53,11 @@ runs:
       if: inputs.explicit_version != ''
       shell: bash
       run: |
-        echo "version_number=${{ inputs.explicit_version }}" >> $GITHUB_OUTPUT
+        echo "VERSION_NUMBER=${{ inputs.explicit_version }}" >> $GITHUB_ENV
+        
+    - name: Export version details
+      id: exports
+      shell: bash
+      run: |
+        echo "version_number=$VERSION_NUMBER" >> $GITHUB_OUTPUT
+        echo "version_suffix=$VERSION_SUFFIX" >> $GITHUB_OUTPUT
