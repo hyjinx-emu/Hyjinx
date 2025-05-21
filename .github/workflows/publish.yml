@@ -19,7 +19,6 @@ jobs:
     outputs:
       version_number: ${{ steps.prepared.outputs.version_number }}
       version_suffix: ${{ steps.prepared.outputs.version_suffix }}
-      full_version: ${{ steps.prepared.outputs.full_version }}
     
     steps:
       - name: Checkout
@@ -43,10 +42,10 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: win-x64,     builds-on: windows-latest, packager: windows }
-          - { name: linux-x64,   builds-on: ubuntu-latest,  packager: linux   }
-#          - { name: linux-arm64, builds-on: ubuntu-latest,  packager: linux   }
-#          - { name: osx-x64,     builds-on: macos-13,       packager: macos   }
+          - { name: win-x64,     builds-on: windows-latest, target-os: windows }
+          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux   }
+#          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux   }
+#          - { name: osx-x64,     builds-on: macos-13,       target-os: macos   }
       fail-fast: false
 
     steps:
@@ -60,7 +59,7 @@ jobs:
         with:
           project: src/Hyjinx/Hyjinx.csproj
           runtime_identifier: ${{ matrix.platform.name }}
-          output_dir: ${{ env.STAGING_DIR }}
+          staging_dir: ${{ env.STAGING_DIR }}
           version: ${{ needs.prepare.outputs.version_number }}
           version_suffix: ${{ needs.prepare.outputs.version_suffix }}
           run_tests: false
@@ -68,11 +67,11 @@ jobs:
       - name: Package
         uses: ./.github/actions/package-template
         with:
-          packager: ${{ matrix.platform.packager }}
+          packager: ${{ matrix.platform.target-os }}
           version: ${{ needs.prepare.outputs.version_number }}
-          package_dir: ${{ env.STAGING_DIR }}
+          staging_dir: ${{ env.STAGING_DIR }}
   
-  post-release:
+  release:
     runs-on: ubuntu-latest
     
     needs:

@@ -12,7 +12,7 @@ inputs:
     description: "The build configuration. Eg: Debug or Release"
     required: false
     default: "Release"
-  output_dir:
+  staging_dir:
     description: "The output directory where the published files should be dropped."
     required: true
   version:
@@ -76,13 +76,13 @@ runs:
       if: inputs.version_suffix != ''
       shell: bash
       run: |
-        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -o ${{ inputs.output_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}"
+        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}"
       
     - name: Publish for Release
       if: inputs.version_suffix == ''
       shell: bash
       run: |
-        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -o ${{ inputs.output_dir }} --self-contained
+        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -o ${{ inputs.staging_dir }} --self-contained
 
     - name: Publish analysis
       if: inputs.run_tests == 'true'

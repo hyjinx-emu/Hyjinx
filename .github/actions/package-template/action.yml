@@ -2,14 +2,14 @@ name: Package
 description: Packages the application
 
 inputs:
-  package_dir:
+  packager:
+    description: "The target operating system. (windows, linux, macos)"
+    required: true
+  staging_dir:
     description: "The location where the package is located."
     required: true
   version:
     description: "The version of the package."
-    required: true
-  zip_os_name:
-    description: "The target file name for the host operating system."
     required: true
 
 runs:
@@ -19,4 +19,4 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: "hyjinx-${{ inputs.version }}-${{ inputs.zip_os_name }}"
-        path: ${{ inputs.package_dir }}
+        path: ${{ inputs.staging_dir }}
