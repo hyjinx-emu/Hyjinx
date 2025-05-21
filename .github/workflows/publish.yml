@@ -45,7 +45,7 @@ jobs:
       - id: bump_preview_version
         name: Bump version
         if: env.IS_RELEASE_EVENT == 'false'
-        uses: vers-one/dotnet-project-version-updater@1
+        uses: vers-one/dotnet-project-version-updater@v1
         with:
           file: "src/.build/common.props"
           version: bump-minor
