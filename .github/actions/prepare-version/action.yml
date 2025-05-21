@@ -18,7 +18,7 @@ outputs:
     value: ${{ steps.get_git_hash.outputs.short_hash }}
   full_version:
     description: "The full version number used."
-    value: ${{ steps.exports.outputs.version_number }}${{ steps.exports.outputs.version_suffix && format('-{}', steps.exports.outputs.version_suffix) }}
+    value: ${{ steps.exports.outputs.version_number }}${{ steps.exports.outputs.version_suffix != '' && '-' || '' }}${{ steps.exports.outputs.version_suffix }}
 
 runs:
   using: "composite"
