@@ -38,7 +38,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           project: src/Hyjinx/Hyjinx.csproj
-          configuration: Release
+          runtime_identifier: ${{ matrix.platform.name }}
           output_dir: dist
           version: "0.1.0"
           version_suffix: "preview.${{ github.run_number }}"

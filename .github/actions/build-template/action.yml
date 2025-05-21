@@ -5,18 +5,19 @@ inputs:
   project:
     description: "The path to the project file."
     required: true
+  runtime_identifier:
+    description: "The target runtime identifier."
+    required: true
   configuration:
     description: "The build configuration. Eg: Debug or Release"
-    required: true    
+    required: false
+    default: "Release"
   output_dir:
     description: "The output directory where the published files should be dropped."
     required: true
   version:
     description: "The version which will be used during compilation."
-    required: true
-  runtime_identifier:
-    description: "The target runtime identifier."
-    required: true
+    required: true  
   version_suffix:
     description: "The suffix of the version (if applicable)."
     required: false
