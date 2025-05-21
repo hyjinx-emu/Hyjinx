@@ -43,7 +43,14 @@ jobs:
           version: "0.1.0"
           version_suffix: "preview.${{ github.run_number }}"
           run_tests: false
-#
+          
+      - name: Package
+        uses: ./.github/actions/package-template
+        with:
+          package_dir: dist
+          runtime_identifier: ${{ matrix.platform.name }}
+          version: "0.1.0"
+          
 #      - name: Set up .NET SDK
 #        uses: actions/setup-dotnet@v4
 #        with:

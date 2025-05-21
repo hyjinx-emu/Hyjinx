@@ -1,0 +1,22 @@
+name: Package
+description: Packages the application
+
+inputs:
+  package_dir:
+    description: "The location where the package is located."
+    required: true
+  version:
+    description: "The version of the package."
+    required: true
+  runtime_identifier:
+    description: "The target runtime identifier."
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: "hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}"
+        path: ${{ inputs.package_dir }}

@@ -139,6 +139,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build-template", "build-tem
 		.github\actions\build-template\action.yml = .github\actions\build-template\action.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "package-template", "package-template", "{EA899FDF-BE78-4543-99F1-76A7BCD15A84}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\package-template\action.yml = .github\actions\package-template\action.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -366,5 +371,6 @@ Global
 		{A8E070B8-0BBA-4D03-A579-8691B11EF072} = {EEB9FB42-5EF6-4135-B051-D5DC604AA6F2}
 		{31742FB0-858D-44B9-AAC1-92DA971B4C96} = {A8E070B8-0BBA-4D03-A579-8691B11EF072}
 		{9E8ECAF0-C80F-4932-868D-A9F6E8D8DC86} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
+		{EA899FDF-BE78-4543-99F1-76A7BCD15A84} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
 	EndGlobalSection
 EndGlobal
