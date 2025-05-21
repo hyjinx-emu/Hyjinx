@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.UI.Common.Models.Amiibo
+namespace Hyjinx.UI.Common.Models.Amiibo;
+
+public class AmiiboApiGamesSwitch
 {
-    public class AmiiboApiGamesSwitch
-    {
-        [JsonPropertyName("amiiboUsage")]
-        public List<AmiiboApiUsage> AmiiboUsage { get; set; }
-        [JsonPropertyName("gameID")]
-        public List<string> GameId { get; set; }
-        [JsonPropertyName("gameName")]
-        public string GameName { get; set; }
-    }
+    [JsonPropertyName("amiiboUsage")]
+    public List<AmiiboApiUsage> AmiiboUsage { get; set; }
+    [JsonPropertyName("gameID")]
+    public List<string> GameId { get; set; }
+    [JsonPropertyName("gameName")]
+    public string GameName { get; set; }
 }

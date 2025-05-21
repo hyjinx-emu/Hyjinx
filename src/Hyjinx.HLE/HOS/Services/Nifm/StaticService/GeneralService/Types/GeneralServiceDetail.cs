@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.GeneralService
+namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.GeneralService;
+
+class GeneralServiceDetail
 {
-    class GeneralServiceDetail
-    {
-        public int ClientId;
-        public bool IsAnyInternetRequestAccepted;
-    }
+    public int ClientId;
+    public bool IsAnyInternetRequestAccepted;
 }

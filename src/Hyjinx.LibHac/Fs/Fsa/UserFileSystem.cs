@@ -1,11 +1,11 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs.Impl;
 using LibHac.Fs.Shim;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 
@@ -47,7 +47,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out fileSystem, out subPath, path);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
         {
@@ -89,7 +90,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out fileSystem, out subPath, path);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
         {
@@ -131,7 +133,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out fileSystem, out subPath, path);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
         {
@@ -173,7 +176,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out fileSystem, out subPath, path);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
         {
@@ -215,7 +219,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out fileSystem, out subPath, path);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
         {
@@ -258,7 +263,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out currentFileSystem, out currentSubPath, currentPath);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Get the file system accessor for the new path
         if (fs.Impl.IsEnabledAccessLog())
@@ -274,7 +280,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out newFileSystem, out newSubPath, newPath);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Rename the file
         if (fs.Impl.IsEnabledAccessLog() && currentFileSystem.IsEnabledAccessLog())
@@ -324,7 +331,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out currentFileSystem, out currentSubPath, currentPath);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Get the file system accessor for the new path
         if (fs.Impl.IsEnabledAccessLog())
@@ -340,7 +348,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out newFileSystem, out newSubPath, newPath);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Rename the directory
         if (fs.Impl.IsEnabledAccessLog() && currentFileSystem.IsEnabledAccessLog())
@@ -393,7 +402,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out fileSystem, out subPath, path);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
         {
@@ -452,7 +462,8 @@ public static class UserFileSystem
             res = FindImpl(fs, path, out fileSystem, ref subPath);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         static Result GetImpl(out long freeSpace, FileSystemAccessor fileSystem, U8Span subPath)
         {
@@ -511,7 +522,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out fileSystem, out subPath, path);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var file = new UniqueRef<FileAccessor>();
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
@@ -527,7 +539,8 @@ public static class UserFileSystem
             res = fileSystem.OpenFile(ref file.Ref, subPath, mode);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         handle = new FileHandle(file.Release());
         return Result.Success;
@@ -568,7 +581,8 @@ public static class UserFileSystem
             res = fs.Impl.FindFileSystem(out fileSystem, out subPath, path);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var accessor = new UniqueRef<DirectoryAccessor>();
 
@@ -585,7 +599,8 @@ public static class UserFileSystem
             res = fileSystem.OpenDirectory(ref accessor.Ref, subPath, mode);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         handle = new DirectoryHandle(accessor.Release());
         return Result.Success;
@@ -615,7 +630,8 @@ public static class UserFileSystem
             res = fs.Impl.Find(out fileSystem, mountName);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
         {
@@ -650,23 +666,27 @@ public static class UserFileSystem
         using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
 
         Result res = fileSystemProxy.Get.OpenMultiCommitManager(ref commitManager.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         for (int i = 0; i < mountNames.Length; i++)
         {
             res = fs.Impl.Find(out FileSystemAccessor accessor, mountNames[i]);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystemSf> fileSystem = accessor.GetMultiCommitTarget();
             if (!fileSystem.HasValue)
                 return ResultFs.UnsupportedCommitTarget.Log();
 
             res = commitManager.Get.Add(ref fileSystem.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         res = commitManager.Get.Commit();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -694,7 +714,8 @@ public static class UserFileSystem
             res = fs.Impl.Find(out fileSystem, mountName);
         }
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog() && fileSystem.IsEnabledAccessLog())
         {
@@ -725,7 +746,8 @@ public static class UserFileSystem
             }
 
             Result res = fileSystem.GetSaveDataAttribute(out SaveDataAttribute attribute);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (attribute.ProgramId == SaveData.InvalidProgramId)
                 attribute.ProgramId = SaveData.AutoResolveCallerProgramId;

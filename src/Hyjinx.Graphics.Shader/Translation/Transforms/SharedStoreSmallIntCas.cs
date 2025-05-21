@@ -5,53 +5,52 @@ using System.Diagnostics;
 
 using static Hyjinx.Graphics.Shader.IntermediateRepresentation.OperandHelper;
 
-namespace Hyjinx.Graphics.Shader.Translation.Transforms
+namespace Hyjinx.Graphics.Shader.Translation.Transforms;
+
+class SharedStoreSmallIntCas : ITransformPass
 {
-    class SharedStoreSmallIntCas : ITransformPass
+    public static bool IsEnabled(IGpuAccessor gpuAccessor, ShaderStage stage, TargetLanguage targetLanguage, FeatureFlags usedFeatures)
     {
-        public static bool IsEnabled(IGpuAccessor gpuAccessor, ShaderStage stage, TargetLanguage targetLanguage, FeatureFlags usedFeatures)
+        return stage == ShaderStage.Compute && usedFeatures.HasFlag(FeatureFlags.SharedMemory);
+    }
+
+    public static LinkedListNode<INode> RunPass(TransformContext context, LinkedListNode<INode> node)
+    {
+        Operation operation = (Operation)node.Value;
+        HelperFunctionName name;
+
+        if (operation.StorageKind == StorageKind.SharedMemory8)
         {
-            return stage == ShaderStage.Compute && usedFeatures.HasFlag(FeatureFlags.SharedMemory);
+            name = HelperFunctionName.SharedStore8;
+        }
+        else if (operation.StorageKind == StorageKind.SharedMemory16)
+        {
+            name = HelperFunctionName.SharedStore16;
+        }
+        else
+        {
+            return node;
         }
 
-        public static LinkedListNode<INode> RunPass(TransformContext context, LinkedListNode<INode> node)
+        if (operation.Inst != Instruction.Store)
         {
-            Operation operation = (Operation)node.Value;
-            HelperFunctionName name;
-
-            if (operation.StorageKind == StorageKind.SharedMemory8)
-            {
-                name = HelperFunctionName.SharedStore8;
-            }
-            else if (operation.StorageKind == StorageKind.SharedMemory16)
-            {
-                name = HelperFunctionName.SharedStore16;
-            }
-            else
-            {
-                return node;
-            }
-
-            if (operation.Inst != Instruction.Store)
-            {
-                return node;
-            }
-
-            Operand memoryId = operation.GetSource(0);
-            Operand byteOffset = operation.GetSource(1);
-            Operand value = operation.GetSource(2);
-
-            Debug.Assert(memoryId.Type == OperandType.Constant);
-
-            int functionId = context.Hfm.GetOrCreateFunctionId(name, memoryId.Value);
-
-            Operand[] callArgs = new Operand[] { Const(functionId), byteOffset, value };
-
-            LinkedListNode<INode> newNode = node.List.AddBefore(node, new Operation(Instruction.Call, 0, (Operand)null, callArgs));
-
-            Utils.DeleteNode(node, operation);
-
-            return newNode;
+            return node;
         }
+
+        Operand memoryId = operation.GetSource(0);
+        Operand byteOffset = operation.GetSource(1);
+        Operand value = operation.GetSource(2);
+
+        Debug.Assert(memoryId.Type == OperandType.Constant);
+
+        int functionId = context.Hfm.GetOrCreateFunctionId(name, memoryId.Value);
+
+        Operand[] callArgs = new Operand[] { Const(functionId), byteOffset, value };
+
+        LinkedListNode<INode> newNode = node.List.AddBefore(node, new Operation(Instruction.Call, 0, (Operand)null, callArgs));
+
+        Utils.DeleteNode(node, operation);
+
+        return newNode;
     }
 }

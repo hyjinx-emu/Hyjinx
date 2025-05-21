@@ -1,8 +1,7 @@
-namespace Hyjinx.Horizon.Sdk.Ngc
+namespace Hyjinx.Horizon.Sdk.Ngc;
+
+enum SkipMode
 {
-    enum SkipMode
-    {
-        DoNotSkip,
-        SkipAtSignCheck,
-    }
+    DoNotSkip,
+    SkipAtSignCheck,
 }

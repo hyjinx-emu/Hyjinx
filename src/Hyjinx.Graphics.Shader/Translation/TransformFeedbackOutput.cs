@@ -1,18 +1,17 @@
-namespace Hyjinx.Graphics.Shader.Translation
-{
-    readonly struct TransformFeedbackOutput
-    {
-        public readonly bool Valid;
-        public readonly int Buffer;
-        public readonly int Offset;
-        public readonly int Stride;
+namespace Hyjinx.Graphics.Shader.Translation;
 
-        public TransformFeedbackOutput(int buffer, int offset, int stride)
-        {
-            Valid = true;
-            Buffer = buffer;
-            Offset = offset;
-            Stride = stride;
-        }
+readonly struct TransformFeedbackOutput
+{
+    public readonly bool Valid;
+    public readonly int Buffer;
+    public readonly int Offset;
+    public readonly int Stride;
+
+    public TransformFeedbackOutput(int buffer, int offset, int stride)
+    {
+        Valid = true;
+        Buffer = buffer;
+        Offset = offset;
+        Stride = stride;
     }
 }

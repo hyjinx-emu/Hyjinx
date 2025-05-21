@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Am.Idle
+namespace Hyjinx.HLE.HOS.Services.Am.Idle;
+
+[Service("idle:sys")]
+class IPolicyManagerSystem : IpcService<IPolicyManagerSystem>
 {
-    [Service("idle:sys")]
-    class IPolicyManagerSystem : IpcService<IPolicyManagerSystem>
-    {
-        public IPolicyManagerSystem(ServiceCtx context) { }
-    }
+    public IPolicyManagerSystem(ServiceCtx context) { }
 }

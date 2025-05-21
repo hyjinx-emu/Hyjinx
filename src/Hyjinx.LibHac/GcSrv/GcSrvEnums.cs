@@ -1,4 +1,4 @@
-﻿namespace LibHac.GcSrv;
+namespace LibHac.GcSrv;
 
 /// <summary>
 /// The operations that <see cref="GameCardManager"/> can perform on the game card ASIC and writable game cards.

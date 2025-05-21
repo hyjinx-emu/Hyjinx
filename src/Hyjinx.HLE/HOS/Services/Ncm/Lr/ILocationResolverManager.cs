@@ -1,22 +1,21 @@
-using LibHac.Ncm;
 using Hyjinx.HLE.HOS.Services.Ncm.Lr.LocationResolverManager;
+using LibHac.Ncm;
 
-namespace Hyjinx.HLE.HOS.Services.Ncm.Lr
+namespace Hyjinx.HLE.HOS.Services.Ncm.Lr;
+
+[Service("lr")]
+class ILocationResolverManager : IpcService<ILocationResolverManager>
 {
-    [Service("lr")]
-    class ILocationResolverManager : IpcService<ILocationResolverManager>
+    public ILocationResolverManager(ServiceCtx context) { }
+
+    [CommandCmif(0)]
+    // OpenLocationResolver()
+    public ResultCode OpenLocationResolver(ServiceCtx context)
     {
-        public ILocationResolverManager(ServiceCtx context) { }
+        StorageId storageId = (StorageId)context.RequestData.ReadByte();
 
-        [CommandCmif(0)]
-        // OpenLocationResolver()
-        public ResultCode OpenLocationResolver(ServiceCtx context)
-        {
-            StorageId storageId = (StorageId)context.RequestData.ReadByte();
+        MakeObject(context, new ILocationResolver(storageId));
 
-            MakeObject(context, new ILocationResolver(storageId));
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

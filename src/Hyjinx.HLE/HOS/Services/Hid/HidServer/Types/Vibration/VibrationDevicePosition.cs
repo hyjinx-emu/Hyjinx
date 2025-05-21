@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public enum VibrationDevicePosition
 {
-    public enum VibrationDevicePosition
-    {
-        None,
-        Left,
-        Right,
-    }
+    None,
+    Left,
+    Right,
 }

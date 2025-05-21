@@ -1,56 +1,55 @@
 using System;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+struct BufferState : IDisposable
 {
-    struct BufferState : IDisposable
+    public static BufferState Null => new(null, 0, 0);
+
+    private readonly int _offset;
+    private readonly int _size;
+
+    private Auto<DisposableBuffer> _buffer;
+
+    public BufferState(Auto<DisposableBuffer> buffer, int offset, int size)
     {
-        public static BufferState Null => new(null, 0, 0);
+        _buffer = buffer;
+        _offset = offset;
+        _size = size;
+        buffer?.IncrementReferenceCount();
+    }
 
-        private readonly int _offset;
-        private readonly int _size;
-
-        private Auto<DisposableBuffer> _buffer;
-
-        public BufferState(Auto<DisposableBuffer> buffer, int offset, int size)
+    public readonly void BindTransformFeedbackBuffer(VulkanRenderer gd, CommandBufferScoped cbs, uint binding)
+    {
+        if (_buffer != null)
         {
-            _buffer = buffer;
-            _offset = offset;
-            _size = size;
-            buffer?.IncrementReferenceCount();
-        }
+            var buffer = _buffer.Get(cbs, _offset, _size, true).Value;
 
-        public readonly void BindTransformFeedbackBuffer(VulkanRenderer gd, CommandBufferScoped cbs, uint binding)
+            ulong offset = (ulong)_offset;
+            ulong size = (ulong)_size;
+
+            gd.TransformFeedbackApi.CmdBindTransformFeedbackBuffers(cbs.CommandBuffer, binding, 1, in buffer, in offset, in size);
+        }
+    }
+
+    public void Swap(Auto<DisposableBuffer> from, Auto<DisposableBuffer> to)
+    {
+        if (_buffer == from)
         {
-            if (_buffer != null)
-            {
-                var buffer = _buffer.Get(cbs, _offset, _size, true).Value;
+            _buffer.DecrementReferenceCount();
+            to.IncrementReferenceCount();
 
-                ulong offset = (ulong)_offset;
-                ulong size = (ulong)_size;
-
-                gd.TransformFeedbackApi.CmdBindTransformFeedbackBuffers(cbs.CommandBuffer, binding, 1, in buffer, in offset, in size);
-            }
+            _buffer = to;
         }
+    }
 
-        public void Swap(Auto<DisposableBuffer> from, Auto<DisposableBuffer> to)
-        {
-            if (_buffer == from)
-            {
-                _buffer.DecrementReferenceCount();
-                to.IncrementReferenceCount();
+    public readonly bool Overlaps(Auto<DisposableBuffer> buffer, int offset, int size)
+    {
+        return buffer == _buffer && offset < _offset + _size && offset + size > _offset;
+    }
 
-                _buffer = to;
-            }
-        }
-
-        public readonly bool Overlaps(Auto<DisposableBuffer> buffer, int offset, int size)
-        {
-            return buffer == _buffer && offset < _offset + _size && offset + size > _offset;
-        }
-
-        public readonly void Dispose()
-        {
-            _buffer?.DecrementReferenceCount();
-        }
+    public readonly void Dispose()
+    {
+        _buffer?.DecrementReferenceCount();
     }
 }

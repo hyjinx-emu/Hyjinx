@@ -1,5 +1,3 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Impl;
@@ -7,6 +5,8 @@ using LibHac.FsSrv.Sf;
 using LibHac.Ncm;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using static LibHac.Fs.SaveData;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
@@ -32,7 +32,8 @@ public static class SaveData
 
         Result res = fileSystemProxy.Get.OpenSaveDataInternalStorageFileSystem(ref fileSystem.Ref, spaceId,
             saveDataId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var fileSystemAdapter =
             new UniqueRef<IFileSystem>(new FileSystemServiceObjectAdapter(ref fileSystem.Ref));
@@ -48,20 +49,24 @@ public static class SaveData
         // Find the save data for the current program.
         Result res = SaveDataFilter.Make(out SaveDataFilter filter, InvalidProgramId.Value, SaveDataType.Account, userId,
             InvalidSystemSaveDataId, index: 0, SaveDataRank.Primary);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fs.Impl.FindSaveDataWithFilter(out SaveDataInfo info, SaveDataSpaceId.User, in filter);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         SaveDataSpaceId spaceId = info.SpaceId;
         ulong saveDataId = info.SaveDataId;
 
         // Get the current save data's sizes.
         res = fs.Impl.GetSaveDataAvailableSize(out long availableSize, spaceId, saveDataId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = fs.Impl.GetSaveDataJournalSize(out long journalSize, spaceId, saveDataId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Extend the save data if it's not large enough.
         if (availableSize < saveDataSize || journalSize < saveDataJournalSize)
@@ -69,7 +74,8 @@ public static class SaveData
             long newSaveDataSize = Math.Max(saveDataSize, availableSize);
             long newJournalSize = Math.Max(saveDataJournalSize, journalSize);
             res = fs.Impl.ExtendSaveData(spaceId, saveDataId, newSaveDataSize, newJournalSize);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -79,25 +85,29 @@ public static class SaveData
         ProgramId programId, UserId userId, SaveDataType type, bool openReadOnly, ushort index)
     {
         Result res = fs.CheckMountName(mountName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using SharedRef<IFileSystemProxy> fileSystemProxy = fs.GetFileSystemProxyServiceObject();
 
         res = SaveDataAttribute.Make(out SaveDataAttribute attribute, programId, type, userId, InvalidSystemSaveDataId,
             index);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var fileSystem = new SharedRef<IFileSystemSf>();
 
         if (openReadOnly)
         {
             res = fileSystemProxy.Get.OpenReadOnlySaveDataFileSystem(ref fileSystem.Ref, spaceId, in attribute);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
             res = fileSystemProxy.Get.OpenSaveDataFileSystem(ref fileSystem.Ref, spaceId, in attribute);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         // Note: Nintendo does pass in the same object both as a unique_ptr and as a raw pointer.
@@ -112,7 +122,8 @@ public static class SaveData
 
         res = fs.Fs.Register(mountName, fileSystemAdapterRaw, ref fileSystemAdapter.Ref, ref mountNameGenerator.Ref,
             false, null, true);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -133,11 +144,13 @@ public static class SaveData
 
         Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, InvalidProgramId, SaveDataType.Account,
             userId, InvalidSystemSaveDataId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = SaveDataCreationInfo.Make(out SaveDataCreationInfo creationInfo, saveDataSize, saveDataJournalSize,
             ownerId: 0, SaveDataFlags.None, SaveDataSpaceId.User);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var metaInfo = new SaveDataMetaInfo
         {
@@ -155,7 +168,8 @@ public static class SaveData
                 if (extendIfNeeded)
                 {
                     res = ExtendSaveDataIfNeeded(fs.Fs, userId, saveDataSize, saveDataJournalSize);
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                 }
             }
             else
@@ -196,7 +210,8 @@ public static class SaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -231,7 +246,8 @@ public static class SaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -266,7 +282,8 @@ public static class SaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -294,7 +311,8 @@ public static class SaveData
 
         Result res = SaveDataAttribute.Make(out SaveDataAttribute attribute, applicationId, type, userId,
             InvalidSystemSaveDataId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var fileSystem = new SharedRef<IFileSystemSf>();
         res = fileSystemProxy.Get.OpenSaveDataFileSystem(ref fileSystem.Ref, SaveDataSpaceId.User, in attribute);
@@ -322,7 +340,8 @@ public static class SaveData
                 userId: default, saveDataId: default, index: default);
 
             fs.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Try to find any temporary save data.
             res = fs.FindSaveDataWithFilter(out SaveDataInfo info, SaveDataSpaceId.Temporary, in filter);
@@ -342,7 +361,8 @@ public static class SaveData
             // Delete the found save data.
             res = fs.DeleteSaveData(SaveDataSpaceId.Temporary, info.SaveDataId);
             fs.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
     }
 
@@ -370,7 +390,8 @@ public static class SaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -402,7 +423,8 @@ public static class SaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -436,7 +458,8 @@ public static class SaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -469,7 +492,8 @@ public static class SaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -504,7 +528,8 @@ public static class SaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -517,7 +542,8 @@ public static class SaveData
     {
         Result res = OpenSaveDataInternalStorageFileSystemImpl(fs, ref outFileSystem, spaceId, saveDataId);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -528,18 +554,21 @@ public static class SaveData
         Result res = Operate(fs, mountName, spaceId, saveDataId);
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
 
         static Result Operate(FileSystemClient fs, U8Span mountName, SaveDataSpaceId spaceId, ulong saveDataId)
         {
             Result res = fs.Impl.CheckMountName(mountName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var fileSystem = new UniqueRef<IFileSystem>();
             res = OpenSaveDataInternalStorageFileSystemImpl(fs, ref fileSystem.Ref, spaceId, saveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return fs.Register(mountName, ref fileSystem.Ref);
         }

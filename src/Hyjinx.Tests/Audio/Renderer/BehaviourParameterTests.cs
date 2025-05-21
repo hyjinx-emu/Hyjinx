@@ -1,15 +1,14 @@
 using Hyjinx.Audio.Renderer.Common;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Audio.Renderer
+namespace Hyjinx.Tests.Audio.Renderer;
+
+class BehaviourParameterTests
 {
-    class BehaviourParameterTests
+    [Test]
+    public void EnsureTypeSize()
     {
-        [Test]
-        public void EnsureTypeSize()
-        {
-            ClassicAssert.AreEqual(0x10, Unsafe.SizeOf<BehaviourParameter>());
-            ClassicAssert.AreEqual(0x10, Unsafe.SizeOf<BehaviourParameter.ErrorInfo>());
-        }
+        ClassicAssert.AreEqual(0x10, Unsafe.SizeOf<BehaviourParameter>());
+        ClassicAssert.AreEqual(0x10, Unsafe.SizeOf<BehaviourParameter.ErrorInfo>());
     }
 }

@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System;
+using System.IO;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -76,7 +76,8 @@ public class NxFileStream : Stream
 
     protected override void Dispose(bool disposing)
     {
-        if (!LeaveOpen) BaseFile?.Dispose();
+        if (!LeaveOpen)
+            BaseFile?.Dispose();
         base.Dispose(disposing);
     }
 }

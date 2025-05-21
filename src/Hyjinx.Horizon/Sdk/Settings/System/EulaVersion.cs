@@ -1,6 +1,5 @@
-namespace Hyjinx.Horizon.Sdk.Settings.System
+namespace Hyjinx.Horizon.Sdk.Settings.System;
+
+struct EulaVersion
 {
-    struct EulaVersion
-    {
-    }
 }

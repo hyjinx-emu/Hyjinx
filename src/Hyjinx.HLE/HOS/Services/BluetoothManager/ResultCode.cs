@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.BluetoothManager
-{
-    enum ResultCode
-    {
-        ModuleId = 143,
-        ErrorCodeShift = 9,
+namespace Hyjinx.HLE.HOS.Services.BluetoothManager;
 
-        Success = 0,
-    }
+enum ResultCode
+{
+    ModuleId = 143,
+    ErrorCodeShift = 9,
+
+    Success = 0,
 }

@@ -1,23 +1,22 @@
-namespace Hyjinx.Graphics.Gpu.Shader.DiskCache
+namespace Hyjinx.Graphics.Gpu.Shader.DiskCache;
+
+/// <summary>
+/// Algorithm used to compress the cache.
+/// </summary>
+enum CompressionAlgorithm : byte
 {
     /// <summary>
-    /// Algorithm used to compress the cache.
+    /// No compression, the data is stored as-is.
     /// </summary>
-    enum CompressionAlgorithm : byte
-    {
-        /// <summary>
-        /// No compression, the data is stored as-is.
-        /// </summary>
-        None,
+    None,
 
-        /// <summary>
-        /// Deflate compression (RFC 1951).
-        /// </summary>
-        Deflate,
+    /// <summary>
+    /// Deflate compression (RFC 1951).
+    /// </summary>
+    Deflate,
 
-        /// <summary>
-        /// Brotli compression (RFC 7932).
-        /// </summary>
-        Brotli,
-    }
+    /// <summary>
+    /// Brotli compression (RFC 7932).
+    /// </summary>
+    Brotli,
 }

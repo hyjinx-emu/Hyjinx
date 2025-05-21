@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
 using LibHac.Fs;
+using System;
+using System.Collections.Generic;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -20,7 +20,8 @@ public class ConcatenationStorage : IStorage
         {
             sources[i].GetSize(out long sourceSize).ThrowIfFailure();
 
-            if (sourceSize < 0) throw new ArgumentException("Sources must have an explicit length.");
+            if (sourceSize < 0)
+                throw new ArgumentException("Sources must have an explicit length.");
             Sources[i] = new ConcatSource(sources[i], length, sourceSize);
             length += sourceSize;
         }
@@ -35,7 +36,8 @@ public class ConcatenationStorage : IStorage
         int remaining = destination.Length;
 
         Result res = CheckAccessRange(offset, destination.Length, Length);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         int sourceIndex = FindSource(inPos);
 
@@ -48,7 +50,8 @@ public class ConcatenationStorage : IStorage
             int bytesToRead = (int)Math.Min(entryRemain, remaining);
 
             res = entry.Storage.Read(entryPos, destination.Slice(outPos, bytesToRead));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outPos += bytesToRead;
             inPos += bytesToRead;
@@ -66,7 +69,8 @@ public class ConcatenationStorage : IStorage
         int remaining = source.Length;
 
         Result res = CheckAccessRange(offset, source.Length, Length);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         int sourceIndex = FindSource(inPos);
 
@@ -79,7 +83,8 @@ public class ConcatenationStorage : IStorage
             int bytesToWrite = (int)Math.Min(entryRemain, remaining);
 
             res = entry.Storage.Write(entryPos, source.Slice(outPos, bytesToWrite));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outPos += bytesToWrite;
             inPos += bytesToWrite;
@@ -95,7 +100,8 @@ public class ConcatenationStorage : IStorage
         foreach (ConcatSource source in Sources)
         {
             Result res = source.Storage.Flush();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -145,7 +151,8 @@ public class ConcatenationStorage : IStorage
 
             long val = Sources[mid].StartOffset;
 
-            if (val == offset) return mid;
+            if (val == offset)
+                return mid;
 
             if (val < offset)
             {

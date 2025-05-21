@@ -1,13 +1,13 @@
-using System;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Gc.Impl;
 using LibHac.Tools.FsSystem;
+using System;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace LibHac.Tools.Fs;
 
@@ -16,7 +16,7 @@ public partial class XciHeader
     private const int SignatureSize = 0x100;
     private const string HeaderMagic = "HEAD";
     private const uint HeaderMagicValue = 0x44414548; // HEAD
-    
+
     public byte[] Signature { get; set; }
     public string Magic { get; set; }
     public int RomAreaStartPage { get; set; }
@@ -87,9 +87,9 @@ public partial class XciHeader
             reader.BaseStream.Position = SignatureSize;
             byte[] sigData = reader.ReadBytes(SignatureSize);
             reader.BaseStream.Position = SignatureSize + 4;
-            
+
             SignatureValidity = Validity.Unchecked;
-            
+
             RomAreaStartPage = reader.ReadInt32();
             BackupAreaStartPage = reader.ReadInt32();
             byte keyIndex = reader.ReadByte();
@@ -110,7 +110,7 @@ public partial class XciHeader
             SelT1Key = reader.ReadInt32();
             SelKey = reader.ReadInt32();
             LimAreaPage = reader.ReadInt32();
-            
+
             ImageHash = new byte[Sha256.DigestSize];
             Sha256.GenerateSha256Hash(sigData, ImageHash);
 
@@ -139,13 +139,15 @@ public partial class XciHeader
         UnsafeHelpers.SkipParamInit(out keyAreaStorage, out bodyStorage);
 
         Result res = baseStorage.GetSize(out long storageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (storageSize >= 0x1104)
         {
             uint magic = 0;
             res = baseStorage.Read(0x1100, SpanHelpers.AsByteSpan(ref magic));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (magic == HeaderMagicValue)
             {
@@ -176,11 +178,16 @@ public static class XciExtensions
     {
         switch (type)
         {
-            case XciPartitionType.Update: return "update";
-            case XciPartitionType.Normal: return "normal";
-            case XciPartitionType.Secure: return "secure";
-            case XciPartitionType.Logo: return "logo";
-            case XciPartitionType.Root: return "root";
+            case XciPartitionType.Update:
+                return "update";
+            case XciPartitionType.Normal:
+                return "normal";
+            case XciPartitionType.Secure:
+                return "secure";
+            case XciPartitionType.Logo:
+                return "logo";
+            case XciPartitionType.Root:
+                return "root";
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }

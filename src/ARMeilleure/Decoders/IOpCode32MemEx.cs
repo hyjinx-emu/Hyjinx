@@ -1,7 +1,6 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+interface IOpCode32MemEx : IOpCode32Mem
 {
-    interface IOpCode32MemEx : IOpCode32Mem
-    {
-        int Rd { get; }
-    }
+    int Rd { get; }
 }

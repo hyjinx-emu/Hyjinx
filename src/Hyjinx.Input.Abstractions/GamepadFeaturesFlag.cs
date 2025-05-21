@@ -1,28 +1,27 @@
 using System;
 
-namespace Hyjinx.Input
+namespace Hyjinx.Input;
+
+/// <summary>
+/// Represent features supported by a <see cref="IGamepad"/>.
+/// </summary>
+[Flags]
+public enum GamepadFeaturesFlag
 {
     /// <summary>
-    /// Represent features supported by a <see cref="IGamepad"/>.
+    /// No features are supported
     /// </summary>
-    [Flags]
-    public enum GamepadFeaturesFlag
-    {
-        /// <summary>
-        /// No features are supported
-        /// </summary>
-        None,
+    None,
 
-        /// <summary>
-        /// Rumble
-        /// </summary>
-        /// <remarks>Also named haptic</remarks>
-        Rumble,
+    /// <summary>
+    /// Rumble
+    /// </summary>
+    /// <remarks>Also named haptic</remarks>
+    Rumble,
 
-        /// <summary>
-        /// Motion
-        /// <remarks>Also named sixaxis</remarks>
-        /// </summary>
-        Motion,
-    }
+    /// <summary>
+    /// Motion
+    /// <remarks>Also named sixaxis</remarks>
+    /// </summary>
+    Motion,
 }

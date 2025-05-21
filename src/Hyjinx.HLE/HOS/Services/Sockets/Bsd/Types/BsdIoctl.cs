@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
+
+enum BsdIoctl
 {
-    enum BsdIoctl
-    {
-        AtMark = 0x40047307,
-    }
+    AtMark = 0x40047307,
 }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.FsSystem;
+using System;
+using System.Buffers;
+using System.Collections.Generic;
 
 namespace LibHac.Tools.Fs;
 
@@ -14,7 +14,8 @@ public static class FileSystemClientUtils
         CreateFileOptions options = CreateFileOptions.None, IProgressReport logger = null)
     {
         Result res = fs.OpenDirectory(out DirectoryHandle sourceHandle, sourcePath.ToU8Span(), OpenDirectoryMode.All);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         try
         {
@@ -28,7 +29,8 @@ public static class FileSystemClientUtils
                     fs.EnsureDirectoryExists(subDstPath);
 
                     res = fs.CopyDirectory(subSrcPath, subDstPath, options, logger);
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                 }
 
                 if (entry.Type == DirectoryEntryType.File)
@@ -37,7 +39,8 @@ public static class FileSystemClientUtils
                     fs.CreateOrOverwriteFile(subDstPath, entry.Size, options);
 
                     res = fs.CopyFile(subSrcPath, subDstPath, logger);
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                 }
             }
         }
@@ -53,20 +56,23 @@ public static class FileSystemClientUtils
     public static Result CopyFile(this FileSystemClient fs, string sourcePath, string destPath, IProgressReport logger = null)
     {
         Result res = fs.OpenFile(out FileHandle sourceHandle, sourcePath.ToU8Span(), OpenMode.Read);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         try
         {
             res = fs.OpenFile(out FileHandle destHandle, destPath.ToU8Span(),
                 OpenMode.Write | OpenMode.AllowAppend);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             try
             {
                 const int maxBufferSize = 0x10000;
 
                 res = fs.GetFileSize(out long fileSize, sourceHandle);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 int bufferSize = (int)Math.Min(maxBufferSize, fileSize);
 
@@ -81,10 +87,12 @@ public static class FileSystemClientUtils
                         Span<byte> buf = buffer.AsSpan(0, toRead);
 
                         res = fs.ReadFile(out long _, sourceHandle, offset, buf);
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
 
                         res = fs.WriteFile(destHandle, offset, buf, WriteOption.None);
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
 
                         logger?.ReportAdd(toRead);
                     }
@@ -96,7 +104,8 @@ public static class FileSystemClientUtils
                 }
 
                 res = fs.FlushFile(destHandle);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
             finally
             {
@@ -137,7 +146,8 @@ public static class FileSystemClientUtils
                 DirectoryEntry dirEntry = default;
 
                 fs.ReadDirectory(out long entriesRead, SpanHelpers.AsSpan(ref dirEntry), sourceHandle);
-                if (entriesRead == 0) break;
+                if (entriesRead == 0)
+                    break;
 
                 DirectoryEntryEx entry = FileSystemExtensions.GetDirectoryEntryEx(ref dirEntry, path);
 
@@ -146,7 +156,8 @@ public static class FileSystemClientUtils
                     yield return entry;
                 }
 
-                if (entry.Type != DirectoryEntryType.Directory || !recurse) continue;
+                if (entry.Type != DirectoryEntryType.Directory || !recurse)
+                    continue;
 
                 IEnumerable<DirectoryEntryEx> subEntries =
                     fs.EnumerateEntries(PathTools.Combine(path, entry.Name), searchPattern, searchOptions);
@@ -181,7 +192,8 @@ public static class FileSystemClientUtils
     public static void EnsureDirectoryExists(this FileSystemClient fs, string path)
     {
         path = PathTools.Normalize(path);
-        if (fs.DirectoryExists(path)) return;
+        if (fs.DirectoryExists(path))
+            return;
 
         PathTools.GetMountNameLength(path, out int mountNameLength).ThrowIfFailure();
 
@@ -231,7 +243,8 @@ public static class FileSystemClientUtils
         if (fs.FileExists(path))
         {
             Result res = fs.DeleteFile(u8Path);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return fs.CreateFile(u8Path, size, CreateFileOptions.None);

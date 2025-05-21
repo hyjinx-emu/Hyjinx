@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum AntiAliasing
 {
-    public enum AntiAliasing
-    {
-        None,
-        Fxaa,
-        SmaaLow,
-        SmaaMedium,
-        SmaaHigh,
-        SmaaUltra,
-    }
+    None,
+    Fxaa,
+    SmaaLow,
+    SmaaMedium,
+    SmaaHigh,
+    SmaaUltra,
 }

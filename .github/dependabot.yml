@@ -15,7 +15,7 @@ updates:
     directory: /
     open-pull-requests-limit: 10
     schedule:
-      interval: daily
+      interval: weekly
     labels:
       - "infra"
     reviewers:
@@ -26,15 +26,15 @@ updates:
       Avalonia:
         patterns:
           - "*Avalonia*"
+      Microsoft:
+        patterns:
+          - "Microsoft*"
       Silk.NET:
         patterns:
           - "Silk.NET*"
       OpenTK:
         patterns:
           - "OpenTK*"
-      SixLabors:
-        patterns:
-          - "SixLabors*"
       NUnit:
         patterns:
           - "NUnit*"

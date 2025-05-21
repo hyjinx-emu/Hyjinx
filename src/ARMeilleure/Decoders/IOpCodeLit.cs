@@ -1,11 +1,10 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+interface IOpCodeLit : IOpCode
 {
-    interface IOpCodeLit : IOpCode
-    {
-        int Rt { get; }
-        long Immediate { get; }
-        int Size { get; }
-        bool Signed { get; }
-        bool Prefetch { get; }
-    }
+    int Rt { get; }
+    long Immediate { get; }
+    int Size { get; }
+    bool Signed { get; }
+    bool Prefetch { get; }
 }

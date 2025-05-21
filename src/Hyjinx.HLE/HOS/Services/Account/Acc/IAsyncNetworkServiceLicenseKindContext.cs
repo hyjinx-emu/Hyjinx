@@ -1,38 +1,37 @@
 using Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
 
-namespace Hyjinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc;
+
+class IAsyncNetworkServiceLicenseKindContext : IAsyncContext
 {
-    class IAsyncNetworkServiceLicenseKindContext : IAsyncContext
+    private readonly NetworkServiceLicenseKind? _serviceLicenseKind;
+
+    public IAsyncNetworkServiceLicenseKindContext(AsyncExecution asyncExecution, NetworkServiceLicenseKind? serviceLicenseKind) : base(asyncExecution)
     {
-        private readonly NetworkServiceLicenseKind? _serviceLicenseKind;
+        _serviceLicenseKind = serviceLicenseKind;
+    }
 
-        public IAsyncNetworkServiceLicenseKindContext(AsyncExecution asyncExecution, NetworkServiceLicenseKind? serviceLicenseKind) : base(asyncExecution)
+    [CommandCmif(100)]
+    // GetNetworkServiceLicenseKind() -> nn::account::NetworkServiceLicenseKind
+    public ResultCode GetNetworkServiceLicenseKind(ServiceCtx context)
+    {
+        if (!AsyncExecution.IsInitialized)
         {
-            _serviceLicenseKind = serviceLicenseKind;
+            return ResultCode.AsyncExecutionNotInitialized;
         }
 
-        [CommandCmif(100)]
-        // GetNetworkServiceLicenseKind() -> nn::account::NetworkServiceLicenseKind
-        public ResultCode GetNetworkServiceLicenseKind(ServiceCtx context)
+        if (!AsyncExecution.SystemEvent.ReadableEvent.IsSignaled())
         {
-            if (!AsyncExecution.IsInitialized)
-            {
-                return ResultCode.AsyncExecutionNotInitialized;
-            }
-
-            if (!AsyncExecution.SystemEvent.ReadableEvent.IsSignaled())
-            {
-                return ResultCode.Unknown41;
-            }
-
-            if (!_serviceLicenseKind.HasValue)
-            {
-                return ResultCode.MissingNetworkServiceLicenseKind;
-            }
-
-            context.ResponseData.Write((uint)_serviceLicenseKind.Value);
-
-            return ResultCode.Success;
+            return ResultCode.Unknown41;
         }
+
+        if (!_serviceLicenseKind.HasValue)
+        {
+            return ResultCode.MissingNetworkServiceLicenseKind;
+        }
+
+        context.ResponseData.Write((uint)_serviceLicenseKind.Value);
+
+        return ResultCode.Success;
     }
 }

@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.Shader.IntermediateRepresentation
-{
-    class CommentNode : Operation
-    {
-        public string Comment { get; }
+namespace Hyjinx.Graphics.Shader.IntermediateRepresentation;
 
-        public CommentNode(string comment) : base(Instruction.Comment, null)
-        {
-            Comment = comment;
-        }
+class CommentNode : Operation
+{
+    public string Comment { get; }
+
+    public CommentNode(string comment) : base(Instruction.Comment, null)
+    {
+        Comment = comment;
     }
 }

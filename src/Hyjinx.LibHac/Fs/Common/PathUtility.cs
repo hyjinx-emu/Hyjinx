@@ -1,9 +1,9 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.Util;
+using System;
 using static LibHac.Fs.StringTraits;
 
 // ReSharper disable once CheckNamespace
@@ -58,7 +58,8 @@ public static class PathUtility
 
         Result res = PathFormatter.SkipMountName(out ReadOnlySpan<byte> pathWithoutMountName, out int skipLength,
             new U8Span(path));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!WindowsPath.IsWindowsPath(pathWithoutMountName, true))
         {

@@ -5,133 +5,132 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 
-namespace Hyjinx.Audio.Renderer.Dsp.Command
+namespace Hyjinx.Audio.Renderer.Dsp.Command;
+
+public class MixCommand : ICommand
 {
-    public class MixCommand : ICommand
+    public bool Enabled { get; set; }
+
+    public int NodeId { get; }
+
+    public CommandType CommandType => CommandType.Mix;
+
+    public uint EstimatedProcessingTime { get; set; }
+
+    public ushort InputBufferIndex { get; }
+    public ushort OutputBufferIndex { get; }
+
+    public float Volume { get; }
+
+    public MixCommand(uint inputBufferIndex, uint outputBufferIndex, int nodeId, float volume)
     {
-        public bool Enabled { get; set; }
+        Enabled = true;
+        NodeId = nodeId;
 
-        public int NodeId { get; }
+        InputBufferIndex = (ushort)inputBufferIndex;
+        OutputBufferIndex = (ushort)outputBufferIndex;
 
-        public CommandType CommandType => CommandType.Mix;
+        Volume = volume;
+    }
 
-        public uint EstimatedProcessingTime { get; set; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ProcessMixAvx(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+    {
+        Vector256<float> volumeVec = Vector256.Create(Volume);
 
-        public ushort InputBufferIndex { get; }
-        public ushort OutputBufferIndex { get; }
+        ReadOnlySpan<Vector256<float>> inputVec = MemoryMarshal.Cast<float, Vector256<float>>(inputMix);
+        Span<Vector256<float>> outputVec = MemoryMarshal.Cast<float, Vector256<float>>(outputMix);
 
-        public float Volume { get; }
+        int sisdStart = inputVec.Length * 8;
 
-        public MixCommand(uint inputBufferIndex, uint outputBufferIndex, int nodeId, float volume)
+        for (int i = 0; i < inputVec.Length; i++)
         {
-            Enabled = true;
-            NodeId = nodeId;
-
-            InputBufferIndex = (ushort)inputBufferIndex;
-            OutputBufferIndex = (ushort)outputBufferIndex;
-
-            Volume = volume;
+            outputVec[i] = Avx.Add(outputVec[i], Avx.Ceiling(Avx.Multiply(inputVec[i], volumeVec)));
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ProcessMixAvx(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+        for (int i = sisdStart; i < inputMix.Length; i++)
         {
-            Vector256<float> volumeVec = Vector256.Create(Volume);
+            outputMix[i] += FloatingPointHelper.MultiplyRoundUp(inputMix[i], Volume);
+        }
+    }
 
-            ReadOnlySpan<Vector256<float>> inputVec = MemoryMarshal.Cast<float, Vector256<float>>(inputMix);
-            Span<Vector256<float>> outputVec = MemoryMarshal.Cast<float, Vector256<float>>(outputMix);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ProcessMixSse41(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+    {
+        Vector128<float> volumeVec = Vector128.Create(Volume);
 
-            int sisdStart = inputVec.Length * 8;
+        ReadOnlySpan<Vector128<float>> inputVec = MemoryMarshal.Cast<float, Vector128<float>>(inputMix);
+        Span<Vector128<float>> outputVec = MemoryMarshal.Cast<float, Vector128<float>>(outputMix);
 
-            for (int i = 0; i < inputVec.Length; i++)
-            {
-                outputVec[i] = Avx.Add(outputVec[i], Avx.Ceiling(Avx.Multiply(inputVec[i], volumeVec)));
-            }
+        int sisdStart = inputVec.Length * 4;
 
-            for (int i = sisdStart; i < inputMix.Length; i++)
-            {
-                outputMix[i] += FloatingPointHelper.MultiplyRoundUp(inputMix[i], Volume);
-            }
+        for (int i = 0; i < inputVec.Length; i++)
+        {
+            outputVec[i] = Sse.Add(outputVec[i], Sse41.Ceiling(Sse.Multiply(inputVec[i], volumeVec)));
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ProcessMixSse41(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+        for (int i = sisdStart; i < inputMix.Length; i++)
         {
-            Vector128<float> volumeVec = Vector128.Create(Volume);
+            outputMix[i] += FloatingPointHelper.MultiplyRoundUp(inputMix[i], Volume);
+        }
+    }
 
-            ReadOnlySpan<Vector128<float>> inputVec = MemoryMarshal.Cast<float, Vector128<float>>(inputMix);
-            Span<Vector128<float>> outputVec = MemoryMarshal.Cast<float, Vector128<float>>(outputMix);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ProcessMixAdvSimd(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+    {
+        Vector128<float> volumeVec = Vector128.Create(Volume);
 
-            int sisdStart = inputVec.Length * 4;
+        ReadOnlySpan<Vector128<float>> inputVec = MemoryMarshal.Cast<float, Vector128<float>>(inputMix);
+        Span<Vector128<float>> outputVec = MemoryMarshal.Cast<float, Vector128<float>>(outputMix);
 
-            for (int i = 0; i < inputVec.Length; i++)
-            {
-                outputVec[i] = Sse.Add(outputVec[i], Sse41.Ceiling(Sse.Multiply(inputVec[i], volumeVec)));
-            }
+        int sisdStart = inputVec.Length * 4;
 
-            for (int i = sisdStart; i < inputMix.Length; i++)
-            {
-                outputMix[i] += FloatingPointHelper.MultiplyRoundUp(inputMix[i], Volume);
-            }
+        for (int i = 0; i < inputVec.Length; i++)
+        {
+            outputVec[i] = AdvSimd.Add(outputVec[i], AdvSimd.Ceiling(AdvSimd.Multiply(inputVec[i], volumeVec)));
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ProcessMixAdvSimd(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+        for (int i = sisdStart; i < inputMix.Length; i++)
         {
-            Vector128<float> volumeVec = Vector128.Create(Volume);
-
-            ReadOnlySpan<Vector128<float>> inputVec = MemoryMarshal.Cast<float, Vector128<float>>(inputMix);
-            Span<Vector128<float>> outputVec = MemoryMarshal.Cast<float, Vector128<float>>(outputMix);
-
-            int sisdStart = inputVec.Length * 4;
-
-            for (int i = 0; i < inputVec.Length; i++)
-            {
-                outputVec[i] = AdvSimd.Add(outputVec[i], AdvSimd.Ceiling(AdvSimd.Multiply(inputVec[i], volumeVec)));
-            }
-
-            for (int i = sisdStart; i < inputMix.Length; i++)
-            {
-                outputMix[i] += FloatingPointHelper.MultiplyRoundUp(inputMix[i], Volume);
-            }
+            outputMix[i] += FloatingPointHelper.MultiplyRoundUp(inputMix[i], Volume);
         }
+    }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ProcessMixSlowPath(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ProcessMixSlowPath(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+    {
+        for (int i = 0; i < inputMix.Length; i++)
         {
-            for (int i = 0; i < inputMix.Length; i++)
-            {
-                outputMix[i] += FloatingPointHelper.MultiplyRoundUp(inputMix[i], Volume);
-            }
+            outputMix[i] += FloatingPointHelper.MultiplyRoundUp(inputMix[i], Volume);
         }
+    }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ProcessMix(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ProcessMix(Span<float> outputMix, ReadOnlySpan<float> inputMix)
+    {
+        if (Avx.IsSupported)
         {
-            if (Avx.IsSupported)
-            {
-                ProcessMixAvx(outputMix, inputMix);
-            }
-            else if (Sse41.IsSupported)
-            {
-                ProcessMixSse41(outputMix, inputMix);
-            }
-            else if (AdvSimd.IsSupported)
-            {
-                ProcessMixAdvSimd(outputMix, inputMix);
-            }
-            else
-            {
-                ProcessMixSlowPath(outputMix, inputMix);
-            }
+            ProcessMixAvx(outputMix, inputMix);
         }
-
-        public void Process(CommandList context)
+        else if (Sse41.IsSupported)
         {
-            ReadOnlySpan<float> inputBuffer = context.GetBuffer(InputBufferIndex);
-            Span<float> outputBuffer = context.GetBuffer(OutputBufferIndex);
-
-            ProcessMix(outputBuffer, inputBuffer);
+            ProcessMixSse41(outputMix, inputMix);
         }
+        else if (AdvSimd.IsSupported)
+        {
+            ProcessMixAdvSimd(outputMix, inputMix);
+        }
+        else
+        {
+            ProcessMixSlowPath(outputMix, inputMix);
+        }
+    }
+
+    public void Process(CommandList context)
+    {
+        ReadOnlySpan<float> inputBuffer = context.GetBuffer(InputBufferIndex);
+        Span<float> outputBuffer = context.GetBuffer(OutputBufferIndex);
+
+        ProcessMix(outputBuffer, inputBuffer);
     }
 }

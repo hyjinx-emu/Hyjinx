@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Nim
+namespace Hyjinx.HLE.HOS.Services.Nim;
+
+[Service("nim")]
+class INetworkInstallManager : IpcService<INetworkInstallManager>
 {
-    [Service("nim")]
-    class INetworkInstallManager : IpcService<INetworkInstallManager>
-    {
-        public INetworkInstallManager(ServiceCtx context) { }
-    }
+    public INetworkInstallManager(ServiceCtx context) { }
 }

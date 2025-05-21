@@ -1,7 +1,6 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+interface IOpCodeSimd : IOpCode
 {
-    interface IOpCodeSimd : IOpCode
-    {
-        int Size { get; }
-    }
+    int Size { get; }
 }

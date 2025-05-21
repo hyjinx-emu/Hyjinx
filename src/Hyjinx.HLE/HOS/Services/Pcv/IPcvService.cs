@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Pcv
+namespace Hyjinx.HLE.HOS.Services.Pcv;
+
+[Service("pcv")]
+class IPcvService : IpcService<IPcvService>
 {
-    [Service("pcv")]
-    class IPcvService : IpcService<IPcvService>
-    {
-        public IPcvService(ServiceCtx context) { }
-    }
+    public IPcvService(ServiceCtx context) { }
 }

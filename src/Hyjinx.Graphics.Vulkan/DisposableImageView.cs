@@ -1,25 +1,24 @@
 using Silk.NET.Vulkan;
 using System;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+readonly struct DisposableImageView : IDisposable
 {
-    readonly struct DisposableImageView : IDisposable
+    private readonly Vk _api;
+    private readonly Device _device;
+
+    public ImageView Value { get; }
+
+    public DisposableImageView(Vk api, Device device, ImageView imageView)
     {
-        private readonly Vk _api;
-        private readonly Device _device;
+        _api = api;
+        _device = device;
+        Value = imageView;
+    }
 
-        public ImageView Value { get; }
-
-        public DisposableImageView(Vk api, Device device, ImageView imageView)
-        {
-            _api = api;
-            _device = device;
-            Value = imageView;
-        }
-
-        public void Dispose()
-        {
-            _api.DestroyImageView(_device, Value, Span<AllocationCallbacks>.Empty);
-        }
+    public void Dispose()
+    {
+        _api.DestroyImageView(_device, Value, Span<AllocationCallbacks>.Empty);
     }
 }

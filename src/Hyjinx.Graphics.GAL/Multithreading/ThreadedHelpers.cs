@@ -1,28 +1,27 @@
 using System;
 using System.Threading;
 
-namespace Hyjinx.Graphics.GAL.Multithreading
+namespace Hyjinx.Graphics.GAL.Multithreading;
+
+static class ThreadedHelpers
 {
-    static class ThreadedHelpers
+    public static void SpinUntilNonNull<T>(ref T obj) where T : class
     {
-        public static void SpinUntilNonNull<T>(ref T obj) where T : class
-        {
-            Span<SpinWait> spinWait = stackalloc SpinWait[1];
+        Span<SpinWait> spinWait = stackalloc SpinWait[1];
 
-            while (obj == null)
-            {
-                spinWait[0].SpinOnce(-1);
-            }
+        while (obj == null)
+        {
+            spinWait[0].SpinOnce(-1);
         }
+    }
 
-        public static void SpinUntilExchange(ref int target, int value, int comparand)
+    public static void SpinUntilExchange(ref int target, int value, int comparand)
+    {
+        Span<SpinWait> spinWait = stackalloc SpinWait[1];
+
+        while (Interlocked.CompareExchange(ref target, value, comparand) != comparand)
         {
-            Span<SpinWait> spinWait = stackalloc SpinWait[1];
-
-            while (Interlocked.CompareExchange(ref target, value, comparand) != comparand)
-            {
-                spinWait[0].SpinOnce(-1);
-            }
+            spinWait[0].SpinOnce(-1);
         }
     }
 }

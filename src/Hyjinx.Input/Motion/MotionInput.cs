@@ -2,64 +2,63 @@ using Hyjinx.Input.Motion;
 using System;
 using System.Numerics;
 
-namespace Hyjinx.Input
+namespace Hyjinx.Input;
+
+public class MotionInput
 {
-    public class MotionInput
+    public ulong TimeStamp { get; set; }
+    public Vector3 Accelerometer { get; set; }
+    public Vector3 Gyroscrope { get; set; }
+    public Vector3 Rotation { get; set; }
+
+    private readonly MotionSensorFilter _filter;
+
+    public MotionInput()
     {
-        public ulong TimeStamp { get; set; }
-        public Vector3 Accelerometer { get; set; }
-        public Vector3 Gyroscrope { get; set; }
-        public Vector3 Rotation { get; set; }
+        TimeStamp = 0;
+        Accelerometer = new Vector3();
+        Gyroscrope = new Vector3();
+        Rotation = new Vector3();
 
-        private readonly MotionSensorFilter _filter;
+        // TODO: RE the correct filter.
+        _filter = new MotionSensorFilter(0f);
+    }
 
-        public MotionInput()
+    public void Update(Vector3 accel, Vector3 gyro, ulong timestamp, int sensitivity, float deadzone)
+    {
+        if (TimeStamp != 0)
         {
-            TimeStamp = 0;
-            Accelerometer = new Vector3();
-            Gyroscrope = new Vector3();
-            Rotation = new Vector3();
+            Accelerometer = -accel;
 
-            // TODO: RE the correct filter.
-            _filter = new MotionSensorFilter(0f);
-        }
-
-        public void Update(Vector3 accel, Vector3 gyro, ulong timestamp, int sensitivity, float deadzone)
-        {
-            if (TimeStamp != 0)
+            if (gyro.Length() < deadzone)
             {
-                Accelerometer = -accel;
-
-                if (gyro.Length() < deadzone)
-                {
-                    gyro = Vector3.Zero;
-                }
-
-                gyro *= (sensitivity / 100f);
-
-                Gyroscrope = gyro;
-
-                float deltaTime = MathF.Abs((long)(timestamp - TimeStamp) / 1000000f);
-
-                Vector3 deltaGyro = gyro * deltaTime;
-
-                Rotation += deltaGyro;
-
-                _filter.SamplePeriod = deltaTime;
-                _filter.Update(accel, DegreeToRad(gyro));
+                gyro = Vector3.Zero;
             }
 
-            TimeStamp = timestamp;
+            gyro *= (sensitivity / 100f);
+
+            Gyroscrope = gyro;
+
+            float deltaTime = MathF.Abs((long)(timestamp - TimeStamp) / 1000000f);
+
+            Vector3 deltaGyro = gyro * deltaTime;
+
+            Rotation += deltaGyro;
+
+            _filter.SamplePeriod = deltaTime;
+            _filter.Update(accel, DegreeToRad(gyro));
         }
 
-        public Matrix4x4 GetOrientation()
-        {
-            return Matrix4x4.CreateFromQuaternion(_filter.Quaternion);
-        }
+        TimeStamp = timestamp;
+    }
 
-        private static Vector3 DegreeToRad(Vector3 degree)
-        {
-            return degree * (MathF.PI / 180);
-        }
+    public Matrix4x4 GetOrientation()
+    {
+        return Matrix4x4.CreateFromQuaternion(_filter.Quaternion);
+    }
+
+    private static Vector3 DegreeToRad(Vector3 degree)
+    {
+        return degree * (MathF.PI / 180);
     }
 }

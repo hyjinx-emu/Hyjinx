@@ -1,123 +1,122 @@
 using ARMeilleure.Memory;
 using ARMeilleure.State;
 
-namespace Hyjinx.Cpu.Jit
+namespace Hyjinx.Cpu.Jit;
+
+class JitExecutionContext : IExecutionContext
 {
-    class JitExecutionContext : IExecutionContext
+    private readonly ExecutionContext _impl;
+    internal ExecutionContext Impl => _impl;
+
+    /// <inheritdoc/>
+    public ulong Pc => _impl.Pc;
+
+    /// <inheritdoc/>
+    public long TpidrEl0
     {
-        private readonly ExecutionContext _impl;
-        internal ExecutionContext Impl => _impl;
+        get => _impl.TpidrEl0;
+        set => _impl.TpidrEl0 = value;
+    }
 
-        /// <inheritdoc/>
-        public ulong Pc => _impl.Pc;
+    /// <inheritdoc/>
+    public long TpidrroEl0
+    {
+        get => _impl.TpidrroEl0;
+        set => _impl.TpidrroEl0 = value;
+    }
 
-        /// <inheritdoc/>
-        public long TpidrEl0
-        {
-            get => _impl.TpidrEl0;
-            set => _impl.TpidrEl0 = value;
-        }
+    /// <inheritdoc/>
+    public uint Pstate
+    {
+        get => _impl.Pstate;
+        set => _impl.Pstate = value;
+    }
 
-        /// <inheritdoc/>
-        public long TpidrroEl0
-        {
-            get => _impl.TpidrroEl0;
-            set => _impl.TpidrroEl0 = value;
-        }
+    /// <inheritdoc/>
+    public uint Fpcr
+    {
+        get => (uint)_impl.Fpcr;
+        set => _impl.Fpcr = (FPCR)value;
+    }
 
-        /// <inheritdoc/>
-        public uint Pstate
-        {
-            get => _impl.Pstate;
-            set => _impl.Pstate = value;
-        }
+    /// <inheritdoc/>
+    public uint Fpsr
+    {
+        get => (uint)_impl.Fpsr;
+        set => _impl.Fpsr = (FPSR)value;
+    }
 
-        /// <inheritdoc/>
-        public uint Fpcr
-        {
-            get => (uint)_impl.Fpcr;
-            set => _impl.Fpcr = (FPCR)value;
-        }
+    /// <inheritdoc/>
+    public bool IsAarch32
+    {
+        get => _impl.IsAarch32;
+        set => _impl.IsAarch32 = value;
+    }
 
-        /// <inheritdoc/>
-        public uint Fpsr
-        {
-            get => (uint)_impl.Fpsr;
-            set => _impl.Fpsr = (FPSR)value;
-        }
+    /// <inheritdoc/>
+    public bool Running => _impl.Running;
 
-        /// <inheritdoc/>
-        public bool IsAarch32
-        {
-            get => _impl.IsAarch32;
-            set => _impl.IsAarch32 = value;
-        }
+    private readonly ExceptionCallbacks _exceptionCallbacks;
 
-        /// <inheritdoc/>
-        public bool Running => _impl.Running;
+    public JitExecutionContext(IJitMemoryAllocator allocator, ICounter counter, ExceptionCallbacks exceptionCallbacks)
+    {
+        _impl = new ExecutionContext(
+            allocator,
+            counter,
+            InterruptHandler,
+            BreakHandler,
+            SupervisorCallHandler,
+            UndefinedHandler);
 
-        private readonly ExceptionCallbacks _exceptionCallbacks;
+        _exceptionCallbacks = exceptionCallbacks;
+    }
 
-        public JitExecutionContext(IJitMemoryAllocator allocator, ICounter counter, ExceptionCallbacks exceptionCallbacks)
-        {
-            _impl = new ExecutionContext(
-                allocator,
-                counter,
-                InterruptHandler,
-                BreakHandler,
-                SupervisorCallHandler,
-                UndefinedHandler);
+    /// <inheritdoc/>
+    public ulong GetX(int index) => _impl.GetX(index);
 
-            _exceptionCallbacks = exceptionCallbacks;
-        }
+    /// <inheritdoc/>
+    public void SetX(int index, ulong value) => _impl.SetX(index, value);
 
-        /// <inheritdoc/>
-        public ulong GetX(int index) => _impl.GetX(index);
+    /// <inheritdoc/>
+    public V128 GetV(int index) => _impl.GetV(index);
 
-        /// <inheritdoc/>
-        public void SetX(int index, ulong value) => _impl.SetX(index, value);
+    /// <inheritdoc/>
+    public void SetV(int index, V128 value) => _impl.SetV(index, value);
 
-        /// <inheritdoc/>
-        public V128 GetV(int index) => _impl.GetV(index);
+    private void InterruptHandler(ExecutionContext context)
+    {
+        _exceptionCallbacks.InterruptCallback?.Invoke(this);
+    }
 
-        /// <inheritdoc/>
-        public void SetV(int index, V128 value) => _impl.SetV(index, value);
+    private void BreakHandler(ExecutionContext context, ulong address, int imm)
+    {
+        _exceptionCallbacks.BreakCallback?.Invoke(this, address, imm);
+    }
 
-        private void InterruptHandler(ExecutionContext context)
-        {
-            _exceptionCallbacks.InterruptCallback?.Invoke(this);
-        }
+    private void SupervisorCallHandler(ExecutionContext context, ulong address, int imm)
+    {
+        _exceptionCallbacks.SupervisorCallback?.Invoke(this, address, imm);
+    }
 
-        private void BreakHandler(ExecutionContext context, ulong address, int imm)
-        {
-            _exceptionCallbacks.BreakCallback?.Invoke(this, address, imm);
-        }
+    private void UndefinedHandler(ExecutionContext context, ulong address, int opCode)
+    {
+        _exceptionCallbacks.UndefinedCallback?.Invoke(this, address, opCode);
+    }
 
-        private void SupervisorCallHandler(ExecutionContext context, ulong address, int imm)
-        {
-            _exceptionCallbacks.SupervisorCallback?.Invoke(this, address, imm);
-        }
+    /// <inheritdoc/>
+    public void RequestInterrupt()
+    {
+        _impl.RequestInterrupt();
+    }
 
-        private void UndefinedHandler(ExecutionContext context, ulong address, int opCode)
-        {
-            _exceptionCallbacks.UndefinedCallback?.Invoke(this, address, opCode);
-        }
+    /// <inheritdoc/>
+    public void StopRunning()
+    {
+        _impl.StopRunning();
+    }
 
-        /// <inheritdoc/>
-        public void RequestInterrupt()
-        {
-            _impl.RequestInterrupt();
-        }
-
-        /// <inheritdoc/>
-        public void StopRunning()
-        {
-            _impl.StopRunning();
-        }
-
-        public void Dispose()
-        {
-            _impl.Dispose();
-        }
+    public void Dispose()
+    {
+        _impl.Dispose();
     }
 }

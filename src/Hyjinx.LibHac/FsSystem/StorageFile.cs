@@ -1,8 +1,8 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System;
 
 namespace LibHac.FsSystem;
 
@@ -28,7 +28,8 @@ public class StorageFile : IFile
         Assert.SdkRequiresNotNull(_baseStorage);
 
         Result res = DryRead(out long readSize, offset, destination.Length, in option, _mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (readSize == 0)
         {
@@ -37,7 +38,8 @@ public class StorageFile : IFile
         }
 
         res = _baseStorage.Read(offset, destination.Slice(0, (int)readSize));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         bytesRead = readSize;
         return Result.Success;
@@ -48,21 +50,25 @@ public class StorageFile : IFile
         Assert.SdkRequiresNotNull(_baseStorage);
 
         Result res = DryWrite(out bool isAppendNeeded, offset, source.Length, in option, _mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (isAppendNeeded)
         {
             res = DoSetSize(offset + source.Length);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         res = _baseStorage.Write(offset, source);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (option.HasFlushFlag())
         {
             res = Flush();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -90,7 +96,8 @@ public class StorageFile : IFile
         Assert.SdkRequiresNotNull(_baseStorage);
 
         Result res = DrySetSize(size, _mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseStorage.SetSize(size);
     }
@@ -103,31 +110,34 @@ public class StorageFile : IFile
         switch (operationId)
         {
             case OperationId.InvalidateCache:
-            {
-                if (!_mode.HasFlag(OpenMode.Read))
-                    return ResultFs.ReadUnpermitted.Log();
+                {
+                    if (!_mode.HasFlag(OpenMode.Read))
+                        return ResultFs.ReadUnpermitted.Log();
 
-                Result res = _baseStorage.OperateRange(OperationId.InvalidateCache, offset, size);
-                if (res.IsFailure()) return res.Miss();
+                    Result res = _baseStorage.OperateRange(OperationId.InvalidateCache, offset, size);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                break;
-            }
+                    break;
+                }
             case OperationId.QueryRange:
-            {
-                if (offset < 0)
-                    return ResultFs.InvalidOffset.Log();
+                {
+                    if (offset < 0)
+                        return ResultFs.InvalidOffset.Log();
 
-                Result res = GetSize(out long fileSize);
-                if (res.IsFailure()) return res.Miss();
+                    Result res = GetSize(out long fileSize);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                long operableSize = Math.Max(0, fileSize - offset);
-                long operateSize = Math.Min(operableSize, size);
+                    long operableSize = Math.Max(0, fileSize - offset);
+                    long operateSize = Math.Min(operableSize, size);
 
-                res = _baseStorage.OperateRange(outBuffer, operationId, offset, operateSize, inBuffer);
-                if (res.IsFailure()) return res.Miss();
+                    res = _baseStorage.OperateRange(outBuffer, operationId, offset, operateSize, inBuffer);
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                break;
-            }
+                    break;
+                }
             default:
                 return ResultFs.UnsupportedOperateRangeForStorageFile.Log();
         }

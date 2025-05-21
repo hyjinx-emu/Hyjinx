@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Ssl.Types
+namespace Hyjinx.HLE.HOS.Services.Ssl.Types;
+
+enum CertificateFormat : uint
 {
-    enum CertificateFormat : uint
-    {
-        Pem = 1,
-        Der = 2,
-    }
+    Pem = 1,
+    Der = 2,
 }

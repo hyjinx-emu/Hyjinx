@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Psc
+namespace Hyjinx.Horizon.Psc;
+
+class PscMain : IService
 {
-    class PscMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            PscIpcServer ipcServer = new();
+        PscIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

@@ -2,32 +2,31 @@ using Hyjinx.Horizon.Common;
 using System;
 using System.Collections.Generic;
 
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+class ServiceDispatchTable : ServiceDispatchTableBase
 {
-    class ServiceDispatchTable : ServiceDispatchTableBase
+    private readonly string _objectName;
+    private readonly IReadOnlyDictionary<int, CommandHandler> _entries;
+
+    public ServiceDispatchTable(string objectName, IReadOnlyDictionary<int, CommandHandler> entries)
     {
-        private readonly string _objectName;
-        private readonly IReadOnlyDictionary<int, CommandHandler> _entries;
+        _objectName = objectName;
+        _entries = entries;
+    }
 
-        public ServiceDispatchTable(string objectName, IReadOnlyDictionary<int, CommandHandler> entries)
+    public override Result ProcessMessage(ref ServiceDispatchContext context, ReadOnlySpan<byte> inRawData)
+    {
+        return ProcessMessageImpl(ref context, inRawData, _entries, _objectName);
+    }
+
+    public static ServiceDispatchTableBase Create(IServiceObject instance)
+    {
+        if (instance is DomainServiceObject)
         {
-            _objectName = objectName;
-            _entries = entries;
+            return new DomainServiceObjectDispatchTable();
         }
 
-        public override Result ProcessMessage(ref ServiceDispatchContext context, ReadOnlySpan<byte> inRawData)
-        {
-            return ProcessMessageImpl(ref context, inRawData, _entries, _objectName);
-        }
-
-        public static ServiceDispatchTableBase Create(IServiceObject instance)
-        {
-            if (instance is DomainServiceObject)
-            {
-                return new DomainServiceObjectDispatchTable();
-            }
-
-            return new ServiceDispatchTable(instance.GetType().Name, instance.GetCommandHandlers());
-        }
+        return new ServiceDispatchTable(instance.GetType().Name, instance.GetCommandHandlers());
     }
 }

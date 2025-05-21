@@ -2,104 +2,103 @@ using Hyjinx.Graphics.Shader.StructuredIr;
 using Hyjinx.Graphics.Shader.Translation;
 using System.Text;
 
-namespace Hyjinx.Graphics.Shader.CodeGen.Glsl
+namespace Hyjinx.Graphics.Shader.CodeGen.Glsl;
+
+class CodeGenContext
 {
-    class CodeGenContext
+    public const string Tab = "    ";
+
+    public StructuredFunction CurrentFunction { get; set; }
+
+    public StructuredProgramInfo Info { get; }
+
+    public AttributeUsage AttributeUsage { get; }
+    public ShaderDefinitions Definitions { get; }
+    public ShaderProperties Properties { get; }
+    public HostCapabilities HostCapabilities { get; }
+    public ILogger Logger { get; }
+    public TargetApi TargetApi { get; }
+
+    public OperandManager OperandManager { get; }
+
+    private readonly StringBuilder _sb;
+
+    private int _level;
+
+    private string _indentation;
+
+    public CodeGenContext(StructuredProgramInfo info, CodeGenParameters parameters)
     {
-        public const string Tab = "    ";
+        Info = info;
+        AttributeUsage = parameters.AttributeUsage;
+        Definitions = parameters.Definitions;
+        Properties = parameters.Properties;
+        HostCapabilities = parameters.HostCapabilities;
+        Logger = parameters.Logger;
+        TargetApi = parameters.TargetApi;
 
-        public StructuredFunction CurrentFunction { get; set; }
+        OperandManager = new OperandManager();
 
-        public StructuredProgramInfo Info { get; }
+        _sb = new StringBuilder();
+    }
 
-        public AttributeUsage AttributeUsage { get; }
-        public ShaderDefinitions Definitions { get; }
-        public ShaderProperties Properties { get; }
-        public HostCapabilities HostCapabilities { get; }
-        public ILogger Logger { get; }
-        public TargetApi TargetApi { get; }
+    public void AppendLine()
+    {
+        _sb.AppendLine();
+    }
 
-        public OperandManager OperandManager { get; }
+    public void AppendLine(string str)
+    {
+        _sb.AppendLine(_indentation + str);
+    }
 
-        private readonly StringBuilder _sb;
+    public string GetCode()
+    {
+        return _sb.ToString();
+    }
 
-        private int _level;
+    public void EnterScope()
+    {
+        AppendLine("{");
 
-        private string _indentation;
+        _level++;
 
-        public CodeGenContext(StructuredProgramInfo info, CodeGenParameters parameters)
+        UpdateIndentation();
+    }
+
+    public void LeaveScope(string suffix = "")
+    {
+        if (_level == 0)
         {
-            Info = info;
-            AttributeUsage = parameters.AttributeUsage;
-            Definitions = parameters.Definitions;
-            Properties = parameters.Properties;
-            HostCapabilities = parameters.HostCapabilities;
-            Logger = parameters.Logger;
-            TargetApi = parameters.TargetApi;
-
-            OperandManager = new OperandManager();
-
-            _sb = new StringBuilder();
+            return;
         }
 
-        public void AppendLine()
+        _level--;
+
+        UpdateIndentation();
+
+        AppendLine("}" + suffix);
+    }
+
+    public StructuredFunction GetFunction(int id)
+    {
+        return Info.Functions[id];
+    }
+
+    private void UpdateIndentation()
+    {
+        _indentation = GetIndentation(_level);
+    }
+
+    private static string GetIndentation(int level)
+    {
+        StringBuilder indentationBuilder = new();
+
+        for (int index = 0; index < level; index++)
         {
-            _sb.AppendLine();
+            indentationBuilder.Append(Tab);
         }
 
-        public void AppendLine(string str)
-        {
-            _sb.AppendLine(_indentation + str);
-        }
-
-        public string GetCode()
-        {
-            return _sb.ToString();
-        }
-
-        public void EnterScope()
-        {
-            AppendLine("{");
-
-            _level++;
-
-            UpdateIndentation();
-        }
-
-        public void LeaveScope(string suffix = "")
-        {
-            if (_level == 0)
-            {
-                return;
-            }
-
-            _level--;
-
-            UpdateIndentation();
-
-            AppendLine("}" + suffix);
-        }
-
-        public StructuredFunction GetFunction(int id)
-        {
-            return Info.Functions[id];
-        }
-
-        private void UpdateIndentation()
-        {
-            _indentation = GetIndentation(_level);
-        }
-
-        private static string GetIndentation(int level)
-        {
-            StringBuilder indentationBuilder = new();
-
-            for (int index = 0; index < level; index++)
-            {
-                indentationBuilder.Append(Tab);
-            }
-
-            return indentationBuilder.ToString();
-        }
+        return indentationBuilder.ToString();
     }
 }

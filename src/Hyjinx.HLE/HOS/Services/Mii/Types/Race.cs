@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
+
+enum Race : uint
 {
-    enum Race : uint
-    {
-        Black,
-        White,
-        Asian,
-        All,
-    }
+    Black,
+    White,
+    Asian,
+    All,
 }

@@ -1,19 +1,18 @@
 using System;
 
-namespace Hyjinx.Horizon.Common
+namespace Hyjinx.Horizon.Common;
+
+public readonly struct OnScopeExit : IDisposable
 {
-    public readonly struct OnScopeExit : IDisposable
+    private readonly Action _action;
+
+    public OnScopeExit(Action action)
     {
-        private readonly Action _action;
+        _action = action;
+    }
 
-        public OnScopeExit(Action action)
-        {
-            _action = action;
-        }
-
-        public void Dispose()
-        {
-            _action();
-        }
+    public void Dispose()
+    {
+        _action();
     }
 }

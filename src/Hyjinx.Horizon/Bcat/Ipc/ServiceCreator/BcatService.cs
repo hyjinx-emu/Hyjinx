@@ -3,18 +3,17 @@ using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Bcat;
 using Hyjinx.Horizon.Sdk.Sf;
 
-namespace Hyjinx.Horizon.Bcat.Ipc
+namespace Hyjinx.Horizon.Bcat.Ipc;
+
+partial class BcatService : IBcatService
 {
-    partial class BcatService : IBcatService
+    public BcatService(BcatServicePermissionLevel permissionLevel) { }
+
+    [CmifCommand(10100)]
+    public Result RequestSyncDeliveryCache(out IDeliveryCacheProgressService deliveryCacheProgressService)
     {
-        public BcatService(BcatServicePermissionLevel permissionLevel) { }
+        deliveryCacheProgressService = new DeliveryCacheProgressService();
 
-        [CmifCommand(10100)]
-        public Result RequestSyncDeliveryCache(out IDeliveryCacheProgressService deliveryCacheProgressService)
-        {
-            deliveryCacheProgressService = new DeliveryCacheProgressService();
-
-            return Result.Success;
-        }
+        return Result.Success;
     }
 }

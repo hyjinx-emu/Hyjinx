@@ -1,141 +1,140 @@
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Common.Configuration.Hid;
 
-namespace Hyjinx.Ava.UI.Models.Input
+namespace Hyjinx.Ava.UI.Models.Input;
+
+public class HotkeyConfig : BaseModel
 {
-    public class HotkeyConfig : BaseModel
+    private Key _toggleVsync;
+    public Key ToggleVsync
     {
-        private Key _toggleVsync;
-        public Key ToggleVsync
+        get => _toggleVsync;
+        set
         {
-            get => _toggleVsync;
-            set
-            {
-                _toggleVsync = value;
-                OnPropertyChanged();
-            }
+            _toggleVsync = value;
+            OnPropertyChanged();
         }
+    }
 
-        private Key _screenshot;
-        public Key Screenshot
+    private Key _screenshot;
+    public Key Screenshot
+    {
+        get => _screenshot;
+        set
         {
-            get => _screenshot;
-            set
-            {
-                _screenshot = value;
-                OnPropertyChanged();
-            }
+            _screenshot = value;
+            OnPropertyChanged();
         }
+    }
 
-        private Key _showUI;
-        public Key ShowUI
+    private Key _showUI;
+    public Key ShowUI
+    {
+        get => _showUI;
+        set
         {
-            get => _showUI;
-            set
-            {
-                _showUI = value;
-                OnPropertyChanged();
-            }
+            _showUI = value;
+            OnPropertyChanged();
         }
+    }
 
-        private Key _pause;
-        public Key Pause
+    private Key _pause;
+    public Key Pause
+    {
+        get => _pause;
+        set
         {
-            get => _pause;
-            set
-            {
-                _pause = value;
-                OnPropertyChanged();
-            }
+            _pause = value;
+            OnPropertyChanged();
         }
+    }
 
-        private Key _toggleMute;
-        public Key ToggleMute
+    private Key _toggleMute;
+    public Key ToggleMute
+    {
+        get => _toggleMute;
+        set
         {
-            get => _toggleMute;
-            set
-            {
-                _toggleMute = value;
-                OnPropertyChanged();
-            }
+            _toggleMute = value;
+            OnPropertyChanged();
         }
+    }
 
-        private Key _resScaleUp;
-        public Key ResScaleUp
+    private Key _resScaleUp;
+    public Key ResScaleUp
+    {
+        get => _resScaleUp;
+        set
         {
-            get => _resScaleUp;
-            set
-            {
-                _resScaleUp = value;
-                OnPropertyChanged();
-            }
+            _resScaleUp = value;
+            OnPropertyChanged();
         }
+    }
 
-        private Key _resScaleDown;
-        public Key ResScaleDown
+    private Key _resScaleDown;
+    public Key ResScaleDown
+    {
+        get => _resScaleDown;
+        set
         {
-            get => _resScaleDown;
-            set
-            {
-                _resScaleDown = value;
-                OnPropertyChanged();
-            }
+            _resScaleDown = value;
+            OnPropertyChanged();
         }
+    }
 
-        private Key _volumeUp;
-        public Key VolumeUp
+    private Key _volumeUp;
+    public Key VolumeUp
+    {
+        get => _volumeUp;
+        set
         {
-            get => _volumeUp;
-            set
-            {
-                _volumeUp = value;
-                OnPropertyChanged();
-            }
+            _volumeUp = value;
+            OnPropertyChanged();
         }
+    }
 
-        private Key _volumeDown;
-        public Key VolumeDown
+    private Key _volumeDown;
+    public Key VolumeDown
+    {
+        get => _volumeDown;
+        set
         {
-            get => _volumeDown;
-            set
-            {
-                _volumeDown = value;
-                OnPropertyChanged();
-            }
+            _volumeDown = value;
+            OnPropertyChanged();
         }
+    }
 
-        public HotkeyConfig(KeyboardHotkeys config)
+    public HotkeyConfig(KeyboardHotkeys config)
+    {
+        if (config != null)
         {
-            if (config != null)
-            {
-                ToggleVsync = config.ToggleVsync;
-                Screenshot = config.Screenshot;
-                ShowUI = config.ShowUI;
-                Pause = config.Pause;
-                ToggleMute = config.ToggleMute;
-                ResScaleUp = config.ResScaleUp;
-                ResScaleDown = config.ResScaleDown;
-                VolumeUp = config.VolumeUp;
-                VolumeDown = config.VolumeDown;
-            }
+            ToggleVsync = config.ToggleVsync;
+            Screenshot = config.Screenshot;
+            ShowUI = config.ShowUI;
+            Pause = config.Pause;
+            ToggleMute = config.ToggleMute;
+            ResScaleUp = config.ResScaleUp;
+            ResScaleDown = config.ResScaleDown;
+            VolumeUp = config.VolumeUp;
+            VolumeDown = config.VolumeDown;
         }
+    }
 
-        public KeyboardHotkeys GetConfig()
+    public KeyboardHotkeys GetConfig()
+    {
+        var config = new KeyboardHotkeys
         {
-            var config = new KeyboardHotkeys
-            {
-                ToggleVsync = ToggleVsync,
-                Screenshot = Screenshot,
-                ShowUI = ShowUI,
-                Pause = Pause,
-                ToggleMute = ToggleMute,
-                ResScaleUp = ResScaleUp,
-                ResScaleDown = ResScaleDown,
-                VolumeUp = VolumeUp,
-                VolumeDown = VolumeDown,
-            };
+            ToggleVsync = ToggleVsync,
+            Screenshot = Screenshot,
+            ShowUI = ShowUI,
+            Pause = Pause,
+            ToggleMute = ToggleMute,
+            ResScaleUp = ResScaleUp,
+            ResScaleDown = ResScaleDown,
+            VolumeUp = VolumeUp,
+            VolumeDown = VolumeDown,
+        };
 
-            return config;
-        }
+        return config;
     }
 }

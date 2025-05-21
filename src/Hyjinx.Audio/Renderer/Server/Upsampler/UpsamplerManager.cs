@@ -1,84 +1,83 @@
 using System;
 using System.Diagnostics;
 
-namespace Hyjinx.Audio.Renderer.Server.Upsampler
+namespace Hyjinx.Audio.Renderer.Server.Upsampler;
+
+/// <summary>
+/// Upsampler manager.
+/// </summary>
+public class UpsamplerManager
 {
     /// <summary>
-    /// Upsampler manager.
+    /// Work buffer for upsampler.
     /// </summary>
-    public class UpsamplerManager
+    private readonly Memory<float> _upSamplerWorkBuffer;
+
+    /// <summary>
+    /// Global lock of the object.
+    /// </summary>
+    private readonly object _lock = new();
+
+    /// <summary>
+    /// The upsamplers instances.
+    /// </summary>
+    private readonly UpsamplerState[] _upsamplers;
+
+    /// <summary>
+    /// The count of upsamplers.
+    /// </summary>
+    private readonly uint _count;
+
+    /// <summary>
+    /// Create a new <see cref="UpsamplerManager"/>.
+    /// </summary>
+    /// <param name="upSamplerWorkBuffer">Work buffer for upsampler.</param>
+    /// <param name="count">The count of upsamplers.</param>
+    public UpsamplerManager(Memory<float> upSamplerWorkBuffer, uint count)
     {
-        /// <summary>
-        /// Work buffer for upsampler.
-        /// </summary>
-        private readonly Memory<float> _upSamplerWorkBuffer;
+        _upSamplerWorkBuffer = upSamplerWorkBuffer;
+        _count = count;
 
-        /// <summary>
-        /// Global lock of the object.
-        /// </summary>
-        private readonly object _lock = new();
+        _upsamplers = new UpsamplerState[_count];
+    }
 
-        /// <summary>
-        /// The upsamplers instances.
-        /// </summary>
-        private readonly UpsamplerState[] _upsamplers;
+    /// <summary>
+    /// Allocate a new <see cref="UpsamplerState"/>.
+    /// </summary>
+    /// <returns>A new <see cref="UpsamplerState"/> or null if out of memory.</returns>
+    public UpsamplerState Allocate()
+    {
+        int workBufferOffset = 0;
 
-        /// <summary>
-        /// The count of upsamplers.
-        /// </summary>
-        private readonly uint _count;
-
-        /// <summary>
-        /// Create a new <see cref="UpsamplerManager"/>.
-        /// </summary>
-        /// <param name="upSamplerWorkBuffer">Work buffer for upsampler.</param>
-        /// <param name="count">The count of upsamplers.</param>
-        public UpsamplerManager(Memory<float> upSamplerWorkBuffer, uint count)
+        lock (_lock)
         {
-            _upSamplerWorkBuffer = upSamplerWorkBuffer;
-            _count = count;
-
-            _upsamplers = new UpsamplerState[_count];
-        }
-
-        /// <summary>
-        /// Allocate a new <see cref="UpsamplerState"/>.
-        /// </summary>
-        /// <returns>A new <see cref="UpsamplerState"/> or null if out of memory.</returns>
-        public UpsamplerState Allocate()
-        {
-            int workBufferOffset = 0;
-
-            lock (_lock)
+            for (int i = 0; i < _count; i++)
             {
-                for (int i = 0; i < _count; i++)
+                if (_upsamplers[i] == null)
                 {
-                    if (_upsamplers[i] == null)
-                    {
-                        _upsamplers[i] = new UpsamplerState(this, i, _upSamplerWorkBuffer.Slice(workBufferOffset, Constants.UpSampleEntrySize), Constants.TargetSampleCount);
+                    _upsamplers[i] = new UpsamplerState(this, i, _upSamplerWorkBuffer.Slice(workBufferOffset, Constants.UpSampleEntrySize), Constants.TargetSampleCount);
 
-                        return _upsamplers[i];
-                    }
-
-                    workBufferOffset += Constants.UpSampleEntrySize;
+                    return _upsamplers[i];
                 }
-            }
 
-            return null;
+                workBufferOffset += Constants.UpSampleEntrySize;
+            }
         }
 
-        /// <summary>
-        /// Free a <see cref="UpsamplerState"/> at the given index.
-        /// </summary>
-        /// <param name="index">The index of the <see cref="UpsamplerState"/> to free.</param>
-        public void Free(int index)
-        {
-            lock (_lock)
-            {
-                Debug.Assert(_upsamplers[index] != null);
+        return null;
+    }
 
-                _upsamplers[index] = null;
-            }
+    /// <summary>
+    /// Free a <see cref="UpsamplerState"/> at the given index.
+    /// </summary>
+    /// <param name="index">The index of the <see cref="UpsamplerState"/> to free.</param>
+    public void Free(int index)
+    {
+        lock (_lock)
+        {
+            Debug.Assert(_upsamplers[index] != null);
+
+            _upsamplers[index] = null;
         }
     }
 }

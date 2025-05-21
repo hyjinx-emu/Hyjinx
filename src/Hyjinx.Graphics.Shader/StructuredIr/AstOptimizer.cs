@@ -5,150 +5,149 @@ using System.Linq;
 
 using static Hyjinx.Graphics.Shader.StructuredIr.AstHelper;
 
-namespace Hyjinx.Graphics.Shader.StructuredIr
+namespace Hyjinx.Graphics.Shader.StructuredIr;
+
+static class AstOptimizer
 {
-    static class AstOptimizer
+    public static void Optimize(StructuredProgramContext context)
     {
-        public static void Optimize(StructuredProgramContext context)
+        AstBlock mainBlock = context.CurrentFunction.MainBlock;
+
+        // When debug mode is enabled, we disable expression propagation
+        // (this makes comparison with the disassembly easier).
+        if (!context.DebugMode)
         {
-            AstBlock mainBlock = context.CurrentFunction.MainBlock;
+            AstBlockVisitor visitor = new(mainBlock);
 
-            // When debug mode is enabled, we disable expression propagation
-            // (this makes comparison with the disassembly easier).
-            if (!context.DebugMode)
+            foreach (IAstNode node in visitor.Visit())
             {
-                AstBlockVisitor visitor = new(mainBlock);
-
-                foreach (IAstNode node in visitor.Visit())
+                if (node is AstAssignment assignment && assignment.Destination is AstOperand propVar)
                 {
-                    if (node is AstAssignment assignment && assignment.Destination is AstOperand propVar)
+                    bool isWorthPropagating = propVar.Uses.Count == 1 || IsWorthPropagating(assignment.Source);
+
+                    if (propVar.Defs.Count == 1 && isWorthPropagating)
                     {
-                        bool isWorthPropagating = propVar.Uses.Count == 1 || IsWorthPropagating(assignment.Source);
-
-                        if (propVar.Defs.Count == 1 && isWorthPropagating)
-                        {
-                            PropagateExpression(propVar, assignment.Source);
-                        }
-
-                        if (propVar.Type == OperandType.LocalVariable && propVar.Uses.Count == 0)
-                        {
-                            visitor.Block.Remove(assignment);
-
-                            context.CurrentFunction.Locals.Remove(propVar);
-                        }
+                        PropagateExpression(propVar, assignment.Source);
                     }
-                }
-            }
 
-            RemoveEmptyBlocks(mainBlock);
-        }
-
-        private static bool IsWorthPropagating(IAstNode source)
-        {
-            if (source is not AstOperation srcOp)
-            {
-                return false;
-            }
-
-            if (!InstructionInfo.IsUnary(srcOp.Inst))
-            {
-                return false;
-            }
-
-            return srcOp.GetSource(0) is AstOperand || srcOp.Inst == Instruction.Copy;
-        }
-
-        private static void PropagateExpression(AstOperand propVar, IAstNode source)
-        {
-            IAstNode[] uses = propVar.Uses.ToArray();
-
-            foreach (IAstNode useNode in uses)
-            {
-                if (useNode is AstBlock useBlock)
-                {
-                    useBlock.Condition = source;
-                }
-                else if (useNode is AstOperation useOperation)
-                {
-                    for (int srcIndex = 0; srcIndex < useOperation.SourcesCount; srcIndex++)
+                    if (propVar.Type == OperandType.LocalVariable && propVar.Uses.Count == 0)
                     {
-                        if (useOperation.GetSource(srcIndex) == propVar)
-                        {
-                            useOperation.SetSource(srcIndex, source);
-                        }
+                        visitor.Block.Remove(assignment);
+
+                        context.CurrentFunction.Locals.Remove(propVar);
                     }
-                }
-                else if (useNode is AstAssignment useAssignment)
-                {
-                    useAssignment.Source = source;
                 }
             }
         }
 
-        private static void RemoveEmptyBlocks(AstBlock mainBlock)
+        RemoveEmptyBlocks(mainBlock);
+    }
+
+    private static bool IsWorthPropagating(IAstNode source)
+    {
+        if (source is not AstOperation srcOp)
         {
-            Queue<AstBlock> pending = new();
+            return false;
+        }
 
-            pending.Enqueue(mainBlock);
+        if (!InstructionInfo.IsUnary(srcOp.Inst))
+        {
+            return false;
+        }
 
-            while (pending.TryDequeue(out AstBlock block))
+        return srcOp.GetSource(0) is AstOperand || srcOp.Inst == Instruction.Copy;
+    }
+
+    private static void PropagateExpression(AstOperand propVar, IAstNode source)
+    {
+        IAstNode[] uses = propVar.Uses.ToArray();
+
+        foreach (IAstNode useNode in uses)
+        {
+            if (useNode is AstBlock useBlock)
             {
-                foreach (IAstNode node in block)
+                useBlock.Condition = source;
+            }
+            else if (useNode is AstOperation useOperation)
+            {
+                for (int srcIndex = 0; srcIndex < useOperation.SourcesCount; srcIndex++)
                 {
-                    if (node is AstBlock childBlock)
+                    if (useOperation.GetSource(srcIndex) == propVar)
                     {
-                        pending.Enqueue(childBlock);
+                        useOperation.SetSource(srcIndex, source);
                     }
                 }
+            }
+            else if (useNode is AstAssignment useAssignment)
+            {
+                useAssignment.Source = source;
+            }
+        }
+    }
 
-                AstBlock parent = block.Parent;
+    private static void RemoveEmptyBlocks(AstBlock mainBlock)
+    {
+        Queue<AstBlock> pending = new();
 
-                if (parent == null)
+        pending.Enqueue(mainBlock);
+
+        while (pending.TryDequeue(out AstBlock block))
+        {
+            foreach (IAstNode node in block)
+            {
+                if (node is AstBlock childBlock)
                 {
-                    continue;
+                    pending.Enqueue(childBlock);
                 }
+            }
 
-                AstBlock nextBlock = Next(block) as AstBlock;
+            AstBlock parent = block.Parent;
 
-                bool hasElse = nextBlock != null && nextBlock.Type == AstBlockType.Else;
+            if (parent == null)
+            {
+                continue;
+            }
 
-                bool isIf = block.Type == AstBlockType.If;
+            AstBlock nextBlock = Next(block) as AstBlock;
 
-                if (block.Count == 0)
+            bool hasElse = nextBlock != null && nextBlock.Type == AstBlockType.Else;
+
+            bool isIf = block.Type == AstBlockType.If;
+
+            if (block.Count == 0)
+            {
+                if (isIf)
                 {
-                    if (isIf)
-                    {
-                        if (hasElse)
-                        {
-                            nextBlock.TurnIntoIf(InverseCond(block.Condition));
-                        }
-
-                        parent.Remove(block);
-                    }
-                    else if (block.Type == AstBlockType.Else)
-                    {
-                        parent.Remove(block);
-                    }
-                }
-                else if (isIf && parent.Type == AstBlockType.Else && parent.Count == (hasElse ? 2 : 1))
-                {
-                    AstBlock parentOfParent = parent.Parent;
-
-                    parent.Remove(block);
-
-                    parentOfParent.AddAfter(parent, block);
-
                     if (hasElse)
                     {
-                        parent.Remove(nextBlock);
-
-                        parentOfParent.AddAfter(block, nextBlock);
+                        nextBlock.TurnIntoIf(InverseCond(block.Condition));
                     }
 
-                    parentOfParent.Remove(parent);
-
-                    block.TurnIntoElseIf();
+                    parent.Remove(block);
                 }
+                else if (block.Type == AstBlockType.Else)
+                {
+                    parent.Remove(block);
+                }
+            }
+            else if (isIf && parent.Type == AstBlockType.Else && parent.Count == (hasElse ? 2 : 1))
+            {
+                AstBlock parentOfParent = parent.Parent;
+
+                parent.Remove(block);
+
+                parentOfParent.AddAfter(parent, block);
+
+                if (hasElse)
+                {
+                    parent.Remove(nextBlock);
+
+                    parentOfParent.AddAfter(block, nextBlock);
+                }
+
+                parentOfParent.Remove(parent);
+
+                block.TurnIntoElseIf();
             }
         }
     }

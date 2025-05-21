@@ -1,21 +1,20 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types
-{
-    [StructLayout(LayoutKind.Sequential)]
-    struct CommandBufferHandle
-    {
-        public int MapHandle;
-        public int MapAddress;
-    }
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types;
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct MapCommandBufferArguments
-    {
-        public int NumEntries;
-        public int DataAddress; // Ignored by the driver.
-        public bool AttachHostChDas;
-        public byte Padding1;
-        public short Padding2;
-    }
+[StructLayout(LayoutKind.Sequential)]
+struct CommandBufferHandle
+{
+    public int MapHandle;
+    public int MapAddress;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+struct MapCommandBufferArguments
+{
+    public int NumEntries;
+    public int DataAddress; // Ignored by the driver.
+    public bool AttachHostChDas;
+    public byte Padding1;
+    public short Padding2;
 }

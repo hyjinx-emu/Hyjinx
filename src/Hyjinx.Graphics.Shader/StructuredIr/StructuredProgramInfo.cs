@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 
-namespace Hyjinx.Graphics.Shader.StructuredIr
+namespace Hyjinx.Graphics.Shader.StructuredIr;
+
+class StructuredProgramInfo
 {
-    class StructuredProgramInfo
+    public List<StructuredFunction> Functions { get; }
+
+    public HashSet<IoDefinition> IoDefinitions { get; }
+
+    public HelperFunctionsMask HelperFunctionsMask { get; set; }
+
+    public StructuredProgramInfo()
     {
-        public List<StructuredFunction> Functions { get; }
+        Functions = new List<StructuredFunction>();
 
-        public HashSet<IoDefinition> IoDefinitions { get; }
-
-        public HelperFunctionsMask HelperFunctionsMask { get; set; }
-
-        public StructuredProgramInfo()
-        {
-            Functions = new List<StructuredFunction>();
-
-            IoDefinitions = new HashSet<IoDefinition>();
-        }
+        IoDefinitions = new HashSet<IoDefinition>();
     }
 }

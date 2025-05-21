@@ -9,168 +9,167 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Hyjinx.Ava.Common.Locale
+namespace Hyjinx.Ava.Common.Locale;
+
+class LocaleManager : BaseModel
 {
-    class LocaleManager : BaseModel
+    private const string DefaultLanguageCode = "en_US";
+
+    private readonly Dictionary<LocaleKeys, string> _localeStrings;
+    private Dictionary<LocaleKeys, string> _localeDefaultStrings;
+    private readonly ConcurrentDictionary<LocaleKeys, object[]> _dynamicValues;
+    private string _localeLanguageCode;
+
+    public static LocaleManager Instance { get; } = new();
+    public event Action LocaleChanged;
+
+    public LocaleManager()
     {
-        private const string DefaultLanguageCode = "en_US";
-        
-        private readonly Dictionary<LocaleKeys, string> _localeStrings;
-        private Dictionary<LocaleKeys, string> _localeDefaultStrings;
-        private readonly ConcurrentDictionary<LocaleKeys, object[]> _dynamicValues;
-        private string _localeLanguageCode;
+        _localeStrings = new Dictionary<LocaleKeys, string>();
+        _localeDefaultStrings = new Dictionary<LocaleKeys, string>();
+        _dynamicValues = new ConcurrentDictionary<LocaleKeys, object[]>();
 
-        public static LocaleManager Instance { get; } = new();
-        public event Action LocaleChanged;
+        Load();
+    }
 
-        public LocaleManager()
+    private void Load()
+    {
+        var localeLanguageCode = !string.IsNullOrEmpty(ConfigurationState.Instance.UI.LanguageCode.Value) ?
+            ConfigurationState.Instance.UI.LanguageCode.Value : CultureInfo.CurrentCulture.Name.Replace('-', '_');
+
+        // Load en_US as default, if the target language translation is missing or incomplete.
+        LoadDefaultLanguage();
+        LoadLanguage(localeLanguageCode);
+
+        // Save whatever we ended up with.
+        if (Program.PreviewerDetached)
         {
-            _localeStrings = new Dictionary<LocaleKeys, string>();
-            _localeDefaultStrings = new Dictionary<LocaleKeys, string>();
-            _dynamicValues = new ConcurrentDictionary<LocaleKeys, object[]>();
+            ConfigurationState.Instance.UI.LanguageCode.Value = _localeLanguageCode;
 
-            Load();
+            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         }
+    }
 
-        private void Load()
+    public string this[LocaleKeys key]
+    {
+        get
         {
-            var localeLanguageCode = !string.IsNullOrEmpty(ConfigurationState.Instance.UI.LanguageCode.Value) ?
-                ConfigurationState.Instance.UI.LanguageCode.Value : CultureInfo.CurrentCulture.Name.Replace('-', '_');
-
-            // Load en_US as default, if the target language translation is missing or incomplete.
-            LoadDefaultLanguage();
-            LoadLanguage(localeLanguageCode);
-
-            // Save whatever we ended up with.
-            if (Program.PreviewerDetached)
+            // Check if the locale contains the key.
+            if (_localeStrings.TryGetValue(key, out string value))
             {
-                ConfigurationState.Instance.UI.LanguageCode.Value = _localeLanguageCode;
-
-                ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
-            }
-        }
-
-        public string this[LocaleKeys key]
-        {
-            get
-            {
-                // Check if the locale contains the key.
-                if (_localeStrings.TryGetValue(key, out string value))
+                // Check if the localized string needs to be formatted.
+                if (_dynamicValues.TryGetValue(key, out var dynamicValue))
                 {
-                    // Check if the localized string needs to be formatted.
-                    if (_dynamicValues.TryGetValue(key, out var dynamicValue))
+                    try
                     {
-                        try
+                        return string.Format(value, dynamicValue);
+                    }
+                    catch (Exception)
+                    {
+                        // If formatting failed use the default text instead.
+                        if (_localeDefaultStrings.TryGetValue(key, out value))
                         {
-                            return string.Format(value, dynamicValue);
-                        }
-                        catch (Exception)
-                        {
-                            // If formatting failed use the default text instead.
-                            if (_localeDefaultStrings.TryGetValue(key, out value))
+                            try
                             {
-                                try
-                                {
-                                    return string.Format(value, dynamicValue);
-                                }
-                                catch (Exception)
-                                {
-                                    // If formatting the default text failed return the key.
-                                    return key.ToString();
-                                }
+                                return string.Format(value, dynamicValue);
+                            }
+                            catch (Exception)
+                            {
+                                // If formatting the default text failed return the key.
+                                return key.ToString();
                             }
                         }
                     }
-
-                    return value;
                 }
 
-                // If the locale doesn't contain the key return the default one.
-                if (_localeDefaultStrings.TryGetValue(key, out string defaultValue))
-                {
-                    return defaultValue;
-                }
-
-                // If the locale text doesn't exist return the key.
-                return key.ToString();
+                return value;
             }
-            set
+
+            // If the locale doesn't contain the key return the default one.
+            if (_localeDefaultStrings.TryGetValue(key, out string defaultValue))
             {
-                _localeStrings[key] = value;
-
-                OnPropertyChanged();
+                return defaultValue;
             }
-        }
 
-        public bool IsRTL()
+            // If the locale text doesn't exist return the key.
+            return key.ToString();
+        }
+        set
         {
-            return _localeLanguageCode switch
-            {
-                "ar_SA" or "he_IL" => true,
-                _ => false
-            };
-        }
+            _localeStrings[key] = value;
 
-        public string UpdateAndGetDynamicValue(LocaleKeys key, params object[] values)
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsRTL()
+    {
+        return _localeLanguageCode switch
         {
-            _dynamicValues[key] = values;
+            "ar_SA" or "he_IL" => true,
+            _ => false
+        };
+    }
 
-            OnPropertyChanged("Item");
+    public string UpdateAndGetDynamicValue(LocaleKeys key, params object[] values)
+    {
+        _dynamicValues[key] = values;
 
-            return this[key];
-        }
+        OnPropertyChanged("Item");
 
-        private void LoadDefaultLanguage()
+        return this[key];
+    }
+
+    private void LoadDefaultLanguage()
+    {
+        _localeDefaultStrings = LoadJsonLanguage(DefaultLanguageCode);
+    }
+
+    public void LoadLanguage(string languageCode)
+    {
+        var locale = LoadJsonLanguage(languageCode);
+
+        if (locale == null)
         {
-            _localeDefaultStrings = LoadJsonLanguage(DefaultLanguageCode);
+            _localeLanguageCode = DefaultLanguageCode;
+            locale = _localeDefaultStrings;
         }
-
-        public void LoadLanguage(string languageCode)
+        else
         {
-            var locale = LoadJsonLanguage(languageCode);
-
-            if (locale == null)
-            {
-                _localeLanguageCode = DefaultLanguageCode;
-                locale = _localeDefaultStrings;
-            }
-            else
-            {
-                _localeLanguageCode = languageCode;
-            }
-
-            foreach (var item in locale)
-            {
-                _localeStrings[item.Key] = item.Value;
-            }
-
-            OnPropertyChanged("Item");
-
-            LocaleChanged?.Invoke();
+            _localeLanguageCode = languageCode;
         }
 
-        private static Dictionary<LocaleKeys, string> LoadJsonLanguage(string languageCode)
+        foreach (var item in locale)
         {
-            var localeStrings = new Dictionary<LocaleKeys, string>();
-            string languageJson = EmbeddedResources.ReadAllText($"Hyjinx/Ava/Assets/Locales/{languageCode}.json");
-
-            if (languageJson == null)
-            {
-                // We were unable to find file for that language code.
-                return null;
-            }
-
-            var strings = JsonHelper.Deserialize(languageJson, CommonJsonContext.Default.StringDictionary);
-
-            foreach (var item in strings)
-            {
-                if (Enum.TryParse<LocaleKeys>(item.Key, out var key))
-                {
-                    localeStrings[key] = item.Value;
-                }
-            }
-
-            return localeStrings;
+            _localeStrings[item.Key] = item.Value;
         }
+
+        OnPropertyChanged("Item");
+
+        LocaleChanged?.Invoke();
+    }
+
+    private static Dictionary<LocaleKeys, string> LoadJsonLanguage(string languageCode)
+    {
+        var localeStrings = new Dictionary<LocaleKeys, string>();
+        string languageJson = EmbeddedResources.ReadAllText($"Hyjinx/Ava/Assets/Locales/{languageCode}.json");
+
+        if (languageJson == null)
+        {
+            // We were unable to find file for that language code.
+            return null;
+        }
+
+        var strings = JsonHelper.Deserialize(languageJson, CommonJsonContext.Default.StringDictionary);
+
+        foreach (var item in strings)
+        {
+            if (Enum.TryParse<LocaleKeys>(item.Key, out var key))
+            {
+                localeStrings[key] = item.Value;
+            }
+        }
+
+        return localeStrings;
     }
 }

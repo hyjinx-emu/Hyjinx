@@ -1,7 +1,7 @@
-﻿using System;
 using LibHac.Fs;
 using LibHac.FsSrv.Impl;
 using LibHac.Sf;
+using System;
 
 namespace LibHac.FsSrv;
 
@@ -19,7 +19,8 @@ internal readonly struct AccessLogService
     public Result SetAccessLogMode(GlobalAccessLogMode mode)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.SetGlobalAccessLogMode))
             return ResultFs.PermissionDenied.Log();
@@ -37,7 +38,8 @@ internal readonly struct AccessLogService
     public Result OutputAccessLogToSdCard(InBuffer textBuffer)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _serviceImpl.OutputAccessLogToSdCard(textBuffer.Buffer, programInfo.ProgramIdValue, _processId);
     }

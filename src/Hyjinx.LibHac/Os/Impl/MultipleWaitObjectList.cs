@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
 using LibHac.Diag;
+using System.Collections.Generic;
 
 namespace LibHac.Os.Impl;
 

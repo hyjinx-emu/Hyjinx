@@ -1,5 +1,5 @@
-﻿using System;
 using LibHac.Fs;
+using System;
 
 namespace LibHac.Tools.FsSystem.Save;
 
@@ -34,7 +34,8 @@ public class DuplexStorage : IStorage
         int remaining = destination.Length;
 
         Result res = CheckAccessRange(offset, destination.Length, Length);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         while (remaining > 0)
         {
@@ -46,7 +47,8 @@ public class DuplexStorage : IStorage
             IStorage data = Bitmap.Bitmap[blockNum] ? DataB : DataA;
 
             res = data.Read(inPos, destination.Slice(outPos, bytesToRead));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outPos += bytesToRead;
             inPos += bytesToRead;
@@ -63,7 +65,8 @@ public class DuplexStorage : IStorage
         int remaining = source.Length;
 
         Result res = CheckAccessRange(offset, source.Length, Length);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         while (remaining > 0)
         {
@@ -75,7 +78,8 @@ public class DuplexStorage : IStorage
             IStorage data = Bitmap.Bitmap[blockNum] ? DataB : DataA;
 
             res = data.Write(inPos, source.Slice(outPos, bytesToWrite));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outPos += bytesToWrite;
             inPos += bytesToWrite;
@@ -88,13 +92,16 @@ public class DuplexStorage : IStorage
     public override Result Flush()
     {
         Result res = BitmapStorage.Flush();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = DataA.Flush();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = DataB.Flush();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

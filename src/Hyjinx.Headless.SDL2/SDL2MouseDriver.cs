@@ -1,6 +1,6 @@
 using Hyjinx.Common.Configuration;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Input;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,32 +10,77 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using static SDL2.SDL;
 
-namespace Hyjinx.Headless.SDL2
+namespace Hyjinx.Headless.SDL2;
+
+class SDL2MouseDriver : IGamepadDriver
 {
-    class SDL2MouseDriver : IGamepadDriver
+    private const int CursorHideIdleTime = 5; // seconds
+
+    private readonly ILogger<SDL2MouseDriver> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<SDL2MouseDriver>();
+
+    private bool _isDisposed;
+    private readonly HideCursorMode _hideCursorMode;
+    private bool _isHidden;
+    private long _lastCursorMoveTime;
+
+    public bool[] PressedButtons { get; }
+
+    public Vector2 CurrentPosition { get; private set; }
+    public Vector2 Scroll { get; private set; }
+    public Size ClientSize;
+
+    public SDL2MouseDriver(HideCursorMode hideCursorMode)
     {
-        private const int CursorHideIdleTime = 5; // seconds
+        PressedButtons = new bool[(int)MouseButton.Count];
+        _hideCursorMode = hideCursorMode;
 
-        private readonly ILogger<SDL2MouseDriver> _logger = 
-            Logger.DefaultLoggerFactory.CreateLogger<SDL2MouseDriver>();
-        
-        private bool _isDisposed;
-        private readonly HideCursorMode _hideCursorMode;
-        private bool _isHidden;
-        private long _lastCursorMoveTime;
-
-        public bool[] PressedButtons { get; }
-
-        public Vector2 CurrentPosition { get; private set; }
-        public Vector2 Scroll { get; private set; }
-        public Size ClientSize;
-
-        public SDL2MouseDriver(HideCursorMode hideCursorMode)
+        if (_hideCursorMode == HideCursorMode.Always)
         {
-            PressedButtons = new bool[(int)MouseButton.Count];
-            _hideCursorMode = hideCursorMode;
+            if (SDL_ShowCursor(SDL_DISABLE) != SDL_DISABLE)
+            {
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    "Failed to disable the cursor.");
+            }
 
-            if (_hideCursorMode == HideCursorMode.Always)
+            _isHidden = true;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static MouseButton DriverButtonToMouseButton(uint rawButton)
+    {
+        Debug.Assert(rawButton > 0 && rawButton <= (int)MouseButton.Count);
+
+        return (MouseButton)(rawButton - 1);
+    }
+
+    public void UpdatePosition()
+    {
+        _ = SDL_GetMouseState(out int posX, out int posY);
+        Vector2 position = new(posX, posY);
+
+        if (CurrentPosition != position)
+        {
+            CurrentPosition = position;
+            _lastCursorMoveTime = Stopwatch.GetTimestamp();
+        }
+
+        CheckIdle();
+    }
+
+    private void CheckIdle()
+    {
+        if (_hideCursorMode != HideCursorMode.OnIdle)
+        {
+            return;
+        }
+
+        long cursorMoveDelta = Stopwatch.GetTimestamp() - _lastCursorMoveTime;
+
+        if (cursorMoveDelta >= CursorHideIdleTime * Stopwatch.Frequency)
+        {
+            if (!_isHidden)
             {
                 if (SDL_ShowCursor(SDL_DISABLE) != SDL_DISABLE)
                 {
@@ -46,141 +91,95 @@ namespace Hyjinx.Headless.SDL2
                 _isHidden = true;
             }
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static MouseButton DriverButtonToMouseButton(uint rawButton)
+        else
         {
-            Debug.Assert(rawButton > 0 && rawButton <= (int)MouseButton.Count);
-
-            return (MouseButton)(rawButton - 1);
-        }
-
-        public void UpdatePosition()
-        {
-            _ = SDL_GetMouseState(out int posX, out int posY);
-            Vector2 position = new(posX, posY);
-
-            if (CurrentPosition != position)
+            if (_isHidden)
             {
-                CurrentPosition = position;
+                if (SDL_ShowCursor(SDL_ENABLE) != SDL_ENABLE)
+                {
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        "Failed to enable the cursor.");
+                }
+
+                _isHidden = false;
+            }
+        }
+    }
+
+    public void Update(SDL_Event evnt)
+    {
+        switch (evnt.type)
+        {
+            case SDL_EventType.SDL_MOUSEBUTTONDOWN:
+            case SDL_EventType.SDL_MOUSEBUTTONUP:
+                uint rawButton = evnt.button.button;
+
+                if (rawButton > 0 && rawButton <= (int)MouseButton.Count)
+                {
+                    PressedButtons[(int)DriverButtonToMouseButton(rawButton)] = evnt.type == SDL_EventType.SDL_MOUSEBUTTONDOWN;
+
+                    CurrentPosition = new Vector2(evnt.button.x, evnt.button.y);
+                }
+
+                break;
+
+            // NOTE: On Linux using Wayland mouse motion events won't be received at all.
+            case SDL_EventType.SDL_MOUSEMOTION:
+                CurrentPosition = new Vector2(evnt.motion.x, evnt.motion.y);
                 _lastCursorMoveTime = Stopwatch.GetTimestamp();
-            }
 
-            CheckIdle();
+                break;
+
+            case SDL_EventType.SDL_MOUSEWHEEL:
+                Scroll = new Vector2(evnt.wheel.x, evnt.wheel.y);
+
+                break;
         }
+    }
 
-        private void CheckIdle()
+    public void SetClientSize(int width, int height)
+    {
+        ClientSize = new Size(width, height);
+    }
+
+    public bool IsButtonPressed(MouseButton button)
+    {
+        return PressedButtons[(int)button];
+    }
+
+    public Size GetClientSize()
+    {
+        return ClientSize;
+    }
+
+    public string DriverName => "SDL2";
+
+    public event Action<string> OnGamepadConnected
+    {
+        add { }
+        remove { }
+    }
+
+    public event Action<string> OnGamepadDisconnected
+    {
+        add { }
+        remove { }
+    }
+
+    public ReadOnlySpan<string> GamepadsIds => new[] { "0" };
+
+    public IGamepad GetGamepad(string id)
+    {
+        return new SDL2Mouse(this);
+    }
+
+    public void Dispose()
+    {
+        if (_isDisposed)
         {
-            if (_hideCursorMode != HideCursorMode.OnIdle)
-            {
-                return;
-            }
-
-            long cursorMoveDelta = Stopwatch.GetTimestamp() - _lastCursorMoveTime;
-
-            if (cursorMoveDelta >= CursorHideIdleTime * Stopwatch.Frequency)
-            {
-                if (!_isHidden)
-                {
-                    if (SDL_ShowCursor(SDL_DISABLE) != SDL_DISABLE)
-                    {
-                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                            "Failed to disable the cursor.");
-                    }
-
-                    _isHidden = true;
-                }
-            }
-            else
-            {
-                if (_isHidden)
-                {
-                    if (SDL_ShowCursor(SDL_ENABLE) != SDL_ENABLE)
-                    {
-                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                            "Failed to enable the cursor.");
-                    }
-
-                    _isHidden = false;
-                }
-            }
+            return;
         }
 
-        public void Update(SDL_Event evnt)
-        {
-            switch (evnt.type)
-            {
-                case SDL_EventType.SDL_MOUSEBUTTONDOWN:
-                case SDL_EventType.SDL_MOUSEBUTTONUP:
-                    uint rawButton = evnt.button.button;
-
-                    if (rawButton > 0 && rawButton <= (int)MouseButton.Count)
-                    {
-                        PressedButtons[(int)DriverButtonToMouseButton(rawButton)] = evnt.type == SDL_EventType.SDL_MOUSEBUTTONDOWN;
-
-                        CurrentPosition = new Vector2(evnt.button.x, evnt.button.y);
-                    }
-
-                    break;
-
-                // NOTE: On Linux using Wayland mouse motion events won't be received at all.
-                case SDL_EventType.SDL_MOUSEMOTION:
-                    CurrentPosition = new Vector2(evnt.motion.x, evnt.motion.y);
-                    _lastCursorMoveTime = Stopwatch.GetTimestamp();
-
-                    break;
-
-                case SDL_EventType.SDL_MOUSEWHEEL:
-                    Scroll = new Vector2(evnt.wheel.x, evnt.wheel.y);
-
-                    break;
-            }
-        }
-
-        public void SetClientSize(int width, int height)
-        {
-            ClientSize = new Size(width, height);
-        }
-
-        public bool IsButtonPressed(MouseButton button)
-        {
-            return PressedButtons[(int)button];
-        }
-
-        public Size GetClientSize()
-        {
-            return ClientSize;
-        }
-
-        public string DriverName => "SDL2";
-
-        public event Action<string> OnGamepadConnected
-        {
-            add { }
-            remove { }
-        }
-
-        public event Action<string> OnGamepadDisconnected
-        {
-            add { }
-            remove { }
-        }
-
-        public ReadOnlySpan<string> GamepadsIds => new[] { "0" };
-
-        public IGamepad GetGamepad(string id)
-        {
-            return new SDL2Mouse(this);
-        }
-
-        public void Dispose()
-        {
-            if (_isDisposed)
-            {
-                return;
-            }
-
-            _isDisposed = true;
-        }
+        _isDisposed = true;
     }
 }

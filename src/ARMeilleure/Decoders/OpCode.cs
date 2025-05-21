@@ -1,48 +1,47 @@
 using ARMeilleure.IntermediateRepresentation;
 using System;
 
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+class OpCode : IOpCode
 {
-    class OpCode : IOpCode
+    public ulong Address { get; }
+    public int RawOpCode { get; }
+
+    public int OpCodeSizeInBytes { get; protected set; } = 4;
+
+    public InstDescriptor Instruction { get; protected set; }
+
+    public RegisterSize RegisterSize { get; protected set; }
+
+    public static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new(inst, address, opCode);
+
+    public OpCode(InstDescriptor inst, ulong address, int opCode)
     {
-        public ulong Address { get; }
-        public int RawOpCode { get; }
+        Instruction = inst;
+        Address = address;
+        RawOpCode = opCode;
 
-        public int OpCodeSizeInBytes { get; protected set; } = 4;
+        RegisterSize = RegisterSize.Int64;
+    }
 
-        public InstDescriptor Instruction { get; protected set; }
+    public int GetPairsCount() => GetBitsCount() / 16;
+    public int GetBytesCount() => GetBitsCount() / 8;
 
-        public RegisterSize RegisterSize { get; protected set; }
-
-        public static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new(inst, address, opCode);
-
-        public OpCode(InstDescriptor inst, ulong address, int opCode)
+    public int GetBitsCount()
+    {
+        return RegisterSize switch
         {
-            Instruction = inst;
-            Address = address;
-            RawOpCode = opCode;
+            RegisterSize.Int32 => 32,
+            RegisterSize.Int64 => 64,
+            RegisterSize.Simd64 => 64,
+            RegisterSize.Simd128 => 128,
+            _ => throw new InvalidOperationException(),
+        };
+    }
 
-            RegisterSize = RegisterSize.Int64;
-        }
-
-        public int GetPairsCount() => GetBitsCount() / 16;
-        public int GetBytesCount() => GetBitsCount() / 8;
-
-        public int GetBitsCount()
-        {
-            return RegisterSize switch
-            {
-                RegisterSize.Int32 => 32,
-                RegisterSize.Int64 => 64,
-                RegisterSize.Simd64 => 64,
-                RegisterSize.Simd128 => 128,
-                _ => throw new InvalidOperationException(),
-            };
-        }
-
-        public OperandType GetOperandType()
-        {
-            return RegisterSize == RegisterSize.Int32 ? OperandType.I32 : OperandType.I64;
-        }
+    public OperandType GetOperandType()
+    {
+        return RegisterSize == RegisterSize.Int32 ? OperandType.I32 : OperandType.I64;
     }
 }

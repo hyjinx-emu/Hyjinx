@@ -1,4 +1,4 @@
-﻿namespace LibHac.Arp;
+namespace LibHac.Arp;
 
 public struct ApplicationLaunchProperty
 {

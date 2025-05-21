@@ -1,81 +1,80 @@
 using Hyjinx.Horizon.Common;
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Sf.Hipc
+namespace Hyjinx.Horizon.Sdk.Sf.Hipc;
+
+static class Api
 {
-    static class Api
+    public const int TlsMessageBufferSize = 0x100;
+
+    public static Result Receive(out ReceiveResult recvResult, int sessionHandle, Span<byte> messageBuffer)
     {
-        public const int TlsMessageBufferSize = 0x100;
+        Result result = ReceiveImpl(sessionHandle, messageBuffer);
 
-        public static Result Receive(out ReceiveResult recvResult, int sessionHandle, Span<byte> messageBuffer)
+        if (result == KernelResult.PortRemoteClosed)
         {
-            Result result = ReceiveImpl(sessionHandle, messageBuffer);
+            recvResult = ReceiveResult.Closed;
 
-            if (result == KernelResult.PortRemoteClosed)
-            {
-                recvResult = ReceiveResult.Closed;
-
-                return Result.Success;
-            }
-            else if (result == KernelResult.ReceiveListBroken)
-            {
-                recvResult = ReceiveResult.NeedsRetry;
-
-                return Result.Success;
-            }
-
-            recvResult = ReceiveResult.Success;
-
-            return result;
+            return Result.Success;
         }
-
-        private static Result ReceiveImpl(int sessionHandle, Span<byte> messageBuffer)
+        else if (result == KernelResult.ReceiveListBroken)
         {
-            Span<int> handles = stackalloc int[1];
-
-            handles[0] = sessionHandle;
-
-            var tlsSpan = HorizonStatic.AddressSpace.GetSpan(HorizonStatic.ThreadContext.TlsAddress, TlsMessageBufferSize);
-
-            if (messageBuffer == tlsSpan)
-            {
-                return HorizonStatic.Syscall.ReplyAndReceive(out _, handles, 0, -1L);
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public static Result Reply(int sessionHandle, ReadOnlySpan<byte> messageBuffer)
-        {
-            Result result = ReplyImpl(sessionHandle, messageBuffer);
-
-            result.AbortUnless(KernelResult.TimedOut, KernelResult.PortRemoteClosed);
+            recvResult = ReceiveResult.NeedsRetry;
 
             return Result.Success;
         }
 
-        private static Result ReplyImpl(int sessionHandle, ReadOnlySpan<byte> messageBuffer)
+        recvResult = ReceiveResult.Success;
+
+        return result;
+    }
+
+    private static Result ReceiveImpl(int sessionHandle, Span<byte> messageBuffer)
+    {
+        Span<int> handles = stackalloc int[1];
+
+        handles[0] = sessionHandle;
+
+        var tlsSpan = HorizonStatic.AddressSpace.GetSpan(HorizonStatic.ThreadContext.TlsAddress, TlsMessageBufferSize);
+
+        if (messageBuffer == tlsSpan)
         {
-            var tlsSpan = HorizonStatic.AddressSpace.GetSpan(HorizonStatic.ThreadContext.TlsAddress, TlsMessageBufferSize);
-
-            if (messageBuffer == tlsSpan)
-            {
-                return HorizonStatic.Syscall.ReplyAndReceive(out _, ReadOnlySpan<int>.Empty, sessionHandle, 0);
-            }
-
-            throw new NotImplementedException();
+            return HorizonStatic.Syscall.ReplyAndReceive(out _, handles, 0, -1L);
         }
 
-        public static Result CreateSession(out int serverHandle, out int clientHandle)
+        throw new NotImplementedException();
+    }
+
+    public static Result Reply(int sessionHandle, ReadOnlySpan<byte> messageBuffer)
+    {
+        Result result = ReplyImpl(sessionHandle, messageBuffer);
+
+        result.AbortUnless(KernelResult.TimedOut, KernelResult.PortRemoteClosed);
+
+        return Result.Success;
+    }
+
+    private static Result ReplyImpl(int sessionHandle, ReadOnlySpan<byte> messageBuffer)
+    {
+        var tlsSpan = HorizonStatic.AddressSpace.GetSpan(HorizonStatic.ThreadContext.TlsAddress, TlsMessageBufferSize);
+
+        if (messageBuffer == tlsSpan)
         {
-            Result result = HorizonStatic.Syscall.CreateSession(out serverHandle, out clientHandle, false, null);
-
-            if (result == KernelResult.OutOfResource)
-            {
-                return HipcResult.OutOfSessions;
-            }
-
-            return result;
+            return HorizonStatic.Syscall.ReplyAndReceive(out _, ReadOnlySpan<int>.Empty, sessionHandle, 0);
         }
+
+        throw new NotImplementedException();
+    }
+
+    public static Result CreateSession(out int serverHandle, out int clientHandle)
+    {
+        Result result = HorizonStatic.Syscall.CreateSession(out serverHandle, out clientHandle, false, null);
+
+        if (result == KernelResult.OutOfResource)
+        {
+            return HipcResult.OutOfSessions;
+        }
+
+        return result;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace LibHac.Ncm;
+namespace LibHac.Ncm;
 
 public readonly struct ProgramLocation
 {

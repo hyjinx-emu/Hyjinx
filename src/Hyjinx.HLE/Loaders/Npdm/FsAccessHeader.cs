@@ -2,43 +2,42 @@ using Hyjinx.HLE.Exceptions;
 using System;
 using System.IO;
 
-namespace Hyjinx.HLE.Loaders.Npdm
+namespace Hyjinx.HLE.Loaders.Npdm;
+
+class FsAccessHeader
 {
-    class FsAccessHeader
+    public int Version { get; private set; }
+    public ulong PermissionsBitmask { get; private set; }
+
+    /// <exception cref="InvalidNpdmException">The stream contains invalid data.</exception>
+    /// <exception cref="NotImplementedException">The ContentOwnerId section is not implemented.</exception>
+    /// <exception cref="ArgumentException">The stream does not support reading, is <see langword="null"/>, or is already closed.</exception>
+    /// <exception cref="EndOfStreamException">The end of the stream is reached.</exception>
+    /// <exception cref="ObjectDisposedException">The stream is closed.</exception>
+    /// <exception cref="IOException">An I/O error occurred.</exception>
+    public FsAccessHeader(Stream stream, int offset, int size)
     {
-        public int Version { get; private set; }
-        public ulong PermissionsBitmask { get; private set; }
+        stream.Seek(offset, SeekOrigin.Begin);
 
-        /// <exception cref="InvalidNpdmException">The stream contains invalid data.</exception>
-        /// <exception cref="NotImplementedException">The ContentOwnerId section is not implemented.</exception>
-        /// <exception cref="ArgumentException">The stream does not support reading, is <see langword="null"/>, or is already closed.</exception>
-        /// <exception cref="EndOfStreamException">The end of the stream is reached.</exception>
-        /// <exception cref="ObjectDisposedException">The stream is closed.</exception>
-        /// <exception cref="IOException">An I/O error occurred.</exception>
-        public FsAccessHeader(Stream stream, int offset, int size)
+        BinaryReader reader = new(stream);
+
+        Version = reader.ReadInt32();
+        PermissionsBitmask = reader.ReadUInt64();
+
+        int dataSize = reader.ReadInt32();
+
+        if (dataSize != 0x1c)
         {
-            stream.Seek(offset, SeekOrigin.Begin);
-
-            BinaryReader reader = new(stream);
-
-            Version = reader.ReadInt32();
-            PermissionsBitmask = reader.ReadUInt64();
-
-            int dataSize = reader.ReadInt32();
-
-            if (dataSize != 0x1c)
-            {
-                throw new InvalidNpdmException("FsAccessHeader is corrupted!");
-            }
+            throw new InvalidNpdmException("FsAccessHeader is corrupted!");
+        }
 #pragma warning disable IDE0059 // Remove unnecessary value assignment
-            int contentOwnerIdSize = reader.ReadInt32();
+        int contentOwnerIdSize = reader.ReadInt32();
 #pragma warning restore IDE0059
-            int dataAndContentOwnerIdSize = reader.ReadInt32();
+        int dataAndContentOwnerIdSize = reader.ReadInt32();
 
-            if (dataAndContentOwnerIdSize != 0x1c)
-            {
-                throw new NotImplementedException("ContentOwnerId section is not implemented!");
-            }
+        if (dataAndContentOwnerIdSize != 0x1c)
+        {
+            throw new NotImplementedException("ContentOwnerId section is not implemented!");
         }
     }
 }

@@ -1,7 +1,6 @@
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using LibHac.Tools.FsSystem;
 using Hyjinx.Audio.Backends.OpenAL;
 using Hyjinx.Audio.Backends.SDL2;
 using Hyjinx.Audio.Backends.SoundIo;
@@ -11,15 +10,16 @@ using Hyjinx.Ava.UI.Models.Input;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.GraphicsDriver;
 using Hyjinx.Graphics.GAL;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Configuration.System;
+using LibHac.Tools.FsSystem;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -586,9 +586,9 @@ public class SettingsViewModel : BaseModel
 
         config.Multiplayer.LanInterfaceId.Value = _networkInterfaces[NetworkInterfaceList[NetworkInterfaceIndex]];
         config.Multiplayer.Mode.Value = (MultiplayerMode)MultiplayerModeIndex;
-        
+
         MainWindow.UpdateGraphicsConfig();
-        
+
         _directoryChanged = false;
     }
 
@@ -606,7 +606,7 @@ public class SettingsViewModel : BaseModel
     public void OkButton()
     {
         ApplySettings();
-        
+
         ConfigurationState.Instance.ToFileFormat()
             .SaveConfig(ConfigurationModule.ConfigurationPath);
 

@@ -1,77 +1,76 @@
 using Hyjinx.HLE.HOS.Kernel.Memory;
 
-namespace Hyjinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process;
+
+class KTlsPageInfo
 {
-    class KTlsPageInfo
+    public const int TlsEntrySize = 0x200;
+
+    public ulong PageVirtualAddress { get; }
+    public ulong PagePhysicalAddress { get; }
+
+    private readonly bool[] _isSlotFree;
+
+    public KTlsPageInfo(ulong pageVirtualAddress, ulong pagePhysicalAddress)
     {
-        public const int TlsEntrySize = 0x200;
+        PageVirtualAddress = pageVirtualAddress;
+        PagePhysicalAddress = pagePhysicalAddress;
 
-        public ulong PageVirtualAddress { get; }
-        public ulong PagePhysicalAddress { get; }
+        _isSlotFree = new bool[KPageTableBase.PageSize / TlsEntrySize];
 
-        private readonly bool[] _isSlotFree;
-
-        public KTlsPageInfo(ulong pageVirtualAddress, ulong pagePhysicalAddress)
+        for (int index = 0; index < _isSlotFree.Length; index++)
         {
-            PageVirtualAddress = pageVirtualAddress;
-            PagePhysicalAddress = pagePhysicalAddress;
-
-            _isSlotFree = new bool[KPageTableBase.PageSize / TlsEntrySize];
-
-            for (int index = 0; index < _isSlotFree.Length; index++)
-            {
-                _isSlotFree[index] = true;
-            }
+            _isSlotFree[index] = true;
         }
+    }
 
-        public bool TryGetFreePage(out ulong address)
+    public bool TryGetFreePage(out ulong address)
+    {
+        address = PageVirtualAddress;
+
+        for (int index = 0; index < _isSlotFree.Length; index++)
         {
-            address = PageVirtualAddress;
-
-            for (int index = 0; index < _isSlotFree.Length; index++)
+            if (_isSlotFree[index])
             {
-                if (_isSlotFree[index])
-                {
-                    _isSlotFree[index] = false;
+                _isSlotFree[index] = false;
 
-                    return true;
-                }
-
-                address += TlsEntrySize;
+                return true;
             }
 
-            address = 0;
-
-            return false;
+            address += TlsEntrySize;
         }
 
-        public bool IsFull()
+        address = 0;
+
+        return false;
+    }
+
+    public bool IsFull()
+    {
+        bool hasFree = false;
+
+        for (int index = 0; index < _isSlotFree.Length; index++)
         {
-            bool hasFree = false;
-
-            for (int index = 0; index < _isSlotFree.Length; index++)
-            {
-                hasFree |= _isSlotFree[index];
-            }
-
-            return !hasFree;
+            hasFree |= _isSlotFree[index];
         }
 
-        public bool IsEmpty()
+        return !hasFree;
+    }
+
+    public bool IsEmpty()
+    {
+        bool allFree = true;
+
+        for (int index = 0; index < _isSlotFree.Length; index++)
         {
-            bool allFree = true;
-
-            for (int index = 0; index < _isSlotFree.Length; index++)
-            {
-                allFree &= _isSlotFree[index];
-            }
-
-            return allFree;
+            allFree &= _isSlotFree[index];
         }
 
-        public void FreeTlsSlot(ulong address)
-        {
-            _isSlotFree[(address - PageVirtualAddress) / TlsEntrySize] = true;
-        }
+        return allFree;
+    }
+
+    public void FreeTlsSlot(ulong address)
+    {
+        _isSlotFree[(address - PageVirtualAddress) / TlsEntrySize] = true;
     }
 }

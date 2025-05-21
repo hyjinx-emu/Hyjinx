@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.FsSrv.Sf;
 
 namespace LibHac.Fs.Shim;
@@ -15,7 +15,8 @@ public static class MemoryReportInfoShim
 
         Result res = fileSystemProxy.Get.GetAndClearMemoryReportInfo(out reportInfo);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

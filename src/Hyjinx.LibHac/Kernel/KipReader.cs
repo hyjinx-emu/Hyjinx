@@ -1,10 +1,10 @@
-﻿using System;
+using LibHac.Common;
+using LibHac.Fs;
+using System;
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.Common;
-using LibHac.Fs;
 
 namespace LibHac.Kernel;
 
@@ -46,13 +46,15 @@ public class KipReader : IDisposable
 
         // Verify there's enough data to read the header
         Result res = kipData.Get.GetSize(out long kipSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (kipSize < Unsafe.SizeOf<KipHeader>())
             return ResultLibHac.InvalidKipFileSize.Log();
 
         res = kipData.Get.Read(0, SpanHelpers.AsByteSpan(ref _header));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!_header.IsValid)
             return ResultLibHac.InvalidKipMagic.Log();
@@ -72,7 +74,8 @@ public class KipReader : IDisposable
         int kipFileSize = GetFileSize();
 
         Result res = _kipStorage.Get.GetSize(out long inputFileSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Verify the input KIP file isn't truncated
         if (inputFileSize < kipFileSize)
@@ -131,7 +134,8 @@ public class KipReader : IDisposable
     public Result ReadSegment(SegmentType segment, Span<byte> buffer)
     {
         Result res = GetSegmentSize(segment, out int segmentSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (buffer.Length < segmentSize)
             return ResultLibHac.BufferTooSmall.Log();
@@ -153,14 +157,16 @@ public class KipReader : IDisposable
 
         // Verify the segment offset is in-range
         res = _kipStorage.Get.GetSize(out long kipSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (kipSize < offset + segmentHeader.FileSize)
             return ResultLibHac.InvalidKipFileSize.Log();
 
         // Read the segment data.
         res = _kipStorage.Get.Read(offset, buffer.Slice(0, segmentHeader.FileSize));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Decompress if necessary.
         bool isCompressed = segment switch
@@ -174,7 +180,8 @@ public class KipReader : IDisposable
         if (isCompressed)
         {
             res = DecompressBlz(buffer, segmentHeader.FileSize);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -193,7 +200,8 @@ public class KipReader : IDisposable
             if (Segments[i].FileSize != 0)
             {
                 Result res = ReadSegment((SegmentType)i, segmentBuffer);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 segmentBuffer = segmentBuffer.Slice(Segments[i].Size);
             }

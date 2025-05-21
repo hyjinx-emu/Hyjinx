@@ -1,8 +1,8 @@
-﻿using System;
+using LibHac.Common;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using LibHac.Common;
 
 namespace LibHac.Account;
 
@@ -38,7 +38,8 @@ public struct Uid : IEquatable<Uid>, IComparable<Uid>, IComparable
 
     public int CompareTo(object obj)
     {
-        if (obj is null) return 1;
+        if (obj is null)
+            return 1;
         return obj is Uid other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(Uid)}");
     }
 

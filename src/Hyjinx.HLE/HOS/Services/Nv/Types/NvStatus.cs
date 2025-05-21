@@ -1,15 +1,14 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.Types;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x20)]
+struct NvStatus
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x20)]
-    struct NvStatus
-    {
-        public uint MemoryValue1;
-        public uint MemoryValue2;
-        public uint MemoryValue3;
-        public uint MemoryValue4;
-        public long Padding1;
-        public long Padding2;
-    }
+    public uint MemoryValue1;
+    public uint MemoryValue2;
+    public uint MemoryValue3;
+    public uint MemoryValue4;
+    public long Padding1;
+    public long Padding2;
 }

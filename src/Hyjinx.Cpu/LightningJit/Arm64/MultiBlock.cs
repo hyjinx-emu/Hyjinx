@@ -2,62 +2,61 @@ using Hyjinx.Cpu.LightningJit.Graph;
 using System;
 using System.Collections.Generic;
 
-namespace Hyjinx.Cpu.LightningJit.Arm64
+namespace Hyjinx.Cpu.LightningJit.Arm64;
+
+class MultiBlock : IBlockList
 {
-    class MultiBlock : IBlockList
+    public readonly List<Block> Blocks;
+    public readonly RegisterMask[] ReadMasks;
+    public readonly RegisterMask[] WriteMasks;
+    public readonly RegisterMask GlobalUseMask;
+    public readonly bool HasHostCall;
+    public readonly bool HasMemoryInstruction;
+    public readonly bool IsTruncated;
+
+    public int Count => Blocks.Count;
+
+    public IBlock this[int index] => Blocks[index];
+
+    public MultiBlock(List<Block> blocks, RegisterMask globalUseMask, bool hasHostCall, bool hasMemoryInstruction)
     {
-        public readonly List<Block> Blocks;
-        public readonly RegisterMask[] ReadMasks;
-        public readonly RegisterMask[] WriteMasks;
-        public readonly RegisterMask GlobalUseMask;
-        public readonly bool HasHostCall;
-        public readonly bool HasMemoryInstruction;
-        public readonly bool IsTruncated;
+        Blocks = blocks;
 
-        public int Count => Blocks.Count;
+        (ReadMasks, WriteMasks) = DataFlow.GetGlobalUses(this);
 
-        public IBlock this[int index] => Blocks[index];
+        GlobalUseMask = globalUseMask;
+        HasHostCall = hasHostCall;
+        HasMemoryInstruction = hasMemoryInstruction;
+        IsTruncated = blocks[^1].IsTruncated;
+    }
 
-        public MultiBlock(List<Block> blocks, RegisterMask globalUseMask, bool hasHostCall, bool hasMemoryInstruction)
+    public void PrintDebugInfo()
+    {
+        foreach (Block block in Blocks)
         {
-            Blocks = blocks;
+            Console.WriteLine($"bb {block.Index}");
 
-            (ReadMasks, WriteMasks) = DataFlow.GetGlobalUses(this);
+            List<int> predList = new();
+            List<int> succList = new();
 
-            GlobalUseMask = globalUseMask;
-            HasHostCall = hasHostCall;
-            HasMemoryInstruction = hasMemoryInstruction;
-            IsTruncated = blocks[^1].IsTruncated;
-        }
-
-        public void PrintDebugInfo()
-        {
-            foreach (Block block in Blocks)
+            for (int index = 0; index < block.PredecessorsCount; index++)
             {
-                Console.WriteLine($"bb {block.Index}");
+                predList.Add(block.GetPredecessor(index).Index);
+            }
 
-                List<int> predList = new();
-                List<int> succList = new();
+            for (int index = 0; index < block.SuccessorsCount; index++)
+            {
+                succList.Add(block.GetSuccessor(index).Index);
+            }
 
-                for (int index = 0; index < block.PredecessorsCount; index++)
-                {
-                    predList.Add(block.GetPredecessor(index).Index);
-                }
+            Console.WriteLine($" predecessors: {string.Join(' ', predList)}");
+            Console.WriteLine($" successors: {string.Join(' ', succList)}");
+            Console.WriteLine($" gpr read mask: 0x{ReadMasks[block.Index].GprMask:X} 0x{block.ComputeUseMasks().Read.GprMask:X}");
+            Console.WriteLine($" gpr write mask: 0x{WriteMasks[block.Index].GprMask:X}");
 
-                for (int index = 0; index < block.SuccessorsCount; index++)
-                {
-                    succList.Add(block.GetSuccessor(index).Index);
-                }
-
-                Console.WriteLine($" predecessors: {string.Join(' ', predList)}");
-                Console.WriteLine($" successors: {string.Join(' ', succList)}");
-                Console.WriteLine($" gpr read mask: 0x{ReadMasks[block.Index].GprMask:X} 0x{block.ComputeUseMasks().Read.GprMask:X}");
-                Console.WriteLine($" gpr write mask: 0x{WriteMasks[block.Index].GprMask:X}");
-
-                for (int index = 0; index < block.Instructions.Count; index++)
-                {
-                    Console.WriteLine($"  {index} 0x{block.Instructions[index].Encoding:X8} {block.Instructions[index].Name}");
-                }
+            for (int index = 0; index < block.Instructions.Count; index++)
+            {
+                Console.WriteLine($"  {index} 0x{block.Instructions[index].Encoding:X8} {block.Instructions[index].Name}");
             }
         }
     }

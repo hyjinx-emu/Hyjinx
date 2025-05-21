@@ -1,50 +1,49 @@
 using System.Collections.Generic;
 
-namespace Hyjinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
+
+class KSlabHeap
 {
-    class KSlabHeap
+    private readonly LinkedList<ulong> _items;
+
+    public KSlabHeap(ulong pa, ulong itemSize, ulong size)
     {
-        private readonly LinkedList<ulong> _items;
+        _items = new LinkedList<ulong>();
 
-        public KSlabHeap(ulong pa, ulong itemSize, ulong size)
+        int itemsCount = (int)(size / itemSize);
+
+        for (int index = 0; index < itemsCount; index++)
         {
-            _items = new LinkedList<ulong>();
+            _items.AddLast(pa);
 
-            int itemsCount = (int)(size / itemSize);
+            pa += itemSize;
+        }
+    }
 
-            for (int index = 0; index < itemsCount; index++)
+    public bool TryGetItem(out ulong pa)
+    {
+        lock (_items)
+        {
+            if (_items.First != null)
             {
-                _items.AddLast(pa);
+                pa = _items.First.Value;
 
-                pa += itemSize;
+                _items.RemoveFirst();
+
+                return true;
             }
         }
 
-        public bool TryGetItem(out ulong pa)
+        pa = 0;
+
+        return false;
+    }
+
+    public void Free(ulong pa)
+    {
+        lock (_items)
         {
-            lock (_items)
-            {
-                if (_items.First != null)
-                {
-                    pa = _items.First.Value;
-
-                    _items.RemoveFirst();
-
-                    return true;
-                }
-            }
-
-            pa = 0;
-
-            return false;
-        }
-
-        public void Free(ulong pa)
-        {
-            lock (_items)
-            {
-                _items.AddFirst(pa);
-            }
+            _items.AddFirst(pa);
         }
     }
 }

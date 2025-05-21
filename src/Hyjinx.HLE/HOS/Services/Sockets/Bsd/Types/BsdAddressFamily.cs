@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
-{
-    enum BsdAddressFamily : uint
-    {
-        Unspecified,
-        InterNetwork = 2,
-        InterNetworkV6 = 28,
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
 
-        Unknown = uint.MaxValue,
-    }
+enum BsdAddressFamily : uint
+{
+    Unspecified,
+    InterNetwork = 2,
+    InterNetworkV6 = 28,
+
+    Unknown = uint.MaxValue,
 }

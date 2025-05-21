@@ -1,15 +1,14 @@
-namespace Hyjinx.HLE.Loaders.Elf
+namespace Hyjinx.HLE.Loaders.Elf;
+
+struct ElfDynamic
 {
-    struct ElfDynamic
+    public ElfDynamicTag Tag { get; private set; }
+
+    public long Value { get; private set; }
+
+    public ElfDynamic(ElfDynamicTag tag, long value)
     {
-        public ElfDynamicTag Tag { get; private set; }
-
-        public long Value { get; private set; }
-
-        public ElfDynamic(ElfDynamicTag tag, long value)
-        {
-            Tag = tag;
-            Value = value;
-        }
+        Tag = tag;
+        Value = value;
     }
 }

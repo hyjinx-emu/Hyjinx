@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
 using LibHac.Common;
+using System.Diagnostics;
 
 namespace LibHac.Tests;
 

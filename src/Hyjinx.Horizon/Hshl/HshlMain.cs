@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Hshl
+namespace Hyjinx.Horizon.Hshl;
+
+class HshlMain : IService
 {
-    class HshlMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            HshlIpcServer ipcServer = new();
+        HshlIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

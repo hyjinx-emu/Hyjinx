@@ -1,20 +1,19 @@
 using ARMeilleure.Memory;
 
-namespace Hyjinx.Cpu.Jit
+namespace Hyjinx.Cpu.Jit;
+
+public class JitEngine : ICpuEngine
 {
-    public class JitEngine : ICpuEngine
+    private readonly ITickSource _tickSource;
+
+    public JitEngine(ITickSource tickSource)
     {
-        private readonly ITickSource _tickSource;
+        _tickSource = tickSource;
+    }
 
-        public JitEngine(ITickSource tickSource)
-        {
-            _tickSource = tickSource;
-        }
-
-        /// <inheritdoc/>
-        public ICpuContext CreateCpuContext(IMemoryManager memoryManager, bool for64Bit)
-        {
-            return new JitCpuContext(_tickSource, memoryManager, for64Bit);
-        }
+    /// <inheritdoc/>
+    public ICpuContext CreateCpuContext(IMemoryManager memoryManager, bool for64Bit)
+    {
+        return new JitCpuContext(_tickSource, memoryManager, for64Bit);
     }
 }

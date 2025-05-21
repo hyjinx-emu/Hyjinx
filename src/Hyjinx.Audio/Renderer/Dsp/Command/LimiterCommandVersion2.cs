@@ -6,164 +6,163 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Audio.Renderer.Dsp.Command
+namespace Hyjinx.Audio.Renderer.Dsp.Command;
+
+public class LimiterCommandVersion2 : ICommand
 {
-    public class LimiterCommandVersion2 : ICommand
+    public bool Enabled { get; set; }
+
+    public int NodeId { get; }
+
+    public CommandType CommandType => CommandType.LimiterVersion2;
+
+    public uint EstimatedProcessingTime { get; set; }
+
+    public LimiterParameter Parameter => _parameter;
+    public Memory<LimiterState> State { get; }
+    public Memory<EffectResultState> ResultState { get; }
+    public ulong WorkBuffer { get; }
+    public ushort[] OutputBufferIndices { get; }
+    public ushort[] InputBufferIndices { get; }
+    public bool IsEffectEnabled { get; }
+
+    private LimiterParameter _parameter;
+
+    public LimiterCommandVersion2(
+        uint bufferOffset,
+        LimiterParameter parameter,
+        Memory<LimiterState> state,
+        Memory<EffectResultState> resultState,
+        bool isEnabled,
+        ulong workBuffer,
+        int nodeId)
     {
-        public bool Enabled { get; set; }
+        Enabled = true;
+        NodeId = nodeId;
+        _parameter = parameter;
+        State = state;
+        ResultState = resultState;
+        WorkBuffer = workBuffer;
 
-        public int NodeId { get; }
+        IsEffectEnabled = isEnabled;
 
-        public CommandType CommandType => CommandType.LimiterVersion2;
+        InputBufferIndices = new ushort[Constants.VoiceChannelCountMax];
+        OutputBufferIndices = new ushort[Constants.VoiceChannelCountMax];
 
-        public uint EstimatedProcessingTime { get; set; }
-
-        public LimiterParameter Parameter => _parameter;
-        public Memory<LimiterState> State { get; }
-        public Memory<EffectResultState> ResultState { get; }
-        public ulong WorkBuffer { get; }
-        public ushort[] OutputBufferIndices { get; }
-        public ushort[] InputBufferIndices { get; }
-        public bool IsEffectEnabled { get; }
-
-        private LimiterParameter _parameter;
-
-        public LimiterCommandVersion2(
-            uint bufferOffset,
-            LimiterParameter parameter,
-            Memory<LimiterState> state,
-            Memory<EffectResultState> resultState,
-            bool isEnabled,
-            ulong workBuffer,
-            int nodeId)
+        for (int i = 0; i < _parameter.ChannelCount; i++)
         {
-            Enabled = true;
-            NodeId = nodeId;
-            _parameter = parameter;
-            State = state;
-            ResultState = resultState;
-            WorkBuffer = workBuffer;
+            InputBufferIndices[i] = (ushort)(bufferOffset + _parameter.Input[i]);
+            OutputBufferIndices[i] = (ushort)(bufferOffset + _parameter.Output[i]);
+        }
+    }
 
-            IsEffectEnabled = isEnabled;
+    public void Process(CommandList context)
+    {
+        ref LimiterState state = ref State.Span[0];
 
-            InputBufferIndices = new ushort[Constants.VoiceChannelCountMax];
-            OutputBufferIndices = new ushort[Constants.VoiceChannelCountMax];
+        if (IsEffectEnabled)
+        {
+            if (_parameter.Status == UsageState.Invalid)
+            {
+                state = new LimiterState(ref _parameter, WorkBuffer);
+            }
+            else if (_parameter.Status == UsageState.New)
+            {
+                LimiterState.UpdateParameter(ref _parameter);
+            }
+        }
+
+        ProcessLimiter(context, ref state);
+    }
+
+    private unsafe void ProcessLimiter(CommandList context, ref LimiterState state)
+    {
+        Debug.Assert(_parameter.IsChannelCountValid());
+
+        if (IsEffectEnabled && _parameter.IsChannelCountValid())
+        {
+            if (!ResultState.IsEmpty && _parameter.StatisticsReset)
+            {
+                ref LimiterStatistics statistics = ref MemoryMarshal.Cast<byte, LimiterStatistics>(ResultState.Span[0].SpecificData)[0];
+
+                statistics.Reset();
+            }
+
+            Span<IntPtr> inputBuffers = stackalloc IntPtr[_parameter.ChannelCount];
+            Span<IntPtr> outputBuffers = stackalloc IntPtr[_parameter.ChannelCount];
 
             for (int i = 0; i < _parameter.ChannelCount; i++)
             {
-                InputBufferIndices[i] = (ushort)(bufferOffset + _parameter.Input[i]);
-                OutputBufferIndices[i] = (ushort)(bufferOffset + _parameter.Output[i]);
-            }
-        }
-
-        public void Process(CommandList context)
-        {
-            ref LimiterState state = ref State.Span[0];
-
-            if (IsEffectEnabled)
-            {
-                if (_parameter.Status == UsageState.Invalid)
-                {
-                    state = new LimiterState(ref _parameter, WorkBuffer);
-                }
-                else if (_parameter.Status == UsageState.New)
-                {
-                    LimiterState.UpdateParameter(ref _parameter);
-                }
+                inputBuffers[i] = context.GetBufferPointer(InputBufferIndices[i]);
+                outputBuffers[i] = context.GetBufferPointer(OutputBufferIndices[i]);
             }
 
-            ProcessLimiter(context, ref state);
-        }
-
-        private unsafe void ProcessLimiter(CommandList context, ref LimiterState state)
-        {
-            Debug.Assert(_parameter.IsChannelCountValid());
-
-            if (IsEffectEnabled && _parameter.IsChannelCountValid())
+            for (int channelIndex = 0; channelIndex < _parameter.ChannelCount; channelIndex++)
             {
-                if (!ResultState.IsEmpty && _parameter.StatisticsReset)
+                for (int sampleIndex = 0; sampleIndex < context.SampleCount; sampleIndex++)
                 {
-                    ref LimiterStatistics statistics = ref MemoryMarshal.Cast<byte, LimiterStatistics>(ResultState.Span[0].SpecificData)[0];
+                    float rawInputSample = *((float*)inputBuffers[channelIndex] + sampleIndex);
 
-                    statistics.Reset();
-                }
+                    float inputSample = (rawInputSample / short.MaxValue) * _parameter.InputGain;
 
-                Span<IntPtr> inputBuffers = stackalloc IntPtr[_parameter.ChannelCount];
-                Span<IntPtr> outputBuffers = stackalloc IntPtr[_parameter.ChannelCount];
+                    float sampleInputMax = Math.Abs(inputSample);
 
-                for (int i = 0; i < _parameter.ChannelCount; i++)
-                {
-                    inputBuffers[i] = context.GetBufferPointer(InputBufferIndices[i]);
-                    outputBuffers[i] = context.GetBufferPointer(OutputBufferIndices[i]);
-                }
+                    float inputCoefficient = _parameter.ReleaseCoefficient;
 
-                for (int channelIndex = 0; channelIndex < _parameter.ChannelCount; channelIndex++)
-                {
-                    for (int sampleIndex = 0; sampleIndex < context.SampleCount; sampleIndex++)
+                    if (sampleInputMax > state.DetectorAverage[channelIndex].Read())
                     {
-                        float rawInputSample = *((float*)inputBuffers[channelIndex] + sampleIndex);
+                        inputCoefficient = _parameter.AttackCoefficient;
+                    }
 
-                        float inputSample = (rawInputSample / short.MaxValue) * _parameter.InputGain;
+                    float detectorValue = state.DetectorAverage[channelIndex].Update(sampleInputMax, inputCoefficient);
+                    float attenuation = 1.0f;
 
-                        float sampleInputMax = Math.Abs(inputSample);
+                    if (detectorValue > _parameter.Threshold)
+                    {
+                        attenuation = _parameter.Threshold / detectorValue;
+                    }
 
-                        float inputCoefficient = _parameter.ReleaseCoefficient;
+                    float outputCoefficient = _parameter.ReleaseCoefficient;
 
-                        if (sampleInputMax > state.DetectorAverage[channelIndex].Read())
-                        {
-                            inputCoefficient = _parameter.AttackCoefficient;
-                        }
+                    if (state.CompressionGainAverage[channelIndex].Read() > attenuation)
+                    {
+                        outputCoefficient = _parameter.AttackCoefficient;
+                    }
 
-                        float detectorValue = state.DetectorAverage[channelIndex].Update(sampleInputMax, inputCoefficient);
-                        float attenuation = 1.0f;
+                    float compressionGain = state.CompressionGainAverage[channelIndex].Update(attenuation, outputCoefficient);
 
-                        if (detectorValue > _parameter.Threshold)
-                        {
-                            attenuation = _parameter.Threshold / detectorValue;
-                        }
+                    ref float delayedSample = ref state.DelayedSampleBuffer[channelIndex * _parameter.DelayBufferSampleCountMax + state.DelayedSampleBufferPosition[channelIndex]];
 
-                        float outputCoefficient = _parameter.ReleaseCoefficient;
+                    float outputSample = delayedSample * compressionGain * _parameter.OutputGain;
 
-                        if (state.CompressionGainAverage[channelIndex].Read() > attenuation)
-                        {
-                            outputCoefficient = _parameter.AttackCoefficient;
-                        }
+                    *((float*)outputBuffers[channelIndex] + sampleIndex) = outputSample * short.MaxValue;
 
-                        float compressionGain = state.CompressionGainAverage[channelIndex].Update(attenuation, outputCoefficient);
+                    delayedSample = inputSample;
 
-                        ref float delayedSample = ref state.DelayedSampleBuffer[channelIndex * _parameter.DelayBufferSampleCountMax + state.DelayedSampleBufferPosition[channelIndex]];
+                    state.DelayedSampleBufferPosition[channelIndex]++;
 
-                        float outputSample = delayedSample * compressionGain * _parameter.OutputGain;
+                    while (state.DelayedSampleBufferPosition[channelIndex] >= _parameter.DelayBufferSampleCountMin)
+                    {
+                        state.DelayedSampleBufferPosition[channelIndex] -= _parameter.DelayBufferSampleCountMin;
+                    }
 
-                        *((float*)outputBuffers[channelIndex] + sampleIndex) = outputSample * short.MaxValue;
+                    if (!ResultState.IsEmpty)
+                    {
+                        ref LimiterStatistics statistics = ref MemoryMarshal.Cast<byte, LimiterStatistics>(ResultState.Span[0].SpecificData)[0];
 
-                        delayedSample = inputSample;
-
-                        state.DelayedSampleBufferPosition[channelIndex]++;
-
-                        while (state.DelayedSampleBufferPosition[channelIndex] >= _parameter.DelayBufferSampleCountMin)
-                        {
-                            state.DelayedSampleBufferPosition[channelIndex] -= _parameter.DelayBufferSampleCountMin;
-                        }
-
-                        if (!ResultState.IsEmpty)
-                        {
-                            ref LimiterStatistics statistics = ref MemoryMarshal.Cast<byte, LimiterStatistics>(ResultState.Span[0].SpecificData)[0];
-
-                            statistics.InputMax[channelIndex] = Math.Max(statistics.InputMax[channelIndex], sampleInputMax);
-                            statistics.CompressionGainMin[channelIndex] = Math.Min(statistics.CompressionGainMin[channelIndex], compressionGain);
-                        }
+                        statistics.InputMax[channelIndex] = Math.Max(statistics.InputMax[channelIndex], sampleInputMax);
+                        statistics.CompressionGainMin[channelIndex] = Math.Min(statistics.CompressionGainMin[channelIndex], compressionGain);
                     }
                 }
             }
-            else
+        }
+        else
+        {
+            for (int i = 0; i < _parameter.ChannelCount; i++)
             {
-                for (int i = 0; i < _parameter.ChannelCount; i++)
+                if (InputBufferIndices[i] != OutputBufferIndices[i])
                 {
-                    if (InputBufferIndices[i] != OutputBufferIndices[i])
-                    {
-                        context.CopyBuffer(OutputBufferIndices[i], InputBufferIndices[i]);
-                    }
+                    context.CopyBuffer(OutputBufferIndices[i], InputBufferIndices[i]);
                 }
             }
         }

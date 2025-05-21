@@ -1,62 +1,61 @@
 using Hyjinx.HLE.HOS.Kernel.Common;
 using Hyjinx.Horizon.Common;
 
-namespace Hyjinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading;
+
+class KReadableEvent : KSynchronizationObject
 {
-    class KReadableEvent : KSynchronizationObject
+    private bool _signaled;
+
+    public KReadableEvent(KernelContext context) : base(context)
     {
-        private bool _signaled;
+    }
 
-        public KReadableEvent(KernelContext context) : base(context)
+    public override void Signal()
+    {
+        KernelContext.CriticalSection.Enter();
+
+        if (!_signaled)
         {
+            _signaled = true;
+
+            base.Signal();
         }
 
-        public override void Signal()
-        {
-            KernelContext.CriticalSection.Enter();
+        KernelContext.CriticalSection.Leave();
+    }
 
-            if (!_signaled)
-            {
-                _signaled = true;
+    public Result Clear()
+    {
+        _signaled = false;
 
-                base.Signal();
-            }
+        return Result.Success;
+    }
 
-            KernelContext.CriticalSection.Leave();
-        }
+    public Result ClearIfSignaled()
+    {
+        Result result;
 
-        public Result Clear()
+        KernelContext.CriticalSection.Enter();
+
+        if (_signaled)
         {
             _signaled = false;
 
-            return Result.Success;
+            result = Result.Success;
         }
-
-        public Result ClearIfSignaled()
+        else
         {
-            Result result;
-
-            KernelContext.CriticalSection.Enter();
-
-            if (_signaled)
-            {
-                _signaled = false;
-
-                result = Result.Success;
-            }
-            else
-            {
-                result = KernelResult.InvalidState;
-            }
-
-            KernelContext.CriticalSection.Leave();
-
-            return result;
+            result = KernelResult.InvalidState;
         }
 
-        public override bool IsSignaled()
-        {
-            return _signaled;
-        }
+        KernelContext.CriticalSection.Leave();
+
+        return result;
+    }
+
+    public override bool IsSignaled()
+    {
+        return _signaled;
     }
 }

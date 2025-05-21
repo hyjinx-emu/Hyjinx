@@ -1,25 +1,24 @@
 using Hyjinx.HLE.HOS.Kernel.Threading;
 
-namespace Hyjinx.HLE.HOS.Services.Bluetooth.BluetoothDriver
+namespace Hyjinx.HLE.HOS.Services.Bluetooth.BluetoothDriver;
+
+static class BluetoothEventManager
 {
-    static class BluetoothEventManager
-    {
-        public static KEvent InitializeBleDebugEvent;
-        public static int InitializeBleDebugEventHandle;
+    public static KEvent InitializeBleDebugEvent;
+    public static int InitializeBleDebugEventHandle;
 
-        public static KEvent UnknownBleDebugEvent;
-        public static int UnknownBleDebugEventHandle;
+    public static KEvent UnknownBleDebugEvent;
+    public static int UnknownBleDebugEventHandle;
 
-        public static KEvent RegisterBleDebugEvent;
-        public static int RegisterBleDebugEventHandle;
+    public static KEvent RegisterBleDebugEvent;
+    public static int RegisterBleDebugEventHandle;
 
-        public static KEvent InitializeBleEvent;
-        public static int InitializeBleEventHandle;
+    public static KEvent InitializeBleEvent;
+    public static int InitializeBleEventHandle;
 
-        public static KEvent UnknownBleEvent;
-        public static int UnknownBleEventHandle;
+    public static KEvent UnknownBleEvent;
+    public static int UnknownBleEventHandle;
 
-        public static KEvent RegisterBleEvent;
-        public static int RegisterBleEventHandle;
-    }
+    public static KEvent RegisterBleEvent;
+    public static int RegisterBleEventHandle;
 }

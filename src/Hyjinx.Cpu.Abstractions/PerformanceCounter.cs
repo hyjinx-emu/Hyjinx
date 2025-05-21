@@ -1,82 +1,81 @@
 using System.Diagnostics;
 
-namespace Hyjinx.Common
+namespace Hyjinx.Common;
+
+public static class PerformanceCounter
 {
-    public static class PerformanceCounter
+    private static readonly double _ticksToNs;
+
+    /// <summary>
+    /// Represents the number of ticks in 1 day.
+    /// </summary>
+    public static long TicksPerDay { get; }
+
+    /// <summary>
+    /// Represents the number of ticks in 1 hour.
+    /// </summary>
+    public static long TicksPerHour { get; }
+
+    /// <summary>
+    /// Represents the number of ticks in 1 minute.
+    /// </summary>
+    public static long TicksPerMinute { get; }
+
+    /// <summary>
+    /// Represents the number of ticks in 1 second.
+    /// </summary>
+    public static long TicksPerSecond { get; }
+
+    /// <summary>
+    /// Represents the number of ticks in 1 millisecond.
+    /// </summary>
+    public static long TicksPerMillisecond { get; }
+
+    /// <summary>
+    /// Gets the number of ticks elapsed since the system started.
+    /// </summary>
+    public static long ElapsedTicks
     {
-        private static readonly double _ticksToNs;
-
-        /// <summary>
-        /// Represents the number of ticks in 1 day.
-        /// </summary>
-        public static long TicksPerDay { get; }
-
-        /// <summary>
-        /// Represents the number of ticks in 1 hour.
-        /// </summary>
-        public static long TicksPerHour { get; }
-
-        /// <summary>
-        /// Represents the number of ticks in 1 minute.
-        /// </summary>
-        public static long TicksPerMinute { get; }
-
-        /// <summary>
-        /// Represents the number of ticks in 1 second.
-        /// </summary>
-        public static long TicksPerSecond { get; }
-
-        /// <summary>
-        /// Represents the number of ticks in 1 millisecond.
-        /// </summary>
-        public static long TicksPerMillisecond { get; }
-
-        /// <summary>
-        /// Gets the number of ticks elapsed since the system started.
-        /// </summary>
-        public static long ElapsedTicks
+        get
         {
-            get
-            {
-                return Stopwatch.GetTimestamp();
-            }
+            return Stopwatch.GetTimestamp();
         }
+    }
 
-        /// <summary>
-        /// Gets the number of milliseconds elapsed since the system started.
-        /// </summary>
-        public static long ElapsedMilliseconds
+    /// <summary>
+    /// Gets the number of milliseconds elapsed since the system started.
+    /// </summary>
+    public static long ElapsedMilliseconds
+    {
+        get
         {
-            get
-            {
-                long timestamp = Stopwatch.GetTimestamp();
+            long timestamp = Stopwatch.GetTimestamp();
 
-                return timestamp / TicksPerMillisecond;
-            }
+            return timestamp / TicksPerMillisecond;
         }
+    }
 
-        /// <summary>
-        /// Gets the number of nanoseconds elapsed since the system started.
-        /// </summary>
-        public static long ElapsedNanoseconds
+    /// <summary>
+    /// Gets the number of nanoseconds elapsed since the system started.
+    /// </summary>
+    public static long ElapsedNanoseconds
+    {
+        get
         {
-            get
-            {
-                long timestamp = Stopwatch.GetTimestamp();
+            long timestamp = Stopwatch.GetTimestamp();
 
-                return (long)(timestamp * _ticksToNs);
-            }
+            return (long)(timestamp * _ticksToNs);
         }
+    }
 
-        static PerformanceCounter()
-        {
-            TicksPerMillisecond = Stopwatch.Frequency / 1000;
-            TicksPerSecond = Stopwatch.Frequency;
-            TicksPerMinute = TicksPerSecond * 60;
-            TicksPerHour = TicksPerMinute * 60;
-            TicksPerDay = TicksPerHour * 24;
+    static PerformanceCounter()
+    {
+        TicksPerMillisecond = Stopwatch.Frequency / 1000;
+        TicksPerSecond = Stopwatch.Frequency;
+        TicksPerMinute = TicksPerSecond * 60;
+        TicksPerHour = TicksPerMinute * 60;
+        TicksPerDay = TicksPerHour * 24;
 
-            _ticksToNs = 1000000000.0 / Stopwatch.Frequency;
-        }
+        _ticksToNs = 1000000000.0 / Stopwatch.Frequency;
     }
 }

@@ -1,12 +1,11 @@
 using System.Diagnostics;
 
-namespace Hyjinx.Horizon.Sdk
+namespace Hyjinx.Horizon.Sdk;
+
+static class DebugUtil
 {
-    static class DebugUtil
+    public static void Assert(bool condition)
     {
-        public static void Assert(bool condition)
-        {
-            Debug.Assert(condition);
-        }
+        Debug.Assert(condition);
     }
 }

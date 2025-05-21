@@ -1,8 +1,8 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Ncm;
 using LibHac.Os;
+using System;
 
 namespace LibHac.Lr;
 
@@ -46,7 +46,8 @@ public static class LrService
 
         using var resolver = new SharedRef<ILocationResolver>();
         Result res = lr.Globals.LrService.LocationResolver.Get.OpenLocationResolver(ref resolver.Ref, storageId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outResolver = new LocationResolver(ref resolver.Ref);
         return Result.Success;
@@ -58,7 +59,8 @@ public static class LrService
 
         using var resolver = new SharedRef<IRegisteredLocationResolver>();
         Result res = lr.Globals.LrService.LocationResolver.Get.OpenRegisteredLocationResolver(ref resolver.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outResolver = new RegisteredLocationResolver(ref resolver.Ref);
         return Result.Success;
@@ -70,7 +72,8 @@ public static class LrService
 
         using var resolver = new SharedRef<IAddOnContentLocationResolver>();
         Result res = lr.Globals.LrService.LocationResolver.Get.OpenAddOnContentLocationResolver(ref resolver.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outResolver = new AddOnContentLocationResolver(ref resolver.Ref);
         return Result.Success;
@@ -79,7 +82,8 @@ public static class LrService
     public static Result RefreshLocationResolver(this LrClient lr, StorageId storageId)
     {
         Result res = lr.Globals.LrService.LocationResolver.Get.RefreshLocationResolver(storageId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

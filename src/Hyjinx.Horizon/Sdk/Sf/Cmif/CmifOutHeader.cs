@@ -1,14 +1,13 @@
 using Hyjinx.Horizon.Common;
 
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+struct CmifOutHeader
 {
-    struct CmifOutHeader
-    {
 #pragma warning disable CS0649 // Field is never assigned to
-        public uint Magic;
-        public uint Version;
-        public Result Result;
-        public uint Token;
+    public uint Magic;
+    public uint Version;
+    public Result Result;
+    public uint Token;
 #pragma warning restore CS0649
-    }
 }

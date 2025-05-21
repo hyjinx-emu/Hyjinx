@@ -1,21 +1,20 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Audio.Renderer.Parameter
+namespace Hyjinx.Audio.Renderer.Parameter;
+
+/// <summary>
+/// Renderer output information on REV5 and later.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct RendererInfoOutStatus
 {
     /// <summary>
-    /// Renderer output information on REV5 and later.
+    /// The count of updates sent to the <see cref="Dsp.AudioProcessor"/>.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct RendererInfoOutStatus
-    {
-        /// <summary>
-        /// The count of updates sent to the <see cref="Dsp.AudioProcessor"/>.
-        /// </summary>
-        public ulong ElapsedFrameCount;
+    public ulong ElapsedFrameCount;
 
-        /// <summary>
-        /// Reserved/Unused.
-        /// </summary>
-        private readonly ulong _reserved;
-    }
+    /// <summary>
+    /// Reserved/Unused.
+    /// </summary>
+    private readonly ulong _reserved;
 }

@@ -1,99 +1,98 @@
 using Hyjinx.Graphics.Device;
 using System.Collections.Generic;
 
-namespace Hyjinx.Graphics.Host1x
+namespace Hyjinx.Graphics.Host1x;
+
+class SyncptIncrManager
 {
-    class SyncptIncrManager
+    private readonly ISynchronizationManager _syncMgr;
+
+    private readonly struct SyncptIncr
     {
-        private readonly ISynchronizationManager _syncMgr;
+        public uint Id { get; }
+        public ClassId ClassId { get; }
+        public uint SyncptId { get; }
+        public bool Done { get; }
 
-        private readonly struct SyncptIncr
+        public SyncptIncr(uint id, ClassId classId, uint syncptId, bool done = false)
         {
-            public uint Id { get; }
-            public ClassId ClassId { get; }
-            public uint SyncptId { get; }
-            public bool Done { get; }
-
-            public SyncptIncr(uint id, ClassId classId, uint syncptId, bool done = false)
-            {
-                Id = id;
-                ClassId = classId;
-                SyncptId = syncptId;
-                Done = done;
-            }
+            Id = id;
+            ClassId = classId;
+            SyncptId = syncptId;
+            Done = done;
         }
+    }
 
-        private readonly List<SyncptIncr> _incrs = new();
+    private readonly List<SyncptIncr> _incrs = new();
 
-        private uint _currentId;
+    private uint _currentId;
 
-        public SyncptIncrManager(ISynchronizationManager syncMgr)
+    public SyncptIncrManager(ISynchronizationManager syncMgr)
+    {
+        _syncMgr = syncMgr;
+    }
+
+    public void Increment(uint id)
+    {
+        lock (_incrs)
         {
-            _syncMgr = syncMgr;
+            _incrs.Add(new SyncptIncr(0, 0, id, true));
+
+            IncrementAllDone();
         }
+    }
 
-        public void Increment(uint id)
+    public uint IncrementWhenDone(ClassId classId, uint id)
+    {
+        lock (_incrs)
         {
-            lock (_incrs)
-            {
-                _incrs.Add(new SyncptIncr(0, 0, id, true));
+            uint handle = _currentId++;
 
-                IncrementAllDone();
-            }
+            _incrs.Add(new SyncptIncr(handle, classId, id));
+
+            return handle;
         }
+    }
 
-        public uint IncrementWhenDone(ClassId classId, uint id)
+    public void SignalDone(uint handle)
+    {
+        lock (_incrs)
         {
-            lock (_incrs)
+            // Set pending increment with the given handle to "done".
+            for (int i = 0; i < _incrs.Count; i++)
             {
-                uint handle = _currentId++;
+                SyncptIncr incr = _incrs[i];
 
-                _incrs.Add(new SyncptIncr(handle, classId, id));
-
-                return handle;
-            }
-        }
-
-        public void SignalDone(uint handle)
-        {
-            lock (_incrs)
-            {
-                // Set pending increment with the given handle to "done".
-                for (int i = 0; i < _incrs.Count; i++)
+                if (_incrs[i].Id == handle)
                 {
-                    SyncptIncr incr = _incrs[i];
+                    _incrs[i] = new SyncptIncr(incr.Id, incr.ClassId, incr.SyncptId, true);
 
-                    if (_incrs[i].Id == handle)
-                    {
-                        _incrs[i] = new SyncptIncr(incr.Id, incr.ClassId, incr.SyncptId, true);
+                    break;
+                }
+            }
 
-                        break;
-                    }
+            IncrementAllDone();
+        }
+    }
+
+    private void IncrementAllDone()
+    {
+        lock (_incrs)
+        {
+            // Increment all sequential pending increments that are already done.
+            int doneCount = 0;
+
+            for (; doneCount < _incrs.Count; doneCount++)
+            {
+                if (!_incrs[doneCount].Done)
+                {
+                    break;
                 }
 
-                IncrementAllDone();
+                _syncMgr.IncrementSyncpoint(_incrs[doneCount].SyncptId);
             }
-        }
 
-        private void IncrementAllDone()
-        {
-            lock (_incrs)
-            {
-                // Increment all sequential pending increments that are already done.
-                int doneCount = 0;
-
-                for (; doneCount < _incrs.Count; doneCount++)
-                {
-                    if (!_incrs[doneCount].Done)
-                    {
-                        break;
-                    }
-
-                    _syncMgr.IncrementSyncpoint(_incrs[doneCount].SyncptId);
-                }
-
-                _incrs.RemoveRange(0, doneCount);
-            }
+            _incrs.RemoveRange(0, doneCount);
         }
     }
 }

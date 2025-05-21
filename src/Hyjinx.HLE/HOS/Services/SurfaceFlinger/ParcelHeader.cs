@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+
+struct ParcelHeader
 {
-    struct ParcelHeader
-    {
-        public uint PayloadSize;
-        public uint PayloadOffset;
-        public uint ObjectsSize;
-        public uint ObjectOffset;
-    }
+    public uint PayloadSize;
+    public uint PayloadOffset;
+    public uint ObjectsSize;
+    public uint ObjectOffset;
 }

@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -97,8 +97,10 @@ internal static class HashHelpers
 
     public static int GetRomFsPrime(int min)
     {
-        if (min < 3) return 3;
-        if (min < 19) return min | 1;
+        if (min < 3)
+            return 3;
+        if (min < 19)
+            return min | 1;
 
         for (int i = (min | 1); i < int.MaxValue; i += 2)
         {

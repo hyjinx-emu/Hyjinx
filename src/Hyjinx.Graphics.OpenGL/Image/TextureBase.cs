@@ -1,42 +1,41 @@
-using OpenTK.Graphics.OpenGL;
 using Hyjinx.Graphics.GAL;
+using OpenTK.Graphics.OpenGL;
 
-namespace Hyjinx.Graphics.OpenGL.Image
+namespace Hyjinx.Graphics.OpenGL.Image;
+
+class TextureBase
 {
-    class TextureBase
+    public int Handle { get; protected set; }
+
+    public TextureCreateInfo Info { get; }
+
+    public int Width => Info.Width;
+    public int Height => Info.Height;
+
+    public Target Target => Info.Target;
+    public Format Format => Info.Format;
+
+    public TextureBase(TextureCreateInfo info)
     {
-        public int Handle { get; protected set; }
+        Info = info;
 
-        public TextureCreateInfo Info { get; }
+        Handle = GL.GenTexture();
+    }
 
-        public int Width => Info.Width;
-        public int Height => Info.Height;
+    public void Bind(int unit)
+    {
+        Bind(Target.Convert(), unit);
+    }
 
-        public Target Target => Info.Target;
-        public Format Format => Info.Format;
+    protected void Bind(TextureTarget target, int unit)
+    {
+        GL.ActiveTexture(TextureUnit.Texture0 + unit);
+        GL.BindTexture(target, Handle);
+    }
 
-        public TextureBase(TextureCreateInfo info)
-        {
-            Info = info;
-
-            Handle = GL.GenTexture();
-        }
-
-        public void Bind(int unit)
-        {
-            Bind(Target.Convert(), unit);
-        }
-
-        protected void Bind(TextureTarget target, int unit)
-        {
-            GL.ActiveTexture(TextureUnit.Texture0 + unit);
-            GL.BindTexture(target, Handle);
-        }
-
-        public static void ClearBinding(int unit)
-        {
-            GL.ActiveTexture(TextureUnit.Texture0 + unit);
-            GL.BindTextureUnit(unit, 0);
-        }
+    public static void ClearBinding(int unit)
+    {
+        GL.ActiveTexture(TextureUnit.Texture0 + unit);
+        GL.BindTextureUnit(unit, 0);
     }
 }

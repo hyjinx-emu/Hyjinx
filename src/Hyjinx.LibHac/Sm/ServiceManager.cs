@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Svc;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Sm;
 
@@ -16,7 +16,8 @@ internal class ServiceManager
     internal Result GetService(ref SharedRef<IDisposable> outServiceObject, ServiceName serviceName)
     {
         Result res = ValidateServiceName(serviceName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!Services.TryGetValue(serviceName, out IServiceObject service))
         {
@@ -29,7 +30,8 @@ internal class ServiceManager
     internal Result RegisterService(IServiceObject service, ServiceName serviceName)
     {
         Result res = ValidateServiceName(serviceName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!Services.TryAdd(serviceName, service))
         {
@@ -42,7 +44,8 @@ internal class ServiceManager
     internal Result UnregisterService(ServiceName serviceName)
     {
         Result res = ValidateServiceName(serviceName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!Services.Remove(serviceName, out IServiceObject service))
         {

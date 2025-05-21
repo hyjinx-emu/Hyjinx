@@ -1,28 +1,27 @@
 using Hyjinx.Graphics.Device;
 using System;
 
-namespace Hyjinx.Graphics.Nvdec
+namespace Hyjinx.Graphics.Nvdec;
+
+static class MemoryExtensions
 {
-    static class MemoryExtensions
+    public static T DeviceRead<T>(this DeviceMemoryManager gmm, uint offset) where T : unmanaged
     {
-        public static T DeviceRead<T>(this DeviceMemoryManager gmm, uint offset) where T : unmanaged
-        {
-            return gmm.Read<T>(ExtendOffset(offset));
-        }
+        return gmm.Read<T>(ExtendOffset(offset));
+    }
 
-        public static ReadOnlySpan<byte> DeviceGetSpan(this DeviceMemoryManager gmm, uint offset, int size)
-        {
-            return gmm.GetSpan(ExtendOffset(offset), size);
-        }
+    public static ReadOnlySpan<byte> DeviceGetSpan(this DeviceMemoryManager gmm, uint offset, int size)
+    {
+        return gmm.GetSpan(ExtendOffset(offset), size);
+    }
 
-        public static void DeviceWrite(this DeviceMemoryManager gmm, uint offset, ReadOnlySpan<byte> data)
-        {
-            gmm.Write(ExtendOffset(offset), data);
-        }
+    public static void DeviceWrite(this DeviceMemoryManager gmm, uint offset, ReadOnlySpan<byte> data)
+    {
+        gmm.Write(ExtendOffset(offset), data);
+    }
 
-        public static ulong ExtendOffset(uint offset)
-        {
-            return (ulong)offset << 8;
-        }
+    public static ulong ExtendOffset(uint offset)
+    {
+        return (ulong)offset << 8;
     }
 }

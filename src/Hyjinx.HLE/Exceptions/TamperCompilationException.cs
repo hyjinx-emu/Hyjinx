@@ -1,9 +1,8 @@
 using System;
 
-namespace Hyjinx.HLE.Exceptions
+namespace Hyjinx.HLE.Exceptions;
+
+public class TamperCompilationException : Exception
 {
-    public class TamperCompilationException : Exception
-    {
-        public TamperCompilationException(string message) : base(message) { }
-    }
+    public TamperCompilationException(string message) : base(message) { }
 }

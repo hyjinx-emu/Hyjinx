@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types
+namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
+
+public enum LaunchParameterKind : uint
 {
-    public enum LaunchParameterKind : uint
-    {
-        UserChannel = 1,
-        PreselectedUser,
-        Unknown,
-    }
+    UserChannel = 1,
+    PreselectedUser,
+    Unknown,
 }

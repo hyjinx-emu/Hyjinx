@@ -1,20 +1,19 @@
 using System;
 
-namespace Hyjinx.Graphics.Video
+namespace Hyjinx.Graphics.Video;
+
+public interface ISurface : IDisposable
 {
-    public interface ISurface : IDisposable
-    {
-        Plane YPlane { get; }
-        Plane UPlane { get; }
-        Plane VPlane { get; }
+    Plane YPlane { get; }
+    Plane UPlane { get; }
+    Plane VPlane { get; }
 
-        FrameField Field { get; }
+    FrameField Field { get; }
 
-        int Width { get; }
-        int Height { get; }
-        int Stride { get; }
-        int UvWidth { get; }
-        int UvHeight { get; }
-        int UvStride { get; }
-    }
+    int Width { get; }
+    int Height { get; }
+    int Stride { get; }
+    int UvWidth { get; }
+    int UvHeight { get; }
+    int UvStride { get; }
 }

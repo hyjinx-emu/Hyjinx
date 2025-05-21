@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Usb
+namespace Hyjinx.Horizon.Usb;
+
+class UsbMain : IService
 {
-    class UsbMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            UsbIpcServer ipcServer = new();
+        UsbIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

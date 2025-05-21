@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.FsSrv.Sf;
 
 namespace LibHac.Fs.Shim;
@@ -16,7 +16,8 @@ public static class ErrorInfo
 
         Result res = fileSystemProxy.Get.GetAndClearErrorInfo(out outErrorInfo);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Npns
+namespace Hyjinx.HLE.HOS.Services.Npns;
+
+[Service("npns:u")]
+class INpnsUser : IpcService<INpnsUser>
 {
-    [Service("npns:u")]
-    class INpnsUser : IpcService<INpnsUser>
-    {
-        public INpnsUser(ServiceCtx context) { }
-    }
+    public INpnsUser(ServiceCtx context) { }
 }

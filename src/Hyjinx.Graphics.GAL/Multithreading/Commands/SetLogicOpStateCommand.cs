@@ -1,20 +1,19 @@
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands;
+
+struct SetLogicOpStateCommand : IGALCommand, IGALCommand<SetLogicOpStateCommand>
 {
-    struct SetLogicOpStateCommand : IGALCommand, IGALCommand<SetLogicOpStateCommand>
+    public readonly CommandType CommandType => CommandType.SetLogicOpState;
+    private bool _enable;
+    private LogicalOp _op;
+
+    public void Set(bool enable, LogicalOp op)
     {
-        public readonly CommandType CommandType => CommandType.SetLogicOpState;
-        private bool _enable;
-        private LogicalOp _op;
+        _enable = enable;
+        _op = op;
+    }
 
-        public void Set(bool enable, LogicalOp op)
-        {
-            _enable = enable;
-            _op = op;
-        }
-
-        public static void Run(ref SetLogicOpStateCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            renderer.Pipeline.SetLogicOpState(command._enable, command._op);
-        }
+    public static void Run(ref SetLogicOpStateCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        renderer.Pipeline.SetLogicOpState(command._enable, command._op);
     }
 }

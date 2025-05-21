@@ -1,14 +1,13 @@
 using System;
 
-namespace Hyjinx.Graphics.Video
+namespace Hyjinx.Graphics.Video;
+
+public interface IVp9Decoder : IDecoder
 {
-    public interface IVp9Decoder : IDecoder
-    {
-        bool Decode(
-            ref Vp9PictureInfo pictureInfo,
-            ISurface output,
-            ReadOnlySpan<byte> bitstream,
-            ReadOnlySpan<Vp9MvRef> mvsIn,
-            Span<Vp9MvRef> mvsOut);
-    }
+    bool Decode(
+        ref Vp9PictureInfo pictureInfo,
+        ISurface output,
+        ReadOnlySpan<byte> bitstream,
+        ReadOnlySpan<Vp9MvRef> mvsIn,
+        Span<Vp9MvRef> mvsOut);
 }

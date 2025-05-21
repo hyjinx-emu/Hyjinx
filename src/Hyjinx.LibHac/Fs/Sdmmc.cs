@@ -1,1 +1,1 @@
-﻿global using SdmmcHandle = System.UInt32;
+global using SdmmcHandle = System.UInt32;

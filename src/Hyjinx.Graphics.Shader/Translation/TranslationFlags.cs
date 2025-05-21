@@ -1,14 +1,13 @@
 using System;
 
-namespace Hyjinx.Graphics.Shader.Translation
-{
-    [Flags]
-    public enum TranslationFlags
-    {
-        None = 0,
+namespace Hyjinx.Graphics.Shader.Translation;
 
-        VertexA = 1 << 0,
-        Compute = 1 << 1,
-        DebugMode = 1 << 2,
-    }
+[Flags]
+public enum TranslationFlags
+{
+    None = 0,
+
+    VertexA = 1 << 0,
+    Compute = 1 << 1,
+    DebugMode = 1 << 2,
 }

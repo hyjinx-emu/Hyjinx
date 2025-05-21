@@ -1,9 +1,9 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Util;
+using System;
 
 namespace LibHac.FsSystem;
 
@@ -37,7 +37,8 @@ public interface IAsynchronousAccessSplitter : IDisposable
         }
 
         Result res = QueryAppropriateOffset(out long offsetAppropriate, startOffset, accessSize, alignmentSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
         Assert.SdkNotEqual(startOffset, offsetAppropriate);
 
         nextOffset = Math.Min(startOffset, offsetAppropriate);
@@ -54,7 +55,8 @@ public interface IAsynchronousAccessSplitter : IDisposable
         while (currentOffset < endOffset)
         {
             Result res = QueryNextOffset(out currentOffset, currentOffset, endOffset, accessSize, alignmentSize);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             invocationCount++;
         }

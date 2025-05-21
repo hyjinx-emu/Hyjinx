@@ -1,18 +1,17 @@
 using System;
 
-namespace Hyjinx.Memory.Tracking
+namespace Hyjinx.Memory.Tracking;
+
+public interface IRegionHandle : IDisposable
 {
-    public interface IRegionHandle : IDisposable
-    {
-        bool Dirty { get; }
+    bool Dirty { get; }
 
-        ulong Address { get; }
-        ulong Size { get; }
-        ulong EndAddress { get; }
+    ulong Address { get; }
+    ulong Size { get; }
+    ulong EndAddress { get; }
 
-        void ForceDirty();
-        void Reprotect(bool asDirty = false);
-        void RegisterAction(RegionSignal action);
-        void RegisterPreciseAction(PreciseRegionSignal action);
-    }
+    void ForceDirty();
+    void Reprotect(bool asDirty = false);
+    void RegisterAction(RegionSignal action);
+    void RegisterPreciseAction(PreciseRegionSignal action);
 }

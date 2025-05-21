@@ -1,18 +1,17 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
-{
-    [StructLayout(LayoutKind.Sequential, Size = 0x5000)]
-    struct NpadState
-    {
-        public NpadInternalState InternalState;
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
 
-        public static NpadState Create()
+[StructLayout(LayoutKind.Sequential, Size = 0x5000)]
+struct NpadState
+{
+    public NpadInternalState InternalState;
+
+    public static NpadState Create()
+    {
+        return new NpadState
         {
-            return new NpadState
-            {
-                InternalState = NpadInternalState.Create(),
-            };
-        }
+            InternalState = NpadInternalState.Create(),
+        };
     }
 }

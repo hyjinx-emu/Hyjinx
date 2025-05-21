@@ -1,5 +1,3 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Common.Keys;
@@ -7,6 +5,8 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using OpenType = LibHac.FsSrv.SaveDataOpenTypeSetFileStorage.OpenType;
 
 namespace LibHac.FsSrv.FsCreator;
@@ -48,7 +48,8 @@ public class SaveDataFileSystemCreator : ISaveDataFileSystemCreator
 
         using scoped var saveImageName = new Path();
         Result res = PathFunctions.SetUpFixedPathSaveId(ref saveImageName.Ref(), saveImageNameBuffer.Items, saveDataId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = baseFileSystem.Get.GetEntryType(out DirectoryEntryType type, in saveImageName);
 
@@ -74,7 +75,8 @@ public class SaveDataFileSystemCreator : ISaveDataFileSystemCreator
                 return ResultFs.AllocationMemoryFailedInSaveDataFileSystemCreatorA.Log();
 
             res = baseFs.Get.Initialize(in saveImageName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Create and initialize the directory save data FS
             using UniqueRef<IFileSystem> tempFs = UniqueRef<IFileSystem>.Create(ref baseFs.Ref);
@@ -86,7 +88,8 @@ public class SaveDataFileSystemCreator : ISaveDataFileSystemCreator
 
             res = saveDirFs.Get.Initialize(isJournalingSupported, isMultiCommitSupported, !openReadOnly,
                 timeStampGetter, _randomGenerator);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             saveDataFs.SetByMove(ref saveDirFs.Ref);
         }
@@ -99,7 +102,8 @@ public class SaveDataFileSystemCreator : ISaveDataFileSystemCreator
 
             res = _fsServer.OpenSaveDataStorage(ref fileStorage.Ref, ref baseFileSystem, spaceId, saveDataId,
                 OpenMode.ReadWrite, openType);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             throw new NotImplementedException();
         }

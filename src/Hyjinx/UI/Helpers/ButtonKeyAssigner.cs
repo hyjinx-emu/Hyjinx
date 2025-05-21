@@ -5,98 +5,97 @@ using Hyjinx.Input.Assigner;
 using System;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Ava.UI.Helpers
+namespace Hyjinx.Ava.UI.Helpers;
+
+internal class ButtonKeyAssigner
 {
-    internal class ButtonKeyAssigner
+    internal class ButtonAssignedEventArgs : EventArgs
     {
-        internal class ButtonAssignedEventArgs : EventArgs
+        public ToggleButton Button { get; }
+        public Button? ButtonValue { get; }
+
+        public ButtonAssignedEventArgs(ToggleButton button, Button? buttonValue)
         {
-            public ToggleButton Button { get; }
-            public Button? ButtonValue { get; }
-
-            public ButtonAssignedEventArgs(ToggleButton button, Button? buttonValue)
-            {
-                Button = button;
-                ButtonValue = buttonValue;
-            }
+            Button = button;
+            ButtonValue = buttonValue;
         }
+    }
 
-        public ToggleButton ToggledButton { get; set; }
+    public ToggleButton ToggledButton { get; set; }
 
-        private bool _isWaitingForInput;
-        private bool _shouldUnbind;
-        public event EventHandler<ButtonAssignedEventArgs> ButtonAssigned;
+    private bool _isWaitingForInput;
+    private bool _shouldUnbind;
+    public event EventHandler<ButtonAssignedEventArgs> ButtonAssigned;
 
-        public ButtonKeyAssigner(ToggleButton toggleButton)
+    public ButtonKeyAssigner(ToggleButton toggleButton)
+    {
+        ToggledButton = toggleButton;
+    }
+
+    public async void GetInputAndAssign(IButtonAssigner assigner, IKeyboard keyboard = null)
+    {
+        Dispatcher.UIThread.Post(() =>
         {
-            ToggledButton = toggleButton;
-        }
+            ToggledButton.IsChecked = true;
+        });
 
-        public async void GetInputAndAssign(IButtonAssigner assigner, IKeyboard keyboard = null)
+        if (_isWaitingForInput)
         {
             Dispatcher.UIThread.Post(() =>
             {
-                ToggledButton.IsChecked = true;
+                Cancel();
             });
 
-            if (_isWaitingForInput)
-            {
-                Dispatcher.UIThread.Post(() =>
-                {
-                    Cancel();
-                });
+            return;
+        }
 
-                return;
+        _isWaitingForInput = true;
+
+        assigner.Initialize();
+
+        await Task.Run(async () =>
+        {
+            while (true)
+            {
+                if (!_isWaitingForInput)
+                {
+                    return;
+                }
+
+                await Task.Delay(10);
+
+                assigner.ReadInput();
+
+                if (assigner.IsAnyButtonPressed() || assigner.ShouldCancel() || (keyboard != null && keyboard.IsPressed(Key.Escape)))
+                {
+                    break;
+                }
+            }
+        });
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            Button? pressedButton = assigner.GetPressedButton();
+
+            if (_shouldUnbind)
+            {
+                pressedButton = null;
             }
 
-            _isWaitingForInput = true;
-
-            assigner.Initialize();
-
-            await Task.Run(async () =>
-            {
-                while (true)
-                {
-                    if (!_isWaitingForInput)
-                    {
-                        return;
-                    }
-
-                    await Task.Delay(10);
-
-                    assigner.ReadInput();
-
-                    if (assigner.IsAnyButtonPressed() || assigner.ShouldCancel() || (keyboard != null && keyboard.IsPressed(Key.Escape)))
-                    {
-                        break;
-                    }
-                }
-            });
-
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                Button? pressedButton = assigner.GetPressedButton();
-
-                if (_shouldUnbind)
-                {
-                    pressedButton = null;
-                }
-
-                _shouldUnbind = false;
-                _isWaitingForInput = false;
-
-                ToggledButton.IsChecked = false;
-
-                ButtonAssigned?.Invoke(this, new ButtonAssignedEventArgs(ToggledButton, pressedButton));
-
-            });
-        }
-
-        public void Cancel(bool shouldUnbind = false)
-        {
+            _shouldUnbind = false;
             _isWaitingForInput = false;
+
             ToggledButton.IsChecked = false;
-            _shouldUnbind = shouldUnbind;
-        }
+
+            ButtonAssigned?.Invoke(this, new ButtonAssignedEventArgs(ToggledButton, pressedButton));
+
+        });
+    }
+
+    public void Cancel(bool shouldUnbind = false)
+    {
+        _isWaitingForInput = false;
+        ToggledButton.IsChecked = false;
+        _shouldUnbind = shouldUnbind;
     }
 }

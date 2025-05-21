@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.Types
+namespace Hyjinx.HLE.HOS.Services.Hid.Types;
+
+enum NpadJoyHoldType
 {
-    enum NpadJoyHoldType
-    {
-        Vertical,
-        Horizontal,
-    }
+    Vertical,
+    Horizontal,
 }

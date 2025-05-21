@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
+
+enum FontRegion : byte
 {
-    enum FontRegion : byte
-    {
-        Standard,
-        China,
-        Korea,
-        Taiwan,
-    }
+    Standard,
+    China,
+    Korea,
+    Taiwan,
 }

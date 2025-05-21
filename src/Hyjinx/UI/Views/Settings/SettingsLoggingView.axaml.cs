@@ -1,12 +1,11 @@
 using Avalonia.Controls;
 
-namespace Hyjinx.Ava.UI.Views.Settings
+namespace Hyjinx.Ava.UI.Views.Settings;
+
+public partial class SettingsLoggingView : UserControl
 {
-    public partial class SettingsLoggingView : UserControl
+    public SettingsLoggingView()
     {
-        public SettingsLoggingView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -3,65 +3,64 @@ using Hyjinx.Audio.Integration;
 using Hyjinx.Memory;
 using System;
 
-namespace Hyjinx.Audio.Backends.Dummy
+namespace Hyjinx.Audio.Backends.Dummy;
+
+class DummyHardwareDeviceSessionInput : IHardwareDeviceSession
 {
-    class DummyHardwareDeviceSessionInput : IHardwareDeviceSession
+    private float _volume;
+    private readonly IHardwareDeviceDriver _manager;
+    private readonly IVirtualMemoryManager _memoryManager;
+
+    public DummyHardwareDeviceSessionInput(IHardwareDeviceDriver manager, IVirtualMemoryManager memoryManager)
     {
-        private float _volume;
-        private readonly IHardwareDeviceDriver _manager;
-        private readonly IVirtualMemoryManager _memoryManager;
+        _volume = 1.0f;
+        _manager = manager;
+        _memoryManager = memoryManager;
+    }
 
-        public DummyHardwareDeviceSessionInput(IHardwareDeviceDriver manager, IVirtualMemoryManager memoryManager)
-        {
-            _volume = 1.0f;
-            _manager = manager;
-            _memoryManager = memoryManager;
-        }
+    public void Dispose()
+    {
+        // Nothing to do.
+    }
 
-        public void Dispose()
-        {
-            // Nothing to do.
-        }
+    public ulong GetPlayedSampleCount()
+    {
+        // Not implemented for input.
+        throw new NotSupportedException();
+    }
 
-        public ulong GetPlayedSampleCount()
-        {
-            // Not implemented for input.
-            throw new NotSupportedException();
-        }
+    public float GetVolume()
+    {
+        return _volume;
+    }
 
-        public float GetVolume()
-        {
-            return _volume;
-        }
+    public void PrepareToClose() { }
 
-        public void PrepareToClose() { }
+    public void QueueBuffer(AudioBuffer buffer)
+    {
+        _memoryManager.Fill(buffer.DataPointer, buffer.DataSize, 0);
 
-        public void QueueBuffer(AudioBuffer buffer)
-        {
-            _memoryManager.Fill(buffer.DataPointer, buffer.DataSize, 0);
+        _manager.GetUpdateRequiredEvent().Set();
+    }
 
-            _manager.GetUpdateRequiredEvent().Set();
-        }
+    public bool RegisterBuffer(AudioBuffer buffer)
+    {
+        return buffer.DataPointer != 0;
+    }
 
-        public bool RegisterBuffer(AudioBuffer buffer)
-        {
-            return buffer.DataPointer != 0;
-        }
+    public void SetVolume(float volume)
+    {
+        _volume = volume;
+    }
 
-        public void SetVolume(float volume)
-        {
-            _volume = volume;
-        }
+    public void Start() { }
 
-        public void Start() { }
+    public void Stop() { }
 
-        public void Stop() { }
+    public void UnregisterBuffer(AudioBuffer buffer) { }
 
-        public void UnregisterBuffer(AudioBuffer buffer) { }
-
-        public bool WasBufferFullyConsumed(AudioBuffer buffer)
-        {
-            return true;
-        }
+    public bool WasBufferFullyConsumed(AudioBuffer buffer)
+    {
+        return true;
     }
 }

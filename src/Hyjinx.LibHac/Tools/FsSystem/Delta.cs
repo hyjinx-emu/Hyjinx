@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -24,11 +24,13 @@ public class Delta
         DeltaStorage = deltaStorage;
         deltaStorage.GetSize(out long deltaSize).ThrowIfFailure();
 
-        if (deltaSize < 0x40) throw new InvalidDataException("Delta file is too small.");
+        if (deltaSize < 0x40)
+            throw new InvalidDataException("Delta file is too small.");
 
         Header = new DeltaHeader(deltaStorage.AsFile(OpenMode.Read));
 
-        if (Header.Magic != Ndv0Magic) throw new InvalidDataException("NDV0 magic value is missing.");
+        if (Header.Magic != Ndv0Magic)
+            throw new InvalidDataException("NDV0 magic value is missing.");
 
         long fragmentSize = Header.HeaderSize + Header.BodySize;
         if (deltaSize < fragmentSize)
@@ -52,7 +54,8 @@ public class Delta
 
     public IStorage GetPatchedStorage()
     {
-        if (OriginalStorage == null) throw new InvalidOperationException("Cannot apply a delta patch without a base file.");
+        if (OriginalStorage == null)
+            throw new InvalidOperationException("Cannot apply a delta patch without a base file.");
 
         var storages = new List<IStorage>();
 
@@ -126,11 +129,16 @@ public class Delta
     {
         switch (bytes)
         {
-            case 1: return reader.ReadUInt8();
-            case 2: return reader.ReadUInt16();
-            case 3: return reader.ReadUInt24();
-            case 4: return reader.ReadInt32();
-            default: return 0;
+            case 1:
+                return reader.ReadUInt8();
+            case 2:
+                return reader.ReadUInt16();
+            case 3:
+                return reader.ReadUInt24();
+            case 4:
+                return reader.ReadInt32();
+            default:
+                return 0;
         }
     }
 }

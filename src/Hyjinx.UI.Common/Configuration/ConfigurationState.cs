@@ -2,10 +2,10 @@ using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Graphics.GAL;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using Hyjinx.UI.Common.Helper;
@@ -834,11 +834,11 @@ public class ConfigurationState
         Hid.EnableKeyboard.Value = configurationFileFormat.EnableKeyboard;
         Hid.EnableMouse.Value = configurationFileFormat.EnableMouse;
         Hid.Hotkeys.Value = configurationFileFormat.Hotkeys;
-        
+
         Hid.InputConfig.Value = new List<InputConfig>();
         Hid.InputConfig.Value.AddRange(configurationFileFormat.InputOptions.KeyboardBindings);
         Hid.InputConfig.Value.AddRange(configurationFileFormat.InputOptions.ControllerBindings);
-        
+
         Multiplayer.LanInterfaceId.Value = configurationFileFormat.MultiplayerLanInterfaceId;
         Multiplayer.Mode.Value = configurationFileFormat.MultiplayerMode;
     }

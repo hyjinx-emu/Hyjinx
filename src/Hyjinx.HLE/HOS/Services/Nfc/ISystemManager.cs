@@ -1,19 +1,18 @@
 using Hyjinx.HLE.HOS.Services.Nfc.NfcManager;
 
-namespace Hyjinx.HLE.HOS.Services.Nfc
+namespace Hyjinx.HLE.HOS.Services.Nfc;
+
+[Service("nfc:sys")]
+class ISystemManager : IpcService<ISystemManager>
 {
-    [Service("nfc:sys")]
-    class ISystemManager : IpcService<ISystemManager>
+    public ISystemManager(ServiceCtx context) { }
+
+    [CommandCmif(0)]
+    // CreateSystemInterface() -> object<nn::nfc::detail::ISystem>
+    public ResultCode CreateSystemInterface(ServiceCtx context)
     {
-        public ISystemManager(ServiceCtx context) { }
+        MakeObject(context, new INfc(NfcPermissionLevel.System));
 
-        [CommandCmif(0)]
-        // CreateSystemInterface() -> object<nn::nfc::detail::ISystem>
-        public ResultCode CreateSystemInterface(ServiceCtx context)
-        {
-            MakeObject(context, new INfc(NfcPermissionLevel.System));
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

@@ -1,21 +1,20 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAccessServer;
+using Hyjinx.Logging.Abstractions;
 
-namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface
+namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface;
+
+class IShopServiceAccessServer : IpcService<IShopServiceAccessServer>
 {
-    class IShopServiceAccessServer : IpcService<IShopServiceAccessServer>
+    public IShopServiceAccessServer() { }
+
+    [CommandCmif(0)]
+    // CreateAccessorInterface(u8) -> object<nn::ec::IShopServiceAccessor>
+    public ResultCode CreateAccessorInterface(ServiceCtx context)
     {
-        public IShopServiceAccessServer() { }
+        MakeObject(context, new IShopServiceAccessor(context.Device.System));
 
-        [CommandCmif(0)]
-        // CreateAccessorInterface(u8) -> object<nn::ec::IShopServiceAccessor>
-        public ResultCode CreateAccessorInterface(ServiceCtx context)
-        {
-            MakeObject(context, new IShopServiceAccessor(context.Device.System));
+        // Logger.Stub?.PrintStub(LogClass.ServiceNim);
 
-            // Logger.Stub?.PrintStub(LogClass.ServiceNim);
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

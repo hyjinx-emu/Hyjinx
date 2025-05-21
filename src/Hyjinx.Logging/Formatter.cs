@@ -1,11 +1,11 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
-using System.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Text;
 
 namespace Hyjinx.Logging;
@@ -17,12 +17,12 @@ public abstract class Formatter<TOptions> : IFormatter, IDisposable
     where TOptions : FormatterOptions
 {
     private readonly IDisposable? _optionsReloadToken;
-    
+
     internal TOptions FormatterOptions { get; set; }
-    
+
     [ThreadStatic]
     private static StringBuilder? t_messageBuilder;
-    
+
     public Formatter(string name, IOptionsMonitor<TOptions> options)
     {
         ArgumentNullException.ThrowIfNull(name);
@@ -36,7 +36,7 @@ public abstract class Formatter<TOptions> : IFormatter, IDisposable
     {
         Dispose(false);
     }
-    
+
     [MemberNotNull(nameof(FormatterOptions))]
     private void ReloadLoggerOptions(TOptions options)
     {
@@ -75,7 +75,7 @@ public abstract class Formatter<TOptions> : IFormatter, IDisposable
     public void Write<TState>(in LogEntry<TState> logEntry, IExternalScopeProvider? scopeProvider, TextWriter textWriter)
     {
         t_messageBuilder ??= new StringBuilder();
-        
+
         try
         {
             string? timestamp = null;
@@ -84,7 +84,7 @@ public abstract class Formatter<TOptions> : IFormatter, IDisposable
             {
                 timestamp = logEntry.UpTime.ToString(timestampFormat);
             }
-            
+
             if (timestamp != null)
             {
                 t_messageBuilder.Append(timestamp);
@@ -92,7 +92,7 @@ public abstract class Formatter<TOptions> : IFormatter, IDisposable
 
             var logLevelString = GetLogLevelString(logEntry.LogLevel);
             t_messageBuilder.Append(' ').Append(logLevelString).Append(' ').Append(logEntry.Category.Substring(logEntry.Category.LastIndexOf('.') + 1));
-            
+
             if (logEntry.ThreadName != null)
             {
                 t_messageBuilder.Append(' ').Append(logEntry.ThreadName);
@@ -115,7 +115,7 @@ public abstract class Formatter<TOptions> : IFormatter, IDisposable
             t_messageBuilder.Clear();
         }
     }
-    
+
     private static string GetLogLevelString(LogLevel logLevel)
     {
         return logLevel switch
@@ -129,6 +129,6 @@ public abstract class Formatter<TOptions> : IFormatter, IDisposable
             _ => throw new ArgumentOutOfRangeException(nameof(logLevel))
         };
     }
-    
+
     protected abstract void WriteCore(string message, LogLevel level, TextWriter textWriter);
 }

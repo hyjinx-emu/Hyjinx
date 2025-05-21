@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum MagFilter
 {
-    public enum MagFilter
-    {
-        Nearest = 1,
-        Linear,
-    }
+    Nearest = 1,
+    Linear,
 }

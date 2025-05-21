@@ -1,9 +1,8 @@
 using System;
 
-namespace SPB.Graphics
+namespace SPB.Graphics;
+
+public interface IBaseContext : IBindingsContext, IDisposable
 {
-    public interface IBaseContext : IBindingsContext, IDisposable
-    {
-        IntPtr ContextHandle { get; }
-    }
+    IntPtr ContextHandle { get; }
 }

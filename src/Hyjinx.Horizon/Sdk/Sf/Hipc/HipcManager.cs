@@ -2,114 +2,113 @@ using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Sf.Cmif;
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Sf.Hipc
+namespace Hyjinx.Horizon.Sdk.Sf.Hipc;
+
+partial class HipcManager : IServiceObject
 {
-    partial class HipcManager : IServiceObject
+    private readonly ServerDomainSessionManager _manager;
+    private readonly ServerSession _session;
+
+    public HipcManager(ServerDomainSessionManager manager, ServerSession session)
     {
-        private readonly ServerDomainSessionManager _manager;
-        private readonly ServerSession _session;
+        _manager = manager;
+        _session = session;
+    }
 
-        public HipcManager(ServerDomainSessionManager manager, ServerSession session)
+    [CmifCommand(0)]
+    public Result ConvertCurrentObjectToDomain(out int objectId)
+    {
+        objectId = 0;
+
+        var domain = _manager.Domain.AllocateDomainServiceObject();
+        if (domain == null)
         {
-            _manager = manager;
-            _session = session;
+            return HipcResult.OutOfDomains;
         }
 
-        [CmifCommand(0)]
-        public Result ConvertCurrentObjectToDomain(out int objectId)
-        {
-            objectId = 0;
+        bool succeeded = false;
 
-            var domain = _manager.Domain.AllocateDomainServiceObject();
-            if (domain == null)
+        try
+        {
+            Span<int> objectIds = stackalloc int[1];
+
+            Result result = domain.ReserveIds(objectIds);
+
+            if (result.IsFailure)
             {
-                return HipcResult.OutOfDomains;
+                return result;
             }
 
-            bool succeeded = false;
-
-            try
-            {
-                Span<int> objectIds = stackalloc int[1];
-
-                Result result = domain.ReserveIds(objectIds);
-
-                if (result.IsFailure)
-                {
-                    return result;
-                }
-
-                objectId = objectIds[0];
-                succeeded = true;
-            }
-            finally
-            {
-                if (!succeeded)
-                {
-                    ServerDomainManager.DestroyDomainServiceObject(domain);
-                }
-            }
-
-            domain.RegisterObject(objectId, _session.ServiceObjectHolder);
-            _session.ServiceObjectHolder = new ServiceObjectHolder(domain);
-
-            return Result.Success;
+            objectId = objectIds[0];
+            succeeded = true;
         }
-
-        [CmifCommand(1)]
-        public Result CopyFromCurrentDomain([MoveHandle] out int clientHandle, int objectId)
+        finally
         {
-            clientHandle = 0;
-
-            if (_session.ServiceObjectHolder.ServiceObject is not DomainServiceObject domain)
+            if (!succeeded)
             {
-                return HipcResult.TargetNotDomain;
+                ServerDomainManager.DestroyDomainServiceObject(domain);
             }
-
-            var obj = domain.GetObject(objectId);
-            if (obj == null)
-            {
-                return HipcResult.DomainObjectNotFound;
-            }
-
-            Api.CreateSession(out int serverHandle, out clientHandle).AbortOnFailure();
-            _manager.RegisterSession(serverHandle, obj).AbortOnFailure();
-
-            return Result.Success;
         }
 
-        [CmifCommand(2)]
-        public Result CloneCurrentObject([MoveHandle] out int clientHandle)
+        domain.RegisterObject(objectId, _session.ServiceObjectHolder);
+        _session.ServiceObjectHolder = new ServiceObjectHolder(domain);
+
+        return Result.Success;
+    }
+
+    [CmifCommand(1)]
+    public Result CopyFromCurrentDomain([MoveHandle] out int clientHandle, int objectId)
+    {
+        clientHandle = 0;
+
+        if (_session.ServiceObjectHolder.ServiceObject is not DomainServiceObject domain)
         {
-            return CloneCurrentObjectImpl(out clientHandle, _manager);
+            return HipcResult.TargetNotDomain;
         }
 
-        [CmifCommand(3)]
-        public void QueryPointerBufferSize(out ushort size)
+        var obj = domain.GetObject(objectId);
+        if (obj == null)
         {
-            size = (ushort)_session.PointerBuffer.Size;
+            return HipcResult.DomainObjectNotFound;
         }
 
-        [CmifCommand(4)]
-        public Result CloneCurrentObjectEx([MoveHandle] out int clientHandle, uint tag)
+        Api.CreateSession(out int serverHandle, out clientHandle).AbortOnFailure();
+        _manager.RegisterSession(serverHandle, obj).AbortOnFailure();
+
+        return Result.Success;
+    }
+
+    [CmifCommand(2)]
+    public Result CloneCurrentObject([MoveHandle] out int clientHandle)
+    {
+        return CloneCurrentObjectImpl(out clientHandle, _manager);
+    }
+
+    [CmifCommand(3)]
+    public void QueryPointerBufferSize(out ushort size)
+    {
+        size = (ushort)_session.PointerBuffer.Size;
+    }
+
+    [CmifCommand(4)]
+    public Result CloneCurrentObjectEx([MoveHandle] out int clientHandle, uint tag)
+    {
+        return CloneCurrentObjectImpl(out clientHandle, _manager.GetSessionManagerByTag(tag));
+    }
+
+    private Result CloneCurrentObjectImpl(out int clientHandle, ServerSessionManager manager)
+    {
+        clientHandle = 0;
+
+        var clone = _session.ServiceObjectHolder.Clone();
+        if (clone == null)
         {
-            return CloneCurrentObjectImpl(out clientHandle, _manager.GetSessionManagerByTag(tag));
+            return HipcResult.DomainObjectNotFound;
         }
 
-        private Result CloneCurrentObjectImpl(out int clientHandle, ServerSessionManager manager)
-        {
-            clientHandle = 0;
+        Api.CreateSession(out int serverHandle, out clientHandle).AbortOnFailure();
+        manager.RegisterSession(serverHandle, clone).AbortOnFailure();
 
-            var clone = _session.ServiceObjectHolder.Clone();
-            if (clone == null)
-            {
-                return HipcResult.DomainObjectNotFound;
-            }
-
-            Api.CreateSession(out int serverHandle, out clientHandle).AbortOnFailure();
-            manager.RegisterSession(serverHandle, clone).AbortOnFailure();
-
-            return Result.Success;
-        }
+        return Result.Success;
     }
 }

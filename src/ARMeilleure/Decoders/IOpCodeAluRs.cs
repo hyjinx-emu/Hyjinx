@@ -1,10 +1,9 @@
-namespace ARMeilleure.Decoders
-{
-    interface IOpCodeAluRs : IOpCodeAlu
-    {
-        int Shift { get; }
-        int Rm { get; }
+namespace ARMeilleure.Decoders;
 
-        ShiftType ShiftType { get; }
-    }
+interface IOpCodeAluRs : IOpCodeAlu
+{
+    int Shift { get; }
+    int Rm { get; }
+
+    ShiftType ShiftType { get; }
 }

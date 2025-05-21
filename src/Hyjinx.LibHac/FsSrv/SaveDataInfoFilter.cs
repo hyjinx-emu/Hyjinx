@@ -1,11 +1,11 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Ncm;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace LibHac.FsSrv;
 
@@ -139,9 +139,11 @@ internal class SaveDataInfoFilterReader : SaveDataInfoReaderImpl
         {
             Unsafe.SkipInit(out SaveDataInfo info);
             Result res = _reader.Get.Read(out long baseReadCount, OutBuffer.FromStruct(ref info));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
-            if (baseReadCount == 0) break;
+            if (baseReadCount == 0)
+                break;
 
             if (_infoFilter.Includes(in info))
             {

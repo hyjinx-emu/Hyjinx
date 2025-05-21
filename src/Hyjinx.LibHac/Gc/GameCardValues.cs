@@ -1,4 +1,4 @@
-﻿namespace LibHac.Gc;
+namespace LibHac.Gc;
 
 public static partial class Values
 {

@@ -3,59 +3,58 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
+
+class NvMapIdDictionary
 {
-    class NvMapIdDictionary
+    private readonly ConcurrentDictionary<int, NvMapHandle> _nvmapHandles;
+    private int _id;
+
+    public ICollection<NvMapHandle> Values => _nvmapHandles.Values;
+
+    public NvMapIdDictionary()
     {
-        private readonly ConcurrentDictionary<int, NvMapHandle> _nvmapHandles;
-        private int _id;
+        _nvmapHandles = new ConcurrentDictionary<int, NvMapHandle>();
+    }
 
-        public ICollection<NvMapHandle> Values => _nvmapHandles.Values;
+    public int Add(NvMapHandle handle)
+    {
+        int id = Interlocked.Add(ref _id, 4);
 
-        public NvMapIdDictionary()
+        if (id != 0 && _nvmapHandles.TryAdd(id, handle))
         {
-            _nvmapHandles = new ConcurrentDictionary<int, NvMapHandle>();
+            return id;
         }
 
-        public int Add(NvMapHandle handle)
+        throw new InvalidOperationException("NvMap ID overflow.");
+    }
+
+    public NvMapHandle Get(int id)
+    {
+        if (_nvmapHandles.TryGetValue(id, out NvMapHandle handle))
         {
-            int id = Interlocked.Add(ref _id, 4);
-
-            if (id != 0 && _nvmapHandles.TryAdd(id, handle))
-            {
-                return id;
-            }
-
-            throw new InvalidOperationException("NvMap ID overflow.");
+            return handle;
         }
 
-        public NvMapHandle Get(int id)
-        {
-            if (_nvmapHandles.TryGetValue(id, out NvMapHandle handle))
-            {
-                return handle;
-            }
+        return null;
+    }
 
-            return null;
+    public NvMapHandle Delete(int id)
+    {
+        if (_nvmapHandles.TryRemove(id, out NvMapHandle handle))
+        {
+            return handle;
         }
 
-        public NvMapHandle Delete(int id)
-        {
-            if (_nvmapHandles.TryRemove(id, out NvMapHandle handle))
-            {
-                return handle;
-            }
+        return null;
+    }
 
-            return null;
-        }
+    public ICollection<NvMapHandle> Clear()
+    {
+        ICollection<NvMapHandle> values = _nvmapHandles.Values;
 
-        public ICollection<NvMapHandle> Clear()
-        {
-            ICollection<NvMapHandle> values = _nvmapHandles.Values;
+        _nvmapHandles.Clear();
 
-            _nvmapHandles.Clear();
-
-            return values;
-        }
+        return values;
     }
 }

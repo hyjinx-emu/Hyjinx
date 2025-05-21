@@ -1,17 +1,16 @@
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public abstract class ParentNode : BaseNode
 {
-    public abstract class ParentNode : BaseNode
+    public BaseNode Child { get; private set; }
+
+    public ParentNode(NodeType type, BaseNode child) : base(type)
     {
-        public BaseNode Child { get; private set; }
+        Child = child;
+    }
 
-        public ParentNode(NodeType type, BaseNode child) : base(type)
-        {
-            Child = child;
-        }
-
-        public override string GetName()
-        {
-            return Child.GetName();
-        }
+    public override string GetName()
+    {
+        return Child.GetName();
     }
 }

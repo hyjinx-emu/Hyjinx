@@ -1,16 +1,15 @@
-namespace Hyjinx.Ava.Common
+namespace Hyjinx.Ava.Common;
+
+public enum KeyboardHotkeyState
 {
-    public enum KeyboardHotkeyState
-    {
-        None,
-        ToggleVSync,
-        Screenshot,
-        ShowUI,
-        Pause,
-        ToggleMute,
-        ResScaleUp,
-        ResScaleDown,
-        VolumeUp,
-        VolumeDown,
-    }
+    None,
+    ToggleVSync,
+    Screenshot,
+    ShowUI,
+    Pause,
+    ToggleMute,
+    ResScaleUp,
+    ResScaleDown,
+    VolumeUp,
+    VolumeDown,
 }

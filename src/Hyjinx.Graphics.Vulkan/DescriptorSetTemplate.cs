@@ -4,131 +4,50 @@ using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+class DescriptorSetTemplate : IDisposable
 {
-    class DescriptorSetTemplate : IDisposable
+    /// <summary>
+    /// Renderdoc seems to crash when doing a templated uniform update with count > 1 on a push descriptor.
+    /// When this is true, consecutive buffers are always updated individually.
+    /// </summary>
+    private const bool RenderdocPushCountBug = true;
+
+    private readonly VulkanRenderer _gd;
+    private readonly Device _device;
+
+    public readonly DescriptorUpdateTemplate Template;
+    public readonly int Size;
+
+    public unsafe DescriptorSetTemplate(
+        VulkanRenderer gd,
+        Device device,
+        ResourceBindingSegment[] segments,
+        PipelineLayoutCacheEntry plce,
+        PipelineBindPoint pbp,
+        int setIndex)
     {
-        /// <summary>
-        /// Renderdoc seems to crash when doing a templated uniform update with count > 1 on a push descriptor.
-        /// When this is true, consecutive buffers are always updated individually.
-        /// </summary>
-        private const bool RenderdocPushCountBug = true;
+        _gd = gd;
+        _device = device;
 
-        private readonly VulkanRenderer _gd;
-        private readonly Device _device;
+        // Create a template from the set usages. Assumes the descriptor set is updated in segment order then binding order.
 
-        public readonly DescriptorUpdateTemplate Template;
-        public readonly int Size;
+        DescriptorUpdateTemplateEntry* entries = stackalloc DescriptorUpdateTemplateEntry[segments.Length];
+        nuint structureOffset = 0;
 
-        public unsafe DescriptorSetTemplate(
-            VulkanRenderer gd,
-            Device device,
-            ResourceBindingSegment[] segments,
-            PipelineLayoutCacheEntry plce,
-            PipelineBindPoint pbp,
-            int setIndex)
+        for (int seg = 0; seg < segments.Length; seg++)
         {
-            _gd = gd;
-            _device = device;
+            ResourceBindingSegment segment = segments[seg];
 
-            // Create a template from the set usages. Assumes the descriptor set is updated in segment order then binding order.
+            int binding = segment.Binding;
+            int count = segment.Count;
 
-            DescriptorUpdateTemplateEntry* entries = stackalloc DescriptorUpdateTemplateEntry[segments.Length];
-            nuint structureOffset = 0;
-
-            for (int seg = 0; seg < segments.Length; seg++)
+            if (IsBufferType(segment.Type))
             {
-                ResourceBindingSegment segment = segments[seg];
-
-                int binding = segment.Binding;
-                int count = segment.Count;
-
-                if (IsBufferType(segment.Type))
+                entries[seg] = new DescriptorUpdateTemplateEntry()
                 {
-                    entries[seg] = new DescriptorUpdateTemplateEntry()
-                    {
-                        DescriptorType = segment.Type.Convert(),
-                        DstBinding = (uint)binding,
-                        DescriptorCount = (uint)count,
-                        Offset = structureOffset,
-                        Stride = (nuint)Unsafe.SizeOf<DescriptorBufferInfo>()
-                    };
-
-                    structureOffset += (nuint)(Unsafe.SizeOf<DescriptorBufferInfo>() * count);
-                }
-                else if (IsBufferTextureType(segment.Type))
-                {
-                    entries[seg] = new DescriptorUpdateTemplateEntry()
-                    {
-                        DescriptorType = segment.Type.Convert(),
-                        DstBinding = (uint)binding,
-                        DescriptorCount = (uint)count,
-                        Offset = structureOffset,
-                        Stride = (nuint)Unsafe.SizeOf<BufferView>()
-                    };
-
-                    structureOffset += (nuint)(Unsafe.SizeOf<BufferView>() * count);
-                }
-                else
-                {
-                    entries[seg] = new DescriptorUpdateTemplateEntry()
-                    {
-                        DescriptorType = segment.Type.Convert(),
-                        DstBinding = (uint)binding,
-                        DescriptorCount = (uint)count,
-                        Offset = structureOffset,
-                        Stride = (nuint)Unsafe.SizeOf<DescriptorImageInfo>()
-                    };
-
-                    structureOffset += (nuint)(Unsafe.SizeOf<DescriptorImageInfo>() * count);
-                }
-            }
-
-            Size = (int)structureOffset;
-
-            var info = new DescriptorUpdateTemplateCreateInfo()
-            {
-                SType = StructureType.DescriptorUpdateTemplateCreateInfo,
-                DescriptorUpdateEntryCount = (uint)segments.Length,
-                PDescriptorUpdateEntries = entries,
-
-                TemplateType = DescriptorUpdateTemplateType.DescriptorSet,
-                DescriptorSetLayout = plce.DescriptorSetLayouts[setIndex],
-                PipelineBindPoint = pbp,
-                PipelineLayout = plce.PipelineLayout,
-                Set = (uint)setIndex,
-            };
-
-            DescriptorUpdateTemplate result;
-            gd.Api.CreateDescriptorUpdateTemplate(device, &info, null, &result).ThrowOnError();
-
-            Template = result;
-        }
-
-        public unsafe DescriptorSetTemplate(
-            VulkanRenderer gd,
-            Device device,
-            ResourceDescriptorCollection descriptors,
-            long updateMask,
-            PipelineLayoutCacheEntry plce,
-            PipelineBindPoint pbp,
-            int setIndex)
-        {
-            _gd = gd;
-            _device = device;
-
-            // Create a template from the set usages. Assumes the descriptor set is updated in segment order then binding order.
-            int segmentCount = BitOperations.PopCount((ulong)updateMask);
-
-            DescriptorUpdateTemplateEntry* entries = stackalloc DescriptorUpdateTemplateEntry[segmentCount];
-            int entry = 0;
-            nuint structureOffset = 0;
-
-            void AddBinding(int binding, int count)
-            {
-                entries[entry++] = new DescriptorUpdateTemplateEntry()
-                {
-                    DescriptorType = DescriptorType.UniformBuffer,
+                    DescriptorType = segment.Type.Convert(),
                     DstBinding = (uint)binding,
                     DescriptorCount = (uint)count,
                     Offset = structureOffset,
@@ -137,74 +56,154 @@ namespace Hyjinx.Graphics.Vulkan
 
                 structureOffset += (nuint)(Unsafe.SizeOf<DescriptorBufferInfo>() * count);
             }
-
-            int startBinding = 0;
-            int bindingCount = 0;
-
-            foreach (ResourceDescriptor descriptor in descriptors.Descriptors)
+            else if (IsBufferTextureType(segment.Type))
             {
-                for (int i = 0; i < descriptor.Count; i++)
+                entries[seg] = new DescriptorUpdateTemplateEntry()
                 {
-                    int binding = descriptor.Binding + i;
+                    DescriptorType = segment.Type.Convert(),
+                    DstBinding = (uint)binding,
+                    DescriptorCount = (uint)count,
+                    Offset = structureOffset,
+                    Stride = (nuint)Unsafe.SizeOf<BufferView>()
+                };
 
-                    if ((updateMask & (1L << binding)) != 0)
-                    {
-                        if (bindingCount > 0 && (RenderdocPushCountBug || startBinding + bindingCount != binding))
-                        {
-                            AddBinding(startBinding, bindingCount);
-
-                            bindingCount = 0;
-                        }
-
-                        if (bindingCount == 0)
-                        {
-                            startBinding = binding;
-                        }
-
-                        bindingCount++;
-                    }
-                }
+                structureOffset += (nuint)(Unsafe.SizeOf<BufferView>() * count);
             }
-
-            if (bindingCount > 0)
+            else
             {
-                AddBinding(startBinding, bindingCount);
+                entries[seg] = new DescriptorUpdateTemplateEntry()
+                {
+                    DescriptorType = segment.Type.Convert(),
+                    DstBinding = (uint)binding,
+                    DescriptorCount = (uint)count,
+                    Offset = structureOffset,
+                    Stride = (nuint)Unsafe.SizeOf<DescriptorImageInfo>()
+                };
+
+                structureOffset += (nuint)(Unsafe.SizeOf<DescriptorImageInfo>() * count);
             }
+        }
 
-            Size = (int)structureOffset;
+        Size = (int)structureOffset;
 
-            var info = new DescriptorUpdateTemplateCreateInfo()
+        var info = new DescriptorUpdateTemplateCreateInfo()
+        {
+            SType = StructureType.DescriptorUpdateTemplateCreateInfo,
+            DescriptorUpdateEntryCount = (uint)segments.Length,
+            PDescriptorUpdateEntries = entries,
+
+            TemplateType = DescriptorUpdateTemplateType.DescriptorSet,
+            DescriptorSetLayout = plce.DescriptorSetLayouts[setIndex],
+            PipelineBindPoint = pbp,
+            PipelineLayout = plce.PipelineLayout,
+            Set = (uint)setIndex,
+        };
+
+        DescriptorUpdateTemplate result;
+        gd.Api.CreateDescriptorUpdateTemplate(device, &info, null, &result).ThrowOnError();
+
+        Template = result;
+    }
+
+    public unsafe DescriptorSetTemplate(
+        VulkanRenderer gd,
+        Device device,
+        ResourceDescriptorCollection descriptors,
+        long updateMask,
+        PipelineLayoutCacheEntry plce,
+        PipelineBindPoint pbp,
+        int setIndex)
+    {
+        _gd = gd;
+        _device = device;
+
+        // Create a template from the set usages. Assumes the descriptor set is updated in segment order then binding order.
+        int segmentCount = BitOperations.PopCount((ulong)updateMask);
+
+        DescriptorUpdateTemplateEntry* entries = stackalloc DescriptorUpdateTemplateEntry[segmentCount];
+        int entry = 0;
+        nuint structureOffset = 0;
+
+        void AddBinding(int binding, int count)
+        {
+            entries[entry++] = new DescriptorUpdateTemplateEntry()
             {
-                SType = StructureType.DescriptorUpdateTemplateCreateInfo,
-                DescriptorUpdateEntryCount = (uint)entry,
-                PDescriptorUpdateEntries = entries,
-
-                TemplateType = DescriptorUpdateTemplateType.PushDescriptorsKhr,
-                DescriptorSetLayout = plce.DescriptorSetLayouts[setIndex],
-                PipelineBindPoint = pbp,
-                PipelineLayout = plce.PipelineLayout,
-                Set = (uint)setIndex,
+                DescriptorType = DescriptorType.UniformBuffer,
+                DstBinding = (uint)binding,
+                DescriptorCount = (uint)count,
+                Offset = structureOffset,
+                Stride = (nuint)Unsafe.SizeOf<DescriptorBufferInfo>()
             };
 
-            DescriptorUpdateTemplate result;
-            gd.Api.CreateDescriptorUpdateTemplate(device, &info, null, &result).ThrowOnError();
-
-            Template = result;
+            structureOffset += (nuint)(Unsafe.SizeOf<DescriptorBufferInfo>() * count);
         }
 
-        private static bool IsBufferType(ResourceType type)
+        int startBinding = 0;
+        int bindingCount = 0;
+
+        foreach (ResourceDescriptor descriptor in descriptors.Descriptors)
         {
-            return type == ResourceType.UniformBuffer || type == ResourceType.StorageBuffer;
+            for (int i = 0; i < descriptor.Count; i++)
+            {
+                int binding = descriptor.Binding + i;
+
+                if ((updateMask & (1L << binding)) != 0)
+                {
+                    if (bindingCount > 0 && (RenderdocPushCountBug || startBinding + bindingCount != binding))
+                    {
+                        AddBinding(startBinding, bindingCount);
+
+                        bindingCount = 0;
+                    }
+
+                    if (bindingCount == 0)
+                    {
+                        startBinding = binding;
+                    }
+
+                    bindingCount++;
+                }
+            }
         }
 
-        private static bool IsBufferTextureType(ResourceType type)
+        if (bindingCount > 0)
         {
-            return type == ResourceType.BufferTexture || type == ResourceType.BufferImage;
+            AddBinding(startBinding, bindingCount);
         }
 
-        public unsafe void Dispose()
+        Size = (int)structureOffset;
+
+        var info = new DescriptorUpdateTemplateCreateInfo()
         {
-            _gd.Api.DestroyDescriptorUpdateTemplate(_device, Template, null);
-        }
+            SType = StructureType.DescriptorUpdateTemplateCreateInfo,
+            DescriptorUpdateEntryCount = (uint)entry,
+            PDescriptorUpdateEntries = entries,
+
+            TemplateType = DescriptorUpdateTemplateType.PushDescriptorsKhr,
+            DescriptorSetLayout = plce.DescriptorSetLayouts[setIndex],
+            PipelineBindPoint = pbp,
+            PipelineLayout = plce.PipelineLayout,
+            Set = (uint)setIndex,
+        };
+
+        DescriptorUpdateTemplate result;
+        gd.Api.CreateDescriptorUpdateTemplate(device, &info, null, &result).ThrowOnError();
+
+        Template = result;
+    }
+
+    private static bool IsBufferType(ResourceType type)
+    {
+        return type == ResourceType.UniformBuffer || type == ResourceType.StorageBuffer;
+    }
+
+    private static bool IsBufferTextureType(ResourceType type)
+    {
+        return type == ResourceType.BufferTexture || type == ResourceType.BufferImage;
+    }
+
+    public unsafe void Dispose()
+    {
+        _gd.Api.DestroyDescriptorUpdateTemplate(_device, Template, null);
     }
 }

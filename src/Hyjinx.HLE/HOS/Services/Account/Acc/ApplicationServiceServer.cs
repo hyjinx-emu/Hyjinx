@@ -1,263 +1,262 @@
 using Hyjinx.Common;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Cpu;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Account.Acc.AccountService;
 using Hyjinx.HLE.HOS.Services.Account.Acc.AsyncContext;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc;
+
+internal partial class ApplicationServiceServer
 {
-    internal partial class ApplicationServiceServer
+    private static readonly ILogger<ApplicationServiceServer> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<ApplicationServiceServer>();
+
+    readonly AccountServiceFlag _serviceFlag;
+
+    public ApplicationServiceServer(AccountServiceFlag serviceFlag)
     {
-        private static readonly ILogger<ApplicationServiceServer> _logger =
-            Logger.DefaultLoggerFactory.CreateLogger<ApplicationServiceServer>();
+        _serviceFlag = serviceFlag;
+    }
 
-        readonly AccountServiceFlag _serviceFlag;
+    public ResultCode GetUserCountImpl(ServiceCtx context)
+    {
+        context.ResponseData.Write(context.Device.System.AccountManager.GetUserCount());
 
-        public ApplicationServiceServer(AccountServiceFlag serviceFlag)
+        return ResultCode.Success;
+    }
+
+    public ResultCode GetUserExistenceImpl(ServiceCtx context)
+    {
+        ResultCode resultCode = CheckUserId(context, out UserId userId);
+
+        if (resultCode != ResultCode.Success)
         {
-            _serviceFlag = serviceFlag;
+            return resultCode;
         }
 
-        public ResultCode GetUserCountImpl(ServiceCtx context)
-        {
-            context.ResponseData.Write(context.Device.System.AccountManager.GetUserCount());
+        context.ResponseData.Write(context.Device.System.AccountManager.TryGetUser(userId, out _));
 
-            return ResultCode.Success;
+        return ResultCode.Success;
+    }
+
+    public ResultCode ListAllUsers(ServiceCtx context)
+    {
+        return WriteUserList(context, context.Device.System.AccountManager.GetAllUsers());
+    }
+
+    public ResultCode ListOpenUsers(ServiceCtx context)
+    {
+        return WriteUserList(context, context.Device.System.AccountManager.GetOpenedUsers());
+    }
+
+    private ResultCode WriteUserList(ServiceCtx context, IEnumerable<UserProfile> profiles)
+    {
+        if (context.Request.RecvListBuff.Count == 0)
+        {
+            return ResultCode.InvalidBuffer;
         }
 
-        public ResultCode GetUserExistenceImpl(ServiceCtx context)
-        {
-            ResultCode resultCode = CheckUserId(context, out UserId userId);
+        ulong outputPosition = context.Request.RecvListBuff[0].Position;
+        ulong outputSize = context.Request.RecvListBuff[0].Size;
 
-            if (resultCode != ResultCode.Success)
+        MemoryHelper.FillWithZeros(context.Memory, outputPosition, (int)outputSize);
+
+        ulong offset = 0;
+
+        foreach (UserProfile userProfile in profiles)
+        {
+            if (offset + 0x10 > outputSize)
             {
-                return resultCode;
+                break;
             }
 
-            context.ResponseData.Write(context.Device.System.AccountManager.TryGetUser(userId, out _));
+            context.Memory.Write(outputPosition + offset, userProfile.UserId.High);
+            context.Memory.Write(outputPosition + offset + 8, userProfile.UserId.Low);
 
-            return ResultCode.Success;
+            offset += 0x10;
         }
 
-        public ResultCode ListAllUsers(ServiceCtx context)
+        return ResultCode.Success;
+    }
+
+    public ResultCode GetLastOpenedUser(ServiceCtx context)
+    {
+        context.Device.System.AccountManager.LastOpenedUser.UserId.Write(context.ResponseData);
+
+        return ResultCode.Success;
+    }
+
+    public ResultCode GetProfile(ServiceCtx context, out IProfile profile)
+    {
+        profile = default;
+
+        ResultCode resultCode = CheckUserId(context, out UserId userId);
+
+        if (resultCode != ResultCode.Success)
         {
-            return WriteUserList(context, context.Device.System.AccountManager.GetAllUsers());
+            return resultCode;
         }
 
-        public ResultCode ListOpenUsers(ServiceCtx context)
+        if (!context.Device.System.AccountManager.TryGetUser(userId, out UserProfile userProfile))
         {
-            return WriteUserList(context, context.Device.System.AccountManager.GetOpenedUsers());
+            LogUserNotFound(userId);
+
+            return ResultCode.UserNotFound;
         }
 
-        private ResultCode WriteUserList(ServiceCtx context, IEnumerable<UserProfile> profiles)
+        profile = new IProfile(userProfile);
+
+        // Doesn't occur in our case.
+        // return ResultCode.NullObject;
+
+        return ResultCode.Success;
+    }
+
+    [LoggerMessage(LogLevel.Warning,
+        EventId = (int)LogClass.ServiceAcc, EventName = nameof(LogClass.ServiceAcc),
+        Message = "User 0x{userId} not found!")]
+    private partial void LogUserNotFound(UserId userId);
+
+    public ResultCode IsUserRegistrationRequestPermitted(ServiceCtx context)
+    {
+        context.ResponseData.Write(_serviceFlag != AccountServiceFlag.Application);
+
+        return ResultCode.Success;
+    }
+
+    public ResultCode TrySelectUserWithoutInteraction(ServiceCtx context)
+    {
+        if (context.Device.System.AccountManager.GetUserCount() < 1)
         {
-            if (context.Request.RecvListBuff.Count == 0)
-            {
-                return ResultCode.InvalidBuffer;
-            }
+            // Invalid UserId.
+            UserId.Null.Write(context.ResponseData);
 
-            ulong outputPosition = context.Request.RecvListBuff[0].Position;
-            ulong outputSize = context.Request.RecvListBuff[0].Size;
-
-            MemoryHelper.FillWithZeros(context.Memory, outputPosition, (int)outputSize);
-
-            ulong offset = 0;
-
-            foreach (UserProfile userProfile in profiles)
-            {
-                if (offset + 0x10 > outputSize)
-                {
-                    break;
-                }
-
-                context.Memory.Write(outputPosition + offset, userProfile.UserId.High);
-                context.Memory.Write(outputPosition + offset + 8, userProfile.UserId.Low);
-
-                offset += 0x10;
-            }
-
-            return ResultCode.Success;
+            return ResultCode.UserNotFound;
         }
 
-        public ResultCode GetLastOpenedUser(ServiceCtx context)
+        bool isNetworkServiceAccountRequired = context.RequestData.ReadBoolean();
+
+        if (isNetworkServiceAccountRequired)
         {
-            context.Device.System.AccountManager.LastOpenedUser.UserId.Write(context.ResponseData);
+            // NOTE: This checks something related to baas (online), and then return an invalid UserId if the check in baas returns an error code.
+            //       In our case, we can just log it for now.
 
-            return ResultCode.Success;
+            // Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { isNetworkServiceAccountRequired });
         }
 
-        public ResultCode GetProfile(ServiceCtx context, out IProfile profile)
+        // NOTE: As we returned an invalid UserId if there is more than one user earlier, now we can return only the first one.
+        context.Device.System.AccountManager.GetFirst().UserId.Write(context.ResponseData);
+
+        return ResultCode.Success;
+    }
+
+    public ResultCode CheckNetworkServiceAvailabilityAsync(ServiceCtx context, out IAsyncContext asyncContext)
+    {
+        KEvent asyncEvent = new(context.Device.System.KernelContext);
+        AsyncExecution asyncExecution = new(asyncEvent);
+
+        asyncExecution.Initialize(1000, CheckNetworkServiceAvailabilityAsyncImpl);
+
+        asyncContext = new IAsyncContext(asyncExecution);
+
+        // return ResultCode.NullObject if the IAsyncContext pointer is null. Doesn't occur in our case.
+
+        return ResultCode.Success;
+    }
+
+    private async Task CheckNetworkServiceAvailabilityAsyncImpl(CancellationToken token)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+
+        // TODO: Use a real function instead, with the CancellationToken.
+        await Task.CompletedTask;
+    }
+
+    public ResultCode StoreSaveDataThumbnail(ServiceCtx context)
+    {
+        ResultCode resultCode = CheckUserId(context, out UserId _);
+
+        if (resultCode != ResultCode.Success)
         {
-            profile = default;
-
-            ResultCode resultCode = CheckUserId(context, out UserId userId);
-
-            if (resultCode != ResultCode.Success)
-            {
-                return resultCode;
-            }
-
-            if (!context.Device.System.AccountManager.TryGetUser(userId, out UserProfile userProfile))
-            {
-                LogUserNotFound(userId);
-
-                return ResultCode.UserNotFound;
-            }
-
-            profile = new IProfile(userProfile);
-
-            // Doesn't occur in our case.
-            // return ResultCode.NullObject;
-
-            return ResultCode.Success;
+            return resultCode;
         }
 
-        [LoggerMessage(LogLevel.Warning,
-            EventId = (int)LogClass.ServiceAcc, EventName = nameof(LogClass.ServiceAcc),
-            Message = "User 0x{userId} not found!")]
-        private partial void LogUserNotFound(UserId userId);
-
-        public ResultCode IsUserRegistrationRequestPermitted(ServiceCtx context)
+        if (context.Request.SendBuff.Count == 0)
         {
-            context.ResponseData.Write(_serviceFlag != AccountServiceFlag.Application);
-
-            return ResultCode.Success;
+            return ResultCode.InvalidBuffer;
         }
 
-        public ResultCode TrySelectUserWithoutInteraction(ServiceCtx context)
+        ulong inputPosition = context.Request.SendBuff[0].Position;
+        ulong inputSize = context.Request.SendBuff[0].Size;
+
+        if (inputSize != 0x24000)
         {
-            if (context.Device.System.AccountManager.GetUserCount() < 1)
-            {
-                // Invalid UserId.
-                UserId.Null.Write(context.ResponseData);
-
-                return ResultCode.UserNotFound;
-            }
-
-            bool isNetworkServiceAccountRequired = context.RequestData.ReadBoolean();
-
-            if (isNetworkServiceAccountRequired)
-            {
-                // NOTE: This checks something related to baas (online), and then return an invalid UserId if the check in baas returns an error code.
-                //       In our case, we can just log it for now.
-
-                // Logger.Stub?.PrintStub(LogClass.ServiceAcc, new { isNetworkServiceAccountRequired });
-            }
-
-            // NOTE: As we returned an invalid UserId if there is more than one user earlier, now we can return only the first one.
-            context.Device.System.AccountManager.GetFirst().UserId.Write(context.ResponseData);
-
-            return ResultCode.Success;
+            return ResultCode.InvalidBufferSize;
         }
 
-        public ResultCode CheckNetworkServiceAvailabilityAsync(ServiceCtx context, out IAsyncContext asyncContext)
+        byte[] thumbnailBuffer = new byte[inputSize];
+
+        context.Memory.Read(inputPosition, thumbnailBuffer);
+
+        // NOTE: Account service call nn::fs::WriteSaveDataThumbnailFile().
+        // TODO: Store thumbnailBuffer somewhere, in save data 0x8000000000000010 ?
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+
+        return ResultCode.Success;
+    }
+
+    public ResultCode ClearSaveDataThumbnail(ServiceCtx context)
+    {
+        ResultCode resultCode = CheckUserId(context, out UserId _);
+
+        if (resultCode != ResultCode.Success)
         {
-            KEvent asyncEvent = new(context.Device.System.KernelContext);
-            AsyncExecution asyncExecution = new(asyncEvent);
-
-            asyncExecution.Initialize(1000, CheckNetworkServiceAvailabilityAsyncImpl);
-
-            asyncContext = new IAsyncContext(asyncExecution);
-
-            // return ResultCode.NullObject if the IAsyncContext pointer is null. Doesn't occur in our case.
-
-            return ResultCode.Success;
+            return resultCode;
         }
 
-        private async Task CheckNetworkServiceAvailabilityAsyncImpl(CancellationToken token)
+        /*
+        // NOTE: Doesn't occur in our case.
+        if (userId == null)
         {
-            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
-
-            // TODO: Use a real function instead, with the CancellationToken.
-            await Task.CompletedTask;
+            return ResultCode.InvalidArgument;
         }
+        */
 
-        public ResultCode StoreSaveDataThumbnail(ServiceCtx context)
+        // NOTE: Account service call nn::fs::WriteSaveDataThumbnailFileHeader();
+        // TODO: Clear the Thumbnail somewhere, in save data 0x8000000000000010 ?
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
+
+        return ResultCode.Success;
+    }
+
+    public ResultCode ListOpenContextStoredUsers(ServiceCtx context)
+    {
+        return WriteUserList(context, context.Device.System.AccountManager.GetStoredOpenedUsers());
+    }
+
+    public ResultCode ListQualifiedUsers(ServiceCtx context)
+    {
+        // TODO: Determine how users are "qualified". We assume all users are "qualified" for now.
+
+        return WriteUserList(context, context.Device.System.AccountManager.GetAllUsers());
+    }
+
+    public ResultCode CheckUserId(ServiceCtx context, out UserId userId)
+    {
+        userId = context.RequestData.ReadStruct<UserId>();
+
+        if (userId.IsNull)
         {
-            ResultCode resultCode = CheckUserId(context, out UserId _);
-
-            if (resultCode != ResultCode.Success)
-            {
-                return resultCode;
-            }
-
-            if (context.Request.SendBuff.Count == 0)
-            {
-                return ResultCode.InvalidBuffer;
-            }
-
-            ulong inputPosition = context.Request.SendBuff[0].Position;
-            ulong inputSize = context.Request.SendBuff[0].Size;
-
-            if (inputSize != 0x24000)
-            {
-                return ResultCode.InvalidBufferSize;
-            }
-
-            byte[] thumbnailBuffer = new byte[inputSize];
-
-            context.Memory.Read(inputPosition, thumbnailBuffer);
-
-            // NOTE: Account service call nn::fs::WriteSaveDataThumbnailFile().
-            // TODO: Store thumbnailBuffer somewhere, in save data 0x8000000000000010 ?
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
-
-            return ResultCode.Success;
+            return ResultCode.NullArgument;
         }
 
-        public ResultCode ClearSaveDataThumbnail(ServiceCtx context)
-        {
-            ResultCode resultCode = CheckUserId(context, out UserId _);
-
-            if (resultCode != ResultCode.Success)
-            {
-                return resultCode;
-            }
-
-            /*
-            // NOTE: Doesn't occur in our case.
-            if (userId == null)
-            {
-                return ResultCode.InvalidArgument;
-            }
-            */
-
-            // NOTE: Account service call nn::fs::WriteSaveDataThumbnailFileHeader();
-            // TODO: Clear the Thumbnail somewhere, in save data 0x8000000000000010 ?
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceAcc);
-
-            return ResultCode.Success;
-        }
-
-        public ResultCode ListOpenContextStoredUsers(ServiceCtx context)
-        {
-            return WriteUserList(context, context.Device.System.AccountManager.GetStoredOpenedUsers());
-        }
-
-        public ResultCode ListQualifiedUsers(ServiceCtx context)
-        {
-            // TODO: Determine how users are "qualified". We assume all users are "qualified" for now.
-
-            return WriteUserList(context, context.Device.System.AccountManager.GetAllUsers());
-        }
-
-        public ResultCode CheckUserId(ServiceCtx context, out UserId userId)
-        {
-            userId = context.RequestData.ReadStruct<UserId>();
-
-            if (userId.IsNull)
-            {
-                return ResultCode.NullArgument;
-            }
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
 using LibHac.Diag;
 using LibHac.Os.Impl;
+using System;
 
 namespace LibHac.Os;
 

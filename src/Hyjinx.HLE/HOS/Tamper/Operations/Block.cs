@@ -1,27 +1,26 @@
 using System.Collections.Generic;
 
-namespace Hyjinx.HLE.HOS.Tamper.Operations
+namespace Hyjinx.HLE.HOS.Tamper.Operations;
+
+class Block : IOperation
 {
-    class Block : IOperation
+    private readonly IEnumerable<IOperation> _operations;
+
+    public Block(IEnumerable<IOperation> operations)
     {
-        private readonly IEnumerable<IOperation> _operations;
+        _operations = operations;
+    }
 
-        public Block(IEnumerable<IOperation> operations)
-        {
-            _operations = operations;
-        }
+    public Block(params IOperation[] operations)
+    {
+        _operations = operations;
+    }
 
-        public Block(params IOperation[] operations)
+    public void Execute()
+    {
+        foreach (IOperation op in _operations)
         {
-            _operations = operations;
-        }
-
-        public void Execute()
-        {
-            foreach (IOperation op in _operations)
-            {
-                op.Execute();
-            }
+            op.Execute();
         }
     }
 }

@@ -1,8 +1,7 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+interface IOpCode32MemRsImm : IOpCode32Mem
 {
-    interface IOpCode32MemRsImm : IOpCode32Mem
-    {
-        int Rm { get; }
-        ShiftType ShiftType { get; }
-    }
+    int Rm { get; }
+    ShiftType ShiftType { get; }
 }

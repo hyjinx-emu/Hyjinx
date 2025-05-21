@@ -1,10 +1,10 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
 using LibHac.Fs;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace LibHac.FsSystem;
 
@@ -125,10 +125,12 @@ public class IndirectStorage : IStorage
         Unsafe.SkipInit(out BucketTree.Header header);
 
         Result res = tableStorage.Read(0, SpanHelpers.AsByteSpan(ref header));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = header.Verify();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         long nodeStorageSize = QueryNodeStorageSize(header.EntryCount);
         long entryStorageSize = QueryEntryStorageSize(header.EntryCount);
@@ -136,7 +138,8 @@ public class IndirectStorage : IStorage
         long entryStorageOffset = nodeStorageSize + nodeStorageOffset;
 
         res = tableStorage.GetSize(out long storageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (storageSize < entryStorageOffset + entryStorageSize)
             return ResultFs.InvalidIndirectStorageBucketTreeSize.Log();
@@ -186,12 +189,14 @@ public class IndirectStorage : IStorage
             {
                 int bufferPosition = (int)(virtualOffset - entryClosure.Offset);
                 Result res = storage.Read(physicalOffset, entryClosure.OutBuffer.Slice(bufferPosition, (int)size));
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 return Result.Success;
             });
 
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -211,7 +216,8 @@ public class IndirectStorage : IStorage
         UnsafeHelpers.SkipParamInit(out size);
 
         Result res = _table.GetOffsets(out BucketTree.Offsets offsets);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         size = offsets.EndOffset;
         return Result.Success;
@@ -240,7 +246,8 @@ public class IndirectStorage : IStorage
 
         // Check that our range is valid
         Result res = _table.GetOffsets(out BucketTree.Offsets offsets);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!offsets.IsInclude(offset, size))
             return ResultFs.OutOfRange.Log();
@@ -250,7 +257,8 @@ public class IndirectStorage : IStorage
         using var visitor = new BucketTree.Visitor();
 
         res = _table.Find(ref visitor.Ref, offset);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         long entryOffset = visitor.Get<Entry>().GetVirtualOffset();
         if (entryOffset < 0 || !offsets.IsInclude(entryOffset))
@@ -279,7 +287,8 @@ public class IndirectStorage : IStorage
                 break;
 
             res = visitor.MoveNext();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             currentEntry = visitor.Get<Entry>();
         }
@@ -301,12 +310,14 @@ public class IndirectStorage : IStorage
                 if (!_table.IsEmpty())
                 {
                     Result res = _table.InvalidateCache();
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     for (int i = 0; i < _dataStorage.Items.Length; i++)
                     {
                         res = _dataStorage.Items[i].OperateRange(OperationId.InvalidateCache, 0, long.MaxValue);
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
                     }
                 }
                 break;
@@ -317,7 +328,8 @@ public class IndirectStorage : IStorage
                 if (size > 0)
                 {
                     Result res = _table.GetOffsets(out BucketTree.Offsets offsets);
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     if (!offsets.IsInclude(offset, size))
                         return ResultFs.OutOfRange.Log();
@@ -332,12 +344,14 @@ public class IndirectStorage : IStorage
                                 Unsafe.SkipInit(out QueryRangeInfo currentInfo);
                                 Result res = storage.OperateRange(SpanHelpers.AsByteSpan(ref currentInfo),
                                     closure.OperationId, physicalOffset, processSize, closure.InBuffer);
-                                if (res.IsFailure()) return res.Miss();
+                                if (res.IsFailure())
+                                    return res.Miss();
 
                                 closure.InfoMerged.Merge(in currentInfo);
                                 return Result.Success;
                             });
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
 
                         SpanHelpers.AsByteSpan(ref closure.InfoMerged).CopyTo(outBuffer);
                     }
@@ -376,7 +390,8 @@ public class IndirectStorage : IStorage
 
         // Validate arguments
         Result res = _table.GetOffsets(out BucketTree.Offsets offsets);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!offsets.IsInclude(offset, size))
             return ResultFs.OutOfRange.Log();
@@ -385,7 +400,8 @@ public class IndirectStorage : IStorage
         using var visitor = new BucketTree.Visitor();
 
         res = _table.Find(ref visitor.Ref, offset);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         long entryOffset = visitor.Get<Entry>().GetVirtualOffset();
         if (entryOffset < 0 || !offsets.IsInclude(entryOffset))
@@ -416,7 +432,8 @@ public class IndirectStorage : IStorage
                 {
                     res = visitor.ScanContinuousReading<ContinuousReadingEntry>(out continuousReading, currentOffset,
                         endOffset - currentOffset);
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                 }
 
                 if (continuousReading.CanDo())
@@ -433,7 +450,8 @@ public class IndirectStorage : IStorage
                     if (verifyEntryRanges)
                     {
                         res = _dataStorage[0].GetSize(out long storageSize);
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
 
                         // Ensure that we remain within range
                         if (entryStorageOffset < 0 || entryStorageOffset > storageSize)
@@ -444,7 +462,8 @@ public class IndirectStorage : IStorage
                     }
 
                     res = func(ref _dataStorage[0], dataStorageOffset, currentOffset, continuousReadSize, ref closure);
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     continuousReading.Done();
                 }
@@ -455,7 +474,8 @@ public class IndirectStorage : IStorage
             if (visitor.CanMoveNext())
             {
                 res = visitor.MoveNext();
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 nextEntryOffset = visitor.Get<Entry>().GetVirtualOffset();
                 if (!offsets.IsInclude(nextEntryOffset))
@@ -498,7 +518,8 @@ public class IndirectStorage : IStorage
                 if (verifyEntryRanges)
                 {
                     res = _dataStorage[currentEntry.StorageIndex].GetSize(out long storageSize);
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     // Ensure that we remain within range
                     if (entryStorageOffset < 0 || entryStorageOffset > storageSize)
@@ -510,7 +531,8 @@ public class IndirectStorage : IStorage
 
                 res = func(ref _dataStorage[currentEntry.StorageIndex], dataStorageOffset, currentOffset, processSize,
                     ref closure);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             currentOffset += processSize;

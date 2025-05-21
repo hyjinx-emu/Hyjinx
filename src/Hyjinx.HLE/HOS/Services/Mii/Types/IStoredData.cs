@@ -1,15 +1,14 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
+
+interface IStoredData<T> : IElement, IEquatable<T> where T : notnull
 {
-    interface IStoredData<T> : IElement, IEquatable<T> where T : notnull
-    {
-        byte Type { get; }
+    byte Type { get; }
 
-        CreateId CreateId { get; }
+    CreateId CreateId { get; }
 
-        ResultCode InvalidData { get; }
+    ResultCode InvalidData { get; }
 
-        bool IsValid();
-    }
+    bool IsValid();
 }

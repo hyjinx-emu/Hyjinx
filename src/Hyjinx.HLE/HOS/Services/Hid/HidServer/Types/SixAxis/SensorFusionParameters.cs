@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public struct SensorFusionParameters
 {
-    public struct SensorFusionParameters
-    {
-        public float RevisePower;
-        public float ReviseRange;
-    }
+    public float RevisePower;
+    public float ReviseRange;
 }

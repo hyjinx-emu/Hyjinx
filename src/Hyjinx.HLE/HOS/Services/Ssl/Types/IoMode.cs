@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Ssl.Types
+namespace Hyjinx.HLE.HOS.Services.Ssl.Types;
+
+enum IoMode : uint
 {
-    enum IoMode : uint
-    {
-        Blocking = 1,
-        NonBlocking = 2,
-    }
+    Blocking = 1,
+    NonBlocking = 2,
 }

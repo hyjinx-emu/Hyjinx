@@ -1,6 +1,3 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -8,6 +5,9 @@ using LibHac.FsSystem;
 using LibHac.Tests.Fs;
 using LibHac.Tests.Fs.IFileSystemTestBase;
 using LibHac.Tools.Fs;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace LibHac.Tests.FsSystem;
@@ -537,17 +537,20 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
         fileSystem.DeleteFile(path).IgnoreResult();
 
         Result res = fileSystem.CreateFile(path, Unsafe.SizeOf<SaveDataExtraData>());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var extraData = new SaveDataExtraData();
         extraData.DataSize = saveDataSize;
 
         using var file = new UniqueRef<IFile>();
         res = fileSystem.OpenFile(ref file.Ref, path, OpenMode.ReadWrite);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = file.Get.Write(0, SpanHelpers.AsByteSpan(ref extraData), WriteOption.Flush);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

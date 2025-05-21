@@ -2,53 +2,52 @@ using ARMeilleure.IntermediateRepresentation;
 using System;
 using static ARMeilleure.IntermediateRepresentation.Operand.Factory;
 
-namespace ARMeilleure.CodeGen
+namespace ARMeilleure.CodeGen;
+
+static class PreAllocatorCommon
 {
-    static class PreAllocatorCommon
+    public static void Propagate(ref Span<Operation> buffer, Operand dest, Operand value)
     {
-        public static void Propagate(ref Span<Operation> buffer, Operand dest, Operand value)
+        ReadOnlySpan<Operation> uses = dest.GetUses(ref buffer);
+
+        foreach (Operation use in uses)
         {
-            ReadOnlySpan<Operation> uses = dest.GetUses(ref buffer);
-
-            foreach (Operation use in uses)
+            for (int srcIndex = 0; srcIndex < use.SourcesCount; srcIndex++)
             {
-                for (int srcIndex = 0; srcIndex < use.SourcesCount; srcIndex++)
+                Operand useSrc = use.GetSource(srcIndex);
+
+                if (useSrc == dest)
                 {
-                    Operand useSrc = use.GetSource(srcIndex);
+                    use.SetSource(srcIndex, value);
+                }
+                else if (useSrc.Kind == OperandKind.Memory)
+                {
+                    MemoryOperand memoryOp = useSrc.GetMemory();
 
-                    if (useSrc == dest)
+                    Operand baseAddr = memoryOp.BaseAddress;
+                    Operand index = memoryOp.Index;
+                    bool changed = false;
+
+                    if (baseAddr == dest)
                     {
-                        use.SetSource(srcIndex, value);
+                        baseAddr = value;
+                        changed = true;
                     }
-                    else if (useSrc.Kind == OperandKind.Memory)
+
+                    if (index == dest)
                     {
-                        MemoryOperand memoryOp = useSrc.GetMemory();
+                        index = value;
+                        changed = true;
+                    }
 
-                        Operand baseAddr = memoryOp.BaseAddress;
-                        Operand index = memoryOp.Index;
-                        bool changed = false;
-
-                        if (baseAddr == dest)
-                        {
-                            baseAddr = value;
-                            changed = true;
-                        }
-
-                        if (index == dest)
-                        {
-                            index = value;
-                            changed = true;
-                        }
-
-                        if (changed)
-                        {
-                            use.SetSource(srcIndex, MemoryOp(
-                                useSrc.Type,
-                                baseAddr,
-                                index,
-                                memoryOp.Scale,
-                                memoryOp.Displacement));
-                        }
+                    if (changed)
+                    {
+                        use.SetSource(srcIndex, MemoryOp(
+                            useSrc.Type,
+                            baseAddr,
+                            index,
+                            memoryOp.Scale,
+                            memoryOp.Displacement));
                     }
                 }
             }

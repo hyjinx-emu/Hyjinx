@@ -1,9 +1,8 @@
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+enum CmifDomainRequestType : byte
 {
-    enum CmifDomainRequestType : byte
-    {
-        Invalid = 0,
-        SendMessage = 1,
-        Close = 2,
-    }
+    Invalid = 0,
+    SendMessage = 1,
+    Close = 2,
 }

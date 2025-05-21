@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -8,6 +5,9 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.FsSrv;
 
@@ -77,7 +77,8 @@ public class SaveDataOpenTypeSetFileStorage : FileStorageBasedFileSystem
     public Result Initialize(ref SharedRef<IFileSystem> baseFileSystem, in Path path, OpenMode mode, OpenType type)
     {
         Result res = Initialize(ref baseFileSystem, in path, mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return SetOpenType(type);
     }
@@ -206,7 +207,8 @@ public class SaveDataSharedFileStorage : IStorage
         using UniqueLockRef<SdkMutexType> scopedLock = _baseStorage.Get.GetLock();
 
         Result res = AccessCheck(isWriteAccess: false);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseStorage.Get.Read(offset, destination);
     }
@@ -216,7 +218,8 @@ public class SaveDataSharedFileStorage : IStorage
         using UniqueLockRef<SdkMutexType> scopedLock = _baseStorage.Get.GetLock();
 
         Result res = AccessCheck(isWriteAccess: true);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseStorage.Get.Write(offset, source);
     }
@@ -226,7 +229,8 @@ public class SaveDataSharedFileStorage : IStorage
         using UniqueLockRef<SdkMutexType> scopedLock = _baseStorage.Get.GetLock();
 
         Result res = AccessCheck(isWriteAccess: true);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseStorage.Get.SetSize(size);
     }
@@ -238,7 +242,8 @@ public class SaveDataSharedFileStorage : IStorage
         using UniqueLockRef<SdkMutexType> scopedLock = _baseStorage.Get.GetLock();
 
         Result res = AccessCheck(isWriteAccess: false);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseStorage.Get.GetSize(out size);
     }
@@ -248,7 +253,8 @@ public class SaveDataSharedFileStorage : IStorage
         using UniqueLockRef<SdkMutexType> scopedLock = _baseStorage.Get.GetLock();
 
         Result res = AccessCheck(isWriteAccess: true);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseStorage.Get.Flush();
     }
@@ -259,7 +265,8 @@ public class SaveDataSharedFileStorage : IStorage
         using UniqueLockRef<SdkMutexType> scopedLock = _baseStorage.Get.GetLock();
 
         Result res = AccessCheck(isWriteAccess: true);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _baseStorage.Get.OperateRange(outBuffer, operationId, offset, size, inBuffer);
     }
@@ -338,14 +345,16 @@ public class SaveDataFileStorageHolder
 
         using scoped var saveImageName = new Path();
         Result res = PathFunctions.SetUpFixedPathSaveId(ref saveImageName.Ref(), saveImageNameBuffer.Items, saveDataId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // If an open type isn't specified, open the save without the shared file storage layer
         if (!type.HasValue)
         {
             using var fileStorage = new SharedRef<FileStorageBasedFileSystem>(new FileStorageBasedFileSystem());
             res = fileStorage.Get.Initialize(ref baseFileSystem, in saveImageName, mode);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outSaveDataStorage.SetByMove(ref fileStorage.Ref);
             return Result.Success;
@@ -358,19 +367,22 @@ public class SaveDataFileStorageHolder
         if (baseFileStorage.HasValue)
         {
             res = baseFileStorage.Get.SetOpenType(type.ValueRo);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
             baseFileStorage.Reset(new SaveDataOpenTypeSetFileStorage(_fsServer, spaceId, saveDataId));
             res = baseFileStorage.Get.Initialize(ref baseFileSystem, in saveImageName, mode, type.ValueRo);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<SaveDataOpenTypeSetFileStorage> baseFileStorageCopy =
                 SharedRef<SaveDataOpenTypeSetFileStorage>.CreateCopy(in baseFileStorage);
 
             res = Register(ref baseFileStorageCopy.Ref, spaceId, saveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         outSaveDataStorage.Reset(new SaveDataSharedFileStorage(ref baseFileStorage.Ref, type.ValueRo));

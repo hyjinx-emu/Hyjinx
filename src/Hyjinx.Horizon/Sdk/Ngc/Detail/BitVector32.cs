@@ -1,78 +1,77 @@
-namespace Hyjinx.Horizon.Sdk.Ngc.Detail
+namespace Hyjinx.Horizon.Sdk.Ngc.Detail;
+
+class BitVector32
 {
-    class BitVector32
+    private const int BitsPerWord = Set.BitsPerWord;
+
+    private int _bitLength;
+    private uint[] _array;
+
+    public int BitLength => _bitLength;
+    public uint[] Array => _array;
+
+    public BitVector32()
     {
-        private const int BitsPerWord = Set.BitsPerWord;
+        _bitLength = 0;
+        _array = null;
+    }
 
-        private int _bitLength;
-        private uint[] _array;
+    public BitVector32(int length)
+    {
+        _bitLength = length;
+        _array = new uint[(length + BitsPerWord - 1) / BitsPerWord];
+    }
 
-        public int BitLength => _bitLength;
-        public uint[] Array => _array;
-
-        public BitVector32()
+    public bool Has(int index)
+    {
+        if ((uint)index < (uint)_bitLength)
         {
-            _bitLength = 0;
-            _array = null;
+            int wordIndex = index / BitsPerWord;
+            int wordBitOffset = index % BitsPerWord;
+
+            return ((_array[wordIndex] >> wordBitOffset) & 1u) != 0;
         }
 
-        public BitVector32(int length)
-        {
-            _bitLength = length;
-            _array = new uint[(length + BitsPerWord - 1) / BitsPerWord];
-        }
+        return false;
+    }
 
-        public bool Has(int index)
+    public bool TurnOn(int index, int count)
+    {
+        for (int bit = 0; bit < count; bit++)
         {
-            if ((uint)index < (uint)_bitLength)
+            if (!TurnOn(index + bit))
             {
-                int wordIndex = index / BitsPerWord;
-                int wordBitOffset = index % BitsPerWord;
-
-                return ((_array[wordIndex] >> wordBitOffset) & 1u) != 0;
+                return false;
             }
-
-            return false;
         }
 
-        public bool TurnOn(int index, int count)
+        return true;
+    }
+
+    public bool TurnOn(int index)
+    {
+        if ((uint)index < (uint)_bitLength)
         {
-            for (int bit = 0; bit < count; bit++)
-            {
-                if (!TurnOn(index + bit))
-                {
-                    return false;
-                }
-            }
+            int wordIndex = index / BitsPerWord;
+            int wordBitOffset = index % BitsPerWord;
+
+            _array[wordIndex] |= 1u << wordBitOffset;
 
             return true;
         }
 
-        public bool TurnOn(int index)
+        return false;
+    }
+
+    public bool Import(ref BinaryReader reader)
+    {
+        if (!reader.Read(out _bitLength))
         {
-            if ((uint)index < (uint)_bitLength)
-            {
-                int wordIndex = index / BitsPerWord;
-                int wordBitOffset = index % BitsPerWord;
-
-                _array[wordIndex] |= 1u << wordBitOffset;
-
-                return true;
-            }
-
             return false;
         }
 
-        public bool Import(ref BinaryReader reader)
-        {
-            if (!reader.Read(out _bitLength))
-            {
-                return false;
-            }
+        int arrayLength = (_bitLength + BitsPerWord - 1) / BitsPerWord;
 
-            int arrayLength = (_bitLength + BitsPerWord - 1) / BitsPerWord;
-
-            return reader.AllocateAndReadArray(ref _array, arrayLength) == arrayLength;
-        }
+        return reader.AllocateAndReadArray(ref _array, arrayLength) == arrayLength;
     }
 }

@@ -1,75 +1,74 @@
 using Hyjinx.Graphics.Shader.IntermediateRepresentation;
 using Hyjinx.Graphics.Shader.Translation;
 
-namespace Hyjinx.Graphics.Shader.StructuredIr
+namespace Hyjinx.Graphics.Shader.StructuredIr;
+
+static class AstHelper
 {
-    static class AstHelper
+    public static void AddUse(IAstNode node, IAstNode parent)
     {
-        public static void AddUse(IAstNode node, IAstNode parent)
+        if (node is AstOperand operand && operand.Type == OperandType.LocalVariable)
         {
-            if (node is AstOperand operand && operand.Type == OperandType.LocalVariable)
-            {
-                operand.Uses.Add(parent);
-            }
+            operand.Uses.Add(parent);
         }
+    }
 
-        public static void AddDef(IAstNode node, IAstNode parent)
+    public static void AddDef(IAstNode node, IAstNode parent)
+    {
+        if (node is AstOperand operand && operand.Type == OperandType.LocalVariable)
         {
-            if (node is AstOperand operand && operand.Type == OperandType.LocalVariable)
-            {
-                operand.Defs.Add(parent);
-            }
+            operand.Defs.Add(parent);
         }
+    }
 
-        public static void RemoveUse(IAstNode node, IAstNode parent)
+    public static void RemoveUse(IAstNode node, IAstNode parent)
+    {
+        if (node is AstOperand operand && operand.Type == OperandType.LocalVariable)
         {
-            if (node is AstOperand operand && operand.Type == OperandType.LocalVariable)
-            {
-                operand.Uses.Remove(parent);
-            }
+            operand.Uses.Remove(parent);
         }
+    }
 
-        public static void RemoveDef(IAstNode node, IAstNode parent)
+    public static void RemoveDef(IAstNode node, IAstNode parent)
+    {
+        if (node is AstOperand operand && operand.Type == OperandType.LocalVariable)
         {
-            if (node is AstOperand operand && operand.Type == OperandType.LocalVariable)
-            {
-                operand.Defs.Remove(parent);
-            }
+            operand.Defs.Remove(parent);
         }
+    }
 
-        public static AstAssignment Assign(IAstNode destination, IAstNode source)
+    public static AstAssignment Assign(IAstNode destination, IAstNode source)
+    {
+        return new AstAssignment(destination, source);
+    }
+
+    public static AstOperand Const(int value)
+    {
+        return new AstOperand(OperandType.Constant, value);
+    }
+
+    public static AstOperand Local(AggregateType type)
+    {
+        AstOperand local = new(OperandType.LocalVariable)
         {
-            return new AstAssignment(destination, source);
-        }
+            VarType = type,
+        };
 
-        public static AstOperand Const(int value)
-        {
-            return new AstOperand(OperandType.Constant, value);
-        }
+        return local;
+    }
 
-        public static AstOperand Local(AggregateType type)
-        {
-            AstOperand local = new(OperandType.LocalVariable)
-            {
-                VarType = type,
-            };
+    public static IAstNode InverseCond(IAstNode cond)
+    {
+        return new AstOperation(Instruction.LogicalNot, cond);
+    }
 
-            return local;
-        }
+    public static IAstNode Next(IAstNode node)
+    {
+        return node.LLNode.Next?.Value;
+    }
 
-        public static IAstNode InverseCond(IAstNode cond)
-        {
-            return new AstOperation(Instruction.LogicalNot, cond);
-        }
-
-        public static IAstNode Next(IAstNode node)
-        {
-            return node.LLNode.Next?.Value;
-        }
-
-        public static IAstNode Previous(IAstNode node)
-        {
-            return node.LLNode.Previous?.Value;
-        }
+    public static IAstNode Previous(IAstNode node)
+    {
+        return node.LLNode.Previous?.Value;
     }
 }

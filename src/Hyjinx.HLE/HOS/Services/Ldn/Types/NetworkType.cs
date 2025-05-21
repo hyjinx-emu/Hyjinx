@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types;
+
+enum NetworkType : uint
 {
-    enum NetworkType : uint
-    {
-        None,
-        General,
-        Ldn,
-        All,
-    }
+    None,
+    General,
+    Ldn,
+    All,
 }

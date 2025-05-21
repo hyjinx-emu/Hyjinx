@@ -1,30 +1,29 @@
-namespace Hyjinx.HLE.HOS.Services.Ns
+namespace Hyjinx.HLE.HOS.Services.Ns;
+
+[Service("ns:am2")]
+[Service("ns:ec")]
+[Service("ns:rid")]
+[Service("ns:rt")]
+[Service("ns:web")]
+class IServiceGetterInterface : IpcService<IServiceGetterInterface>
 {
-    [Service("ns:am2")]
-    [Service("ns:ec")]
-    [Service("ns:rid")]
-    [Service("ns:rt")]
-    [Service("ns:web")]
-    class IServiceGetterInterface : IpcService<IServiceGetterInterface>
+    public IServiceGetterInterface(ServiceCtx context) { }
+
+    [CommandCmif(7996)]
+    // GetApplicationManagerInterface() -> object<nn::ns::detail::IApplicationManagerInterface>
+    public ResultCode GetApplicationManagerInterface(ServiceCtx context)
     {
-        public IServiceGetterInterface(ServiceCtx context) { }
+        MakeObject(context, new IApplicationManagerInterface(context));
 
-        [CommandCmif(7996)]
-        // GetApplicationManagerInterface() -> object<nn::ns::detail::IApplicationManagerInterface>
-        public ResultCode GetApplicationManagerInterface(ServiceCtx context)
-        {
-            MakeObject(context, new IApplicationManagerInterface(context));
+        return ResultCode.Success;
+    }
 
-            return ResultCode.Success;
-        }
+    [CommandCmif(7989)]
+    // GetReadOnlyApplicationControlDataInterface() -> object<nn::ns::detail::IReadOnlyApplicationControlDataInterface>
+    public ResultCode GetReadOnlyApplicationControlDataInterface(ServiceCtx context)
+    {
+        MakeObject(context, new IReadOnlyApplicationControlDataInterface(context));
 
-        [CommandCmif(7989)]
-        // GetReadOnlyApplicationControlDataInterface() -> object<nn::ns::detail::IReadOnlyApplicationControlDataInterface>
-        public ResultCode GetReadOnlyApplicationControlDataInterface(ServiceCtx context)
-        {
-            MakeObject(context, new IReadOnlyApplicationControlDataInterface(context));
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

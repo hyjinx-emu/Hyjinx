@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.Vic.Types
+namespace Hyjinx.Graphics.Vic.Types;
+
+struct SlotStruct
 {
-    struct SlotStruct
-    {
-        public SlotConfig SlotConfig;
-        public SlotSurfaceConfig SlotSurfaceConfig;
-        public LumaKeyStruct LumaKeyStruct;
-        public MatrixStruct ColorMatrixStruct;
-        public MatrixStruct GamutMatrixStruct;
-        public BlendingSlotStruct BlendingSlotStruct;
-    }
+    public SlotConfig SlotConfig;
+    public SlotSurfaceConfig SlotSurfaceConfig;
+    public LumaKeyStruct LumaKeyStruct;
+    public MatrixStruct ColorMatrixStruct;
+    public MatrixStruct GamutMatrixStruct;
+    public BlendingSlotStruct BlendingSlotStruct;
 }

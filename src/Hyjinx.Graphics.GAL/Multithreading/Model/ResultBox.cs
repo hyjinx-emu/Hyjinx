@@ -1,7 +1,6 @@
-namespace Hyjinx.Graphics.GAL.Multithreading.Model
+namespace Hyjinx.Graphics.GAL.Multithreading.Model;
+
+public class ResultBox<T>
 {
-    public class ResultBox<T>
-    {
-        public T Result;
-    }
+    public T Result;
 }

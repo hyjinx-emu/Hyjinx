@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading;
+
+enum ArbitrationType
 {
-    enum ArbitrationType
-    {
-        WaitIfLessThan = 0,
-        DecrementAndWaitIfLessThan = 1,
-        WaitIfEqual = 2,
-    }
+    WaitIfLessThan = 0,
+    DecrementAndWaitIfLessThan = 1,
+    WaitIfEqual = 2,
 }

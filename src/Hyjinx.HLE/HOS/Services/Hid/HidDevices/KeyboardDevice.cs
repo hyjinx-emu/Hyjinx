@@ -2,34 +2,33 @@ using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Keyboard;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public class KeyboardDevice : BaseDevice
 {
-    public class KeyboardDevice : BaseDevice
+    public KeyboardDevice(Switch device, bool active) : base(device, active) { }
+
+    public void Update(KeyboardInput keyState)
     {
-        public KeyboardDevice(Switch device, bool active) : base(device, active) { }
+        ref RingLifo<KeyboardState> lifo = ref _device.Hid.SharedMemory.Keyboard;
 
-        public void Update(KeyboardInput keyState)
+        if (!Active)
         {
-            ref RingLifo<KeyboardState> lifo = ref _device.Hid.SharedMemory.Keyboard;
+            lifo.Clear();
 
-            if (!Active)
-            {
-                lifo.Clear();
-
-                return;
-            }
-
-            ref KeyboardState previousEntry = ref lifo.GetCurrentEntryRef();
-
-            KeyboardState newState = new()
-            {
-                SamplingNumber = previousEntry.SamplingNumber + 1,
-            };
-
-            keyState.Keys.AsSpan().CopyTo(newState.Keys.RawData.AsSpan());
-            newState.Modifiers = (KeyboardModifier)keyState.Modifier;
-
-            lifo.Write(ref newState);
+            return;
         }
+
+        ref KeyboardState previousEntry = ref lifo.GetCurrentEntryRef();
+
+        KeyboardState newState = new()
+        {
+            SamplingNumber = previousEntry.SamplingNumber + 1,
+        };
+
+        keyState.Keys.AsSpan().CopyTo(newState.Keys.RawData.AsSpan());
+        newState.Modifiers = (KeyboardModifier)keyState.Modifier;
+
+        lifo.Write(ref newState);
     }
 }

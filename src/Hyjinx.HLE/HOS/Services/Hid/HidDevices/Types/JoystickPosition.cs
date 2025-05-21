@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public struct JoystickPosition
 {
-    public struct JoystickPosition
-    {
-        public int Dx;
-        public int Dy;
-    }
+    public int Dx;
+    public int Dy;
 }

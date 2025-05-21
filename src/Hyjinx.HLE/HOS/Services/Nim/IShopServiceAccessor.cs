@@ -1,42 +1,41 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Ipc;
 using Hyjinx.HLE.HOS.Kernel.Threading;
 using Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAccessServer.ShopServiceAccessor;
 using Hyjinx.Horizon.Common;
+using Hyjinx.Logging.Abstractions;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAccessServer
+namespace Hyjinx.HLE.HOS.Services.Nim.ShopServiceAccessServerInterface.ShopServiceAccessServer;
+
+class IShopServiceAccessor : IpcService<IShopServiceAccessor>
 {
-    class IShopServiceAccessor : IpcService<IShopServiceAccessor>
+    private readonly KEvent _event;
+
+    private int _eventHandle;
+
+    public IShopServiceAccessor(Horizon system)
     {
-        private readonly KEvent _event;
+        _event = new KEvent(system.KernelContext);
+    }
 
-        private int _eventHandle;
+    [CommandCmif(0)]
+    // CreateAsyncInterface(u64) -> (handle<copy>, object<nn::ec::IShopServiceAsync>)
+    public ResultCode CreateAsyncInterface(ServiceCtx context)
+    {
+        MakeObject(context, new IShopServiceAsync());
 
-        public IShopServiceAccessor(Horizon system)
+        if (_eventHandle == 0)
         {
-            _event = new KEvent(system.KernelContext);
-        }
-
-        [CommandCmif(0)]
-        // CreateAsyncInterface(u64) -> (handle<copy>, object<nn::ec::IShopServiceAsync>)
-        public ResultCode CreateAsyncInterface(ServiceCtx context)
-        {
-            MakeObject(context, new IShopServiceAsync());
-
-            if (_eventHandle == 0)
+            if (context.Process.HandleTable.GenerateHandle(_event.ReadableEvent, out _eventHandle) != Result.Success)
             {
-                if (context.Process.HandleTable.GenerateHandle(_event.ReadableEvent, out _eventHandle) != Result.Success)
-                {
-                    throw new InvalidOperationException("Out of handles!");
-                }
+                throw new InvalidOperationException("Out of handles!");
             }
-
-            context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_eventHandle);
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceNim);
-
-            return ResultCode.Success;
         }
+
+        context.Response.HandleDesc = IpcHandleDesc.MakeCopy(_eventHandle);
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceNim);
+
+        return ResultCode.Success;
     }
 }

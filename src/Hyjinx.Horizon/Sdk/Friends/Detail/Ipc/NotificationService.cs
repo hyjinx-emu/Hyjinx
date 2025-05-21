@@ -5,168 +5,167 @@ using Hyjinx.Horizon.Sdk.Sf;
 using System;
 using System.Collections.Generic;
 
-namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc
+namespace Hyjinx.Horizon.Sdk.Friends.Detail.Ipc;
+
+partial class NotificationService : INotificationService, IDisposable
 {
-    partial class NotificationService : INotificationService, IDisposable
+    private readonly NotificationEventHandler _notificationEventHandler;
+    private readonly Uid _userId;
+    private readonly FriendsServicePermissionLevel _permissionLevel;
+
+    private readonly object _lock = new();
+
+    private SystemEventType _notificationEvent;
+
+    private readonly LinkedList<SizedNotificationInfo> _notifications;
+
+    private bool _hasNewFriendRequest;
+    private bool _hasFriendListUpdate;
+
+    public NotificationService(NotificationEventHandler notificationEventHandler, Uid userId, FriendsServicePermissionLevel permissionLevel)
     {
-        private readonly NotificationEventHandler _notificationEventHandler;
-        private readonly Uid _userId;
-        private readonly FriendsServicePermissionLevel _permissionLevel;
+        _notificationEventHandler = notificationEventHandler;
+        _userId = userId;
+        _permissionLevel = permissionLevel;
+        _notifications = new LinkedList<SizedNotificationInfo>();
+        Os.CreateSystemEvent(out _notificationEvent, EventClearMode.AutoClear, interProcess: true).AbortOnFailure();
 
-        private readonly object _lock = new();
+        _hasNewFriendRequest = false;
+        _hasFriendListUpdate = false;
 
-        private SystemEventType _notificationEvent;
+        notificationEventHandler.RegisterNotificationService(this);
+    }
 
-        private readonly LinkedList<SizedNotificationInfo> _notifications;
+    [CmifCommand(0)]
+    public Result GetEvent([CopyHandle] out int eventHandle)
+    {
+        eventHandle = Os.GetReadableHandleOfSystemEvent(ref _notificationEvent);
 
-        private bool _hasNewFriendRequest;
-        private bool _hasFriendListUpdate;
+        return Result.Success;
+    }
 
-        public NotificationService(NotificationEventHandler notificationEventHandler, Uid userId, FriendsServicePermissionLevel permissionLevel)
+    [CmifCommand(1)]
+    public Result Clear()
+    {
+        lock (_lock)
         {
-            _notificationEventHandler = notificationEventHandler;
-            _userId = userId;
-            _permissionLevel = permissionLevel;
-            _notifications = new LinkedList<SizedNotificationInfo>();
-            Os.CreateSystemEvent(out _notificationEvent, EventClearMode.AutoClear, interProcess: true).AbortOnFailure();
-
             _hasNewFriendRequest = false;
             _hasFriendListUpdate = false;
 
-            notificationEventHandler.RegisterNotificationService(this);
+            _notifications.Clear();
         }
 
-        [CmifCommand(0)]
-        public Result GetEvent([CopyHandle] out int eventHandle)
-        {
-            eventHandle = Os.GetReadableHandleOfSystemEvent(ref _notificationEvent);
+        return Result.Success;
+    }
 
-            return Result.Success;
-        }
-
-        [CmifCommand(1)]
-        public Result Clear()
+    [CmifCommand(2)]
+    public Result Pop(out SizedNotificationInfo sizedNotificationInfo)
+    {
+        lock (_lock)
         {
-            lock (_lock)
+            if (_notifications.Count >= 1)
             {
-                _hasNewFriendRequest = false;
-                _hasFriendListUpdate = false;
+                sizedNotificationInfo = _notifications.First.Value;
+                _notifications.RemoveFirst();
 
-                _notifications.Clear();
-            }
-
-            return Result.Success;
-        }
-
-        [CmifCommand(2)]
-        public Result Pop(out SizedNotificationInfo sizedNotificationInfo)
-        {
-            lock (_lock)
-            {
-                if (_notifications.Count >= 1)
+                if (sizedNotificationInfo.Type == NotificationEventType.FriendListUpdate)
                 {
-                    sizedNotificationInfo = _notifications.First.Value;
-                    _notifications.RemoveFirst();
-
-                    if (sizedNotificationInfo.Type == NotificationEventType.FriendListUpdate)
-                    {
-                        _hasFriendListUpdate = false;
-                    }
-                    else if (sizedNotificationInfo.Type == NotificationEventType.NewFriendRequest)
-                    {
-                        _hasNewFriendRequest = false;
-                    }
-
-                    return Result.Success;
+                    _hasFriendListUpdate = false;
                 }
+                else if (sizedNotificationInfo.Type == NotificationEventType.NewFriendRequest)
+                {
+                    _hasNewFriendRequest = false;
+                }
+
+                return Result.Success;
             }
-
-            sizedNotificationInfo = default;
-
-            return FriendResult.NotificationQueueEmpty;
         }
 
-        public void SignalFriendListUpdate(Uid targetId)
+        sizedNotificationInfo = default;
+
+        return FriendResult.NotificationQueueEmpty;
+    }
+
+    public void SignalFriendListUpdate(Uid targetId)
+    {
+        lock (_lock)
         {
-            lock (_lock)
+            if (_userId == targetId)
             {
-                if (_userId == targetId)
+                if (!_hasFriendListUpdate)
                 {
-                    if (!_hasFriendListUpdate)
+                    SizedNotificationInfo friendListNotification = new();
+
+                    if (_notifications.Count != 0)
                     {
-                        SizedNotificationInfo friendListNotification = new();
+                        friendListNotification = _notifications.First.Value;
+                        _notifications.RemoveFirst();
+                    }
+
+                    friendListNotification.Type = NotificationEventType.FriendListUpdate;
+                    _hasFriendListUpdate = true;
+
+                    if (_hasNewFriendRequest)
+                    {
+                        SizedNotificationInfo newFriendRequestNotification = new();
 
                         if (_notifications.Count != 0)
                         {
-                            friendListNotification = _notifications.First.Value;
+                            newFriendRequestNotification = _notifications.First.Value;
                             _notifications.RemoveFirst();
                         }
 
-                        friendListNotification.Type = NotificationEventType.FriendListUpdate;
-                        _hasFriendListUpdate = true;
-
-                        if (_hasNewFriendRequest)
-                        {
-                            SizedNotificationInfo newFriendRequestNotification = new();
-
-                            if (_notifications.Count != 0)
-                            {
-                                newFriendRequestNotification = _notifications.First.Value;
-                                _notifications.RemoveFirst();
-                            }
-
-                            newFriendRequestNotification.Type = NotificationEventType.NewFriendRequest;
-                            _notifications.AddFirst(newFriendRequestNotification);
-                        }
-
-                        // We defer this to make sure we are on top of the queue.
-                        _notifications.AddFirst(friendListNotification);
+                        newFriendRequestNotification.Type = NotificationEventType.NewFriendRequest;
+                        _notifications.AddFirst(newFriendRequestNotification);
                     }
 
-                    Os.SignalSystemEvent(ref _notificationEvent);
+                    // We defer this to make sure we are on top of the queue.
+                    _notifications.AddFirst(friendListNotification);
                 }
+
+                Os.SignalSystemEvent(ref _notificationEvent);
             }
         }
+    }
 
-        public void SignalNewFriendRequest(Uid targetId)
+    public void SignalNewFriendRequest(Uid targetId)
+    {
+        lock (_lock)
         {
-            lock (_lock)
+            if (_permissionLevel.HasFlag(FriendsServicePermissionLevel.ViewerMask) && _userId == targetId)
             {
-                if (_permissionLevel.HasFlag(FriendsServicePermissionLevel.ViewerMask) && _userId == targetId)
+                if (!_hasNewFriendRequest)
                 {
-                    if (!_hasNewFriendRequest)
+                    if (_notifications.Count == 100)
                     {
-                        if (_notifications.Count == 100)
-                        {
-                            SignalFriendListUpdate(targetId);
-                        }
-
-                        SizedNotificationInfo newFriendRequestNotification = new()
-                        {
-                            Type = NotificationEventType.NewFriendRequest,
-                        };
-
-                        _notifications.AddLast(newFriendRequestNotification);
-                        _hasNewFriendRequest = true;
+                        SignalFriendListUpdate(targetId);
                     }
 
-                    Os.SignalSystemEvent(ref _notificationEvent);
+                    SizedNotificationInfo newFriendRequestNotification = new()
+                    {
+                        Type = NotificationEventType.NewFriendRequest,
+                    };
+
+                    _notifications.AddLast(newFriendRequestNotification);
+                    _hasNewFriendRequest = true;
                 }
+
+                Os.SignalSystemEvent(ref _notificationEvent);
             }
         }
+    }
 
-        protected virtual void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            if (disposing)
-            {
-                _notificationEventHandler.UnregisterNotificationService(this);
-            }
+            _notificationEventHandler.UnregisterNotificationService(this);
         }
+    }
 
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

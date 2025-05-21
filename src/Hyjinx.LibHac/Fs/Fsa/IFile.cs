@@ -1,6 +1,6 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Fs.Fsa;
 
@@ -84,7 +84,8 @@ public abstract class IFile : IDisposable
             if (option.HasFlushFlag())
             {
                 Result res = Flush();
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             return Result.Success;
@@ -167,7 +168,8 @@ public abstract class IFile : IDisposable
 
         // Get the file size, and validate our offset.
         Result res = GetSize(out long fileSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (offset > fileSize)
             return ResultFs.OutOfRange.Log();
@@ -187,7 +189,8 @@ public abstract class IFile : IDisposable
 
         // Get the file size.
         Result res = GetSize(out long fileSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         needsAppend = false;
 

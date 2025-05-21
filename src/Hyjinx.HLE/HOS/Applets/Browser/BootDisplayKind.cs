@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser;
+
+enum BootDisplayKind
 {
-    enum BootDisplayKind
-    {
-        White,
-        Offline,
-        Black,
-        Share,
-        Lobby,
-    }
+    White,
+    Offline,
+    Black,
+    Share,
+    Lobby,
 }

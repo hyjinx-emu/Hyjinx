@@ -1,34 +1,33 @@
-namespace Hyjinx.Horizon.Sdk.Ngc.Detail
+namespace Hyjinx.Horizon.Sdk.Ngc.Detail;
+
+class Sbv
 {
-    class Sbv
+    private readonly SbvSelect _sbvSelect;
+    private readonly Set _set;
+
+    public SbvSelect SbvSelect => _sbvSelect;
+    public Set Set => _set;
+
+    public Sbv()
     {
-        private readonly SbvSelect _sbvSelect;
-        private readonly Set _set;
+        _sbvSelect = new();
+        _set = new();
+    }
 
-        public SbvSelect SbvSelect => _sbvSelect;
-        public Set Set => _set;
+    public Sbv(int length)
+    {
+        _sbvSelect = new();
+        _set = new(length);
+    }
 
-        public Sbv()
-        {
-            _sbvSelect = new();
-            _set = new();
-        }
+    public void Build()
+    {
+        _set.Build();
+        _sbvSelect.Build(_set.BitVector.Array, _set.BitVector.BitLength);
+    }
 
-        public Sbv(int length)
-        {
-            _sbvSelect = new();
-            _set = new(length);
-        }
-
-        public void Build()
-        {
-            _set.Build();
-            _sbvSelect.Build(_set.BitVector.Array, _set.BitVector.BitLength);
-        }
-
-        public bool Import(ref BinaryReader reader)
-        {
-            return _set.Import(ref reader) && _sbvSelect.Import(ref reader);
-        }
+    public bool Import(ref BinaryReader reader)
+    {
+        return _set.Import(ref reader) && _sbvSelect.Import(ref reader);
     }
 }

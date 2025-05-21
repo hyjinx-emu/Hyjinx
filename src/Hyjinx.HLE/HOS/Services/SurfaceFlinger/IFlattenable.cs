@@ -1,13 +1,12 @@
-namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+
+interface IFlattenable
 {
-    interface IFlattenable
-    {
-        uint GetFlattenedSize();
+    uint GetFlattenedSize();
 
-        uint GetFdCount();
+    uint GetFdCount();
 
-        void Flatten(Parcel parcel);
+    void Flatten(Parcel parcel);
 
-        void Unflatten(Parcel parcel);
-    }
+    void Unflatten(Parcel parcel);
 }

@@ -1,9 +1,9 @@
-﻿using System.IO;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.Fs;
 using LibHac.Util;
+using System.IO;
 using Path = LibHac.Fs.Path;
 
 namespace LibHac.Tools.FsSystem.Save;
@@ -35,7 +35,8 @@ public class SaveDataFileSystemCore : IFileSystem
     private Result CheckIfNormalized(in Path path)
     {
         Result res = PathNormalizer.IsNormalized(out bool isNormalized, out _, path.GetString());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!isNormalized)
             return ResultFs.NotNormalized.Log();
@@ -46,7 +47,8 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoCreateDirectory(in Path path)
     {
         Result res = CheckIfNormalized(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         FileTable.AddDirectory(new U8Span(path.GetString()));
 
@@ -56,7 +58,8 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoCreateFile(in Path path, long size, CreateFileOptions option)
     {
         Result res = CheckIfNormalized(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (size == 0)
         {
@@ -84,7 +87,8 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoDeleteDirectory(in Path path)
     {
         Result res = CheckIfNormalized(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         FileTable.DeleteDirectory(new U8Span(path.GetString()));
 
@@ -94,13 +98,16 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoDeleteDirectoryRecursively(in Path path)
     {
         Result res = CheckIfNormalized(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CleanDirectoryRecursively(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = DeleteDirectory(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -108,7 +115,8 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoCleanDirectoryRecursively(in Path path)
     {
         Result res = CheckIfNormalized(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         FileSystemExtensions.CleanDirectoryRecursivelyGeneric(this, new U8Span(path.GetString()).ToString());
 
@@ -118,7 +126,8 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoDeleteFile(in Path path)
     {
         Result res = CheckIfNormalized(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!FileTable.TryOpenFile(new U8Span(path.GetString()), out SaveFileInfo fileInfo))
         {
@@ -139,7 +148,8 @@ public class SaveDataFileSystemCore : IFileSystem
         OpenDirectoryMode mode)
     {
         Result res = CheckIfNormalized(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!FileTable.TryOpenDirectory(new U8Span(path.GetString()), out SaveFindPosition position))
         {
@@ -154,7 +164,8 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoOpenFile(ref UniqueRef<IFile> outFile, in Path path, OpenMode mode)
     {
         Result res = CheckIfNormalized(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!FileTable.TryOpenFile(new U8Span(path.GetString()), out SaveFileInfo fileInfo))
         {
@@ -171,10 +182,12 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoRenameDirectory(in Path currentPath, in Path newPath)
     {
         Result res = CheckIfNormalized(in currentPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckIfNormalized(in newPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return FileTable.RenameDirectory(new U8Span(currentPath.GetString()), new U8Span(newPath.GetString()));
     }
@@ -182,10 +195,12 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoRenameFile(in Path currentPath, in Path newPath)
     {
         Result res = CheckIfNormalized(in currentPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckIfNormalized(in newPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         FileTable.RenameFile(new U8Span(currentPath.GetString()), new U8Span(newPath.GetString()));
 
@@ -197,7 +212,8 @@ public class SaveDataFileSystemCore : IFileSystem
         UnsafeHelpers.SkipParamInit(out entryType);
 
         Result res = CheckIfNormalized(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (FileTable.TryOpenFile(new U8Span(path.GetString()), out SaveFileInfo _))
         {
@@ -232,7 +248,7 @@ public class SaveDataFileSystemCore : IFileSystem
     protected override Result DoGetFileSystemAttribute(out FileSystemAttribute outAttribute)
     {
         const int maxSaveNameLength = 0x40;
-        
+
         outAttribute = default;
         outAttribute.DirectoryNameLengthMax = maxSaveNameLength;
         outAttribute.DirectoryNameLengthMaxHasValue = true;
@@ -265,7 +281,8 @@ public class SaveDataFileSystemCore : IFileSystem
         }
 
         int freeIndex = AllocationTable.GetFreeListBlockIndex();
-        if (freeIndex == 0) return;
+        if (freeIndex == 0)
+            return;
 
         AllocationTable.FsTrimList(freeIndex);
 

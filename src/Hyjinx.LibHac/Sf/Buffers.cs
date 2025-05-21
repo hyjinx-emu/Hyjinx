@@ -1,7 +1,7 @@
-﻿using System;
+using LibHac.Common;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.Common;
 
 namespace LibHac.Sf;
 

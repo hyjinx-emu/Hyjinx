@@ -1,4 +1,4 @@
-﻿#if IS_LEGACY_ENABLED
+#if IS_LEGACY_ENABLED
 
 namespace LibHac.FsSrv.Storage;
 

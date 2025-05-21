@@ -1,18 +1,17 @@
-namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
+
+/// <summary>
+/// Identifies the text entry mode.
+/// </summary>
+enum InputFormMode : uint
 {
     /// <summary>
-    /// Identifies the text entry mode.
+    /// Displays the text entry area as a single-line field.
     /// </summary>
-    enum InputFormMode : uint
-    {
-        /// <summary>
-        /// Displays the text entry area as a single-line field.
-        /// </summary>
-        SingleLine,
+    SingleLine,
 
-        /// <summary>
-        /// Displays the text entry area as a multi-line field.
-        /// </summary>
-        MultiLine,
-    }
+    /// <summary>
+    /// Displays the text entry area as a multi-line field.
+    /// </summary>
+    MultiLine,
 }

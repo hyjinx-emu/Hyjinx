@@ -1,4 +1,4 @@
-﻿namespace Hyjinx.HLE.FileSystem.Installers;
+namespace Hyjinx.HLE.FileSystem.Installers;
 
 /// <summary>
 /// An <see cref="IContentInstaller"/> which specifically handles the installation of firmware.

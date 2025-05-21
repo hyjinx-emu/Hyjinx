@@ -1,14 +1,13 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum AddressMode
 {
-    public enum AddressMode
-    {
-        Repeat,
-        MirroredRepeat,
-        ClampToEdge,
-        ClampToBorder,
-        Clamp,
-        MirrorClampToEdge,
-        MirrorClampToBorder,
-        MirrorClamp,
-    }
+    Repeat,
+    MirroredRepeat,
+    ClampToEdge,
+    ClampToBorder,
+    Clamp,
+    MirrorClampToEdge,
+    MirrorClampToBorder,
+    MirrorClamp,
 }

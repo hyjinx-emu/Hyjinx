@@ -2,43 +2,42 @@ using Hyjinx.Horizon.MmNv.Ipc;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
 using Hyjinx.Horizon.Sdk.Sm;
 
-namespace Hyjinx.Horizon.MmNv
+namespace Hyjinx.Horizon.MmNv;
+
+class MmNvIpcServer
 {
-    class MmNvIpcServer
+    private const int MaxSessionsCount = 40;
+
+    private const int PointerBufferSize = 0;
+    private const int MaxDomains = 0;
+    private const int MaxDomainObjects = 0;
+    private const int MaxPortsCount = 1;
+
+    private static readonly ManagerOptions _managerOptions = new(PointerBufferSize, MaxDomains, MaxDomainObjects, false);
+
+    private SmApi _sm;
+    private ServerManager _serverManager;
+
+    public void Initialize()
     {
-        private const int MaxSessionsCount = 40;
+        HeapAllocator allocator = new();
 
-        private const int PointerBufferSize = 0;
-        private const int MaxDomains = 0;
-        private const int MaxDomainObjects = 0;
-        private const int MaxPortsCount = 1;
+        _sm = new SmApi();
+        _sm.Initialize().AbortOnFailure();
 
-        private static readonly ManagerOptions _managerOptions = new(PointerBufferSize, MaxDomains, MaxDomainObjects, false);
+        _serverManager = new ServerManager(allocator, _sm, MaxPortsCount, _managerOptions, MaxSessionsCount);
 
-        private SmApi _sm;
-        private ServerManager _serverManager;
+        _serverManager.RegisterObjectForServer(new Request(), ServiceName.Encode("mm:u"), MaxSessionsCount);
+    }
 
-        public void Initialize()
-        {
-            HeapAllocator allocator = new();
+    public void ServiceRequests()
+    {
+        _serverManager.ServiceRequests();
+    }
 
-            _sm = new SmApi();
-            _sm.Initialize().AbortOnFailure();
-
-            _serverManager = new ServerManager(allocator, _sm, MaxPortsCount, _managerOptions, MaxSessionsCount);
-
-            _serverManager.RegisterObjectForServer(new Request(), ServiceName.Encode("mm:u"), MaxSessionsCount);
-        }
-
-        public void ServiceRequests()
-        {
-            _serverManager.ServiceRequests();
-        }
-
-        public void Shutdown()
-        {
-            _serverManager.Dispose();
-            _sm.Dispose();
-        }
+    public void Shutdown()
+    {
+        _serverManager.Dispose();
+        _sm.Dispose();
     }
 }

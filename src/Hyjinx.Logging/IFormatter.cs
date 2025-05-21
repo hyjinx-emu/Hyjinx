@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using System.IO;
 
 namespace Hyjinx.Logging;
@@ -12,7 +12,7 @@ public interface IFormatter
     /// The name of the formatter.
     /// </summary>
     string Name { get; }
-    
+
     /// <summary>
     /// Writes the log entry.
     /// </summary>

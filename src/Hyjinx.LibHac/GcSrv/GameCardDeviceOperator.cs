@@ -1,4 +1,3 @@
-﻿using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Storage.Sf;
@@ -6,6 +5,7 @@ using LibHac.Gc;
 using LibHac.Gc.Writer;
 using LibHac.Os;
 using LibHac.Sf;
+using System.Runtime.CompilerServices;
 using static LibHac.Gc.Values;
 
 namespace LibHac.GcSrv;
@@ -51,18 +51,19 @@ internal class GameCardDeviceOperator : IStorageDeviceOperator
         switch (operation)
         {
             case GameCardOperationIdValue.EraseGameCard:
-            {
-                using var readLock = new SharedLock<ReaderWriterLock>();
-                Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
-                if (res.IsFailure()) return res.Miss();
+                {
+                    using var readLock = new SharedLock<ReaderWriterLock>();
+                    Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                if (buffer.Size != sizeof(long))
-                    return ResultFs.InvalidArgument.Log();
+                    if (buffer.Size != sizeof(long))
+                        return ResultFs.InvalidArgument.Log();
 
-                result = _gc.Writer.EraseAndWriteParameter((MemorySize)size, BytesToPages(buffer.As<long>()));
+                    result = _gc.Writer.EraseAndWriteParameter((MemorySize)size, BytesToPages(buffer.As<long>()));
 
-                break;
-            }
+                    break;
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }
@@ -81,70 +82,75 @@ internal class GameCardDeviceOperator : IStorageDeviceOperator
             switch (operation)
             {
                 case GameCardOperationIdValue.GetGameCardIdSet:
-                {
-                    Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
-                    if (res.IsFailure()) return res.Miss();
+                    {
+                        Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
+                        if (res.IsFailure())
+                            return res.Miss();
 
-                    if (buffer.Size < Unsafe.SizeOf<GameCardIdSet>())
-                        return ResultFs.InvalidArgument.Log();
+                        if (buffer.Size < Unsafe.SizeOf<GameCardIdSet>())
+                            return ResultFs.InvalidArgument.Log();
 
-                    result = _gc.GetGameCardIdSet(out buffer.As<GameCardIdSet>());
-                    bytesWritten = Unsafe.SizeOf<GameCardIdSet>();
+                        result = _gc.GetGameCardIdSet(out buffer.As<GameCardIdSet>());
+                        bytesWritten = Unsafe.SizeOf<GameCardIdSet>();
 
-                    break;
-                }
+                        break;
+                    }
                 case GameCardOperationIdValue.GetGameCardDeviceId:
-                {
-                    Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
-                    if (res.IsFailure()) return res.Miss();
+                    {
+                        Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
+                        if (res.IsFailure())
+                            return res.Miss();
 
-                    if (buffer.Size < GcCardDeviceIdSize)
-                        return ResultFs.InvalidArgument.Log();
+                        if (buffer.Size < GcCardDeviceIdSize)
+                            return ResultFs.InvalidArgument.Log();
 
-                    result = _gc.GetCardDeviceId(buffer.Buffer);
-                    bytesWritten = GcCardDeviceIdSize;
+                        result = _gc.GetCardDeviceId(buffer.Buffer);
+                        bytesWritten = GcCardDeviceIdSize;
 
-                    break;
-                }
+                        break;
+                    }
                 case GameCardOperationIdValue.GetGameCardImageHash:
-                {
-                    Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
-                    if (res.IsFailure()) return res.Miss();
+                    {
+                        Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
+                        if (res.IsFailure())
+                            return res.Miss();
 
-                    if (buffer.Size < GcCardImageHashSize)
-                        return ResultFs.InvalidArgument.Log();
+                        if (buffer.Size < GcCardImageHashSize)
+                            return ResultFs.InvalidArgument.Log();
 
-                    result = _gc.GetCardImageHash(buffer.Buffer);
-                    bytesWritten = GcCardImageHashSize;
+                        result = _gc.GetCardImageHash(buffer.Buffer);
+                        bytesWritten = GcCardImageHashSize;
 
-                    break;
-                }
+                        break;
+                    }
                 case GameCardOperationIdValue.GetGameCardDeviceCertificate:
-                {
-                    Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
-                    if (res.IsFailure()) return res.Miss();
+                    {
+                        Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
+                        if (res.IsFailure())
+                            return res.Miss();
 
-                    if (buffer.Size < GcDeviceCertificateSize)
-                        return ResultFs.InvalidArgument.Log();
+                        if (buffer.Size < GcDeviceCertificateSize)
+                            return ResultFs.InvalidArgument.Log();
 
-                    result = _gc.GetCardDeviceCertificate(buffer.Buffer);
-                    bytesWritten = GcDeviceCertificateSize;
+                        result = _gc.GetCardDeviceCertificate(buffer.Buffer);
+                        bytesWritten = GcDeviceCertificateSize;
 
-                    break;
-                }
+                        break;
+                    }
                 case GameCardOperationIdValue.GetGameCardStatus:
-                {
-                    Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
-                    if (res.IsFailure()) return res.Miss();
+                    {
+                        Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
+                        if (res.IsFailure())
+                            return res.Miss();
 
-                    if (buffer.Size < Unsafe.SizeOf<GameCardStatus>())
-                        return ResultFs.InvalidArgument.Log();
+                        if (buffer.Size < Unsafe.SizeOf<GameCardStatus>())
+                            return ResultFs.InvalidArgument.Log();
 
-                    result = _gc.GetCardStatus(out buffer.As<GameCardStatus>());
-                    bytesWritten = Unsafe.SizeOf<GameCardStatus>();
+                        result = _gc.GetCardStatus(out buffer.As<GameCardStatus>());
+                        bytesWritten = Unsafe.SizeOf<GameCardStatus>();
 
-                    break;
-                }
+                        break;
+                    }
                 default:
                     return ResultFs.InvalidArgument.Log();
             }
@@ -179,19 +185,20 @@ internal class GameCardDeviceOperator : IStorageDeviceOperator
         switch (operation)
         {
             case GameCardOperationIdValue.ChallengeCardExistence:
-            {
-                using var readLock = new SharedLock<ReaderWriterLock>();
-                Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
-                if (res.IsFailure()) return res.Miss();
+                {
+                    using var readLock = new SharedLock<ReaderWriterLock>();
+                    Result res = _storageDevice.Get.AcquireReadLock(ref readLock.Ref());
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                if (outBuffer.Size < GcChallengeCardExistenceResponseSize)
-                    return ResultFs.InvalidArgument.Log();
+                    if (outBuffer.Size < GcChallengeCardExistenceResponseSize)
+                        return ResultFs.InvalidArgument.Log();
 
-                result = _gc.ChallengeCardExistence(outBuffer.Buffer, inBuffer1.Buffer, inBuffer2.Buffer);
-                bytesWritten = GcChallengeCardExistenceResponseSize;
+                    result = _gc.ChallengeCardExistence(outBuffer.Buffer, inBuffer1.Buffer, inBuffer2.Buffer);
+                    bytesWritten = GcChallengeCardExistenceResponseSize;
 
-                break;
-            }
+                    break;
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Diagnostics;
 using LibHac.Bcat.Impl.Ipc;
 using LibHac.Bcat.Impl.Service.Core;
 using LibHac.Common;
 using LibHac.Util;
+using System;
+using System.Diagnostics;
 
 namespace LibHac.Bcat.Impl.Service;
 
@@ -61,7 +61,8 @@ internal class DeliveryCacheStorageService : IDeliveryCacheStorageService
         {
             var metaReader = new DeliveryCacheDirectoryMetaAccessor(Server);
             Result res = metaReader.ReadApplicationDirectoryMeta(ApplicationId, true);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             int i;
             for (i = 0; i < nameBuffer.Length; i++)

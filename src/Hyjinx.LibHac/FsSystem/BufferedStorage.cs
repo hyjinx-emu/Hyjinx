@@ -1,12 +1,12 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem.Buffers;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Buffer = LibHac.Mem.Buffer;
 using CacheHandle = System.UInt64;
 
@@ -317,7 +317,8 @@ public class BufferedStorage : IStorage
                 Assert.SdkEqual(flushSize, cacheBuffer.Length);
 
                 Result res = baseStorage.Write(_offset, cacheBuffer);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 _isDirty = false;
 
@@ -400,13 +401,15 @@ public class BufferedStorage : IStorage
             if (_memoryRange.IsNull)
             {
                 res = AllocateFetchBuffer();
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             CalcFetchParameter(out FetchParameter fetchParam, offset);
 
             res = _bufferedStorage._baseStorage.Read(fetchParam.Offset, fetchParam.Buffer);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _offset = fetchParam.Offset;
             Assert.SdkAssert(Hits(offset, 1));
@@ -437,7 +440,8 @@ public class BufferedStorage : IStorage
             if (_memoryRange.IsNull)
             {
                 Result res = AllocateFetchBuffer();
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             CalcFetchParameter(out FetchParameter fetchParam, offset);
@@ -998,7 +1002,8 @@ public class BufferedStorage : IStorage
 
         // Get the base storage size.
         Result res = baseStorage.GetSize(out _baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Set members.
         _baseStorage.Set(in baseStorage);
@@ -1116,7 +1121,8 @@ public class BufferedStorage : IStorage
                 if (cache.AcquireNextOverlappedCache(invalidateOffset, invalidateSize))
                 {
                     res = cache.Flush();
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     cache.Invalidate();
                 }
@@ -1137,7 +1143,8 @@ public class BufferedStorage : IStorage
                 if (isFragment && cache.Hits(invalidateOffset, 1))
                 {
                     res = cache.Flush();
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                 }
 
                 cache.Invalidate();
@@ -1146,11 +1153,13 @@ public class BufferedStorage : IStorage
 
         // Set the size.
         res = _baseStorage.SetSize(size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Get our new size.
         res = _baseStorage.GetSize(out long newSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _baseStorageSize = newSize;
         return Result.Success;
@@ -1179,7 +1188,8 @@ public class BufferedStorage : IStorage
         while (cache.AcquireNextDirtyCache())
         {
             Result res = cache.Flush();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         // Flush the base storage.
@@ -1218,7 +1228,8 @@ public class BufferedStorage : IStorage
         if (_bufferManager.GetTotalAllocatableSize() < flushThreshold)
         {
             Result res = Flush();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -1243,7 +1254,8 @@ public class BufferedStorage : IStorage
                 if (++dirtyCount > 1)
                 {
                     Result res = cache.Flush();
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     cache.Invalidate();
                 }
@@ -1288,11 +1300,13 @@ public class BufferedStorage : IStorage
             // Read any blocks at the head of the range that are cached.
             bool headCacheNeeded =
                 ReadHeadCache(ref currentOffset, destination, ref remainingSize, ref bufferOffset);
-            if (remainingSize == 0) return Result.Success;
+            if (remainingSize == 0)
+                return Result.Success;
 
             // Read any blocks at the tail of the range that are cached.
             bool tailCacheNeeded = ReadTailCache(currentOffset, destination, ref remainingSize, bufferOffset);
-            if (remainingSize == 0) return Result.Success;
+            if (remainingSize == 0)
+                return Result.Success;
 
             // Perform bulk reads.
             const long bulkReadSizeMax = 1024 * 1024 * 2; // 2 MB
@@ -1345,7 +1359,8 @@ public class BufferedStorage : IStorage
                 {
                     // The block wasn't in the cache. Read the block from the base storage
                     Result res = PrepareAllocation();
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     // Loop until we can get exclusive access to the cache block
                     while (true)
@@ -1363,14 +1378,16 @@ public class BufferedStorage : IStorage
                         if (upgradeResult.wasUpgradeSuccessful)
                         {
                             res = fetchCache.Fetch(currentOffset);
-                            if (res.IsFailure()) return res.Miss();
+                            if (res.IsFailure())
+                                return res.Miss();
 
                             break;
                         }
                     }
 
                     res = ControlDirtiness();
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                 }
 
                 // Copy the data from the cache buffer to the destination buffer
@@ -1386,7 +1403,8 @@ public class BufferedStorage : IStorage
                     while (cache.AcquireNextOverlappedCache(currentOffset, currentSize))
                     {
                         Result res = cache.Flush();
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
 
                         cache.Invalidate();
                     }
@@ -1394,7 +1412,8 @@ public class BufferedStorage : IStorage
 
                 // Read directly from the base storage to the destination buffer
                 Result resultRead = _baseStorage.Read(currentOffset, currentDestination);
-                if (resultRead.IsFailure()) return resultRead.Miss();
+                if (resultRead.IsFailure())
+                    return resultRead.Miss();
             }
 
             remainingSize -= currentSize;
@@ -1540,7 +1559,8 @@ public class BufferedStorage : IStorage
             while (cache.AcquireNextOverlappedCache(alignedOffset, alignedSize))
             {
                 res = cache.Flush();
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 cache.Invalidate();
             }
@@ -1548,7 +1568,8 @@ public class BufferedStorage : IStorage
 
         // Read from the base storage.
         res = _baseStorage.Read(alignedOffset, workBuffer.Slice(0, (int)alignedSize));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
         if (workBuffer != buffer)
         {
             workBuffer.Slice((int)(offset - alignedOffset), buffer.Length).CopyTo(buffer);
@@ -1560,7 +1581,8 @@ public class BufferedStorage : IStorage
         if (isHeadCacheNeeded)
         {
             res = PrepareAllocation();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var cache = new SharedCache(this);
             while (true)
@@ -1576,7 +1598,8 @@ public class BufferedStorage : IStorage
                 if (upgradeResult.wasUpgradeSuccessful)
                 {
                     res = fetchCache.FetchFromBuffer(alignedOffset, workBuffer.Slice(0, (int)alignedSize));
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                     break;
                 }
             }
@@ -1590,7 +1613,8 @@ public class BufferedStorage : IStorage
             if (!cached)
             {
                 res = PrepareAllocation();
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             using var cache = new SharedCache(this);
@@ -1611,7 +1635,8 @@ public class BufferedStorage : IStorage
 
                     res = fetchCache.FetchFromBuffer(tailCacheOffset,
                         workBuffer.Slice((int)(tailCacheOffset - alignedOffset), (int)tailCacheSize));
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                     break;
                 }
             }
@@ -1620,7 +1645,8 @@ public class BufferedStorage : IStorage
         if (cached)
         {
             res = ControlDirtiness();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -1671,7 +1697,8 @@ public class BufferedStorage : IStorage
                 if (!cache.AcquireNextOverlappedCache(currentOffset, currentSize))
                 {
                     res = PrepareAllocation();
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     while (true)
                     {
@@ -1686,7 +1713,8 @@ public class BufferedStorage : IStorage
                         if (upgradeResult.wasUpgradeSuccessful)
                         {
                             res = fetchCache.Fetch(currentOffset);
-                            if (res.IsFailure()) return res.Miss();
+                            if (res.IsFailure())
+                                return res.Miss();
                             break;
                         }
                     }
@@ -1697,7 +1725,8 @@ public class BufferedStorage : IStorage
                 BufferManagerUtility.EnableBlockingBufferManagerAllocation();
 
                 res = ControlDirtiness();
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
             else
             {
@@ -1706,14 +1735,16 @@ public class BufferedStorage : IStorage
                     while (cache.AcquireNextOverlappedCache(currentOffset, currentSize))
                     {
                         res = cache.Flush();
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
 
                         cache.Invalidate();
                     }
                 }
 
                 res = _baseStorage.Write(currentOffset, currentSource.Slice(0, currentSize));
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 BufferManagerUtility.EnableBlockingBufferManagerAllocation();
             }

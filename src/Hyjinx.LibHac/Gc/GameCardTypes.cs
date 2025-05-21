@@ -1,4 +1,4 @@
-﻿using LibHac.Common.FixedArrays;
+using LibHac.Common.FixedArrays;
 using LibHac.Gc.Impl;
 
 namespace LibHac.Gc;
@@ -6,7 +6,7 @@ namespace LibHac.Gc;
 public struct GameCardStatus
 {
     public Array32<byte> PartitionFsHeaderHash;
-    public Array8<byte>  PackageId;
+    public Array8<byte> PackageId;
     public long CardSize;
     public long PartitionFsHeaderAddress;
     public long PartitionFsHeaderSize;

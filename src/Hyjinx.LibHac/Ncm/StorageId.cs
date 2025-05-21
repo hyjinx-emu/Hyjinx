@@ -1,4 +1,4 @@
-﻿namespace LibHac.Ncm;
+namespace LibHac.Ncm;
 
 public enum StorageId : byte
 {

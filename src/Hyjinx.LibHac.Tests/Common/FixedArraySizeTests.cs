@@ -1,5 +1,5 @@
-﻿using System.Runtime.CompilerServices;
 using LibHac.Common.FixedArrays;
+using System.Runtime.CompilerServices;
 using Xunit;
 
 namespace LibHac.Tests.Common;

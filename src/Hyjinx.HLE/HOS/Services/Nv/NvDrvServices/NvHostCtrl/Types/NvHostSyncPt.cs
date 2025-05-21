@@ -1,203 +1,202 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.Gpu.Synchronization;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl;
+
+partial class NvHostSyncpt
 {
-    partial class NvHostSyncpt
+    public const int VBlank0SyncpointId = 26;
+    public const int VBlank1SyncpointId = 27;
+
+    private readonly ILogger<NvHostSyncpt> _logger = Logger.DefaultLoggerFactory.CreateLogger<NvHostSyncpt>();
+    private readonly int[] _counterMin;
+    private readonly int[] _counterMax;
+    private readonly bool[] _clientManaged;
+    private readonly bool[] _assigned;
+
+    private readonly Switch _device;
+
+    private readonly object _syncpointAllocatorLock = new();
+
+    public NvHostSyncpt(Switch device)
     {
-        public const int VBlank0SyncpointId = 26;
-        public const int VBlank1SyncpointId = 27;
+        _device = device;
+        _counterMin = new int[SynchronizationManager.MaxHardwareSyncpoints];
+        _counterMax = new int[SynchronizationManager.MaxHardwareSyncpoints];
+        _clientManaged = new bool[SynchronizationManager.MaxHardwareSyncpoints];
+        _assigned = new bool[SynchronizationManager.MaxHardwareSyncpoints];
 
-        private readonly ILogger<NvHostSyncpt> _logger = Logger.DefaultLoggerFactory.CreateLogger<NvHostSyncpt>();
-        private readonly int[] _counterMin;
-        private readonly int[] _counterMax;
-        private readonly bool[] _clientManaged;
-        private readonly bool[] _assigned;
+        // Reserve VBLANK syncpoints
+        ReserveSyncpointLocked(VBlank0SyncpointId, true);
+        ReserveSyncpointLocked(VBlank1SyncpointId, true);
+    }
 
-        private readonly Switch _device;
-
-        private readonly object _syncpointAllocatorLock = new();
-
-        public NvHostSyncpt(Switch device)
+    private void ReserveSyncpointLocked(uint id, bool isClientManaged)
+    {
+        if (id >= SynchronizationManager.MaxHardwareSyncpoints || _assigned[id])
         {
-            _device = device;
-            _counterMin = new int[SynchronizationManager.MaxHardwareSyncpoints];
-            _counterMax = new int[SynchronizationManager.MaxHardwareSyncpoints];
-            _clientManaged = new bool[SynchronizationManager.MaxHardwareSyncpoints];
-            _assigned = new bool[SynchronizationManager.MaxHardwareSyncpoints];
-
-            // Reserve VBLANK syncpoints
-            ReserveSyncpointLocked(VBlank0SyncpointId, true);
-            ReserveSyncpointLocked(VBlank1SyncpointId, true);
+            throw new ArgumentOutOfRangeException(nameof(id));
         }
 
-        private void ReserveSyncpointLocked(uint id, bool isClientManaged)
+        _assigned[id] = true;
+        _clientManaged[id] = isClientManaged;
+    }
+
+    public uint AllocateSyncpoint(bool isClientManaged)
+    {
+        lock (_syncpointAllocatorLock)
         {
-            if (id >= SynchronizationManager.MaxHardwareSyncpoints || _assigned[id])
+            for (uint i = 1; i < SynchronizationManager.MaxHardwareSyncpoints; i++)
+            {
+                if (!_assigned[i])
+                {
+                    ReserveSyncpointLocked(i, isClientManaged);
+                    return i;
+                }
+            }
+        }
+
+        LogCannotAllocateSyncPoint();
+
+        return 0;
+    }
+
+    [LoggerMessage(LogLevel.Error,
+        EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
+        Message = "Cannot allocate a new syncpoint!")]
+    private partial void LogCannotAllocateSyncPoint();
+
+    public void ReleaseSyncpoint(uint id)
+    {
+        if (id == 0)
+        {
+            return;
+        }
+
+        lock (_syncpointAllocatorLock)
+        {
+            if (id >= SynchronizationManager.MaxHardwareSyncpoints || !_assigned[id])
             {
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
 
-            _assigned[id] = true;
-            _clientManaged[id] = isClientManaged;
+            _assigned[id] = false;
+            _clientManaged[id] = false;
+
+            SetSyncpointMinEqualSyncpointMax(id);
+        }
+    }
+
+    public void SetSyncpointMinEqualSyncpointMax(uint id)
+    {
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(id, (uint)SynchronizationManager.MaxHardwareSyncpoints);
+
+        int value = (int)ReadSyncpointValue(id);
+
+        Interlocked.Exchange(ref _counterMax[id], value);
+    }
+
+    public uint ReadSyncpointValue(uint id)
+    {
+        return UpdateMin(id);
+    }
+
+    public uint ReadSyncpointMinValue(uint id)
+    {
+        return (uint)_counterMin[id];
+    }
+
+    public uint ReadSyncpointMaxValue(uint id)
+    {
+        return (uint)_counterMax[id];
+    }
+
+    private bool IsClientManaged(uint id)
+    {
+        if (id >= SynchronizationManager.MaxHardwareSyncpoints)
+        {
+            return false;
         }
 
-        public uint AllocateSyncpoint(bool isClientManaged)
+        return _clientManaged[id];
+    }
+
+    public void Increment(uint id)
+    {
+        if (IsClientManaged(id))
         {
-            lock (_syncpointAllocatorLock)
-            {
-                for (uint i = 1; i < SynchronizationManager.MaxHardwareSyncpoints; i++)
-                {
-                    if (!_assigned[i])
-                    {
-                        ReserveSyncpointLocked(i, isClientManaged);
-                        return i;
-                    }
-                }
-            }
-
-            LogCannotAllocateSyncPoint();
-
-            return 0;
+            IncrementSyncpointMax(id);
         }
 
-        [LoggerMessage(LogLevel.Error,
-            EventId = (int)LogClass.ServiceNv, EventName = nameof(LogClass.ServiceNv),
-            Message = "Cannot allocate a new syncpoint!")]
-        private partial void LogCannotAllocateSyncPoint();
+        IncrementSyncpointGPU(id);
+    }
 
-        public void ReleaseSyncpoint(uint id)
+    public uint UpdateMin(uint id)
+    {
+        uint newValue = _device.Gpu.Synchronization.GetSyncpointValue(id);
+
+        Interlocked.Exchange(ref _counterMin[id], (int)newValue);
+
+        return newValue;
+    }
+
+    private void IncrementSyncpointGPU(uint id)
+    {
+        _device.Gpu.Synchronization.IncrementSyncpoint(id);
+    }
+
+    public void IncrementSyncpointMin(uint id)
+    {
+        Interlocked.Increment(ref _counterMin[id]);
+    }
+
+    public uint IncrementSyncpointMaxExt(uint id, int count)
+    {
+        if (count == 0)
         {
-            if (id == 0)
-            {
-                return;
-            }
-
-            lock (_syncpointAllocatorLock)
-            {
-                if (id >= SynchronizationManager.MaxHardwareSyncpoints || !_assigned[id])
-                {
-                    throw new ArgumentOutOfRangeException(nameof(id));
-                }
-
-                _assigned[id] = false;
-                _clientManaged[id] = false;
-
-                SetSyncpointMinEqualSyncpointMax(id);
-            }
+            return ReadSyncpointMaxValue(id);
         }
 
-        public void SetSyncpointMinEqualSyncpointMax(uint id)
+        uint result = 0;
+
+        for (int i = 0; i < count; i++)
         {
-            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(id, (uint)SynchronizationManager.MaxHardwareSyncpoints);
-
-            int value = (int)ReadSyncpointValue(id);
-
-            Interlocked.Exchange(ref _counterMax[id], value);
+            result = IncrementSyncpointMax(id);
         }
 
-        public uint ReadSyncpointValue(uint id)
+        return result;
+    }
+
+    private uint IncrementSyncpointMax(uint id)
+    {
+        return (uint)Interlocked.Increment(ref _counterMax[id]);
+    }
+
+    public uint IncrementSyncpointMax(uint id, uint incrs)
+    {
+        return (uint)Interlocked.Add(ref _counterMax[id], (int)incrs);
+    }
+
+    public bool IsSyncpointExpired(uint id, uint threshold)
+    {
+        return MinCompare(id, _counterMin[id], _counterMax[id], (int)threshold);
+    }
+
+    private bool MinCompare(uint id, int min, int max, int threshold)
+    {
+        int minDiff = min - threshold;
+        int maxDiff = max - threshold;
+
+        if (IsClientManaged(id))
         {
-            return UpdateMin(id);
+            return minDiff >= 0;
         }
-
-        public uint ReadSyncpointMinValue(uint id)
+        else
         {
-            return (uint)_counterMin[id];
-        }
-
-        public uint ReadSyncpointMaxValue(uint id)
-        {
-            return (uint)_counterMax[id];
-        }
-
-        private bool IsClientManaged(uint id)
-        {
-            if (id >= SynchronizationManager.MaxHardwareSyncpoints)
-            {
-                return false;
-            }
-
-            return _clientManaged[id];
-        }
-
-        public void Increment(uint id)
-        {
-            if (IsClientManaged(id))
-            {
-                IncrementSyncpointMax(id);
-            }
-
-            IncrementSyncpointGPU(id);
-        }
-
-        public uint UpdateMin(uint id)
-        {
-            uint newValue = _device.Gpu.Synchronization.GetSyncpointValue(id);
-
-            Interlocked.Exchange(ref _counterMin[id], (int)newValue);
-
-            return newValue;
-        }
-
-        private void IncrementSyncpointGPU(uint id)
-        {
-            _device.Gpu.Synchronization.IncrementSyncpoint(id);
-        }
-
-        public void IncrementSyncpointMin(uint id)
-        {
-            Interlocked.Increment(ref _counterMin[id]);
-        }
-
-        public uint IncrementSyncpointMaxExt(uint id, int count)
-        {
-            if (count == 0)
-            {
-                return ReadSyncpointMaxValue(id);
-            }
-
-            uint result = 0;
-
-            for (int i = 0; i < count; i++)
-            {
-                result = IncrementSyncpointMax(id);
-            }
-
-            return result;
-        }
-
-        private uint IncrementSyncpointMax(uint id)
-        {
-            return (uint)Interlocked.Increment(ref _counterMax[id]);
-        }
-
-        public uint IncrementSyncpointMax(uint id, uint incrs)
-        {
-            return (uint)Interlocked.Add(ref _counterMax[id], (int)incrs);
-        }
-
-        public bool IsSyncpointExpired(uint id, uint threshold)
-        {
-            return MinCompare(id, _counterMin[id], _counterMax[id], (int)threshold);
-        }
-
-        private bool MinCompare(uint id, int min, int max, int threshold)
-        {
-            int minDiff = min - threshold;
-            int maxDiff = max - threshold;
-
-            if (IsClientManaged(id))
-            {
-                return minDiff >= 0;
-            }
-            else
-            {
-                return (uint)maxDiff >= (uint)minDiff;
-            }
+            return (uint)maxDiff >= (uint)minDiff;
         }
     }
 }

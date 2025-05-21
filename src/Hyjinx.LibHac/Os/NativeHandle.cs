@@ -1,4 +1,4 @@
-﻿namespace LibHac.Os;
+namespace LibHac.Os;
 
 public static class NativeHandleApi
 {

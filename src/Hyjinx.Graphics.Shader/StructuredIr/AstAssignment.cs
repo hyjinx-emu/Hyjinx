@@ -1,35 +1,34 @@
 using static Hyjinx.Graphics.Shader.StructuredIr.AstHelper;
 
-namespace Hyjinx.Graphics.Shader.StructuredIr
+namespace Hyjinx.Graphics.Shader.StructuredIr;
+
+class AstAssignment : AstNode
 {
-    class AstAssignment : AstNode
+    public IAstNode Destination { get; }
+
+    private IAstNode _source;
+
+    public IAstNode Source
     {
-        public IAstNode Destination { get; }
-
-        private IAstNode _source;
-
-        public IAstNode Source
+        get
         {
-            get
-            {
-                return _source;
-            }
-            set
-            {
-                RemoveUse(_source, this);
-
-                AddUse(value, this);
-
-                _source = value;
-            }
+            return _source;
         }
-
-        public AstAssignment(IAstNode destination, IAstNode source)
+        set
         {
-            Destination = destination;
-            Source = source;
+            RemoveUse(_source, this);
 
-            AddDef(destination, this);
+            AddUse(value, this);
+
+            _source = value;
         }
+    }
+
+    public AstAssignment(IAstNode destination, IAstNode source)
+    {
+        Destination = destination;
+        Source = source;
+
+        AddDef(destination, this);
     }
 }

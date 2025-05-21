@@ -1,10 +1,9 @@
-namespace Hyjinx.Graphics.Shader.Decoders
+namespace Hyjinx.Graphics.Shader.Decoders;
+
+enum FunctionType : byte
 {
-    enum FunctionType : byte
-    {
-        User,
-        Unused,
-        BuiltInFSIBegin,
-        BuiltInFSIEnd
-    }
+    User,
+    Unused,
+    BuiltInFSIBegin,
+    BuiltInFSIEnd
 }

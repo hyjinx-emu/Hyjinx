@@ -1,17 +1,16 @@
 using System;
 
-namespace Hyjinx.Common.Pools
+namespace Hyjinx.Common.Pools;
+
+public static class ThreadStaticArray<T>
 {
-    public static class ThreadStaticArray<T>
+    [ThreadStatic]
+    private static T[] _array;
+
+    public static ref T[] Get()
     {
-        [ThreadStatic]
-        private static T[] _array;
+        _array ??= new T[1];
 
-        public static ref T[] Get()
-        {
-            _array ??= new T[1];
-
-            return ref _array;
-        }
+        return ref _array;
     }
 }

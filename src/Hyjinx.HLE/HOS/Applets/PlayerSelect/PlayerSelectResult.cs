@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Applets
+namespace Hyjinx.HLE.HOS.Applets;
+
+enum PlayerSelectResult : ulong
 {
-    enum PlayerSelectResult : ulong
-    {
-        Success = 0,
-        Failure = 2,
-    }
+    Success = 0,
+    Failure = 2,
 }

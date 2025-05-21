@@ -10,9 +10,11 @@
 
 <p align="center">
   Hyjinx is an open-source Nintendo Switch emulator, originally known as Ryujinx and created by gdkchan, written in C#.
-  This emulator aims at providing excellent accuracy and performance, a user-friendly interface and consistent builds.
-  It was written from scratch and development on the project began in September 2017.
+  This emulator aims at providing excellent accuracy and performance, a user-friendly interface, and consistent builds.
+  It was written from scratch, and development on the project began in September 2017.
 </p>
+
+[![build](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml/badge.svg)](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx)
 
 ## Usage
 
@@ -21,7 +23,7 @@ failing to meet this requirement may result in a poor gameplay experience or une
 
 ## Latest Build
 
-These builds are compiled automatically for each commit on the master branch.
+These builds are compiled automatically for each commit on the main branch.
 While we strive to ensure optimal stability and performance prior to pushing an update, our automated builds **may be unstable or completely broken**.
 
 See the [Releases](https://github.com/hyjinx-emu/Hyjinx/releases) page for automatic builds for Windows, macOS, and Linux.
@@ -33,7 +35,7 @@ If you are planning to contribute or just want to learn more about this project 
 ## Features
 - **DMCA Compliance**
 
-  The primary goal of this emulator was to ensure a DMCA compliant emulator that allows the community to continue to tinker, while staying compliant with the law. With this in mind, this emulator is unable to decrypt anything. If any encrypted files are used, a warning or error will be shown to the user.
+  The main goal of this fork was to provide a DMCA compliant emulator that allows the community to continue to tinker, while staying compliant with applicable laws. With this in mind, this emulator is unable to decrypt anything. If any encrypted files are used, a warning or error will be shown to the user.
 
 - **Audio**
 
@@ -83,12 +85,12 @@ You may also review our [FAQ](https://github.com/hyjinx-emu/Hyjinx/wiki/Frequent
 
 ## License
 
-This software is licensed under the terms of the [MIT license](LICENSE.txt).
+This software is licensed under customized terms of the [MIT license](LICENSE.txt).
 This project makes use of code authored by the libvpx project, licensed under BSD and the ffmpeg project, licensed under LGPLv3.
 See [LICENSE.txt](LICENSE.txt) and [THIRDPARTY.md](distribution/legal/THIRDPARTY.md) for more details.
 
 ## Credits
-- Ryujinx was used as the original source code for this emulator. This fork was later renamed to Hyjinx to ensure any failures or mis-steps taken by the project team wouldn't negatively effect the Ryujinx legacy.
+- Ryujinx was used as the original source code for this emulator. This fork was later renamed to Hyjinx to ensure any issues caused by the project team wouldn't negatively effect the Ryujinx legacy or other forks.
 - [LibHac](https://github.com/Thealexbarney/LibHac) is used for our file-system.
 - [AmiiboAPI](https://www.amiiboapi.com) is used in our Amiibo emulation.
 - [ldn_mitm](https://github.com/spacemeowx2/ldn_mitm) is used for one of our available multiplayer modes.

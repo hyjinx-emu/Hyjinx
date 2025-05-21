@@ -1,99 +1,98 @@
 using Hyjinx.Common;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Common.Memory;
 using Hyjinx.HLE.HOS.Services.Am.AppletAE;
+using Hyjinx.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser;
+
+internal class BrowserApplet : IApplet
 {
-    internal class BrowserApplet : IApplet
+    public event EventHandler AppletStateChanged;
+
+    private AppletSession _normalSession;
+
+    private CommonArguments _commonArguments;
+    private List<BrowserArgument> _arguments;
+    private ShimKind _shimKind;
+
+    public BrowserApplet(Horizon system) { }
+
+    public ResultCode GetResult()
     {
-        public event EventHandler AppletStateChanged;
+        return ResultCode.Success;
+    }
 
-        private AppletSession _normalSession;
+    public ResultCode Start(AppletSession normalSession, AppletSession interactiveSession)
+    {
+        _normalSession = normalSession;
 
-        private CommonArguments _commonArguments;
-        private List<BrowserArgument> _arguments;
-        private ShimKind _shimKind;
+        _commonArguments = IApplet.ReadStruct<CommonArguments>(_normalSession.Pop());
 
-        public BrowserApplet(Horizon system) { }
+        // Logger.Stub?.PrintStub(LogClass.ServiceAm, $"WebApplet version: 0x{_commonArguments.AppletVersion:x8}");
 
-        public ResultCode GetResult()
+        ReadOnlySpan<byte> webArguments = _normalSession.Pop();
+
+        (_shimKind, _arguments) = BrowserArgument.ParseArguments(webArguments);
+
+        // Logger.Stub?.PrintStub(LogClass.ServiceAm, $"Web Arguments: {_arguments.Count}");
+
+        foreach (BrowserArgument argument in _arguments)
         {
-            return ResultCode.Success;
+            // Logger.Stub?.PrintStub(LogClass.ServiceAm, $"{argument.Type}: {argument.GetValue()}");
         }
 
-        public ResultCode Start(AppletSession normalSession, AppletSession interactiveSession)
+        if ((_commonArguments.AppletVersion >= 0x80000 && _shimKind == ShimKind.Web) || (_commonArguments.AppletVersion >= 0x30000 && _shimKind == ShimKind.Share))
         {
-            _normalSession = normalSession;
-
-            _commonArguments = IApplet.ReadStruct<CommonArguments>(_normalSession.Pop());
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceAm, $"WebApplet version: 0x{_commonArguments.AppletVersion:x8}");
-
-            ReadOnlySpan<byte> webArguments = _normalSession.Pop();
-
-            (_shimKind, _arguments) = BrowserArgument.ParseArguments(webArguments);
-
-            // Logger.Stub?.PrintStub(LogClass.ServiceAm, $"Web Arguments: {_arguments.Count}");
-
-            foreach (BrowserArgument argument in _arguments)
+            List<BrowserOutput> result = new()
             {
-                // Logger.Stub?.PrintStub(LogClass.ServiceAm, $"{argument.Type}: {argument.GetValue()}");
-            }
+                new BrowserOutput(BrowserOutputType.ExitReason, (uint)WebExitReason.ExitButton),
+            };
 
-            if ((_commonArguments.AppletVersion >= 0x80000 && _shimKind == ShimKind.Web) || (_commonArguments.AppletVersion >= 0x30000 && _shimKind == ShimKind.Share))
+            _normalSession.Push(BuildResponseNew(result));
+        }
+        else
+        {
+            WebCommonReturnValue result = new()
             {
-                List<BrowserOutput> result = new()
-                {
-                    new BrowserOutput(BrowserOutputType.ExitReason, (uint)WebExitReason.ExitButton),
-                };
+                ExitReason = WebExitReason.ExitButton,
+            };
 
-                _normalSession.Push(BuildResponseNew(result));
-            }
-            else
-            {
-                WebCommonReturnValue result = new()
-                {
-                    ExitReason = WebExitReason.ExitButton,
-                };
-
-                _normalSession.Push(BuildResponseOld(result));
-            }
-
-            AppletStateChanged?.Invoke(this, null);
-
-            return ResultCode.Success;
+            _normalSession.Push(BuildResponseOld(result));
         }
 
-        private static byte[] BuildResponseOld(WebCommonReturnValue result)
+        AppletStateChanged?.Invoke(this, null);
+
+        return ResultCode.Success;
+    }
+
+    private static byte[] BuildResponseOld(WebCommonReturnValue result)
+    {
+        using MemoryStream stream = MemoryStreamManager.Shared.GetStream();
+        using BinaryWriter writer = new(stream);
+        writer.WriteStruct(result);
+
+        return stream.ToArray();
+    }
+    private byte[] BuildResponseNew(List<BrowserOutput> outputArguments)
+    {
+        using MemoryStream stream = MemoryStreamManager.Shared.GetStream();
+        using BinaryWriter writer = new(stream);
+        writer.WriteStruct(new WebArgHeader
         {
-            using MemoryStream stream = MemoryStreamManager.Shared.GetStream();
-            using BinaryWriter writer = new(stream);
-            writer.WriteStruct(result);
+            Count = (ushort)outputArguments.Count,
+            ShimKind = _shimKind,
+        });
 
-            return stream.ToArray();
-        }
-        private byte[] BuildResponseNew(List<BrowserOutput> outputArguments)
+        foreach (BrowserOutput output in outputArguments)
         {
-            using MemoryStream stream = MemoryStreamManager.Shared.GetStream();
-            using BinaryWriter writer = new(stream);
-            writer.WriteStruct(new WebArgHeader
-            {
-                Count = (ushort)outputArguments.Count,
-                ShimKind = _shimKind,
-            });
-
-            foreach (BrowserOutput output in outputArguments)
-            {
-                output.Write(writer);
-            }
-
-            writer.Write(new byte[0x2000 - writer.BaseStream.Position]);
-
-            return stream.ToArray();
+            output.Write(writer);
         }
+
+        writer.Write(new byte[0x2000 - writer.BaseStream.Position]);
+
+        return stream.ToArray();
     }
 }

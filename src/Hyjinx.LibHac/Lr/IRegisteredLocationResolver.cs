@@ -1,5 +1,5 @@
-﻿using System;
 using LibHac.Ncm;
+using System;
 
 namespace LibHac.Lr;
 

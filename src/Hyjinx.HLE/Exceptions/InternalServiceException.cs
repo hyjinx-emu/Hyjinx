@@ -1,9 +1,8 @@
 using System;
 
-namespace Hyjinx.HLE.Exceptions
+namespace Hyjinx.HLE.Exceptions;
+
+class InternalServiceException : Exception
 {
-    class InternalServiceException : Exception
-    {
-        public InternalServiceException(string message) : base(message) { }
-    }
+    public InternalServiceException(string message) : base(message) { }
 }

@@ -2,36 +2,35 @@ using Hyjinx.Cpu;
 using Hyjinx.Memory;
 using System;
 
-namespace Hyjinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process;
+
+class ProcessContext : IProcessContext
 {
-    class ProcessContext : IProcessContext
+    public IVirtualMemoryManager AddressSpace { get; }
+
+    public ulong AddressSpaceSize { get; }
+
+    public ProcessContext(IVirtualMemoryManager asManager, ulong addressSpaceSize)
     {
-        public IVirtualMemoryManager AddressSpace { get; }
+        AddressSpace = asManager;
+        AddressSpaceSize = addressSpaceSize;
+    }
 
-        public ulong AddressSpaceSize { get; }
+    public IExecutionContext CreateExecutionContext(ExceptionCallbacks exceptionCallbacks)
+    {
+        return new ProcessExecutionContext();
+    }
 
-        public ProcessContext(IVirtualMemoryManager asManager, ulong addressSpaceSize)
-        {
-            AddressSpace = asManager;
-            AddressSpaceSize = addressSpaceSize;
-        }
+    public void Execute(IExecutionContext context, ulong codeAddress)
+    {
+        throw new NotSupportedException();
+    }
 
-        public IExecutionContext CreateExecutionContext(ExceptionCallbacks exceptionCallbacks)
-        {
-            return new ProcessExecutionContext();
-        }
+    public void InvalidateCacheRegion(ulong address, ulong size)
+    {
+    }
 
-        public void Execute(IExecutionContext context, ulong codeAddress)
-        {
-            throw new NotSupportedException();
-        }
-
-        public void InvalidateCacheRegion(ulong address, ulong size)
-        {
-        }
-
-        public void Dispose()
-        {
-        }
+    public void Dispose()
+    {
     }
 }

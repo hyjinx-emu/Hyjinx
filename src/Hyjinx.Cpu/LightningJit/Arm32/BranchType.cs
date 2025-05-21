@@ -1,15 +1,14 @@
-namespace Hyjinx.Cpu.LightningJit.Arm32
+namespace Hyjinx.Cpu.LightningJit.Arm32;
+
+enum BranchType
 {
-    enum BranchType
-    {
-        Branch,
-        Call,
-        IndirectBranch,
-        TableBranchByte,
-        TableBranchHalfword,
-        IndirectCall,
-        SyncPoint,
-        SoftwareInterrupt,
-        ReadCntpct,
-    }
+    Branch,
+    Call,
+    IndirectBranch,
+    TableBranchByte,
+    TableBranchHalfword,
+    IndirectCall,
+    SyncPoint,
+    SoftwareInterrupt,
+    ReadCntpct,
 }

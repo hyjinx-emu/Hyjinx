@@ -1,13 +1,12 @@
 using Hyjinx.Horizon.Common;
 
-namespace Hyjinx.Horizon.Sdk.Friends
-{
-    static class FriendResult
-    {
-        private const int ModuleId = 121;
+namespace Hyjinx.Horizon.Sdk.Friends;
 
-        public static Result InvalidArgument => new(ModuleId, 2);
-        public static Result InternetRequestDenied => new(ModuleId, 6);
-        public static Result NotificationQueueEmpty => new(ModuleId, 15);
-    }
+static class FriendResult
+{
+    private const int ModuleId = 121;
+
+    public static Result InvalidArgument => new(ModuleId, 2);
+    public static Result InternetRequestDenied => new(ModuleId, 6);
+    public static Result NotificationQueueEmpty => new(ModuleId, 15);
 }

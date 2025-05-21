@@ -1,4 +1,4 @@
-﻿// ReSharper disable UnusedVariable
+// ReSharper disable UnusedVariable
 
 using System;
 using System.IO;

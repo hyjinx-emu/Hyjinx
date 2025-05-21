@@ -6,133 +6,132 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace SPB.Platform.WGL
+namespace SPB.Platform.WGL;
+
+[SupportedOSPlatform("windows")]
+public class WGLOpenGLContext : OpenGLContextBase
 {
-    [SupportedOSPlatform("windows")]
-    public class WGLOpenGLContext : OpenGLContextBase
+    private IntPtr _windowHandle;
+    private IntPtr _deviceContext;
+
+    private NativeWindowBase _window;
+
+    public WGLOpenGLContext(FramebufferFormat framebufferFormat, int major, int minor, OpenGLContextFlags flags = OpenGLContextFlags.Default, bool directRendering = true, WGLOpenGLContext shareContext = null) : base(framebufferFormat, major, minor, flags, directRendering, shareContext)
     {
-        private IntPtr _windowHandle;
-        private IntPtr _deviceContext;
+        _deviceContext = IntPtr.Zero;
+        _window = null;
+    }
 
-        private NativeWindowBase _window;
+    public override bool IsCurrent => WGL.GetCurrentContext() == ContextHandle;
 
-        public WGLOpenGLContext(FramebufferFormat framebufferFormat, int major, int minor, OpenGLContextFlags flags = OpenGLContextFlags.Default, bool directRendering = true, WGLOpenGLContext shareContext = null) : base(framebufferFormat, major, minor, flags, directRendering, shareContext)
+    public override IntPtr GetProcAddress(string procName)
+    {
+        return WGLHelper.GetProcAddress(procName);
+    }
+
+    public override void Initialize(NativeWindowBase window = null)
+    {
+        IntPtr windowHandle = IntPtr.Zero;
+
+        if (window != null)
         {
-            _deviceContext = IntPtr.Zero;
-            _window = null;
+            windowHandle = window.WindowHandle.RawHandle;
         }
 
-        public override bool IsCurrent => WGL.GetCurrentContext() == ContextHandle;
+        IntPtr sharedContextHandle = IntPtr.Zero;
 
-        public override IntPtr GetProcAddress(string procName)
+        if (ShareContext != null)
         {
-            return WGLHelper.GetProcAddress(procName);
+            sharedContextHandle = ShareContext.ContextHandle;
         }
 
-        public override void Initialize(NativeWindowBase window = null)
+        IntPtr context = WGLHelper.CreateContext(ref windowHandle, FramebufferFormat, Major, Minor, Flags, DirectRendering, sharedContextHandle);
+
+        ContextHandle = context;
+
+        if (ContextHandle != IntPtr.Zero)
         {
-            IntPtr windowHandle = IntPtr.Zero;
-
-            if (window != null)
+            // If there is no window provided, keep the temporary window around to free it later.
+            if (window == null)
             {
-                windowHandle = window.WindowHandle.RawHandle;
-            }
-
-            IntPtr sharedContextHandle = IntPtr.Zero;
-
-            if (ShareContext != null)
-            {
-                sharedContextHandle = ShareContext.ContextHandle;
-            }
-
-            IntPtr context = WGLHelper.CreateContext(ref windowHandle, FramebufferFormat, Major, Minor, Flags, DirectRendering, sharedContextHandle);
-
-            ContextHandle = context;
-
-            if (ContextHandle != IntPtr.Zero)
-            {
-                // If there is no window provided, keep the temporary window around to free it later.
-                if (window == null)
-                {
-                    _windowHandle = windowHandle;
-                    _deviceContext = Win32.Win32.GetDC(windowHandle);
-                }
-                else
-                {
-                    _window = window;
-                    _deviceContext = _window.DisplayHandle.RawHandle;
-                }
-            }
-
-            if (ContextHandle == IntPtr.Zero)
-            {
-                throw new ContextException("CreateContext() failed.");
-            }
-        }
-
-        public override void MakeCurrent(NativeWindowBase window)
-        {
-            if (_window != null && window != null && _window.WindowHandle.RawHandle == window.WindowHandle.RawHandle && IsCurrent)
-            {
-                return;
-            }
-
-            bool success;
-
-            if (window != null)
-            {
-                if (!(window is WGLWindow))
-                {
-                    throw new InvalidOperationException($"MakeCurrent() should be used with a {typeof(WGLWindow).Name}.");
-                }
-                if (_deviceContext != window.DisplayHandle.RawHandle)
-                {
-                    throw new InvalidOperationException("MakeCurrent() should be used with a window originated from the same device context.");
-                }
-
-                success = WGL.MakeCurrent(_deviceContext, ContextHandle);
+                _windowHandle = windowHandle;
+                _deviceContext = Win32.Win32.GetDC(windowHandle);
             }
             else
-            {
-                if (WGL.GetCurrentContext() == IntPtr.Zero)
-                {
-                    success = true;
-                }
-                else
-                {
-                    success = WGL.MakeCurrent(IntPtr.Zero, IntPtr.Zero);
-                }
-            }
-
-            if (success)
             {
                 _window = window;
-            }
-            else
-            {
-                throw new ContextException($"MakeCurrent() failed with error 0x{Marshal.GetLastWin32Error():x}");
+                _deviceContext = _window.DisplayHandle.RawHandle;
             }
         }
 
-        protected override void Dispose(bool disposing)
+        if (ContextHandle == IntPtr.Zero)
         {
-            if (!IsDisposed)
+            throw new ContextException("CreateContext() failed.");
+        }
+    }
+
+    public override void MakeCurrent(NativeWindowBase window)
+    {
+        if (_window != null && window != null && _window.WindowHandle.RawHandle == window.WindowHandle.RawHandle && IsCurrent)
+        {
+            return;
+        }
+
+        bool success;
+
+        if (window != null)
+        {
+            if (!(window is WGLWindow))
             {
-                if (disposing)
+                throw new InvalidOperationException($"MakeCurrent() should be used with a {typeof(WGLWindow).Name}.");
+            }
+            if (_deviceContext != window.DisplayHandle.RawHandle)
+            {
+                throw new InvalidOperationException("MakeCurrent() should be used with a window originated from the same device context.");
+            }
+
+            success = WGL.MakeCurrent(_deviceContext, ContextHandle);
+        }
+        else
+        {
+            if (WGL.GetCurrentContext() == IntPtr.Zero)
+            {
+                success = true;
+            }
+            else
+            {
+                success = WGL.MakeCurrent(IntPtr.Zero, IntPtr.Zero);
+            }
+        }
+
+        if (success)
+        {
+            _window = window;
+        }
+        else
+        {
+            throw new ContextException($"MakeCurrent() failed with error 0x{Marshal.GetLastWin32Error():x}");
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (!IsDisposed)
+        {
+            if (disposing)
+            {
+                MakeCurrent(null);
+
+                if (_windowHandle != IntPtr.Zero)
                 {
-                    MakeCurrent(null);
-
-                    if (_windowHandle != IntPtr.Zero)
-                    {
-                        Win32.Win32.ReleaseDC(_windowHandle, _deviceContext);
-                        Win32.Win32.DestroyWindow(_windowHandle);
-                    }
-
-                    WGL.DeleteContext(ContextHandle);
+                    Win32.Win32.ReleaseDC(_windowHandle, _deviceContext);
+                    Win32.Win32.DestroyWindow(_windowHandle);
                 }
 
-                IsDisposed = true;
+                WGL.DeleteContext(ContextHandle);
             }
+
+            IsDisposed = true;
         }
     }
 }

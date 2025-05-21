@@ -1,4 +1,3 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -6,6 +5,7 @@ using LibHac.FsSystem;
 using LibHac.Tests.Fs;
 using LibHac.Tests.Fs.IFileSystemTestBase;
 using LibHac.Tools.Fs;
+using System;
 using Xunit;
 
 namespace LibHac.Tests.FsSystem;

@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Nim
+namespace Hyjinx.HLE.HOS.Services.Nim;
+
+[Service("nim:shp")]
+class IShopServiceManager : IpcService<IShopServiceManager>
 {
-    [Service("nim:shp")]
-    class IShopServiceManager : IpcService<IShopServiceManager>
-    {
-        public IShopServiceManager(ServiceCtx context) { }
-    }
+    public IShopServiceManager(ServiceCtx context) { }
 }

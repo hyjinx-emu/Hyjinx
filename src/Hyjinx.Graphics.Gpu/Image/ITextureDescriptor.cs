@@ -1,10 +1,9 @@
-namespace Hyjinx.Graphics.Gpu.Image
+namespace Hyjinx.Graphics.Gpu.Image;
+
+interface ITextureDescriptor
 {
-    interface ITextureDescriptor
-    {
-        public uint UnpackFormat();
-        public TextureTarget UnpackTextureTarget();
-        public bool UnpackSrgb();
-        public bool UnpackTextureCoordNormalized();
-    }
+    public uint UnpackFormat();
+    public TextureTarget UnpackTextureTarget();
+    public bool UnpackSrgb();
+    public bool UnpackTextureCoordNormalized();
 }

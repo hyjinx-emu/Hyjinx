@@ -1,13 +1,12 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Time.Clock.Types
+namespace Hyjinx.HLE.HOS.Services.Time.Clock.Types;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+struct ContinuousAdjustmentTimePoint
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct ContinuousAdjustmentTimePoint
-    {
-        public ulong ClockOffset;
-        public long Multiplier;
-        public long DivisorLog2;
-        public SystemClockContext Context;
-    }
+    public ulong ClockOffset;
+    public long Multiplier;
+    public long DivisorLog2;
+    public SystemClockContext Context;
 }

@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Usb;
 
-namespace Hyjinx.Horizon.Usb.Ipc
+namespace Hyjinx.Horizon.Usb.Ipc;
+
+partial class QdbManager : IQdbManager
 {
-    partial class QdbManager : IQdbManager
-    {
-    }
 }

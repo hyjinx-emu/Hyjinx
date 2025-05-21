@@ -1,19 +1,18 @@
-namespace Hyjinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
+
+class KMemoryBlockSlabManager
 {
-    class KMemoryBlockSlabManager
+    private readonly ulong _capacityElements;
+
+    public int Count { get; set; }
+
+    public KMemoryBlockSlabManager(ulong capacityElements)
     {
-        private readonly ulong _capacityElements;
+        _capacityElements = capacityElements;
+    }
 
-        public int Count { get; set; }
-
-        public KMemoryBlockSlabManager(ulong capacityElements)
-        {
-            _capacityElements = capacityElements;
-        }
-
-        public bool CanAllocate(int count)
-        {
-            return (ulong)(Count + count) <= _capacityElements;
-        }
+    public bool CanAllocate(int count)
+    {
+        return (ulong)(Count + count) <= _capacityElements;
     }
 }

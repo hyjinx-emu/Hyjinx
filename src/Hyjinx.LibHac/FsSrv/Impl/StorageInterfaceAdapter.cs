@@ -1,9 +1,9 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Sf;
+using System;
+using System.Runtime.CompilerServices;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;
 
 namespace LibHac.FsSrv.Impl;
@@ -96,7 +96,8 @@ public class StorageInterfaceAdapter : IStorageSf
 
             Result res = _baseStorage.Get.OperateRange(SpanHelpers.AsByteSpan(ref info), OperationId.QueryRange,
                 offset, size, ReadOnlySpan<byte>.Empty);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             rangeInfo.Merge(in info);
         }
@@ -104,7 +105,8 @@ public class StorageInterfaceAdapter : IStorageSf
         {
             Result res = _baseStorage.Get.OperateRange(Span<byte>.Empty, OperationId.InvalidateCache, offset, size,
                 ReadOnlySpan<byte>.Empty);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;

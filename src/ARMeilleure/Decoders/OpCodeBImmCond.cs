@@ -1,25 +1,24 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+class OpCodeBImmCond : OpCodeBImm, IOpCodeCond
 {
-    class OpCodeBImmCond : OpCodeBImm, IOpCodeCond
+    public Condition Cond { get; }
+
+    public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCodeBImmCond(inst, address, opCode);
+
+    public OpCodeBImmCond(InstDescriptor inst, ulong address, int opCode) : base(inst, address, opCode)
     {
-        public Condition Cond { get; }
+        int o0 = (opCode >> 4) & 1;
 
-        public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCodeBImmCond(inst, address, opCode);
-
-        public OpCodeBImmCond(InstDescriptor inst, ulong address, int opCode) : base(inst, address, opCode)
+        if (o0 != 0)
         {
-            int o0 = (opCode >> 4) & 1;
+            Instruction = InstDescriptor.Undefined;
 
-            if (o0 != 0)
-            {
-                Instruction = InstDescriptor.Undefined;
-
-                return;
-            }
-
-            Cond = (Condition)(opCode & 0xf);
-
-            Immediate = (long)address + DecoderHelper.DecodeImmS19_2(opCode);
+            return;
         }
+
+        Cond = (Condition)(opCode & 0xf);
+
+        Immediate = (long)address + DecoderHelper.DecodeImmS19_2(opCode);
     }
 }

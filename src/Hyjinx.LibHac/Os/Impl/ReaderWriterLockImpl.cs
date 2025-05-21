@@ -1,4 +1,4 @@
-﻿using LibHac.Diag;
+using LibHac.Diag;
 
 namespace LibHac.Os.Impl;
 

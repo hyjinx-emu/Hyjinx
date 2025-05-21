@@ -1,9 +1,8 @@
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+enum TriBool
 {
-    enum TriBool
-    {
-        False,
-        True,
-        Undefined,
-    }
+    False,
+    True,
+    Undefined,
 }

@@ -3,62 +3,61 @@ using Hyjinx.HLE.HOS.Kernel.Common;
 using Hyjinx.HLE.HOS.Kernel.Process;
 using Hyjinx.Horizon.Common;
 
-namespace Hyjinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
+
+class KSharedMemory : KAutoObject
 {
-    class KSharedMemory : KAutoObject
+    private readonly KPageList _pageList;
+
+    private readonly ulong _ownerPid;
+
+    private readonly KMemoryPermission _ownerPermission;
+    private readonly KMemoryPermission _userPermission;
+
+    public KSharedMemory(
+        KernelContext context,
+        SharedMemoryStorage storage,
+        ulong ownerPid,
+        KMemoryPermission ownerPermission,
+        KMemoryPermission userPermission) : base(context)
     {
-        private readonly KPageList _pageList;
+        _pageList = storage.GetPageList();
+        _ownerPid = ownerPid;
+        _ownerPermission = ownerPermission;
+        _userPermission = userPermission;
+    }
 
-        private readonly ulong _ownerPid;
-
-        private readonly KMemoryPermission _ownerPermission;
-        private readonly KMemoryPermission _userPermission;
-
-        public KSharedMemory(
-            KernelContext context,
-            SharedMemoryStorage storage,
-            ulong ownerPid,
-            KMemoryPermission ownerPermission,
-            KMemoryPermission userPermission) : base(context)
+    public Result MapIntoProcess(
+        KPageTableBase memoryManager,
+        ulong address,
+        ulong size,
+        KProcess process,
+        KMemoryPermission permission)
+    {
+        if (_pageList.GetPagesCount() != BitUtils.DivRoundUp<ulong>(size, KPageTableBase.PageSize))
         {
-            _pageList = storage.GetPageList();
-            _ownerPid = ownerPid;
-            _ownerPermission = ownerPermission;
-            _userPermission = userPermission;
+            return KernelResult.InvalidSize;
         }
 
-        public Result MapIntoProcess(
-            KPageTableBase memoryManager,
-            ulong address,
-            ulong size,
-            KProcess process,
-            KMemoryPermission permission)
+        KMemoryPermission expectedPermission = process.Pid == _ownerPid
+            ? _ownerPermission
+            : _userPermission;
+
+        if (permission != expectedPermission)
         {
-            if (_pageList.GetPagesCount() != BitUtils.DivRoundUp<ulong>(size, KPageTableBase.PageSize))
-            {
-                return KernelResult.InvalidSize;
-            }
-
-            KMemoryPermission expectedPermission = process.Pid == _ownerPid
-                ? _ownerPermission
-                : _userPermission;
-
-            if (permission != expectedPermission)
-            {
-                return KernelResult.InvalidPermission;
-            }
-
-            return memoryManager.MapPages(address, _pageList, MemoryState.SharedMemory, permission);
+            return KernelResult.InvalidPermission;
         }
 
-        public Result UnmapFromProcess(KPageTableBase memoryManager, ulong address, ulong size, KProcess process)
-        {
-            if (_pageList.GetPagesCount() != BitUtils.DivRoundUp<ulong>(size, KPageTableBase.PageSize))
-            {
-                return KernelResult.InvalidSize;
-            }
+        return memoryManager.MapPages(address, _pageList, MemoryState.SharedMemory, permission);
+    }
 
-            return memoryManager.UnmapPages(address, _pageList, MemoryState.SharedMemory);
+    public Result UnmapFromProcess(KPageTableBase memoryManager, ulong address, ulong size, KProcess process)
+    {
+        if (_pageList.GetPagesCount() != BitUtils.DivRoundUp<ulong>(size, KPageTableBase.PageSize))
+        {
+            return KernelResult.InvalidSize;
         }
+
+        return memoryManager.UnmapPages(address, _pageList, MemoryState.SharedMemory);
     }
 }

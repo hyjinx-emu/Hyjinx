@@ -1,65 +1,64 @@
 using Hyjinx.HLE.HOS.Kernel.Common;
 using System;
 
-namespace Hyjinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
+
+class KMemoryManager
 {
-    class KMemoryManager
+    public KMemoryRegionManager[] MemoryRegions { get; }
+
+    public KMemoryManager(MemorySize size, MemoryArrange arrange)
     {
-        public KMemoryRegionManager[] MemoryRegions { get; }
+        MemoryRegions = KernelInit.GetMemoryRegions(size, arrange);
+    }
 
-        public KMemoryManager(MemorySize size, MemoryArrange arrange)
+    private KMemoryRegionManager GetMemoryRegion(ulong address)
+    {
+        for (int i = 0; i < MemoryRegions.Length; i++)
         {
-            MemoryRegions = KernelInit.GetMemoryRegions(size, arrange);
+            var region = MemoryRegions[i];
+
+            if (address >= region.Address && address < region.EndAddr)
+            {
+                return region;
+            }
         }
 
-        private KMemoryRegionManager GetMemoryRegion(ulong address)
-        {
-            for (int i = 0; i < MemoryRegions.Length; i++)
-            {
-                var region = MemoryRegions[i];
+        return null;
+    }
 
-                if (address >= region.Address && address < region.EndAddr)
+    public void IncrementPagesReferenceCount(ulong address, ulong pagesCount)
+    {
+        IncrementOrDecrementPagesReferenceCount(address, pagesCount, true);
+    }
+
+    public void DecrementPagesReferenceCount(ulong address, ulong pagesCount)
+    {
+        IncrementOrDecrementPagesReferenceCount(address, pagesCount, false);
+    }
+
+    private void IncrementOrDecrementPagesReferenceCount(ulong address, ulong pagesCount, bool increment)
+    {
+        while (pagesCount != 0)
+        {
+            var region = GetMemoryRegion(address);
+
+            ulong countToProcess = Math.Min(pagesCount, region.GetPageOffsetFromEnd(address));
+
+            lock (region)
+            {
+                if (increment)
                 {
-                    return region;
+                    region.IncrementPagesReferenceCount(address, countToProcess);
+                }
+                else
+                {
+                    region.DecrementPagesReferenceCount(address, countToProcess);
                 }
             }
 
-            return null;
-        }
-
-        public void IncrementPagesReferenceCount(ulong address, ulong pagesCount)
-        {
-            IncrementOrDecrementPagesReferenceCount(address, pagesCount, true);
-        }
-
-        public void DecrementPagesReferenceCount(ulong address, ulong pagesCount)
-        {
-            IncrementOrDecrementPagesReferenceCount(address, pagesCount, false);
-        }
-
-        private void IncrementOrDecrementPagesReferenceCount(ulong address, ulong pagesCount, bool increment)
-        {
-            while (pagesCount != 0)
-            {
-                var region = GetMemoryRegion(address);
-
-                ulong countToProcess = Math.Min(pagesCount, region.GetPageOffsetFromEnd(address));
-
-                lock (region)
-                {
-                    if (increment)
-                    {
-                        region.IncrementPagesReferenceCount(address, countToProcess);
-                    }
-                    else
-                    {
-                        region.DecrementPagesReferenceCount(address, countToProcess);
-                    }
-                }
-
-                pagesCount -= countToProcess;
-                address += countToProcess * KPageTableBase.PageSize;
-            }
+            pagesCount -= countToProcess;
+            address += countToProcess * KPageTableBase.PageSize;
         }
     }
 }

@@ -1,4 +1,3 @@
-namespace Hyjinx.Graphics.GAL
-{
-    public readonly record struct ColorF(float Red, float Green, float Blue, float Alpha);
-}
+namespace Hyjinx.Graphics.GAL;
+
+public readonly record struct ColorF(float Red, float Green, float Blue, float Alpha);

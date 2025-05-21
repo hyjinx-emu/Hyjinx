@@ -1,9 +1,9 @@
-﻿// ReSharper disable UnusedMember.Local
-using System;
+// ReSharper disable UnusedMember.Local
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Impl;
 using LibHac.Os;
+using System;
 
 namespace LibHac.Fs.Impl
 {

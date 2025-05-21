@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall
+namespace Hyjinx.HLE.HOS.Kernel.SupervisorCall;
+
+enum CodeMemoryOperation : uint
 {
-    enum CodeMemoryOperation : uint
-    {
-        Map,
-        MapToOwner,
-        Unmap,
-        UnmapFromOwner,
-    };
-}
+    Map,
+    MapToOwner,
+    Unmap,
+    UnmapFromOwner,
+};

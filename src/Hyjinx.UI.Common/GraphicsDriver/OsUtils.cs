@@ -2,23 +2,22 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Common.Utilities
+namespace Hyjinx.Common.Utilities;
+
+internal partial class OsUtils
 {
-    internal partial class OsUtils
+    [LibraryImport("libc", SetLastError = true)]
+    private static partial int setenv([MarshalAs(UnmanagedType.LPStr)] string name, [MarshalAs(UnmanagedType.LPStr)] string value, int overwrite);
+
+    public static void SetEnvironmentVariableNoCaching(string key, string value)
     {
-        [LibraryImport("libc", SetLastError = true)]
-        private static partial int setenv([MarshalAs(UnmanagedType.LPStr)] string name, [MarshalAs(UnmanagedType.LPStr)] string value, int overwrite);
+        // Set the value in the cached environment variables, too.
+        Environment.SetEnvironmentVariable(key, value);
 
-        public static void SetEnvironmentVariableNoCaching(string key, string value)
+        if (!OperatingSystem.IsWindows())
         {
-            // Set the value in the cached environment variables, too.
-            Environment.SetEnvironmentVariable(key, value);
-
-            if (!OperatingSystem.IsWindows())
-            {
-                int res = setenv(key, value, 1);
-                Debug.Assert(res != -1);
-            }
+            int res = setenv(key, value, 1);
+            Debug.Assert(res != -1);
         }
     }
 }

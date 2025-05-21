@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Wlan;
 
-namespace Hyjinx.Horizon.Wlan.Ipc
+namespace Hyjinx.Horizon.Wlan.Ipc;
+
+partial class LocalGetFrame : ILocalGetFrame
 {
-    partial class LocalGetFrame : ILocalGetFrame
-    {
-    }
 }

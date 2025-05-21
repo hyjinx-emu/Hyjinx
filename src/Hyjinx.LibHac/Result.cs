@@ -1,8 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
+using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using BaseType = System.UInt32;
 
 namespace LibHac;

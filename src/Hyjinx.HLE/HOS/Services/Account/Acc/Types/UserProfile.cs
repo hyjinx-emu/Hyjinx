@@ -1,87 +1,86 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc;
+
+public class UserProfile
 {
-    public class UserProfile
+    public UserId UserId { get; }
+
+    public long LastModifiedTimestamp { get; set; }
+
+    private string _name;
+
+    public string Name
     {
-        public UserId UserId { get; }
-
-        public long LastModifiedTimestamp { get; set; }
-
-        private string _name;
-
-        public string Name
+        get => _name;
+        set
         {
-            get => _name;
-            set
-            {
-                _name = value;
+            _name = value;
 
-                UpdateLastModifiedTimestamp();
-            }
+            UpdateLastModifiedTimestamp();
         }
+    }
 
-        private byte[] _image;
+    private byte[] _image;
 
-        public byte[] Image
+    public byte[] Image
+    {
+        get => _image;
+        set
         {
-            get => _image;
-            set
-            {
-                _image = value;
+            _image = value;
 
-                UpdateLastModifiedTimestamp();
-            }
+            UpdateLastModifiedTimestamp();
         }
+    }
 
-        private AccountState _accountState;
+    private AccountState _accountState;
 
-        public AccountState AccountState
+    public AccountState AccountState
+    {
+        get => _accountState;
+        set
         {
-            get => _accountState;
-            set
-            {
-                _accountState = value;
+            _accountState = value;
 
-                UpdateLastModifiedTimestamp();
-            }
+            UpdateLastModifiedTimestamp();
         }
+    }
 
-        private AccountState _onlinePlayState;
+    private AccountState _onlinePlayState;
 
-        public AccountState OnlinePlayState
+    public AccountState OnlinePlayState
+    {
+        get => _onlinePlayState;
+        set
         {
-            get => _onlinePlayState;
-            set
-            {
-                _onlinePlayState = value;
+            _onlinePlayState = value;
 
-                UpdateLastModifiedTimestamp();
-            }
+            UpdateLastModifiedTimestamp();
         }
+    }
 
-        public UserProfile(UserId userId, string name, byte[] image, long lastModifiedTimestamp = 0)
+    public UserProfile(UserId userId, string name, byte[] image, long lastModifiedTimestamp = 0)
+    {
+        UserId = userId;
+        Name = name;
+        Image = image;
+
+        AccountState = AccountState.Closed;
+        OnlinePlayState = AccountState.Closed;
+
+        if (lastModifiedTimestamp != 0)
         {
-            UserId = userId;
-            Name = name;
-            Image = image;
-
-            AccountState = AccountState.Closed;
-            OnlinePlayState = AccountState.Closed;
-
-            if (lastModifiedTimestamp != 0)
-            {
-                LastModifiedTimestamp = lastModifiedTimestamp;
-            }
-            else
-            {
-                UpdateLastModifiedTimestamp();
-            }
+            LastModifiedTimestamp = lastModifiedTimestamp;
         }
-
-        private void UpdateLastModifiedTimestamp()
+        else
         {
-            LastModifiedTimestamp = (long)(DateTime.Now - DateTime.UnixEpoch).TotalSeconds;
+            UpdateLastModifiedTimestamp();
         }
+    }
+
+    private void UpdateLastModifiedTimestamp()
+    {
+        LastModifiedTimestamp = (long)(DateTime.Now - DateTime.UnixEpoch).TotalSeconds;
     }
 }

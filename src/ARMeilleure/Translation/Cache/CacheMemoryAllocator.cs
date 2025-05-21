@@ -2,95 +2,94 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ARMeilleure.Translation.Cache
+namespace ARMeilleure.Translation.Cache;
+
+class CacheMemoryAllocator
 {
-    class CacheMemoryAllocator
+    private readonly struct MemoryBlock : IComparable<MemoryBlock>
     {
-        private readonly struct MemoryBlock : IComparable<MemoryBlock>
+        public int Offset { get; }
+        public int Size { get; }
+
+        public MemoryBlock(int offset, int size)
         {
-            public int Offset { get; }
-            public int Size { get; }
+            Offset = offset;
+            Size = size;
+        }
 
-            public MemoryBlock(int offset, int size)
+        public int CompareTo([AllowNull] MemoryBlock other)
+        {
+            return Offset.CompareTo(other.Offset);
+        }
+    }
+
+    private readonly List<MemoryBlock> _blocks = new();
+
+    public CacheMemoryAllocator(int capacity)
+    {
+        _blocks.Add(new MemoryBlock(0, capacity));
+    }
+
+    public int Allocate(int size)
+    {
+        for (int i = 0; i < _blocks.Count; i++)
+        {
+            MemoryBlock block = _blocks[i];
+
+            if (block.Size > size)
             {
-                Offset = offset;
-                Size = size;
+                _blocks[i] = new MemoryBlock(block.Offset + size, block.Size - size);
+                return block.Offset;
             }
-
-            public int CompareTo([AllowNull] MemoryBlock other)
+            else if (block.Size == size)
             {
-                return Offset.CompareTo(other.Offset);
+                _blocks.RemoveAt(i);
+                return block.Offset;
             }
         }
 
-        private readonly List<MemoryBlock> _blocks = new();
+        // We don't have enough free memory to perform the allocation.
+        return -1;
+    }
 
-        public CacheMemoryAllocator(int capacity)
+    public void Free(int offset, int size)
+    {
+        Insert(new MemoryBlock(offset, size));
+    }
+
+    private void Insert(MemoryBlock block)
+    {
+        int index = _blocks.BinarySearch(block);
+
+        if (index < 0)
         {
-            _blocks.Add(new MemoryBlock(0, capacity));
+            index = ~index;
         }
 
-        public int Allocate(int size)
+        if (index < _blocks.Count)
         {
-            for (int i = 0; i < _blocks.Count; i++)
+            MemoryBlock next = _blocks[index];
+
+            int endOffs = block.Offset + block.Size;
+
+            if (next.Offset == endOffs)
             {
-                MemoryBlock block = _blocks[i];
-
-                if (block.Size > size)
-                {
-                    _blocks[i] = new MemoryBlock(block.Offset + size, block.Size - size);
-                    return block.Offset;
-                }
-                else if (block.Size == size)
-                {
-                    _blocks.RemoveAt(i);
-                    return block.Offset;
-                }
+                block = new MemoryBlock(block.Offset, block.Size + next.Size);
+                _blocks.RemoveAt(index);
             }
-
-            // We don't have enough free memory to perform the allocation.
-            return -1;
         }
 
-        public void Free(int offset, int size)
+        if (index > 0)
         {
-            Insert(new MemoryBlock(offset, size));
+            MemoryBlock prev = _blocks[index - 1];
+
+            if (prev.Offset + prev.Size == block.Offset)
+            {
+                block = new MemoryBlock(block.Offset - prev.Size, block.Size + prev.Size);
+                _blocks.RemoveAt(--index);
+            }
         }
 
-        private void Insert(MemoryBlock block)
-        {
-            int index = _blocks.BinarySearch(block);
-
-            if (index < 0)
-            {
-                index = ~index;
-            }
-
-            if (index < _blocks.Count)
-            {
-                MemoryBlock next = _blocks[index];
-
-                int endOffs = block.Offset + block.Size;
-
-                if (next.Offset == endOffs)
-                {
-                    block = new MemoryBlock(block.Offset, block.Size + next.Size);
-                    _blocks.RemoveAt(index);
-                }
-            }
-
-            if (index > 0)
-            {
-                MemoryBlock prev = _blocks[index - 1];
-
-                if (prev.Offset + prev.Size == block.Offset)
-                {
-                    block = new MemoryBlock(block.Offset - prev.Size, block.Size + prev.Size);
-                    _blocks.RemoveAt(--index);
-                }
-            }
-
-            _blocks.Insert(index, block);
-        }
+        _blocks.Insert(index, block);
     }
 }

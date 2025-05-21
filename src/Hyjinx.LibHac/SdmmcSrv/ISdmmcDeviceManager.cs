@@ -1,7 +1,7 @@
-﻿using System;
 using LibHac.Fs;
 using LibHac.Os;
 using LibHac.Sdmmc;
+using System;
 
 namespace LibHac.SdmmcSrv;
 

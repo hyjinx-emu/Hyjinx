@@ -1,13 +1,12 @@
 using System;
 
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public interface ICounterEvent : IDisposable
 {
-    public interface ICounterEvent : IDisposable
-    {
-        bool Invalid { get; set; }
+    bool Invalid { get; set; }
 
-        bool ReserveForHostAccess();
+    bool ReserveForHostAccess();
 
-        void Flush();
-    }
+    void Flush();
 }

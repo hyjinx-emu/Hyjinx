@@ -1,11 +1,10 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel.Types;
+
+[StructLayout(LayoutKind.Sequential)]
+struct GetParameterArguments
 {
-    [StructLayout(LayoutKind.Sequential)]
-    struct GetParameterArguments
-    {
-        public uint Parameter;
-        public uint Value;
-    }
+    public uint Parameter;
+    public uint Value;
 }

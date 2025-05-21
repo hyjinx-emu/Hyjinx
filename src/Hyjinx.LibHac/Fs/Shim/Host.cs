@@ -1,5 +1,3 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -8,9 +6,11 @@ using LibHac.Fs.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Util;
-using static LibHac.Fs.StringTraits;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using static LibHac.Fs.Impl.CommonMountNames;
+using static LibHac.Fs.StringTraits;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 
@@ -45,12 +45,14 @@ public static class Host
         if (option.Flags != MountHostOptionFlag.None)
         {
             Result res = fileSystemProxy.Get.OpenHostFileSystemWithOption(ref fileSystem.Ref, in path, option);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
             Result res = fileSystemProxy.Get.OpenHostFileSystem(ref fileSystem.Ref, in path);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         using var fileSystemAdapter =
@@ -129,7 +131,8 @@ public static class Host
             return ResultFs.InvalidMountName.Log();
 
         Result res = PathUtility.ConvertToFspPath(out FspPath sfPath, path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (sfPath.Str[0] == NullTerminator)
         {
@@ -140,7 +143,8 @@ public static class Host
         using var fileSystem = new UniqueRef<IFileSystem>();
 
         res = OpenHostFileSystemImpl(fs, ref fileSystem.Ref, in sfPath, option);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outFileSystem.Set(ref fileSystem.Ref);
         return Result.Success;
@@ -159,7 +163,8 @@ public static class Host
         ref UniqueRef<HostCommonMountNameGenerator> outMountNameGenerator, U8Span mountName, U8Span path)
     {
         Result res = fs.Impl.CheckMountName(mountName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outMountNameGenerator.Reset(new HostCommonMountNameGenerator(path));
 
@@ -203,7 +208,8 @@ public static class Host
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var fileSystem = new UniqueRef<IFileSystem>();
 
@@ -221,7 +227,8 @@ public static class Host
         }
 
         // No AbortIfNeeded here
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
         {
@@ -237,7 +244,8 @@ public static class Host
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -251,7 +259,8 @@ public static class Host
                 UniqueRef<ICommonMountNameGenerator>.Create(ref mountNameGenerator);
 
             Result res = fs.Register(mountName, ref fileSystem, ref baseMountNameGenerator.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -295,7 +304,8 @@ public static class Host
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var fileSystem = new UniqueRef<IFileSystem>();
 
@@ -313,7 +323,8 @@ public static class Host
         }
 
         // No AbortIfNeeded here
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
         {
@@ -329,7 +340,8 @@ public static class Host
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -343,7 +355,8 @@ public static class Host
                 UniqueRef<ICommonMountNameGenerator>.Create(ref mountNameGenerator);
 
             Result res = fs.Register(mountName, ref fileSystem, ref baseMountNameGenerator.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -380,7 +393,8 @@ public static class Host
         }
 
         // No AbortIfNeeded here
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
         {
@@ -396,7 +410,8 @@ public static class Host
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(new U8Span(HostRootFileSystemMountName));
@@ -413,7 +428,8 @@ public static class Host
 
             Result res = fs.Register(new U8Span(HostRootFileSystemMountName), ref fileSystem,
                 ref mountNameGenerator.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -455,7 +471,8 @@ public static class Host
         }
 
         // No AbortIfNeeded here
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
         {
@@ -471,7 +488,8 @@ public static class Host
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(new U8Span(HostRootFileSystemMountName));
@@ -488,7 +506,8 @@ public static class Host
 
             Result res = fs.Register(new U8Span(HostRootFileSystemMountName), ref fileSystem,
                 ref mountNameGenerator.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }

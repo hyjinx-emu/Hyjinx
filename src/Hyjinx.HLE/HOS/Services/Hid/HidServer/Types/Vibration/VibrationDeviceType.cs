@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public enum VibrationDeviceType
 {
-    public enum VibrationDeviceType
-    {
-        None,
-        LinearResonantActuator,
-        GcErm,
-    }
+    None,
+    LinearResonantActuator,
+    GcErm,
 }

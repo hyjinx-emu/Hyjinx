@@ -2,70 +2,69 @@ using Hyjinx.Graphics.GAL;
 using Silk.NET.Vulkan;
 using System;
 
-namespace Hyjinx.Graphics.Vulkan.Queries
+namespace Hyjinx.Graphics.Vulkan.Queries;
+
+class Counters : IDisposable
 {
-    class Counters : IDisposable
+    private readonly CounterQueue[] _counterQueues;
+    private readonly PipelineFull _pipeline;
+
+    public Counters(VulkanRenderer gd, Device device, PipelineFull pipeline)
     {
-        private readonly CounterQueue[] _counterQueues;
-        private readonly PipelineFull _pipeline;
+        _pipeline = pipeline;
 
-        public Counters(VulkanRenderer gd, Device device, PipelineFull pipeline)
+        int count = Enum.GetNames(typeof(CounterType)).Length;
+
+        _counterQueues = new CounterQueue[count];
+
+        for (int index = 0; index < _counterQueues.Length; index++)
         {
-            _pipeline = pipeline;
-
-            int count = Enum.GetNames(typeof(CounterType)).Length;
-
-            _counterQueues = new CounterQueue[count];
-
-            for (int index = 0; index < _counterQueues.Length; index++)
-            {
-                CounterType type = (CounterType)index;
-                _counterQueues[index] = new CounterQueue(gd, device, pipeline, type);
-            }
+            CounterType type = (CounterType)index;
+            _counterQueues[index] = new CounterQueue(gd, device, pipeline, type);
         }
+    }
 
-        public void ResetCounterPool()
+    public void ResetCounterPool()
+    {
+        foreach (var queue in _counterQueues)
         {
-            foreach (var queue in _counterQueues)
-            {
-                queue.ResetCounterPool();
-            }
+            queue.ResetCounterPool();
         }
+    }
 
-        public void ResetFutureCounters(CommandBuffer cmd, int count)
+    public void ResetFutureCounters(CommandBuffer cmd, int count)
+    {
+        _counterQueues[(int)CounterType.SamplesPassed].ResetFutureCounters(cmd, count);
+    }
+
+    public CounterQueueEvent QueueReport(CounterType type, EventHandler<ulong> resultHandler, float divisor, bool hostReserved)
+    {
+        return _counterQueues[(int)type].QueueReport(resultHandler, divisor, _pipeline.DrawCount, hostReserved);
+    }
+
+    public void QueueReset(CounterType type)
+    {
+        _counterQueues[(int)type].QueueReset(_pipeline.DrawCount);
+    }
+
+    public void Update()
+    {
+        foreach (var queue in _counterQueues)
         {
-            _counterQueues[(int)CounterType.SamplesPassed].ResetFutureCounters(cmd, count);
+            queue.Flush(false);
         }
+    }
 
-        public CounterQueueEvent QueueReport(CounterType type, EventHandler<ulong> resultHandler, float divisor, bool hostReserved)
-        {
-            return _counterQueues[(int)type].QueueReport(resultHandler, divisor, _pipeline.DrawCount, hostReserved);
-        }
+    public void Flush(CounterType type)
+    {
+        _counterQueues[(int)type].Flush(true);
+    }
 
-        public void QueueReset(CounterType type)
+    public void Dispose()
+    {
+        foreach (var queue in _counterQueues)
         {
-            _counterQueues[(int)type].QueueReset(_pipeline.DrawCount);
-        }
-
-        public void Update()
-        {
-            foreach (var queue in _counterQueues)
-            {
-                queue.Flush(false);
-            }
-        }
-
-        public void Flush(CounterType type)
-        {
-            _counterQueues[(int)type].Flush(true);
-        }
-
-        public void Dispose()
-        {
-            foreach (var queue in _counterQueues)
-            {
-                queue.Dispose();
-            }
+            queue.Dispose();
         }
     }
 }

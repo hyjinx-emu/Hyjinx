@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Ovln;
 
-namespace Hyjinx.Horizon.Ovln.Ipc
+namespace Hyjinx.Horizon.Ovln.Ipc;
+
+partial class SenderService : ISenderService
 {
-    partial class SenderService : ISenderService
-    {
-    }
 }

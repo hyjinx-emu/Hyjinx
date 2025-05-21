@@ -1,9 +1,9 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.FsSystem;
 
@@ -91,10 +91,12 @@ public class AlignmentMatchingStorage<TDataAlignment, TBufferAlignment> : IStora
             return Result.Success;
 
         Result res = GetSize(out long totalSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, destination.Length, totalSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return AlignmentMatchingStorageImpl.Read(_baseStorage, workBuffer, DataAlign, BufferAlign, offset, destination);
     }
@@ -107,10 +109,12 @@ public class AlignmentMatchingStorage<TDataAlignment, TBufferAlignment> : IStora
             return Result.Success;
 
         Result res = GetSize(out long totalSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, source.Length, totalSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return AlignmentMatchingStorageImpl.Write(_baseStorage, workBuffer, DataAlign, BufferAlign, offset, source);
     }
@@ -135,7 +139,8 @@ public class AlignmentMatchingStorage<TDataAlignment, TBufferAlignment> : IStora
         if (_isBaseStorageSizeDirty)
         {
             Result res = _baseStorage.GetSize(out long baseStorageSize);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _baseStorageSize = baseStorageSize;
             _isBaseStorageSizeDirty = false;
@@ -157,10 +162,12 @@ public class AlignmentMatchingStorage<TDataAlignment, TBufferAlignment> : IStora
             return Result.Success;
 
         Result res = GetSize(out long baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckOffsetAndSize(offset, size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         long validSize = Math.Min(size, baseStorageSize - offset);
         long alignedOffset = Alignment.AlignDown(offset, DataAlign);
@@ -231,10 +238,12 @@ public class AlignmentMatchingStoragePooledBuffer<TBufferAlignment> : IStorage
             return Result.Success;
 
         Result res = GetSize(out long baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, destination.Length, baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var pooledBuffer = new PooledBuffer();
         pooledBuffer.AllocateParticularlyLarge((int)_dataAlignment, (int)_dataAlignment);
@@ -249,10 +258,12 @@ public class AlignmentMatchingStoragePooledBuffer<TBufferAlignment> : IStorage
             return Result.Success;
 
         Result res = GetSize(out long baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, source.Length, baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var pooledBuffer = new PooledBuffer();
         pooledBuffer.AllocateParticularlyLarge((int)_dataAlignment, (int)_dataAlignment);
@@ -281,7 +292,8 @@ public class AlignmentMatchingStoragePooledBuffer<TBufferAlignment> : IStorage
         if (_isBaseStorageSizeDirty)
         {
             Result res = _baseStorage.GetSize(out long baseStorageSize);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _isBaseStorageSizeDirty = false;
             _baseStorageSize = baseStorageSize;
@@ -303,10 +315,12 @@ public class AlignmentMatchingStoragePooledBuffer<TBufferAlignment> : IStorage
             return Result.Success;
 
         Result res = GetSize(out long baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckOffsetAndSize(offset, size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         long validSize = Math.Min(size, baseStorageSize - offset);
         long alignedOffset = Alignment.AlignDown(offset, _dataAlignment);
@@ -373,10 +387,12 @@ public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : IStorage
             return Result.Success;
 
         Result res = GetSize(out long baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, destination.Length, baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Calculate the aligned offsets of the requested region.
         long offsetEnd = offset + destination.Length;
@@ -399,7 +415,8 @@ public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : IStorage
                 if (alignedSize <= pooledBuffer.GetSize())
                 {
                     res = _baseStorage.Read(alignedOffset, pooledBuffer.GetBuffer().Slice(0, (int)alignedSize));
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     pooledBuffer.GetBuffer().Slice((int)(offset - alignedOffset), destination.Length)
                         .CopyTo(destination);
@@ -429,7 +446,8 @@ public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : IStorage
             Assert.SdkLess(headSize, destination.Length);
 
             res = _baseStorage.Read(alignedOffset, pooledBuffer.GetBuffer().Slice(0, (int)_dataAlignment));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             pooledBuffer.GetBuffer().Slice((int)(offset - alignedOffset), headSize).CopyTo(destination);
         }
@@ -441,7 +459,8 @@ public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : IStorage
             Span<byte> coreBuffer = destination.Slice((int)(coreOffset - offset), coreSize);
 
             res = _baseStorage.Read(coreOffset, coreBuffer);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         // Handle any data after the aligned portion.
@@ -450,7 +469,8 @@ public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : IStorage
             int tailSize = (int)(offsetEnd - coreOffsetEnd);
 
             res = _baseStorage.Read(coreOffsetEnd, pooledBuffer.GetBuffer().Slice(0, (int)_dataAlignment));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             pooledBuffer.GetBuffer().Slice(0, tailSize).CopyTo(destination.Slice((int)(coreOffsetEnd - offset)));
         }
@@ -464,10 +484,12 @@ public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : IStorage
             return Result.Success;
 
         Result res = GetSize(out long baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckAccessRange(offset, source.Length, baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var pooledBuffer = new PooledBuffer((int)_dataAlignment, (int)_dataAlignment);
 
@@ -495,7 +517,8 @@ public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : IStorage
         if (_baseStorageSize < 0)
         {
             Result res = _baseStorage.GetSize(out long baseStorageSize);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _baseStorageSize = baseStorageSize;
         }
@@ -516,10 +539,12 @@ public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : IStorage
             return Result.Success;
 
         Result res = GetSize(out long baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CheckOffsetAndSize(offset, size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         long validSize = Math.Min(size, baseStorageSize - offset);
         long alignedOffset = Alignment.AlignDown(offset, _dataAlignment);

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Shim;
 using LibHac.Tests.Fs.FileSystemClientTests;
+using System.Collections.Generic;
 using Xunit;
 using static LibHac.Fs.SaveData;
 

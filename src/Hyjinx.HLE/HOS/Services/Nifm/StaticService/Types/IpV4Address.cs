@@ -2,23 +2,22 @@ using System;
 using System.Net;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types
-{
-    [StructLayout(LayoutKind.Sequential)]
-    struct IpV4Address
-    {
-        public uint Address;
+namespace Hyjinx.HLE.HOS.Services.Nifm.StaticService.Types;
 
-        public IpV4Address(IPAddress address)
+[StructLayout(LayoutKind.Sequential)]
+struct IpV4Address
+{
+    public uint Address;
+
+    public IpV4Address(IPAddress address)
+    {
+        if (address == null)
         {
-            if (address == null)
-            {
-                Address = 0;
-            }
-            else
-            {
-                Address = BitConverter.ToUInt32(address.GetAddressBytes());
-            }
+            Address = 0;
+        }
+        else
+        {
+            Address = BitConverter.ToUInt32(address.GetAddressBytes());
         }
     }
 }

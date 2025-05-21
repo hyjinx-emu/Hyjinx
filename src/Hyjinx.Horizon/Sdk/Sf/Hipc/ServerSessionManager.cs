@@ -1,340 +1,339 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.OsTypes;
 using Hyjinx.Horizon.Sdk.Sf.Cmif;
 using Hyjinx.Horizon.Sdk.Sm;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Sf.Hipc
+namespace Hyjinx.Horizon.Sdk.Sf.Hipc;
+
+partial class ServerSessionManager
 {
-    partial class ServerSessionManager
+    private readonly ILogger<ServerSessionManager> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<ServerSessionManager>();
+
+    public Result AcceptSession(int portHandle, ServiceObjectHolder obj)
     {
-        private readonly ILogger<ServerSessionManager> _logger =
-            Logger.DefaultLoggerFactory.CreateLogger<ServerSessionManager>();
-        
-        public Result AcceptSession(int portHandle, ServiceObjectHolder obj)
+        return AcceptSession(out _, portHandle, obj);
+    }
+
+    private Result AcceptSession(out ServerSession session, int portHandle, ServiceObjectHolder obj)
+    {
+        return AcceptSessionImpl(out session, portHandle, obj);
+    }
+
+    private Result AcceptSessionImpl(out ServerSession session, int portHandle, ServiceObjectHolder obj)
+    {
+        session = null;
+
+        Result result = HorizonStatic.Syscall.AcceptSession(out int sessionHandle, portHandle);
+
+        if (result.IsFailure)
         {
-            return AcceptSession(out _, portHandle, obj);
+            return result;
         }
 
-        private Result AcceptSession(out ServerSession session, int portHandle, ServiceObjectHolder obj)
-        {
-            return AcceptSessionImpl(out session, portHandle, obj);
-        }
+        bool succeeded = false;
 
-        private Result AcceptSessionImpl(out ServerSession session, int portHandle, ServiceObjectHolder obj)
+        try
         {
-            session = null;
-
-            Result result = HorizonStatic.Syscall.AcceptSession(out int sessionHandle, portHandle);
+            result = RegisterSessionImpl(out session, sessionHandle, obj);
 
             if (result.IsFailure)
             {
                 return result;
             }
 
-            bool succeeded = false;
-
-            try
+            succeeded = true;
+        }
+        finally
+        {
+            if (!succeeded)
             {
-                result = RegisterSessionImpl(out session, sessionHandle, obj);
-
-                if (result.IsFailure)
-                {
-                    return result;
-                }
-
-                succeeded = true;
+                HorizonStatic.Syscall.CloseHandle(sessionHandle);
             }
-            finally
-            {
-                if (!succeeded)
-                {
-                    HorizonStatic.Syscall.CloseHandle(sessionHandle);
-                }
-            }
-
-            return Result.Success;
         }
 
-        public Result RegisterSession(int sessionHandle, ServiceObjectHolder obj)
+        return Result.Success;
+    }
+
+    public Result RegisterSession(int sessionHandle, ServiceObjectHolder obj)
+    {
+        return RegisterSession(out _, sessionHandle, obj);
+    }
+
+    public Result RegisterSession(out ServerSession session, int sessionHandle, ServiceObjectHolder obj)
+    {
+        return RegisterSessionImpl(out session, sessionHandle, obj);
+    }
+
+    private Result RegisterSessionImpl(out ServerSession session, int sessionHandle, ServiceObjectHolder obj)
+    {
+        Result result = CreateSessionImpl(out session, sessionHandle, obj);
+
+        if (result.IsFailure)
         {
-            return RegisterSession(out _, sessionHandle, obj);
+            return result;
         }
 
-        public Result RegisterSession(out ServerSession session, int sessionHandle, ServiceObjectHolder obj)
+        session.PointerBuffer = GetSessionPointerBuffer(session);
+        session.SavedMessage = GetSessionSavedMessageBuffer(session);
+
+        RegisterSessionToWaitList(session);
+
+        return Result.Success;
+    }
+
+    protected virtual void RegisterSessionToWaitList(ServerSession session)
+    {
+        throw new NotSupportedException();
+    }
+
+    private Result CreateSessionImpl(out ServerSession session, int sessionHandle, ServiceObjectHolder obj)
+    {
+        session = AllocateSession(sessionHandle, obj);
+
+        if (session == null)
         {
-            return RegisterSessionImpl(out session, sessionHandle, obj);
+            return HipcResult.OutOfSessionMemory;
         }
 
-        private Result RegisterSessionImpl(out ServerSession session, int sessionHandle, ServiceObjectHolder obj)
+        return Result.Success;
+    }
+
+    protected virtual ServerSession AllocateSession(int sessionHandle, ServiceObjectHolder obj)
+    {
+        throw new NotSupportedException();
+    }
+
+    protected virtual void FreeSession(ServerSession session)
+    {
+        throw new NotSupportedException();
+    }
+
+    protected virtual Server AllocateServer(
+        int portIndex,
+        int portHandle,
+        ServiceName name,
+        bool managed,
+        ServiceObjectHolder staticHoder)
+    {
+        throw new NotSupportedException();
+    }
+
+    protected virtual void DestroyServer(Server server)
+    {
+        throw new NotSupportedException();
+    }
+
+    protected virtual PointerAndSize GetSessionPointerBuffer(ServerSession session)
+    {
+        throw new NotSupportedException();
+    }
+
+    protected virtual PointerAndSize GetSessionSavedMessageBuffer(ServerSession session)
+    {
+        throw new NotSupportedException();
+    }
+
+    private void DestroySession(ServerSession session)
+    {
+        FreeSession(session);
+    }
+
+    protected void CloseSessionImpl(ServerSession session)
+    {
+        int sessionHandle = session.Handle;
+
+        Os.FinalizeMultiWaitHolder(session);
+        DestroySession(session);
+        HorizonStatic.Syscall.CloseHandle(sessionHandle).AbortOnFailure();
+    }
+
+    private static CommandType GetCmifCommandType(ReadOnlySpan<byte> message)
+    {
+        return MemoryMarshal.Cast<byte, Header>(message)[0].Type;
+    }
+
+    public Result ProcessRequest(ServerSession session, Span<byte> message)
+    {
+        if (session.IsClosed || GetCmifCommandType(message) == CommandType.Close)
         {
-            Result result = CreateSessionImpl(out session, sessionHandle, obj);
-
-            if (result.IsFailure)
-            {
-                return result;
-            }
-
-            session.PointerBuffer = GetSessionPointerBuffer(session);
-            session.SavedMessage = GetSessionSavedMessageBuffer(session);
-
-            RegisterSessionToWaitList(session);
-
-            return Result.Success;
-        }
-
-        protected virtual void RegisterSessionToWaitList(ServerSession session)
-        {
-            throw new NotSupportedException();
-        }
-
-        private Result CreateSessionImpl(out ServerSession session, int sessionHandle, ServiceObjectHolder obj)
-        {
-            session = AllocateSession(sessionHandle, obj);
-
-            if (session == null)
-            {
-                return HipcResult.OutOfSessionMemory;
-            }
-
-            return Result.Success;
-        }
-
-        protected virtual ServerSession AllocateSession(int sessionHandle, ServiceObjectHolder obj)
-        {
-            throw new NotSupportedException();
-        }
-
-        protected virtual void FreeSession(ServerSession session)
-        {
-            throw new NotSupportedException();
-        }
-
-        protected virtual Server AllocateServer(
-            int portIndex,
-            int portHandle,
-            ServiceName name,
-            bool managed,
-            ServiceObjectHolder staticHoder)
-        {
-            throw new NotSupportedException();
-        }
-
-        protected virtual void DestroyServer(Server server)
-        {
-            throw new NotSupportedException();
-        }
-
-        protected virtual PointerAndSize GetSessionPointerBuffer(ServerSession session)
-        {
-            throw new NotSupportedException();
-        }
-
-        protected virtual PointerAndSize GetSessionSavedMessageBuffer(ServerSession session)
-        {
-            throw new NotSupportedException();
-        }
-
-        private void DestroySession(ServerSession session)
-        {
-            FreeSession(session);
-        }
-
-        protected void CloseSessionImpl(ServerSession session)
-        {
-            int sessionHandle = session.Handle;
-
-            Os.FinalizeMultiWaitHolder(session);
-            DestroySession(session);
-            HorizonStatic.Syscall.CloseHandle(sessionHandle).AbortOnFailure();
-        }
-
-        private static CommandType GetCmifCommandType(ReadOnlySpan<byte> message)
-        {
-            return MemoryMarshal.Cast<byte, Header>(message)[0].Type;
-        }
-
-        public Result ProcessRequest(ServerSession session, Span<byte> message)
-        {
-            if (session.IsClosed || GetCmifCommandType(message) == CommandType.Close)
-            {
-                CloseSessionImpl(session);
-
-                return Result.Success;
-            }
-
-            Result result = ProcessRequestImpl(session, message, message);
-
-            if (result.IsSuccess)
-            {
-                RegisterSessionToWaitList(session);
-
-                return Result.Success;
-            }
-            else if (SfResult.RequestContextChanged(result))
-            {
-                return result;
-            }
-
-            LogProcessingError(result);
-
             CloseSessionImpl(session);
 
             return Result.Success;
         }
 
-        [LoggerMessage(LogLevel.Warning,
-            EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
-            Message = "Request processing returned error {result}")]
-        private partial void LogProcessingError(Result result);
+        Result result = ProcessRequestImpl(session, message, message);
 
-        private Result ProcessRequestImpl(ServerSession session, Span<byte> inMessage, Span<byte> outMessage)
+        if (result.IsSuccess)
         {
-            CommandType commandType = GetCmifCommandType(inMessage);
+            RegisterSessionToWaitList(session);
 
-            using var _ = new ScopedInlineContextChange(GetInlineContext(commandType, inMessage));
-
-            return commandType switch
-            {
-                CommandType.Request or CommandType.RequestWithContext => DispatchRequest(session.ServiceObjectHolder, session, inMessage, outMessage),
-                CommandType.Control or CommandType.ControlWithContext => DispatchManagerRequest(session, inMessage, outMessage),
-                _ => HipcResult.UnknownCommandType,
-            };
+            return Result.Success;
+        }
+        else if (SfResult.RequestContextChanged(result))
+        {
+            return result;
         }
 
-        private static int GetInlineContext(CommandType commandType, ReadOnlySpan<byte> inMessage)
+        LogProcessingError(result);
+
+        CloseSessionImpl(session);
+
+        return Result.Success;
+    }
+
+    [LoggerMessage(LogLevel.Warning,
+        EventId = (int)LogClass.KernelIpc, EventName = nameof(LogClass.KernelIpc),
+        Message = "Request processing returned error {result}")]
+    private partial void LogProcessingError(Result result);
+
+    private Result ProcessRequestImpl(ServerSession session, Span<byte> inMessage, Span<byte> outMessage)
+    {
+        CommandType commandType = GetCmifCommandType(inMessage);
+
+        using var _ = new ScopedInlineContextChange(GetInlineContext(commandType, inMessage));
+
+        return commandType switch
         {
-            switch (commandType)
-            {
-                case CommandType.RequestWithContext:
-                case CommandType.ControlWithContext:
-                    if (inMessage.Length >= 0x10)
-                    {
-                        return MemoryMarshal.Cast<byte, int>(inMessage)[3];
-                    }
-                    break;
-            }
+            CommandType.Request or CommandType.RequestWithContext => DispatchRequest(session.ServiceObjectHolder, session, inMessage, outMessage),
+            CommandType.Control or CommandType.ControlWithContext => DispatchManagerRequest(session, inMessage, outMessage),
+            _ => HipcResult.UnknownCommandType,
+        };
+    }
 
-            return 0;
-        }
-
-        protected static Result ReceiveRequest(ServerSession session, Span<byte> message)
+    private static int GetInlineContext(CommandType commandType, ReadOnlySpan<byte> inMessage)
+    {
+        switch (commandType)
         {
-            return ReceiveRequestImpl(session, message);
-        }
-
-        private static Result ReceiveRequestImpl(ServerSession session, Span<byte> message)
-        {
-            PointerAndSize pointerBuffer = session.PointerBuffer;
-
-            while (true)
-            {
-                if (pointerBuffer.Address != 0)
+            case CommandType.RequestWithContext:
+            case CommandType.ControlWithContext:
+                if (inMessage.Length >= 0x10)
                 {
-                    HipcMessageData messageData = HipcMessage.WriteMessage(message, new HipcMetadata
-                    {
-                        Type = (int)CommandType.Invalid,
-                        ReceiveStaticsCount = HipcMessage.AutoReceiveStatic,
-                    });
-
-                    messageData.ReceiveList[0] = new HipcReceiveListEntry(pointerBuffer.Address, pointerBuffer.Size);
+                    return MemoryMarshal.Cast<byte, int>(inMessage)[3];
                 }
-                else
-                {
-                    MemoryMarshal.Cast<byte, Header>(message)[0] = new Header
-                    {
-                        Type = CommandType.Invalid,
-                    };
-                }
-
-                Result result = Api.Receive(out ReceiveResult recvResult, session.Handle, message);
-
-                if (result.IsFailure)
-                {
-                    return result;
-                }
-
-                switch (recvResult)
-                {
-                    case ReceiveResult.Success:
-                        session.IsClosed = false;
-                        return Result.Success;
-                    case ReceiveResult.Closed:
-                        session.IsClosed = true;
-                        return Result.Success;
-                }
-            }
+                break;
         }
 
-        protected virtual Result DispatchManagerRequest(ServerSession session, Span<byte> inMessage, Span<byte> outMessage)
+        return 0;
+    }
+
+    protected static Result ReceiveRequest(ServerSession session, Span<byte> message)
+    {
+        return ReceiveRequestImpl(session, message);
+    }
+
+    private static Result ReceiveRequestImpl(ServerSession session, Span<byte> message)
+    {
+        PointerAndSize pointerBuffer = session.PointerBuffer;
+
+        while (true)
         {
-            return SfResult.NotSupported;
-        }
-
-        protected virtual Result DispatchRequest(
-            ServiceObjectHolder objectHolder,
-            ServerSession session,
-            Span<byte> inMessage,
-            Span<byte> outMessage)
-        {
-            HipcMessage request;
-
-            try
+            if (pointerBuffer.Address != 0)
             {
-                request = new HipcMessage(inMessage);
+                HipcMessageData messageData = HipcMessage.WriteMessage(message, new HipcMetadata
+                {
+                    Type = (int)CommandType.Invalid,
+                    ReceiveStaticsCount = HipcMessage.AutoReceiveStatic,
+                });
+
+                messageData.ReceiveList[0] = new HipcReceiveListEntry(pointerBuffer.Address, pointerBuffer.Size);
             }
-            catch (ArgumentOutOfRangeException)
+            else
             {
-                return HipcResult.InvalidRequestSize;
+                MemoryMarshal.Cast<byte, Header>(message)[0] = new Header
+                {
+                    Type = CommandType.Invalid,
+                };
             }
 
-            var dispatchCtx = new ServiceDispatchContext
-            {
-                ServiceObject = objectHolder.ServiceObject,
-                Manager = this,
-                Session = session,
-                HandlesToClose = new HandlesToClose(),
-                PointerBuffer = session.PointerBuffer,
-                InMessageBuffer = inMessage,
-                OutMessageBuffer = outMessage,
-                Request = request,
-            };
-
-            ReadOnlySpan<byte> inRawData = MemoryMarshal.Cast<uint, byte>(dispatchCtx.Request.Data.DataWords);
-
-            int inRawSize = dispatchCtx.Request.Meta.DataWordsCount * sizeof(uint);
-
-            if (inRawSize < 0x10)
-            {
-                return HipcResult.InvalidRequestSize;
-            }
-
-            Result result = objectHolder.ProcessMessage(ref dispatchCtx, inRawData);
+            Result result = Api.Receive(out ReceiveResult recvResult, session.Handle, message);
 
             if (result.IsFailure)
             {
                 return result;
             }
 
-            result = Api.Reply(session.SessionHandle, outMessage);
-
-            ref var handlesToClose = ref dispatchCtx.HandlesToClose;
-
-            for (int i = 0; i < handlesToClose.Count; i++)
+            switch (recvResult)
             {
-                HorizonStatic.Syscall.CloseHandle(handlesToClose[i]).AbortOnFailure();
+                case ReceiveResult.Success:
+                    session.IsClosed = false;
+                    return Result.Success;
+                case ReceiveResult.Closed:
+                    session.IsClosed = true;
+                    return Result.Success;
             }
+        }
+    }
 
+    protected virtual Result DispatchManagerRequest(ServerSession session, Span<byte> inMessage, Span<byte> outMessage)
+    {
+        return SfResult.NotSupported;
+    }
+
+    protected virtual Result DispatchRequest(
+        ServiceObjectHolder objectHolder,
+        ServerSession session,
+        Span<byte> inMessage,
+        Span<byte> outMessage)
+    {
+        HipcMessage request;
+
+        try
+        {
+            request = new HipcMessage(inMessage);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return HipcResult.InvalidRequestSize;
+        }
+
+        var dispatchCtx = new ServiceDispatchContext
+        {
+            ServiceObject = objectHolder.ServiceObject,
+            Manager = this,
+            Session = session,
+            HandlesToClose = new HandlesToClose(),
+            PointerBuffer = session.PointerBuffer,
+            InMessageBuffer = inMessage,
+            OutMessageBuffer = outMessage,
+            Request = request,
+        };
+
+        ReadOnlySpan<byte> inRawData = MemoryMarshal.Cast<uint, byte>(dispatchCtx.Request.Data.DataWords);
+
+        int inRawSize = dispatchCtx.Request.Meta.DataWordsCount * sizeof(uint);
+
+        if (inRawSize < 0x10)
+        {
+            return HipcResult.InvalidRequestSize;
+        }
+
+        Result result = objectHolder.ProcessMessage(ref dispatchCtx, inRawData);
+
+        if (result.IsFailure)
+        {
             return result;
         }
 
-        public ServerSessionManager GetSessionManagerByTag(uint tag)
+        result = Api.Reply(session.SessionHandle, outMessage);
+
+        ref var handlesToClose = ref dispatchCtx.HandlesToClose;
+
+        for (int i = 0; i < handlesToClose.Count; i++)
         {
-            // Official FW does not do anything with the tag currently.
-            return this;
+            HorizonStatic.Syscall.CloseHandle(handlesToClose[i]).AbortOnFailure();
         }
+
+        return result;
+    }
+
+    public ServerSessionManager GetSessionManagerByTag(uint tag)
+    {
+        // Official FW does not do anything with the tag currently.
+        return this;
     }
 }

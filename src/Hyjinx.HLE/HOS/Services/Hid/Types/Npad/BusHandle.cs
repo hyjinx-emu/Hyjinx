@@ -1,14 +1,13 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+[StructLayout(LayoutKind.Sequential)]
+struct BusHandle
 {
-    [StructLayout(LayoutKind.Sequential)]
-    struct BusHandle
-    {
-        public int AbstractedPadId;
-        public byte InternalIndex;
-        public byte PlayerNumber;
-        public byte BusTypeId;
-        public byte IsValid;
-    }
+    public int AbstractedPadId;
+    public byte InternalIndex;
+    public byte PlayerNumber;
+    public byte BusTypeId;
+    public byte IsValid;
 }

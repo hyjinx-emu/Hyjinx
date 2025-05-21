@@ -1,4 +1,3 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Fs.Impl;
 using LibHac.Fs.Shim;
@@ -8,6 +7,7 @@ using LibHac.FsSrv.Sf;
 using LibHac.FsSrv.Storage;
 using LibHac.FsSystem;
 using LibHac.Sm;
+using System;
 
 namespace LibHac.FsSrv;
 

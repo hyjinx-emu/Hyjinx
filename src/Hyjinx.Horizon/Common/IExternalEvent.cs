@@ -1,10 +1,9 @@
 using System;
 
-namespace Hyjinx.Horizon.Common
+namespace Hyjinx.Horizon.Common;
+
+public interface IExternalEvent
 {
-    public interface IExternalEvent
-    {
-        void Signal();
-        void Clear();
-    }
+    void Signal();
+    void Clear();
 }

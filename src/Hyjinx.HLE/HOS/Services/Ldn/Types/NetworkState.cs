@@ -1,13 +1,12 @@
-namespace Hyjinx.HLE.HOS.Services.Ldn.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.Types;
+
+enum NetworkState
 {
-    enum NetworkState
-    {
-        None,
-        Initialized,
-        AccessPoint,
-        AccessPointCreated,
-        Station,
-        StationConnected,
-        Error,
-    }
+    None,
+    Initialized,
+    AccessPoint,
+    AccessPointCreated,
+    Station,
+    StationConnected,
+    Error,
 }

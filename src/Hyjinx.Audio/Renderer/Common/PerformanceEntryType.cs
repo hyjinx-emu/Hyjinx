@@ -1,11 +1,10 @@
-namespace Hyjinx.Audio.Renderer.Common
+namespace Hyjinx.Audio.Renderer.Common;
+
+public enum PerformanceEntryType : byte
 {
-    public enum PerformanceEntryType : byte
-    {
-        Invalid,
-        Voice,
-        SubMix,
-        FinalMix,
-        Sink,
-    }
+    Invalid,
+    Voice,
+    SubMix,
+    FinalMix,
+    Sink,
 }

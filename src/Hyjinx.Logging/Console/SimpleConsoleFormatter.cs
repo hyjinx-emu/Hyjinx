@@ -3,9 +3,9 @@
 
 using Hyjinx.Logging.Console.Internal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.IO;
-using Microsoft.Extensions.Options;
 
 namespace Hyjinx.Logging.Console;
 
@@ -22,7 +22,7 @@ public sealed class SimpleConsoleFormatter : Formatter<SimpleConsoleFormatterOpt
     {
         _isColoredWriterEnabled = options.CurrentValue.ColorBehavior != LoggerColorBehavior.Disabled;
     }
-    
+
     protected override void WriteCore(string message, LogLevel level, TextWriter textWriter)
     {
         if (_isColoredWriterEnabled)
@@ -46,7 +46,7 @@ public sealed class SimpleConsoleFormatter : Formatter<SimpleConsoleFormatterOpt
         {
             return new ConsoleColors(null);
         }
-        
+
         // We must explicitly set the background color if we are setting the foreground color,
         // since just setting one can look bad on the users console.
         return logLevel switch

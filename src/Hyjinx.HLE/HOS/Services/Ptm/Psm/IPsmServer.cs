@@ -1,45 +1,44 @@
 using Hyjinx.Logging.Abstractions;
 
-namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
+namespace Hyjinx.HLE.HOS.Services.Ptm.Psm;
+
+[Service("psm")]
+class IPsmServer : IpcService<IPsmServer>
 {
-    [Service("psm")]
-    class IPsmServer : IpcService<IPsmServer>
+    public IPsmServer(ServiceCtx context) { }
+
+    [CommandCmif(0)]
+    // GetBatteryChargePercentage() -> u32
+    public static ResultCode GetBatteryChargePercentage(ServiceCtx context)
     {
-        public IPsmServer(ServiceCtx context) { }
+        int chargePercentage = 100;
 
-        [CommandCmif(0)]
-        // GetBatteryChargePercentage() -> u32
-        public static ResultCode GetBatteryChargePercentage(ServiceCtx context)
-        {
-            int chargePercentage = 100;
+        context.ResponseData.Write(chargePercentage);
 
-            context.ResponseData.Write(chargePercentage);
+        // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargePercentage });
 
-            // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargePercentage });
+        return ResultCode.Success;
+    }
 
-            return ResultCode.Success;
-        }
+    [CommandCmif(1)]
+    // GetChargerType() -> u32
+    public static ResultCode GetChargerType(ServiceCtx context)
+    {
+        ChargerType chargerType = ChargerType.ChargerOrDock;
 
-        [CommandCmif(1)]
-        // GetChargerType() -> u32
-        public static ResultCode GetChargerType(ServiceCtx context)
-        {
-            ChargerType chargerType = ChargerType.ChargerOrDock;
+        context.ResponseData.Write((int)chargerType);
 
-            context.ResponseData.Write((int)chargerType);
+        // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargerType });
 
-            // Logger.Stub?.PrintStub(LogClass.ServicePsm, new { chargerType });
+        return ResultCode.Success;
+    }
 
-            return ResultCode.Success;
-        }
+    [CommandCmif(7)]
+    // OpenSession() -> IPsmSession
+    public ResultCode OpenSession(ServiceCtx context)
+    {
+        MakeObject(context, new IPsmSession(context.Device.System));
 
-        [CommandCmif(7)]
-        // OpenSession() -> IPsmSession
-        public ResultCode OpenSession(ServiceCtx context)
-        {
-            MakeObject(context, new IPsmSession(context.Device.System));
-
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

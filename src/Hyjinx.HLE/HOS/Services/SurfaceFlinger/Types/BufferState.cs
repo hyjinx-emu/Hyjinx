@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+
+internal enum BufferState
 {
-    internal enum BufferState
-    {
-        Free = 0,
-        Dequeued = 1,
-        Queued = 2,
-        Acquired = 3,
-    }
+    Free = 0,
+    Dequeued = 1,
+    Queued = 2,
+    Acquired = 3,
 }

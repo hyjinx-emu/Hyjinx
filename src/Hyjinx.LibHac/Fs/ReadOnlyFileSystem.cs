@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Fs;
 
@@ -98,7 +98,8 @@ public class ReadOnlyFileSystem : IFileSystem
 
         using var baseFile = new UniqueRef<IFile>();
         Result res = _baseFileSystem.Get.OpenFile(ref baseFile.Ref, in path, mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outFile.Reset(new ReadOnlyFile(ref baseFile.Ref));
         return Result.Success;

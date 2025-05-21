@@ -1,9 +1,8 @@
 using System;
 
-namespace Hyjinx.HLE.Exceptions
+namespace Hyjinx.HLE.Exceptions;
+
+public class InvalidNpdmException : Exception
 {
-    public class InvalidNpdmException : Exception
-    {
-        public InvalidNpdmException(string message) : base(message) { }
-    }
+    public InvalidNpdmException(string message) : base(message) { }
 }

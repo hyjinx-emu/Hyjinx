@@ -2,22 +2,21 @@ using Hyjinx.Graphics.GAL;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Graphics.OpenGL
+namespace Hyjinx.Graphics.OpenGL;
+
+static class Handle
 {
-    static class Handle
+    public static T FromInt32<T>(int handle) where T : unmanaged
     {
-        public static T FromInt32<T>(int handle) where T : unmanaged
-        {
-            Debug.Assert(Unsafe.SizeOf<T>() == sizeof(ulong));
+        Debug.Assert(Unsafe.SizeOf<T>() == sizeof(ulong));
 
-            ulong handle64 = (uint)handle;
+        ulong handle64 = (uint)handle;
 
-            return Unsafe.As<ulong, T>(ref handle64);
-        }
+        return Unsafe.As<ulong, T>(ref handle64);
+    }
 
-        public static int ToInt32(this BufferHandle handle)
-        {
-            return (int)Unsafe.As<BufferHandle, ulong>(ref handle);
-        }
+    public static int ToInt32(this BufferHandle handle)
+    {
+        return (int)Unsafe.As<BufferHandle, ulong>(ref handle);
     }
 }

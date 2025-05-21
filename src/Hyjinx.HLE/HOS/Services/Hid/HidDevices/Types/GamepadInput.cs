@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public struct GamepadInput
 {
-    public struct GamepadInput
-    {
-        public PlayerIndex PlayerId;
-        public ControllerKeys Buttons;
-        public JoystickPosition LStick;
-        public JoystickPosition RStick;
-    }
+    public PlayerIndex PlayerId;
+    public ControllerKeys Buttons;
+    public JoystickPosition LStick;
+    public JoystickPosition RStick;
 }

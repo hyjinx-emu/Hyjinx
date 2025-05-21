@@ -1,4 +1,4 @@
-﻿using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.Exceptions;
 using LibHac.FsSystem;
 using System.IO;
 
@@ -16,7 +16,7 @@ public class DirectoryFirmwareInstaller(VirtualFileSystem virtualFileSystem) : P
         {
             throw new DirectoryNotFoundException("The directory does not exist.");
         }
-        
+
         InstallFromPartition(new LocalFileSystem(source), destination.FullName);
     }
 
@@ -26,7 +26,7 @@ public class DirectoryFirmwareInstaller(VirtualFileSystem virtualFileSystem) : P
         {
             throw new DirectoryNotFoundException("The directory does not exist.");
         }
-        
+
         var result = VerifyAndGetVersion(new LocalFileSystem(source));
         if (result == null)
         {

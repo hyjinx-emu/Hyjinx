@@ -1,4 +1,4 @@
-﻿namespace LibHac.Bcat;
+namespace LibHac.Bcat;
 
 public enum BcatServiceType
 {

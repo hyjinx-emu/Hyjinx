@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy.Types
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy.Types;
+
+enum AlbumReportOption
 {
-    enum AlbumReportOption
-    {
-        OverlayNotDisplayed,
-        OverlayDisplayed,
-        Unknown2,
-        Unknown3,
-    }
+    OverlayNotDisplayed,
+    OverlayDisplayed,
+    Unknown2,
+    Unknown3,
 }

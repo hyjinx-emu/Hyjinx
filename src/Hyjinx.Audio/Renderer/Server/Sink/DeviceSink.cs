@@ -7,69 +7,68 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Audio.Renderer.Server.Sink
+namespace Hyjinx.Audio.Renderer.Server.Sink;
+
+/// <summary>
+/// Server information for a device sink.
+/// </summary>
+public class DeviceSink : BaseSink
 {
     /// <summary>
-    /// Server information for a device sink.
+    /// The downmix coefficients.
     /// </summary>
-    public class DeviceSink : BaseSink
+    public float[] DownMixCoefficients;
+
+    /// <summary>
+    /// The device parameters.
+    /// </summary>
+    public DeviceParameter Parameter;
+
+    /// <summary>
+    /// The upsampler instance used by this sink.
+    /// </summary>
+    /// <remarks>Null if no upsampling is needed.</remarks>
+    public UpsamplerState UpsamplerState;
+
+    /// <summary>
+    /// Create a new <see cref="DeviceSink"/>.
+    /// </summary>
+    public DeviceSink()
     {
-        /// <summary>
-        /// The downmix coefficients.
-        /// </summary>
-        public float[] DownMixCoefficients;
+        DownMixCoefficients = new float[4];
+    }
 
-        /// <summary>
-        /// The device parameters.
-        /// </summary>
-        public DeviceParameter Parameter;
+    public override void CleanUp()
+    {
+        UpsamplerState?.Release();
 
-        /// <summary>
-        /// The upsampler instance used by this sink.
-        /// </summary>
-        /// <remarks>Null if no upsampling is needed.</remarks>
-        public UpsamplerState UpsamplerState;
+        UpsamplerState = null;
 
-        /// <summary>
-        /// Create a new <see cref="DeviceSink"/>.
-        /// </summary>
-        public DeviceSink()
+        base.CleanUp();
+    }
+
+    public override SinkType TargetSinkType => SinkType.Device;
+
+    public override void Update(out BehaviourParameter.ErrorInfo errorInfo, in SinkInParameter parameter, ref SinkOutStatus outStatus, PoolMapper mapper)
+    {
+        Debug.Assert(IsTypeValid(in parameter));
+
+        ref DeviceParameter inputDeviceParameter = ref MemoryMarshal.Cast<byte, DeviceParameter>(parameter.SpecificData)[0];
+
+        if (parameter.IsUsed != IsUsed)
         {
-            DownMixCoefficients = new float[4];
+            UpdateStandardParameter(in parameter);
+            Parameter = inputDeviceParameter;
+        }
+        else
+        {
+            Parameter.DownMixParameterEnabled = inputDeviceParameter.DownMixParameterEnabled;
+            inputDeviceParameter.DownMixParameter.AsSpan().CopyTo(Parameter.DownMixParameter.AsSpan());
         }
 
-        public override void CleanUp()
-        {
-            UpsamplerState?.Release();
+        Parameter.DownMixParameter.AsSpan().CopyTo(DownMixCoefficients.AsSpan());
 
-            UpsamplerState = null;
-
-            base.CleanUp();
-        }
-
-        public override SinkType TargetSinkType => SinkType.Device;
-
-        public override void Update(out BehaviourParameter.ErrorInfo errorInfo, in SinkInParameter parameter, ref SinkOutStatus outStatus, PoolMapper mapper)
-        {
-            Debug.Assert(IsTypeValid(in parameter));
-
-            ref DeviceParameter inputDeviceParameter = ref MemoryMarshal.Cast<byte, DeviceParameter>(parameter.SpecificData)[0];
-
-            if (parameter.IsUsed != IsUsed)
-            {
-                UpdateStandardParameter(in parameter);
-                Parameter = inputDeviceParameter;
-            }
-            else
-            {
-                Parameter.DownMixParameterEnabled = inputDeviceParameter.DownMixParameterEnabled;
-                inputDeviceParameter.DownMixParameter.AsSpan().CopyTo(Parameter.DownMixParameter.AsSpan());
-            }
-
-            Parameter.DownMixParameter.AsSpan().CopyTo(DownMixCoefficients.AsSpan());
-
-            errorInfo = new BehaviourParameter.ErrorInfo();
-            outStatus = new SinkOutStatus();
-        }
+        errorInfo = new BehaviourParameter.ErrorInfo();
+        outStatus = new SinkOutStatus();
     }
 }

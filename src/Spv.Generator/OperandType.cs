@@ -1,10 +1,9 @@
-namespace Spv.Generator
+namespace Spv.Generator;
+
+public enum OperandType
 {
-    public enum OperandType
-    {
-        Invalid,
-        Number,
-        String,
-        Instruction,
-    }
+    Invalid,
+    Number,
+    String,
+    Instruction,
 }

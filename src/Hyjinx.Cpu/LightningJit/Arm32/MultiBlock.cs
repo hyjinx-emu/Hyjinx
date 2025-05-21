@@ -1,34 +1,33 @@
 using System.Collections.Generic;
 
-namespace Hyjinx.Cpu.LightningJit.Arm32
+namespace Hyjinx.Cpu.LightningJit.Arm32;
+
+class MultiBlock
 {
-    class MultiBlock
+    public readonly List<Block> Blocks;
+    public readonly bool HasHostCall;
+    public readonly bool HasHostCallSkipContext;
+    public readonly bool IsTruncated;
+
+    public MultiBlock(List<Block> blocks)
     {
-        public readonly List<Block> Blocks;
-        public readonly bool HasHostCall;
-        public readonly bool HasHostCallSkipContext;
-        public readonly bool IsTruncated;
+        Blocks = blocks;
 
-        public MultiBlock(List<Block> blocks)
+        Block block = blocks[0];
+
+        HasHostCall = block.HasHostCall;
+        HasHostCallSkipContext = block.HasHostCallSkipContext;
+
+        for (int index = 1; index < blocks.Count; index++)
         {
-            Blocks = blocks;
+            block = blocks[index];
 
-            Block block = blocks[0];
-
-            HasHostCall = block.HasHostCall;
-            HasHostCallSkipContext = block.HasHostCallSkipContext;
-
-            for (int index = 1; index < blocks.Count; index++)
-            {
-                block = blocks[index];
-
-                HasHostCall |= block.HasHostCall;
-                HasHostCallSkipContext |= block.HasHostCallSkipContext;
-            }
-
-            block = blocks[^1];
-
-            IsTruncated = block.IsTruncated;
+            HasHostCall |= block.HasHostCall;
+            HasHostCallSkipContext |= block.HasHostCallSkipContext;
         }
+
+        block = blocks[^1];
+
+        IsTruncated = block.IsTruncated;
     }
 }

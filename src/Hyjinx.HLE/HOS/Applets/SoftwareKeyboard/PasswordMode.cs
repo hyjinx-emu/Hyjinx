@@ -1,18 +1,17 @@
-namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
+
+/// <summary>
+/// Identifies the display mode of text in a password field.
+/// </summary>
+enum PasswordMode : uint
 {
     /// <summary>
-    /// Identifies the display mode of text in a password field.
+    /// Display input characters.
     /// </summary>
-    enum PasswordMode : uint
-    {
-        /// <summary>
-        /// Display input characters.
-        /// </summary>
-        Disabled,
+    Disabled,
 
-        /// <summary>
-        /// Hide input characters.
-        /// </summary>
-        Enabled,
-    }
+    /// <summary>
+    /// Hide input characters.
+    /// </summary>
+    Enabled,
 }

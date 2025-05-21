@@ -1,7 +1,7 @@
-﻿using System;
+using LibHac.Diag;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.Diag;
 
 namespace LibHac.Fs;
 
@@ -37,7 +37,8 @@ public class MemoryStorage : IStorage
             return Result.Success;
 
         Result res = CheckAccessRange(offset, destination.Length, _size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _buffer.AsSpan((int)offset, destination.Length).CopyTo(destination);
 
@@ -50,7 +51,8 @@ public class MemoryStorage : IStorage
             return Result.Success;
 
         Result res = CheckAccessRange(offset, source.Length, _size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         source.CopyTo(_buffer.AsSpan((int)offset));
 

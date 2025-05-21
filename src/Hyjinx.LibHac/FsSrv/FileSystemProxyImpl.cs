@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Impl;
 using LibHac.FsSrv.Sf;
@@ -7,12 +7,12 @@ using LibHac.Ncm;
 using LibHac.Sf;
 using LibHac.Spl;
 using LibHac.Util;
+using static LibHac.Fs.StringTraits;
+using IFileSf = LibHac.FsSrv.Sf.IFile;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
-using IFileSf = LibHac.FsSrv.Sf.IFile;
 using IStorageSf = LibHac.FsSrv.Sf.IStorage;
 using Path = LibHac.Fs.Path;
-using static LibHac.Fs.StringTraits;
 
 namespace LibHac.FsSrv;
 
@@ -157,7 +157,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         ulong id, FileSystemProxyType fsType)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenFileSystemWithId(ref outFileSystem, in path, id, fsType);
     }
@@ -166,7 +167,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         ProgramId programId, FileSystemProxyType fsType)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenFileSystemWithPatch(ref outFileSystem, programId, fsType);
     }
@@ -177,7 +179,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out verificationData);
 
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenCodeFileSystem(ref fileSystem, out verificationData, in path, programId);
     }
@@ -203,7 +206,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out freeSpaceSize);
 
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.GetFreeSpaceSizeForSaveData(out freeSpaceSize, spaceId);
     }
@@ -211,7 +215,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result OpenDataFileSystemByCurrentProcess(ref SharedRef<IFileSystemSf> outFileSystem)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenDataFileSystemByCurrentProcess(ref outFileSystem);
     }
@@ -220,7 +225,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         ProgramId programId)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenDataFileSystemByProgramId(ref outFileSystem, programId);
     }
@@ -228,7 +234,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result OpenDataStorageByCurrentProcess(ref SharedRef<IStorageSf> outStorage)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenDataStorageByCurrentProcess(ref outStorage);
     }
@@ -237,7 +244,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         ProgramId programId)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenDataStorageByProgramId(ref outStorage, programId);
     }
@@ -246,7 +254,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         StorageId storageId)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenDataStorageByDataId(ref outStorage, dataId, storageId);
     }
@@ -255,7 +264,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         FileSystemProxyType fsType)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenDataStorageByPath(ref outFileSystem, in path, fsType);
     }
@@ -269,7 +279,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         byte programIndex)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenDataFileSystemWithProgramIndex(ref outFileSystem, programIndex);
     }
@@ -278,7 +289,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         byte programIndex)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenDataStorageWithProgramIndex(ref outStorage, programIndex);
     }
@@ -286,7 +298,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result RegisterSaveDataFileSystemAtomicDeletion(InBuffer saveDataIds)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.RegisterSaveDataFileSystemAtomicDeletion(saveDataIds);
     }
@@ -294,7 +307,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result DeleteSaveDataFileSystem(ulong saveDataId)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.DeleteSaveDataFileSystem(saveDataId);
     }
@@ -302,7 +316,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result DeleteSaveDataFileSystemBySaveDataSpaceId(SaveDataSpaceId spaceId, ulong saveDataId)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.DeleteSaveDataFileSystemBySaveDataSpaceId(spaceId, saveDataId);
     }
@@ -311,7 +326,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         in SaveDataAttribute attribute)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.DeleteSaveDataFileSystemBySaveDataAttribute(spaceId, in attribute);
     }
@@ -319,7 +335,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result UpdateSaveDataMacForDebug(SaveDataSpaceId spaceId, ulong saveDataId)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.UpdateSaveDataMacForDebug(spaceId, saveDataId);
     }
@@ -328,7 +345,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         in SaveDataMetaInfo metaInfo)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.CreateSaveDataFileSystem(in attribute, in creationInfo, in metaInfo);
     }
@@ -337,7 +355,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         in SaveDataCreationInfo creationInfo, in SaveDataMetaInfo metaInfo, in HashSalt hashSalt)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.CreateSaveDataFileSystemWithHashSalt(in attribute, in creationInfo, in metaInfo,
             in hashSalt);
@@ -347,7 +366,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         in SaveDataCreationInfo creationInfo)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.CreateSaveDataFileSystemBySystemSaveDataId(in attribute, in creationInfo);
     }
@@ -355,7 +375,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result CreateSaveDataFileSystemWithCreationInfo2(in SaveDataCreationInfo2 creationInfo)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.CreateSaveDataFileSystemWithCreationInfo2(in creationInfo);
     }
@@ -364,7 +385,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         long journalSize)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.ExtendSaveDataFileSystem(spaceId, saveDataId, dataSize, journalSize);
     }
@@ -373,7 +395,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         in SaveDataAttribute attribute)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataFileSystem(ref outFileSystem, spaceId, in attribute);
     }
@@ -382,7 +405,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         SaveDataSpaceId spaceId, in SaveDataAttribute attribute)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenReadOnlySaveDataFileSystem(ref outFileSystem, spaceId, in attribute);
     }
@@ -391,7 +415,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         SaveDataSpaceId spaceId, in SaveDataAttribute attribute)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataFileSystemBySystemSaveDataId(ref outFileSystem, spaceId, in attribute);
     }
@@ -399,7 +424,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result ReadSaveDataFileSystemExtraData(OutBuffer extraDataBuffer, ulong saveDataId)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.ReadSaveDataFileSystemExtraData(extraDataBuffer, saveDataId);
     }
@@ -408,7 +434,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         SaveDataSpaceId spaceId, in SaveDataAttribute attribute)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.ReadSaveDataFileSystemExtraDataBySaveDataAttribute(extraDataBuffer, spaceId,
             in attribute);
@@ -418,7 +445,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         SaveDataSpaceId spaceId, in SaveDataAttribute attribute, InBuffer maskBuffer)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.ReadSaveDataFileSystemExtraDataWithMaskBySaveDataAttribute(extraDataBuffer, spaceId,
             in attribute, maskBuffer);
@@ -428,7 +456,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         SaveDataSpaceId spaceId, ulong saveDataId)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.ReadSaveDataFileSystemExtraDataBySaveDataSpaceId(extraDataBuffer, spaceId, saveDataId);
     }
@@ -437,7 +466,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         InBuffer extraDataBuffer)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.WriteSaveDataFileSystemExtraData(saveDataId, spaceId, extraDataBuffer);
     }
@@ -446,7 +476,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         SaveDataSpaceId spaceId, InBuffer extraDataBuffer, InBuffer maskBuffer)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.WriteSaveDataFileSystemExtraDataWithMaskBySaveDataAttribute(in attribute, spaceId,
             extraDataBuffer, maskBuffer);
@@ -456,7 +487,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         InBuffer extraDataBuffer, InBuffer maskBuffer)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.WriteSaveDataFileSystemExtraDataWithMask(saveDataId, spaceId, extraDataBuffer,
             maskBuffer);
@@ -503,7 +535,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         in FspPath path, MountHostOption option)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Accessibility accessibility = programInfo.AccessControl.GetAccessibilityFor(AccessibilityType.MountHost);
 
@@ -516,12 +549,14 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         if (path.Str.At(0) == DirectorySeparator && path.Str.At(1) != DirectorySeparator)
         {
             res = pathNormalized.Initialize(path.Str.Slice(1));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         else
         {
             res = pathNormalized.InitializeWithReplaceUnc(path.Str);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         var flags = new PathFlags();
@@ -530,12 +565,14 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         flags.AllowEmptyPath();
 
         res = pathNormalized.Normalize(flags);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         bool isCaseSensitive = option.Flags.HasFlag(MountHostOptionFlag.PseudoCaseSensitive);
 
         res = _fsProxyCore.OpenHostFileSystem(ref hostFileSystem.Ref, in pathNormalized, isCaseSensitive);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var adapterFlags = new PathFlags();
         if (path.Str.At(0) == NullTerminator)
@@ -598,7 +635,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result OpenSystemDataUpdateEventNotifier(ref SharedRef<IEventNotifier> outEventNotifier)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenSystemDataUpdateEventNotifier(ref outEventNotifier);
     }
@@ -606,7 +644,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result NotifySystemDataUpdateEvent()
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.NotifySystemDataUpdateEvent();
     }
@@ -614,7 +653,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result OpenSaveDataInfoReader(ref SharedRef<ISaveDataInfoReader> outInfoReader)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataInfoReader(ref outInfoReader);
     }
@@ -623,7 +663,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         ref SharedRef<ISaveDataInfoReader> outInfoReader, SaveDataSpaceId spaceId)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataInfoReaderBySaveDataSpaceId(ref outInfoReader, spaceId);
     }
@@ -632,7 +673,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         SaveDataSpaceId spaceId, in SaveDataFilter filter)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataInfoReaderWithFilter(ref outInfoReader, spaceId, in filter);
     }
@@ -643,7 +685,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out count);
 
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.FindSaveDataWithFilter(out count, saveDataInfoBuffer, spaceId, in filter);
     }
@@ -652,7 +695,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         SaveDataSpaceId spaceId, ulong saveDataId)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataInternalStorageFileSystem(ref outFileSystem, spaceId, saveDataId);
     }
@@ -662,7 +706,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out size);
 
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.QuerySaveDataInternalStorageTotalSize(out size, spaceId, saveDataId);
     }
@@ -672,7 +717,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out commitId);
 
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.GetSaveDataCommitId(out commitId, spaceId, saveDataId);
     }
@@ -680,7 +726,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result OpenSaveDataInfoReaderOnlyCacheStorage(ref SharedRef<ISaveDataInfoReader> outInfoReader)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataInfoReaderOnlyCacheStorage(ref outInfoReader);
     }
@@ -689,7 +736,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         in SaveDataAttribute attribute, SaveDataMetaType type)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataMetaFile(ref outFile, spaceId, in attribute, type);
     }
@@ -697,7 +745,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result DeleteCacheStorage(ushort index)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.DeleteCacheStorage(index);
     }
@@ -707,7 +756,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out dataSize, out journalSize);
 
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.GetCacheStorageSize(out dataSize, out journalSize, index);
     }
@@ -715,7 +765,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result OpenSaveDataTransferManager(ref SharedRef<ISaveDataTransferManager> outTransferManager)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataTransferManager(ref outTransferManager);
     }
@@ -724,7 +775,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         ref SharedRef<ISaveDataTransferManagerWithDivision> outTransferManager)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataTransferManagerVersion2(ref outTransferManager);
     }
@@ -733,7 +785,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         ref SharedRef<ISaveDataTransferManagerForSaveDataRepair> outTransferManager)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataTransferManagerForSaveDataRepair(ref outTransferManager);
     }
@@ -742,7 +795,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         ref SharedRef<ISaveDataTransferManagerForRepair> outTransferManager)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataTransferManagerForRepair(ref outTransferManager);
     }
@@ -751,7 +805,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         Ncm.ApplicationId applicationId)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataTransferProhibiter(ref outProhibiter, applicationId);
     }
@@ -762,7 +817,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out readCount);
 
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.ListAccessibleSaveDataOwnerId(out readCount, idBuffer, programId, startIndex,
             bufferIdCount);
@@ -772,7 +828,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         SaveDataSpaceId destinationSpaceId, NativeHandle workBufferHandle, ulong workBufferSize)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenSaveDataMover(ref outSaveDataMover, sourceSpaceId, destinationSpaceId,
             workBufferHandle, workBufferSize);
@@ -786,7 +843,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result SetSaveDataRootPath(in FspPath path)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.SetSaveDataRootPath(in path);
     }
@@ -794,7 +852,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result UnsetSaveDataRootPath()
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.UnsetSaveDataRootPath();
     }
@@ -803,7 +862,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         ContentStorageId storageId)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenContentStorageFileSystem(ref outFileSystem, storageId);
     }
@@ -815,7 +875,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         using var scopedContext = new ScopedStorageLayoutTypeSetter(storageFlag);
 
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Accessibility accessibility =
             programInfo.AccessControl.GetAccessibilityFor(AccessibilityType.MountCloudBackupWorkStorage);
@@ -825,7 +886,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
 
         using var fileSystem = new SharedRef<IFileSystem>();
         res = _fsProxyCore.OpenCloudBackupWorkStorageFileSystem(ref fileSystem.Ref, storageId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Add all the wrappers for the file system
         using var typeSetFileSystem =
@@ -848,7 +910,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         using var scopedContext = new ScopedStorageLayoutTypeSetter(storageFlag);
 
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         AccessibilityType accessType = storageId > CustomStorageId.SdCard
             ? AccessibilityType.NotMount
@@ -861,7 +924,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
 
         using var fileSystem = new SharedRef<IFileSystem>();
         res = _fsProxyCore.OpenCustomStorageFileSystem(ref fileSystem.Ref, storageId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Add all the file system wrappers
         using var typeSetFileSystem =
@@ -889,7 +953,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out isArchived);
 
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.IsArchivedProgram(out isArchived, processId);
     }
@@ -899,7 +964,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out totalSize);
 
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.QuerySaveDataTotalSize(out totalSize, dataSize, journalSize);
     }
@@ -914,7 +980,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out rightsId);
 
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.GetRightsId(out rightsId, programId, storageId);
     }
@@ -929,7 +996,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out rightsId, out keyGeneration);
 
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.GetRightsIdAndKeyGenerationByPath(out rightsId, out keyGeneration, in path);
     }
@@ -937,7 +1005,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result RegisterExternalKey(in RightsId rightsId, in AccessKey externalKey)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.RegisterExternalKey(in rightsId, in externalKey);
     }
@@ -945,7 +1014,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result UnregisterExternalKey(in RightsId rightsId)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.UnregisterExternalKey(in rightsId);
     }
@@ -953,7 +1023,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result UnregisterAllExternalKey()
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.UnregisterAllExternalKey();
     }
@@ -961,22 +1032,27 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result SetSdCardEncryptionSeed(in EncryptionSeed seed)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.SetEncryptionSeed))
             return ResultFs.PermissionDenied.Log();
 
         res = _fsProxyCore.SetSdCardEncryptionSeed(in seed);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = saveFsService.SetSdCardEncryptionSeed(in seed);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.SetSdCardEncryptionSeed(in seed);
     }
@@ -1001,7 +1077,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         OutBuffer readBuffer)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.VerifySaveDataFileSystemBySaveDataSpaceId(spaceId, saveDataId, readBuffer);
     }
@@ -1014,7 +1091,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result CorruptSaveDataFileSystemByOffset(SaveDataSpaceId spaceId, ulong saveDataId, long offset)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.CorruptSaveDataFileSystemByOffset(spaceId, saveDataId, offset);
     }
@@ -1023,7 +1101,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     {
         // Corrupt both of the save data headers
         Result res = CorruptSaveDataFileSystemByOffset(spaceId, saveDataId, 0);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return CorruptSaveDataFileSystemByOffset(spaceId, saveDataId, 0x4000);
     }
@@ -1086,7 +1165,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result RegisterUpdatePartition()
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.RegisterUpdatePartition();
     }
@@ -1094,7 +1174,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result OpenRegisteredUpdatePartition(ref SharedRef<IFileSystemSf> outFileSystem)
     {
         Result res = GetNcaFileSystemService(out NcaFileSystemService ncaFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return ncaFsService.OpenRegisteredUpdatePartition(ref outFileSystem);
     }
@@ -1112,7 +1193,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result OverrideSaveDataTransferTokenSignVerificationKey(InBuffer key)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OverrideSaveDataTransferTokenSignVerificationKey(key);
     }
@@ -1120,7 +1202,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result SetSdCardAccessibility(bool isAccessible)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.SetSdCardAccessibility(isAccessible);
     }
@@ -1130,7 +1213,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
         UnsafeHelpers.SkipParamInit(out isAccessible);
 
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.IsSdCardAccessible(out isAccessible);
     }
@@ -1165,7 +1249,8 @@ public class FileSystemProxyImpl : IFileSystemProxy, IFileSystemProxyForLoader
     public Result OpenMultiCommitManager(ref SharedRef<IMultiCommitManager> outCommitManager)
     {
         Result res = GetSaveDataFileSystemService(out SaveDataFileSystemService saveFsService);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return saveFsService.OpenMultiCommitManager(ref outCommitManager);
     }

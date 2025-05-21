@@ -1,6 +1,3 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Diag;
@@ -8,6 +5,9 @@ using LibHac.Fs;
 using LibHac.FsSystem.Impl;
 using LibHac.Mem;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Buffer = LibHac.Mem.Buffer;
 
 namespace LibHac.FsSystem
@@ -114,7 +114,8 @@ namespace LibHac.FsSystem
 
             // Read the header.
             Result res = baseStorage.Read(offset: 0, metaSpan);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Set and validate the header.
             // Get the section of the buffer that contains the header.
@@ -126,7 +127,8 @@ namespace LibHac.FsSystem
                 return ResultFs.PartitionSignatureVerificationFailed.Log();
 
             res = QueryMetaDataSize(out MetaDataSize, in header);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             int entriesSize = header.EntryCount * Unsafe.SizeOf<TEntry>();
 
@@ -145,7 +147,8 @@ namespace LibHac.FsSystem
             // Read entries and name table.
             Span<byte> destSpan = metaSpan.Slice(Unsafe.SizeOf<THeader>(), entriesSize + header.NameTableSize);
             res = baseStorage.Read(Unsafe.SizeOf<THeader>(), destSpan);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Mark as initialized.
             IsInitialized = true;
@@ -158,7 +161,8 @@ namespace LibHac.FsSystem
 
             // Determine the meta data size.
             Result res = QueryMetaDataSize(out MetaDataSize, baseStorage);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Deallocate any old meta buffer and allocate a new one.
             DeallocateBuffer();
@@ -169,7 +173,8 @@ namespace LibHac.FsSystem
 
             // Perform regular initialization.
             res = Initialize(baseStorage, MetaDataBuffer, (int)MetaDataSize);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -188,10 +193,12 @@ namespace LibHac.FsSystem
 
             Unsafe.SkipInit(out THeader header);
             Result res = storage.Read(0, SpanHelpers.AsByteSpan(ref header));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = QueryMetaDataSize(out outSize, in header);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -296,7 +303,8 @@ namespace LibHac.FsSystem
         public Result Initialize(IStorage baseStorage, MemoryResource allocator, ReadOnlySpan<byte> hash)
         {
             Result res = Initialize(baseStorage, allocator, hash, salt: default);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -307,7 +315,8 @@ namespace LibHac.FsSystem
                 return ResultFs.PreconditionViolation.Log();
 
             Result res = QueryMetaDataSize(out MetaDataSize, baseStorage);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             DeallocateBuffer();
             Allocator = allocator;
@@ -318,7 +327,8 @@ namespace LibHac.FsSystem
             Span<byte> metaDataSpan = MetaDataBuffer.Span.Slice(0, (int)MetaDataSize);
 
             res = baseStorage.Read(offset: 0, metaDataSpan);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             Span<byte> hashBuffer = stackalloc byte[Sha256Generator.HashSize];
             var generator = new Sha256Generator();
@@ -362,5 +372,6 @@ namespace LibHac.FsSystem
     /// </summary>
     /// <remarks>Based on nnSdk 16.2.0 (FS 16.0.0)</remarks>
     public class PartitionFileSystemMeta : PartitionFileSystemMetaCore<PartitionFileSystemFormat,
-        PartitionFileSystemFormat.PartitionFileSystemHeaderImpl, PartitionFileSystemFormat.PartitionEntry> { }
+        PartitionFileSystemFormat.PartitionFileSystemHeaderImpl, PartitionFileSystemFormat.PartitionEntry>
+    { }
 }

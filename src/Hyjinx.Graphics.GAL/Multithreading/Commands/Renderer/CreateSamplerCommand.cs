@@ -1,23 +1,22 @@
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 using Hyjinx.Graphics.GAL.Multithreading.Resources;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer;
+
+struct CreateSamplerCommand : IGALCommand, IGALCommand<CreateSamplerCommand>
 {
-    struct CreateSamplerCommand : IGALCommand, IGALCommand<CreateSamplerCommand>
+    public readonly CommandType CommandType => CommandType.CreateSampler;
+    private TableRef<ThreadedSampler> _sampler;
+    private SamplerCreateInfo _info;
+
+    public void Set(TableRef<ThreadedSampler> sampler, SamplerCreateInfo info)
     {
-        public readonly CommandType CommandType => CommandType.CreateSampler;
-        private TableRef<ThreadedSampler> _sampler;
-        private SamplerCreateInfo _info;
+        _sampler = sampler;
+        _info = info;
+    }
 
-        public void Set(TableRef<ThreadedSampler> sampler, SamplerCreateInfo info)
-        {
-            _sampler = sampler;
-            _info = info;
-        }
-
-        public static void Run(ref CreateSamplerCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            command._sampler.Get(threaded).Base = renderer.CreateSampler(command._info);
-        }
+    public static void Run(ref CreateSamplerCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        command._sampler.Get(threaded).Base = renderer.CreateSampler(command._info);
     }
 }

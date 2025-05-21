@@ -1,10 +1,9 @@
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+static partial class Os
 {
-    static partial class Os
+    public static int GetCurrentThreadHandle()
     {
-        public static int GetCurrentThreadHandle()
-        {
-            return HorizonStatic.CurrentThreadHandle;
-        }
+        return HorizonStatic.CurrentThreadHandle;
     }
 }

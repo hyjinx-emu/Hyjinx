@@ -4,185 +4,184 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.Cpu.AppleHv
+namespace Hyjinx.Cpu.AppleHv;
+
+[SupportedOSPlatform("macos")]
+class HvExecutionContextVcpu : IHvExecutionContext
 {
-    [SupportedOSPlatform("macos")]
-    class HvExecutionContextVcpu : IHvExecutionContext
+    private static readonly MemoryBlock _setSimdFpRegFuncMem;
+    private delegate HvResult SetSimdFpReg(ulong vcpu, HvSimdFPReg reg, in V128 value, IntPtr funcPtr);
+    private static readonly SetSimdFpReg _setSimdFpReg;
+    private static readonly IntPtr _setSimdFpRegNativePtr;
+
+    static HvExecutionContextVcpu()
     {
-        private static readonly MemoryBlock _setSimdFpRegFuncMem;
-        private delegate HvResult SetSimdFpReg(ulong vcpu, HvSimdFPReg reg, in V128 value, IntPtr funcPtr);
-        private static readonly SetSimdFpReg _setSimdFpReg;
-        private static readonly IntPtr _setSimdFpRegNativePtr;
+        // .NET does not support passing vectors by value, so we need to pass a pointer and use a native
+        // function to load the value into a vector register.
+        _setSimdFpRegFuncMem = new MemoryBlock(MemoryBlock.GetPageSize());
+        _setSimdFpRegFuncMem.Write(0, 0x3DC00040u); // LDR Q0, [X2]
+        _setSimdFpRegFuncMem.Write(4, 0xD61F0060u); // BR X3
+        _setSimdFpRegFuncMem.Reprotect(0, _setSimdFpRegFuncMem.Size, MemoryPermission.ReadAndExecute);
 
-        static HvExecutionContextVcpu()
+        _setSimdFpReg = Marshal.GetDelegateForFunctionPointer<SetSimdFpReg>(_setSimdFpRegFuncMem.Pointer);
+
+        if (NativeLibrary.TryLoad(HvApi.LibraryName, out IntPtr hvLibHandle))
         {
-            // .NET does not support passing vectors by value, so we need to pass a pointer and use a native
-            // function to load the value into a vector register.
-            _setSimdFpRegFuncMem = new MemoryBlock(MemoryBlock.GetPageSize());
-            _setSimdFpRegFuncMem.Write(0, 0x3DC00040u); // LDR Q0, [X2]
-            _setSimdFpRegFuncMem.Write(4, 0xD61F0060u); // BR X3
-            _setSimdFpRegFuncMem.Reprotect(0, _setSimdFpRegFuncMem.Size, MemoryPermission.ReadAndExecute);
-
-            _setSimdFpReg = Marshal.GetDelegateForFunctionPointer<SetSimdFpReg>(_setSimdFpRegFuncMem.Pointer);
-
-            if (NativeLibrary.TryLoad(HvApi.LibraryName, out IntPtr hvLibHandle))
-            {
-                _setSimdFpRegNativePtr = NativeLibrary.GetExport(hvLibHandle, nameof(HvApi.hv_vcpu_set_simd_fp_reg));
-            }
+            _setSimdFpRegNativePtr = NativeLibrary.GetExport(hvLibHandle, nameof(HvApi.hv_vcpu_set_simd_fp_reg));
         }
+    }
 
-        public ulong Pc
+    public ulong Pc
+    {
+        get
         {
-            get
-            {
-                HvApi.hv_vcpu_get_reg(_vcpu, HvReg.PC, out ulong pc).ThrowOnError();
-                return pc;
-            }
-            set
-            {
-                HvApi.hv_vcpu_set_reg(_vcpu, HvReg.PC, value).ThrowOnError();
-            }
+            HvApi.hv_vcpu_get_reg(_vcpu, HvReg.PC, out ulong pc).ThrowOnError();
+            return pc;
         }
-
-        public ulong ElrEl1
+        set
         {
-            get
-            {
-                HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.ELR_EL1, out ulong elr).ThrowOnError();
-                return elr;
-            }
-            set
-            {
-                HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.ELR_EL1, value).ThrowOnError();
-            }
+            HvApi.hv_vcpu_set_reg(_vcpu, HvReg.PC, value).ThrowOnError();
         }
+    }
 
-        public ulong EsrEl1
+    public ulong ElrEl1
+    {
+        get
         {
-            get
-            {
-                HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.ESR_EL1, out ulong esr).ThrowOnError();
-                return esr;
-            }
-            set
-            {
-                HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.ESR_EL1, value).ThrowOnError();
-            }
+            HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.ELR_EL1, out ulong elr).ThrowOnError();
+            return elr;
         }
-
-        public long TpidrEl0
+        set
         {
-            get
-            {
-                HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.TPIDR_EL0, out ulong tpidrEl0).ThrowOnError();
-                return (long)tpidrEl0;
-            }
-            set
-            {
-                HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.TPIDR_EL0, (ulong)value).ThrowOnError();
-            }
+            HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.ELR_EL1, value).ThrowOnError();
         }
+    }
 
-        public long TpidrroEl0
+    public ulong EsrEl1
+    {
+        get
         {
-            get
-            {
-                HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.TPIDRRO_EL0, out ulong tpidrroEl0).ThrowOnError();
-                return (long)tpidrroEl0;
-            }
-            set
-            {
-                HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.TPIDRRO_EL0, (ulong)value).ThrowOnError();
-            }
+            HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.ESR_EL1, out ulong esr).ThrowOnError();
+            return esr;
         }
-
-        public uint Pstate
+        set
         {
-            get
-            {
-                HvApi.hv_vcpu_get_reg(_vcpu, HvReg.CPSR, out ulong cpsr).ThrowOnError();
-                return (uint)cpsr;
-            }
-            set
-            {
-                HvApi.hv_vcpu_set_reg(_vcpu, HvReg.CPSR, (ulong)value).ThrowOnError();
-            }
+            HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.ESR_EL1, value).ThrowOnError();
         }
+    }
 
-        public uint Fpcr
+    public long TpidrEl0
+    {
+        get
         {
-            get
-            {
-                HvApi.hv_vcpu_get_reg(_vcpu, HvReg.FPCR, out ulong fpcr).ThrowOnError();
-                return (uint)fpcr;
-            }
-            set
-            {
-                HvApi.hv_vcpu_set_reg(_vcpu, HvReg.FPCR, (ulong)value).ThrowOnError();
-            }
+            HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.TPIDR_EL0, out ulong tpidrEl0).ThrowOnError();
+            return (long)tpidrEl0;
         }
-
-        public uint Fpsr
+        set
         {
-            get
-            {
-                HvApi.hv_vcpu_get_reg(_vcpu, HvReg.FPSR, out ulong fpsr).ThrowOnError();
-                return (uint)fpsr;
-            }
-            set
-            {
-                HvApi.hv_vcpu_set_reg(_vcpu, HvReg.FPSR, (ulong)value).ThrowOnError();
-            }
+            HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.TPIDR_EL0, (ulong)value).ThrowOnError();
         }
+    }
 
-        private readonly ulong _vcpu;
-
-        public HvExecutionContextVcpu(ulong vcpu)
+    public long TpidrroEl0
+    {
+        get
         {
-            _vcpu = vcpu;
+            HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.TPIDRRO_EL0, out ulong tpidrroEl0).ThrowOnError();
+            return (long)tpidrroEl0;
         }
-
-        public ulong GetX(int index)
+        set
         {
-            if (index == 31)
-            {
-                HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.SP_EL0, out ulong value).ThrowOnError();
-                return value;
-            }
-            else
-            {
-                HvApi.hv_vcpu_get_reg(_vcpu, HvReg.X0 + (uint)index, out ulong value).ThrowOnError();
-                return value;
-            }
+            HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.TPIDRRO_EL0, (ulong)value).ThrowOnError();
         }
+    }
 
-        public void SetX(int index, ulong value)
+    public uint Pstate
+    {
+        get
         {
-            if (index == 31)
-            {
-                HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.SP_EL0, value).ThrowOnError();
-            }
-            else
-            {
-                HvApi.hv_vcpu_set_reg(_vcpu, HvReg.X0 + (uint)index, value).ThrowOnError();
-            }
+            HvApi.hv_vcpu_get_reg(_vcpu, HvReg.CPSR, out ulong cpsr).ThrowOnError();
+            return (uint)cpsr;
         }
+        set
+        {
+            HvApi.hv_vcpu_set_reg(_vcpu, HvReg.CPSR, (ulong)value).ThrowOnError();
+        }
+    }
 
-        public V128 GetV(int index)
+    public uint Fpcr
+    {
+        get
         {
-            HvApi.hv_vcpu_get_simd_fp_reg(_vcpu, HvSimdFPReg.Q0 + (uint)index, out HvSimdFPUchar16 value).ThrowOnError();
-            return new V128(value.Low, value.High);
+            HvApi.hv_vcpu_get_reg(_vcpu, HvReg.FPCR, out ulong fpcr).ThrowOnError();
+            return (uint)fpcr;
         }
+        set
+        {
+            HvApi.hv_vcpu_set_reg(_vcpu, HvReg.FPCR, (ulong)value).ThrowOnError();
+        }
+    }
 
-        public void SetV(int index, V128 value)
+    public uint Fpsr
+    {
+        get
         {
-            _setSimdFpReg(_vcpu, HvSimdFPReg.Q0 + (uint)index, value, _setSimdFpRegNativePtr).ThrowOnError();
+            HvApi.hv_vcpu_get_reg(_vcpu, HvReg.FPSR, out ulong fpsr).ThrowOnError();
+            return (uint)fpsr;
         }
+        set
+        {
+            HvApi.hv_vcpu_set_reg(_vcpu, HvReg.FPSR, (ulong)value).ThrowOnError();
+        }
+    }
 
-        public void RequestInterrupt()
+    private readonly ulong _vcpu;
+
+    public HvExecutionContextVcpu(ulong vcpu)
+    {
+        _vcpu = vcpu;
+    }
+
+    public ulong GetX(int index)
+    {
+        if (index == 31)
         {
-            ulong vcpu = _vcpu;
-            HvApi.hv_vcpus_exit(ref vcpu, 1);
+            HvApi.hv_vcpu_get_sys_reg(_vcpu, HvSysReg.SP_EL0, out ulong value).ThrowOnError();
+            return value;
         }
+        else
+        {
+            HvApi.hv_vcpu_get_reg(_vcpu, HvReg.X0 + (uint)index, out ulong value).ThrowOnError();
+            return value;
+        }
+    }
+
+    public void SetX(int index, ulong value)
+    {
+        if (index == 31)
+        {
+            HvApi.hv_vcpu_set_sys_reg(_vcpu, HvSysReg.SP_EL0, value).ThrowOnError();
+        }
+        else
+        {
+            HvApi.hv_vcpu_set_reg(_vcpu, HvReg.X0 + (uint)index, value).ThrowOnError();
+        }
+    }
+
+    public V128 GetV(int index)
+    {
+        HvApi.hv_vcpu_get_simd_fp_reg(_vcpu, HvSimdFPReg.Q0 + (uint)index, out HvSimdFPUchar16 value).ThrowOnError();
+        return new V128(value.Low, value.High);
+    }
+
+    public void SetV(int index, V128 value)
+    {
+        _setSimdFpReg(_vcpu, HvSimdFPReg.Q0 + (uint)index, value, _setSimdFpRegNativePtr).ThrowOnError();
+    }
+
+    public void RequestInterrupt()
+    {
+        ulong vcpu = _vcpu;
+        HvApi.hv_vcpus_exit(ref vcpu, 1);
     }
 }

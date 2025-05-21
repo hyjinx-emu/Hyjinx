@@ -1,138 +1,137 @@
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
 
-namespace Hyjinx.HLE.UI.Input
+namespace Hyjinx.HLE.UI.Input;
+
+/// <summary>
+/// Class that converts Hid entries for the Npad into pressed / released events.
+/// </summary>
+class NpadReader
 {
-    /// <summary>
-    /// Class that converts Hid entries for the Npad into pressed / released events.
-    /// </summary>
-    class NpadReader
+    private readonly Switch _device;
+    private readonly NpadCommonState[] _lastStates;
+
+    public event NpadButtonHandler NpadButtonUpEvent;
+    public event NpadButtonHandler NpadButtonDownEvent;
+
+    public NpadReader(Switch device)
     {
-        private readonly Switch _device;
-        private readonly NpadCommonState[] _lastStates;
+        _device = device;
+        _lastStates = new NpadCommonState[_device.Hid.SharedMemory.Npads.Length];
+    }
 
-        public event NpadButtonHandler NpadButtonUpEvent;
-        public event NpadButtonHandler NpadButtonDownEvent;
+    public NpadButton GetCurrentButtonsOfNpad(int npadIndex)
+    {
+        return _lastStates[npadIndex].Buttons;
+    }
 
-        public NpadReader(Switch device)
+    public NpadButton GetCurrentButtonsOfAllNpads()
+    {
+        NpadButton buttons = 0;
+
+        foreach (var state in _lastStates)
         {
-            _device = device;
-            _lastStates = new NpadCommonState[_device.Hid.SharedMemory.Npads.Length];
+            buttons |= state.Buttons;
         }
 
-        public NpadButton GetCurrentButtonsOfNpad(int npadIndex)
+        return buttons;
+    }
+
+    private static ref RingLifo<NpadCommonState> GetCommonStateLifo(ref NpadInternalState npad)
+    {
+        switch (npad.StyleSet)
         {
-            return _lastStates[npadIndex].Buttons;
+            case NpadStyleTag.FullKey:
+                return ref npad.FullKey;
+            case NpadStyleTag.Handheld:
+                return ref npad.Handheld;
+            case NpadStyleTag.JoyDual:
+                return ref npad.JoyDual;
+            case NpadStyleTag.JoyLeft:
+                return ref npad.JoyLeft;
+            case NpadStyleTag.JoyRight:
+                return ref npad.JoyRight;
+            case NpadStyleTag.Palma:
+                return ref npad.Palma;
+            default:
+                return ref npad.SystemExt;
+        }
+    }
+
+    public void Update(bool supressEvents = false)
+    {
+        ref var npads = ref _device.Hid.SharedMemory.Npads;
+
+        // Process each input individually.
+        for (int npadIndex = 0; npadIndex < npads.Length; npadIndex++)
+        {
+            UpdateNpad(npadIndex, supressEvents);
+        }
+    }
+
+    private void UpdateNpad(int npadIndex, bool supressEvents)
+    {
+        const int MaxEntries = 1024;
+
+        ref var npadState = ref _device.Hid.SharedMemory.Npads[npadIndex];
+        ref var lastEntry = ref _lastStates[npadIndex];
+
+        var fullKeyEntries = GetCommonStateLifo(ref npadState.InternalState).ReadEntries(MaxEntries);
+
+        int firstEntryNum;
+
+        // Scan the LIFO for the first entry that is newer that what's already processed.
+        for (firstEntryNum = fullKeyEntries.Length - 1;
+             firstEntryNum >= 0 && fullKeyEntries[firstEntryNum].Object.SamplingNumber <= lastEntry.SamplingNumber;
+             firstEntryNum--)
+        {
         }
 
-        public NpadButton GetCurrentButtonsOfAllNpads()
+        if (firstEntryNum == -1)
         {
-            NpadButton buttons = 0;
-
-            foreach (var state in _lastStates)
-            {
-                buttons |= state.Buttons;
-            }
-
-            return buttons;
+            return;
         }
 
-        private static ref RingLifo<NpadCommonState> GetCommonStateLifo(ref NpadInternalState npad)
+        for (; firstEntryNum >= 0; firstEntryNum--)
         {
-            switch (npad.StyleSet)
+            var entry = fullKeyEntries[firstEntryNum];
+
+            // The interval of valid entries should be contiguous.
+            if (entry.SamplingNumber < lastEntry.SamplingNumber)
             {
-                case NpadStyleTag.FullKey:
-                    return ref npad.FullKey;
-                case NpadStyleTag.Handheld:
-                    return ref npad.Handheld;
-                case NpadStyleTag.JoyDual:
-                    return ref npad.JoyDual;
-                case NpadStyleTag.JoyLeft:
-                    return ref npad.JoyLeft;
-                case NpadStyleTag.JoyRight:
-                    return ref npad.JoyRight;
-                case NpadStyleTag.Palma:
-                    return ref npad.Palma;
-                default:
-                    return ref npad.SystemExt;
+                break;
             }
+
+            if (!supressEvents)
+            {
+                ProcessNpadButtons(npadIndex, entry.Object.Buttons);
+            }
+
+            lastEntry = entry.Object;
         }
+    }
 
-        public void Update(bool supressEvents = false)
+    private void ProcessNpadButtons(int npadIndex, NpadButton buttons)
+    {
+        NpadButton lastButtons = _lastStates[npadIndex].Buttons;
+
+        for (ulong buttonMask = 1; buttonMask != 0; buttonMask <<= 1)
         {
-            ref var npads = ref _device.Hid.SharedMemory.Npads;
+            NpadButton currentButton = (NpadButton)buttonMask & buttons;
+            NpadButton lastButton = (NpadButton)buttonMask & lastButtons;
 
-            // Process each input individually.
-            for (int npadIndex = 0; npadIndex < npads.Length; npadIndex++)
+            if (lastButton != 0)
             {
-                UpdateNpad(npadIndex, supressEvents);
-            }
-        }
-
-        private void UpdateNpad(int npadIndex, bool supressEvents)
-        {
-            const int MaxEntries = 1024;
-
-            ref var npadState = ref _device.Hid.SharedMemory.Npads[npadIndex];
-            ref var lastEntry = ref _lastStates[npadIndex];
-
-            var fullKeyEntries = GetCommonStateLifo(ref npadState.InternalState).ReadEntries(MaxEntries);
-
-            int firstEntryNum;
-
-            // Scan the LIFO for the first entry that is newer that what's already processed.
-            for (firstEntryNum = fullKeyEntries.Length - 1;
-                 firstEntryNum >= 0 && fullKeyEntries[firstEntryNum].Object.SamplingNumber <= lastEntry.SamplingNumber;
-                 firstEntryNum--)
-            {
-            }
-
-            if (firstEntryNum == -1)
-            {
-                return;
-            }
-
-            for (; firstEntryNum >= 0; firstEntryNum--)
-            {
-                var entry = fullKeyEntries[firstEntryNum];
-
-                // The interval of valid entries should be contiguous.
-                if (entry.SamplingNumber < lastEntry.SamplingNumber)
+                if (currentButton == 0)
                 {
-                    break;
+                    NpadButtonUpEvent?.Invoke(npadIndex, lastButton);
                 }
-
-                if (!supressEvents)
-                {
-                    ProcessNpadButtons(npadIndex, entry.Object.Buttons);
-                }
-
-                lastEntry = entry.Object;
             }
-        }
-
-        private void ProcessNpadButtons(int npadIndex, NpadButton buttons)
-        {
-            NpadButton lastButtons = _lastStates[npadIndex].Buttons;
-
-            for (ulong buttonMask = 1; buttonMask != 0; buttonMask <<= 1)
+            else
             {
-                NpadButton currentButton = (NpadButton)buttonMask & buttons;
-                NpadButton lastButton = (NpadButton)buttonMask & lastButtons;
-
-                if (lastButton != 0)
+                if (currentButton != 0)
                 {
-                    if (currentButton == 0)
-                    {
-                        NpadButtonUpEvent?.Invoke(npadIndex, lastButton);
-                    }
-                }
-                else
-                {
-                    if (currentButton != 0)
-                    {
-                        NpadButtonDownEvent?.Invoke(npadIndex, currentButton);
-                    }
+                    NpadButtonDownEvent?.Invoke(npadIndex, currentButton);
                 }
             }
         }

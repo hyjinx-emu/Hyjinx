@@ -1,107 +1,106 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
+using Hyjinx.Logging.Abstractions;
 using LibHac.Os;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.LdnMitm.Proxy;
+
+internal partial class LdnProxyTcpSession : NetCoreServer.TcpSession
 {
-    internal partial class LdnProxyTcpSession : NetCoreServer.TcpSession
+    private readonly LanProtocol _protocol;
+
+    internal int NodeId;
+    internal NodeInfo NodeInfo;
+
+    private readonly ILogger<LdnProxyTcpSession> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpSession>();
+
+    private byte[] _buffer;
+    private int _bufferEnd;
+
+    public LdnProxyTcpSession(LdnProxyTcpServer server, LanProtocol protocol) : base(server)
     {
-        private readonly LanProtocol _protocol;
+        _protocol = protocol;
+        _protocol.Connect += OnConnect;
+        _buffer = new byte[LanProtocol.BufferSize];
+        OptionSendBufferSize = LanProtocol.TcpTxBufferSize;
+        OptionReceiveBufferSize = LanProtocol.TcpRxBufferSize;
+        OptionSendBufferLimit = LanProtocol.TxBufferSizeMax;
+        OptionReceiveBufferLimit = LanProtocol.RxBufferSizeMax;
+    }
 
-        internal int NodeId;
-        internal NodeInfo NodeInfo;
+    public void OverrideInfo()
+    {
+        NodeInfo.NodeId = (byte)NodeId;
+        NodeInfo.IsConnected = (byte)(IsConnected ? 1 : 0);
+    }
 
-        private readonly ILogger<LdnProxyTcpSession> _logger =
-            Logger.DefaultLoggerFactory.CreateLogger<LdnProxyTcpSession>();
-        
-        private byte[] _buffer;
-        private int _bufferEnd;
+    protected override void OnConnected()
+    {
+        LogSessionConnected();
+    }
 
-        public LdnProxyTcpSession(LdnProxyTcpServer server, LanProtocol protocol) : base(server)
+    [LoggerMessage(LogLevel.Information,
+        EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+        Message = "LdnProxyTCPSession connected!")]
+    private partial void LogSessionConnected();
+
+    protected override void OnDisconnected()
+    {
+        LogSessionDisconnected();
+
+        _protocol.InvokeDisconnectStation(this);
+    }
+
+    [LoggerMessage(LogLevel.Information,
+        EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+        Message = "LdnProxyTCPSession disconnected!")]
+    private partial void LogSessionDisconnected();
+
+    protected override void OnReceived(byte[] buffer, long offset, long size)
+    {
+        _protocol.Read(ref _buffer, ref _bufferEnd, buffer, (int)offset, (int)size, this.Socket.RemoteEndPoint);
+    }
+
+    protected override void OnError(SocketError error)
+    {
+        LogError(error);
+
+        Dispose();
+    }
+
+    [LoggerMessage(LogLevel.Error,
+        EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+        Message = "LdnProxyTCPSession caught an error with code {error}")]
+    private partial void LogError(SocketError error);
+
+    protected override void Dispose(bool disposingManagedResources)
+    {
+        _protocol.Connect -= OnConnect;
+        base.Dispose(disposingManagedResources);
+    }
+
+    private void OnConnect(NodeInfo info, EndPoint endPoint)
+    {
+        try
         {
-            _protocol = protocol;
-            _protocol.Connect += OnConnect;
-            _buffer = new byte[LanProtocol.BufferSize];
-            OptionSendBufferSize = LanProtocol.TcpTxBufferSize;
-            OptionReceiveBufferSize = LanProtocol.TcpRxBufferSize;
-            OptionSendBufferLimit = LanProtocol.TxBufferSizeMax;
-            OptionReceiveBufferLimit = LanProtocol.RxBufferSizeMax;
+            if (endPoint.Equals(this.Socket.RemoteEndPoint))
+            {
+                NodeInfo = info;
+                _protocol.InvokeAccept(this);
+            }
         }
-
-        public void OverrideInfo()
+        catch (System.ObjectDisposedException)
         {
-            NodeInfo.NodeId = (byte)NodeId;
-            NodeInfo.IsConnected = (byte)(IsConnected ? 1 : 0);
-        }
-
-        protected override void OnConnected()
-        {
-            LogSessionConnected();
-        }
-
-        [LoggerMessage(LogLevel.Information,
-            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
-            Message = "LdnProxyTCPSession connected!")]
-        private partial void LogSessionConnected();
-
-        protected override void OnDisconnected()
-        {
-            LogSessionDisconnected();
-
+            LogSessionDisposed(NodeInfo.Ipv4Address);
             _protocol.InvokeDisconnectStation(this);
         }
-        
-        [LoggerMessage(LogLevel.Information,
-            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
-            Message = "LdnProxyTCPSession disconnected!")]
-        private partial void LogSessionDisconnected();
-
-        protected override void OnReceived(byte[] buffer, long offset, long size)
-        {
-            _protocol.Read(ref _buffer, ref _bufferEnd, buffer, (int)offset, (int)size, this.Socket.RemoteEndPoint);
-        }
-
-        protected override void OnError(SocketError error)
-        {
-            LogError(error);
-
-            Dispose();
-        }
-
-        [LoggerMessage(LogLevel.Error,
-            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
-            Message = "LdnProxyTCPSession caught an error with code {error}")]
-        private partial void LogError(SocketError error);
-
-        protected override void Dispose(bool disposingManagedResources)
-        {
-            _protocol.Connect -= OnConnect;
-            base.Dispose(disposingManagedResources);
-        }
-
-        private void OnConnect(NodeInfo info, EndPoint endPoint)
-        {
-            try
-            {
-                if (endPoint.Equals(this.Socket.RemoteEndPoint))
-                {
-                    NodeInfo = info;
-                    _protocol.InvokeAccept(this);
-                }
-            }
-            catch (System.ObjectDisposedException)
-            {
-                LogSessionDisposed(NodeInfo.Ipv4Address);
-                _protocol.InvokeDisconnectStation(this);
-            }
-        }
-
-        [LoggerMessage(LogLevel.Error,
-            EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
-            Message = "LdnProxyTCPSession was disposed. [IP: {ipv4Address}]")]
-        private partial void LogSessionDisposed(uint ipv4Address);
     }
+
+    [LoggerMessage(LogLevel.Error,
+        EventId = (int)LogClass.ServiceLdn, EventName = nameof(LogClass.ServiceLdn),
+        Message = "LdnProxyTCPSession was disposed. [IP: {ipv4Address}]")]
+    private partial void LogSessionDisposed(uint ipv4Address);
 }

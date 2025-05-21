@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.Nvdec.FFmpeg.Native
+namespace Hyjinx.Graphics.Nvdec.FFmpeg.Native;
+
+public struct AVRational
 {
-    public struct AVRational
-    {
-        public int Numerator;
-        public int Denominator;
-    }
+    public int Numerator;
+    public int Denominator;
 }

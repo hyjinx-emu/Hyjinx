@@ -1,4 +1,4 @@
-﻿using LibHac.Diag;
+using LibHac.Diag;
 using LibHac.Fs;
 
 namespace LibHac.FsSrv.Impl;

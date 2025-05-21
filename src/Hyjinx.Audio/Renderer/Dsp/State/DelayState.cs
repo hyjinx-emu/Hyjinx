@@ -2,66 +2,65 @@ using Hyjinx.Audio.Renderer.Dsp.Effect;
 using Hyjinx.Audio.Renderer.Parameter.Effect;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Audio.Renderer.Dsp.State
+namespace Hyjinx.Audio.Renderer.Dsp.State;
+
+public struct DelayState
 {
-    public struct DelayState
+    public DelayLine[] DelayLines { get; }
+    public float[] LowPassZ { get; set; }
+    public float FeedbackGain { get; private set; }
+    public float DelayFeedbackBaseGain { get; private set; }
+    public float DelayFeedbackCrossGain { get; private set; }
+    public float LowPassFeedbackGain { get; private set; }
+    public float LowPassBaseGain { get; private set; }
+
+    private const int FixedPointPrecision = 14;
+
+    public DelayState(ref DelayParameter parameter, ulong workBuffer)
     {
-        public DelayLine[] DelayLines { get; }
-        public float[] LowPassZ { get; set; }
-        public float FeedbackGain { get; private set; }
-        public float DelayFeedbackBaseGain { get; private set; }
-        public float DelayFeedbackCrossGain { get; private set; }
-        public float LowPassFeedbackGain { get; private set; }
-        public float LowPassBaseGain { get; private set; }
+        DelayLines = new DelayLine[parameter.ChannelCount];
+        LowPassZ = new float[parameter.ChannelCount];
 
-        private const int FixedPointPrecision = 14;
+        uint sampleRate = (uint)FixedPointHelper.ToInt(parameter.SampleRate, FixedPointPrecision) / 1000;
 
-        public DelayState(ref DelayParameter parameter, ulong workBuffer)
+        for (int i = 0; i < DelayLines.Length; i++)
         {
-            DelayLines = new DelayLine[parameter.ChannelCount];
-            LowPassZ = new float[parameter.ChannelCount];
-
-            uint sampleRate = (uint)FixedPointHelper.ToInt(parameter.SampleRate, FixedPointPrecision) / 1000;
-
-            for (int i = 0; i < DelayLines.Length; i++)
-            {
-                DelayLines[i] = new DelayLine(sampleRate, parameter.DelayTimeMax);
-                DelayLines[i].SetDelay(parameter.DelayTime);
-            }
-
-            UpdateParameter(ref parameter);
+            DelayLines[i] = new DelayLine(sampleRate, parameter.DelayTimeMax);
+            DelayLines[i].SetDelay(parameter.DelayTime);
         }
 
-        public void UpdateParameter(ref DelayParameter parameter)
+        UpdateParameter(ref parameter);
+    }
+
+    public void UpdateParameter(ref DelayParameter parameter)
+    {
+        FeedbackGain = FixedPointHelper.ToFloat(parameter.FeedbackGain, FixedPointPrecision) * 0.98f;
+
+        float channelSpread = FixedPointHelper.ToFloat(parameter.ChannelSpread, FixedPointPrecision);
+
+        DelayFeedbackBaseGain = (1.0f - channelSpread) * FeedbackGain;
+
+        if (parameter.ChannelCount == 4 || parameter.ChannelCount == 6)
         {
-            FeedbackGain = FixedPointHelper.ToFloat(parameter.FeedbackGain, FixedPointPrecision) * 0.98f;
-
-            float channelSpread = FixedPointHelper.ToFloat(parameter.ChannelSpread, FixedPointPrecision);
-
-            DelayFeedbackBaseGain = (1.0f - channelSpread) * FeedbackGain;
-
-            if (parameter.ChannelCount == 4 || parameter.ChannelCount == 6)
-            {
-                DelayFeedbackCrossGain = channelSpread * 0.5f * FeedbackGain;
-            }
-            else
-            {
-                DelayFeedbackCrossGain = channelSpread * FeedbackGain;
-            }
-
-            LowPassFeedbackGain = 0.95f * FixedPointHelper.ToFloat(parameter.LowPassAmount, FixedPointPrecision);
-            LowPassBaseGain = 1.0f - LowPassFeedbackGain;
+            DelayFeedbackCrossGain = channelSpread * 0.5f * FeedbackGain;
+        }
+        else
+        {
+            DelayFeedbackCrossGain = channelSpread * FeedbackGain;
         }
 
-        public readonly void UpdateLowPassFilter(ref float tempRawRef, uint channelCount)
-        {
-            for (int i = 0; i < channelCount; i++)
-            {
-                float lowPassResult = LowPassFeedbackGain * LowPassZ[i] + Unsafe.Add(ref tempRawRef, i) * LowPassBaseGain;
+        LowPassFeedbackGain = 0.95f * FixedPointHelper.ToFloat(parameter.LowPassAmount, FixedPointPrecision);
+        LowPassBaseGain = 1.0f - LowPassFeedbackGain;
+    }
 
-                LowPassZ[i] = lowPassResult;
-                DelayLines[i].Update(lowPassResult);
-            }
+    public readonly void UpdateLowPassFilter(ref float tempRawRef, uint channelCount)
+    {
+        for (int i = 0; i < channelCount; i++)
+        {
+            float lowPassResult = LowPassFeedbackGain * LowPassZ[i] + Unsafe.Add(ref tempRawRef, i) * LowPassBaseGain;
+
+            LowPassZ[i] = lowPassResult;
+            DelayLines[i].Update(lowPassResult);
         }
     }
 }

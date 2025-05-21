@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Services.Ns.Aoc
+namespace Hyjinx.HLE.HOS.Services.Ns.Aoc;
+
+class IContentsServiceManager : IpcService<IContentsServiceManager>
 {
-    class IContentsServiceManager : IpcService<IContentsServiceManager>
-    {
-        public IContentsServiceManager() { }
-    }
+    public IContentsServiceManager() { }
 }

@@ -1,8 +1,7 @@
-namespace Hyjinx.Horizon.Sdk.Account
+namespace Hyjinx.Horizon.Sdk.Account;
+
+public interface IEmulatorAccountManager
 {
-    public interface IEmulatorAccountManager
-    {
-        void OpenUserOnlinePlay(Uid userId);
-        void CloseUserOnlinePlay(Uid userId);
-    }
+    void OpenUserOnlinePlay(Uid userId);
+    void CloseUserOnlinePlay(Uid userId);
 }

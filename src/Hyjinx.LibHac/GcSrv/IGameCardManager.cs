@@ -1,5 +1,5 @@
-﻿using System;
 using LibHac.Os;
+using System;
 
 namespace LibHac.GcSrv;
 

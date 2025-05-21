@@ -2,8 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using LibHac.Fs;
-using LibHac.Tools.FsSystem.NcaUtils;
 using Hyjinx.Ava.Common;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
@@ -13,6 +11,8 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.HLE.HOS;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Helper;
+using LibHac.Fs;
+using LibHac.Tools.FsSystem.NcaUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,353 +20,352 @@ using System.Threading;
 using System.Threading.Tasks;
 using Path = System.IO.Path;
 
-namespace Hyjinx.Ava.UI.Controls
+namespace Hyjinx.Ava.UI.Controls;
+
+public class ApplicationContextMenu : MenuFlyout
 {
-    public class ApplicationContextMenu : MenuFlyout
+    public ApplicationContextMenu()
     {
-        public ApplicationContextMenu()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
+    }
 
-        public void ToggleFavorite_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+    public void ToggleFavorite_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
 
-            if (viewModel?.SelectedApplication != null)
+        if (viewModel?.SelectedApplication != null)
+        {
+            viewModel.SelectedApplication.Favorite = !viewModel.SelectedApplication.Favorite;
+
+            ApplicationLibrary.LoadAndSaveMetaData(viewModel.SelectedApplication.IdString, appMetadata =>
             {
-                viewModel.SelectedApplication.Favorite = !viewModel.SelectedApplication.Favorite;
+                appMetadata.Favorite = viewModel.SelectedApplication.Favorite;
+            });
 
-                ApplicationLibrary.LoadAndSaveMetaData(viewModel.SelectedApplication.IdString, appMetadata =>
+            viewModel.RefreshView();
+        }
+    }
+
+    public void OpenUserSaveDirectory_Click(object sender, RoutedEventArgs args)
+    {
+        if (sender is MenuItem { DataContext: MainWindowViewModel viewModel })
+        {
+            OpenSaveDirectory(viewModel, SaveDataType.Account, new UserId((ulong)viewModel.AccountManager.LastOpenedUser.UserId.High, (ulong)viewModel.AccountManager.LastOpenedUser.UserId.Low));
+        }
+    }
+
+    public void OpenDeviceSaveDirectory_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        OpenSaveDirectory(viewModel, SaveDataType.Device, default);
+    }
+
+    public void OpenBcatSaveDirectory_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        OpenSaveDirectory(viewModel, SaveDataType.Bcat, default);
+    }
+
+    private static void OpenSaveDirectory(MainWindowViewModel viewModel, SaveDataType saveDataType, UserId userId)
+    {
+        if (viewModel?.SelectedApplication != null)
+        {
+            var saveDataFilter = SaveDataFilter.Make(viewModel.SelectedApplication.Id, saveDataType, userId, saveDataId: default, index: default);
+
+            ApplicationHelper.OpenSaveDir(in saveDataFilter, viewModel.SelectedApplication.Id, viewModel.SelectedApplication.ControlHolder, viewModel.SelectedApplication.Name);
+        }
+    }
+
+    public async void OpenTitleUpdateManager_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
+        {
+            await TitleUpdateWindow.Show(viewModel.VirtualFileSystem, viewModel.SelectedApplication);
+        }
+    }
+
+    public async void OpenDownloadableContentManager_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
+        {
+            await DownloadableContentManagerWindow.Show(viewModel.VirtualFileSystem, viewModel.SelectedApplication);
+        }
+    }
+
+    public async void OpenCheatManager_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
+        {
+            await new CheatWindow(
+                viewModel.VirtualFileSystem,
+                viewModel.SelectedApplication.IdString,
+                viewModel.SelectedApplication.Name,
+                viewModel.SelectedApplication.Path).ShowDialog(viewModel.TopLevel as Window);
+        }
+    }
+
+    public void OpenModsDirectory_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
+        {
+            string modsBasePath = ModLoader.GetModsBasePath();
+            string titleModsPath = ModLoader.GetApplicationDir(modsBasePath, viewModel.SelectedApplication.IdString);
+
+            OpenHelper.OpenFolder(titleModsPath);
+        }
+    }
+
+    public void OpenSdModsDirectory_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
+        {
+            string sdModsBasePath = ModLoader.GetSdModsBasePath();
+            string titleModsPath = ModLoader.GetApplicationDir(sdModsBasePath, viewModel.SelectedApplication.IdString);
+
+            OpenHelper.OpenFolder(titleModsPath);
+        }
+    }
+
+    public async void OpenModManager_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
+        {
+            await ModManagerWindow.Show(viewModel.SelectedApplication.Id, viewModel.SelectedApplication.Name);
+        }
+    }
+
+    public async void PurgePtcCache_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
+        {
+            UserResult result = await ContentDialogHelper.CreateConfirmationDialog(
+                LocaleManager.Instance[LocaleKeys.DialogWarning],
+                LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogPPTCDeletionMessage, viewModel.SelectedApplication.Name),
+                LocaleManager.Instance[LocaleKeys.InputDialogYes],
+                LocaleManager.Instance[LocaleKeys.InputDialogNo],
+                LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
+
+            if (result == UserResult.Yes)
+            {
+                DirectoryInfo mainDir = new(Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "cpu", "0"));
+                DirectoryInfo backupDir = new(Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "cpu", "1"));
+
+                List<FileInfo> cacheFiles = new();
+
+                if (mainDir.Exists)
                 {
-                    appMetadata.Favorite = viewModel.SelectedApplication.Favorite;
-                });
+                    cacheFiles.AddRange(mainDir.EnumerateFiles("*.cache"));
+                }
 
-                viewModel.RefreshView();
-            }
-        }
-
-        public void OpenUserSaveDirectory_Click(object sender, RoutedEventArgs args)
-        {
-            if (sender is MenuItem { DataContext: MainWindowViewModel viewModel })
-            {
-                OpenSaveDirectory(viewModel, SaveDataType.Account, new UserId((ulong)viewModel.AccountManager.LastOpenedUser.UserId.High, (ulong)viewModel.AccountManager.LastOpenedUser.UserId.Low));
-            }
-        }
-
-        public void OpenDeviceSaveDirectory_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            OpenSaveDirectory(viewModel, SaveDataType.Device, default);
-        }
-
-        public void OpenBcatSaveDirectory_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            OpenSaveDirectory(viewModel, SaveDataType.Bcat, default);
-        }
-
-        private static void OpenSaveDirectory(MainWindowViewModel viewModel, SaveDataType saveDataType, UserId userId)
-        {
-            if (viewModel?.SelectedApplication != null)
-            {
-                var saveDataFilter = SaveDataFilter.Make(viewModel.SelectedApplication.Id, saveDataType, userId, saveDataId: default, index: default);
-
-                ApplicationHelper.OpenSaveDir(in saveDataFilter, viewModel.SelectedApplication.Id, viewModel.SelectedApplication.ControlHolder, viewModel.SelectedApplication.Name);
-            }
-        }
-
-        public async void OpenTitleUpdateManager_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                await TitleUpdateWindow.Show(viewModel.VirtualFileSystem, viewModel.SelectedApplication);
-            }
-        }
-
-        public async void OpenDownloadableContentManager_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                await DownloadableContentManagerWindow.Show(viewModel.VirtualFileSystem, viewModel.SelectedApplication);
-            }
-        }
-
-        public async void OpenCheatManager_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                await new CheatWindow(
-                    viewModel.VirtualFileSystem,
-                    viewModel.SelectedApplication.IdString,
-                    viewModel.SelectedApplication.Name,
-                    viewModel.SelectedApplication.Path).ShowDialog(viewModel.TopLevel as Window);
-            }
-        }
-
-        public void OpenModsDirectory_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                string modsBasePath = ModLoader.GetModsBasePath();
-                string titleModsPath = ModLoader.GetApplicationDir(modsBasePath, viewModel.SelectedApplication.IdString);
-
-                OpenHelper.OpenFolder(titleModsPath);
-            }
-        }
-
-        public void OpenSdModsDirectory_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                string sdModsBasePath = ModLoader.GetSdModsBasePath();
-                string titleModsPath = ModLoader.GetApplicationDir(sdModsBasePath, viewModel.SelectedApplication.IdString);
-
-                OpenHelper.OpenFolder(titleModsPath);
-            }
-        }
-
-        public async void OpenModManager_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                await ModManagerWindow.Show(viewModel.SelectedApplication.Id, viewModel.SelectedApplication.Name);
-            }
-        }
-
-        public async void PurgePtcCache_Click(object sender, RoutedEventArgs args)
-        {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                UserResult result = await ContentDialogHelper.CreateConfirmationDialog(
-                    LocaleManager.Instance[LocaleKeys.DialogWarning],
-                    LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogPPTCDeletionMessage, viewModel.SelectedApplication.Name),
-                    LocaleManager.Instance[LocaleKeys.InputDialogYes],
-                    LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
-
-                if (result == UserResult.Yes)
+                if (backupDir.Exists)
                 {
-                    DirectoryInfo mainDir = new(Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "cpu", "0"));
-                    DirectoryInfo backupDir = new(Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "cpu", "1"));
+                    cacheFiles.AddRange(backupDir.EnumerateFiles("*.cache"));
+                }
 
-                    List<FileInfo> cacheFiles = new();
-
-                    if (mainDir.Exists)
+                if (cacheFiles.Count > 0)
+                {
+                    foreach (FileInfo file in cacheFiles)
                     {
-                        cacheFiles.AddRange(mainDir.EnumerateFiles("*.cache"));
-                    }
-
-                    if (backupDir.Exists)
-                    {
-                        cacheFiles.AddRange(backupDir.EnumerateFiles("*.cache"));
-                    }
-
-                    if (cacheFiles.Count > 0)
-                    {
-                        foreach (FileInfo file in cacheFiles)
+                        try
                         {
-                            try
-                            {
-                                file.Delete();
-                            }
-                            catch (Exception ex)
-                            {
-                                await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogPPTCDeletionErrorMessage, file.Name, ex));
-                            }
+                            file.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogPPTCDeletionErrorMessage, file.Name, ex));
                         }
                     }
                 }
             }
         }
+    }
 
-        public async void PurgeShaderCache_Click(object sender, RoutedEventArgs args)
+    public async void PurgeShaderCache_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
         {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+            UserResult result = await ContentDialogHelper.CreateConfirmationDialog(
+                LocaleManager.Instance[LocaleKeys.DialogWarning],
+                LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogShaderDeletionMessage, viewModel.SelectedApplication.Name),
+                LocaleManager.Instance[LocaleKeys.InputDialogYes],
+                LocaleManager.Instance[LocaleKeys.InputDialogNo],
+                LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
 
-            if (viewModel?.SelectedApplication != null)
+            if (result == UserResult.Yes)
             {
-                UserResult result = await ContentDialogHelper.CreateConfirmationDialog(
-                    LocaleManager.Instance[LocaleKeys.DialogWarning],
-                    LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogShaderDeletionMessage, viewModel.SelectedApplication.Name),
-                    LocaleManager.Instance[LocaleKeys.InputDialogYes],
-                    LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
+                DirectoryInfo shaderCacheDir = new(Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "shader"));
 
-                if (result == UserResult.Yes)
+                List<DirectoryInfo> oldCacheDirectories = new();
+                List<FileInfo> newCacheFiles = new();
+
+                if (shaderCacheDir.Exists)
                 {
-                    DirectoryInfo shaderCacheDir = new(Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "shader"));
+                    oldCacheDirectories.AddRange(shaderCacheDir.EnumerateDirectories("*"));
+                    newCacheFiles.AddRange(shaderCacheDir.GetFiles("*.toc"));
+                    newCacheFiles.AddRange(shaderCacheDir.GetFiles("*.data"));
+                }
 
-                    List<DirectoryInfo> oldCacheDirectories = new();
-                    List<FileInfo> newCacheFiles = new();
-
-                    if (shaderCacheDir.Exists)
+                if ((oldCacheDirectories.Count > 0 || newCacheFiles.Count > 0))
+                {
+                    foreach (DirectoryInfo directory in oldCacheDirectories)
                     {
-                        oldCacheDirectories.AddRange(shaderCacheDir.EnumerateDirectories("*"));
-                        newCacheFiles.AddRange(shaderCacheDir.GetFiles("*.toc"));
-                        newCacheFiles.AddRange(shaderCacheDir.GetFiles("*.data"));
-                    }
-
-                    if ((oldCacheDirectories.Count > 0 || newCacheFiles.Count > 0))
-                    {
-                        foreach (DirectoryInfo directory in oldCacheDirectories)
+                        try
                         {
-                            try
-                            {
-                                directory.Delete(true);
-                            }
-                            catch (Exception ex)
-                            {
-                                await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogPPTCDeletionErrorMessage, directory.Name, ex));
-                            }
+                            directory.Delete(true);
                         }
-
-                        foreach (FileInfo file in newCacheFiles)
+                        catch (Exception ex)
                         {
-                            try
-                            {
-                                file.Delete();
-                            }
-                            catch (Exception ex)
-                            {
-                                await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.ShaderCachePurgeError, file.Name, ex));
-                            }
+                            await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.DialogPPTCDeletionErrorMessage, directory.Name, ex));
                         }
                     }
+
+                    foreach (FileInfo file in newCacheFiles)
+                    {
+                        try
+                        {
+                            file.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            await ContentDialogHelper.CreateErrorDialog(LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.ShaderCachePurgeError, file.Name, ex));
+                        }
+                    }
                 }
             }
         }
+    }
 
-        public void OpenPtcDirectory_Click(object sender, RoutedEventArgs args)
+    public void OpenPtcDirectory_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
         {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+            string ptcDir = Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "cpu");
+            string mainDir = Path.Combine(ptcDir, "0");
+            string backupDir = Path.Combine(ptcDir, "1");
 
-            if (viewModel?.SelectedApplication != null)
+            if (!Directory.Exists(ptcDir))
             {
-                string ptcDir = Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "cpu");
-                string mainDir = Path.Combine(ptcDir, "0");
-                string backupDir = Path.Combine(ptcDir, "1");
-
-                if (!Directory.Exists(ptcDir))
-                {
-                    Directory.CreateDirectory(ptcDir);
-                    Directory.CreateDirectory(mainDir);
-                    Directory.CreateDirectory(backupDir);
-                }
-
-                OpenHelper.OpenFolder(ptcDir);
+                Directory.CreateDirectory(ptcDir);
+                Directory.CreateDirectory(mainDir);
+                Directory.CreateDirectory(backupDir);
             }
+
+            OpenHelper.OpenFolder(ptcDir);
         }
+    }
 
-        public void OpenShaderCacheDirectory_Click(object sender, RoutedEventArgs args)
+    public void OpenShaderCacheDirectory_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
         {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+            string shaderCacheDir = Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "shader");
 
-            if (viewModel?.SelectedApplication != null)
+            if (!Directory.Exists(shaderCacheDir))
             {
-                string shaderCacheDir = Path.Combine(AppDataManager.GamesDirPath, viewModel.SelectedApplication.IdString, "cache", "shader");
-
-                if (!Directory.Exists(shaderCacheDir))
-                {
-                    Directory.CreateDirectory(shaderCacheDir);
-                }
-
-                OpenHelper.OpenFolder(shaderCacheDir);
+                Directory.CreateDirectory(shaderCacheDir);
             }
+
+            OpenHelper.OpenFolder(shaderCacheDir);
         }
+    }
 
-        public async void ExtractApplicationExeFs_Click(object sender, RoutedEventArgs args)
+    public async void ExtractApplicationExeFs_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
         {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                await ApplicationHelper.ExtractSection(
-                    viewModel.StorageProvider,
-                    NcaSectionType.Code,
-                    viewModel.SelectedApplication.Path,
-                    viewModel.SelectedApplication.Name);
-            }
+            await ApplicationHelper.ExtractSection(
+                viewModel.StorageProvider,
+                NcaSectionType.Code,
+                viewModel.SelectedApplication.Path,
+                viewModel.SelectedApplication.Name);
         }
+    }
 
-        public async void ExtractApplicationRomFs_Click(object sender, RoutedEventArgs args)
+    public async void ExtractApplicationRomFs_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
         {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                await ApplicationHelper.ExtractSection(
-                    viewModel.StorageProvider,
-                    NcaSectionType.Data,
-                    viewModel.SelectedApplication.Path,
-                    viewModel.SelectedApplication.Name);
-            }
+            await ApplicationHelper.ExtractSection(
+                viewModel.StorageProvider,
+                NcaSectionType.Data,
+                viewModel.SelectedApplication.Path,
+                viewModel.SelectedApplication.Name);
         }
+    }
 
-        public async void ExtractApplicationLogo_Click(object sender, RoutedEventArgs args)
+    public async void ExtractApplicationLogo_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
         {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                await ApplicationHelper.ExtractSection(
-                    viewModel.StorageProvider,
-                    NcaSectionType.Logo,
-                    viewModel.SelectedApplication.Path,
-                    viewModel.SelectedApplication.Name);
-            }
+            await ApplicationHelper.ExtractSection(
+                viewModel.StorageProvider,
+                NcaSectionType.Logo,
+                viewModel.SelectedApplication.Path,
+                viewModel.SelectedApplication.Name);
         }
+    }
 
-        public void CreateApplicationShortcut_Click(object sender, RoutedEventArgs args)
+    public void CreateApplicationShortcut_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
         {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                ApplicationData selectedApplication = viewModel.SelectedApplication;
-                ShortcutHelper.CreateAppShortcut(selectedApplication.Path, selectedApplication.Name, selectedApplication.IdString, selectedApplication.Icon);
-            }
+            ApplicationData selectedApplication = viewModel.SelectedApplication;
+            ShortcutHelper.CreateAppShortcut(selectedApplication.Path, selectedApplication.Name, selectedApplication.IdString, selectedApplication.Icon);
         }
+    }
 
-        public async void RunApplication_Click(object sender, RoutedEventArgs args)
+    public async void RunApplication_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
         {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                await viewModel.LoadApplication(viewModel.SelectedApplication);
-            }
+            await viewModel.LoadApplication(viewModel.SelectedApplication);
         }
+    }
 
-        public async void TrimXCI_Click(object sender, RoutedEventArgs args)
+    public async void TrimXCI_Click(object sender, RoutedEventArgs args)
+    {
+        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+
+        if (viewModel?.SelectedApplication != null)
         {
-            var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-            if (viewModel?.SelectedApplication != null)
-            {
-                await viewModel.TrimXCIFile(viewModel.SelectedApplication.Path);
-            }
+            await viewModel.TrimXCIFile(viewModel.SelectedApplication.Path);
         }
     }
 }

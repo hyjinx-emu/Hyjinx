@@ -1,9 +1,8 @@
-namespace Hyjinx.Audio.Backends.OpenAL
+namespace Hyjinx.Audio.Backends.OpenAL;
+
+class OpenALAudioBuffer
 {
-    class OpenALAudioBuffer
-    {
-        public int BufferId;
-        public ulong DriverIdentifier;
-        public ulong SampleCount;
-    }
+    public int BufferId;
+    public ulong DriverIdentifier;
+    public ulong SampleCount;
 }

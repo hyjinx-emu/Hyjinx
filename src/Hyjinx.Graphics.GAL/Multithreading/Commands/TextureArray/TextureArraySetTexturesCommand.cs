@@ -2,26 +2,25 @@ using Hyjinx.Graphics.GAL.Multithreading.Model;
 using Hyjinx.Graphics.GAL.Multithreading.Resources;
 using System.Linq;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands.TextureArray
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands.TextureArray;
+
+struct TextureArraySetTexturesCommand : IGALCommand, IGALCommand<TextureArraySetTexturesCommand>
 {
-    struct TextureArraySetTexturesCommand : IGALCommand, IGALCommand<TextureArraySetTexturesCommand>
+    public readonly CommandType CommandType => CommandType.TextureArraySetTextures;
+    private TableRef<ThreadedTextureArray> _textureArray;
+    private int _index;
+    private TableRef<ITexture[]> _textures;
+
+    public void Set(TableRef<ThreadedTextureArray> textureArray, int index, TableRef<ITexture[]> textures)
     {
-        public readonly CommandType CommandType => CommandType.TextureArraySetTextures;
-        private TableRef<ThreadedTextureArray> _textureArray;
-        private int _index;
-        private TableRef<ITexture[]> _textures;
+        _textureArray = textureArray;
+        _index = index;
+        _textures = textures;
+    }
 
-        public void Set(TableRef<ThreadedTextureArray> textureArray, int index, TableRef<ITexture[]> textures)
-        {
-            _textureArray = textureArray;
-            _index = index;
-            _textures = textures;
-        }
-
-        public static void Run(ref TextureArraySetTexturesCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            ThreadedTextureArray textureArray = command._textureArray.Get(threaded);
-            textureArray.Base.SetTextures(command._index, command._textures.Get(threaded).Select(texture => ((ThreadedTexture)texture)?.Base).ToArray());
-        }
+    public static void Run(ref TextureArraySetTexturesCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        ThreadedTextureArray textureArray = command._textureArray.Get(threaded);
+        textureArray.Base.SetTextures(command._index, command._textures.Get(threaded).Select(texture => ((ThreadedTexture)texture)?.Base).ToArray());
     }
 }

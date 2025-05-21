@@ -1,14 +1,13 @@
 using Hyjinx.Audio.Renderer.Common;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Audio.Renderer.Common
+namespace Hyjinx.Tests.Audio.Renderer.Common;
+
+class UpdateDataHeaderTests
 {
-    class UpdateDataHeaderTests
+    [Test]
+    public void EnsureTypeSize()
     {
-        [Test]
-        public void EnsureTypeSize()
-        {
-            ClassicAssert.AreEqual(0x40, Unsafe.SizeOf<UpdateDataHeader>());
-        }
+        ClassicAssert.AreEqual(0x40, Unsafe.SizeOf<UpdateDataHeader>());
     }
 }

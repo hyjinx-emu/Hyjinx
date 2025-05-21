@@ -1,11 +1,11 @@
-﻿using System;
+using LibHac.Common;
+using LibHac.Fs;
+using LibHac.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using LibHac.Common;
-using LibHac.Fs;
-using LibHac.Util;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -172,7 +172,8 @@ public class HierarchicalIntegrityVerificationStorage : IStorage
             if (validities[i] == Validity.Invalid)
             {
                 result = Validity.Invalid;
-                if (returnOnError) break;
+                if (returnOnError)
+                    break;
             }
 
             logger?.ReportAdd(1);
@@ -256,7 +257,8 @@ public class IvfcHeader
 
         SaltSource = reader.ReadBytes(0x20);
 
-        if (reader.BaseStream.Position + 0x20 >= reader.BaseStream.Length) return;
+        if (reader.BaseStream.Position + 0x20 >= reader.BaseStream.Length)
+            return;
 
         MasterHash = reader.ReadBytes(0x20);
     }

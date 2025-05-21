@@ -1,6 +1,6 @@
-﻿using System;
-using System.Text;
 using LibHac.Util.Impl;
+using System;
+using System.Text;
 
 namespace LibHac.Util;
 
@@ -208,7 +208,8 @@ public static class StringUtils
         for (int i = 0; i <= haystack.Length - needle.Length; i++)
         {
             int j;
-            for (j = 0; j < needle.Length && haystack[i + j] == needle[j]; j++) { }
+            for (j = 0; j < needle.Length && haystack[i + j] == needle[j]; j++)
+            { }
 
             if (j == needle.Length)
                 return i;

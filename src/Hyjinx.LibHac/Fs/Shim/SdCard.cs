@@ -1,5 +1,3 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
@@ -7,6 +5,8 @@ using LibHac.Fs.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Sf;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
@@ -89,7 +89,8 @@ public static class SdCard
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Open the SD card file system
         using var fileSystem = new SharedRef<IFileSystemSf>();
@@ -107,7 +108,8 @@ public static class SdCard
             res = OpenSdCardFileSystem(fs, ref fileSystem.Ref);
         }
 
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Mount the file system
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
@@ -124,7 +126,8 @@ public static class SdCard
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -156,7 +159,8 @@ public static class SdCard
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Open the SD card file system
         using var fileSystem = new SharedRef<IFileSystemSf>();
@@ -174,7 +178,8 @@ public static class SdCard
             res = OpenSdCardFileSystem(fs, ref fileSystem.Ref);
         }
 
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Mount the file system
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
@@ -191,7 +196,8 @@ public static class SdCard
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -252,11 +258,13 @@ public static class SdCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = GetSpeedMode(fs, in deviceOperator, out long speedMode);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outMode = (SdCardSpeedMode)speedMode;
         return Result.Success;
@@ -297,11 +305,13 @@ public static class SdCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = GetCid(fs, in deviceOperator, outCidBuffer);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
 
@@ -340,11 +350,13 @@ public static class SdCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = GetUserAreaSize(fs, in deviceOperator, out outSize);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
 
@@ -386,11 +398,13 @@ public static class SdCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = GetProtectedAreaSize(fs, in deviceOperator, out outSize);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
 
@@ -433,11 +447,13 @@ public static class SdCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = GetErrorInfo(fs, in deviceOperator, out outErrorInfo, out long logSize, logBuffer);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outLogSize = logSize;
         return Result.Success;
@@ -478,7 +494,8 @@ public static class SdCard
 
         Result res = Format(fs, in fileSystemProxy);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
 
@@ -514,7 +531,8 @@ public static class SdCard
 
         Result res = fileSystemProxy.Get.FormatSdCardDryRun();
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -571,7 +589,8 @@ public static class SdCard
 
         Result res = fileSystemProxy.Get.SimulateDeviceDetectionEvent(SdmmcPort.SdCard, mode, signalEvent);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -583,7 +602,8 @@ public static class SdCard
         Result res = SetSdCardSimulationEvent(fs, simulatedOperationType, simulatedFailureType, Result.Success,
             autoClearEvent: false);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -595,7 +615,8 @@ public static class SdCard
         Result res = SetSdCardSimulationEvent(fs, simulatedOperationType, simulatedFailureType, Result.Success,
             autoClearEvent);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -606,7 +627,8 @@ public static class SdCard
         Result res = SetSdCardSimulationEvent(fs, simulatedOperationType,
             SimulatingDeviceAccessFailureEventType.AccessFailure, failureResult, autoClearEvent);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -618,11 +640,13 @@ public static class SdCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.ClearDeviceSimulationEvent((uint)SdmmcPort.SdCard);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

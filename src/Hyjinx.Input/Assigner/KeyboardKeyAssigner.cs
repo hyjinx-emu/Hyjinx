@@ -1,50 +1,49 @@
-namespace Hyjinx.Input.Assigner
+namespace Hyjinx.Input.Assigner;
+
+/// <summary>
+/// <see cref="IButtonAssigner"/> implementation for <see cref="IKeyboard"/>.
+/// </summary>
+public class KeyboardKeyAssigner : IButtonAssigner
 {
-    /// <summary>
-    /// <see cref="IButtonAssigner"/> implementation for <see cref="IKeyboard"/>.
-    /// </summary>
-    public class KeyboardKeyAssigner : IButtonAssigner
+    private readonly IKeyboard _keyboard;
+
+    private KeyboardStateSnapshot _keyboardState;
+
+    public KeyboardKeyAssigner(IKeyboard keyboard)
     {
-        private readonly IKeyboard _keyboard;
+        _keyboard = keyboard;
+    }
 
-        private KeyboardStateSnapshot _keyboardState;
+    public void Initialize() { }
 
-        public KeyboardKeyAssigner(IKeyboard keyboard)
+    public void ReadInput()
+    {
+        _keyboardState = _keyboard.GetKeyboardStateSnapshot();
+    }
+
+    public bool IsAnyButtonPressed()
+    {
+        return GetPressedButton() is not null;
+    }
+
+    public bool ShouldCancel()
+    {
+        return _keyboardState.IsPressed(Key.Escape);
+    }
+
+    public Button? GetPressedButton()
+    {
+        Button? keyPressed = null;
+
+        for (Key key = Key.Unknown; key < Key.Count; key++)
         {
-            _keyboard = keyboard;
-        }
-
-        public void Initialize() { }
-
-        public void ReadInput()
-        {
-            _keyboardState = _keyboard.GetKeyboardStateSnapshot();
-        }
-
-        public bool IsAnyButtonPressed()
-        {
-            return GetPressedButton() is not null;
-        }
-
-        public bool ShouldCancel()
-        {
-            return _keyboardState.IsPressed(Key.Escape);
-        }
-
-        public Button? GetPressedButton()
-        {
-            Button? keyPressed = null;
-
-            for (Key key = Key.Unknown; key < Key.Count; key++)
+            if (_keyboardState.IsPressed(key))
             {
-                if (_keyboardState.IsPressed(key))
-                {
-                    keyPressed = new(key);
-                    break;
-                }
+                keyPressed = new(key);
+                break;
             }
-
-            return !ShouldCancel() ? keyPressed : null;
         }
+
+        return !ShouldCancel() ? keyPressed : null;
     }
 }

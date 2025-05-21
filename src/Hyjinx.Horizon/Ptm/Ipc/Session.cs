@@ -1,47 +1,46 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Ptm.Ipc;
 using Hyjinx.Horizon.Sdk.Sf;
 using Hyjinx.Horizon.Sdk.Ts;
+using Hyjinx.Logging.Abstractions;
 
-namespace Hyjinx.Horizon.Ts.Ipc
+namespace Hyjinx.Horizon.Ts.Ipc;
+
+partial class Session : ISession
 {
-    partial class Session : ISession
+    private readonly DeviceCode _deviceCode;
+
+    public Session(DeviceCode deviceCode)
     {
-        private readonly DeviceCode _deviceCode;
+        _deviceCode = deviceCode;
+    }
 
-        public Session(DeviceCode deviceCode)
-        {
-            _deviceCode = deviceCode;
-        }
+    [CmifCommand(0)]
+    public Result GetTemperatureRange(out int minimumTemperature, out int maximumTemperature)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode });
 
-        [CmifCommand(0)]
-        public Result GetTemperatureRange(out int minimumTemperature, out int maximumTemperature)
-        {
-            // Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode });
+        minimumTemperature = MeasurementServer.MinimumTemperature;
+        maximumTemperature = MeasurementServer.MaximumTemperature;
 
-            minimumTemperature = MeasurementServer.MinimumTemperature;
-            maximumTemperature = MeasurementServer.MaximumTemperature;
+        return Result.Success;
+    }
 
-            return Result.Success;
-        }
+    [CmifCommand(2)]
+    public Result SetMeasurementMode(byte measurementMode)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode, measurementMode });
 
-        [CmifCommand(2)]
-        public Result SetMeasurementMode(byte measurementMode)
-        {
-            // Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode, measurementMode });
+        return Result.Success;
+    }
 
-            return Result.Success;
-        }
+    [CmifCommand(4)]
+    public Result GetTemperature(out int temperature)
+    {
+        // Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode });
 
-        [CmifCommand(4)]
-        public Result GetTemperature(out int temperature)
-        {
-            // Logger.Stub?.PrintStub(LogClass.ServicePtm, new { _deviceCode });
+        temperature = MeasurementServer.DefaultTemperature;
 
-            temperature = MeasurementServer.DefaultTemperature;
-
-            return Result.Success;
-        }
+        return Result.Success;
     }
 }

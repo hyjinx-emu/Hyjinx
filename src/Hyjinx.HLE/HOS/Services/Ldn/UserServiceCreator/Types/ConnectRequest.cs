@@ -1,15 +1,14 @@
 using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x4FC)]
+struct ConnectRequest
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x4FC)]
-    struct ConnectRequest
-    {
-        public SecurityConfig SecurityConfig;
-        public UserConfig UserConfig;
-        public uint LocalCommunicationVersion;
-        public uint OptionUnknown;
-        public NetworkInfo NetworkInfo;
-    }
+    public SecurityConfig SecurityConfig;
+    public UserConfig UserConfig;
+    public uint LocalCommunicationVersion;
+    public uint OptionUnknown;
+    public NetworkInfo NetworkInfo;
 }

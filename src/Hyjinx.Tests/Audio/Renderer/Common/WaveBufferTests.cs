@@ -1,14 +1,13 @@
 using Hyjinx.Audio.Renderer.Common;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Audio.Renderer.Common
+namespace Hyjinx.Tests.Audio.Renderer.Common;
+
+class WaveBufferTests
 {
-    class WaveBufferTests
+    [Test]
+    public void EnsureTypeSize()
     {
-        [Test]
-        public void EnsureTypeSize()
-        {
-            ClassicAssert.AreEqual(0x30, Unsafe.SizeOf<WaveBuffer>());
-        }
+        ClassicAssert.AreEqual(0x30, Unsafe.SizeOf<WaveBuffer>());
     }
 }

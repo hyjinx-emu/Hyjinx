@@ -1,13 +1,12 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
-{
-    enum BsdSocketType
-    {
-        Stream = 1,
-        Dgram,
-        Raw,
-        Rdm,
-        Seqpacket,
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
 
-        TypeMask = 0xFFFFFFF,
-    }
+enum BsdSocketType
+{
+    Stream = 1,
+    Dgram,
+    Raw,
+    Rdm,
+    Seqpacket,
+
+    TypeMask = 0xFFFFFFF,
 }

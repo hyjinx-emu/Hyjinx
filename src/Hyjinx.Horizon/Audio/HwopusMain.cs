@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Audio
+namespace Hyjinx.Horizon.Audio;
+
+class HwopusMain : IService
 {
-    class HwopusMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            HwopusIpcServer ipcServer = new();
+        HwopusIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

@@ -1,4 +1,4 @@
-﻿using Hyjinx.Common.Memory;
+using Hyjinx.Common.Memory;
 using Hyjinx.HLE.Exceptions;
 using LibHac.Common;
 using LibHac.Fs;
@@ -29,11 +29,11 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
         {
             throw new FileNotFoundException("The file does not exist.");
         }
-        
+
         using var archive = ZipFile.OpenRead(source);
         InstallFromZip(archive, destination.FullName);
     }
-    
+
     private static void InstallFromZip(ZipArchive archive, string temporaryDirectory)
     {
         foreach (var entry in archive.Entries)
@@ -70,7 +70,7 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
         {
             throw new FileNotFoundException("The file does not exist.");
         }
-        
+
         using var archive = ZipFile.OpenRead(source);
 
         var result = VerifyAndGetVersionZip(archive);
@@ -81,12 +81,12 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
 
         return result;
     }
-    
+
     private SystemVersion? VerifyAndGetVersionZip(ZipArchive archive)
     {
         SystemVersion? systemVersion = null;
         Dictionary<ulong, List<(NcaContentType type, string path)>> updateNcas = new();
-        
+
         foreach (var entry in archive.Entries)
         {
             if (entry.FullName.EndsWith(".nca") || entry.FullName.EndsWith(".nca/00"))
@@ -242,7 +242,7 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
 
         return systemVersion;
     }
-    
+
     private static Stream GetZipStream(ZipArchiveEntry entry)
     {
         MemoryStream dest = MemoryStreamManager.Shared.GetStream();

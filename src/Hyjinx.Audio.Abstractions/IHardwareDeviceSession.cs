@@ -1,28 +1,27 @@
 using Hyjinx.Audio.Common;
 using System;
 
-namespace Hyjinx.Audio.Integration
+namespace Hyjinx.Audio.Integration;
+
+public interface IHardwareDeviceSession : IDisposable
 {
-    public interface IHardwareDeviceSession : IDisposable
-    {
-        bool RegisterBuffer(AudioBuffer buffer);
+    bool RegisterBuffer(AudioBuffer buffer);
 
-        void UnregisterBuffer(AudioBuffer buffer);
+    void UnregisterBuffer(AudioBuffer buffer);
 
-        void QueueBuffer(AudioBuffer buffer);
+    void QueueBuffer(AudioBuffer buffer);
 
-        bool WasBufferFullyConsumed(AudioBuffer buffer);
+    bool WasBufferFullyConsumed(AudioBuffer buffer);
 
-        void SetVolume(float volume);
+    void SetVolume(float volume);
 
-        float GetVolume();
+    float GetVolume();
 
-        ulong GetPlayedSampleCount();
+    ulong GetPlayedSampleCount();
 
-        void Start();
+    void Start();
 
-        void Stop();
+    void Stop();
 
-        void PrepareToClose();
-    }
+    void PrepareToClose();
 }

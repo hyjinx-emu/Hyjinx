@@ -1,4 +1,4 @@
-﻿using LibHac.Ncm;
+using LibHac.Ncm;
 
 namespace LibHac.Fs;
 

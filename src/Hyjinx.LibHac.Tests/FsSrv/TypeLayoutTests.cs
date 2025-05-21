@@ -1,8 +1,8 @@
-﻿using System.Runtime.CompilerServices;
 using LibHac.FsSrv;
 using LibHac.FsSrv.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.FsSrv.Storage;
+using System.Runtime.CompilerServices;
 using Xunit;
 using static LibHac.Tests.Common.Layout;
 

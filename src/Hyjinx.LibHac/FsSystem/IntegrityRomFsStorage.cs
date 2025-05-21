@@ -1,10 +1,10 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSrv;
 using LibHac.Os;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.FsSystem.HierarchicalIntegrityVerificationStorage;
 
 namespace LibHac.FsSystem;
@@ -66,7 +66,8 @@ public class IntegrityRomFsStorage : IStorage
         // Initialize our integrity storage.
         Result res = _integrityStorage.Initialize(in info, ref storageInfo, _bufferManagerSet, hashGeneratorFactory,
             false, _mutex, maxDataCacheEntries, maxHashCacheEntries, bufferLevel, false, false);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

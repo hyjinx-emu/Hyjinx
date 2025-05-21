@@ -1,7 +1,6 @@
-﻿using System;
 using LibHac.Diag;
 using LibHac.Fs;
-
+using System;
 using Buffer = LibHac.Mem.Buffer;
 using CacheHandle = System.UInt64;
 

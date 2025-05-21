@@ -1,4 +1,4 @@
-﻿namespace Hyjinx.UI.Common.Utilities;
+namespace Hyjinx.UI.Common.Utilities;
 
 public sealed partial class XCIFileTrimmer
 {

@@ -1,17 +1,16 @@
-namespace Hyjinx.Graphics.Shader.CodeGen
+namespace Hyjinx.Graphics.Shader.CodeGen;
+
+/// <summary>
+/// Shader code generation logging interface.
+/// </summary>
+public interface ILogger
 {
     /// <summary>
-    /// Shader code generation logging interface.
+    /// Prints a log message.
     /// </summary>
-    public interface ILogger
+    /// <param name="message">Message to print</param>
+    void Log(string message)
     {
-        /// <summary>
-        /// Prints a log message.
-        /// </summary>
-        /// <param name="message">Message to print</param>
-        void Log(string message)
-        {
-            // No default log output.
-        }
+        // No default log output.
     }
 }

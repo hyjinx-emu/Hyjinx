@@ -1,22 +1,21 @@
-namespace Hyjinx.Graphics.Shader
-{
-    public enum TessSpacing
-    {
-        EqualSpacing = 0,
-        FractionalEventSpacing = 1,
-        FractionalOddSpacing = 2,
-    }
+namespace Hyjinx.Graphics.Shader;
 
-    static class TessSpacingExtensions
+public enum TessSpacing
+{
+    EqualSpacing = 0,
+    FractionalEventSpacing = 1,
+    FractionalOddSpacing = 2,
+}
+
+static class TessSpacingExtensions
+{
+    public static string ToGlsl(this TessSpacing spacing)
     {
-        public static string ToGlsl(this TessSpacing spacing)
+        return spacing switch
         {
-            return spacing switch
-            {
-                TessSpacing.FractionalEventSpacing => "fractional_even_spacing",
-                TessSpacing.FractionalOddSpacing => "fractional_odd_spacing",
-                _ => "equal_spacing",
-            };
-        }
+            TessSpacing.FractionalEventSpacing => "fractional_even_spacing",
+            TessSpacing.FractionalOddSpacing => "fractional_odd_spacing",
+            _ => "equal_spacing",
+        };
     }
 }

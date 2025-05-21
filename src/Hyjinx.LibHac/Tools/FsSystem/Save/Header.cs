@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Fs;
+using System;
+using System.IO;
 
 namespace LibHac.Tools.FsSystem.Save;
 

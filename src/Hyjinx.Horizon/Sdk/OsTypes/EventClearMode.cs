@@ -1,8 +1,7 @@
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+enum EventClearMode
 {
-    enum EventClearMode
-    {
-        ManualClear,
-        AutoClear,
-    }
+    ManualClear,
+    AutoClear,
 }

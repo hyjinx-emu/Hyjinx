@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.Video
+namespace Hyjinx.Graphics.Video;
+
+public enum FrameField
 {
-    public enum FrameField
-    {
-        Progressive,
-        Interlaced,
-    }
+    Progressive,
+    Interlaced,
 }

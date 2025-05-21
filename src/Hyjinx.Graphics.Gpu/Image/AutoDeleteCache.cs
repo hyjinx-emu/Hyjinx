@@ -2,320 +2,319 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Hyjinx.Graphics.Gpu.Image
+namespace Hyjinx.Graphics.Gpu.Image;
+
+/// <summary>
+/// An entry on the short duration texture cache.
+/// </summary>
+class ShortTextureCacheEntry
 {
+    public bool IsAutoDelete;
+    public readonly TextureDescriptor Descriptor;
+    public readonly int InvalidatedSequence;
+    public readonly Texture Texture;
+
     /// <summary>
-    /// An entry on the short duration texture cache.
+    /// Create a new entry on the short duration texture cache.
     /// </summary>
-    class ShortTextureCacheEntry
+    /// <param name="descriptor">Last descriptor that referenced the texture</param>
+    /// <param name="texture">The texture</param>
+    public ShortTextureCacheEntry(TextureDescriptor descriptor, Texture texture)
     {
-        public bool IsAutoDelete;
-        public readonly TextureDescriptor Descriptor;
-        public readonly int InvalidatedSequence;
-        public readonly Texture Texture;
+        Descriptor = descriptor;
+        InvalidatedSequence = texture.InvalidatedSequence;
+        Texture = texture;
+    }
 
-        /// <summary>
-        /// Create a new entry on the short duration texture cache.
-        /// </summary>
-        /// <param name="descriptor">Last descriptor that referenced the texture</param>
-        /// <param name="texture">The texture</param>
-        public ShortTextureCacheEntry(TextureDescriptor descriptor, Texture texture)
-        {
-            Descriptor = descriptor;
-            InvalidatedSequence = texture.InvalidatedSequence;
-            Texture = texture;
-        }
+    /// <summary>
+    /// Create a new entry on the short duration texture cache from the auto delete cache.
+    /// </summary>
+    /// <param name="texture">The texture</param>
+    public ShortTextureCacheEntry(Texture texture)
+    {
+        IsAutoDelete = true;
+        InvalidatedSequence = texture.InvalidatedSequence;
+        Texture = texture;
+    }
+}
 
-        /// <summary>
-        /// Create a new entry on the short duration texture cache from the auto delete cache.
-        /// </summary>
-        /// <param name="texture">The texture</param>
-        public ShortTextureCacheEntry(Texture texture)
+/// <summary>
+/// A texture cache that automatically removes older textures that are not used for some time.
+/// The cache works with a rotated list with a fixed size. When new textures are added, the
+/// old ones at the bottom of the list are deleted.
+/// </summary>
+class AutoDeleteCache : IEnumerable<Texture>
+{
+    private const int MinCountForDeletion = 32;
+    private const int MaxCapacity = 2048;
+    private const ulong MinTextureSizeCapacity = 512 * 1024 * 1024;
+    private const ulong MaxTextureSizeCapacity = 4UL * 1024 * 1024 * 1024;
+    private const ulong DefaultTextureSizeCapacity = 1UL * 1024 * 1024 * 1024;
+    private const float MemoryScaleFactor = 0.50f;
+    private ulong _maxCacheMemoryUsage = 0;
+
+    private readonly LinkedList<Texture> _textures;
+    private ulong _totalSize;
+
+    private HashSet<ShortTextureCacheEntry> _shortCacheBuilder;
+    private HashSet<ShortTextureCacheEntry> _shortCache;
+
+    private readonly Dictionary<TextureDescriptor, ShortTextureCacheEntry> _shortCacheLookup;
+
+    /// <summary>
+    /// Initializes the cache, setting the maximum texture capacity for the specified GPU context.
+    /// </summary>
+    /// <remarks>
+    /// If the backend GPU has 0 memory capacity, the cache size defaults to `DefaultTextureSizeCapacity`.
+    /// </remarks>
+    /// <param name="context">The GPU context that the cache belongs to</param>
+    public void Initialize(GpuContext context)
+    {
+        var cacheMemory = (ulong)(context.Capabilities.MaximumGpuMemory * MemoryScaleFactor);
+
+        _maxCacheMemoryUsage = Math.Clamp(cacheMemory, MinTextureSizeCapacity, MaxTextureSizeCapacity);
+
+        if (context.Capabilities.MaximumGpuMemory == 0)
         {
-            IsAutoDelete = true;
-            InvalidatedSequence = texture.InvalidatedSequence;
-            Texture = texture;
+            _maxCacheMemoryUsage = DefaultTextureSizeCapacity;
         }
     }
 
     /// <summary>
-    /// A texture cache that automatically removes older textures that are not used for some time.
-    /// The cache works with a rotated list with a fixed size. When new textures are added, the
-    /// old ones at the bottom of the list are deleted.
+    /// Creates a new instance of the automatic deletion cache.
     /// </summary>
-    class AutoDeleteCache : IEnumerable<Texture>
+    public AutoDeleteCache()
     {
-        private const int MinCountForDeletion = 32;
-        private const int MaxCapacity = 2048;
-        private const ulong MinTextureSizeCapacity = 512 * 1024 * 1024;
-        private const ulong MaxTextureSizeCapacity = 4UL * 1024 * 1024 * 1024;
-        private const ulong DefaultTextureSizeCapacity = 1UL * 1024 * 1024 * 1024;
-        private const float MemoryScaleFactor = 0.50f;
-        private ulong _maxCacheMemoryUsage = 0;
+        _textures = new LinkedList<Texture>();
 
-        private readonly LinkedList<Texture> _textures;
-        private ulong _totalSize;
+        _shortCacheBuilder = new HashSet<ShortTextureCacheEntry>();
+        _shortCache = new HashSet<ShortTextureCacheEntry>();
 
-        private HashSet<ShortTextureCacheEntry> _shortCacheBuilder;
-        private HashSet<ShortTextureCacheEntry> _shortCache;
+        _shortCacheLookup = new Dictionary<TextureDescriptor, ShortTextureCacheEntry>();
+    }
 
-        private readonly Dictionary<TextureDescriptor, ShortTextureCacheEntry> _shortCacheLookup;
+    /// <summary>
+    /// Adds a new texture to the cache, even if the texture added is already on the cache.
+    /// </summary>
+    /// <remarks>
+    /// Using this method is only recommended if you know that the texture is not yet on the cache,
+    /// otherwise it would store the same texture more than once.
+    /// </remarks>
+    /// <param name="texture">The texture to be added to the cache</param>
+    public void Add(Texture texture)
+    {
+        _totalSize += texture.Size;
 
-        /// <summary>
-        /// Initializes the cache, setting the maximum texture capacity for the specified GPU context.
-        /// </summary>
-        /// <remarks>
-        /// If the backend GPU has 0 memory capacity, the cache size defaults to `DefaultTextureSizeCapacity`.
-        /// </remarks>
-        /// <param name="context">The GPU context that the cache belongs to</param>
-        public void Initialize(GpuContext context)
+        texture.IncrementReferenceCount();
+        texture.CacheNode = _textures.AddLast(texture);
+
+        if (_textures.Count > MaxCapacity ||
+            (_totalSize > _maxCacheMemoryUsage && _textures.Count >= MinCountForDeletion))
         {
-            var cacheMemory = (ulong)(context.Capabilities.MaximumGpuMemory * MemoryScaleFactor);
+            RemoveLeastUsedTexture();
+        }
+    }
 
-            _maxCacheMemoryUsage = Math.Clamp(cacheMemory, MinTextureSizeCapacity, MaxTextureSizeCapacity);
-
-            if (context.Capabilities.MaximumGpuMemory == 0)
+    /// <summary>
+    /// Adds a new texture to the cache, or just moves it to the top of the list if the
+    /// texture is already on the cache.
+    /// </summary>
+    /// <remarks>
+    /// Moving the texture to the top of the list prevents it from being deleted,
+    /// as the textures on the bottom of the list are deleted when new ones are added.
+    /// </remarks>
+    /// <param name="texture">The texture to be added, or moved to the top</param>
+    public void Lift(Texture texture)
+    {
+        if (texture.CacheNode != null)
+        {
+            if (texture.CacheNode != _textures.Last)
             {
-                _maxCacheMemoryUsage = DefaultTextureSizeCapacity;
+                _textures.Remove(texture.CacheNode);
+                _textures.AddLast(texture.CacheNode);
             }
-        }
 
-        /// <summary>
-        /// Creates a new instance of the automatic deletion cache.
-        /// </summary>
-        public AutoDeleteCache()
-        {
-            _textures = new LinkedList<Texture>();
-
-            _shortCacheBuilder = new HashSet<ShortTextureCacheEntry>();
-            _shortCache = new HashSet<ShortTextureCacheEntry>();
-
-            _shortCacheLookup = new Dictionary<TextureDescriptor, ShortTextureCacheEntry>();
-        }
-
-        /// <summary>
-        /// Adds a new texture to the cache, even if the texture added is already on the cache.
-        /// </summary>
-        /// <remarks>
-        /// Using this method is only recommended if you know that the texture is not yet on the cache,
-        /// otherwise it would store the same texture more than once.
-        /// </remarks>
-        /// <param name="texture">The texture to be added to the cache</param>
-        public void Add(Texture texture)
-        {
-            _totalSize += texture.Size;
-
-            texture.IncrementReferenceCount();
-            texture.CacheNode = _textures.AddLast(texture);
-
-            if (_textures.Count > MaxCapacity ||
-                (_totalSize > _maxCacheMemoryUsage && _textures.Count >= MinCountForDeletion))
+            if (_totalSize > _maxCacheMemoryUsage && _textures.Count >= MinCountForDeletion)
             {
                 RemoveLeastUsedTexture();
             }
         }
-
-        /// <summary>
-        /// Adds a new texture to the cache, or just moves it to the top of the list if the
-        /// texture is already on the cache.
-        /// </summary>
-        /// <remarks>
-        /// Moving the texture to the top of the list prevents it from being deleted,
-        /// as the textures on the bottom of the list are deleted when new ones are added.
-        /// </remarks>
-        /// <param name="texture">The texture to be added, or moved to the top</param>
-        public void Lift(Texture texture)
+        else
         {
-            if (texture.CacheNode != null)
-            {
-                if (texture.CacheNode != _textures.Last)
-                {
-                    _textures.Remove(texture.CacheNode);
-                    _textures.AddLast(texture.CacheNode);
-                }
+            Add(texture);
+        }
+    }
 
-                if (_totalSize > _maxCacheMemoryUsage && _textures.Count >= MinCountForDeletion)
-                {
-                    RemoveLeastUsedTexture();
-                }
+    /// <summary>
+    /// Removes the least used texture from the cache.
+    /// </summary>
+    private void RemoveLeastUsedTexture()
+    {
+        Texture oldestTexture = _textures.First.Value;
+
+        _totalSize -= oldestTexture.Size;
+
+        if (!oldestTexture.CheckModified(false))
+        {
+            // The texture must be flushed if it falls out of the auto delete cache.
+            // Flushes out of the auto delete cache do not trigger write tracking,
+            // as it is expected that other overlapping textures exist that have more up-to-date contents.
+
+            oldestTexture.Group.SynchronizeDependents(oldestTexture);
+            oldestTexture.FlushModified(false);
+        }
+
+        _textures.RemoveFirst();
+
+        oldestTexture.DecrementReferenceCount();
+        oldestTexture.CacheNode = null;
+    }
+
+    /// <summary>
+    /// Removes a texture from the cache.
+    /// </summary>
+    /// <param name="texture">The texture to be removed from the cache</param>
+    /// <param name="flush">True to remove the texture if it was on the cache</param>
+    /// <returns>True if the texture was found and removed, false otherwise</returns>
+    public bool Remove(Texture texture, bool flush)
+    {
+        if (texture.CacheNode == null)
+        {
+            return false;
+        }
+
+        // Remove our reference to this texture.
+        if (flush)
+        {
+            texture.FlushModified(false);
+        }
+
+        _textures.Remove(texture.CacheNode);
+
+        _totalSize -= texture.Size;
+
+        texture.CacheNode = null;
+
+        return texture.DecrementReferenceCount();
+    }
+
+    /// <summary>
+    /// Attempt to find a texture on the short duration cache.
+    /// </summary>
+    /// <param name="descriptor">The texture descriptor</param>
+    /// <returns>The texture if found, null otherwise</returns>
+    public Texture FindShortCache(in TextureDescriptor descriptor)
+    {
+        if (_shortCacheLookup.Count > 0 && _shortCacheLookup.TryGetValue(descriptor, out var entry))
+        {
+            if (entry.InvalidatedSequence == entry.Texture.InvalidatedSequence)
+            {
+                return entry.Texture;
             }
             else
             {
-                Add(texture);
+                _shortCacheLookup.Remove(descriptor);
             }
         }
 
-        /// <summary>
-        /// Removes the least used texture from the cache.
-        /// </summary>
-        private void RemoveLeastUsedTexture()
+        return null;
+    }
+
+    /// <summary>
+    /// Removes a texture from the short duration cache.
+    /// </summary>
+    /// <param name="texture">Texture to remove from the short cache</param>
+    public void RemoveShortCache(Texture texture)
+    {
+        bool removed = _shortCache.Remove(texture.ShortCacheEntry);
+        removed |= _shortCacheBuilder.Remove(texture.ShortCacheEntry);
+
+        if (removed)
         {
-            Texture oldestTexture = _textures.First.Value;
+            texture.DecrementReferenceCount();
 
-            _totalSize -= oldestTexture.Size;
-
-            if (!oldestTexture.CheckModified(false))
+            if (!texture.ShortCacheEntry.IsAutoDelete)
             {
-                // The texture must be flushed if it falls out of the auto delete cache.
-                // Flushes out of the auto delete cache do not trigger write tracking,
-                // as it is expected that other overlapping textures exist that have more up-to-date contents.
-
-                oldestTexture.Group.SynchronizeDependents(oldestTexture);
-                oldestTexture.FlushModified(false);
+                _shortCacheLookup.Remove(texture.ShortCacheEntry.Descriptor);
             }
 
-            _textures.RemoveFirst();
-
-            oldestTexture.DecrementReferenceCount();
-            oldestTexture.CacheNode = null;
+            texture.ShortCacheEntry = null;
         }
+    }
 
-        /// <summary>
-        /// Removes a texture from the cache.
-        /// </summary>
-        /// <param name="texture">The texture to be removed from the cache</param>
-        /// <param name="flush">True to remove the texture if it was on the cache</param>
-        /// <returns>True if the texture was found and removed, false otherwise</returns>
-        public bool Remove(Texture texture, bool flush)
+    /// <summary>
+    /// Adds a texture to the short duration cache.
+    /// It starts in the builder set, and it is moved into the deletion set on next process.
+    /// </summary>
+    /// <param name="texture">Texture to add to the short cache</param>
+    /// <param name="descriptor">Last used texture descriptor</param>
+    public void AddShortCache(Texture texture, ref TextureDescriptor descriptor)
+    {
+        var entry = new ShortTextureCacheEntry(descriptor, texture);
+
+        _shortCacheBuilder.Add(entry);
+        _shortCacheLookup.Add(entry.Descriptor, entry);
+
+        texture.ShortCacheEntry = entry;
+
+        texture.IncrementReferenceCount();
+    }
+
+    /// <summary>
+    /// Adds a texture to the short duration cache without a descriptor. This typically keeps it alive for two ticks.
+    /// On expiry, it will be removed from the AutoDeleteCache.
+    /// </summary>
+    /// <param name="texture">Texture to add to the short cache</param>
+    public void AddShortCache(Texture texture)
+    {
+        if (texture.ShortCacheEntry != null)
         {
-            if (texture.CacheNode == null)
-            {
-                return false;
-            }
-
-            // Remove our reference to this texture.
-            if (flush)
-            {
-                texture.FlushModified(false);
-            }
-
-            _textures.Remove(texture.CacheNode);
-
-            _totalSize -= texture.Size;
-
-            texture.CacheNode = null;
-
-            return texture.DecrementReferenceCount();
-        }
-
-        /// <summary>
-        /// Attempt to find a texture on the short duration cache.
-        /// </summary>
-        /// <param name="descriptor">The texture descriptor</param>
-        /// <returns>The texture if found, null otherwise</returns>
-        public Texture FindShortCache(in TextureDescriptor descriptor)
-        {
-            if (_shortCacheLookup.Count > 0 && _shortCacheLookup.TryGetValue(descriptor, out var entry))
-            {
-                if (entry.InvalidatedSequence == entry.Texture.InvalidatedSequence)
-                {
-                    return entry.Texture;
-                }
-                else
-                {
-                    _shortCacheLookup.Remove(descriptor);
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Removes a texture from the short duration cache.
-        /// </summary>
-        /// <param name="texture">Texture to remove from the short cache</param>
-        public void RemoveShortCache(Texture texture)
-        {
-            bool removed = _shortCache.Remove(texture.ShortCacheEntry);
-            removed |= _shortCacheBuilder.Remove(texture.ShortCacheEntry);
-
-            if (removed)
-            {
-                texture.DecrementReferenceCount();
-
-                if (!texture.ShortCacheEntry.IsAutoDelete)
-                {
-                    _shortCacheLookup.Remove(texture.ShortCacheEntry.Descriptor);
-                }
-
-                texture.ShortCacheEntry = null;
-            }
-        }
-
-        /// <summary>
-        /// Adds a texture to the short duration cache.
-        /// It starts in the builder set, and it is moved into the deletion set on next process.
-        /// </summary>
-        /// <param name="texture">Texture to add to the short cache</param>
-        /// <param name="descriptor">Last used texture descriptor</param>
-        public void AddShortCache(Texture texture, ref TextureDescriptor descriptor)
-        {
-            var entry = new ShortTextureCacheEntry(descriptor, texture);
+            var entry = new ShortTextureCacheEntry(texture);
 
             _shortCacheBuilder.Add(entry);
-            _shortCacheLookup.Add(entry.Descriptor, entry);
 
             texture.ShortCacheEntry = entry;
 
             texture.IncrementReferenceCount();
         }
+    }
 
-        /// <summary>
-        /// Adds a texture to the short duration cache without a descriptor. This typically keeps it alive for two ticks.
-        /// On expiry, it will be removed from the AutoDeleteCache.
-        /// </summary>
-        /// <param name="texture">Texture to add to the short cache</param>
-        public void AddShortCache(Texture texture)
+    /// <summary>
+    /// Delete textures from the short duration cache.
+    /// Moves the builder set to be deleted on next process.
+    /// </summary>
+    public void ProcessShortCache()
+    {
+        HashSet<ShortTextureCacheEntry> toRemove = _shortCache;
+
+        foreach (var entry in toRemove)
         {
-            if (texture.ShortCacheEntry != null)
+            entry.Texture.DecrementReferenceCount();
+
+            if (entry.IsAutoDelete)
             {
-                var entry = new ShortTextureCacheEntry(texture);
-
-                _shortCacheBuilder.Add(entry);
-
-                texture.ShortCacheEntry = entry;
-
-                texture.IncrementReferenceCount();
+                Remove(entry.Texture, false);
             }
-        }
-
-        /// <summary>
-        /// Delete textures from the short duration cache.
-        /// Moves the builder set to be deleted on next process.
-        /// </summary>
-        public void ProcessShortCache()
-        {
-            HashSet<ShortTextureCacheEntry> toRemove = _shortCache;
-
-            foreach (var entry in toRemove)
+            else
             {
-                entry.Texture.DecrementReferenceCount();
-
-                if (entry.IsAutoDelete)
-                {
-                    Remove(entry.Texture, false);
-                }
-                else
-                {
-                    _shortCacheLookup.Remove(entry.Descriptor);
-                }
-
-                entry.Texture.ShortCacheEntry = null;
+                _shortCacheLookup.Remove(entry.Descriptor);
             }
 
-            toRemove.Clear();
-            _shortCache = _shortCacheBuilder;
-            _shortCacheBuilder = toRemove;
+            entry.Texture.ShortCacheEntry = null;
         }
 
-        public IEnumerator<Texture> GetEnumerator()
-        {
-            return _textures.GetEnumerator();
-        }
+        toRemove.Clear();
+        _shortCache = _shortCacheBuilder;
+        _shortCacheBuilder = toRemove;
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _textures.GetEnumerator();
-        }
+    public IEnumerator<Texture> GetEnumerator()
+    {
+        return _textures.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return _textures.GetEnumerator();
     }
 }

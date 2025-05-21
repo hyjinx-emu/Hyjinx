@@ -1,7 +1,7 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.FsSrv.Sf;
 using LibHac.Sf;
+using System;
 
 namespace LibHac.Fs.Shim;
 
@@ -29,7 +29,8 @@ public static class ProgramIndexMapInfoShim
 
         Result res = fileSystemProxy.Get.RegisterProgramIndexMapInfo(InBuffer.FromSpan(mapInfo), mapInfo.Length);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

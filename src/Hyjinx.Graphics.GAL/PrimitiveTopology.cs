@@ -1,21 +1,20 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum PrimitiveTopology
 {
-    public enum PrimitiveTopology
-    {
-        Points,
-        Lines,
-        LineLoop,
-        LineStrip,
-        Triangles,
-        TriangleStrip,
-        TriangleFan,
-        Quads,
-        QuadStrip,
-        Polygon,
-        LinesAdjacency,
-        LineStripAdjacency,
-        TrianglesAdjacency,
-        TriangleStripAdjacency,
-        Patches,
-    }
+    Points,
+    Lines,
+    LineLoop,
+    LineStrip,
+    Triangles,
+    TriangleStrip,
+    TriangleFan,
+    Quads,
+    QuadStrip,
+    Polygon,
+    LinesAdjacency,
+    LineStripAdjacency,
+    TrianglesAdjacency,
+    TriangleStripAdjacency,
+    Patches,
 }

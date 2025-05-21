@@ -1,281 +1,280 @@
 using System.IO;
 using System.Text;
 
-namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
+
+internal class InlineResponses
 {
-    internal class InlineResponses
+    private const uint MaxStrLenUTF8 = 0x7D4;
+    private const uint MaxStrLenUTF16 = 0x3EC;
+
+    private static void BeginResponse(InlineKeyboardState state, InlineKeyboardResponse resCode, BinaryWriter writer)
     {
-        private const uint MaxStrLenUTF8 = 0x7D4;
-        private const uint MaxStrLenUTF16 = 0x3EC;
+        writer.Write((uint)state);
+        writer.Write((uint)resCode);
+    }
 
-        private static void BeginResponse(InlineKeyboardState state, InlineKeyboardResponse resCode, BinaryWriter writer)
+    private static uint WriteString(string text, BinaryWriter writer, uint maxSize, Encoding encoding)
+    {
+        // Ensure the text fits in the buffer, but do not straight cut the bytes because
+        // this may corrupt the encoding. Search for a cut in the source string that fits.
+
+        byte[] bytes = null;
+
+        for (int maxStr = text.Length; maxStr >= 0; maxStr--)
         {
-            writer.Write((uint)state);
-            writer.Write((uint)resCode);
-        }
-
-        private static uint WriteString(string text, BinaryWriter writer, uint maxSize, Encoding encoding)
-        {
-            // Ensure the text fits in the buffer, but do not straight cut the bytes because
-            // this may corrupt the encoding. Search for a cut in the source string that fits.
-
-            byte[] bytes = null;
-
-            for (int maxStr = text.Length; maxStr >= 0; maxStr--)
+            // This loop will probably will run only once.
+            bytes = encoding.GetBytes(text, 0, maxStr);
+            if (bytes.Length <= maxSize)
             {
-                // This loop will probably will run only once.
-                bytes = encoding.GetBytes(text, 0, maxStr);
-                if (bytes.Length <= maxSize)
-                {
-                    break;
-                }
+                break;
             }
-
-            writer.Write(bytes);
-            writer.Seek((int)maxSize - bytes.Length, SeekOrigin.Current);
-            writer.Write((uint)text.Length); // String size
-
-            return (uint)text.Length; // Return the cursor position at the end of the text
         }
 
-        private static void WriteStringWithCursor(string text, uint cursor, BinaryWriter writer, uint maxSize, Encoding encoding, bool padMiddle)
+        writer.Write(bytes);
+        writer.Seek((int)maxSize - bytes.Length, SeekOrigin.Current);
+        writer.Write((uint)text.Length); // String size
+
+        return (uint)text.Length; // Return the cursor position at the end of the text
+    }
+
+    private static void WriteStringWithCursor(string text, uint cursor, BinaryWriter writer, uint maxSize, Encoding encoding, bool padMiddle)
+    {
+        uint length = WriteString(text, writer, maxSize, encoding);
+
+        if (cursor > length)
         {
-            uint length = WriteString(text, writer, maxSize, encoding);
-
-            if (cursor > length)
-            {
-                cursor = length;
-            }
-
-            if (padMiddle)
-            {
-                writer.Write((int)-1); // ?
-                writer.Write((int)-1); // ?
-            }
-
-            writer.Write(cursor); // Cursor position
+            cursor = length;
         }
 
-        public static byte[] FinishedInitialize(InlineKeyboardState state)
+        if (padMiddle)
         {
-            uint resSize = 2 * sizeof(uint) + 0x1;
-
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
-
-            BeginResponse(state, InlineKeyboardResponse.FinishedInitialize, writer);
-            writer.Write((byte)1); // Data (ignored by the program)
-
-            return stream.ToArray();
+            writer.Write((int)-1); // ?
+            writer.Write((int)-1); // ?
         }
 
-        public static byte[] Default(InlineKeyboardState state)
-        {
-            uint resSize = 2 * sizeof(uint);
+        writer.Write(cursor); // Cursor position
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] FinishedInitialize(InlineKeyboardState state)
+    {
+        uint resSize = 2 * sizeof(uint) + 0x1;
 
-            BeginResponse(state, InlineKeyboardResponse.Default, writer);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.FinishedInitialize, writer);
+        writer.Write((byte)1); // Data (ignored by the program)
 
-        public static byte[] ChangedString(string text, uint cursor, InlineKeyboardState state)
-        {
-            uint resSize = 6 * sizeof(uint) + MaxStrLenUTF16;
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] Default(InlineKeyboardState state)
+    {
+        uint resSize = 2 * sizeof(uint);
 
-            BeginResponse(state, InlineKeyboardResponse.ChangedString, writer);
-            WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, true);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.Default, writer);
 
-        public static byte[] MovedCursor(string text, uint cursor, InlineKeyboardState state)
-        {
-            uint resSize = 4 * sizeof(uint) + MaxStrLenUTF16;
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] ChangedString(string text, uint cursor, InlineKeyboardState state)
+    {
+        uint resSize = 6 * sizeof(uint) + MaxStrLenUTF16;
 
-            BeginResponse(state, InlineKeyboardResponse.MovedCursor, writer);
-            WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, false);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.ChangedString, writer);
+        WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, true);
 
-        public static byte[] MovedTab(string text, uint cursor, InlineKeyboardState state)
-        {
-            // Should be the same as MovedCursor.
+        return stream.ToArray();
+    }
 
-            uint resSize = 4 * sizeof(uint) + MaxStrLenUTF16;
+    public static byte[] MovedCursor(string text, uint cursor, InlineKeyboardState state)
+    {
+        uint resSize = 4 * sizeof(uint) + MaxStrLenUTF16;
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            BeginResponse(state, InlineKeyboardResponse.MovedTab, writer);
-            WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, false);
+        BeginResponse(state, InlineKeyboardResponse.MovedCursor, writer);
+        WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, false);
 
-            return stream.ToArray();
-        }
+        return stream.ToArray();
+    }
 
-        public static byte[] DecidedEnter(string text, InlineKeyboardState state)
-        {
-            uint resSize = 3 * sizeof(uint) + MaxStrLenUTF16;
+    public static byte[] MovedTab(string text, uint cursor, InlineKeyboardState state)
+    {
+        // Should be the same as MovedCursor.
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+        uint resSize = 4 * sizeof(uint) + MaxStrLenUTF16;
 
-            BeginResponse(state, InlineKeyboardResponse.DecidedEnter, writer);
-            WriteString(text, writer, MaxStrLenUTF16, Encoding.Unicode);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.MovedTab, writer);
+        WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, false);
 
-        public static byte[] DecidedCancel(InlineKeyboardState state)
-        {
-            uint resSize = 2 * sizeof(uint);
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] DecidedEnter(string text, InlineKeyboardState state)
+    {
+        uint resSize = 3 * sizeof(uint) + MaxStrLenUTF16;
 
-            BeginResponse(state, InlineKeyboardResponse.DecidedCancel, writer);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.DecidedEnter, writer);
+        WriteString(text, writer, MaxStrLenUTF16, Encoding.Unicode);
 
-        public static byte[] ChangedStringUtf8(string text, uint cursor, InlineKeyboardState state)
-        {
-            uint resSize = 6 * sizeof(uint) + MaxStrLenUTF8;
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] DecidedCancel(InlineKeyboardState state)
+    {
+        uint resSize = 2 * sizeof(uint);
 
-            BeginResponse(state, InlineKeyboardResponse.ChangedStringUtf8, writer);
-            WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF8, Encoding.UTF8, true);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.DecidedCancel, writer);
 
-        public static byte[] MovedCursorUtf8(string text, uint cursor, InlineKeyboardState state)
-        {
-            uint resSize = 4 * sizeof(uint) + MaxStrLenUTF8;
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] ChangedStringUtf8(string text, uint cursor, InlineKeyboardState state)
+    {
+        uint resSize = 6 * sizeof(uint) + MaxStrLenUTF8;
 
-            BeginResponse(state, InlineKeyboardResponse.MovedCursorUtf8, writer);
-            WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF8, Encoding.UTF8, false);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.ChangedStringUtf8, writer);
+        WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF8, Encoding.UTF8, true);
 
-        public static byte[] DecidedEnterUtf8(string text, InlineKeyboardState state)
-        {
-            uint resSize = 3 * sizeof(uint) + MaxStrLenUTF8;
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] MovedCursorUtf8(string text, uint cursor, InlineKeyboardState state)
+    {
+        uint resSize = 4 * sizeof(uint) + MaxStrLenUTF8;
 
-            BeginResponse(state, InlineKeyboardResponse.DecidedEnterUtf8, writer);
-            WriteString(text, writer, MaxStrLenUTF8, Encoding.UTF8);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.MovedCursorUtf8, writer);
+        WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF8, Encoding.UTF8, false);
 
-        public static byte[] UnsetCustomizeDic(InlineKeyboardState state)
-        {
-            uint resSize = 2 * sizeof(uint);
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] DecidedEnterUtf8(string text, InlineKeyboardState state)
+    {
+        uint resSize = 3 * sizeof(uint) + MaxStrLenUTF8;
 
-            BeginResponse(state, InlineKeyboardResponse.UnsetCustomizeDic, writer);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.DecidedEnterUtf8, writer);
+        WriteString(text, writer, MaxStrLenUTF8, Encoding.UTF8);
 
-        public static byte[] ReleasedUserWordInfo(InlineKeyboardState state)
-        {
-            uint resSize = 2 * sizeof(uint);
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] UnsetCustomizeDic(InlineKeyboardState state)
+    {
+        uint resSize = 2 * sizeof(uint);
 
-            BeginResponse(state, InlineKeyboardResponse.ReleasedUserWordInfo, writer);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.UnsetCustomizeDic, writer);
 
-        public static byte[] UnsetCustomizedDictionaries(InlineKeyboardState state)
-        {
-            uint resSize = 2 * sizeof(uint);
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] ReleasedUserWordInfo(InlineKeyboardState state)
+    {
+        uint resSize = 2 * sizeof(uint);
 
-            BeginResponse(state, InlineKeyboardResponse.UnsetCustomizedDictionaries, writer);
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.ReleasedUserWordInfo, writer);
 
-        public static byte[] ChangedStringV2(string text, uint cursor, InlineKeyboardState state)
-        {
-            uint resSize = 6 * sizeof(uint) + MaxStrLenUTF16 + 0x1;
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] UnsetCustomizedDictionaries(InlineKeyboardState state)
+    {
+        uint resSize = 2 * sizeof(uint);
 
-            BeginResponse(state, InlineKeyboardResponse.ChangedStringV2, writer);
-            WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, true);
-            writer.Write((byte)0); // Flag == 0
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.UnsetCustomizedDictionaries, writer);
 
-        public static byte[] MovedCursorV2(string text, uint cursor, InlineKeyboardState state)
-        {
-            uint resSize = 4 * sizeof(uint) + MaxStrLenUTF16 + 0x1;
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] ChangedStringV2(string text, uint cursor, InlineKeyboardState state)
+    {
+        uint resSize = 6 * sizeof(uint) + MaxStrLenUTF16 + 0x1;
 
-            BeginResponse(state, InlineKeyboardResponse.MovedCursorV2, writer);
-            WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, false);
-            writer.Write((byte)0); // Flag == 0
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.ChangedStringV2, writer);
+        WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, true);
+        writer.Write((byte)0); // Flag == 0
 
-        public static byte[] ChangedStringUtf8V2(string text, uint cursor, InlineKeyboardState state)
-        {
-            uint resSize = 6 * sizeof(uint) + MaxStrLenUTF8 + 0x1;
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] MovedCursorV2(string text, uint cursor, InlineKeyboardState state)
+    {
+        uint resSize = 4 * sizeof(uint) + MaxStrLenUTF16 + 0x1;
 
-            BeginResponse(state, InlineKeyboardResponse.ChangedStringUtf8V2, writer);
-            WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF8, Encoding.UTF8, true);
-            writer.Write((byte)0); // Flag == 0
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.MovedCursorV2, writer);
+        WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF16, Encoding.Unicode, false);
+        writer.Write((byte)0); // Flag == 0
 
-        public static byte[] MovedCursorUtf8V2(string text, uint cursor, InlineKeyboardState state)
-        {
-            uint resSize = 4 * sizeof(uint) + MaxStrLenUTF8 + 0x1;
+        return stream.ToArray();
+    }
 
-            using MemoryStream stream = new(new byte[resSize]);
-            using BinaryWriter writer = new(stream);
+    public static byte[] ChangedStringUtf8V2(string text, uint cursor, InlineKeyboardState state)
+    {
+        uint resSize = 6 * sizeof(uint) + MaxStrLenUTF8 + 0x1;
 
-            BeginResponse(state, InlineKeyboardResponse.MovedCursorUtf8V2, writer);
-            WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF8, Encoding.UTF8, false);
-            writer.Write((byte)0); // Flag == 0
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
 
-            return stream.ToArray();
-        }
+        BeginResponse(state, InlineKeyboardResponse.ChangedStringUtf8V2, writer);
+        WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF8, Encoding.UTF8, true);
+        writer.Write((byte)0); // Flag == 0
+
+        return stream.ToArray();
+    }
+
+    public static byte[] MovedCursorUtf8V2(string text, uint cursor, InlineKeyboardState state)
+    {
+        uint resSize = 4 * sizeof(uint) + MaxStrLenUTF8 + 0x1;
+
+        using MemoryStream stream = new(new byte[resSize]);
+        using BinaryWriter writer = new(stream);
+
+        BeginResponse(state, InlineKeyboardResponse.MovedCursorUtf8V2, writer);
+        WriteStringWithCursor(text, cursor, writer, MaxStrLenUTF8, Encoding.UTF8, false);
+        writer.Write((byte)0); // Flag == 0
+
+        return stream.ToArray();
     }
 }

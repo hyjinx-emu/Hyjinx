@@ -1,11 +1,10 @@
-namespace Hyjinx.Horizon.Sdk.Sf.Cmif
+namespace Hyjinx.Horizon.Sdk.Sf.Cmif;
+
+class InlineContext
 {
-    class InlineContext
+    public static int Set(int newContext)
     {
-        public static int Set(int newContext)
-        {
-            // TODO: Implement (will require FS changes???)
-            return newContext;
-        }
+        // TODO: Implement (will require FS changes???)
+        return newContext;
     }
 }

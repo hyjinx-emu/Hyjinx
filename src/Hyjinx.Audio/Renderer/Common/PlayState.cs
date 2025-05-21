@@ -1,23 +1,22 @@
-namespace Hyjinx.Audio.Renderer.Common
+namespace Hyjinx.Audio.Renderer.Common;
+
+/// <summary>
+/// Common play state.
+/// </summary>
+public enum PlayState : byte
 {
     /// <summary>
-    /// Common play state.
+    /// The user request the voice to be started.
     /// </summary>
-    public enum PlayState : byte
-    {
-        /// <summary>
-        /// The user request the voice to be started.
-        /// </summary>
-        Start,
+    Start,
 
-        /// <summary>
-        /// The user request the voice to be stopped.
-        /// </summary>
-        Stop,
+    /// <summary>
+    /// The user request the voice to be stopped.
+    /// </summary>
+    Stop,
 
-        /// <summary>
-        /// The user request the voice to be paused.
-        /// </summary>
-        Pause,
-    }
+    /// <summary>
+    /// The user request the voice to be paused.
+    /// </summary>
+    Pause,
 }

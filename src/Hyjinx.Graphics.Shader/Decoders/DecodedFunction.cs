@@ -1,48 +1,47 @@
 using System;
 using System.Collections.Generic;
 
-namespace Hyjinx.Graphics.Shader.Decoders
+namespace Hyjinx.Graphics.Shader.Decoders;
+
+class DecodedFunction
 {
-    class DecodedFunction
+    private readonly HashSet<DecodedFunction> _callers;
+
+    public bool IsCompilerGenerated => Type != FunctionType.User;
+    public FunctionType Type { get; set; }
+    public int Id { get; set; }
+
+    public ulong Address { get; }
+    public Block[] Blocks { get; private set; }
+
+    public DecodedFunction(ulong address)
     {
-        private readonly HashSet<DecodedFunction> _callers;
+        Address = address;
+        _callers = new HashSet<DecodedFunction>();
+        Type = FunctionType.User;
+        Id = -1;
+    }
 
-        public bool IsCompilerGenerated => Type != FunctionType.User;
-        public FunctionType Type { get; set; }
-        public int Id { get; set; }
-
-        public ulong Address { get; }
-        public Block[] Blocks { get; private set; }
-
-        public DecodedFunction(ulong address)
+    public void SetBlocks(Block[] blocks)
+    {
+        if (Blocks != null)
         {
-            Address = address;
-            _callers = new HashSet<DecodedFunction>();
-            Type = FunctionType.User;
-            Id = -1;
+            throw new InvalidOperationException("Blocks have already been set.");
         }
 
-        public void SetBlocks(Block[] blocks)
-        {
-            if (Blocks != null)
-            {
-                throw new InvalidOperationException("Blocks have already been set.");
-            }
+        Blocks = blocks;
+    }
 
-            Blocks = blocks;
-        }
+    public void AddCaller(DecodedFunction caller)
+    {
+        _callers.Add(caller);
+    }
 
-        public void AddCaller(DecodedFunction caller)
+    public void RemoveCaller(DecodedFunction caller)
+    {
+        if (_callers.Remove(caller) && _callers.Count == 0)
         {
-            _callers.Add(caller);
-        }
-
-        public void RemoveCaller(DecodedFunction caller)
-        {
-            if (_callers.Remove(caller) && _callers.Count == 0)
-            {
-                Type = FunctionType.Unused;
-            }
+            Type = FunctionType.Unused;
         }
     }
 }

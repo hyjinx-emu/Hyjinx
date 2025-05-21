@@ -1,34 +1,33 @@
 using System;
 using System.Text;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrl.Types;
+
+class GetConfigurationArguments
 {
-    class GetConfigurationArguments
+    public string Domain;
+    public string Parameter;
+    public byte[] Configuration;
+
+    public static GetConfigurationArguments FromSpan(Span<byte> span)
     {
-        public string Domain;
-        public string Parameter;
-        public byte[] Configuration;
+        string domain = Encoding.ASCII.GetString(span[..0x41]);
+        string parameter = Encoding.ASCII.GetString(span.Slice(0x41, 0x41));
 
-        public static GetConfigurationArguments FromSpan(Span<byte> span)
+        GetConfigurationArguments result = new()
         {
-            string domain = Encoding.ASCII.GetString(span[..0x41]);
-            string parameter = Encoding.ASCII.GetString(span.Slice(0x41, 0x41));
+            Domain = domain[..domain.IndexOf('\0')],
+            Parameter = parameter[..parameter.IndexOf('\0')],
+            Configuration = span.Slice(0x82, 0x101).ToArray(),
+        };
 
-            GetConfigurationArguments result = new()
-            {
-                Domain = domain[..domain.IndexOf('\0')],
-                Parameter = parameter[..parameter.IndexOf('\0')],
-                Configuration = span.Slice(0x82, 0x101).ToArray(),
-            };
+        return result;
+    }
 
-            return result;
-        }
-
-        public void CopyTo(Span<byte> span)
-        {
-            Encoding.ASCII.GetBytes(Domain + '\0').CopyTo(span[..0x41]);
-            Encoding.ASCII.GetBytes(Parameter + '\0').CopyTo(span.Slice(0x41, 0x41));
-            Configuration.CopyTo(span.Slice(0x82, 0x101));
-        }
+    public void CopyTo(Span<byte> span)
+    {
+        Encoding.ASCII.GetBytes(Domain + '\0').CopyTo(span[..0x41]);
+        Encoding.ASCII.GetBytes(Parameter + '\0').CopyTo(span.Slice(0x41, 0x41));
+        Configuration.CopyTo(span.Slice(0x82, 0x101));
     }
 }

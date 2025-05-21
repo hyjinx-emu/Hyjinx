@@ -1,24 +1,23 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class FunctionParameter : BaseNode
 {
-    public class FunctionParameter : BaseNode
+    private readonly string _number;
+
+    public FunctionParameter(string number) : base(NodeType.FunctionParameter)
     {
-        private readonly string _number;
+        _number = number;
+    }
 
-        public FunctionParameter(string number) : base(NodeType.FunctionParameter)
+    public override void PrintLeft(TextWriter writer)
+    {
+        writer.Write("fp ");
+
+        if (_number != null)
         {
-            _number = number;
-        }
-
-        public override void PrintLeft(TextWriter writer)
-        {
-            writer.Write("fp ");
-
-            if (_number != null)
-            {
-                writer.Write(_number);
-            }
+            writer.Write(_number);
         }
     }
 }

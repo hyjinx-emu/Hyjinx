@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.Vulkan
-{
-    static class VulkanConfiguration
-    {
-        public const bool UseFastBufferUpdates = true;
-        public const bool UseUnsafeBlit = true;
-        public const bool UsePushDescriptors = true;
+namespace Hyjinx.Graphics.Vulkan;
 
-        public const bool ForceD24S8Unsupported = false;
-        public const bool ForceRGB16IntFloatUnsupported = false;
-    }
+static class VulkanConfiguration
+{
+    public const bool UseFastBufferUpdates = true;
+    public const bool UseUnsafeBlit = true;
+    public const bool UsePushDescriptors = true;
+
+    public const bool ForceD24S8Unsupported = false;
+    public const bool ForceRGB16IntFloatUnsupported = false;
 }

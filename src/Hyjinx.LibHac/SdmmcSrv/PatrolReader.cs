@@ -1,4 +1,3 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Diag;
@@ -6,6 +5,7 @@ using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Os;
 using LibHac.Sdmmc;
+using System;
 using static LibHac.SdmmcSrv.Common;
 using MmcPartition = LibHac.Sdmmc.MmcPartition;
 

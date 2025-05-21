@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using LibHac.Common;
 using LibHac.Tools.FsSystem;
 using LibHac.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace LibHac.Tests;
@@ -163,7 +163,8 @@ public class PathToolsTests
             string pathNotNorm = (string)pair[0];
             string pathNorm = (string)pair[1];
 
-            if (pathNorm != pathNotNorm) notNormalizedPaths.Add(pathNotNorm);
+            if (pathNorm != pathNotNorm)
+                notNormalizedPaths.Add(pathNotNorm);
             normalizedPaths.Add(pathNorm);
         }
 

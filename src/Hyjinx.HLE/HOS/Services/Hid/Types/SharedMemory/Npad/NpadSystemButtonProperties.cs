@@ -1,11 +1,10 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Npad;
+
+[Flags]
+enum NpadSystemButtonProperties : uint
 {
-    [Flags]
-    enum NpadSystemButtonProperties : uint
-    {
-        None = 0,
-        IsUnintendedHomeButtonInputProtectionEnabled = 1 << 0,
-    }
+    None = 0,
+    IsUnintendedHomeButtonInputProtectionEnabled = 1 << 0,
 }

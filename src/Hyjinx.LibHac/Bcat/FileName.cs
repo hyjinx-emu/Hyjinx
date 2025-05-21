@@ -1,6 +1,6 @@
-﻿using System;
 using LibHac.Common.FixedArrays;
 using LibHac.Util;
+using System;
 
 namespace LibHac.Bcat;
 

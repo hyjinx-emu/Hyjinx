@@ -1,4 +1,4 @@
-﻿using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.Exceptions;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -24,7 +24,7 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
     public abstract void Install(string source, DirectoryInfo destination);
 
     public abstract SystemVersion Verify(string source);
-    
+
     protected void InstallFromPartition(IFileSystem filesystem, string temporaryDirectory)
     {
         foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
@@ -60,14 +60,14 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
 
         return file.Release();
     }
-    
+
     protected SystemVersion? VerifyAndGetVersion(IFileSystem filesystem)
     {
         SystemVersion? systemVersion = null;
 
         CnmtContentMetaEntry[] metaEntries = null;
         Dictionary<ulong, List<(NcaContentType type, string path)>> updateNcas = new();
-        
+
         foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
         {
             IStorage ncaStorage = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read).AsStorage();

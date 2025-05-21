@@ -1,7 +1,7 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.FsSrv.Sf;
 using LibHac.Sf;
+using System;
 
 namespace LibHac.Fs.Shim;
 
@@ -26,7 +26,8 @@ public static class DebugShim
 
         Result res = fileSystemProxy.Get.CreatePaddingFile(size);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -37,7 +38,8 @@ public static class DebugShim
 
         Result res = fileSystemProxy.Get.DeleteAllPaddingFiles();
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -49,7 +51,8 @@ public static class DebugShim
 
         Result res = fileSystemProxy.Get.OverrideSaveDataTransferTokenSignVerificationKey(new InBuffer(keyBuffer));
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -60,7 +63,8 @@ public static class DebugShim
 
         Result res = fileSystemProxy.Get.RegisterDebugConfiguration((uint)key, value);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -71,7 +75,8 @@ public static class DebugShim
 
         Result res = fileSystemProxy.Get.UnregisterDebugConfiguration((uint)key);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

@@ -2,46 +2,45 @@ using Hyjinx.Common;
 using System;
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser;
+
+class BrowserOutput
 {
-    class BrowserOutput
+    public BrowserOutputType Type { get; }
+    public byte[] Value { get; }
+
+    public BrowserOutput(BrowserOutputType type, byte[] value)
     {
-        public BrowserOutputType Type { get; }
-        public byte[] Value { get; }
+        Type = type;
+        Value = value;
+    }
 
-        public BrowserOutput(BrowserOutputType type, byte[] value)
+    public BrowserOutput(BrowserOutputType type, uint value)
+    {
+        Type = type;
+        Value = BitConverter.GetBytes(value);
+    }
+
+    public BrowserOutput(BrowserOutputType type, ulong value)
+    {
+        Type = type;
+        Value = BitConverter.GetBytes(value);
+    }
+
+    public BrowserOutput(BrowserOutputType type, bool value)
+    {
+        Type = type;
+        Value = BitConverter.GetBytes(value);
+    }
+
+    public void Write(BinaryWriter writer)
+    {
+        writer.WriteStruct(new WebArgTLV
         {
-            Type = type;
-            Value = value;
-        }
+            Type = (ushort)Type,
+            Size = (ushort)Value.Length,
+        });
 
-        public BrowserOutput(BrowserOutputType type, uint value)
-        {
-            Type = type;
-            Value = BitConverter.GetBytes(value);
-        }
-
-        public BrowserOutput(BrowserOutputType type, ulong value)
-        {
-            Type = type;
-            Value = BitConverter.GetBytes(value);
-        }
-
-        public BrowserOutput(BrowserOutputType type, bool value)
-        {
-            Type = type;
-            Value = BitConverter.GetBytes(value);
-        }
-
-        public void Write(BinaryWriter writer)
-        {
-            writer.WriteStruct(new WebArgTLV
-            {
-                Type = (ushort)Type,
-                Size = (ushort)Value.Length,
-            });
-
-            writer.Write(Value);
-        }
+        writer.Write(Value);
     }
 }

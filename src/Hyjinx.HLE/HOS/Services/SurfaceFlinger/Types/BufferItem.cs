@@ -1,63 +1,62 @@
 using Hyjinx.HLE.HOS.Services.SurfaceFlinger.Types;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+
+class BufferItem : ICloneable
 {
-    class BufferItem : ICloneable
+    public AndroidStrongPointer<GraphicBuffer> GraphicBuffer;
+    public AndroidFence Fence;
+    public Rect Crop;
+    public NativeWindowTransform Transform;
+    public NativeWindowScalingMode ScalingMode;
+    public long Timestamp;
+    public bool IsAutoTimestamp;
+    public int SwapInterval;
+    public ulong FrameNumber;
+    public int Slot;
+    public bool IsDroppable;
+    public bool AcquireCalled;
+    public bool TransformToDisplayInverse;
+
+    public BufferItem()
     {
-        public AndroidStrongPointer<GraphicBuffer> GraphicBuffer;
-        public AndroidFence Fence;
-        public Rect Crop;
-        public NativeWindowTransform Transform;
-        public NativeWindowScalingMode ScalingMode;
-        public long Timestamp;
-        public bool IsAutoTimestamp;
-        public int SwapInterval;
-        public ulong FrameNumber;
-        public int Slot;
-        public bool IsDroppable;
-        public bool AcquireCalled;
-        public bool TransformToDisplayInverse;
+        GraphicBuffer = new AndroidStrongPointer<GraphicBuffer>();
+        Transform = NativeWindowTransform.None;
+        ScalingMode = NativeWindowScalingMode.Freeze;
+        Timestamp = 0;
+        IsAutoTimestamp = false;
+        FrameNumber = 0;
+        Slot = BufferSlotArray.InvalidBufferSlot;
+        IsDroppable = false;
+        AcquireCalled = false;
+        TransformToDisplayInverse = false;
+        SwapInterval = 1;
+        Fence = AndroidFence.NoFence;
 
-        public BufferItem()
+        Crop = new Rect();
+        Crop.MakeInvalid();
+    }
+
+    public object Clone()
+    {
+        BufferItem item = new()
         {
-            GraphicBuffer = new AndroidStrongPointer<GraphicBuffer>();
-            Transform = NativeWindowTransform.None;
-            ScalingMode = NativeWindowScalingMode.Freeze;
-            Timestamp = 0;
-            IsAutoTimestamp = false;
-            FrameNumber = 0;
-            Slot = BufferSlotArray.InvalidBufferSlot;
-            IsDroppable = false;
-            AcquireCalled = false;
-            TransformToDisplayInverse = false;
-            SwapInterval = 1;
-            Fence = AndroidFence.NoFence;
+            Transform = Transform,
+            ScalingMode = ScalingMode,
+            IsAutoTimestamp = IsAutoTimestamp,
+            FrameNumber = FrameNumber,
+            Slot = Slot,
+            IsDroppable = IsDroppable,
+            AcquireCalled = AcquireCalled,
+            TransformToDisplayInverse = TransformToDisplayInverse,
+            SwapInterval = SwapInterval,
+            Fence = Fence,
+            Crop = Crop,
+        };
 
-            Crop = new Rect();
-            Crop.MakeInvalid();
-        }
+        item.GraphicBuffer.Set(GraphicBuffer);
 
-        public object Clone()
-        {
-            BufferItem item = new()
-            {
-                Transform = Transform,
-                ScalingMode = ScalingMode,
-                IsAutoTimestamp = IsAutoTimestamp,
-                FrameNumber = FrameNumber,
-                Slot = Slot,
-                IsDroppable = IsDroppable,
-                AcquireCalled = AcquireCalled,
-                TransformToDisplayInverse = TransformToDisplayInverse,
-                SwapInterval = SwapInterval,
-                Fence = Fence,
-                Crop = Crop,
-            };
-
-            item.GraphicBuffer.Set(GraphicBuffer);
-
-            return item;
-        }
+        return item;
     }
 }

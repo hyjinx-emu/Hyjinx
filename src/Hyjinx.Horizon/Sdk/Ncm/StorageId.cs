@@ -1,13 +1,12 @@
-namespace Hyjinx.Horizon.Sdk.Ncm
+namespace Hyjinx.Horizon.Sdk.Ncm;
+
+public enum StorageId : byte
 {
-    public enum StorageId : byte
-    {
-        None,
-        Host,
-        GameCard,
-        BuiltInSystem,
-        BuiltInUser,
-        SdCard,
-        Any,
-    }
+    None,
+    Host,
+    GameCard,
+    BuiltInSystem,
+    BuiltInUser,
+    SdCard,
+    Any,
 }

@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.FsSrv.Sf;
 
 namespace LibHac.Fs
@@ -23,11 +23,13 @@ namespace LibHac.Fs.Shim
 
             Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = deviceOperator.Get.SetSpeedEmulationMode((int)mode);
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -41,11 +43,13 @@ namespace LibHac.Fs.Shim
 
             Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = deviceOperator.Get.GetSpeedEmulationMode(out int mode);
             fs.Impl.AbortIfNeeded(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outMode = (SpeedEmulationMode)mode;
 

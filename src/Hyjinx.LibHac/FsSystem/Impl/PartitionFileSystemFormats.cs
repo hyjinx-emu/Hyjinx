@@ -1,7 +1,7 @@
-﻿using System;
-using System.Runtime.InteropServices;
 using LibHac.Common.FixedArrays;
 using LibHac.Fs;
+using System;
+using System.Runtime.InteropServices;
 
 namespace LibHac.FsSystem.Impl;
 

@@ -1,6 +1,6 @@
-﻿// ReSharper disable InconsistentNaming
-using System.Runtime.CompilerServices;
+// ReSharper disable InconsistentNaming
 using LibHac.Spl;
+using System.Runtime.CompilerServices;
 using Xunit;
 
 namespace LibHac.Tests.Spl;

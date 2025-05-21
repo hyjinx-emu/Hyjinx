@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService
+namespace Hyjinx.HLE.HOS.Services.Vi.RootService.ApplicationDisplayService;
+
+enum DestinationScalingMode
 {
-    enum DestinationScalingMode
-    {
-        Freeze,
-        ScaleToWindow,
-        ScaleAndCrop,
-        None,
-        PreserveAspectRatio,
-    }
+    Freeze,
+    ScaleToWindow,
+    ScaleAndCrop,
+    None,
+    PreserveAspectRatio,
 }

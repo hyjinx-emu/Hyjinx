@@ -1,17 +1,16 @@
-namespace Hyjinx.Cpu.LightningJit.Graph
+namespace Hyjinx.Cpu.LightningJit.Graph;
+
+interface IBlock
 {
-    interface IBlock
-    {
-        int Index { get; }
+    int Index { get; }
 
-        int PredecessorsCount { get; }
-        int SuccessorsCount { get; }
+    int PredecessorsCount { get; }
+    int SuccessorsCount { get; }
 
-        IBlock GetSuccessor(int index);
-        IBlock GetPredecessor(int index);
+    IBlock GetSuccessor(int index);
+    IBlock GetPredecessor(int index);
 
-        RegisterUse ComputeUseMasks();
-        bool EndsWithContextLoad();
-        bool EndsWithContextStore();
-    }
+    RegisterUse ComputeUseMasks();
+    bool EndsWithContextLoad();
+    bool EndsWithContextStore();
 }

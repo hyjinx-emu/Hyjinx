@@ -1,14 +1,13 @@
-namespace Hyjinx.Graphics.GAL
-{
-    public readonly struct BufferAssignment
-    {
-        public readonly int Binding;
-        public readonly BufferRange Range;
+namespace Hyjinx.Graphics.GAL;
 
-        public BufferAssignment(int binding, BufferRange range)
-        {
-            Binding = binding;
-            Range = range;
-        }
+public readonly struct BufferAssignment
+{
+    public readonly int Binding;
+    public readonly BufferRange Range;
+
+    public BufferAssignment(int binding, BufferRange range)
+    {
+        Binding = binding;
+        Range = range;
     }
 }

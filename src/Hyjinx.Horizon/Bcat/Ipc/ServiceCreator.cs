@@ -1,85 +1,84 @@
-using LibHac.Common;
 using Hyjinx.Horizon.Bcat.Types;
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Bcat;
 using Hyjinx.Horizon.Sdk.Sf;
+using LibHac.Common;
 using System;
 using System.Threading;
 using ApplicationId = Hyjinx.Horizon.Sdk.Ncm.ApplicationId;
 
-namespace Hyjinx.Horizon.Bcat.Ipc
+namespace Hyjinx.Horizon.Bcat.Ipc;
+
+partial class ServiceCreator : IServiceCreator, IDisposable
 {
-    partial class ServiceCreator : IServiceCreator, IDisposable
+    private readonly BcatServicePermissionLevel _permissionLevel;
+    private SharedRef<LibHac.Bcat.Impl.Ipc.IServiceCreator> _libHacService;
+
+    private int _disposalState;
+
+    public ServiceCreator(string serviceName, BcatServicePermissionLevel permissionLevel)
     {
-        private readonly BcatServicePermissionLevel _permissionLevel;
-        private SharedRef<LibHac.Bcat.Impl.Ipc.IServiceCreator> _libHacService;
+        HorizonStatic.Options.BcatClient.Sm.GetService(ref _libHacService, serviceName).ThrowIfFailure();
+        _permissionLevel = permissionLevel;
+    }
 
-        private int _disposalState;
+    [CmifCommand(0)]
+    public Result CreateBcatService(out IBcatService bcatService, [ClientProcessId] ulong pid)
+    {
+        // TODO: Call arp:r GetApplicationLaunchProperty with the pid to get the TitleId.
+        //       Add an instance of nn::bcat::detail::service::core::PassphraseManager.
+        //       Add an instance of nn::bcat::detail::service::ServiceMemoryManager.
+        //       Add an instance of nn::bcat::detail::service::core::TaskManager who loads "bcat-sys:/" system save data and opens "dc/task.bin". 
+        //       If the file don't exist, create a new one (with a size of 0x800 bytes) and write 2 empty structs with a size of 0x400 bytes.
 
-        public ServiceCreator(string serviceName, BcatServicePermissionLevel permissionLevel)
+        bcatService = new BcatService(_permissionLevel);
+
+        return Result.Success;
+    }
+
+    [CmifCommand(1)]
+    public Result CreateDeliveryCacheStorageService(out IDeliveryCacheStorageService service, [ClientProcessId] ulong pid)
+    {
+        using var libHacService = new SharedRef<LibHac.Bcat.Impl.Ipc.IDeliveryCacheStorageService>();
+
+        var resultCode = _libHacService.Get.CreateDeliveryCacheStorageService(ref libHacService.Ref, pid);
+
+        if (resultCode.IsSuccess())
         {
-            HorizonStatic.Options.BcatClient.Sm.GetService(ref _libHacService, serviceName).ThrowIfFailure();
-            _permissionLevel = permissionLevel;
+            service = new DeliveryCacheStorageService(ref libHacService.Ref);
+        }
+        else
+        {
+            service = null;
         }
 
-        [CmifCommand(0)]
-        public Result CreateBcatService(out IBcatService bcatService, [ClientProcessId] ulong pid)
+        return resultCode.ToHorizonResult();
+    }
+
+    [CmifCommand(2)]
+    public Result CreateDeliveryCacheStorageServiceWithApplicationId(out IDeliveryCacheStorageService service, ApplicationId applicationId)
+    {
+        using var libHacService = new SharedRef<LibHac.Bcat.Impl.Ipc.IDeliveryCacheStorageService>();
+
+        var resultCode = _libHacService.Get.CreateDeliveryCacheStorageServiceWithApplicationId(ref libHacService.Ref, new LibHac.ApplicationId(applicationId.Id));
+
+        if (resultCode.IsSuccess())
         {
-            // TODO: Call arp:r GetApplicationLaunchProperty with the pid to get the TitleId.
-            //       Add an instance of nn::bcat::detail::service::core::PassphraseManager.
-            //       Add an instance of nn::bcat::detail::service::ServiceMemoryManager.
-            //       Add an instance of nn::bcat::detail::service::core::TaskManager who loads "bcat-sys:/" system save data and opens "dc/task.bin". 
-            //       If the file don't exist, create a new one (with a size of 0x800 bytes) and write 2 empty structs with a size of 0x400 bytes.
-
-            bcatService = new BcatService(_permissionLevel);
-
-            return Result.Success;
+            service = new DeliveryCacheStorageService(ref libHacService.Ref);
+        }
+        else
+        {
+            service = null;
         }
 
-        [CmifCommand(1)]
-        public Result CreateDeliveryCacheStorageService(out IDeliveryCacheStorageService service, [ClientProcessId] ulong pid)
+        return resultCode.ToHorizonResult();
+    }
+
+    public void Dispose()
+    {
+        if (Interlocked.Exchange(ref _disposalState, 1) == 0)
         {
-            using var libHacService = new SharedRef<LibHac.Bcat.Impl.Ipc.IDeliveryCacheStorageService>();
-
-            var resultCode = _libHacService.Get.CreateDeliveryCacheStorageService(ref libHacService.Ref, pid);
-
-            if (resultCode.IsSuccess())
-            {
-                service = new DeliveryCacheStorageService(ref libHacService.Ref);
-            }
-            else
-            {
-                service = null;
-            }
-
-            return resultCode.ToHorizonResult();
-        }
-
-        [CmifCommand(2)]
-        public Result CreateDeliveryCacheStorageServiceWithApplicationId(out IDeliveryCacheStorageService service, ApplicationId applicationId)
-        {
-            using var libHacService = new SharedRef<LibHac.Bcat.Impl.Ipc.IDeliveryCacheStorageService>();
-
-            var resultCode = _libHacService.Get.CreateDeliveryCacheStorageServiceWithApplicationId(ref libHacService.Ref, new LibHac.ApplicationId(applicationId.Id));
-
-            if (resultCode.IsSuccess())
-            {
-                service = new DeliveryCacheStorageService(ref libHacService.Ref);
-            }
-            else
-            {
-                service = null;
-            }
-
-            return resultCode.ToHorizonResult();
-        }
-
-        public void Dispose()
-        {
-            if (Interlocked.Exchange(ref _disposalState, 1) == 0)
-            {
-                _libHacService.Destroy();
-            }
+            _libHacService.Destroy();
         }
     }
 }

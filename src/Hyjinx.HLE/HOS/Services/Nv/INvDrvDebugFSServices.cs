@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Nv
+namespace Hyjinx.HLE.HOS.Services.Nv;
+
+[Service("nvdrvdbg")]
+class INvDrvDebugFSServices : IpcService<INvDrvDebugFSServices>
 {
-    [Service("nvdrvdbg")]
-    class INvDrvDebugFSServices : IpcService<INvDrvDebugFSServices>
-    {
-        public INvDrvDebugFSServices(ServiceCtx context) { }
-    }
+    public INvDrvDebugFSServices(ServiceCtx context) { }
 }

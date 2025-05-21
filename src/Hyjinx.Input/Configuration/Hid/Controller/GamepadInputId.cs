@@ -1,56 +1,55 @@
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.Common.Configuration.Hid.Controller
+namespace Hyjinx.Common.Configuration.Hid.Controller;
+
+public enum GamepadInputId : byte
 {
-    public enum GamepadInputId : byte
-    {
-        Unbound,
-        A,
-        B,
-        X,
-        Y,
-        LeftStick,
-        RightStick,
-        LeftShoulder,
-        RightShoulder,
+    Unbound,
+    A,
+    B,
+    X,
+    Y,
+    LeftStick,
+    RightStick,
+    LeftShoulder,
+    RightShoulder,
 
-        // Likely axis
-        LeftTrigger,
-        // Likely axis
-        RightTrigger,
+    // Likely axis
+    LeftTrigger,
+    // Likely axis
+    RightTrigger,
 
-        DpadUp,
-        DpadDown,
-        DpadLeft,
-        DpadRight,
+    DpadUp,
+    DpadDown,
+    DpadLeft,
+    DpadRight,
 
-        // Special buttons
+    // Special buttons
 
-        Minus,
-        Plus,
+    Minus,
+    Plus,
 
-        Back = Minus,
-        Start = Plus,
+    Back = Minus,
+    Start = Plus,
 
-        Guide,
-        Misc1,
+    Guide,
+    Misc1,
 
-        // Xbox Elite paddle
-        Paddle1,
-        Paddle2,
-        Paddle3,
-        Paddle4,
+    // Xbox Elite paddle
+    Paddle1,
+    Paddle2,
+    Paddle3,
+    Paddle4,
 
-        // PS5 touchpad button
-        Touchpad,
+    // PS5 touchpad button
+    Touchpad,
 
-        // Virtual buttons for single joycon
-        SingleLeftTrigger0,
-        SingleRightTrigger0,
+    // Virtual buttons for single joycon
+    SingleLeftTrigger0,
+    SingleRightTrigger0,
 
-        SingleLeftTrigger1,
-        SingleRightTrigger1,
+    SingleLeftTrigger1,
+    SingleRightTrigger1,
 
-        Count,
-    }
+    Count,
 }

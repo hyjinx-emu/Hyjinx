@@ -1,10 +1,10 @@
-﻿using System;
 using LibHac.Arp;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Lr;
 using LibHac.Os;
 using LibHac.Sm;
+using System;
 
 namespace LibHac;
 

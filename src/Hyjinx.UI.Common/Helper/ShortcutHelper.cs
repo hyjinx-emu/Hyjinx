@@ -7,166 +7,165 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.UI.Common.Helper
+namespace Hyjinx.UI.Common.Helper;
+
+public static class ShortcutHelper
 {
-    public static class ShortcutHelper
+    [SupportedOSPlatform("windows")]
+    private static void CreateShortcutWindows(string applicationFilePath, string applicationId, byte[] iconData, string iconPath, string cleanedAppName, string desktopPath)
     {
-        [SupportedOSPlatform("windows")]
-        private static void CreateShortcutWindows(string applicationFilePath, string applicationId, byte[] iconData, string iconPath, string cleanedAppName, string desktopPath)
+        string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName + ".exe");
+        iconPath += ".ico";
+
+        MemoryStream iconDataStream = new(iconData);
+        using var image = SKBitmap.Decode(iconDataStream);
+        image.Resize(new SKImageInfo(128, 128), SKFilterQuality.High);
+        SaveBitmapAsIcon(image, iconPath);
+
+        var shortcut = Shortcut.CreateShortcut(basePath, GetArgsString(applicationFilePath, applicationId), iconPath, 0);
+        shortcut.StringData.NameString = cleanedAppName;
+        shortcut.WriteToFile(Path.Combine(desktopPath, cleanedAppName + ".lnk"));
+    }
+
+    [SupportedOSPlatform("linux")]
+    private static void CreateShortcutLinux(string applicationFilePath, string applicationId, byte[] iconData, string iconPath, string desktopPath, string cleanedAppName)
+    {
+        string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Hyjinx.sh");
+        var desktopFile = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-template.desktop");
+        iconPath += ".png";
+
+        var image = SKBitmap.Decode(iconData);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        using var file = File.OpenWrite(iconPath);
+        data.SaveTo(file);
+
+        using StreamWriter outputFile = new(Path.Combine(desktopPath, cleanedAppName + ".desktop"));
+        outputFile.Write(desktopFile, cleanedAppName, iconPath, $"{basePath} {GetArgsString(applicationFilePath, applicationId)}");
+    }
+
+    [SupportedOSPlatform("macos")]
+    private static void CreateShortcutMacos(string appFilePath, string applicationId, byte[] iconData, string desktopPath, string cleanedAppName)
+    {
+        string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Hyjinx");
+        var plistFile = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-template.plist");
+        var shortcutScript = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-launch-script.sh");
+        // Macos .App folder
+        string contentFolderPath = Path.Combine("/Applications", cleanedAppName + ".app", "Contents");
+        string scriptFolderPath = Path.Combine(contentFolderPath, "MacOS");
+
+        if (!Directory.Exists(scriptFolderPath))
         {
-            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName + ".exe");
-            iconPath += ".ico";
-
-            MemoryStream iconDataStream = new(iconData);
-            using var image = SKBitmap.Decode(iconDataStream);
-            image.Resize(new SKImageInfo(128, 128), SKFilterQuality.High);
-            SaveBitmapAsIcon(image, iconPath);
-
-            var shortcut = Shortcut.CreateShortcut(basePath, GetArgsString(applicationFilePath, applicationId), iconPath, 0);
-            shortcut.StringData.NameString = cleanedAppName;
-            shortcut.WriteToFile(Path.Combine(desktopPath, cleanedAppName + ".lnk"));
+            Directory.CreateDirectory(scriptFolderPath);
         }
 
-        [SupportedOSPlatform("linux")]
-        private static void CreateShortcutLinux(string applicationFilePath, string applicationId, byte[] iconData, string iconPath, string desktopPath, string cleanedAppName)
+        // Runner script
+        const string ScriptName = "runner.sh";
+        string scriptPath = Path.Combine(scriptFolderPath, ScriptName);
+        using StreamWriter scriptFile = new(scriptPath);
+
+        scriptFile.Write(shortcutScript, basePath, GetArgsString(appFilePath, applicationId));
+
+        // Set execute permission
+        FileInfo fileInfo = new(scriptPath);
+        fileInfo.UnixFileMode |= UnixFileMode.UserExecute;
+
+        // img
+        string resourceFolderPath = Path.Combine(contentFolderPath, "Resources");
+        if (!Directory.Exists(resourceFolderPath))
         {
-            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Hyjinx.sh");
-            var desktopFile = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-template.desktop");
-            iconPath += ".png";
-
-            var image = SKBitmap.Decode(iconData);
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-            using var file = File.OpenWrite(iconPath);
-            data.SaveTo(file);
-
-            using StreamWriter outputFile = new(Path.Combine(desktopPath, cleanedAppName + ".desktop"));
-            outputFile.Write(desktopFile, cleanedAppName, iconPath, $"{basePath} {GetArgsString(applicationFilePath, applicationId)}");
+            Directory.CreateDirectory(resourceFolderPath);
         }
 
-        [SupportedOSPlatform("macos")]
-        private static void CreateShortcutMacos(string appFilePath, string applicationId, byte[] iconData, string desktopPath, string cleanedAppName)
+        const string IconName = "icon.png";
+        var image = SKBitmap.Decode(iconData);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        using var file = File.OpenWrite(Path.Combine(resourceFolderPath, IconName));
+        data.SaveTo(file);
+
+        // plist file
+        using StreamWriter outputFile = new(Path.Combine(contentFolderPath, "Info.plist"));
+        outputFile.Write(plistFile, ScriptName, cleanedAppName, IconName);
+    }
+
+    public static void CreateAppShortcut(string applicationFilePath, string applicationName, string applicationId, byte[] iconData)
+    {
+        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        string cleanedAppName = string.Join("_", applicationName.Split(Path.GetInvalidFileNameChars()));
+
+        if (OperatingSystem.IsWindows())
         {
-            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Hyjinx");
-            var plistFile = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-template.plist");
-            var shortcutScript = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-launch-script.sh");
-            // Macos .App folder
-            string contentFolderPath = Path.Combine("/Applications", cleanedAppName + ".app", "Contents");
-            string scriptFolderPath = Path.Combine(contentFolderPath, "MacOS");
+            string iconPath = Path.Combine(AppDataManager.GamesDirPath, applicationId, "app");
 
-            if (!Directory.Exists(scriptFolderPath))
-            {
-                Directory.CreateDirectory(scriptFolderPath);
-            }
+            CreateShortcutWindows(applicationFilePath, applicationId, iconData, iconPath, cleanedAppName, desktopPath);
 
-            // Runner script
-            const string ScriptName = "runner.sh";
-            string scriptPath = Path.Combine(scriptFolderPath, ScriptName);
-            using StreamWriter scriptFile = new(scriptPath);
-
-            scriptFile.Write(shortcutScript, basePath, GetArgsString(appFilePath, applicationId));
-
-            // Set execute permission
-            FileInfo fileInfo = new(scriptPath);
-            fileInfo.UnixFileMode |= UnixFileMode.UserExecute;
-
-            // img
-            string resourceFolderPath = Path.Combine(contentFolderPath, "Resources");
-            if (!Directory.Exists(resourceFolderPath))
-            {
-                Directory.CreateDirectory(resourceFolderPath);
-            }
-
-            const string IconName = "icon.png";
-            var image = SKBitmap.Decode(iconData);
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-            using var file = File.OpenWrite(Path.Combine(resourceFolderPath, IconName));
-            data.SaveTo(file);
-
-            // plist file
-            using StreamWriter outputFile = new(Path.Combine(contentFolderPath, "Info.plist"));
-            outputFile.Write(plistFile, ScriptName, cleanedAppName, IconName);
+            return;
         }
 
-        public static void CreateAppShortcut(string applicationFilePath, string applicationName, string applicationId, byte[] iconData)
+        if (OperatingSystem.IsLinux())
         {
-            string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-            string cleanedAppName = string.Join("_", applicationName.Split(Path.GetInvalidFileNameChars()));
+            string iconPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share", "icons", "Hyjinx");
 
-            if (OperatingSystem.IsWindows())
-            {
-                string iconPath = Path.Combine(AppDataManager.GamesDirPath, applicationId, "app");
+            Directory.CreateDirectory(iconPath);
+            CreateShortcutLinux(applicationFilePath, applicationId, iconData, Path.Combine(iconPath, applicationId), desktopPath, cleanedAppName);
 
-                CreateShortcutWindows(applicationFilePath, applicationId, iconData, iconPath, cleanedAppName, desktopPath);
-
-                return;
-            }
-
-            if (OperatingSystem.IsLinux())
-            {
-                string iconPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share", "icons", "Hyjinx");
-
-                Directory.CreateDirectory(iconPath);
-                CreateShortcutLinux(applicationFilePath, applicationId, iconData, Path.Combine(iconPath, applicationId), desktopPath, cleanedAppName);
-
-                return;
-            }
-
-            if (OperatingSystem.IsMacOS())
-            {
-                CreateShortcutMacos(applicationFilePath, applicationId, iconData, desktopPath, cleanedAppName);
-
-                return;
-            }
-
-            throw new NotImplementedException("Shortcut support has not been implemented yet for this OS.");
+            return;
         }
 
-        private static string GetArgsString(string appFilePath, string applicationId)
+        if (OperatingSystem.IsMacOS())
         {
-            // args are first defined as a list, for easier adjustments in the future
-            var argsList = new List<string>();
+            CreateShortcutMacos(applicationFilePath, applicationId, iconData, desktopPath, cleanedAppName);
 
-            if (!string.IsNullOrEmpty(CommandLineState.BaseDirPathArg))
-            {
-                argsList.Add("--root-data-dir");
-                argsList.Add($"\"{CommandLineState.BaseDirPathArg}\"");
-            }
-
-            if (appFilePath.ToLower().EndsWith(".xci"))
-            {
-                argsList.Add("--application-id");
-                argsList.Add($"\"{applicationId}\"");
-            }
-
-            argsList.Add($"\"{appFilePath}\"");
-
-            return String.Join(" ", argsList);
+            return;
         }
 
-        /// <summary>
-        /// Creates a Icon (.ico) file using the source bitmap image at the specified file path.
-        /// </summary>
-        /// <param name="source">The source bitmap image that will be saved as an .ico file</param>
-        /// <param name="filePath">The location that the new .ico file will be saved too (Make sure to include '.ico' in the path).</param>
-        [SupportedOSPlatform("windows")]
-        private static void SaveBitmapAsIcon(SKBitmap source, string filePath)
-        {
-            // Code Modified From https://stackoverflow.com/a/11448060/368354 by Benlitz
-            byte[] header = { 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 32, 0, 0, 0, 0, 0, 22, 0, 0, 0 };
-            using FileStream fs = new(filePath, FileMode.Create);
+        throw new NotImplementedException("Shortcut support has not been implemented yet for this OS.");
+    }
 
-            fs.Write(header);
-            // Writing actual data
-            using var data = source.Encode(SKEncodedImageFormat.Png, 100);
-            data.SaveTo(fs);
-            // Getting data length (file length minus header)
-            long dataLength = fs.Length - header.Length;
-            // Write it in the correct place
-            fs.Seek(14, SeekOrigin.Begin);
-            fs.WriteByte((byte)dataLength);
-            fs.WriteByte((byte)(dataLength >> 8));
-            fs.WriteByte((byte)(dataLength >> 16));
-            fs.WriteByte((byte)(dataLength >> 24));
+    private static string GetArgsString(string appFilePath, string applicationId)
+    {
+        // args are first defined as a list, for easier adjustments in the future
+        var argsList = new List<string>();
+
+        if (!string.IsNullOrEmpty(CommandLineState.BaseDirPathArg))
+        {
+            argsList.Add("--root-data-dir");
+            argsList.Add($"\"{CommandLineState.BaseDirPathArg}\"");
         }
+
+        if (appFilePath.ToLower().EndsWith(".xci"))
+        {
+            argsList.Add("--application-id");
+            argsList.Add($"\"{applicationId}\"");
+        }
+
+        argsList.Add($"\"{appFilePath}\"");
+
+        return String.Join(" ", argsList);
+    }
+
+    /// <summary>
+    /// Creates a Icon (.ico) file using the source bitmap image at the specified file path.
+    /// </summary>
+    /// <param name="source">The source bitmap image that will be saved as an .ico file</param>
+    /// <param name="filePath">The location that the new .ico file will be saved too (Make sure to include '.ico' in the path).</param>
+    [SupportedOSPlatform("windows")]
+    private static void SaveBitmapAsIcon(SKBitmap source, string filePath)
+    {
+        // Code Modified From https://stackoverflow.com/a/11448060/368354 by Benlitz
+        byte[] header = { 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 32, 0, 0, 0, 0, 0, 22, 0, 0, 0 };
+        using FileStream fs = new(filePath, FileMode.Create);
+
+        fs.Write(header);
+        // Writing actual data
+        using var data = source.Encode(SKEncodedImageFormat.Png, 100);
+        data.SaveTo(fs);
+        // Getting data length (file length minus header)
+        long dataLength = fs.Length - header.Length;
+        // Write it in the correct place
+        fs.Seek(14, SeekOrigin.Begin);
+        fs.WriteByte((byte)dataLength);
+        fs.WriteByte((byte)(dataLength >> 8));
+        fs.WriteByte((byte)(dataLength >> 16));
+        fs.WriteByte((byte)(dataLength >> 24));
     }
 }

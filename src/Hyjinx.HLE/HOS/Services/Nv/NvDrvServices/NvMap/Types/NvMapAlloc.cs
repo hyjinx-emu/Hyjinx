@@ -1,15 +1,14 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
+
+[StructLayout(LayoutKind.Sequential)]
+struct NvMapAlloc
 {
-    [StructLayout(LayoutKind.Sequential)]
-    struct NvMapAlloc
-    {
-        public int Handle;
-        public int HeapMask;
-        public int Flags;
-        public int Align;
-        public long Kind;
-        public ulong Address;
-    }
+    public int Handle;
+    public int HeapMask;
+    public int Flags;
+    public int Align;
+    public long Kind;
+    public ulong Address;
 }

@@ -1,12 +1,11 @@
 using Hyjinx.Graphics.OpenGL.Helper;
 using System;
 
-namespace Hyjinx.Graphics.OpenGL
-{
-    public interface IOpenGLContext : IDisposable
-    {
-        void MakeCurrent();
+namespace Hyjinx.Graphics.OpenGL;
 
-        bool HasContext();
-    }
+public interface IOpenGLContext : IDisposable
+{
+    void MakeCurrent();
+
+    bool HasContext();
 }

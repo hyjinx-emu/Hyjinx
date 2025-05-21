@@ -1,8 +1,7 @@
 using Hyjinx.Horizon.Sdk.Sf;
 
-namespace Hyjinx.Horizon.Sdk.Wlan
+namespace Hyjinx.Horizon.Sdk.Wlan;
+
+interface ILocalGetFrame : IServiceObject
 {
-    interface ILocalGetFrame : IServiceObject
-    {
-    }
 }

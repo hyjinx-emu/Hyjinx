@@ -1,7 +1,7 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Ncm;
+using System;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 
 namespace LibHac.FsSrv.Sf;

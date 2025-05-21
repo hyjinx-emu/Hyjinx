@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
+
+enum State
 {
-    enum State
-    {
-        NonInitialized = 0,
-        Initialized = 1,
-    }
+    NonInitialized = 0,
+    Initialized = 1,
 }

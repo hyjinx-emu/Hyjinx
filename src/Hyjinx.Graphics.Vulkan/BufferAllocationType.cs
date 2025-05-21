@@ -1,13 +1,12 @@
-namespace Hyjinx.Graphics.Vulkan
-{
-    internal enum BufferAllocationType
-    {
-        Auto = 0,
+namespace Hyjinx.Graphics.Vulkan;
 
-        HostMappedNoCache,
-        HostMapped,
-        DeviceLocal,
-        DeviceLocalMapped,
-        Sparse,
-    }
+internal enum BufferAllocationType
+{
+    Auto = 0,
+
+    HostMappedNoCache,
+    HostMapped,
+    DeviceLocal,
+    DeviceLocalMapped,
+    Sparse,
 }

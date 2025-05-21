@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+[Service("xcd:sys")]
+class ISystemServer : IpcService<ISystemServer>
 {
-    [Service("xcd:sys")]
-    class ISystemServer : IpcService<ISystemServer>
-    {
-        public ISystemServer(ServiceCtx context) { }
-    }
+    public ISystemServer(ServiceCtx context) { }
 }

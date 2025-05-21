@@ -1,4 +1,3 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -7,6 +6,7 @@ using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
 using IDirectory = LibHac.Fs.Fsa.IDirectory;
 using IFile = LibHac.Fs.Fsa.IFile;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
@@ -60,39 +60,47 @@ internal static class Utility
         using var directory = new UniqueRef<IDirectory>();
 
         Result res = fs.OpenDirectory(ref directory.Ref, in workPath, OpenDirectoryMode.All);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         while (true)
         {
             res = directory.Get.Read(out long entriesRead, SpanHelpers.AsSpan(ref dirEntry));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (entriesRead == 0)
                 break;
 
             workPath.AppendChild(dirEntry.Name);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (dirEntry.Type == DirectoryEntryType.Directory)
             {
                 res = onEnterDir(in workPath, in dirEntry, ref closure);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = IterateDirectoryRecursivelyInternal(fs, ref workPath, ref dirEntry, onEnterDir, onExitDir,
                     onFile, ref closure);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = onExitDir(in workPath, in dirEntry, ref closure);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
             else
             {
                 res = onFile(in workPath, in dirEntry, ref closure);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             res = workPath.RemoveChild();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -107,10 +115,12 @@ internal static class Utility
         while (true)
         {
             Result res = fs.OpenDirectory(ref directory.Ref, in workPath, OpenDirectoryMode.All);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = directory.Get.Read(out long entriesRead, SpanHelpers.AsSpan(ref dirEntry));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             directory.Reset();
 
@@ -118,28 +128,34 @@ internal static class Utility
                 break;
 
             res = workPath.AppendChild(dirEntry.Name);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (dirEntry.Type == DirectoryEntryType.Directory)
             {
                 res = onEnterDir(in workPath, in dirEntry, ref closure);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = CleanupDirectoryRecursivelyInternal(fs, ref workPath, ref dirEntry, onEnterDir, onExitDir,
                     onFile, ref closure);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = onExitDir(in workPath, in dirEntry, ref closure);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
             else
             {
                 res = onFile(in workPath, in dirEntry, ref closure);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             res = workPath.RemoveChild();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -151,11 +167,13 @@ internal static class Utility
     {
         using var pathBuffer = new Path();
         Result res = pathBuffer.Initialize(in rootPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = IterateDirectoryRecursivelyInternal(fs, ref pathBuffer.Ref(), ref dirEntry, onEnterDir, onExitDir,
             onFile, ref closure);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -166,7 +184,8 @@ internal static class Utility
     {
         using var pathBuffer = new Path();
         Result res = pathBuffer.Initialize(in rootPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return CleanupDirectoryRecursivelyInternal(fs, ref pathBuffer.Ref(), ref dirEntry, onEnterDir, onExitDir, onFile,
             ref closure);
@@ -178,17 +197,21 @@ internal static class Utility
         // Open source file.
         using var sourceFile = new UniqueRef<IFile>();
         Result res = sourceFileSystem.OpenFile(ref sourceFile.Ref, sourcePath, OpenMode.Read);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = sourceFile.Get.GetSize(out long fileSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var destFile = new UniqueRef<IFile>();
         res = destFileSystem.CreateFile(in destPath, fileSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = destFileSystem.OpenFile(ref destFile.Ref, in destPath, OpenMode.Write);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Read/Write file in work-buffer-sized chunks.
         long remaining = fileSize;
@@ -197,10 +220,12 @@ internal static class Utility
         while (remaining > 0)
         {
             res = sourceFile.Get.Read(out long bytesRead, offset, workBuffer, ReadOption.None);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = destFile.Get.Write(offset, workBuffer.Slice(0, (int)bytesRead), WriteOption.None);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             remaining -= bytesRead;
             offset += bytesRead;
@@ -215,7 +240,8 @@ internal static class Utility
         static Result OnEnterDir(in Path path, in DirectoryEntry entry, ref FsIterationTaskClosure closure)
         {
             Result res = closure.DestinationPathBuffer.AppendChild(entry.Name);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return closure.SourceFileSystem.CreateDirectory(in closure.DestinationPathBuffer);
         }
@@ -228,11 +254,13 @@ internal static class Utility
         static Result OnFile(in Path path, in DirectoryEntry entry, ref FsIterationTaskClosure closure)
         {
             Result res = closure.DestinationPathBuffer.AppendChild(entry.Name);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = CopyFile(closure.DestFileSystem, closure.SourceFileSystem, in closure.DestinationPathBuffer,
                 in path, closure.Buffer);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return closure.DestinationPathBuffer.RemoveChild();
         }
@@ -243,7 +271,8 @@ internal static class Utility
         closure.DestFileSystem = destinationFileSystem;
 
         Result res = closure.DestinationPathBuffer.Initialize(destinationPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = IterateDirectoryRecursively(sourceFileSystem, in sourcePath, ref dirEntry, OnEnterDir, OnExitDir,
             OnFile, ref closure);
@@ -260,12 +289,14 @@ internal static class Utility
         closure.SourceFileSystem = fileSystem;
 
         Result res = closure.DestinationPathBuffer.Initialize(destinationPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         static Result OnEnterDir(in Path path, in DirectoryEntry entry, ref FsIterationTaskClosure closure)
         {
             Result res = closure.DestinationPathBuffer.AppendChild(entry.Name);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return closure.SourceFileSystem.CreateDirectory(in closure.DestinationPathBuffer);
         }
@@ -278,11 +309,13 @@ internal static class Utility
         static Result OnFile(in Path path, in DirectoryEntry entry, ref FsIterationTaskClosure closure)
         {
             Result res = closure.DestinationPathBuffer.AppendChild(entry.Name);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = CopyFile(closure.SourceFileSystem, closure.SourceFileSystem, in closure.DestinationPathBuffer,
                 in path, closure.Buffer);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return closure.DestinationPathBuffer.RemoveChild();
         }
@@ -304,14 +337,16 @@ internal static class Utility
             using var file = new UniqueRef<IFile>();
 
             Result res = closure.SourceFileSystem.OpenFile(ref file.Ref, in path, OpenMode.Read);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             long offset = 0;
 
             while (true)
             {
                 res = file.Get.Read(out long bytesRead, offset, closure.Buffer, ReadOption.None);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 if (bytesRead < closure.Buffer.Length)
                     break;
@@ -324,7 +359,8 @@ internal static class Utility
 
         using var rootPath = new Path();
         Result res = PathFunctions.SetUpFixedPath(ref rootPath.Ref(), RootPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var closure = new FsIterationTaskClosure();
         closure.Buffer = workBuffer;
@@ -342,11 +378,13 @@ internal static class Utility
         bool isFinished;
 
         Result res = pathCopy.Initialize(in path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var parser = new DirectoryPathParser();
         res = parser.Initialize(ref pathCopy.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         do
         {
@@ -365,14 +403,16 @@ internal static class Utility
 
                 // Check once more if the path exists
                 res = fileSystem.GetEntryType(out type, in parser.GetCurrentPath());
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             if (type == DirectoryEntryType.File)
                 return ResultFs.PathAlreadyExists.Log();
 
             res = parser.ReadNext(out isFinished);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         } while (!isFinished);
 
         return Result.Success;
@@ -388,7 +428,8 @@ internal static class Utility
                 return res;
 
             res = EnsureDirectoryImpl(fileSystem, in path);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -432,7 +473,8 @@ internal static class Utility
     {
         using var semaphoreAdapter = new UniqueLock<SemaphoreAdapter>();
         Result res = TryAcquireCountSemaphore(ref semaphoreAdapter.Ref(), semaphore);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var lockWithPin = new UniqueLockWithPin<T>(ref semaphoreAdapter.Ref(), ref objectToPin);
         using var uniqueLock = new UniqueRef<IUniqueLock>(lockWithPin);

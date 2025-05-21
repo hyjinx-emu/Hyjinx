@@ -1,26 +1,25 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class TemplateArguments : NodeArray
 {
-    public class TemplateArguments : NodeArray
+    public TemplateArguments(List<BaseNode> nodes) : base(nodes, NodeType.TemplateArguments) { }
+
+    public override void PrintLeft(TextWriter writer)
     {
-        public TemplateArguments(List<BaseNode> nodes) : base(nodes, NodeType.TemplateArguments) { }
+        string paramsString = string.Join<BaseNode>(", ", Nodes.ToArray());
 
-        public override void PrintLeft(TextWriter writer)
+        writer.Write("<");
+
+        writer.Write(paramsString);
+
+        if (paramsString.EndsWith('>'))
         {
-            string paramsString = string.Join<BaseNode>(", ", Nodes.ToArray());
-
-            writer.Write("<");
-
-            writer.Write(paramsString);
-
-            if (paramsString.EndsWith('>'))
-            {
-                writer.Write(" ");
-            }
-
-            writer.Write(">");
+            writer.Write(" ");
         }
+
+        writer.Write(">");
     }
 }

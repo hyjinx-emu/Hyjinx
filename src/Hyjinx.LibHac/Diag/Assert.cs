@@ -1,11 +1,11 @@
-﻿using System;
+using LibHac.Common;
+using LibHac.Diag.Impl;
+using LibHac.Os;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using LibHac.Common;
-using LibHac.Diag.Impl;
-using LibHac.Os;
 
 namespace LibHac.Diag;
 
@@ -45,10 +45,14 @@ public static class Assert
     {
         switch (assertionType)
         {
-            case AssertionType.SdkAssert: return AbortReason.SdkAssert;
-            case AssertionType.SdkRequires: return AbortReason.SdkRequires;
-            case AssertionType.UserAssert: return AbortReason.UserAssert;
-            default: return AbortReason.Abort;
+            case AssertionType.SdkAssert:
+                return AbortReason.SdkAssert;
+            case AssertionType.SdkRequires:
+                return AbortReason.SdkRequires;
+            case AssertionType.UserAssert:
+                return AbortReason.UserAssert;
+            default:
+                return AbortReason.Abort;
         }
     }
 

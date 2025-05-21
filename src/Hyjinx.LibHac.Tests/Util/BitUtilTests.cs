@@ -1,4 +1,4 @@
-﻿using LibHac.Util;
+using LibHac.Util;
 using Xunit;
 
 namespace LibHac.Tests.Util;

@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Account.Acc
+namespace Hyjinx.HLE.HOS.Services.Account.Acc;
+
+public enum AccountState
 {
-    public enum AccountState
-    {
-        Closed,
-        Open,
-    }
+    Closed,
+    Open,
 }

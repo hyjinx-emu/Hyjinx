@@ -1,15 +1,14 @@
 using Hyjinx.Common.Memory;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostCtrlGpu.Types;
+
+[StructLayout(LayoutKind.Sequential)]
+struct ZbcSetTableArguments
 {
-    [StructLayout(LayoutKind.Sequential)]
-    struct ZbcSetTableArguments
-    {
-        public Array4<uint> ColorDs;
-        public Array4<uint> ColorL2;
-        public uint Depth;
-        public uint Format;
-        public uint Type;
-    }
+    public Array4<uint> ColorDs;
+    public Array4<uint> ColorL2;
+    public uint Depth;
+    public uint Format;
+    public uint Type;
 }

@@ -1,11 +1,11 @@
-﻿using System;
+using LibHac.Common.FixedArrays;
+using LibHac.Diag;
+using LibHac.Util;
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
-using LibHac.Common.FixedArrays;
-using LibHac.Diag;
-using LibHac.Util;
 
 namespace LibHac.Fs;
 

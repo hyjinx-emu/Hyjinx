@@ -1,6 +1,6 @@
-﻿global using GameCardHandle = System.UInt32;
-using System;
+global using GameCardHandle = System.UInt32;
 using LibHac.Common.FixedArrays;
+using System;
 
 namespace LibHac.Fs;
 

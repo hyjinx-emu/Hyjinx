@@ -1,10 +1,10 @@
-﻿// ReSharper disable UnusedMember.Local NotAccessedField.Local
-using System;
-using System.Runtime.CompilerServices;
+// ReSharper disable UnusedMember.Local NotAccessedField.Local
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem.Impl;
 using LibHac.Os;
+using System;
+using System.Runtime.CompilerServices;
 using Buffer = LibHac.Mem.Buffer;
 using CacheHandle = System.UInt64;
 
@@ -43,7 +43,8 @@ public class CompressedStorage : IStorage, IAsynchronousAccessSplitter
             Assert.SdkRequiresNotNullOut(out size);
 
             Result res = _bucketTree.GetOffsets(out BucketTree.Offsets offsets);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             size = offsets.EndOffset;
             return Result.Success;
@@ -75,7 +76,8 @@ public class CompressedStorage : IStorage, IAsynchronousAccessSplitter
 
             Result res = _bucketTree.Initialize(allocatorForBucketTree, in nodeStorage, in entryStorage, NodeSize,
                 Unsafe.SizeOf<Entry>(), bucketTreeEntryCount);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _blockSizeMax = blockSizeMax;
             _continuousReadingSizeMax = continuousReadingSizeMax;
@@ -197,7 +199,8 @@ public class CompressedStorage : IStorage, IAsynchronousAccessSplitter
             int maxCacheEntries)
         {
             Result res = _cacheManager.Initialize(allocator, maxCacheEntries);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _storageSize = storageSize;
             _cacheSize0 = cacheSize0;
@@ -302,13 +305,16 @@ public class CompressedStorage : IStorage, IAsynchronousAccessSplitter
     {
         Result res = _core.Initialize(allocatorForBucketTree, in dataStorage, in nodeStorage, in entryStorage,
             bucketTreeEntryCount, blockSizeMax, continuousReadingSizeMax, getDecompressorFunc);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _core.GetSize(out long size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _cacheManager.Initialize(allocatorForCacheManager, size, cacheSize0, cacheSize1, maxCacheEntries);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -322,7 +328,8 @@ public class CompressedStorage : IStorage, IAsynchronousAccessSplitter
     public override Result Read(long offset, Span<byte> destination)
     {
         Result res = _cacheManager.Read(_core, offset, destination);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -345,7 +352,8 @@ public class CompressedStorage : IStorage, IAsynchronousAccessSplitter
     public override Result GetSize(out long size)
     {
         Result res = _core.GetSize(out size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -359,18 +367,20 @@ public class CompressedStorage : IStorage, IAsynchronousAccessSplitter
         switch (operationId)
         {
             case OperationId.InvalidateCache:
-            {
-                _cacheManager.Invalidate();
-                Result res = _core.Invalidate();
-                if (res.IsFailure()) return res.Miss();
-                break;
-            }
+                {
+                    _cacheManager.Invalidate();
+                    Result res = _core.Invalidate();
+                    if (res.IsFailure())
+                        return res.Miss();
+                    break;
+                }
             case OperationId.QueryRange:
-            {
-                Result res = _core.QueryRange(outBuffer, offset, size);
-                if (res.IsFailure()) return res.Miss();
-                break;
-            }
+                {
+                    Result res = _core.QueryRange(outBuffer, offset, size);
+                    if (res.IsFailure())
+                        return res.Miss();
+                    break;
+                }
             default:
                 return ResultFs.UnsupportedOperateRangeForCompressedStorage.Log();
         }
@@ -383,7 +393,8 @@ public class CompressedStorage : IStorage, IAsynchronousAccessSplitter
     {
         Result res = _core.QueryAppropriateOffsetForAsynchronousAccess(out offsetAppropriate, startOffset, accessSize,
             alignmentSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

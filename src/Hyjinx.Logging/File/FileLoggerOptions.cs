@@ -1,4 +1,4 @@
-﻿namespace Hyjinx.Logging.File;
+namespace Hyjinx.Logging.File;
 
 /// <summary>
 /// Options for a <see cref="FileLoggerProvider"/>.

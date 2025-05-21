@@ -1,11 +1,11 @@
-﻿using System;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Impl;
 using LibHac.Ncm;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.InteropServices;
 
 namespace LibHac.FsSrv;
 
@@ -47,7 +47,8 @@ internal readonly struct ProgramIndexRegistryService
         using (var programRegistry = new ProgramRegistryImpl(_fsServer))
         {
             Result res = programRegistry.GetProgramInfo(out ProgramInfo programInfo, _processId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             if (!programInfo.AccessControl.CanCall(OperationType.RegisterProgramIndexMapInfo))
                 return ResultFs.PermissionDenied.Log();
@@ -86,7 +87,8 @@ internal readonly struct ProgramIndexRegistryService
 
         // No permissions are needed to call this method
         Result res = GetProgramInfo(out ProgramInfo programInfo, _processId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Try to get map info for this process
         Optional<ProgramIndexMapInfo> mapInfo = _serviceImpl.GetProgramIndexMapInfo(programInfo.ProgramId);

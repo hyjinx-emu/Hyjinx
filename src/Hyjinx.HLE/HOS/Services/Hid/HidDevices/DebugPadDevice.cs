@@ -1,28 +1,27 @@
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.Common;
 using Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
 
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public class DebugPadDevice : BaseDevice
 {
-    public class DebugPadDevice : BaseDevice
+    public DebugPadDevice(Switch device, bool active) : base(device, active) { }
+
+    public void Update()
     {
-        public DebugPadDevice(Switch device, bool active) : base(device, active) { }
+        ref RingLifo<DebugPadState> lifo = ref _device.Hid.SharedMemory.DebugPad;
 
-        public void Update()
+        ref DebugPadState previousEntry = ref lifo.GetCurrentEntryRef();
+
+        DebugPadState newState = new();
+
+        if (Active)
         {
-            ref RingLifo<DebugPadState> lifo = ref _device.Hid.SharedMemory.DebugPad;
-
-            ref DebugPadState previousEntry = ref lifo.GetCurrentEntryRef();
-
-            DebugPadState newState = new();
-
-            if (Active)
-            {
-                // TODO: This is a debug device only present in dev environment, do we want to support it?
-            }
-
-            newState.SamplingNumber = previousEntry.SamplingNumber + 1;
-
-            lifo.Write(ref newState);
+            // TODO: This is a debug device only present in dev environment, do we want to support it?
         }
+
+        newState.SamplingNumber = previousEntry.SamplingNumber + 1;
+
+        lifo.Write(ref newState);
     }
 }

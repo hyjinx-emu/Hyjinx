@@ -1,4 +1,4 @@
-﻿using LibHac.FsSrv.Storage;
+using LibHac.FsSrv.Storage;
 
 namespace LibHac.FsSrv;
 

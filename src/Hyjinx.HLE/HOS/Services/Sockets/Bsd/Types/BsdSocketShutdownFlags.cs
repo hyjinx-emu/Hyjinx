@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types
+namespace Hyjinx.HLE.HOS.Services.Sockets.Bsd.Types;
+
+enum BsdSocketShutdownFlags
 {
-    enum BsdSocketShutdownFlags
-    {
-        Receive,
-        Send,
-        ReceiveAndSend,
-    }
+    Receive,
+    Send,
+    ReceiveAndSend,
 }

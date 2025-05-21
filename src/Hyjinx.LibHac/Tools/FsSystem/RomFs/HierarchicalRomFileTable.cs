@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Util;
+using System;
+using System.Runtime.InteropServices;
 
 namespace LibHac.Tools.FsSystem.RomFs;
 
@@ -210,7 +210,8 @@ public class HierarchicalRomFileTable<T> where T : unmanaged
         path = PathTools.Normalize(path);
         ReadOnlySpan<byte> pathBytes = StringUtils.StringToUtf8(path);
 
-        if (path == "/") throw new ArgumentException("Path cannot be empty");
+        if (path == "/")
+            throw new ArgumentException("Path cannot be empty");
 
         CreateFileRecursiveInternal(pathBytes, ref fileInfo);
     }
@@ -337,7 +338,8 @@ public class HierarchicalRomFileTable<T> where T : unmanaged
         {
             ref FileRomEntry entry = ref FileTable.AddOrGet(ref key, out int offset, out bool alreadyExists, out _);
             entry.Info = fileInfo;
-            if (!alreadyExists) entry.NextSibling = -1;
+            if (!alreadyExists)
+                entry.NextSibling = -1;
 
             ref DirectoryRomEntry parent = ref DirectoryTable.GetValueReference(prevOffset);
 

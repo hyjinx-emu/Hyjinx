@@ -1,9 +1,8 @@
 using System;
 
-namespace Hyjinx.HLE.Exceptions
+namespace Hyjinx.HLE.Exceptions;
+
+public class InvalidSystemResourceException : Exception
 {
-    public class InvalidSystemResourceException : Exception
-    {
-        public InvalidSystemResourceException(string message) : base(message) { }
-    }
+    public InvalidSystemResourceException(string message) : base(message) { }
 }

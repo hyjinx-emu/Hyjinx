@@ -1,10 +1,9 @@
-namespace Hyjinx.Horizon.Bcat.Types
+namespace Hyjinx.Horizon.Bcat.Types;
+
+enum BcatPortIndex
 {
-    enum BcatPortIndex
-    {
-        Admin,
-        Manager,
-        User,
-        System,
-    }
+    Admin,
+    Manager,
+    User,
+    System,
 }

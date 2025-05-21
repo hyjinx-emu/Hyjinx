@@ -1,9 +1,8 @@
-namespace Hyjinx.Horizon.Sdk.Friends.Detail
+namespace Hyjinx.Horizon.Sdk.Friends.Detail;
+
+enum PresenceStatus : uint
 {
-    enum PresenceStatus : uint
-    {
-        Offline,
-        Online,
-        OnlinePlay,
-    }
+    Offline,
+    Online,
+    OnlinePlay,
 }

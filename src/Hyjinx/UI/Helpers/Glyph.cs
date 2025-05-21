@@ -1,9 +1,8 @@
-namespace Hyjinx.Ava.UI.Helpers
+namespace Hyjinx.Ava.UI.Helpers;
+
+public enum Glyph
 {
-    public enum Glyph
-    {
-        List,
-        Grid,
-        Chip,
-    }
+    List,
+    Grid,
+    Chip,
 }

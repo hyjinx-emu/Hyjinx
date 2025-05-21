@@ -4,48 +4,47 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.Graphics.Vulkan.MoltenVK
+namespace Hyjinx.Graphics.Vulkan.MoltenVK;
+
+[SupportedOSPlatform("macos")]
+public static partial class MVKInitialization
 {
-    [SupportedOSPlatform("macos")]
-    public static partial class MVKInitialization
+    private const string VulkanLib = "libvulkan.dylib";
+
+    [LibraryImport("libMoltenVK.dylib")]
+    private static partial Result vkGetMoltenVKConfigurationMVK(IntPtr unusedInstance, out MVKConfiguration config, in IntPtr configSize);
+
+    [LibraryImport("libMoltenVK.dylib")]
+    private static partial Result vkSetMoltenVKConfigurationMVK(IntPtr unusedInstance, in MVKConfiguration config, in IntPtr configSize);
+
+    public static void Initialize()
     {
-        private const string VulkanLib = "libvulkan.dylib";
+        var configSize = (IntPtr)Marshal.SizeOf<MVKConfiguration>();
 
-        [LibraryImport("libMoltenVK.dylib")]
-        private static partial Result vkGetMoltenVKConfigurationMVK(IntPtr unusedInstance, out MVKConfiguration config, in IntPtr configSize);
+        vkGetMoltenVKConfigurationMVK(IntPtr.Zero, out MVKConfiguration config, configSize);
 
-        [LibraryImport("libMoltenVK.dylib")]
-        private static partial Result vkSetMoltenVKConfigurationMVK(IntPtr unusedInstance, in MVKConfiguration config, in IntPtr configSize);
+        config.UseMetalArgumentBuffers = true;
 
-        public static void Initialize()
+        config.SemaphoreSupportStyle = MVKVkSemaphoreSupportStyle.MVK_CONFIG_VK_SEMAPHORE_SUPPORT_STYLE_SINGLE_QUEUE;
+        config.SynchronousQueueSubmits = false;
+
+        config.ResumeLostDevice = true;
+
+        vkSetMoltenVKConfigurationMVK(IntPtr.Zero, config, configSize);
+    }
+
+    private static string[] Resolver(string path)
+    {
+        if (path.EndsWith(VulkanLib))
         {
-            var configSize = (IntPtr)Marshal.SizeOf<MVKConfiguration>();
-
-            vkGetMoltenVKConfigurationMVK(IntPtr.Zero, out MVKConfiguration config, configSize);
-
-            config.UseMetalArgumentBuffers = true;
-
-            config.SemaphoreSupportStyle = MVKVkSemaphoreSupportStyle.MVK_CONFIG_VK_SEMAPHORE_SUPPORT_STYLE_SINGLE_QUEUE;
-            config.SynchronousQueueSubmits = false;
-
-            config.ResumeLostDevice = true;
-
-            vkSetMoltenVKConfigurationMVK(IntPtr.Zero, config, configSize);
+            path = path[..^VulkanLib.Length] + "libMoltenVK.dylib";
+            return [path];
         }
+        return Array.Empty<string>();
+    }
 
-        private static string[] Resolver(string path)
-        {
-            if (path.EndsWith(VulkanLib))
-            {
-                path = path[..^VulkanLib.Length] + "libMoltenVK.dylib";
-                return [path];
-            }
-            return Array.Empty<string>();
-        }
-
-        public static void InitializeResolver()
-        {
-            ((DefaultPathResolver)PathResolver.Default).Resolvers.Insert(0, Resolver);
-        }
+    public static void InitializeResolver()
+    {
+        ((DefaultPathResolver)PathResolver.Default).Resolvers.Insert(0, Resolver);
     }
 }

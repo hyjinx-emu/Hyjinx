@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +12,7 @@ internal sealed class FileOutput : IOutput, IDisposable
     public FileOutput(StreamWriter writer)
     {
         ArgumentNullException.ThrowIfNull(writer);
-        
+
         _writer = writer;
     }
 
@@ -20,7 +20,7 @@ internal sealed class FileOutput : IOutput, IDisposable
     {
         Dispose(false);
     }
-    
+
     public async Task WriteAsync(string? message, CancellationToken cancellationToken)
     {
         await _writer.WriteAsync(message);

@@ -1,11 +1,10 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
+
+[StructLayout(LayoutKind.Sequential)]
+struct NvMapGetId
 {
-    [StructLayout(LayoutKind.Sequential)]
-    struct NvMapGetId
-    {
-        public int Id;
-        public int Handle;
-    }
+    public int Id;
+    public int Handle;
 }

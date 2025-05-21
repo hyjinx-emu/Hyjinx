@@ -8,9 +8,9 @@ namespace Hyjinx.Ava.Common;
 
 internal class XCIFileTrimmerLog : XCIFileTrimmer.ILog
 {
-    private static readonly ILogger<XCIFileTrimmerLog> _logger = 
+    private static readonly ILogger<XCIFileTrimmerLog> _logger =
         Logger.DefaultLoggerFactory.CreateLogger<XCIFileTrimmerLog>();
-    
+
     private readonly MainWindowViewModel _viewModel;
 
     public XCIFileTrimmerLog(MainWindowViewModel viewModel)
@@ -26,7 +26,7 @@ internal class XCIFileTrimmerLog : XCIFileTrimmer.ILog
             _viewModel.StatusBarProgressValue = (int)(current);
         });
     }
-    
+
     public void Write(XCIFileTrimmer.LogType logType, string text)
     {
         switch (logType)

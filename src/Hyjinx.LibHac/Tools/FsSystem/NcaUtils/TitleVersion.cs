@@ -1,4 +1,4 @@
-﻿namespace LibHac.Tools.FsSystem.NcaUtils;
+namespace LibHac.Tools.FsSystem.NcaUtils;
 
 public record TitleVersion
 {

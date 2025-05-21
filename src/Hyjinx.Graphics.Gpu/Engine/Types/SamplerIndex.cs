@@ -1,11 +1,10 @@
-namespace Hyjinx.Graphics.Gpu.Engine.Types
+namespace Hyjinx.Graphics.Gpu.Engine.Types;
+
+/// <summary>
+/// Sampler pool indexing mode.
+/// </summary>
+enum SamplerIndex
 {
-    /// <summary>
-    /// Sampler pool indexing mode.
-    /// </summary>
-    enum SamplerIndex
-    {
-        Independently = 0,
-        ViaHeaderIndex = 1,
-    }
+    Independently = 0,
+    ViaHeaderIndex = 1,
 }

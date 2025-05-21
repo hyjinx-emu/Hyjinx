@@ -9,77 +9,76 @@ using System.Runtime.InteropServices;
 using static Hyjinx.Audio.Renderer.Dsp.State.AuxiliaryBufferHeader;
 using DspAddress = System.UInt64;
 
-namespace Hyjinx.Audio.Renderer.Server.Effect
+namespace Hyjinx.Audio.Renderer.Server.Effect;
+
+/// <summary>
+/// Server state for an auxiliary buffer effect.
+/// </summary>
+public class AuxiliaryBufferEffect : BaseEffect
 {
     /// <summary>
-    /// Server state for an auxiliary buffer effect.
+    /// The auxiliary buffer parameter.
     /// </summary>
-    public class AuxiliaryBufferEffect : BaseEffect
+    public AuxiliaryBufferParameter Parameter;
+
+    /// <summary>
+    /// Auxiliary buffer state.
+    /// </summary>
+    public AuxiliaryBufferAddresses State;
+
+    public override EffectType TargetEffectType => EffectType.AuxiliaryBuffer;
+
+    public override DspAddress GetWorkBuffer(int index)
     {
-        /// <summary>
-        /// The auxiliary buffer parameter.
-        /// </summary>
-        public AuxiliaryBufferParameter Parameter;
+        return WorkBuffers[index].GetReference(true);
+    }
 
-        /// <summary>
-        /// Auxiliary buffer state.
-        /// </summary>
-        public AuxiliaryBufferAddresses State;
+    public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion1 parameter, PoolMapper mapper)
+    {
+        Update(out updateErrorInfo, in parameter, mapper);
+    }
 
-        public override EffectType TargetEffectType => EffectType.AuxiliaryBuffer;
+    public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion2 parameter, PoolMapper mapper)
+    {
+        Update(out updateErrorInfo, in parameter, mapper);
+    }
 
-        public override DspAddress GetWorkBuffer(int index)
+    public void Update<T>(out BehaviourParameter.ErrorInfo updateErrorInfo, in T parameter, PoolMapper mapper) where T : unmanaged, IEffectInParameter
+    {
+        Debug.Assert(IsTypeValid(in parameter));
+
+        UpdateParameterBase(in parameter);
+
+        Parameter = MemoryMarshal.Cast<byte, AuxiliaryBufferParameter>(parameter.SpecificData)[0];
+        IsEnabled = parameter.IsEnabled;
+
+        updateErrorInfo = new BehaviourParameter.ErrorInfo();
+
+        if (BufferUnmapped || parameter.IsNew)
         {
-            return WorkBuffers[index].GetReference(true);
-        }
+            ulong bufferSize = (ulong)Unsafe.SizeOf<int>() * Parameter.BufferStorageSize + (ulong)Unsafe.SizeOf<AuxiliaryBufferHeader>();
 
-        public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion1 parameter, PoolMapper mapper)
-        {
-            Update(out updateErrorInfo, in parameter, mapper);
-        }
+            bool sendBufferUnmapped = !mapper.TryAttachBuffer(out _, ref WorkBuffers[0], Parameter.SendBufferInfoAddress, bufferSize);
+            bool returnBufferUnmapped = !mapper.TryAttachBuffer(out updateErrorInfo, ref WorkBuffers[1], Parameter.ReturnBufferInfoAddress, bufferSize);
 
-        public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion2 parameter, PoolMapper mapper)
-        {
-            Update(out updateErrorInfo, in parameter, mapper);
-        }
+            BufferUnmapped = sendBufferUnmapped && returnBufferUnmapped;
 
-        public void Update<T>(out BehaviourParameter.ErrorInfo updateErrorInfo, in T parameter, PoolMapper mapper) where T : unmanaged, IEffectInParameter
-        {
-            Debug.Assert(IsTypeValid(in parameter));
-
-            UpdateParameterBase(in parameter);
-
-            Parameter = MemoryMarshal.Cast<byte, AuxiliaryBufferParameter>(parameter.SpecificData)[0];
-            IsEnabled = parameter.IsEnabled;
-
-            updateErrorInfo = new BehaviourParameter.ErrorInfo();
-
-            if (BufferUnmapped || parameter.IsNew)
+            if (!BufferUnmapped)
             {
-                ulong bufferSize = (ulong)Unsafe.SizeOf<int>() * Parameter.BufferStorageSize + (ulong)Unsafe.SizeOf<AuxiliaryBufferHeader>();
+                DspAddress sendDspAddress = WorkBuffers[0].GetReference(false);
+                DspAddress returnDspAddress = WorkBuffers[1].GetReference(false);
 
-                bool sendBufferUnmapped = !mapper.TryAttachBuffer(out _, ref WorkBuffers[0], Parameter.SendBufferInfoAddress, bufferSize);
-                bool returnBufferUnmapped = !mapper.TryAttachBuffer(out updateErrorInfo, ref WorkBuffers[1], Parameter.ReturnBufferInfoAddress, bufferSize);
+                State.SendBufferInfo = sendDspAddress + (uint)Unsafe.SizeOf<AuxiliaryBufferInfo>();
+                State.SendBufferInfoBase = sendDspAddress + (uint)Unsafe.SizeOf<AuxiliaryBufferHeader>();
 
-                BufferUnmapped = sendBufferUnmapped && returnBufferUnmapped;
-
-                if (!BufferUnmapped)
-                {
-                    DspAddress sendDspAddress = WorkBuffers[0].GetReference(false);
-                    DspAddress returnDspAddress = WorkBuffers[1].GetReference(false);
-
-                    State.SendBufferInfo = sendDspAddress + (uint)Unsafe.SizeOf<AuxiliaryBufferInfo>();
-                    State.SendBufferInfoBase = sendDspAddress + (uint)Unsafe.SizeOf<AuxiliaryBufferHeader>();
-
-                    State.ReturnBufferInfo = returnDspAddress + (uint)Unsafe.SizeOf<AuxiliaryBufferInfo>();
-                    State.ReturnBufferInfoBase = returnDspAddress + (uint)Unsafe.SizeOf<AuxiliaryBufferHeader>();
-                }
+                State.ReturnBufferInfo = returnDspAddress + (uint)Unsafe.SizeOf<AuxiliaryBufferInfo>();
+                State.ReturnBufferInfoBase = returnDspAddress + (uint)Unsafe.SizeOf<AuxiliaryBufferHeader>();
             }
         }
+    }
 
-        public override void UpdateForCommandGeneration()
-        {
-            UpdateUsageStateForCommandGeneration();
-        }
+    public override void UpdateForCommandGeneration()
+    {
+        UpdateUsageStateForCommandGeneration();
     }
 }

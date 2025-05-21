@@ -1,4 +1,4 @@
-﻿namespace LibHac.Fat;
+namespace LibHac.Fat;
 
 public struct FatAttribute
 {

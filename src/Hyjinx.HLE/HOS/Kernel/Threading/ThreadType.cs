@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Kernel.Threading
+namespace Hyjinx.HLE.HOS.Kernel.Threading;
+
+enum ThreadType
 {
-    enum ThreadType
-    {
-        Kernel,
-        Kernel2,
-        User,
-    }
+    Kernel,
+    Kernel2,
+    User,
 }

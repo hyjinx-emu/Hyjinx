@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Ptm.Psm
+namespace Hyjinx.HLE.HOS.Services.Ptm.Psm;
+
+enum ChargerType
 {
-    enum ChargerType
-    {
-        None,
-        ChargerOrDock,
-        UsbC,
-    }
+    None,
+    ChargerOrDock,
+    UsbC,
 }

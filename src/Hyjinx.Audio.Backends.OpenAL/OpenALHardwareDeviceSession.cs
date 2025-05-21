@@ -1,212 +1,211 @@
-using OpenTK.Audio.OpenAL;
 using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Common;
 using Hyjinx.Memory;
+using OpenTK.Audio.OpenAL;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Hyjinx.Audio.Backends.OpenAL
+namespace Hyjinx.Audio.Backends.OpenAL;
+
+class OpenALHardwareDeviceSession : HardwareDeviceSessionOutputBase
 {
-    class OpenALHardwareDeviceSession : HardwareDeviceSessionOutputBase
+    private readonly OpenALHardwareDeviceDriver _driver;
+    private readonly int _sourceId;
+    private readonly ALFormat _targetFormat;
+    private bool _isActive;
+    private readonly Queue<OpenALAudioBuffer> _queuedBuffers;
+    private ulong _playedSampleCount;
+    private float _volume;
+
+    private readonly object _lock = new();
+
+    public OpenALHardwareDeviceSession(OpenALHardwareDeviceDriver driver, IVirtualMemoryManager memoryManager, SampleFormat requestedSampleFormat, uint requestedSampleRate, uint requestedChannelCount) : base(memoryManager, requestedSampleFormat, requestedSampleRate, requestedChannelCount)
     {
-        private readonly OpenALHardwareDeviceDriver _driver;
-        private readonly int _sourceId;
-        private readonly ALFormat _targetFormat;
-        private bool _isActive;
-        private readonly Queue<OpenALAudioBuffer> _queuedBuffers;
-        private ulong _playedSampleCount;
-        private float _volume;
+        _driver = driver;
+        _queuedBuffers = new Queue<OpenALAudioBuffer>();
+        _sourceId = AL.GenSource();
+        _targetFormat = GetALFormat();
+        _isActive = false;
+        _playedSampleCount = 0;
+        SetVolume(1f);
+    }
 
-        private readonly object _lock = new();
-
-        public OpenALHardwareDeviceSession(OpenALHardwareDeviceDriver driver, IVirtualMemoryManager memoryManager, SampleFormat requestedSampleFormat, uint requestedSampleRate, uint requestedChannelCount) : base(memoryManager, requestedSampleFormat, requestedSampleRate, requestedChannelCount)
+    private ALFormat GetALFormat()
+    {
+        return RequestedSampleFormat switch
         {
-            _driver = driver;
-            _queuedBuffers = new Queue<OpenALAudioBuffer>();
-            _sourceId = AL.GenSource();
-            _targetFormat = GetALFormat();
-            _isActive = false;
-            _playedSampleCount = 0;
-            SetVolume(1f);
-        }
-
-        private ALFormat GetALFormat()
-        {
-            return RequestedSampleFormat switch
+            SampleFormat.PcmInt16 => RequestedChannelCount switch
             {
-                SampleFormat.PcmInt16 => RequestedChannelCount switch
-                {
-                    1 => ALFormat.Mono16,
-                    2 => ALFormat.Stereo16,
-                    6 => ALFormat.Multi51Chn16Ext,
-                    _ => throw new NotImplementedException($"Unsupported channel config {RequestedChannelCount}"),
-                },
-                _ => throw new NotImplementedException($"Unsupported sample format {RequestedSampleFormat}"),
+                1 => ALFormat.Mono16,
+                2 => ALFormat.Stereo16,
+                6 => ALFormat.Multi51Chn16Ext,
+                _ => throw new NotImplementedException($"Unsupported channel config {RequestedChannelCount}"),
+            },
+            _ => throw new NotImplementedException($"Unsupported sample format {RequestedSampleFormat}"),
+        };
+    }
+
+    public override void PrepareToClose() { }
+
+    private void StartIfNotPlaying()
+    {
+        AL.GetSource(_sourceId, ALGetSourcei.SourceState, out int stateInt);
+
+        ALSourceState State = (ALSourceState)stateInt;
+
+        if (State != ALSourceState.Playing)
+        {
+            AL.SourcePlay(_sourceId);
+        }
+    }
+
+    public override void QueueBuffer(AudioBuffer buffer)
+    {
+        lock (_lock)
+        {
+            OpenALAudioBuffer driverBuffer = new()
+            {
+                DriverIdentifier = buffer.DataPointer,
+                BufferId = AL.GenBuffer(),
+                SampleCount = GetSampleCount(buffer),
             };
-        }
 
-        public override void PrepareToClose() { }
+            AL.BufferData(driverBuffer.BufferId, _targetFormat, buffer.Data, (int)RequestedSampleRate);
 
-        private void StartIfNotPlaying()
-        {
-            AL.GetSource(_sourceId, ALGetSourcei.SourceState, out int stateInt);
+            _queuedBuffers.Enqueue(driverBuffer);
 
-            ALSourceState State = (ALSourceState)stateInt;
+            AL.SourceQueueBuffer(_sourceId, driverBuffer.BufferId);
 
-            if (State != ALSourceState.Playing)
+            if (_isActive)
             {
-                AL.SourcePlay(_sourceId);
-            }
-        }
-
-        public override void QueueBuffer(AudioBuffer buffer)
-        {
-            lock (_lock)
-            {
-                OpenALAudioBuffer driverBuffer = new()
-                {
-                    DriverIdentifier = buffer.DataPointer,
-                    BufferId = AL.GenBuffer(),
-                    SampleCount = GetSampleCount(buffer),
-                };
-
-                AL.BufferData(driverBuffer.BufferId, _targetFormat, buffer.Data, (int)RequestedSampleRate);
-
-                _queuedBuffers.Enqueue(driverBuffer);
-
-                AL.SourceQueueBuffer(_sourceId, driverBuffer.BufferId);
-
-                if (_isActive)
-                {
-                    StartIfNotPlaying();
-                }
-            }
-        }
-
-        public override void SetVolume(float volume)
-        {
-            _volume = volume;
-
-            UpdateMasterVolume(_driver.Volume);
-        }
-
-        public override float GetVolume()
-        {
-            return _volume;
-        }
-
-        public void UpdateMasterVolume(float newVolume)
-        {
-            lock (_lock)
-            {
-                AL.Source(_sourceId, ALSourcef.Gain, newVolume * _volume);
-            }
-        }
-
-        public override void Start()
-        {
-            lock (_lock)
-            {
-                _isActive = true;
-
                 StartIfNotPlaying();
             }
         }
+    }
 
-        public override void Stop()
+    public override void SetVolume(float volume)
+    {
+        _volume = volume;
+
+        UpdateMasterVolume(_driver.Volume);
+    }
+
+    public override float GetVolume()
+    {
+        return _volume;
+    }
+
+    public void UpdateMasterVolume(float newVolume)
+    {
+        lock (_lock)
         {
-            lock (_lock)
-            {
-                SetVolume(0.0f);
-
-                AL.SourceStop(_sourceId);
-
-                _isActive = false;
-            }
+            AL.Source(_sourceId, ALSourcef.Gain, newVolume * _volume);
         }
+    }
 
-        public override void UnregisterBuffer(AudioBuffer buffer) { }
-
-        public override bool WasBufferFullyConsumed(AudioBuffer buffer)
+    public override void Start()
+    {
+        lock (_lock)
         {
-            lock (_lock)
+            _isActive = true;
+
+            StartIfNotPlaying();
+        }
+    }
+
+    public override void Stop()
+    {
+        lock (_lock)
+        {
+            SetVolume(0.0f);
+
+            AL.SourceStop(_sourceId);
+
+            _isActive = false;
+        }
+    }
+
+    public override void UnregisterBuffer(AudioBuffer buffer) { }
+
+    public override bool WasBufferFullyConsumed(AudioBuffer buffer)
+    {
+        lock (_lock)
+        {
+            if (!_queuedBuffers.TryPeek(out OpenALAudioBuffer driverBuffer))
             {
-                if (!_queuedBuffers.TryPeek(out OpenALAudioBuffer driverBuffer))
+                return true;
+            }
+
+            return driverBuffer.DriverIdentifier != buffer.DataPointer;
+        }
+    }
+
+    public override ulong GetPlayedSampleCount()
+    {
+        lock (_lock)
+        {
+            return _playedSampleCount;
+        }
+    }
+
+    public bool Update()
+    {
+        lock (_lock)
+        {
+            if (_isActive)
+            {
+                AL.GetSource(_sourceId, ALGetSourcei.BuffersProcessed, out int releasedCount);
+
+                if (releasedCount > 0)
                 {
-                    return true;
-                }
+                    int[] bufferIds = new int[releasedCount];
 
-                return driverBuffer.DriverIdentifier != buffer.DataPointer;
-            }
-        }
+                    AL.SourceUnqueueBuffers(_sourceId, releasedCount, bufferIds);
 
-        public override ulong GetPlayedSampleCount()
-        {
-            lock (_lock)
-            {
-                return _playedSampleCount;
-            }
-        }
+                    int i = 0;
 
-        public bool Update()
-        {
-            lock (_lock)
-            {
-                if (_isActive)
-                {
-                    AL.GetSource(_sourceId, ALGetSourcei.BuffersProcessed, out int releasedCount);
-
-                    if (releasedCount > 0)
+                    while (_queuedBuffers.TryPeek(out OpenALAudioBuffer buffer) && i < bufferIds.Length)
                     {
-                        int[] bufferIds = new int[releasedCount];
-
-                        AL.SourceUnqueueBuffers(_sourceId, releasedCount, bufferIds);
-
-                        int i = 0;
-
-                        while (_queuedBuffers.TryPeek(out OpenALAudioBuffer buffer) && i < bufferIds.Length)
+                        if (buffer.BufferId == bufferIds[i])
                         {
-                            if (buffer.BufferId == bufferIds[i])
-                            {
-                                _playedSampleCount += buffer.SampleCount;
+                            _playedSampleCount += buffer.SampleCount;
 
-                                _queuedBuffers.TryDequeue(out _);
+                            _queuedBuffers.TryDequeue(out _);
 
-                                i++;
-                            }
+                            i++;
                         }
-
-                        Debug.Assert(i == bufferIds.Length, "Unknown buffer ids found!");
-
-                        AL.DeleteBuffers(bufferIds);
                     }
 
-                    return releasedCount > 0;
+                    Debug.Assert(i == bufferIds.Length, "Unknown buffer ids found!");
+
+                    AL.DeleteBuffers(bufferIds);
                 }
 
-                return false;
+                return releasedCount > 0;
             }
-        }
 
-        protected virtual void Dispose(bool disposing)
+            return false;
+        }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && _driver.Unregister(this))
         {
-            if (disposing && _driver.Unregister(this))
+            lock (_lock)
             {
-                lock (_lock)
-                {
-                    PrepareToClose();
-                    Stop();
+                PrepareToClose();
+                Stop();
 
-                    AL.DeleteSource(_sourceId);
-                }
+                AL.DeleteSource(_sourceId);
             }
         }
+    }
 
-        public override void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+    public override void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

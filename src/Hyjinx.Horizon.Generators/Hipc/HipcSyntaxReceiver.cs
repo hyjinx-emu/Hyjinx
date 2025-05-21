@@ -4,53 +4,52 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hyjinx.Horizon.Generators.Hipc
+namespace Hyjinx.Horizon.Generators.Hipc;
+
+class HipcSyntaxReceiver : ISyntaxReceiver
 {
-    class HipcSyntaxReceiver : ISyntaxReceiver
+    public List<CommandInterface> CommandInterfaces { get; }
+
+    public HipcSyntaxReceiver()
     {
-        public List<CommandInterface> CommandInterfaces { get; }
+        CommandInterfaces = new List<CommandInterface>();
+    }
 
-        public HipcSyntaxReceiver()
+    public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+    {
+        if (syntaxNode is ClassDeclarationSyntax classDeclaration)
         {
-            CommandInterfaces = new List<CommandInterface>();
-        }
-
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-        {
-            if (syntaxNode is ClassDeclarationSyntax classDeclaration)
+            if (!classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword) || classDeclaration.BaseList == null)
             {
-                if (!classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword) || classDeclaration.BaseList == null)
-                {
-                    return;
-                }
-
-                CommandInterface commandInterface = new CommandInterface(classDeclaration);
-
-                foreach (var memberDeclaration in classDeclaration.Members)
-                {
-                    if (memberDeclaration is MethodDeclarationSyntax methodDeclaration)
-                    {
-                        VisitMethod(commandInterface, methodDeclaration);
-                    }
-                }
-
-                CommandInterfaces.Add(commandInterface);
+                return;
             }
-        }
 
-        private void VisitMethod(CommandInterface commandInterface, MethodDeclarationSyntax methodDeclaration)
-        {
-            string attributeName = HipcGenerator.CommandAttributeName.Replace("Attribute", string.Empty);
+            CommandInterface commandInterface = new CommandInterface(classDeclaration);
 
-            if (methodDeclaration.AttributeLists.Count != 0)
+            foreach (var memberDeclaration in classDeclaration.Members)
             {
-                foreach (var attributeList in methodDeclaration.AttributeLists)
+                if (memberDeclaration is MethodDeclarationSyntax methodDeclaration)
                 {
-                    if (attributeList.Attributes.Any(x => x.Name.ToString().Contains(attributeName)))
-                    {
-                        commandInterface.CommandImplementations.Add(methodDeclaration);
-                        break;
-                    }
+                    VisitMethod(commandInterface, methodDeclaration);
+                }
+            }
+
+            CommandInterfaces.Add(commandInterface);
+        }
+    }
+
+    private void VisitMethod(CommandInterface commandInterface, MethodDeclarationSyntax methodDeclaration)
+    {
+        string attributeName = HipcGenerator.CommandAttributeName.Replace("Attribute", string.Empty);
+
+        if (methodDeclaration.AttributeLists.Count != 0)
+        {
+            foreach (var attributeList in methodDeclaration.AttributeLists)
+            {
+                if (attributeList.Attributes.Any(x => x.Name.ToString().Contains(attributeName)))
+                {
+                    commandInterface.CommandImplementations.Add(methodDeclaration);
+                    break;
                 }
             }
         }

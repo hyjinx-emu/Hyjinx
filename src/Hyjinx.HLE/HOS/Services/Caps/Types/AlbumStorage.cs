@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Caps.Types
+namespace Hyjinx.HLE.HOS.Services.Caps.Types;
+
+enum AlbumStorage : byte
 {
-    enum AlbumStorage : byte
-    {
-        Nand,
-        Sd,
-    }
+    Nand,
+    Sd,
 }

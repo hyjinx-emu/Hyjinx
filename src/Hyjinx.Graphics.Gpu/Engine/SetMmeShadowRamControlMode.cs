@@ -1,31 +1,30 @@
-namespace Hyjinx.Graphics.Gpu.Engine
+namespace Hyjinx.Graphics.Gpu.Engine;
+
+/// <summary>
+/// MME shadow RAM control mode.
+/// </summary>
+enum SetMmeShadowRamControlMode
 {
-    /// <summary>
-    /// MME shadow RAM control mode.
-    /// </summary>
-    enum SetMmeShadowRamControlMode
+    MethodTrack = 0,
+    MethodTrackWithFilter = 1,
+    MethodPassthrough = 2,
+    MethodReplay = 3,
+}
+
+static class SetMmeShadowRamControlModeExtensions
+{
+    public static bool IsTrack(this SetMmeShadowRamControlMode mode)
     {
-        MethodTrack = 0,
-        MethodTrackWithFilter = 1,
-        MethodPassthrough = 2,
-        MethodReplay = 3,
+        return mode == SetMmeShadowRamControlMode.MethodTrack || mode == SetMmeShadowRamControlMode.MethodTrackWithFilter;
     }
 
-    static class SetMmeShadowRamControlModeExtensions
+    public static bool IsPassthrough(this SetMmeShadowRamControlMode mode)
     {
-        public static bool IsTrack(this SetMmeShadowRamControlMode mode)
-        {
-            return mode == SetMmeShadowRamControlMode.MethodTrack || mode == SetMmeShadowRamControlMode.MethodTrackWithFilter;
-        }
+        return mode == SetMmeShadowRamControlMode.MethodPassthrough;
+    }
 
-        public static bool IsPassthrough(this SetMmeShadowRamControlMode mode)
-        {
-            return mode == SetMmeShadowRamControlMode.MethodPassthrough;
-        }
-
-        public static bool IsReplay(this SetMmeShadowRamControlMode mode)
-        {
-            return mode == SetMmeShadowRamControlMode.MethodReplay;
-        }
+    public static bool IsReplay(this SetMmeShadowRamControlMode mode)
+    {
+        return mode == SetMmeShadowRamControlMode.MethodReplay;
     }
 }

@@ -2,297 +2,296 @@ using MsgPack;
 using System;
 using System.Text;
 
-namespace Hyjinx.Common.Utilities
+namespace Hyjinx.Common.Utilities;
+
+public static class MessagePackObjectFormatter
 {
-    public static class MessagePackObjectFormatter
+    public static string ToString(this MessagePackObject obj, bool pretty)
     {
-        public static string ToString(this MessagePackObject obj, bool pretty)
+        if (pretty)
         {
-            if (pretty)
-            {
-                return Format(obj);
-            }
-
-            return obj.ToString();
+            return Format(obj);
         }
 
-        public static string Format(MessagePackObject obj)
+        return obj.ToString();
+    }
+
+    public static string Format(MessagePackObject obj)
+    {
+        var builder = new IndentedStringBuilder();
+
+        FormatMsgPackObj(obj, builder);
+
+        return builder.ToString();
+    }
+
+    private static void FormatMsgPackObj(MessagePackObject obj, IndentedStringBuilder builder)
+    {
+        if (obj.IsMap || obj.IsDictionary)
         {
-            var builder = new IndentedStringBuilder();
-
-            FormatMsgPackObj(obj, builder);
-
-            return builder.ToString();
+            FormatMsgPackMap(obj, builder);
         }
-
-        private static void FormatMsgPackObj(MessagePackObject obj, IndentedStringBuilder builder)
+        else if (obj.IsArray || obj.IsList)
         {
-            if (obj.IsMap || obj.IsDictionary)
+            FormatMsgPackArray(obj, builder);
+        }
+        else if (obj.IsNil)
+        {
+            builder.Append("null");
+        }
+        else
+        {
+            var literal = obj.ToObject();
+
+            if (literal is String)
             {
-                FormatMsgPackMap(obj, builder);
+                builder.AppendQuotedString(obj.AsStringUtf16());
             }
-            else if (obj.IsArray || obj.IsList)
+            else if (literal is byte[] byteArray)
             {
-                FormatMsgPackArray(obj, builder);
+                FormatByteArray(byteArray, builder);
             }
-            else if (obj.IsNil)
+            else if (literal is MessagePackExtendedTypeObject extObject)
             {
-                builder.Append("null");
+                builder.Append('{');
+
+                // Indent
+                builder.IncreaseIndent()
+                       .AppendLine();
+
+                // Print TypeCode field
+                builder.AppendQuotedString("TypeCode")
+                       .Append(": ")
+                       .Append(extObject.TypeCode)
+                       .AppendLine(",");
+
+                // Print Value field
+                builder.AppendQuotedString("Value")
+                       .Append(": ");
+
+                FormatByteArrayAsString(extObject.GetBody(), builder, true);
+
+                // Unindent
+                builder.DecreaseIndent()
+                       .AppendLine();
+
+                builder.Append('}');
             }
             else
             {
-                var literal = obj.ToObject();
-
-                if (literal is String)
-                {
-                    builder.AppendQuotedString(obj.AsStringUtf16());
-                }
-                else if (literal is byte[] byteArray)
-                {
-                    FormatByteArray(byteArray, builder);
-                }
-                else if (literal is MessagePackExtendedTypeObject extObject)
-                {
-                    builder.Append('{');
-
-                    // Indent
-                    builder.IncreaseIndent()
-                           .AppendLine();
-
-                    // Print TypeCode field
-                    builder.AppendQuotedString("TypeCode")
-                           .Append(": ")
-                           .Append(extObject.TypeCode)
-                           .AppendLine(",");
-
-                    // Print Value field
-                    builder.AppendQuotedString("Value")
-                           .Append(": ");
-
-                    FormatByteArrayAsString(extObject.GetBody(), builder, true);
-
-                    // Unindent
-                    builder.DecreaseIndent()
-                           .AppendLine();
-
-                    builder.Append('}');
-                }
-                else
-                {
-                    builder.Append(literal);
-                }
+                builder.Append(literal);
             }
         }
+    }
 
-        private static void FormatByteArray(byte[] arr, IndentedStringBuilder builder)
+    private static void FormatByteArray(byte[] arr, IndentedStringBuilder builder)
+    {
+        builder.Append("[ ");
+
+        foreach (var b in arr)
         {
-            builder.Append("[ ");
-
-            foreach (var b in arr)
-            {
-                builder.Append("0x");
-                builder.Append(ToHexChar(b >> 4));
-                builder.Append(ToHexChar(b & 0xF));
-                builder.Append(", ");
-            }
-
-            // Remove trailing comma
-            builder.Remove(builder.Length - 2, 2);
-
-            builder.Append(" ]");
+            builder.Append("0x");
+            builder.Append(ToHexChar(b >> 4));
+            builder.Append(ToHexChar(b & 0xF));
+            builder.Append(", ");
         }
 
-        private static void FormatByteArrayAsString(byte[] arr, IndentedStringBuilder builder, bool withPrefix)
+        // Remove trailing comma
+        builder.Remove(builder.Length - 2, 2);
+
+        builder.Append(" ]");
+    }
+
+    private static void FormatByteArrayAsString(byte[] arr, IndentedStringBuilder builder, bool withPrefix)
+    {
+        builder.Append('"');
+
+        if (withPrefix)
         {
-            builder.Append('"');
-
-            if (withPrefix)
-            {
-                builder.Append("0x");
-            }
-
-            foreach (var b in arr)
-            {
-                builder.Append(ToHexChar(b >> 4));
-                builder.Append(ToHexChar(b & 0xF));
-            }
-
-            builder.Append('"');
+            builder.Append("0x");
         }
 
-        private static void FormatMsgPackMap(MessagePackObject obj, IndentedStringBuilder builder)
+        foreach (var b in arr)
         {
-            var map = obj.AsDictionary();
-
-            builder.Append('{');
-
-            // Indent
-            builder.IncreaseIndent()
-                   .AppendLine();
-
-            foreach (var item in map)
-            {
-                FormatMsgPackObj(item.Key, builder);
-
-                builder.Append(": ");
-
-                FormatMsgPackObj(item.Value, builder);
-
-                builder.AppendLine(",");
-            }
-
-            // Remove the trailing new line and comma
-            builder.TrimLastLine()
-                   .Remove(builder.Length - 1, 1);
-
-            // Unindent
-            builder.DecreaseIndent()
-                   .AppendLine();
-
-            builder.Append('}');
+            builder.Append(ToHexChar(b >> 4));
+            builder.Append(ToHexChar(b & 0xF));
         }
 
-        private static void FormatMsgPackArray(MessagePackObject obj, IndentedStringBuilder builder)
+        builder.Append('"');
+    }
+
+    private static void FormatMsgPackMap(MessagePackObject obj, IndentedStringBuilder builder)
+    {
+        var map = obj.AsDictionary();
+
+        builder.Append('{');
+
+        // Indent
+        builder.IncreaseIndent()
+               .AppendLine();
+
+        foreach (var item in map)
         {
-            var arr = obj.AsList();
+            FormatMsgPackObj(item.Key, builder);
 
-            builder.Append("[ ");
+            builder.Append(": ");
 
-            foreach (var item in arr)
-            {
-                FormatMsgPackObj(item, builder);
+            FormatMsgPackObj(item.Value, builder);
 
-                builder.Append(", ");
-            }
-
-            // Remove trailing comma
-            builder.Remove(builder.Length - 2, 2);
-
-            builder.Append(" ]");
+            builder.AppendLine(",");
         }
 
-        private static char ToHexChar(int b)
-        {
-            if (b < 10)
-            {
-                return unchecked((char)('0' + b));
-            }
+        // Remove the trailing new line and comma
+        builder.TrimLastLine()
+               .Remove(builder.Length - 1, 1);
 
-            return unchecked((char)('A' + (b - 10)));
+        // Unindent
+        builder.DecreaseIndent()
+               .AppendLine();
+
+        builder.Append('}');
+    }
+
+    private static void FormatMsgPackArray(MessagePackObject obj, IndentedStringBuilder builder)
+    {
+        var arr = obj.AsList();
+
+        builder.Append("[ ");
+
+        foreach (var item in arr)
+        {
+            FormatMsgPackObj(item, builder);
+
+            builder.Append(", ");
         }
 
-        internal class IndentedStringBuilder
+        // Remove trailing comma
+        builder.Remove(builder.Length - 2, 2);
+
+        builder.Append(" ]");
+    }
+
+    private static char ToHexChar(int b)
+    {
+        if (b < 10)
         {
-            const string DefaultIndent = "    ";
+            return unchecked((char)('0' + b));
+        }
 
-            private int _indentCount;
-            private int _newLineIndex;
-            private readonly StringBuilder _builder;
+        return unchecked((char)('A' + (b - 10)));
+    }
 
-            public string IndentString { get; set; } = DefaultIndent;
+    internal class IndentedStringBuilder
+    {
+        const string DefaultIndent = "    ";
 
-            public IndentedStringBuilder(StringBuilder builder)
-            {
-                _builder = builder;
-            }
+        private int _indentCount;
+        private int _newLineIndex;
+        private readonly StringBuilder _builder;
 
-            public IndentedStringBuilder()
-                : this(new StringBuilder())
-            { }
+        public string IndentString { get; set; } = DefaultIndent;
 
-            public IndentedStringBuilder(string str)
-                : this(new StringBuilder(str))
-            { }
+        public IndentedStringBuilder(StringBuilder builder)
+        {
+            _builder = builder;
+        }
 
-            public IndentedStringBuilder(int length)
-                : this(new StringBuilder(length))
-            { }
+        public IndentedStringBuilder()
+            : this(new StringBuilder())
+        { }
 
-            public int Length { get => _builder.Length; }
+        public IndentedStringBuilder(string str)
+            : this(new StringBuilder(str))
+        { }
 
-            public IndentedStringBuilder IncreaseIndent()
-            {
-                _indentCount++;
+        public IndentedStringBuilder(int length)
+            : this(new StringBuilder(length))
+        { }
 
-                return this;
-            }
+        public int Length { get => _builder.Length; }
 
-            public IndentedStringBuilder DecreaseIndent()
-            {
-                _indentCount--;
+        public IndentedStringBuilder IncreaseIndent()
+        {
+            _indentCount++;
 
-                return this;
-            }
+            return this;
+        }
 
-            public IndentedStringBuilder Append(char value)
-            {
-                _builder.Append(value);
+        public IndentedStringBuilder DecreaseIndent()
+        {
+            _indentCount--;
 
-                return this;
-            }
+            return this;
+        }
 
-            public IndentedStringBuilder Append(string value)
-            {
-                _builder.Append(value);
+        public IndentedStringBuilder Append(char value)
+        {
+            _builder.Append(value);
 
-                return this;
-            }
+            return this;
+        }
 
-            public IndentedStringBuilder Append(object value)
-            {
-                this.Append(value.ToString());
+        public IndentedStringBuilder Append(string value)
+        {
+            _builder.Append(value);
 
-                return this;
-            }
+            return this;
+        }
 
-            public IndentedStringBuilder AppendQuotedString(string value)
-            {
-                _builder.Append('"');
-                _builder.Append(value);
-                _builder.Append('"');
+        public IndentedStringBuilder Append(object value)
+        {
+            this.Append(value.ToString());
 
-                return this;
-            }
+            return this;
+        }
 
-            public IndentedStringBuilder AppendLine()
-            {
-                _newLineIndex = _builder.Length;
+        public IndentedStringBuilder AppendQuotedString(string value)
+        {
+            _builder.Append('"');
+            _builder.Append(value);
+            _builder.Append('"');
 
-                _builder.AppendLine();
+            return this;
+        }
 
-                for (int i = 0; i < _indentCount; i++)
-                    _builder.Append(IndentString);
+        public IndentedStringBuilder AppendLine()
+        {
+            _newLineIndex = _builder.Length;
 
-                return this;
-            }
+            _builder.AppendLine();
 
-            public IndentedStringBuilder AppendLine(string value)
-            {
-                _builder.Append(value);
+            for (int i = 0; i < _indentCount; i++)
+                _builder.Append(IndentString);
 
-                this.AppendLine();
+            return this;
+        }
 
-                return this;
-            }
+        public IndentedStringBuilder AppendLine(string value)
+        {
+            _builder.Append(value);
 
-            public IndentedStringBuilder TrimLastLine()
-            {
-                _builder.Remove(_newLineIndex, _builder.Length - _newLineIndex);
+            this.AppendLine();
 
-                return this;
-            }
+            return this;
+        }
 
-            public IndentedStringBuilder Remove(int startIndex, int length)
-            {
-                _builder.Remove(startIndex, length);
+        public IndentedStringBuilder TrimLastLine()
+        {
+            _builder.Remove(_newLineIndex, _builder.Length - _newLineIndex);
 
-                return this;
-            }
+            return this;
+        }
 
-            public override string ToString()
-            {
-                return _builder.ToString();
-            }
+        public IndentedStringBuilder Remove(int startIndex, int length)
+        {
+            _builder.Remove(startIndex, length);
+
+            return this;
+        }
+
+        public override string ToString()
+        {
+            return _builder.ToString();
         }
     }
 }

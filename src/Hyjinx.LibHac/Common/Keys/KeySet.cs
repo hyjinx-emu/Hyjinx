@@ -1,4 +1,4 @@
-﻿using LibHac.FsSrv;
+using LibHac.FsSrv;
 
 // ReSharper disable once CheckNamespace
 namespace LibHac.Common.Keys;
@@ -6,9 +6,9 @@ namespace LibHac.Common.Keys;
 public class KeySet
 {
     public static readonly KeySet Empty = new();
-    
+
     public ExternalKeySet ExternalKeySet { get; } = new();
-    
+
     internal KeySet() { }
 
     /// <summary>

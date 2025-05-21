@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types
+namespace Hyjinx.HLE.HOS.Services.Am.AppletOE.ApplicationProxyService.ApplicationProxy.Types;
+
+public enum ProgramSpecifyKind : uint
 {
-    public enum ProgramSpecifyKind : uint
-    {
-        ExecuteProgram,
-        SubApplicationProgram,
-        RestartProgram,
-    }
+    ExecuteProgram,
+    SubApplicationProgram,
+    RestartProgram,
 }

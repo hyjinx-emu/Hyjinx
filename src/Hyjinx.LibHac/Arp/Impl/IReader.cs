@@ -1,5 +1,5 @@
-﻿using System;
 using LibHac.Ns;
+using System;
 
 namespace LibHac.Arp.Impl;
 

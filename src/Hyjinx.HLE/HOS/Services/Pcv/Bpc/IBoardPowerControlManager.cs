@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Pcv.Bpc
+namespace Hyjinx.HLE.HOS.Services.Pcv.Bpc;
+
+[Service("bpc")]
+class IBoardPowerControlManager : IpcService<IBoardPowerControlManager>
 {
-    [Service("bpc")]
-    class IBoardPowerControlManager : IpcService<IBoardPowerControlManager>
-    {
-        public IBoardPowerControlManager(ServiceCtx context) { }
-    }
+    public IBoardPowerControlManager(ServiceCtx context) { }
 }

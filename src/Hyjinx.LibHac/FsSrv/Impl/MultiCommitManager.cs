@@ -1,5 +1,3 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -7,7 +5,8 @@ using LibHac.Fs.Shim;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Sf;
-
+using System;
+using System.Runtime.CompilerServices;
 using IFile = LibHac.Fs.Fsa.IFile;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
@@ -107,7 +106,8 @@ internal class MultiCommitManager : IMultiCommitManager
                 return res;
 
             res = _fsServer.Hos.Fs.CreateSystemSaveData(SaveDataId, SaveDataSize, SaveJournalSize, SaveDataFlags.None);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -128,7 +128,8 @@ internal class MultiCommitManager : IMultiCommitManager
 
         using var fsaFileSystem = new SharedRef<IFileSystem>();
         Result res = fileSystem.Get.GetImpl(ref fsaFileSystem.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Check that the file system hasn't already been added
         for (int i = 0; i < _fileSystemCount; i++)
@@ -155,19 +156,24 @@ internal class MultiCommitManager : IMultiCommitManager
 
         using var contextUpdater = new ContextUpdater(contextFileSystem);
         Result res = contextUpdater.Create(_counter, _fileSystemCount);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CommitProvisionallyFileSystem(_counter);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = contextUpdater.CommitProvisionallyDone();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CommitFileSystem();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = contextUpdater.CommitDone();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -182,10 +188,12 @@ internal class MultiCommitManager : IMultiCommitManager
 
         using var contextFileSystem = new SharedRef<IFileSystem>();
         Result res = EnsureSaveDataForContext();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = _multiCommitInterface.Get.OpenMultiCommitContext(ref contextFileSystem.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Commit(contextFileSystem.Get);
     }
@@ -247,7 +255,8 @@ internal class MultiCommitManager : IMultiCommitManager
             }
         }
 
-        if (result.IsFailure()) return result.Miss();
+        if (result.IsFailure())
+            return result.Miss();
 
         return Result.Success;
     }
@@ -269,16 +278,19 @@ internal class MultiCommitManager : IMultiCommitManager
     {
         using var contextFilePath = new Fs.Path();
         Result res = PathFunctions.SetUpFixedPath(ref contextFilePath.Ref(), CommitContextFileName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Read the multi-commit context
         using var contextFile = new UniqueRef<IFile>();
         res = contextFs.OpenFile(ref contextFile.Ref, in contextFilePath, OpenMode.ReadWrite);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Unsafe.SkipInit(out Context context);
         res = contextFile.Get.Read(out _, 0, SpanHelpers.AsByteSpan(ref context), ReadOption.None);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Note: Nintendo doesn't check if the proper amount of bytes were read, but it
         // doesn't really matter since the context is validated.
@@ -301,10 +313,12 @@ internal class MultiCommitManager : IMultiCommitManager
             using var accessor = new UniqueRef<SaveDataIndexerAccessor>();
 
             res = saveService.OpenSaveDataIndexerAccessor(ref accessor.Ref, out _, SaveDataSpaceId.User);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = accessor.Get.GetInterface().OpenSaveDataInfoReader(ref reader.Ref);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Iterate through all the saves to find any provisionally committed save data
             while (true)
@@ -312,7 +326,8 @@ internal class MultiCommitManager : IMultiCommitManager
                 Unsafe.SkipInit(out SaveDataInfo info);
 
                 res = reader.Get.Read(out long readCount, OutBuffer.FromStruct(ref info));
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 // Break once we're done iterating all save data
                 if (readCount == 0)
@@ -382,10 +397,12 @@ internal class MultiCommitManager : IMultiCommitManager
                 using var accessor = new UniqueRef<SaveDataIndexerAccessor>();
 
                 res = saveService.OpenSaveDataIndexerAccessor(ref accessor.Ref, out _, SaveDataSpaceId.User);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = accessor.Get.GetInterface().OpenSaveDataInfoReader(ref reader.Ref);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 // Iterate through all the saves to find any provisionally committed save data
                 while (true)
@@ -393,7 +410,8 @@ internal class MultiCommitManager : IMultiCommitManager
                     Unsafe.SkipInit(out SaveDataInfo info);
 
                     res = reader.Get.Read(out long readCount, OutBuffer.FromStruct(ref info));
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     // Break once we're done iterating all save data
                     if (readCount == 0)
@@ -430,14 +448,17 @@ internal class MultiCommitManager : IMultiCommitManager
 
         using var contextFilePath = new Fs.Path();
         res = PathFunctions.SetUpFixedPath(ref contextFilePath.Ref(), CommitContextFileName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Delete the commit context file
         res = contextFs.DeleteFile(in contextFilePath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = contextFs.Commit();
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return recoveryResult;
     }
@@ -476,7 +497,8 @@ internal class MultiCommitManager : IMultiCommitManager
         {
             using var contextFilePath = new Fs.Path();
             res = PathFunctions.SetUpFixedPath(ref contextFilePath.Ref(), CommitContextFileName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var file = new UniqueRef<IFile>();
             res = fileSystem.Get.OpenFile(ref file.Ref, in contextFilePath, OpenMode.Read);
@@ -527,7 +549,8 @@ internal class MultiCommitManager : IMultiCommitManager
 
         public void Dispose()
         {
-            if (_fileSystem is null) return;
+            if (_fileSystem is null)
+                return;
 
             using var contextFilePath = new Fs.Path();
             PathFunctions.SetUpFixedPath(ref contextFilePath.Ref(), CommitContextFileName).IgnoreResult();
@@ -547,7 +570,8 @@ internal class MultiCommitManager : IMultiCommitManager
         {
             using var contextFilePath = new Fs.Path();
             Result res = PathFunctions.SetUpFixedPath(ref contextFilePath.Ref(), CommitContextFileName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Open context file and create if it doesn't exist
             using (var contextFile = new UniqueRef<IFile>())
@@ -560,17 +584,20 @@ internal class MultiCommitManager : IMultiCommitManager
                         return res;
 
                     res = _fileSystem.CreateFile(in contextFilePath, CommitContextFileSize);
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
 
                     res = _fileSystem.OpenFile(ref contextFile.Ref, in contextFilePath, OpenMode.Read);
-                    if (res.IsFailure()) return res.Miss();
+                    if (res.IsFailure())
+                        return res.Miss();
                 }
             }
 
             using (var contextFile = new UniqueRef<IFile>())
             {
                 res = _fileSystem.OpenFile(ref contextFile.Ref, in contextFilePath, OpenMode.ReadWrite);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 _context.Version = CurrentCommitContextVersion;
                 _context.State = CommitState.NotCommitted;
@@ -579,14 +606,17 @@ internal class MultiCommitManager : IMultiCommitManager
 
                 // Write the initial context to the file
                 res = contextFile.Get.Write(0, SpanHelpers.AsByteSpan(ref _context), WriteOption.None);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = contextFile.Get.Flush();
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             res = _fileSystem.Commit();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -601,19 +631,23 @@ internal class MultiCommitManager : IMultiCommitManager
             using (var contextFilePath = new Fs.Path())
             {
                 Result res = PathFunctions.SetUpFixedPath(ref contextFilePath.Ref(), CommitContextFileName);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 using var contextFile = new UniqueRef<IFile>();
                 res = _fileSystem.OpenFile(ref contextFile.Ref, in contextFilePath, OpenMode.ReadWrite);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 _context.State = CommitState.ProvisionallyCommitted;
 
                 res = contextFile.Get.Write(0, SpanHelpers.AsByteSpan(ref _context), WriteOption.None);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = contextFile.Get.Flush();
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             return _fileSystem.Commit();
@@ -627,13 +661,16 @@ internal class MultiCommitManager : IMultiCommitManager
         {
             using var contextFilePath = new Fs.Path();
             Result res = PathFunctions.SetUpFixedPath(ref contextFilePath.Ref(), CommitContextFileName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = _fileSystem.DeleteFile(in contextFilePath);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = _fileSystem.Commit();
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _fileSystem = null;
             return Result.Success;

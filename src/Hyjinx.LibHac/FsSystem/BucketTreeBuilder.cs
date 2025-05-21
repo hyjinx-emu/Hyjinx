@@ -1,10 +1,10 @@
-﻿using System;
-using System.Buffers.Binary;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Util;
+using System;
+using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.FsSystem;
 
@@ -68,7 +68,8 @@ public partial class BucketTree
             var header = new Header();
             header.Format(entryCount);
             Result res = headerStorage.Write(0, SpanHelpers.AsByteSpan(ref header));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Allocate buffers for the L1 node and entry sets
             _l1Node.Allocate(allocator, nodeSize);
@@ -116,7 +117,8 @@ public partial class BucketTree
                 return ResultFs.InvalidOffset.Log();
 
             Result res = FinalizePreviousEntrySet(entryOffset);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             AddEntryOffset(entryOffset);
 
@@ -154,7 +156,8 @@ public partial class BucketTree
                 // Write the entry set to the entry storage
                 long storageOffset = (long)_nodeSize * prevEntrySetIndex;
                 Result res = _entryStorage.Write(storageOffset, _entrySet.GetBuffer());
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 // Clear the entry set buffer to begin the new entry set
                 _entrySet.FillZero();
@@ -178,7 +181,8 @@ public partial class BucketTree
                         // Write the L2 node to the node storage
                         long nodeOffset = (long)_nodeSize * (prevL2NodeIndex + 1);
                         res = _nodeStorage.Write(nodeOffset, _l2Node.GetBuffer());
-                        if (res.IsFailure()) return res.Miss();
+                        if (res.IsFailure())
+                            return res.Miss();
 
                         // Clear the L2 node buffer to begin the new node
                         _l2Node.FillZero();
@@ -254,7 +258,8 @@ public partial class BucketTree
                 return Result.Success;
 
             Result res = FinalizePreviousEntrySet(endOffset);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             int entrySetIndex = _currentEntryIndex / _entriesPerEntrySet;
             int indexInEntrySet = _currentEntryIndex % _entriesPerEntrySet;
@@ -270,7 +275,8 @@ public partial class BucketTree
 
                 long entryStorageOffset = (long)_nodeSize * entrySetIndex;
                 res = _entryStorage.Write(entryStorageOffset, _entrySet.GetBuffer());
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             int l2NodeIndex = BitUtil.DivideUp(_currentL2OffsetIndex, _offsetsPerNode) - 2;
@@ -286,7 +292,8 @@ public partial class BucketTree
 
                 long l2NodeStorageOffset = (long)_nodeSize * (l2NodeIndex + 1);
                 res = _nodeStorage.Write(l2NodeStorageOffset, _l2Node.GetBuffer());
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             // Finalize the L1 node
@@ -305,7 +312,8 @@ public partial class BucketTree
             }
 
             res = _nodeStorage.Write(0, _l1Node.GetBuffer());
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _currentOffset = long.MaxValue;
             return Result.Success;

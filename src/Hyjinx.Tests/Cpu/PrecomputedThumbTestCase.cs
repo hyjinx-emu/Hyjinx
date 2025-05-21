@@ -1,9 +1,8 @@
-namespace Hyjinx.Tests.Cpu
+namespace Hyjinx.Tests.Cpu;
+
+public class PrecomputedThumbTestCase
 {
-    public class PrecomputedThumbTestCase
-    {
-        public ushort[] Instructions;
-        public uint[] StartRegs;
-        public uint[] FinalRegs;
-    }
+    public ushort[] Instructions;
+    public uint[] StartRegs;
+    public uint[] FinalRegs;
 }

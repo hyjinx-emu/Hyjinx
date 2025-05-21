@@ -1,684 +1,683 @@
-using OpenTK.Graphics.OpenGL;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Shader;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
+using OpenTK.Graphics.OpenGL;
 
-namespace Hyjinx.Graphics.OpenGL
+namespace Hyjinx.Graphics.OpenGL;
+
+static class EnumConversion
 {
-    static class EnumConversion
+    private static readonly ILogger _logger =
+        Logger.DefaultLoggerFactory.CreateLogger(typeof(EnumConversion).FullName!);
+
+    private static void LogInvalidEnumValue<T>(T value)
     {
-        private static readonly ILogger _logger =
-            Logger.DefaultLoggerFactory.CreateLogger(typeof(EnumConversion).FullName!);
-        
-        private static void LogInvalidEnumValue<T>(T value)
-        {
-            _logger.LogDebug(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)),
-                $"Invalid {nameof(T)} enum value {value}");
-        }
-        
-        public static TextureWrapMode Convert(this AddressMode mode)
-        {
-            switch (mode)
-            {
-                case AddressMode.Clamp:
-                    return TextureWrapMode.Clamp;
-                case AddressMode.Repeat:
-                    return TextureWrapMode.Repeat;
-                case AddressMode.MirrorClamp:
-                    return (TextureWrapMode)ExtTextureMirrorClamp.MirrorClampExt;
-                case AddressMode.MirrorClampToEdge:
-                    return (TextureWrapMode)ExtTextureMirrorClamp.MirrorClampToEdgeExt;
-                case AddressMode.MirrorClampToBorder:
-                    return (TextureWrapMode)ExtTextureMirrorClamp.MirrorClampToBorderExt;
-                case AddressMode.ClampToBorder:
-                    return TextureWrapMode.ClampToBorder;
-                case AddressMode.MirroredRepeat:
-                    return TextureWrapMode.MirroredRepeat;
-                case AddressMode.ClampToEdge:
-                    return TextureWrapMode.ClampToEdge;
-            }
+        _logger.LogDebug(new EventId((int)LogClass.Gpu, nameof(LogClass.Gpu)),
+            $"Invalid {nameof(T)} enum value {value}");
+    }
 
-            LogInvalidEnumValue(mode);
-            return TextureWrapMode.Clamp;
+    public static TextureWrapMode Convert(this AddressMode mode)
+    {
+        switch (mode)
+        {
+            case AddressMode.Clamp:
+                return TextureWrapMode.Clamp;
+            case AddressMode.Repeat:
+                return TextureWrapMode.Repeat;
+            case AddressMode.MirrorClamp:
+                return (TextureWrapMode)ExtTextureMirrorClamp.MirrorClampExt;
+            case AddressMode.MirrorClampToEdge:
+                return (TextureWrapMode)ExtTextureMirrorClamp.MirrorClampToEdgeExt;
+            case AddressMode.MirrorClampToBorder:
+                return (TextureWrapMode)ExtTextureMirrorClamp.MirrorClampToBorderExt;
+            case AddressMode.ClampToBorder:
+                return TextureWrapMode.ClampToBorder;
+            case AddressMode.MirroredRepeat:
+                return TextureWrapMode.MirroredRepeat;
+            case AddressMode.ClampToEdge:
+                return TextureWrapMode.ClampToEdge;
         }
 
-        public static NvBlendEquationAdvanced Convert(this AdvancedBlendOp op)
+        LogInvalidEnumValue(mode);
+        return TextureWrapMode.Clamp;
+    }
+
+    public static NvBlendEquationAdvanced Convert(this AdvancedBlendOp op)
+    {
+        switch (op)
         {
-            switch (op)
-            {
-                case AdvancedBlendOp.Zero:
-                    return NvBlendEquationAdvanced.Zero;
-                case AdvancedBlendOp.Src:
-                    return NvBlendEquationAdvanced.SrcNv;
-                case AdvancedBlendOp.Dst:
-                    return NvBlendEquationAdvanced.DstNv;
-                case AdvancedBlendOp.SrcOver:
-                    return NvBlendEquationAdvanced.SrcOverNv;
-                case AdvancedBlendOp.DstOver:
-                    return NvBlendEquationAdvanced.DstOverNv;
-                case AdvancedBlendOp.SrcIn:
-                    return NvBlendEquationAdvanced.SrcInNv;
-                case AdvancedBlendOp.DstIn:
-                    return NvBlendEquationAdvanced.DstInNv;
-                case AdvancedBlendOp.SrcOut:
-                    return NvBlendEquationAdvanced.SrcOutNv;
-                case AdvancedBlendOp.DstOut:
-                    return NvBlendEquationAdvanced.DstOutNv;
-                case AdvancedBlendOp.SrcAtop:
-                    return NvBlendEquationAdvanced.SrcAtopNv;
-                case AdvancedBlendOp.DstAtop:
-                    return NvBlendEquationAdvanced.DstAtopNv;
-                case AdvancedBlendOp.Xor:
-                    return NvBlendEquationAdvanced.XorNv;
-                case AdvancedBlendOp.Plus:
-                    return NvBlendEquationAdvanced.PlusNv;
-                case AdvancedBlendOp.PlusClamped:
-                    return NvBlendEquationAdvanced.PlusClampedNv;
-                case AdvancedBlendOp.PlusClampedAlpha:
-                    return NvBlendEquationAdvanced.PlusClampedAlphaNv;
-                case AdvancedBlendOp.PlusDarker:
-                    return NvBlendEquationAdvanced.PlusDarkerNv;
-                case AdvancedBlendOp.Multiply:
-                    return NvBlendEquationAdvanced.MultiplyNv;
-                case AdvancedBlendOp.Screen:
-                    return NvBlendEquationAdvanced.ScreenNv;
-                case AdvancedBlendOp.Overlay:
-                    return NvBlendEquationAdvanced.OverlayNv;
-                case AdvancedBlendOp.Darken:
-                    return NvBlendEquationAdvanced.DarkenNv;
-                case AdvancedBlendOp.Lighten:
-                    return NvBlendEquationAdvanced.LightenNv;
-                case AdvancedBlendOp.ColorDodge:
-                    return NvBlendEquationAdvanced.ColordodgeNv;
-                case AdvancedBlendOp.ColorBurn:
-                    return NvBlendEquationAdvanced.ColorburnNv;
-                case AdvancedBlendOp.HardLight:
-                    return NvBlendEquationAdvanced.HardlightNv;
-                case AdvancedBlendOp.SoftLight:
-                    return NvBlendEquationAdvanced.SoftlightNv;
-                case AdvancedBlendOp.Difference:
-                    return NvBlendEquationAdvanced.DifferenceNv;
-                case AdvancedBlendOp.Minus:
-                    return NvBlendEquationAdvanced.MinusNv;
-                case AdvancedBlendOp.MinusClamped:
-                    return NvBlendEquationAdvanced.MinusClampedNv;
-                case AdvancedBlendOp.Exclusion:
-                    return NvBlendEquationAdvanced.ExclusionNv;
-                case AdvancedBlendOp.Contrast:
-                    return NvBlendEquationAdvanced.ContrastNv;
-                case AdvancedBlendOp.Invert:
-                    return NvBlendEquationAdvanced.Invert;
-                case AdvancedBlendOp.InvertRGB:
-                    return NvBlendEquationAdvanced.InvertRgbNv;
-                case AdvancedBlendOp.InvertOvg:
-                    return NvBlendEquationAdvanced.InvertOvgNv;
-                case AdvancedBlendOp.LinearDodge:
-                    return NvBlendEquationAdvanced.LineardodgeNv;
-                case AdvancedBlendOp.LinearBurn:
-                    return NvBlendEquationAdvanced.LinearburnNv;
-                case AdvancedBlendOp.VividLight:
-                    return NvBlendEquationAdvanced.VividlightNv;
-                case AdvancedBlendOp.LinearLight:
-                    return NvBlendEquationAdvanced.LinearlightNv;
-                case AdvancedBlendOp.PinLight:
-                    return NvBlendEquationAdvanced.PinlightNv;
-                case AdvancedBlendOp.HardMix:
-                    return NvBlendEquationAdvanced.HardmixNv;
-                case AdvancedBlendOp.Red:
-                    return NvBlendEquationAdvanced.RedNv;
-                case AdvancedBlendOp.Green:
-                    return NvBlendEquationAdvanced.GreenNv;
-                case AdvancedBlendOp.Blue:
-                    return NvBlendEquationAdvanced.BlueNv;
-                case AdvancedBlendOp.HslHue:
-                    return NvBlendEquationAdvanced.HslHueNv;
-                case AdvancedBlendOp.HslSaturation:
-                    return NvBlendEquationAdvanced.HslSaturationNv;
-                case AdvancedBlendOp.HslColor:
-                    return NvBlendEquationAdvanced.HslColorNv;
-                case AdvancedBlendOp.HslLuminosity:
-                    return NvBlendEquationAdvanced.HslLuminosityNv;
-            }
-            
-            LogInvalidEnumValue(op);
-            
-            return NvBlendEquationAdvanced.Zero;
+            case AdvancedBlendOp.Zero:
+                return NvBlendEquationAdvanced.Zero;
+            case AdvancedBlendOp.Src:
+                return NvBlendEquationAdvanced.SrcNv;
+            case AdvancedBlendOp.Dst:
+                return NvBlendEquationAdvanced.DstNv;
+            case AdvancedBlendOp.SrcOver:
+                return NvBlendEquationAdvanced.SrcOverNv;
+            case AdvancedBlendOp.DstOver:
+                return NvBlendEquationAdvanced.DstOverNv;
+            case AdvancedBlendOp.SrcIn:
+                return NvBlendEquationAdvanced.SrcInNv;
+            case AdvancedBlendOp.DstIn:
+                return NvBlendEquationAdvanced.DstInNv;
+            case AdvancedBlendOp.SrcOut:
+                return NvBlendEquationAdvanced.SrcOutNv;
+            case AdvancedBlendOp.DstOut:
+                return NvBlendEquationAdvanced.DstOutNv;
+            case AdvancedBlendOp.SrcAtop:
+                return NvBlendEquationAdvanced.SrcAtopNv;
+            case AdvancedBlendOp.DstAtop:
+                return NvBlendEquationAdvanced.DstAtopNv;
+            case AdvancedBlendOp.Xor:
+                return NvBlendEquationAdvanced.XorNv;
+            case AdvancedBlendOp.Plus:
+                return NvBlendEquationAdvanced.PlusNv;
+            case AdvancedBlendOp.PlusClamped:
+                return NvBlendEquationAdvanced.PlusClampedNv;
+            case AdvancedBlendOp.PlusClampedAlpha:
+                return NvBlendEquationAdvanced.PlusClampedAlphaNv;
+            case AdvancedBlendOp.PlusDarker:
+                return NvBlendEquationAdvanced.PlusDarkerNv;
+            case AdvancedBlendOp.Multiply:
+                return NvBlendEquationAdvanced.MultiplyNv;
+            case AdvancedBlendOp.Screen:
+                return NvBlendEquationAdvanced.ScreenNv;
+            case AdvancedBlendOp.Overlay:
+                return NvBlendEquationAdvanced.OverlayNv;
+            case AdvancedBlendOp.Darken:
+                return NvBlendEquationAdvanced.DarkenNv;
+            case AdvancedBlendOp.Lighten:
+                return NvBlendEquationAdvanced.LightenNv;
+            case AdvancedBlendOp.ColorDodge:
+                return NvBlendEquationAdvanced.ColordodgeNv;
+            case AdvancedBlendOp.ColorBurn:
+                return NvBlendEquationAdvanced.ColorburnNv;
+            case AdvancedBlendOp.HardLight:
+                return NvBlendEquationAdvanced.HardlightNv;
+            case AdvancedBlendOp.SoftLight:
+                return NvBlendEquationAdvanced.SoftlightNv;
+            case AdvancedBlendOp.Difference:
+                return NvBlendEquationAdvanced.DifferenceNv;
+            case AdvancedBlendOp.Minus:
+                return NvBlendEquationAdvanced.MinusNv;
+            case AdvancedBlendOp.MinusClamped:
+                return NvBlendEquationAdvanced.MinusClampedNv;
+            case AdvancedBlendOp.Exclusion:
+                return NvBlendEquationAdvanced.ExclusionNv;
+            case AdvancedBlendOp.Contrast:
+                return NvBlendEquationAdvanced.ContrastNv;
+            case AdvancedBlendOp.Invert:
+                return NvBlendEquationAdvanced.Invert;
+            case AdvancedBlendOp.InvertRGB:
+                return NvBlendEquationAdvanced.InvertRgbNv;
+            case AdvancedBlendOp.InvertOvg:
+                return NvBlendEquationAdvanced.InvertOvgNv;
+            case AdvancedBlendOp.LinearDodge:
+                return NvBlendEquationAdvanced.LineardodgeNv;
+            case AdvancedBlendOp.LinearBurn:
+                return NvBlendEquationAdvanced.LinearburnNv;
+            case AdvancedBlendOp.VividLight:
+                return NvBlendEquationAdvanced.VividlightNv;
+            case AdvancedBlendOp.LinearLight:
+                return NvBlendEquationAdvanced.LinearlightNv;
+            case AdvancedBlendOp.PinLight:
+                return NvBlendEquationAdvanced.PinlightNv;
+            case AdvancedBlendOp.HardMix:
+                return NvBlendEquationAdvanced.HardmixNv;
+            case AdvancedBlendOp.Red:
+                return NvBlendEquationAdvanced.RedNv;
+            case AdvancedBlendOp.Green:
+                return NvBlendEquationAdvanced.GreenNv;
+            case AdvancedBlendOp.Blue:
+                return NvBlendEquationAdvanced.BlueNv;
+            case AdvancedBlendOp.HslHue:
+                return NvBlendEquationAdvanced.HslHueNv;
+            case AdvancedBlendOp.HslSaturation:
+                return NvBlendEquationAdvanced.HslSaturationNv;
+            case AdvancedBlendOp.HslColor:
+                return NvBlendEquationAdvanced.HslColorNv;
+            case AdvancedBlendOp.HslLuminosity:
+                return NvBlendEquationAdvanced.HslLuminosityNv;
         }
 
-        public static All Convert(this AdvancedBlendOverlap overlap)
+        LogInvalidEnumValue(op);
+
+        return NvBlendEquationAdvanced.Zero;
+    }
+
+    public static All Convert(this AdvancedBlendOverlap overlap)
+    {
+        switch (overlap)
         {
-            switch (overlap)
-            {
-                case AdvancedBlendOverlap.Uncorrelated:
-                    return All.UncorrelatedNv;
-                case AdvancedBlendOverlap.Disjoint:
-                    return All.DisjointNv;
-                case AdvancedBlendOverlap.Conjoint:
-                    return All.ConjointNv;
-            }
-
-            LogInvalidEnumValue(overlap);
-
-            return All.UncorrelatedNv;
+            case AdvancedBlendOverlap.Uncorrelated:
+                return All.UncorrelatedNv;
+            case AdvancedBlendOverlap.Disjoint:
+                return All.DisjointNv;
+            case AdvancedBlendOverlap.Conjoint:
+                return All.ConjointNv;
         }
 
-        public static All Convert(this BlendFactor factor)
+        LogInvalidEnumValue(overlap);
+
+        return All.UncorrelatedNv;
+    }
+
+    public static All Convert(this BlendFactor factor)
+    {
+        switch (factor)
         {
-            switch (factor)
-            {
-                case BlendFactor.Zero:
-                case BlendFactor.ZeroGl:
-                    return All.Zero;
-                case BlendFactor.One:
-                case BlendFactor.OneGl:
-                    return All.One;
-                case BlendFactor.SrcColor:
-                case BlendFactor.SrcColorGl:
-                    return All.SrcColor;
-                case BlendFactor.OneMinusSrcColor:
-                case BlendFactor.OneMinusSrcColorGl:
-                    return All.OneMinusSrcColor;
-                case BlendFactor.SrcAlpha:
-                case BlendFactor.SrcAlphaGl:
-                    return All.SrcAlpha;
-                case BlendFactor.OneMinusSrcAlpha:
-                case BlendFactor.OneMinusSrcAlphaGl:
-                    return All.OneMinusSrcAlpha;
-                case BlendFactor.DstAlpha:
-                case BlendFactor.DstAlphaGl:
-                    return All.DstAlpha;
-                case BlendFactor.OneMinusDstAlpha:
-                case BlendFactor.OneMinusDstAlphaGl:
-                    return All.OneMinusDstAlpha;
-                case BlendFactor.DstColor:
-                case BlendFactor.DstColorGl:
-                    return All.DstColor;
-                case BlendFactor.OneMinusDstColor:
-                case BlendFactor.OneMinusDstColorGl:
-                    return All.OneMinusDstColor;
-                case BlendFactor.SrcAlphaSaturate:
-                case BlendFactor.SrcAlphaSaturateGl:
-                    return All.SrcAlphaSaturate;
-                case BlendFactor.Src1Color:
-                case BlendFactor.Src1ColorGl:
-                    return All.Src1Color;
-                case BlendFactor.OneMinusSrc1Color:
-                case BlendFactor.OneMinusSrc1ColorGl:
-                    return All.OneMinusSrc1Color;
-                case BlendFactor.Src1Alpha:
-                case BlendFactor.Src1AlphaGl:
-                    return All.Src1Alpha;
-                case BlendFactor.OneMinusSrc1Alpha:
-                case BlendFactor.OneMinusSrc1AlphaGl:
-                    return All.OneMinusSrc1Alpha;
-                case BlendFactor.ConstantColor:
-                    return All.ConstantColor;
-                case BlendFactor.OneMinusConstantColor:
-                    return All.OneMinusConstantColor;
-                case BlendFactor.ConstantAlpha:
-                    return All.ConstantAlpha;
-                case BlendFactor.OneMinusConstantAlpha:
-                    return All.OneMinusConstantAlpha;
-            }
-
-            LogInvalidEnumValue(factor);
-
-            return All.Zero;
+            case BlendFactor.Zero:
+            case BlendFactor.ZeroGl:
+                return All.Zero;
+            case BlendFactor.One:
+            case BlendFactor.OneGl:
+                return All.One;
+            case BlendFactor.SrcColor:
+            case BlendFactor.SrcColorGl:
+                return All.SrcColor;
+            case BlendFactor.OneMinusSrcColor:
+            case BlendFactor.OneMinusSrcColorGl:
+                return All.OneMinusSrcColor;
+            case BlendFactor.SrcAlpha:
+            case BlendFactor.SrcAlphaGl:
+                return All.SrcAlpha;
+            case BlendFactor.OneMinusSrcAlpha:
+            case BlendFactor.OneMinusSrcAlphaGl:
+                return All.OneMinusSrcAlpha;
+            case BlendFactor.DstAlpha:
+            case BlendFactor.DstAlphaGl:
+                return All.DstAlpha;
+            case BlendFactor.OneMinusDstAlpha:
+            case BlendFactor.OneMinusDstAlphaGl:
+                return All.OneMinusDstAlpha;
+            case BlendFactor.DstColor:
+            case BlendFactor.DstColorGl:
+                return All.DstColor;
+            case BlendFactor.OneMinusDstColor:
+            case BlendFactor.OneMinusDstColorGl:
+                return All.OneMinusDstColor;
+            case BlendFactor.SrcAlphaSaturate:
+            case BlendFactor.SrcAlphaSaturateGl:
+                return All.SrcAlphaSaturate;
+            case BlendFactor.Src1Color:
+            case BlendFactor.Src1ColorGl:
+                return All.Src1Color;
+            case BlendFactor.OneMinusSrc1Color:
+            case BlendFactor.OneMinusSrc1ColorGl:
+                return All.OneMinusSrc1Color;
+            case BlendFactor.Src1Alpha:
+            case BlendFactor.Src1AlphaGl:
+                return All.Src1Alpha;
+            case BlendFactor.OneMinusSrc1Alpha:
+            case BlendFactor.OneMinusSrc1AlphaGl:
+                return All.OneMinusSrc1Alpha;
+            case BlendFactor.ConstantColor:
+                return All.ConstantColor;
+            case BlendFactor.OneMinusConstantColor:
+                return All.OneMinusConstantColor;
+            case BlendFactor.ConstantAlpha:
+                return All.ConstantAlpha;
+            case BlendFactor.OneMinusConstantAlpha:
+                return All.OneMinusConstantAlpha;
         }
 
-        public static BlendEquationMode Convert(this BlendOp op)
-        {
-            switch (op)
-            {
-                case BlendOp.Add:
-                case BlendOp.AddGl:
-                    return BlendEquationMode.FuncAdd;
-                case BlendOp.Minimum:
-                case BlendOp.MinimumGl:
-                    return BlendEquationMode.Min;
-                case BlendOp.Maximum:
-                case BlendOp.MaximumGl:
-                    return BlendEquationMode.Max;
-                case BlendOp.Subtract:
-                case BlendOp.SubtractGl:
-                    return BlendEquationMode.FuncSubtract;
-                case BlendOp.ReverseSubtract:
-                case BlendOp.ReverseSubtractGl:
-                    return BlendEquationMode.FuncReverseSubtract;
-            }
+        LogInvalidEnumValue(factor);
 
-            LogInvalidEnumValue(op);
-            
-            return BlendEquationMode.FuncAdd;
+        return All.Zero;
+    }
+
+    public static BlendEquationMode Convert(this BlendOp op)
+    {
+        switch (op)
+        {
+            case BlendOp.Add:
+            case BlendOp.AddGl:
+                return BlendEquationMode.FuncAdd;
+            case BlendOp.Minimum:
+            case BlendOp.MinimumGl:
+                return BlendEquationMode.Min;
+            case BlendOp.Maximum:
+            case BlendOp.MaximumGl:
+                return BlendEquationMode.Max;
+            case BlendOp.Subtract:
+            case BlendOp.SubtractGl:
+                return BlendEquationMode.FuncSubtract;
+            case BlendOp.ReverseSubtract:
+            case BlendOp.ReverseSubtractGl:
+                return BlendEquationMode.FuncReverseSubtract;
         }
 
-        public static TextureCompareMode Convert(this CompareMode mode)
+        LogInvalidEnumValue(op);
+
+        return BlendEquationMode.FuncAdd;
+    }
+
+    public static TextureCompareMode Convert(this CompareMode mode)
+    {
+        switch (mode)
         {
-            switch (mode)
-            {
-                case CompareMode.None:
-                    return TextureCompareMode.None;
-                case CompareMode.CompareRToTexture:
-                    return TextureCompareMode.CompareRToTexture;
-            }
-            
-            LogInvalidEnumValue(mode);
-            
-            return TextureCompareMode.None;
+            case CompareMode.None:
+                return TextureCompareMode.None;
+            case CompareMode.CompareRToTexture:
+                return TextureCompareMode.CompareRToTexture;
         }
 
-        public static All Convert(this CompareOp op)
+        LogInvalidEnumValue(mode);
+
+        return TextureCompareMode.None;
+    }
+
+    public static All Convert(this CompareOp op)
+    {
+        switch (op)
         {
-            switch (op)
-            {
-                case CompareOp.Never:
-                case CompareOp.NeverGl:
-                    return All.Never;
-                case CompareOp.Less:
-                case CompareOp.LessGl:
-                    return All.Less;
-                case CompareOp.Equal:
-                case CompareOp.EqualGl:
-                    return All.Equal;
-                case CompareOp.LessOrEqual:
-                case CompareOp.LessOrEqualGl:
-                    return All.Lequal;
-                case CompareOp.Greater:
-                case CompareOp.GreaterGl:
-                    return All.Greater;
-                case CompareOp.NotEqual:
-                case CompareOp.NotEqualGl:
-                    return All.Notequal;
-                case CompareOp.GreaterOrEqual:
-                case CompareOp.GreaterOrEqualGl:
-                    return All.Gequal;
-                case CompareOp.Always:
-                case CompareOp.AlwaysGl:
-                    return All.Always;
-            }
-
-            LogInvalidEnumValue(op);
-
-            return All.Never;
+            case CompareOp.Never:
+            case CompareOp.NeverGl:
+                return All.Never;
+            case CompareOp.Less:
+            case CompareOp.LessGl:
+                return All.Less;
+            case CompareOp.Equal:
+            case CompareOp.EqualGl:
+                return All.Equal;
+            case CompareOp.LessOrEqual:
+            case CompareOp.LessOrEqualGl:
+                return All.Lequal;
+            case CompareOp.Greater:
+            case CompareOp.GreaterGl:
+                return All.Greater;
+            case CompareOp.NotEqual:
+            case CompareOp.NotEqualGl:
+                return All.Notequal;
+            case CompareOp.GreaterOrEqual:
+            case CompareOp.GreaterOrEqualGl:
+                return All.Gequal;
+            case CompareOp.Always:
+            case CompareOp.AlwaysGl:
+                return All.Always;
         }
 
-        public static ClipDepthMode Convert(this DepthMode mode)
+        LogInvalidEnumValue(op);
+
+        return All.Never;
+    }
+
+    public static ClipDepthMode Convert(this DepthMode mode)
+    {
+        switch (mode)
         {
-            switch (mode)
-            {
-                case DepthMode.MinusOneToOne:
-                    return ClipDepthMode.NegativeOneToOne;
-                case DepthMode.ZeroToOne:
-                    return ClipDepthMode.ZeroToOne;
-            }
-
-            LogInvalidEnumValue(mode);
-
-            return ClipDepthMode.NegativeOneToOne;
+            case DepthMode.MinusOneToOne:
+                return ClipDepthMode.NegativeOneToOne;
+            case DepthMode.ZeroToOne:
+                return ClipDepthMode.ZeroToOne;
         }
 
-        public static All Convert(this DepthStencilMode mode)
+        LogInvalidEnumValue(mode);
+
+        return ClipDepthMode.NegativeOneToOne;
+    }
+
+    public static All Convert(this DepthStencilMode mode)
+    {
+        switch (mode)
         {
-            switch (mode)
-            {
-                case DepthStencilMode.Depth:
-                    return All.DepthComponent;
-                case DepthStencilMode.Stencil:
-                    return All.StencilIndex;
-            }
-
-            LogInvalidEnumValue(mode);
-
-            return All.Depth;
+            case DepthStencilMode.Depth:
+                return All.DepthComponent;
+            case DepthStencilMode.Stencil:
+                return All.StencilIndex;
         }
 
-        public static CullFaceMode Convert(this Face face)
-        {
-            switch (face)
-            {
-                case Face.Back:
-                    return CullFaceMode.Back;
-                case Face.Front:
-                    return CullFaceMode.Front;
-                case Face.FrontAndBack:
-                    return CullFaceMode.FrontAndBack;
-            }
-            
-            LogInvalidEnumValue(face);
+        LogInvalidEnumValue(mode);
 
-            return CullFaceMode.Back;
+        return All.Depth;
+    }
+
+    public static CullFaceMode Convert(this Face face)
+    {
+        switch (face)
+        {
+            case Face.Back:
+                return CullFaceMode.Back;
+            case Face.Front:
+                return CullFaceMode.Front;
+            case Face.FrontAndBack:
+                return CullFaceMode.FrontAndBack;
         }
 
-        public static FrontFaceDirection Convert(this FrontFace frontFace)
+        LogInvalidEnumValue(face);
+
+        return CullFaceMode.Back;
+    }
+
+    public static FrontFaceDirection Convert(this FrontFace frontFace)
+    {
+        switch (frontFace)
         {
-            switch (frontFace)
-            {
-                case FrontFace.Clockwise:
-                    return FrontFaceDirection.Cw;
-                case FrontFace.CounterClockwise:
-                    return FrontFaceDirection.Ccw;
-            }
-
-            LogInvalidEnumValue(frontFace);
-
-            return FrontFaceDirection.Cw;
+            case FrontFace.Clockwise:
+                return FrontFaceDirection.Cw;
+            case FrontFace.CounterClockwise:
+                return FrontFaceDirection.Ccw;
         }
 
-        public static DrawElementsType Convert(this IndexType type)
+        LogInvalidEnumValue(frontFace);
+
+        return FrontFaceDirection.Cw;
+    }
+
+    public static DrawElementsType Convert(this IndexType type)
+    {
+        switch (type)
         {
-            switch (type)
-            {
-                case IndexType.UByte:
-                    return DrawElementsType.UnsignedByte;
-                case IndexType.UShort:
-                    return DrawElementsType.UnsignedShort;
-                case IndexType.UInt:
-                    return DrawElementsType.UnsignedInt;
-            }
-
-            LogInvalidEnumValue(type);
-
-            return DrawElementsType.UnsignedByte;
+            case IndexType.UByte:
+                return DrawElementsType.UnsignedByte;
+            case IndexType.UShort:
+                return DrawElementsType.UnsignedShort;
+            case IndexType.UInt:
+                return DrawElementsType.UnsignedInt;
         }
 
-        public static TextureMagFilter Convert(this MagFilter filter)
+        LogInvalidEnumValue(type);
+
+        return DrawElementsType.UnsignedByte;
+    }
+
+    public static TextureMagFilter Convert(this MagFilter filter)
+    {
+        switch (filter)
         {
-            switch (filter)
-            {
-                case MagFilter.Nearest:
-                    return TextureMagFilter.Nearest;
-                case MagFilter.Linear:
-                    return TextureMagFilter.Linear;
-            }
-
-            LogInvalidEnumValue(filter);
-
-            return TextureMagFilter.Nearest;
+            case MagFilter.Nearest:
+                return TextureMagFilter.Nearest;
+            case MagFilter.Linear:
+                return TextureMagFilter.Linear;
         }
 
-        public static TextureMinFilter Convert(this MinFilter filter)
+        LogInvalidEnumValue(filter);
+
+        return TextureMagFilter.Nearest;
+    }
+
+    public static TextureMinFilter Convert(this MinFilter filter)
+    {
+        switch (filter)
         {
-            switch (filter)
-            {
-                case MinFilter.Nearest:
-                    return TextureMinFilter.Nearest;
-                case MinFilter.Linear:
-                    return TextureMinFilter.Linear;
-                case MinFilter.NearestMipmapNearest:
-                    return TextureMinFilter.NearestMipmapNearest;
-                case MinFilter.LinearMipmapNearest:
-                    return TextureMinFilter.LinearMipmapNearest;
-                case MinFilter.NearestMipmapLinear:
-                    return TextureMinFilter.NearestMipmapLinear;
-                case MinFilter.LinearMipmapLinear:
-                    return TextureMinFilter.LinearMipmapLinear;
-            }
-
-            LogInvalidEnumValue(filter);
-
-            return TextureMinFilter.Nearest;
+            case MinFilter.Nearest:
+                return TextureMinFilter.Nearest;
+            case MinFilter.Linear:
+                return TextureMinFilter.Linear;
+            case MinFilter.NearestMipmapNearest:
+                return TextureMinFilter.NearestMipmapNearest;
+            case MinFilter.LinearMipmapNearest:
+                return TextureMinFilter.LinearMipmapNearest;
+            case MinFilter.NearestMipmapLinear:
+                return TextureMinFilter.NearestMipmapLinear;
+            case MinFilter.LinearMipmapLinear:
+                return TextureMinFilter.LinearMipmapLinear;
         }
 
-        public static OpenTK.Graphics.OpenGL.PolygonMode Convert(this Hyjinx.Graphics.GAL.PolygonMode mode)
+        LogInvalidEnumValue(filter);
+
+        return TextureMinFilter.Nearest;
+    }
+
+    public static OpenTK.Graphics.OpenGL.PolygonMode Convert(this Hyjinx.Graphics.GAL.PolygonMode mode)
+    {
+        switch (mode)
         {
-            switch (mode)
-            {
-                case Hyjinx.Graphics.GAL.PolygonMode.Point:
-                    return OpenTK.Graphics.OpenGL.PolygonMode.Point;
-                case Hyjinx.Graphics.GAL.PolygonMode.Line:
-                    return OpenTK.Graphics.OpenGL.PolygonMode.Line;
-                case Hyjinx.Graphics.GAL.PolygonMode.Fill:
-                    return OpenTK.Graphics.OpenGL.PolygonMode.Fill;
-            }
-
-            LogInvalidEnumValue(mode);
-
-            return OpenTK.Graphics.OpenGL.PolygonMode.Fill;
+            case Hyjinx.Graphics.GAL.PolygonMode.Point:
+                return OpenTK.Graphics.OpenGL.PolygonMode.Point;
+            case Hyjinx.Graphics.GAL.PolygonMode.Line:
+                return OpenTK.Graphics.OpenGL.PolygonMode.Line;
+            case Hyjinx.Graphics.GAL.PolygonMode.Fill:
+                return OpenTK.Graphics.OpenGL.PolygonMode.Fill;
         }
 
-        public static PrimitiveType Convert(this PrimitiveTopology topology)
+        LogInvalidEnumValue(mode);
+
+        return OpenTK.Graphics.OpenGL.PolygonMode.Fill;
+    }
+
+    public static PrimitiveType Convert(this PrimitiveTopology topology)
+    {
+        switch (topology)
         {
-            switch (topology)
-            {
-                case PrimitiveTopology.Points:
-                    return PrimitiveType.Points;
-                case PrimitiveTopology.Lines:
-                    return PrimitiveType.Lines;
-                case PrimitiveTopology.LineLoop:
-                    return PrimitiveType.LineLoop;
-                case PrimitiveTopology.LineStrip:
-                    return PrimitiveType.LineStrip;
-                case PrimitiveTopology.Triangles:
-                    return PrimitiveType.Triangles;
-                case PrimitiveTopology.TriangleStrip:
-                    return PrimitiveType.TriangleStrip;
-                case PrimitiveTopology.TriangleFan:
-                    return PrimitiveType.TriangleFan;
-                case PrimitiveTopology.Quads:
-                    return PrimitiveType.Quads;
-                case PrimitiveTopology.QuadStrip:
-                    return PrimitiveType.QuadStrip;
-                case PrimitiveTopology.Polygon:
-                    return PrimitiveType.TriangleFan;
-                case PrimitiveTopology.LinesAdjacency:
-                    return PrimitiveType.LinesAdjacency;
-                case PrimitiveTopology.LineStripAdjacency:
-                    return PrimitiveType.LineStripAdjacency;
-                case PrimitiveTopology.TrianglesAdjacency:
-                    return PrimitiveType.TrianglesAdjacency;
-                case PrimitiveTopology.TriangleStripAdjacency:
-                    return PrimitiveType.TriangleStripAdjacency;
-                case PrimitiveTopology.Patches:
-                    return PrimitiveType.Patches;
-            }
-
-            LogInvalidEnumValue(topology);
-
-            return PrimitiveType.Points;
+            case PrimitiveTopology.Points:
+                return PrimitiveType.Points;
+            case PrimitiveTopology.Lines:
+                return PrimitiveType.Lines;
+            case PrimitiveTopology.LineLoop:
+                return PrimitiveType.LineLoop;
+            case PrimitiveTopology.LineStrip:
+                return PrimitiveType.LineStrip;
+            case PrimitiveTopology.Triangles:
+                return PrimitiveType.Triangles;
+            case PrimitiveTopology.TriangleStrip:
+                return PrimitiveType.TriangleStrip;
+            case PrimitiveTopology.TriangleFan:
+                return PrimitiveType.TriangleFan;
+            case PrimitiveTopology.Quads:
+                return PrimitiveType.Quads;
+            case PrimitiveTopology.QuadStrip:
+                return PrimitiveType.QuadStrip;
+            case PrimitiveTopology.Polygon:
+                return PrimitiveType.TriangleFan;
+            case PrimitiveTopology.LinesAdjacency:
+                return PrimitiveType.LinesAdjacency;
+            case PrimitiveTopology.LineStripAdjacency:
+                return PrimitiveType.LineStripAdjacency;
+            case PrimitiveTopology.TrianglesAdjacency:
+                return PrimitiveType.TrianglesAdjacency;
+            case PrimitiveTopology.TriangleStripAdjacency:
+                return PrimitiveType.TriangleStripAdjacency;
+            case PrimitiveTopology.Patches:
+                return PrimitiveType.Patches;
         }
 
-        public static TransformFeedbackPrimitiveType ConvertToTfType(this PrimitiveTopology topology)
+        LogInvalidEnumValue(topology);
+
+        return PrimitiveType.Points;
+    }
+
+    public static TransformFeedbackPrimitiveType ConvertToTfType(this PrimitiveTopology topology)
+    {
+        switch (topology)
         {
-            switch (topology)
-            {
-                case PrimitiveTopology.Points:
-                    return TransformFeedbackPrimitiveType.Points;
-                case PrimitiveTopology.Lines:
-                case PrimitiveTopology.LineLoop:
-                case PrimitiveTopology.LineStrip:
-                case PrimitiveTopology.LinesAdjacency:
-                case PrimitiveTopology.LineStripAdjacency:
-                    return TransformFeedbackPrimitiveType.Lines;
-                case PrimitiveTopology.Triangles:
-                case PrimitiveTopology.TriangleStrip:
-                case PrimitiveTopology.TriangleFan:
-                case PrimitiveTopology.TrianglesAdjacency:
-                case PrimitiveTopology.TriangleStripAdjacency:
-                    return TransformFeedbackPrimitiveType.Triangles;
-            }
-
-            LogInvalidEnumValue(topology);
-
-            return TransformFeedbackPrimitiveType.Points;
+            case PrimitiveTopology.Points:
+                return TransformFeedbackPrimitiveType.Points;
+            case PrimitiveTopology.Lines:
+            case PrimitiveTopology.LineLoop:
+            case PrimitiveTopology.LineStrip:
+            case PrimitiveTopology.LinesAdjacency:
+            case PrimitiveTopology.LineStripAdjacency:
+                return TransformFeedbackPrimitiveType.Lines;
+            case PrimitiveTopology.Triangles:
+            case PrimitiveTopology.TriangleStrip:
+            case PrimitiveTopology.TriangleFan:
+            case PrimitiveTopology.TrianglesAdjacency:
+            case PrimitiveTopology.TriangleStripAdjacency:
+                return TransformFeedbackPrimitiveType.Triangles;
         }
 
-        public static OpenTK.Graphics.OpenGL.StencilOp Convert(this Hyjinx.Graphics.GAL.StencilOp op)
+        LogInvalidEnumValue(topology);
+
+        return TransformFeedbackPrimitiveType.Points;
+    }
+
+    public static OpenTK.Graphics.OpenGL.StencilOp Convert(this Hyjinx.Graphics.GAL.StencilOp op)
+    {
+        switch (op)
         {
-            switch (op)
-            {
-                case Hyjinx.Graphics.GAL.StencilOp.Keep:
-                case Hyjinx.Graphics.GAL.StencilOp.KeepGl:
-                    return OpenTK.Graphics.OpenGL.StencilOp.Keep;
-                case Hyjinx.Graphics.GAL.StencilOp.Zero:
-                case Hyjinx.Graphics.GAL.StencilOp.ZeroGl:
-                    return OpenTK.Graphics.OpenGL.StencilOp.Zero;
-                case Hyjinx.Graphics.GAL.StencilOp.Replace:
-                case Hyjinx.Graphics.GAL.StencilOp.ReplaceGl:
-                    return OpenTK.Graphics.OpenGL.StencilOp.Replace;
-                case Hyjinx.Graphics.GAL.StencilOp.IncrementAndClamp:
-                case Hyjinx.Graphics.GAL.StencilOp.IncrementAndClampGl:
-                    return OpenTK.Graphics.OpenGL.StencilOp.Incr;
-                case Hyjinx.Graphics.GAL.StencilOp.DecrementAndClamp:
-                case Hyjinx.Graphics.GAL.StencilOp.DecrementAndClampGl:
-                    return OpenTK.Graphics.OpenGL.StencilOp.Decr;
-                case Hyjinx.Graphics.GAL.StencilOp.Invert:
-                case Hyjinx.Graphics.GAL.StencilOp.InvertGl:
-                    return OpenTK.Graphics.OpenGL.StencilOp.Invert;
-                case Hyjinx.Graphics.GAL.StencilOp.IncrementAndWrap:
-                case Hyjinx.Graphics.GAL.StencilOp.IncrementAndWrapGl:
-                    return OpenTK.Graphics.OpenGL.StencilOp.IncrWrap;
-                case Hyjinx.Graphics.GAL.StencilOp.DecrementAndWrap:
-                case Hyjinx.Graphics.GAL.StencilOp.DecrementAndWrapGl:
-                    return OpenTK.Graphics.OpenGL.StencilOp.DecrWrap;
-            }
-
-            LogInvalidEnumValue(op);
-
-            return OpenTK.Graphics.OpenGL.StencilOp.Keep;
+            case Hyjinx.Graphics.GAL.StencilOp.Keep:
+            case Hyjinx.Graphics.GAL.StencilOp.KeepGl:
+                return OpenTK.Graphics.OpenGL.StencilOp.Keep;
+            case Hyjinx.Graphics.GAL.StencilOp.Zero:
+            case Hyjinx.Graphics.GAL.StencilOp.ZeroGl:
+                return OpenTK.Graphics.OpenGL.StencilOp.Zero;
+            case Hyjinx.Graphics.GAL.StencilOp.Replace:
+            case Hyjinx.Graphics.GAL.StencilOp.ReplaceGl:
+                return OpenTK.Graphics.OpenGL.StencilOp.Replace;
+            case Hyjinx.Graphics.GAL.StencilOp.IncrementAndClamp:
+            case Hyjinx.Graphics.GAL.StencilOp.IncrementAndClampGl:
+                return OpenTK.Graphics.OpenGL.StencilOp.Incr;
+            case Hyjinx.Graphics.GAL.StencilOp.DecrementAndClamp:
+            case Hyjinx.Graphics.GAL.StencilOp.DecrementAndClampGl:
+                return OpenTK.Graphics.OpenGL.StencilOp.Decr;
+            case Hyjinx.Graphics.GAL.StencilOp.Invert:
+            case Hyjinx.Graphics.GAL.StencilOp.InvertGl:
+                return OpenTK.Graphics.OpenGL.StencilOp.Invert;
+            case Hyjinx.Graphics.GAL.StencilOp.IncrementAndWrap:
+            case Hyjinx.Graphics.GAL.StencilOp.IncrementAndWrapGl:
+                return OpenTK.Graphics.OpenGL.StencilOp.IncrWrap;
+            case Hyjinx.Graphics.GAL.StencilOp.DecrementAndWrap:
+            case Hyjinx.Graphics.GAL.StencilOp.DecrementAndWrapGl:
+                return OpenTK.Graphics.OpenGL.StencilOp.DecrWrap;
         }
 
-        public static All Convert(this SwizzleComponent swizzleComponent)
+        LogInvalidEnumValue(op);
+
+        return OpenTK.Graphics.OpenGL.StencilOp.Keep;
+    }
+
+    public static All Convert(this SwizzleComponent swizzleComponent)
+    {
+        switch (swizzleComponent)
         {
-            switch (swizzleComponent)
-            {
-                case SwizzleComponent.Zero:
-                    return All.Zero;
-                case SwizzleComponent.One:
-                    return All.One;
-                case SwizzleComponent.Red:
-                    return All.Red;
-                case SwizzleComponent.Green:
-                    return All.Green;
-                case SwizzleComponent.Blue:
-                    return All.Blue;
-                case SwizzleComponent.Alpha:
-                    return All.Alpha;
-            }
-
-            LogInvalidEnumValue(swizzleComponent);
-
-            return All.Zero;
+            case SwizzleComponent.Zero:
+                return All.Zero;
+            case SwizzleComponent.One:
+                return All.One;
+            case SwizzleComponent.Red:
+                return All.Red;
+            case SwizzleComponent.Green:
+                return All.Green;
+            case SwizzleComponent.Blue:
+                return All.Blue;
+            case SwizzleComponent.Alpha:
+                return All.Alpha;
         }
 
-        public static ImageTarget ConvertToImageTarget(this Target target)
+        LogInvalidEnumValue(swizzleComponent);
+
+        return All.Zero;
+    }
+
+    public static ImageTarget ConvertToImageTarget(this Target target)
+    {
+        return (ImageTarget)target.Convert();
+    }
+
+    public static TextureTarget Convert(this Target target)
+    {
+        switch (target)
         {
-            return (ImageTarget)target.Convert();
+            case Target.Texture1D:
+                return TextureTarget.Texture1D;
+            case Target.Texture2D:
+                return TextureTarget.Texture2D;
+            case Target.Texture3D:
+                return TextureTarget.Texture3D;
+            case Target.Texture1DArray:
+                return TextureTarget.Texture1DArray;
+            case Target.Texture2DArray:
+                return TextureTarget.Texture2DArray;
+            case Target.Texture2DMultisample:
+                return TextureTarget.Texture2DMultisample;
+            case Target.Texture2DMultisampleArray:
+                return TextureTarget.Texture2DMultisampleArray;
+            case Target.Cubemap:
+                return TextureTarget.TextureCubeMap;
+            case Target.CubemapArray:
+                return TextureTarget.TextureCubeMapArray;
+            case Target.TextureBuffer:
+                return TextureTarget.TextureBuffer;
         }
 
-        public static TextureTarget Convert(this Target target)
+        LogInvalidEnumValue(target);
+
+        return TextureTarget.Texture2D;
+    }
+
+    public static NvViewportSwizzle Convert(this ViewportSwizzle swizzle)
+    {
+        switch (swizzle)
         {
-            switch (target)
-            {
-                case Target.Texture1D:
-                    return TextureTarget.Texture1D;
-                case Target.Texture2D:
-                    return TextureTarget.Texture2D;
-                case Target.Texture3D:
-                    return TextureTarget.Texture3D;
-                case Target.Texture1DArray:
-                    return TextureTarget.Texture1DArray;
-                case Target.Texture2DArray:
-                    return TextureTarget.Texture2DArray;
-                case Target.Texture2DMultisample:
-                    return TextureTarget.Texture2DMultisample;
-                case Target.Texture2DMultisampleArray:
-                    return TextureTarget.Texture2DMultisampleArray;
-                case Target.Cubemap:
-                    return TextureTarget.TextureCubeMap;
-                case Target.CubemapArray:
-                    return TextureTarget.TextureCubeMapArray;
-                case Target.TextureBuffer:
-                    return TextureTarget.TextureBuffer;
-            }
-
-            LogInvalidEnumValue(target);
-
-            return TextureTarget.Texture2D;
+            case ViewportSwizzle.PositiveX:
+                return NvViewportSwizzle.ViewportSwizzlePositiveXNv;
+            case ViewportSwizzle.PositiveY:
+                return NvViewportSwizzle.ViewportSwizzlePositiveYNv;
+            case ViewportSwizzle.PositiveZ:
+                return NvViewportSwizzle.ViewportSwizzlePositiveZNv;
+            case ViewportSwizzle.PositiveW:
+                return NvViewportSwizzle.ViewportSwizzlePositiveWNv;
+            case ViewportSwizzle.NegativeX:
+                return NvViewportSwizzle.ViewportSwizzleNegativeXNv;
+            case ViewportSwizzle.NegativeY:
+                return NvViewportSwizzle.ViewportSwizzleNegativeYNv;
+            case ViewportSwizzle.NegativeZ:
+                return NvViewportSwizzle.ViewportSwizzleNegativeZNv;
+            case ViewportSwizzle.NegativeW:
+                return NvViewportSwizzle.ViewportSwizzleNegativeWNv;
         }
 
-        public static NvViewportSwizzle Convert(this ViewportSwizzle swizzle)
+        LogInvalidEnumValue(swizzle);
+
+        return NvViewportSwizzle.ViewportSwizzlePositiveXNv;
+    }
+
+    public static All Convert(this LogicalOp op)
+    {
+        switch (op)
         {
-            switch (swizzle)
-            {
-                case ViewportSwizzle.PositiveX:
-                    return NvViewportSwizzle.ViewportSwizzlePositiveXNv;
-                case ViewportSwizzle.PositiveY:
-                    return NvViewportSwizzle.ViewportSwizzlePositiveYNv;
-                case ViewportSwizzle.PositiveZ:
-                    return NvViewportSwizzle.ViewportSwizzlePositiveZNv;
-                case ViewportSwizzle.PositiveW:
-                    return NvViewportSwizzle.ViewportSwizzlePositiveWNv;
-                case ViewportSwizzle.NegativeX:
-                    return NvViewportSwizzle.ViewportSwizzleNegativeXNv;
-                case ViewportSwizzle.NegativeY:
-                    return NvViewportSwizzle.ViewportSwizzleNegativeYNv;
-                case ViewportSwizzle.NegativeZ:
-                    return NvViewportSwizzle.ViewportSwizzleNegativeZNv;
-                case ViewportSwizzle.NegativeW:
-                    return NvViewportSwizzle.ViewportSwizzleNegativeWNv;
-            }
-
-            LogInvalidEnumValue(swizzle);
-
-            return NvViewportSwizzle.ViewportSwizzlePositiveXNv;
+            case LogicalOp.Clear:
+                return All.Clear;
+            case LogicalOp.And:
+                return All.And;
+            case LogicalOp.AndReverse:
+                return All.AndReverse;
+            case LogicalOp.Copy:
+                return All.Copy;
+            case LogicalOp.AndInverted:
+                return All.AndInverted;
+            case LogicalOp.Noop:
+                return All.Noop;
+            case LogicalOp.Xor:
+                return All.Xor;
+            case LogicalOp.Or:
+                return All.Or;
+            case LogicalOp.Nor:
+                return All.Nor;
+            case LogicalOp.Equiv:
+                return All.Equiv;
+            case LogicalOp.Invert:
+                return All.Invert;
+            case LogicalOp.OrReverse:
+                return All.OrReverse;
+            case LogicalOp.CopyInverted:
+                return All.CopyInverted;
+            case LogicalOp.OrInverted:
+                return All.OrInverted;
+            case LogicalOp.Nand:
+                return All.Nand;
+            case LogicalOp.Set:
+                return All.Set;
         }
 
-        public static All Convert(this LogicalOp op)
+        LogInvalidEnumValue(op);
+
+        return All.Never;
+    }
+
+    public static ShaderType Convert(this ShaderStage stage)
+    {
+        return stage switch
         {
-            switch (op)
-            {
-                case LogicalOp.Clear:
-                    return All.Clear;
-                case LogicalOp.And:
-                    return All.And;
-                case LogicalOp.AndReverse:
-                    return All.AndReverse;
-                case LogicalOp.Copy:
-                    return All.Copy;
-                case LogicalOp.AndInverted:
-                    return All.AndInverted;
-                case LogicalOp.Noop:
-                    return All.Noop;
-                case LogicalOp.Xor:
-                    return All.Xor;
-                case LogicalOp.Or:
-                    return All.Or;
-                case LogicalOp.Nor:
-                    return All.Nor;
-                case LogicalOp.Equiv:
-                    return All.Equiv;
-                case LogicalOp.Invert:
-                    return All.Invert;
-                case LogicalOp.OrReverse:
-                    return All.OrReverse;
-                case LogicalOp.CopyInverted:
-                    return All.CopyInverted;
-                case LogicalOp.OrInverted:
-                    return All.OrInverted;
-                case LogicalOp.Nand:
-                    return All.Nand;
-                case LogicalOp.Set:
-                    return All.Set;
-            }
-
-            LogInvalidEnumValue(op);
-
-            return All.Never;
-        }
-
-        public static ShaderType Convert(this ShaderStage stage)
-        {
-            return stage switch
-            {
-                ShaderStage.Compute => ShaderType.ComputeShader,
-                ShaderStage.Vertex => ShaderType.VertexShader,
-                ShaderStage.TessellationControl => ShaderType.TessControlShader,
-                ShaderStage.TessellationEvaluation => ShaderType.TessEvaluationShader,
-                ShaderStage.Geometry => ShaderType.GeometryShader,
-                ShaderStage.Fragment => ShaderType.FragmentShader,
-                _ => ShaderType.VertexShader,
-            };
-        }
+            ShaderStage.Compute => ShaderType.ComputeShader,
+            ShaderStage.Vertex => ShaderType.VertexShader,
+            ShaderStage.TessellationControl => ShaderType.TessControlShader,
+            ShaderStage.TessellationEvaluation => ShaderType.TessEvaluationShader,
+            ShaderStage.Geometry => ShaderType.GeometryShader,
+            ShaderStage.Fragment => ShaderType.FragmentShader,
+            _ => ShaderType.VertexShader,
+        };
     }
 }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Buffers.Binary;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSystem;
+using System;
+using System.Buffers.Binary;
 using Xunit;
 
 namespace LibHac.Tests.FsSystem;

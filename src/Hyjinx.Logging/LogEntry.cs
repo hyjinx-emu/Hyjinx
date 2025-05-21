@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.Extensions.Logging;
@@ -57,12 +57,12 @@ public readonly struct LogEntry<TState>
     /// Gets the name of the thread.
     /// </summary>
     public string? ThreadName { get; }
-    
+
     /// <summary>
     /// Gets the log exception.
     /// </summary>
     public Exception? Exception { get; }
-    
+
     /// <summary>
     /// Gets the duration of time the application has been active.
     /// </summary>

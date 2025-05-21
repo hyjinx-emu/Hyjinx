@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Apm
+namespace Hyjinx.HLE.HOS.Services.Apm;
+
+enum PerformanceMode : uint
 {
-    enum PerformanceMode : uint
-    {
-        Default = 0,
-        Boost = 1,
-    }
+    Default = 0,
+    Boost = 1,
 }

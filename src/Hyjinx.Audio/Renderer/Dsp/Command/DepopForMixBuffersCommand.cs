@@ -1,88 +1,87 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Audio.Renderer.Dsp.Command
+namespace Hyjinx.Audio.Renderer.Dsp.Command;
+
+public class DepopForMixBuffersCommand : ICommand
 {
-    public class DepopForMixBuffersCommand : ICommand
+    public bool Enabled { get; set; }
+
+    public int NodeId { get; }
+
+    public CommandType CommandType => CommandType.DepopForMixBuffers;
+
+    public uint EstimatedProcessingTime { get; set; }
+
+    public uint MixBufferOffset { get; }
+
+    public uint MixBufferCount { get; }
+
+    public float Decay { get; }
+
+    public Memory<float> DepopBuffer { get; }
+
+    public DepopForMixBuffersCommand(Memory<float> depopBuffer, uint bufferOffset, uint mixBufferCount, int nodeId, uint sampleRate)
     {
-        public bool Enabled { get; set; }
+        Enabled = true;
+        NodeId = nodeId;
+        MixBufferOffset = bufferOffset;
+        MixBufferCount = mixBufferCount;
+        DepopBuffer = depopBuffer;
 
-        public int NodeId { get; }
-
-        public CommandType CommandType => CommandType.DepopForMixBuffers;
-
-        public uint EstimatedProcessingTime { get; set; }
-
-        public uint MixBufferOffset { get; }
-
-        public uint MixBufferCount { get; }
-
-        public float Decay { get; }
-
-        public Memory<float> DepopBuffer { get; }
-
-        public DepopForMixBuffersCommand(Memory<float> depopBuffer, uint bufferOffset, uint mixBufferCount, int nodeId, uint sampleRate)
+        if (sampleRate == 48000)
         {
-            Enabled = true;
-            NodeId = nodeId;
-            MixBufferOffset = bufferOffset;
-            MixBufferCount = mixBufferCount;
-            DepopBuffer = depopBuffer;
-
-            if (sampleRate == 48000)
-            {
-                Decay = 0.962189f;
-            }
-            else // if (sampleRate == 32000)
-            {
-                Decay = 0.943695f;
-            }
+            Decay = 0.962189f;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe float ProcessDepopMix(float* buffer, float depopValue, uint sampleCount)
+        else // if (sampleRate == 32000)
         {
-            if (depopValue < 0)
-            {
-                depopValue = -depopValue;
+            Decay = 0.943695f;
+        }
+    }
 
-                for (int i = 0; i < sampleCount; i++)
-                {
-                    depopValue = FloatingPointHelper.MultiplyRoundDown(Decay, depopValue);
-
-                    buffer[i] -= depopValue;
-                }
-
-                return -depopValue;
-            }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private unsafe float ProcessDepopMix(float* buffer, float depopValue, uint sampleCount)
+    {
+        if (depopValue < 0)
+        {
+            depopValue = -depopValue;
 
             for (int i = 0; i < sampleCount; i++)
             {
                 depopValue = FloatingPointHelper.MultiplyRoundDown(Decay, depopValue);
 
-                buffer[i] += depopValue;
+                buffer[i] -= depopValue;
             }
 
-            return depopValue;
+            return -depopValue;
         }
 
-        public void Process(CommandList context)
+        for (int i = 0; i < sampleCount; i++)
         {
-            Span<float> depopBuffer = DepopBuffer.Span;
+            depopValue = FloatingPointHelper.MultiplyRoundDown(Decay, depopValue);
 
-            uint bufferCount = Math.Min(MixBufferOffset + MixBufferCount, context.BufferCount);
+            buffer[i] += depopValue;
+        }
 
-            for (int i = (int)MixBufferOffset; i < bufferCount; i++)
+        return depopValue;
+    }
+
+    public void Process(CommandList context)
+    {
+        Span<float> depopBuffer = DepopBuffer.Span;
+
+        uint bufferCount = Math.Min(MixBufferOffset + MixBufferCount, context.BufferCount);
+
+        for (int i = (int)MixBufferOffset; i < bufferCount; i++)
+        {
+            float depopValue = depopBuffer[i];
+            if (depopValue != 0)
             {
-                float depopValue = depopBuffer[i];
-                if (depopValue != 0)
+                unsafe
                 {
-                    unsafe
-                    {
-                        float* buffer = (float*)context.GetBufferPointer(i);
+                    float* buffer = (float*)context.GetBufferPointer(i);
 
-                        depopBuffer[i] = ProcessDepopMix(buffer, depopValue, context.SampleCount);
-                    }
+                    depopBuffer[i] = ProcessDepopMix(buffer, depopValue, context.SampleCount);
                 }
             }
         }

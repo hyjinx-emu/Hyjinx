@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Os;
 using LibHac.Util;
+using System;
+using System.Collections.Generic;
 using BlockCache = LibHac.FsSystem.LruListCache<long, System.Memory<byte>>;
 
 namespace LibHac.FsSystem;
@@ -74,7 +74,8 @@ public class ReadOnlyBlockCacheStorage : IStorage
 
             // The block wasn't in the cache. Read from the base storage.
             Result res = _baseStorage.Get.Read(offset, destination);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Add the block to the cache.
             using (new ScopedLock<SdkMutexType>(ref _mutex))

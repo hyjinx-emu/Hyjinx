@@ -2,28 +2,27 @@ using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Applet;
 using Hyjinx.Horizon.Sdk.Sf;
 
-namespace Hyjinx.Horizon.Sdk.Audio.Detail
+namespace Hyjinx.Horizon.Sdk.Audio.Detail;
+
+interface IAudioRendererManager : IServiceObject
 {
-    interface IAudioRendererManager : IServiceObject
-    {
-        Result OpenAudioRenderer(
-            out IAudioRenderer renderer,
-            AudioRendererParameterInternal parameter,
-            int processHandle,
-            int workBufferHandle,
-            ulong workBufferSize,
-            AppletResourceUserId appletUserId,
-            ulong pid);
-        Result GetWorkBufferSize(out long workBufferSize, AudioRendererParameterInternal parameter);
-        Result GetAudioDeviceService(out IAudioDevice audioDevice, AppletResourceUserId appletUserId);
-        Result OpenAudioRendererForManualExecution(
-            out IAudioRenderer renderer,
-            AudioRendererParameterInternal parameter,
-            ulong workBufferAddress,
-            int processHandle,
-            ulong workBufferSize,
-            AppletResourceUserId appletUserId,
-            ulong pid);
-        Result GetAudioDeviceServiceWithRevisionInfo(out IAudioDevice audioDevice, AppletResourceUserId appletUserId, uint revision);
-    }
+    Result OpenAudioRenderer(
+        out IAudioRenderer renderer,
+        AudioRendererParameterInternal parameter,
+        int processHandle,
+        int workBufferHandle,
+        ulong workBufferSize,
+        AppletResourceUserId appletUserId,
+        ulong pid);
+    Result GetWorkBufferSize(out long workBufferSize, AudioRendererParameterInternal parameter);
+    Result GetAudioDeviceService(out IAudioDevice audioDevice, AppletResourceUserId appletUserId);
+    Result OpenAudioRendererForManualExecution(
+        out IAudioRenderer renderer,
+        AudioRendererParameterInternal parameter,
+        ulong workBufferAddress,
+        int processHandle,
+        ulong workBufferSize,
+        AppletResourceUserId appletUserId,
+        ulong pid);
+    Result GetAudioDeviceServiceWithRevisionInfo(out IAudioDevice audioDevice, AppletResourceUserId appletUserId, uint revision);
 }

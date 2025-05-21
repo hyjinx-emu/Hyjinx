@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public struct ControllerConfig
 {
-    public struct ControllerConfig
-    {
-        public PlayerIndex Player;
-        public ControllerType Type;
-    }
+    public PlayerIndex Player;
+    public ControllerType Type;
 }

@@ -7,121 +7,120 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+class VulkanInstance : IDisposable
 {
-    class VulkanInstance : IDisposable
+    private readonly Vk _api;
+    public readonly Instance Instance;
+    public readonly Version32 InstanceVersion;
+
+    private bool _disposed;
+
+    private VulkanInstance(Vk api, Instance instance)
     {
-        private readonly Vk _api;
-        public readonly Instance Instance;
-        public readonly Version32 InstanceVersion;
+        _api = api;
+        Instance = instance;
 
-        private bool _disposed;
-
-        private VulkanInstance(Vk api, Instance instance)
+        if (api.GetInstanceProcAddr(instance, "vkEnumerateInstanceVersion") == IntPtr.Zero)
         {
-            _api = api;
-            Instance = instance;
+            InstanceVersion = Vk.Version10;
+        }
+        else
+        {
+            uint rawInstanceVersion = 0;
 
-            if (api.GetInstanceProcAddr(instance, "vkEnumerateInstanceVersion") == IntPtr.Zero)
+            if (api.EnumerateInstanceVersion(ref rawInstanceVersion) != Result.Success)
             {
-                InstanceVersion = Vk.Version10;
+                rawInstanceVersion = Vk.Version11.Value;
             }
-            else
-            {
-                uint rawInstanceVersion = 0;
 
-                if (api.EnumerateInstanceVersion(ref rawInstanceVersion) != Result.Success)
-                {
-                    rawInstanceVersion = Vk.Version11.Value;
-                }
+            InstanceVersion = (Version32)rawInstanceVersion;
+        }
+    }
 
-                InstanceVersion = (Version32)rawInstanceVersion;
-            }
+    public static Result Create(Vk api, ref InstanceCreateInfo createInfo, out VulkanInstance instance)
+    {
+        instance = null;
+
+        Instance rawInstance = default;
+
+        Result result = api.CreateInstance(SpanHelpers.AsReadOnlySpan(ref createInfo), ReadOnlySpan<AllocationCallbacks>.Empty, SpanHelpers.AsSpan(ref rawInstance));
+
+        if (result == Result.Success)
+        {
+            instance = new VulkanInstance(api, rawInstance);
         }
 
-        public static Result Create(Vk api, ref InstanceCreateInfo createInfo, out VulkanInstance instance)
+        return result;
+    }
+
+    public Result EnumeratePhysicalDevices(out VulkanPhysicalDevice[] physicalDevices)
+    {
+        physicalDevices = null;
+
+        uint physicalDeviceCount = 0;
+
+        Result result = _api.EnumeratePhysicalDevices(Instance, SpanHelpers.AsSpan(ref physicalDeviceCount), Span<PhysicalDevice>.Empty);
+
+        if (result != Result.Success)
         {
-            instance = null;
-
-            Instance rawInstance = default;
-
-            Result result = api.CreateInstance(SpanHelpers.AsReadOnlySpan(ref createInfo), ReadOnlySpan<AllocationCallbacks>.Empty, SpanHelpers.AsSpan(ref rawInstance));
-
-            if (result == Result.Success)
-            {
-                instance = new VulkanInstance(api, rawInstance);
-            }
-
             return result;
         }
 
-        public Result EnumeratePhysicalDevices(out VulkanPhysicalDevice[] physicalDevices)
+        PhysicalDevice[] rawPhysicalDevices = new PhysicalDevice[physicalDeviceCount];
+
+        result = _api.EnumeratePhysicalDevices(Instance, SpanHelpers.AsSpan(ref physicalDeviceCount), rawPhysicalDevices);
+
+        if (result != Result.Success)
         {
-            physicalDevices = null;
-
-            uint physicalDeviceCount = 0;
-
-            Result result = _api.EnumeratePhysicalDevices(Instance, SpanHelpers.AsSpan(ref physicalDeviceCount), Span<PhysicalDevice>.Empty);
-
-            if (result != Result.Success)
-            {
-                return result;
-            }
-
-            PhysicalDevice[] rawPhysicalDevices = new PhysicalDevice[physicalDeviceCount];
-
-            result = _api.EnumeratePhysicalDevices(Instance, SpanHelpers.AsSpan(ref physicalDeviceCount), rawPhysicalDevices);
-
-            if (result != Result.Success)
-            {
-                return result;
-            }
-
-            physicalDevices = rawPhysicalDevices.Select(x => new VulkanPhysicalDevice(_api, x)).ToArray();
-
-            return Result.Success;
+            return result;
         }
 
-        public static IReadOnlySet<string> GetInstanceExtensions(Vk api)
+        physicalDevices = rawPhysicalDevices.Select(x => new VulkanPhysicalDevice(_api, x)).ToArray();
+
+        return Result.Success;
+    }
+
+    public static IReadOnlySet<string> GetInstanceExtensions(Vk api)
+    {
+        uint propertiesCount = 0;
+
+        api.EnumerateInstanceExtensionProperties(ReadOnlySpan<byte>.Empty, SpanHelpers.AsSpan(ref propertiesCount), Span<ExtensionProperties>.Empty).ThrowOnError();
+
+        ExtensionProperties[] extensionProperties = new ExtensionProperties[propertiesCount];
+
+        api.EnumerateInstanceExtensionProperties(ReadOnlySpan<byte>.Empty, SpanHelpers.AsSpan(ref propertiesCount), extensionProperties).ThrowOnError();
+
+        unsafe
         {
-            uint propertiesCount = 0;
-
-            api.EnumerateInstanceExtensionProperties(ReadOnlySpan<byte>.Empty, SpanHelpers.AsSpan(ref propertiesCount), Span<ExtensionProperties>.Empty).ThrowOnError();
-
-            ExtensionProperties[] extensionProperties = new ExtensionProperties[propertiesCount];
-
-            api.EnumerateInstanceExtensionProperties(ReadOnlySpan<byte>.Empty, SpanHelpers.AsSpan(ref propertiesCount), extensionProperties).ThrowOnError();
-
-            unsafe
-            {
-                return extensionProperties.Select(x => Marshal.PtrToStringAnsi((IntPtr)x.ExtensionName)).ToImmutableHashSet();
-            }
+            return extensionProperties.Select(x => Marshal.PtrToStringAnsi((IntPtr)x.ExtensionName)).ToImmutableHashSet();
         }
+    }
 
-        public static IReadOnlySet<string> GetInstanceLayers(Vk api)
+    public static IReadOnlySet<string> GetInstanceLayers(Vk api)
+    {
+        uint propertiesCount = 0;
+
+        api.EnumerateInstanceLayerProperties(SpanHelpers.AsSpan(ref propertiesCount), Span<LayerProperties>.Empty).ThrowOnError();
+
+        LayerProperties[] layerProperties = new LayerProperties[propertiesCount];
+
+        api.EnumerateInstanceLayerProperties(SpanHelpers.AsSpan(ref propertiesCount), layerProperties).ThrowOnError();
+
+        unsafe
         {
-            uint propertiesCount = 0;
-
-            api.EnumerateInstanceLayerProperties(SpanHelpers.AsSpan(ref propertiesCount), Span<LayerProperties>.Empty).ThrowOnError();
-
-            LayerProperties[] layerProperties = new LayerProperties[propertiesCount];
-
-            api.EnumerateInstanceLayerProperties(SpanHelpers.AsSpan(ref propertiesCount), layerProperties).ThrowOnError();
-
-            unsafe
-            {
-                return layerProperties.Select(x => Marshal.PtrToStringAnsi((IntPtr)x.LayerName)).ToImmutableHashSet();
-            }
+            return layerProperties.Select(x => Marshal.PtrToStringAnsi((IntPtr)x.LayerName)).ToImmutableHashSet();
         }
+    }
 
-        public void Dispose()
+    public void Dispose()
+    {
+        if (!_disposed)
         {
-            if (!_disposed)
-            {
-                _api.DestroyInstance(Instance, ReadOnlySpan<AllocationCallbacks>.Empty);
+            _api.DestroyInstance(Instance, ReadOnlySpan<AllocationCallbacks>.Empty);
 
-                _disposed = true;
-            }
+            _disposed = true;
         }
     }
 }

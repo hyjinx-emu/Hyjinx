@@ -1,13 +1,12 @@
 using System.Numerics;
 
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public struct SixAxisInput
 {
-    public struct SixAxisInput
-    {
-        public PlayerIndex PlayerId;
-        public Vector3 Accelerometer;
-        public Vector3 Gyroscope;
-        public Vector3 Rotation;
-        public float[] Orientation;
-    }
+    public PlayerIndex PlayerId;
+    public Vector3 Accelerometer;
+    public Vector3 Gyroscope;
+    public Vector3 Rotation;
+    public float[] Orientation;
 }

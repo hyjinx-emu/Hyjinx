@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser;
+
+public enum WebExitReason : uint
 {
-    public enum WebExitReason : uint
-    {
-        ExitButton,
-        BackButton,
-        Requested,
-        LastUrl,
-        ErrorDialog = 7,
-    }
+    ExitButton,
+    BackButton,
+    Requested,
+    LastUrl,
+    ErrorDialog = 7,
 }

@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.MmNv
+namespace Hyjinx.Horizon.MmNv;
+
+class MmNvMain : IService
 {
-    class MmNvMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            MmNvIpcServer ipcServer = new();
+        MmNvIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

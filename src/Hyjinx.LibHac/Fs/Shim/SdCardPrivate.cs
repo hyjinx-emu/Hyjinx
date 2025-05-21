@@ -1,5 +1,5 @@
-﻿using System;
 using LibHac.Diag;
+using System;
 
 namespace LibHac.Fs.Shim;
 

@@ -1,4 +1,4 @@
-﻿using LibHac.Common.FixedArrays;
+using LibHac.Common.FixedArrays;
 using LibHac.Util;
 
 namespace LibHac.Fs;

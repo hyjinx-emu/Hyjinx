@@ -1,13 +1,12 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
+namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres;
+
+enum NetDbError
 {
-    enum NetDbError
-    {
-        Internal = -1,
-        Success,
-        HostNotFound,
-        TryAgain,
-        NoRecovery,
-        NoData,
-        NoAddress = NoData,
-    }
+    Internal = -1,
+    Success,
+    HostNotFound,
+    TryAgain,
+    NoRecovery,
+    NoData,
+    NoAddress = NoData,
 }

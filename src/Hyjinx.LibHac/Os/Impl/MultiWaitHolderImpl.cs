@@ -1,4 +1,4 @@
-﻿namespace LibHac.Os.Impl;
+namespace LibHac.Os.Impl;
 
 public class MultiWaitHolderImpl
 {

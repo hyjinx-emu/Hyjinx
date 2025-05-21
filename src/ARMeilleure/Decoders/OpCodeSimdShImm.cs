@@ -1,18 +1,17 @@
 using ARMeilleure.Common;
 
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+class OpCodeSimdShImm : OpCodeSimd
 {
-    class OpCodeSimdShImm : OpCodeSimd
+    public int Imm { get; }
+
+    public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCodeSimdShImm(inst, address, opCode);
+
+    public OpCodeSimdShImm(InstDescriptor inst, ulong address, int opCode) : base(inst, address, opCode)
     {
-        public int Imm { get; }
+        Imm = (opCode >> 16) & 0x7f;
 
-        public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCodeSimdShImm(inst, address, opCode);
-
-        public OpCodeSimdShImm(InstDescriptor inst, ulong address, int opCode) : base(inst, address, opCode)
-        {
-            Imm = (opCode >> 16) & 0x7f;
-
-            Size = BitUtils.HighestBitSetNibble(Imm >> 3);
-        }
+        Size = BitUtils.HighestBitSetNibble(Imm >> 3);
     }
 }

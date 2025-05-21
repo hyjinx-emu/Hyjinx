@@ -2,21 +2,20 @@ using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Sf;
 using System;
 
-namespace Hyjinx.Horizon.Sdk.Audio.Detail
+namespace Hyjinx.Horizon.Sdk.Audio.Detail;
+
+interface IFinalOutputRecorder : IServiceObject
 {
-    interface IFinalOutputRecorder : IServiceObject
-    {
-        Result GetFinalOutputRecorderState(out uint state);
-        Result Start();
-        Result Stop();
-        Result AppendFinalOutputRecorderBuffer(ReadOnlySpan<byte> buffer, ulong bufferClientPtr);
-        Result RegisterBufferEvent(out int eventHandle);
-        Result GetReleasedFinalOutputRecorderBuffers(Span<byte> buffer, out uint count, out ulong released);
-        Result ContainsFinalOutputRecorderBuffer(ulong bufferPointer, out bool contains);
-        Result GetFinalOutputRecorderBufferEndTime(ulong bufferPointer, out ulong released);
-        Result AppendFinalOutputRecorderBufferAuto(ReadOnlySpan<byte> buffer, ulong bufferClientPtr);
-        Result GetReleasedFinalOutputRecorderBuffersAuto(Span<byte> buffer, out uint count, out ulong released);
-        Result FlushFinalOutputRecorderBuffers(out bool pending);
-        Result AttachWorkBuffer(FinalOutputRecorderParameterInternal parameter);
-    }
+    Result GetFinalOutputRecorderState(out uint state);
+    Result Start();
+    Result Stop();
+    Result AppendFinalOutputRecorderBuffer(ReadOnlySpan<byte> buffer, ulong bufferClientPtr);
+    Result RegisterBufferEvent(out int eventHandle);
+    Result GetReleasedFinalOutputRecorderBuffers(Span<byte> buffer, out uint count, out ulong released);
+    Result ContainsFinalOutputRecorderBuffer(ulong bufferPointer, out bool contains);
+    Result GetFinalOutputRecorderBufferEndTime(ulong bufferPointer, out ulong released);
+    Result AppendFinalOutputRecorderBufferAuto(ReadOnlySpan<byte> buffer, ulong bufferClientPtr);
+    Result GetReleasedFinalOutputRecorderBuffersAuto(Span<byte> buffer, out uint count, out ulong released);
+    Result FlushFinalOutputRecorderBuffers(out bool pending);
+    Result AttachWorkBuffer(FinalOutputRecorderParameterInternal parameter);
 }

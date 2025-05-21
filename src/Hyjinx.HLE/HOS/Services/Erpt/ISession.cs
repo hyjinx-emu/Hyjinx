@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Erpt
+namespace Hyjinx.HLE.HOS.Services.Erpt;
+
+[Service("erpt:r")]
+class ISession : IpcService<ISession>
 {
-    [Service("erpt:r")]
-    class ISession : IpcService<ISession>
-    {
-        public ISession(ServiceCtx context) { }
-    }
+    public ISession(ServiceCtx context) { }
 }

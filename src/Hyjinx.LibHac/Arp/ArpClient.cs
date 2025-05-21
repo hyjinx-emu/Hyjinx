@@ -1,7 +1,7 @@
-﻿using System;
 using LibHac.Arp.Impl;
 using LibHac.Common;
 using LibHac.Ns;
+using System;
 
 namespace LibHac.Arp;
 

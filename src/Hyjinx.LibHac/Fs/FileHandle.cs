@@ -1,5 +1,5 @@
-﻿using System;
 using LibHac.Fs.Fsa;
+using System;
 
 namespace LibHac.Fs;
 

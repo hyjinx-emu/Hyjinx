@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Settings
+namespace Hyjinx.HLE.HOS.Services.Settings;
+
+[Service("set:fd")]
+class IFirmwareDebugSettingsServer : IpcService<IFirmwareDebugSettingsServer>
 {
-    [Service("set:fd")]
-    class IFirmwareDebugSettingsServer : IpcService<IFirmwareDebugSettingsServer>
-    {
-        public IFirmwareDebugSettingsServer(ServiceCtx context) { }
-    }
+    public IFirmwareDebugSettingsServer(ServiceCtx context) { }
 }

@@ -1,4 +1,4 @@
-﻿using LibHac.Util;
+using LibHac.Util;
 using Xunit;
 
 namespace LibHac.Tests.Util;
@@ -194,7 +194,7 @@ public class IntUtilTests
     [InlineData(uint.MaxValue, true)]
     public void IsIntValueRepresentable_UintToUlong(uint value, bool expectedResult)
     {
-        bool actualResult = IntUtil.IsIntValueRepresentable<ulong, uint> (value);
+        bool actualResult = IntUtil.IsIntValueRepresentable<ulong, uint>(value);
         Assert.Equal(expectedResult, actualResult);
     }
 }

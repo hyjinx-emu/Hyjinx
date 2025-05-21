@@ -1,22 +1,21 @@
-namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
+
+enum NetworkError : int
 {
-    enum NetworkError : int
-    {
-        None,
+    None,
 
-        PortUnreachable,
+    PortUnreachable,
 
-        TooManyPlayers,
-        VersionTooLow,
-        VersionTooHigh,
+    TooManyPlayers,
+    VersionTooLow,
+    VersionTooHigh,
 
-        ConnectFailure,
-        ConnectNotFound,
-        ConnectTimeout,
-        ConnectRejected,
+    ConnectFailure,
+    ConnectNotFound,
+    ConnectTimeout,
+    ConnectRejected,
 
-        RejectFailed,
+    RejectFailed,
 
-        Unknown = -1,
-    }
+    Unknown = -1,
 }

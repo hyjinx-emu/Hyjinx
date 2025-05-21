@@ -1,38 +1,37 @@
 using ARMeilleure.Translation.PTC;
 using System;
 
-namespace Hyjinx.Cpu.Jit
+namespace Hyjinx.Cpu.Jit;
+
+public class JitDiskCacheLoadState : IDiskCacheLoadState
 {
-    public class JitDiskCacheLoadState : IDiskCacheLoadState
+    /// <inheritdoc/>
+    public event Action<LoadState, int, int> StateChanged;
+
+    private readonly IPtcLoadState _loadState;
+
+    public JitDiskCacheLoadState(IPtcLoadState loadState)
     {
-        /// <inheritdoc/>
-        public event Action<LoadState, int, int> StateChanged;
+        loadState.PtcStateChanged += LoadStateChanged;
+        _loadState = loadState;
+    }
 
-        private readonly IPtcLoadState _loadState;
-
-        public JitDiskCacheLoadState(IPtcLoadState loadState)
+    private void LoadStateChanged(PtcLoadingState newState, int current, int total)
+    {
+        LoadState state = newState switch
         {
-            loadState.PtcStateChanged += LoadStateChanged;
-            _loadState = loadState;
-        }
+            PtcLoadingState.Start => LoadState.Unloaded,
+            PtcLoadingState.Loading => LoadState.Loading,
+            PtcLoadingState.Loaded => LoadState.Loaded,
+            _ => throw new ArgumentException($"Invalid load state \"{newState}\"."),
+        };
 
-        private void LoadStateChanged(PtcLoadingState newState, int current, int total)
-        {
-            LoadState state = newState switch
-            {
-                PtcLoadingState.Start => LoadState.Unloaded,
-                PtcLoadingState.Loading => LoadState.Loading,
-                PtcLoadingState.Loaded => LoadState.Loaded,
-                _ => throw new ArgumentException($"Invalid load state \"{newState}\"."),
-            };
+        StateChanged?.Invoke(state, current, total);
+    }
 
-            StateChanged?.Invoke(state, current, total);
-        }
-
-        /// <inheritdoc/>
-        public void Cancel()
-        {
-            _loadState.Continue();
-        }
+    /// <inheritdoc/>
+    public void Cancel()
+    {
+        _loadState.Continue();
     }
 }

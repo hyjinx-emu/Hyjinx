@@ -1,10 +1,9 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+enum RegisterSize
 {
-    enum RegisterSize
-    {
-        Int32,
-        Int64,
-        Simd64,
-        Simd128,
-    }
+    Int32,
+    Int64,
+    Simd64,
+    Simd128,
 }

@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
 using LibHac.Fs;
+using System;
+using System.IO;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -74,7 +74,8 @@ public class StorageStream : Stream
 
     protected override void Dispose(bool disposing)
     {
-        if (!LeaveOpen) BaseStorage?.Dispose();
+        if (!LeaveOpen)
+            BaseStorage?.Dispose();
         base.Dispose(disposing);
     }
 }

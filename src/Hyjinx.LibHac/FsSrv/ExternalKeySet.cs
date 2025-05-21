@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
 using LibHac.Fs;
 using LibHac.Spl;
+using System;
+using System.Collections.Generic;
 
 namespace LibHac.FsSrv;
 

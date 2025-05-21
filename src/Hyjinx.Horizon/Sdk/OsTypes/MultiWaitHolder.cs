@@ -1,16 +1,15 @@
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+class MultiWaitHolder : MultiWaitHolderBase
 {
-    class MultiWaitHolder : MultiWaitHolderBase
+    public object UserData { get; set; }
+
+    public void UnlinkFromMultiWaitHolder()
     {
-        public object UserData { get; set; }
+        DebugUtil.Assert(IsLinked);
 
-        public void UnlinkFromMultiWaitHolder()
-        {
-            DebugUtil.Assert(IsLinked);
+        MultiWait.UnlinkMultiWaitHolder(this);
 
-            MultiWait.UnlinkMultiWaitHolder(this);
-
-            SetMultiWait(null);
-        }
+        SetMultiWait(null);
     }
 }

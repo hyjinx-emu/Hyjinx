@@ -1,26 +1,25 @@
-namespace Hyjinx.HLE.HOS.Tamper.Operations
+namespace Hyjinx.HLE.HOS.Tamper.Operations;
+
+class OpProcCtrl : IOperation
 {
-    class OpProcCtrl : IOperation
+    private readonly ITamperedProcess _process;
+    private readonly bool _pause;
+
+    public OpProcCtrl(ITamperedProcess process, bool pause)
     {
-        private readonly ITamperedProcess _process;
-        private readonly bool _pause;
+        _process = process;
+        _pause = pause;
+    }
 
-        public OpProcCtrl(ITamperedProcess process, bool pause)
+    public void Execute()
+    {
+        if (_pause)
         {
-            _process = process;
-            _pause = pause;
+            _process.PauseProcess();
         }
-
-        public void Execute()
+        else
         {
-            if (_pause)
-            {
-                _process.PauseProcess();
-            }
-            else
-            {
-                _process.ResumeProcess();
-            }
+            _process.ResumeProcess();
         }
     }
 }

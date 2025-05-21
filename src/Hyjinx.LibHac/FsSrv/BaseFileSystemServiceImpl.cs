@@ -1,10 +1,10 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.FsCreator;
 using LibHac.FsSrv.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.Sf;
+using System;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 
 namespace LibHac.FsSrv;
@@ -54,7 +54,8 @@ public class BaseFileSystemServiceImpl
         bool caseSensitive)
     {
         Result res = _config.BisFileSystemCreator.Create(ref outFileSystem, partitionId, caseSensitive);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

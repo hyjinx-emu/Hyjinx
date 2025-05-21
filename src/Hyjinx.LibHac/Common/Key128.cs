@@ -1,7 +1,7 @@
-﻿using System;
+using LibHac.Util;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using LibHac.Util;
 
 namespace LibHac.Common;
 

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
 using LibHac.Diag;
+using System;
+using System.Collections.Generic;
 
 namespace LibHac.FsSystem;
 

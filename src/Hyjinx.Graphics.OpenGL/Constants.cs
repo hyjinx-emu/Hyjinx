@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.OpenGL
+namespace Hyjinx.Graphics.OpenGL;
+
+static class Constants
 {
-    static class Constants
-    {
-        public const int MaxRenderTargets = 8;
-        public const int MaxViewports = 16;
-        public const int MaxVertexAttribs = 16;
-        public const int MaxVertexBuffers = 16;
-        public const int MaxTransformFeedbackBuffers = 4;
-        public const int MaxSubgroupSize = 64;
-    }
+    public const int MaxRenderTargets = 8;
+    public const int MaxViewports = 16;
+    public const int MaxVertexAttribs = 16;
+    public const int MaxVertexBuffers = 16;
+    public const int MaxTransformFeedbackBuffers = 4;
+    public const int MaxSubgroupSize = 64;
 }

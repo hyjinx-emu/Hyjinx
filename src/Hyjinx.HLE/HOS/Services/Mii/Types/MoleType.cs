@@ -1,11 +1,10 @@
-namespace Hyjinx.HLE.HOS.Services.Mii.Types
-{
-    enum MoleType : byte
-    {
-        None,
-        OneDot,
+namespace Hyjinx.HLE.HOS.Services.Mii.Types;
 
-        Min = None,
-        Max = OneDot,
-    }
+enum MoleType : byte
+{
+    None,
+    OneDot,
+
+    Min = None,
+    Max = OneDot,
 }

@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System.Diagnostics;
 using Utility = LibHac.FsSrv.Impl.Utility;
 
 namespace LibHac.FsSrv.FsCreator;
@@ -57,7 +57,8 @@ public class EmulatedBisFileSystemCreator : IBuiltInStorageFileSystemCreator
     // Todo: Make case sensitive
     public Result Create(ref SharedRef<IFileSystem> outFileSystem, BisPartitionId partitionId, bool caseSensitive)
     {
-        if (!IsValidPartitionId(partitionId)) return ResultFs.InvalidArgument.Log();
+        if (!IsValidPartitionId(partitionId))
+            return ResultFs.InvalidArgument.Log();
 
         using var fileSystem = new SharedRef<IFileSystem>();
         if (Config.TryGetFileSystem(ref fileSystem.Ref, partitionId))
@@ -75,16 +76,19 @@ public class EmulatedBisFileSystemCreator : IBuiltInStorageFileSystemCreator
 
         using var bisRootPath = new Path();
         Result res = bisRootPath.Initialize(GetPartitionPath(partitionId).ToU8Span());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var pathFlags = new PathFlags();
         pathFlags.AllowEmptyPath();
         res = bisRootPath.Normalize(pathFlags);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var partitionFileSystem = new SharedRef<IFileSystem>();
         res = Utility.WrapSubDirectory(ref partitionFileSystem.Ref, ref rootFileSystem.Ref, in bisRootPath, true);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outFileSystem.SetByMove(ref partitionFileSystem.Ref);
         return Result.Success;

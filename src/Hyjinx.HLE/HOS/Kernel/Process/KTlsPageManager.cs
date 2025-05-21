@@ -1,61 +1,60 @@
 using Hyjinx.HLE.HOS.Kernel.Memory;
 using System;
 
-namespace Hyjinx.HLE.HOS.Kernel.Process
+namespace Hyjinx.HLE.HOS.Kernel.Process;
+
+class KTlsPageManager
 {
-    class KTlsPageManager
+    private const int TlsEntrySize = 0x200;
+
+    private readonly long _pagePosition;
+
+    private int _usedSlots;
+
+    private readonly bool[] _slots;
+
+    public bool IsEmpty => _usedSlots == 0;
+    public bool IsFull => _usedSlots == _slots.Length;
+
+    public KTlsPageManager(long pagePosition)
     {
-        private const int TlsEntrySize = 0x200;
+        _pagePosition = pagePosition;
 
-        private readonly long _pagePosition;
+        _slots = new bool[KPageTableBase.PageSize / TlsEntrySize];
+    }
 
-        private int _usedSlots;
+    public bool TryGetFreeTlsAddr(out long position)
+    {
+        position = _pagePosition;
 
-        private readonly bool[] _slots;
-
-        public bool IsEmpty => _usedSlots == 0;
-        public bool IsFull => _usedSlots == _slots.Length;
-
-        public KTlsPageManager(long pagePosition)
+        for (int index = 0; index < _slots.Length; index++)
         {
-            _pagePosition = pagePosition;
-
-            _slots = new bool[KPageTableBase.PageSize / TlsEntrySize];
-        }
-
-        public bool TryGetFreeTlsAddr(out long position)
-        {
-            position = _pagePosition;
-
-            for (int index = 0; index < _slots.Length; index++)
+            if (!_slots[index])
             {
-                if (!_slots[index])
-                {
-                    _slots[index] = true;
+                _slots[index] = true;
 
-                    _usedSlots++;
+                _usedSlots++;
 
-                    return true;
-                }
-
-                position += TlsEntrySize;
+                return true;
             }
 
-            position = 0;
-
-            return false;
+            position += TlsEntrySize;
         }
 
-        public void FreeTlsSlot(int slot)
+        position = 0;
+
+        return false;
+    }
+
+    public void FreeTlsSlot(int slot)
+    {
+        if ((uint)slot > _slots.Length)
         {
-            if ((uint)slot > _slots.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(slot));
-            }
-
-            _slots[slot] = false;
-
-            _usedSlots--;
+            throw new ArgumentOutOfRangeException(nameof(slot));
         }
+
+        _slots[slot] = false;
+
+        _usedSlots--;
     }
 }

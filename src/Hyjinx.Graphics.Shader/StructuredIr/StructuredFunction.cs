@@ -1,42 +1,41 @@
 using Hyjinx.Graphics.Shader.Translation;
 using System.Collections.Generic;
 
-namespace Hyjinx.Graphics.Shader.StructuredIr
+namespace Hyjinx.Graphics.Shader.StructuredIr;
+
+class StructuredFunction
 {
-    class StructuredFunction
+    public AstBlock MainBlock { get; }
+
+    public string Name { get; }
+
+    public AggregateType ReturnType { get; }
+
+    public AggregateType[] InArguments { get; }
+    public AggregateType[] OutArguments { get; }
+
+    public HashSet<AstOperand> Locals { get; }
+
+    public StructuredFunction(
+        AstBlock mainBlock,
+        string name,
+        AggregateType returnType,
+        AggregateType[] inArguments,
+        AggregateType[] outArguments)
     {
-        public AstBlock MainBlock { get; }
+        MainBlock = mainBlock;
+        Name = name;
+        ReturnType = returnType;
+        InArguments = inArguments;
+        OutArguments = outArguments;
 
-        public string Name { get; }
+        Locals = new HashSet<AstOperand>();
+    }
 
-        public AggregateType ReturnType { get; }
-
-        public AggregateType[] InArguments { get; }
-        public AggregateType[] OutArguments { get; }
-
-        public HashSet<AstOperand> Locals { get; }
-
-        public StructuredFunction(
-            AstBlock mainBlock,
-            string name,
-            AggregateType returnType,
-            AggregateType[] inArguments,
-            AggregateType[] outArguments)
-        {
-            MainBlock = mainBlock;
-            Name = name;
-            ReturnType = returnType;
-            InArguments = inArguments;
-            OutArguments = outArguments;
-
-            Locals = new HashSet<AstOperand>();
-        }
-
-        public AggregateType GetArgumentType(int index)
-        {
-            return index >= InArguments.Length
-                ? OutArguments[index - InArguments.Length]
-                : InArguments[index];
-        }
+    public AggregateType GetArgumentType(int index)
+    {
+        return index >= InArguments.Length
+            ? OutArguments[index - InArguments.Length]
+            : InArguments[index];
     }
 }

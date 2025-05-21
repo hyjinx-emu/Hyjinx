@@ -1,8 +1,8 @@
-﻿using System;
-using System.Text;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Util;
+using System;
+using System.Text;
 
 namespace LibHac.Tools.FsSystem.Save;
 

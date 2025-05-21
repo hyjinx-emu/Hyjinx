@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Loader
+namespace Hyjinx.HLE.HOS.Services.Loader;
+
+[Service("ldr:shel")]
+class IShellInterface : IpcService<IShellInterface>
 {
-    [Service("ldr:shel")]
-    class IShellInterface : IpcService<IShellInterface>
-    {
-        public IShellInterface(ServiceCtx context) { }
-    }
+    public IShellInterface(ServiceCtx context) { }
 }

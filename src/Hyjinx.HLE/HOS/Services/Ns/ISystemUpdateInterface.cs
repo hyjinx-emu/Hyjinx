@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Ns
+namespace Hyjinx.HLE.HOS.Services.Ns;
+
+[Service("ns:su")]
+class ISystemUpdateInterface : IpcService<ISystemUpdateInterface>
 {
-    [Service("ns:su")]
-    class ISystemUpdateInterface : IpcService<ISystemUpdateInterface>
-    {
-        public ISystemUpdateInterface(ServiceCtx context) { }
-    }
+    public ISystemUpdateInterface(ServiceCtx context) { }
 }

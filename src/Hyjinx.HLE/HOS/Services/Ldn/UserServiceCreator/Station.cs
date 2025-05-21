@@ -3,112 +3,111 @@ using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
+
+class Station : IDisposable
 {
-    class Station : IDisposable
+    public NetworkInfo NetworkInfo;
+    public Array8<NodeLatestUpdate> LatestUpdates = new();
+
+    private readonly IUserLocalCommunicationService _parent;
+
+    public bool Connected { get; private set; }
+
+    public Station(IUserLocalCommunicationService parent)
     {
-        public NetworkInfo NetworkInfo;
-        public Array8<NodeLatestUpdate> LatestUpdates = new();
+        _parent = parent;
 
-        private readonly IUserLocalCommunicationService _parent;
+        _parent.NetworkClient.NetworkChange += NetworkChanged;
+    }
 
-        public bool Connected { get; private set; }
+    private void NetworkChanged(object sender, NetworkChangeEventArgs e)
+    {
+        LatestUpdates.CalculateLatestUpdate(NetworkInfo.Ldn.Nodes, e.Info.Ldn.Nodes);
 
-        public Station(IUserLocalCommunicationService parent)
+        NetworkInfo = e.Info;
+
+        if (Connected != e.Connected)
         {
-            _parent = parent;
+            Connected = e.Connected;
 
-            _parent.NetworkClient.NetworkChange += NetworkChanged;
-        }
-
-        private void NetworkChanged(object sender, NetworkChangeEventArgs e)
-        {
-            LatestUpdates.CalculateLatestUpdate(NetworkInfo.Ldn.Nodes, e.Info.Ldn.Nodes);
-
-            NetworkInfo = e.Info;
-
-            if (Connected != e.Connected)
+            if (Connected)
             {
-                Connected = e.Connected;
-
-                if (Connected)
-                {
-                    _parent.SetState(NetworkState.StationConnected);
-                }
-                else
-                {
-                    _parent.SetDisconnectReason(e.DisconnectReasonOrDefault(DisconnectReason.DestroyedByUser));
-                }
+                _parent.SetState(NetworkState.StationConnected);
             }
             else
             {
-                _parent.SetState();
+                _parent.SetDisconnectReason(e.DisconnectReasonOrDefault(DisconnectReason.DestroyedByUser));
             }
         }
-
-        public void Dispose()
+        else
         {
-            _parent.NetworkClient.DisconnectNetwork();
-
-            _parent.NetworkClient.NetworkChange -= NetworkChanged;
+            _parent.SetState();
         }
+    }
 
-        private ResultCode NetworkErrorToResult(NetworkError error)
+    public void Dispose()
+    {
+        _parent.NetworkClient.DisconnectNetwork();
+
+        _parent.NetworkClient.NetworkChange -= NetworkChanged;
+    }
+
+    private ResultCode NetworkErrorToResult(NetworkError error)
+    {
+        return error switch
         {
-            return error switch
-            {
-                NetworkError.None => ResultCode.Success,
-                NetworkError.VersionTooLow => ResultCode.VersionTooLow,
-                NetworkError.VersionTooHigh => ResultCode.VersionTooHigh,
-                NetworkError.TooManyPlayers => ResultCode.TooManyPlayers,
+            NetworkError.None => ResultCode.Success,
+            NetworkError.VersionTooLow => ResultCode.VersionTooLow,
+            NetworkError.VersionTooHigh => ResultCode.VersionTooHigh,
+            NetworkError.TooManyPlayers => ResultCode.TooManyPlayers,
 
-                NetworkError.ConnectFailure => ResultCode.ConnectFailure,
-                NetworkError.ConnectNotFound => ResultCode.ConnectNotFound,
-                NetworkError.ConnectTimeout => ResultCode.ConnectTimeout,
-                NetworkError.ConnectRejected => ResultCode.ConnectRejected,
+            NetworkError.ConnectFailure => ResultCode.ConnectFailure,
+            NetworkError.ConnectNotFound => ResultCode.ConnectNotFound,
+            NetworkError.ConnectTimeout => ResultCode.ConnectTimeout,
+            NetworkError.ConnectRejected => ResultCode.ConnectRejected,
 
-                _ => ResultCode.DeviceNotAvailable,
-            };
-        }
+            _ => ResultCode.DeviceNotAvailable,
+        };
+    }
 
-        public ResultCode Connect(
-            SecurityConfig securityConfig,
-            UserConfig userConfig,
-            uint localCommunicationVersion,
-            uint optionUnknown,
-            NetworkInfo networkInfo)
+    public ResultCode Connect(
+        SecurityConfig securityConfig,
+        UserConfig userConfig,
+        uint localCommunicationVersion,
+        uint optionUnknown,
+        NetworkInfo networkInfo)
+    {
+        ConnectRequest request = new()
         {
-            ConnectRequest request = new()
-            {
-                SecurityConfig = securityConfig,
-                UserConfig = userConfig,
-                LocalCommunicationVersion = localCommunicationVersion,
-                OptionUnknown = optionUnknown,
-                NetworkInfo = networkInfo,
-            };
+            SecurityConfig = securityConfig,
+            UserConfig = userConfig,
+            LocalCommunicationVersion = localCommunicationVersion,
+            OptionUnknown = optionUnknown,
+            NetworkInfo = networkInfo,
+        };
 
-            return NetworkErrorToResult(_parent.NetworkClient.Connect(request));
-        }
+        return NetworkErrorToResult(_parent.NetworkClient.Connect(request));
+    }
 
-        public ResultCode ConnectPrivate(
-            SecurityConfig securityConfig,
-            SecurityParameter securityParameter,
-            UserConfig userConfig,
-            uint localCommunicationVersion,
-            uint optionUnknown,
-            NetworkConfig networkConfig)
+    public ResultCode ConnectPrivate(
+        SecurityConfig securityConfig,
+        SecurityParameter securityParameter,
+        UserConfig userConfig,
+        uint localCommunicationVersion,
+        uint optionUnknown,
+        NetworkConfig networkConfig)
+    {
+        ConnectPrivateRequest request = new()
         {
-            ConnectPrivateRequest request = new()
-            {
-                SecurityConfig = securityConfig,
-                SecurityParameter = securityParameter,
-                UserConfig = userConfig,
-                LocalCommunicationVersion = localCommunicationVersion,
-                OptionUnknown = optionUnknown,
-                NetworkConfig = networkConfig,
-            };
+            SecurityConfig = securityConfig,
+            SecurityParameter = securityParameter,
+            UserConfig = userConfig,
+            LocalCommunicationVersion = localCommunicationVersion,
+            OptionUnknown = optionUnknown,
+            NetworkConfig = networkConfig,
+        };
 
-            return NetworkErrorToResult(_parent.NetworkClient.ConnectPrivate(request));
-        }
+        return NetworkErrorToResult(_parent.NetworkClient.ConnectPrivate(request));
     }
 }

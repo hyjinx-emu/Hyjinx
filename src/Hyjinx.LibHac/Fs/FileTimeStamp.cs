@@ -1,4 +1,4 @@
-﻿using LibHac.Common.FixedArrays;
+using LibHac.Common.FixedArrays;
 using LibHac.Time;
 
 namespace LibHac.Fs;

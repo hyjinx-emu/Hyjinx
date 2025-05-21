@@ -1,8 +1,7 @@
-namespace Hyjinx.Audio.Backends.SoundIo.Native
+namespace Hyjinx.Audio.Backends.SoundIo.Native;
+
+public enum SoundIoDeviceAim
 {
-    public enum SoundIoDeviceAim
-    {
-        SoundIoDeviceAimInput = 0,
-        SoundIoDeviceAimOutput = 1,
-    }
+    SoundIoDeviceAimInput = 0,
+    SoundIoDeviceAimOutput = 1,
 }

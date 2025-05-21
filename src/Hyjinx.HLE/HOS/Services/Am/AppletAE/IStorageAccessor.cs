@@ -1,86 +1,85 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Am.AppletAE
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE;
+
+class IStorageAccessor : IpcService<IStorageAccessor>
 {
-    class IStorageAccessor : IpcService<IStorageAccessor>
+    private readonly IStorage _storage;
+
+    public IStorageAccessor(IStorage storage)
     {
-        private readonly IStorage _storage;
+        _storage = storage;
+    }
 
-        public IStorageAccessor(IStorage storage)
+    [CommandCmif(0)]
+    // GetSize() -> u64
+    public ResultCode GetSize(ServiceCtx context)
+    {
+        context.ResponseData.Write((long)_storage.Data.Length);
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(10)]
+    // Write(u64, buffer<bytes, 0x21>)
+    public ResultCode Write(ServiceCtx context)
+    {
+        if (_storage.IsReadOnly)
         {
-            _storage = storage;
+            return ResultCode.ObjectInvalid;
         }
 
-        [CommandCmif(0)]
-        // GetSize() -> u64
-        public ResultCode GetSize(ServiceCtx context)
-        {
-            context.ResponseData.Write((long)_storage.Data.Length);
+        ulong writePosition = context.RequestData.ReadUInt64();
 
-            return ResultCode.Success;
+        if (writePosition > (ulong)_storage.Data.Length)
+        {
+            return ResultCode.OutOfBounds;
         }
 
-        [CommandCmif(10)]
-        // Write(u64, buffer<bytes, 0x21>)
-        public ResultCode Write(ServiceCtx context)
+        (ulong position, ulong size) = context.Request.GetBufferType0x21();
+
+        size = Math.Min(size, (ulong)_storage.Data.Length - writePosition);
+
+        if (size > 0)
         {
-            if (_storage.IsReadOnly)
+            ulong maxSize = (ulong)_storage.Data.Length - writePosition;
+
+            if (size > maxSize)
             {
-                return ResultCode.ObjectInvalid;
+                size = maxSize;
             }
-
-            ulong writePosition = context.RequestData.ReadUInt64();
-
-            if (writePosition > (ulong)_storage.Data.Length)
-            {
-                return ResultCode.OutOfBounds;
-            }
-
-            (ulong position, ulong size) = context.Request.GetBufferType0x21();
-
-            size = Math.Min(size, (ulong)_storage.Data.Length - writePosition);
-
-            if (size > 0)
-            {
-                ulong maxSize = (ulong)_storage.Data.Length - writePosition;
-
-                if (size > maxSize)
-                {
-                    size = maxSize;
-                }
-
-                byte[] data = new byte[size];
-
-                context.Memory.Read(position, data);
-
-                Buffer.BlockCopy(data, 0, _storage.Data, (int)writePosition, (int)size);
-            }
-
-            return ResultCode.Success;
-        }
-
-        [CommandCmif(11)]
-        // Read(u64) -> buffer<bytes, 0x22>
-        public ResultCode Read(ServiceCtx context)
-        {
-            ulong readPosition = context.RequestData.ReadUInt64();
-
-            if (readPosition > (ulong)_storage.Data.Length)
-            {
-                return ResultCode.OutOfBounds;
-            }
-
-            (ulong position, ulong size) = context.Request.GetBufferType0x22();
-
-            size = Math.Min(size, (ulong)_storage.Data.Length - readPosition);
 
             byte[] data = new byte[size];
 
-            Buffer.BlockCopy(_storage.Data, (int)readPosition, data, 0, (int)size);
+            context.Memory.Read(position, data);
 
-            context.Memory.Write(position, data);
-
-            return ResultCode.Success;
+            Buffer.BlockCopy(data, 0, _storage.Data, (int)writePosition, (int)size);
         }
+
+        return ResultCode.Success;
+    }
+
+    [CommandCmif(11)]
+    // Read(u64) -> buffer<bytes, 0x22>
+    public ResultCode Read(ServiceCtx context)
+    {
+        ulong readPosition = context.RequestData.ReadUInt64();
+
+        if (readPosition > (ulong)_storage.Data.Length)
+        {
+            return ResultCode.OutOfBounds;
+        }
+
+        (ulong position, ulong size) = context.Request.GetBufferType0x22();
+
+        size = Math.Min(size, (ulong)_storage.Data.Length - readPosition);
+
+        byte[] data = new byte[size];
+
+        Buffer.BlockCopy(_storage.Data, (int)readPosition, data, 0, (int)size);
+
+        context.Memory.Write(position, data);
+
+        return ResultCode.Success;
     }
 }

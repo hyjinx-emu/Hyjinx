@@ -1,18 +1,17 @@
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands;
+
+struct SetBlendStateAdvancedCommand : IGALCommand, IGALCommand<SetBlendStateAdvancedCommand>
 {
-    struct SetBlendStateAdvancedCommand : IGALCommand, IGALCommand<SetBlendStateAdvancedCommand>
+    public readonly CommandType CommandType => CommandType.SetBlendStateAdvanced;
+    private AdvancedBlendDescriptor _blend;
+
+    public void Set(AdvancedBlendDescriptor blend)
     {
-        public readonly CommandType CommandType => CommandType.SetBlendStateAdvanced;
-        private AdvancedBlendDescriptor _blend;
+        _blend = blend;
+    }
 
-        public void Set(AdvancedBlendDescriptor blend)
-        {
-            _blend = blend;
-        }
-
-        public static void Run(ref SetBlendStateAdvancedCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            renderer.Pipeline.SetBlendState(command._blend);
-        }
+    public static void Run(ref SetBlendStateAdvancedCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        renderer.Pipeline.SetBlendState(command._blend);
     }
 }

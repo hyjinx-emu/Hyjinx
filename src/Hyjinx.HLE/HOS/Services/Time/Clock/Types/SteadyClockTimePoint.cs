@@ -3,42 +3,41 @@ using Hyjinx.HLE.Utilities;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+struct SteadyClockTimePoint
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    struct SteadyClockTimePoint
+    public long TimePoint;
+    public UInt128 ClockSourceId;
+
+    public readonly ResultCode GetSpanBetween(SteadyClockTimePoint other, out long outSpan)
     {
-        public long TimePoint;
-        public UInt128 ClockSourceId;
+        outSpan = 0;
 
-        public readonly ResultCode GetSpanBetween(SteadyClockTimePoint other, out long outSpan)
+        if (ClockSourceId == other.ClockSourceId)
         {
-            outSpan = 0;
-
-            if (ClockSourceId == other.ClockSourceId)
+            try
             {
-                try
-                {
-                    outSpan = checked(other.TimePoint - TimePoint);
+                outSpan = checked(other.TimePoint - TimePoint);
 
-                    return ResultCode.Success;
-                }
-                catch (OverflowException)
-                {
-                    return ResultCode.Overflow;
-                }
+                return ResultCode.Success;
             }
-
-            return ResultCode.Overflow;
-        }
-
-        public static SteadyClockTimePoint GetRandom()
-        {
-            return new SteadyClockTimePoint
+            catch (OverflowException)
             {
-                TimePoint = 0,
-                ClockSourceId = UInt128Utils.CreateRandom(),
-            };
+                return ResultCode.Overflow;
+            }
         }
+
+        return ResultCode.Overflow;
+    }
+
+    public static SteadyClockTimePoint GetRandom()
+    {
+        return new SteadyClockTimePoint
+        {
+            TimePoint = 0,
+            ClockSourceId = UInt128Utils.CreateRandom(),
+        };
     }
 }

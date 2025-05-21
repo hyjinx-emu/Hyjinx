@@ -1,4 +1,4 @@
-﻿using Hyjinx.Common.Configuration.Hid.Controller;
+using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
 using System.Collections.Generic;
 
@@ -13,7 +13,7 @@ public class InputOptions
     /// The keyboard bindings.
     /// </summary>
     public List<StandardKeyboardInputConfig> KeyboardBindings { get; set; } = [];
-    
+
     /// <summary>
     /// The controller bindings.
     /// </summary>

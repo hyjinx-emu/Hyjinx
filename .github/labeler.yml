@@ -1,39 +1,39 @@
-audio:
+"audio":
 - changed-files:
   - any-glob-to-any-file: 'src/Hyjinx.Audio*/**'
 
-cpu:
+"cpu":
 - changed-files:
   - any-glob-to-any-file: ['src/ARMeilleure/**', 'src/Hyjinx.Cpu/**', 'src/Hyjinx.Memory/**']
 
-gpu:
+"gpu":
 - changed-files:
   - any-glob-to-any-file: ['src/Hyjinx.Graphics.*/**', 'src/Spv.Generator/**', 'src/Hyjinx.ShaderTools/**']
 
-'graphics-backend:opengl':
+"opengl":
 - changed-files:
   - any-glob-to-any-file: 'src/Hyjinx.Graphics.OpenGL/**'
 
-'graphics-backend:vulkan':
+"vulkan":
 - changed-files:
   - any-glob-to-any-file: ['src/Hyjinx.Graphics.Vulkan/**', 'src/Spv.Generator/**']
 
-gui:
+"gui":
 - changed-files:
   - any-glob-to-any-file: ['src/Hyjinx/**', 'src/Hyjinx.UI.Common/**', 'src/Hyjinx.UI.LocaleGenerator/**', 'src/Hyjinx.Gtk3/**']
 
-horizon:
+"horizon":
 - changed-files:
   - any-glob-to-any-file: ['src/Hyjinx.HLE/**', 'src/Hyjinx.Horizon/**']
 
-kernel:
+"kernel":
 - changed-files:
   - any-glob-to-any-file: 'src/Hyjinx.HLE/HOS/Kernel/**'
 
-infra:
+"infra":
 - changed-files:
   - any-glob-to-any-file: ['.github/**', 'distribution/**', 'Directory.Packages.props']
 
-meta:
+"meta":
 - changed-files:
   - any-glob-to-any-file: ['docs/**', 'README.md', 'CONTRIBUTING.md']

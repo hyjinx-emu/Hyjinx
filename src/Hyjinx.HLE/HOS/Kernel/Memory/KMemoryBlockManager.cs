@@ -2,287 +2,286 @@ using Hyjinx.Common.Collections;
 using Hyjinx.Horizon.Common;
 using System.Diagnostics;
 
-namespace Hyjinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
+
+class KMemoryBlockManager
 {
-    class KMemoryBlockManager
+    private const int PageSize = KPageTableBase.PageSize;
+
+    private readonly IntrusiveRedBlackTree<KMemoryBlock> _blockTree;
+
+    public int BlocksCount => _blockTree.Count;
+
+    private KMemoryBlockSlabManager _slabManager;
+
+    private ulong _addrSpaceStart;
+    private ulong _addrSpaceEnd;
+
+    public KMemoryBlockManager()
     {
-        private const int PageSize = KPageTableBase.PageSize;
+        _blockTree = new IntrusiveRedBlackTree<KMemoryBlock>();
+    }
 
-        private readonly IntrusiveRedBlackTree<KMemoryBlock> _blockTree;
+    public Result Initialize(ulong addrSpaceStart, ulong addrSpaceEnd, KMemoryBlockSlabManager slabManager)
+    {
+        _slabManager = slabManager;
+        _addrSpaceStart = addrSpaceStart;
+        _addrSpaceEnd = addrSpaceEnd;
 
-        public int BlocksCount => _blockTree.Count;
-
-        private KMemoryBlockSlabManager _slabManager;
-
-        private ulong _addrSpaceStart;
-        private ulong _addrSpaceEnd;
-
-        public KMemoryBlockManager()
+        // First insertion will always need only a single block, because there's nothing to split.
+        if (!slabManager.CanAllocate(1))
         {
-            _blockTree = new IntrusiveRedBlackTree<KMemoryBlock>();
+            return KernelResult.OutOfResource;
         }
 
-        public Result Initialize(ulong addrSpaceStart, ulong addrSpaceEnd, KMemoryBlockSlabManager slabManager)
+        ulong addrSpacePagesCount = (addrSpaceEnd - addrSpaceStart) / PageSize;
+
+        _blockTree.Add(new KMemoryBlock(
+            addrSpaceStart,
+            addrSpacePagesCount,
+            MemoryState.Unmapped,
+            KMemoryPermission.None,
+            MemoryAttribute.None));
+
+        return Result.Success;
+    }
+
+    public void InsertBlock(
+        ulong baseAddress,
+        ulong pagesCount,
+        MemoryState oldState,
+        KMemoryPermission oldPermission,
+        MemoryAttribute oldAttribute,
+        MemoryState newState,
+        KMemoryPermission newPermission,
+        MemoryAttribute newAttribute)
+    {
+        // Insert new block on the list only on areas where the state
+        // of the block matches the state specified on the old* state
+        // arguments, otherwise leave it as is.
+
+        int oldCount = _blockTree.Count;
+
+        oldAttribute |= MemoryAttribute.IpcAndDeviceMapped;
+
+        ulong endAddr = baseAddress + pagesCount * PageSize;
+
+        KMemoryBlock currBlock = FindBlock(baseAddress);
+
+        while (currBlock != null)
         {
-            _slabManager = slabManager;
-            _addrSpaceStart = addrSpaceStart;
-            _addrSpaceEnd = addrSpaceEnd;
+            ulong currBaseAddr = currBlock.BaseAddress;
+            ulong currEndAddr = currBlock.PagesCount * PageSize + currBaseAddr;
 
-            // First insertion will always need only a single block, because there's nothing to split.
-            if (!slabManager.CanAllocate(1))
+            if (baseAddress < currEndAddr && currBaseAddr < endAddr)
             {
-                return KernelResult.OutOfResource;
-            }
+                MemoryAttribute currBlockAttr = currBlock.Attribute | MemoryAttribute.IpcAndDeviceMapped;
 
-            ulong addrSpacePagesCount = (addrSpaceEnd - addrSpaceStart) / PageSize;
-
-            _blockTree.Add(new KMemoryBlock(
-                addrSpaceStart,
-                addrSpacePagesCount,
-                MemoryState.Unmapped,
-                KMemoryPermission.None,
-                MemoryAttribute.None));
-
-            return Result.Success;
-        }
-
-        public void InsertBlock(
-            ulong baseAddress,
-            ulong pagesCount,
-            MemoryState oldState,
-            KMemoryPermission oldPermission,
-            MemoryAttribute oldAttribute,
-            MemoryState newState,
-            KMemoryPermission newPermission,
-            MemoryAttribute newAttribute)
-        {
-            // Insert new block on the list only on areas where the state
-            // of the block matches the state specified on the old* state
-            // arguments, otherwise leave it as is.
-
-            int oldCount = _blockTree.Count;
-
-            oldAttribute |= MemoryAttribute.IpcAndDeviceMapped;
-
-            ulong endAddr = baseAddress + pagesCount * PageSize;
-
-            KMemoryBlock currBlock = FindBlock(baseAddress);
-
-            while (currBlock != null)
-            {
-                ulong currBaseAddr = currBlock.BaseAddress;
-                ulong currEndAddr = currBlock.PagesCount * PageSize + currBaseAddr;
-
-                if (baseAddress < currEndAddr && currBaseAddr < endAddr)
+                if (currBlock.State != oldState ||
+                    currBlock.Permission != oldPermission ||
+                    currBlockAttr != oldAttribute)
                 {
-                    MemoryAttribute currBlockAttr = currBlock.Attribute | MemoryAttribute.IpcAndDeviceMapped;
+                    currBlock = currBlock.Successor;
 
-                    if (currBlock.State != oldState ||
-                        currBlock.Permission != oldPermission ||
-                        currBlockAttr != oldAttribute)
-                    {
-                        currBlock = currBlock.Successor;
-
-                        continue;
-                    }
-
-                    if (baseAddress > currBaseAddr)
-                    {
-                        KMemoryBlock newBlock = currBlock.SplitRightAtAddress(baseAddress);
-                        _blockTree.Add(newBlock);
-                    }
-
-                    if (endAddr < currEndAddr)
-                    {
-                        KMemoryBlock newBlock = currBlock.SplitRightAtAddress(endAddr);
-                        _blockTree.Add(newBlock);
-                        currBlock = newBlock;
-                    }
-
-                    currBlock.SetState(newPermission, newState, newAttribute);
-
-                    currBlock = MergeEqualStateNeighbors(currBlock);
+                    continue;
                 }
 
-                if (currEndAddr - 1 >= endAddr - 1)
+                if (baseAddress > currBaseAddr)
                 {
-                    break;
+                    KMemoryBlock newBlock = currBlock.SplitRightAtAddress(baseAddress);
+                    _blockTree.Add(newBlock);
                 }
 
-                currBlock = currBlock.Successor;
-            }
-
-            _slabManager.Count += _blockTree.Count - oldCount;
-
-            ValidateInternalState();
-        }
-
-        public void InsertBlock(
-            ulong baseAddress,
-            ulong pagesCount,
-            MemoryState state,
-            KMemoryPermission permission = KMemoryPermission.None,
-            MemoryAttribute attribute = MemoryAttribute.None)
-        {
-            // Inserts new block at the list, replacing and splitting
-            // existing blocks as needed.
-
-            int oldCount = _blockTree.Count;
-
-            ulong endAddr = baseAddress + pagesCount * PageSize;
-
-            KMemoryBlock currBlock = FindBlock(baseAddress);
-
-            while (currBlock != null)
-            {
-                ulong currBaseAddr = currBlock.BaseAddress;
-                ulong currEndAddr = currBlock.PagesCount * PageSize + currBaseAddr;
-
-                if (baseAddress < currEndAddr && currBaseAddr < endAddr)
+                if (endAddr < currEndAddr)
                 {
-                    if (baseAddress > currBaseAddr)
-                    {
-                        KMemoryBlock newBlock = currBlock.SplitRightAtAddress(baseAddress);
-                        _blockTree.Add(newBlock);
-                    }
-
-                    if (endAddr < currEndAddr)
-                    {
-                        KMemoryBlock newBlock = currBlock.SplitRightAtAddress(endAddr);
-                        _blockTree.Add(newBlock);
-                        currBlock = newBlock;
-                    }
-
-                    currBlock.SetState(permission, state, attribute);
-
-                    currBlock = MergeEqualStateNeighbors(currBlock);
+                    KMemoryBlock newBlock = currBlock.SplitRightAtAddress(endAddr);
+                    _blockTree.Add(newBlock);
+                    currBlock = newBlock;
                 }
 
-                if (currEndAddr - 1 >= endAddr - 1)
+                currBlock.SetState(newPermission, newState, newAttribute);
+
+                currBlock = MergeEqualStateNeighbors(currBlock);
+            }
+
+            if (currEndAddr - 1 >= endAddr - 1)
+            {
+                break;
+            }
+
+            currBlock = currBlock.Successor;
+        }
+
+        _slabManager.Count += _blockTree.Count - oldCount;
+
+        ValidateInternalState();
+    }
+
+    public void InsertBlock(
+        ulong baseAddress,
+        ulong pagesCount,
+        MemoryState state,
+        KMemoryPermission permission = KMemoryPermission.None,
+        MemoryAttribute attribute = MemoryAttribute.None)
+    {
+        // Inserts new block at the list, replacing and splitting
+        // existing blocks as needed.
+
+        int oldCount = _blockTree.Count;
+
+        ulong endAddr = baseAddress + pagesCount * PageSize;
+
+        KMemoryBlock currBlock = FindBlock(baseAddress);
+
+        while (currBlock != null)
+        {
+            ulong currBaseAddr = currBlock.BaseAddress;
+            ulong currEndAddr = currBlock.PagesCount * PageSize + currBaseAddr;
+
+            if (baseAddress < currEndAddr && currBaseAddr < endAddr)
+            {
+                if (baseAddress > currBaseAddr)
                 {
-                    break;
+                    KMemoryBlock newBlock = currBlock.SplitRightAtAddress(baseAddress);
+                    _blockTree.Add(newBlock);
                 }
 
-                currBlock = currBlock.Successor;
-            }
-
-            _slabManager.Count += _blockTree.Count - oldCount;
-
-            ValidateInternalState();
-        }
-
-        public delegate void BlockMutator(KMemoryBlock block, KMemoryPermission newPerm);
-
-        public void InsertBlock(
-            ulong baseAddress,
-            ulong pagesCount,
-            BlockMutator blockMutate,
-            KMemoryPermission permission = KMemoryPermission.None)
-        {
-            // Inserts new block at the list, replacing and splitting
-            // existing blocks as needed, then calling the callback
-            // function on the new block.
-
-            int oldCount = _blockTree.Count;
-
-            ulong endAddr = baseAddress + pagesCount * PageSize;
-
-            KMemoryBlock currBlock = FindBlock(baseAddress);
-
-            while (currBlock != null)
-            {
-                ulong currBaseAddr = currBlock.BaseAddress;
-                ulong currEndAddr = currBlock.PagesCount * PageSize + currBaseAddr;
-
-                if (baseAddress < currEndAddr && currBaseAddr < endAddr)
+                if (endAddr < currEndAddr)
                 {
-                    if (baseAddress > currBaseAddr)
-                    {
-                        KMemoryBlock newBlock = currBlock.SplitRightAtAddress(baseAddress);
-                        _blockTree.Add(newBlock);
-                    }
-
-                    if (endAddr < currEndAddr)
-                    {
-                        KMemoryBlock newBlock = currBlock.SplitRightAtAddress(endAddr);
-                        _blockTree.Add(newBlock);
-                        currBlock = newBlock;
-                    }
-
-                    blockMutate(currBlock, permission);
-
-                    currBlock = MergeEqualStateNeighbors(currBlock);
+                    KMemoryBlock newBlock = currBlock.SplitRightAtAddress(endAddr);
+                    _blockTree.Add(newBlock);
+                    currBlock = newBlock;
                 }
 
-                if (currEndAddr - 1 >= endAddr - 1)
+                currBlock.SetState(permission, state, attribute);
+
+                currBlock = MergeEqualStateNeighbors(currBlock);
+            }
+
+            if (currEndAddr - 1 >= endAddr - 1)
+            {
+                break;
+            }
+
+            currBlock = currBlock.Successor;
+        }
+
+        _slabManager.Count += _blockTree.Count - oldCount;
+
+        ValidateInternalState();
+    }
+
+    public delegate void BlockMutator(KMemoryBlock block, KMemoryPermission newPerm);
+
+    public void InsertBlock(
+        ulong baseAddress,
+        ulong pagesCount,
+        BlockMutator blockMutate,
+        KMemoryPermission permission = KMemoryPermission.None)
+    {
+        // Inserts new block at the list, replacing and splitting
+        // existing blocks as needed, then calling the callback
+        // function on the new block.
+
+        int oldCount = _blockTree.Count;
+
+        ulong endAddr = baseAddress + pagesCount * PageSize;
+
+        KMemoryBlock currBlock = FindBlock(baseAddress);
+
+        while (currBlock != null)
+        {
+            ulong currBaseAddr = currBlock.BaseAddress;
+            ulong currEndAddr = currBlock.PagesCount * PageSize + currBaseAddr;
+
+            if (baseAddress < currEndAddr && currBaseAddr < endAddr)
+            {
+                if (baseAddress > currBaseAddr)
                 {
-                    break;
+                    KMemoryBlock newBlock = currBlock.SplitRightAtAddress(baseAddress);
+                    _blockTree.Add(newBlock);
                 }
 
-                currBlock = currBlock.Successor;
+                if (endAddr < currEndAddr)
+                {
+                    KMemoryBlock newBlock = currBlock.SplitRightAtAddress(endAddr);
+                    _blockTree.Add(newBlock);
+                    currBlock = newBlock;
+                }
+
+                blockMutate(currBlock, permission);
+
+                currBlock = MergeEqualStateNeighbors(currBlock);
             }
 
-            _slabManager.Count += _blockTree.Count - oldCount;
-
-            ValidateInternalState();
-        }
-
-        [Conditional("DEBUG")]
-        private void ValidateInternalState()
-        {
-            ulong expectedAddress = 0;
-
-            KMemoryBlock currBlock = FindBlock(_addrSpaceStart);
-
-            while (currBlock != null)
+            if (currEndAddr - 1 >= endAddr - 1)
             {
-                Debug.Assert(currBlock.BaseAddress == expectedAddress);
-
-                expectedAddress = currBlock.BaseAddress + currBlock.PagesCount * PageSize;
-
-                currBlock = currBlock.Successor;
+                break;
             }
 
-            Debug.Assert(expectedAddress == _addrSpaceEnd);
+            currBlock = currBlock.Successor;
         }
 
-        private KMemoryBlock MergeEqualStateNeighbors(KMemoryBlock block)
+        _slabManager.Count += _blockTree.Count - oldCount;
+
+        ValidateInternalState();
+    }
+
+    [Conditional("DEBUG")]
+    private void ValidateInternalState()
+    {
+        ulong expectedAddress = 0;
+
+        KMemoryBlock currBlock = FindBlock(_addrSpaceStart);
+
+        while (currBlock != null)
         {
-            KMemoryBlock previousBlock = block.Predecessor;
-            KMemoryBlock nextBlock = block.Successor;
+            Debug.Assert(currBlock.BaseAddress == expectedAddress);
 
-            if (previousBlock != null && BlockStateEquals(block, previousBlock))
-            {
-                _blockTree.Remove(block);
+            expectedAddress = currBlock.BaseAddress + currBlock.PagesCount * PageSize;
 
-                previousBlock.AddPages(block.PagesCount);
-
-                block = previousBlock;
-            }
-
-            if (nextBlock != null && BlockStateEquals(block, nextBlock))
-            {
-                _blockTree.Remove(nextBlock);
-
-                block.AddPages(nextBlock.PagesCount);
-            }
-
-            return block;
+            currBlock = currBlock.Successor;
         }
 
-        private static bool BlockStateEquals(KMemoryBlock lhs, KMemoryBlock rhs)
+        Debug.Assert(expectedAddress == _addrSpaceEnd);
+    }
+
+    private KMemoryBlock MergeEqualStateNeighbors(KMemoryBlock block)
+    {
+        KMemoryBlock previousBlock = block.Predecessor;
+        KMemoryBlock nextBlock = block.Successor;
+
+        if (previousBlock != null && BlockStateEquals(block, previousBlock))
         {
-            return lhs.State == rhs.State &&
-                   lhs.Permission == rhs.Permission &&
-                   lhs.Attribute == rhs.Attribute &&
-                   lhs.SourcePermission == rhs.SourcePermission &&
-                   lhs.DeviceRefCount == rhs.DeviceRefCount &&
-                   lhs.IpcRefCount == rhs.IpcRefCount;
+            _blockTree.Remove(block);
+
+            previousBlock.AddPages(block.PagesCount);
+
+            block = previousBlock;
         }
 
-        public KMemoryBlock FindBlock(ulong address)
+        if (nextBlock != null && BlockStateEquals(block, nextBlock))
         {
-            return _blockTree.GetNodeByKey(address);
+            _blockTree.Remove(nextBlock);
+
+            block.AddPages(nextBlock.PagesCount);
         }
+
+        return block;
+    }
+
+    private static bool BlockStateEquals(KMemoryBlock lhs, KMemoryBlock rhs)
+    {
+        return lhs.State == rhs.State &&
+               lhs.Permission == rhs.Permission &&
+               lhs.Attribute == rhs.Attribute &&
+               lhs.SourcePermission == rhs.SourcePermission &&
+               lhs.DeviceRefCount == rhs.DeviceRefCount &&
+               lhs.IpcRefCount == rhs.IpcRefCount;
+    }
+
+    public KMemoryBlock FindBlock(ulong address)
+    {
+        return _blockTree.GetNodeByKey(address);
     }
 }

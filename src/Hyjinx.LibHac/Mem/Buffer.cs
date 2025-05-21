@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
@@ -47,7 +47,7 @@ public struct Buffer : IEquatable<Buffer>
     /// from <paramref name="start"/> to the end of the instance.</para>
     /// <para> The <see cref="BufferSegment"/> must not be accessed after this parent <see cref="Buffer"/> is deallocated.</para></returns>
     internal BufferSegment GetSegment(int start) => new BufferSegment(_memory.Slice(start));
-    
+
     /// <summary>
     /// Forms a <see cref="BufferSegment"/> out of the current <see cref="Buffer"/> starting at a specified index for a specified length.
     /// </summary>

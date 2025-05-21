@@ -1,11 +1,11 @@
-﻿using System;
+using LibHac.Common;
+using LibHac.Fs;
+using LibHac.Util;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.Common;
-using LibHac.Fs;
-using LibHac.Util;
 
 namespace LibHac.Tools.FsSystem.Save;
 
@@ -42,7 +42,8 @@ internal class SaveFsList<T> where T : struct
 
         while (index > 0)
         {
-            if (index > capacity) throw new IndexOutOfRangeException("Save entry index out of range");
+            if (index > capacity)
+                throw new IndexOutOfRangeException("Save entry index out of range");
 
             ReadEntry(index, out entry);
 
@@ -237,8 +238,10 @@ internal class SaveFsList<T> where T : struct
         int index = GetIndexFromKey(ref oldKey).Index;
         int newIndex = GetIndexFromKey(ref newKey).Index;
 
-        if (index == -1) throw new KeyNotFoundException("Old key was not found.");
-        if (newIndex != -1) throw new KeyNotFoundException("New key already exists.");
+        if (index == -1)
+            throw new KeyNotFoundException("Old key was not found.");
+        if (newIndex != -1)
+            throw new KeyNotFoundException("New key already exists.");
 
         Span<byte> entryBytes = stackalloc byte[_sizeOfEntry];
         Span<byte> name = entryBytes.Slice(4, MaxNameLength);

@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public enum BusType : long
 {
-    public enum BusType : long
-    {
-        LeftJoyRail = 0,
-        RightJoyRail = 1,
-        InternalBus = 2,
-    }
+    LeftJoyRail = 0,
+    RightJoyRail = 1,
+    InternalBus = 2,
 }

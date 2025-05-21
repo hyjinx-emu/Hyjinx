@@ -1,20 +1,19 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class PostfixQualifiedType : ParentNode
 {
-    public class PostfixQualifiedType : ParentNode
+    private readonly string _postfixQualifier;
+
+    public PostfixQualifiedType(string postfixQualifier, BaseNode type) : base(NodeType.PostfixQualifiedType, type)
     {
-        private readonly string _postfixQualifier;
+        _postfixQualifier = postfixQualifier;
+    }
 
-        public PostfixQualifiedType(string postfixQualifier, BaseNode type) : base(NodeType.PostfixQualifiedType, type)
-        {
-            _postfixQualifier = postfixQualifier;
-        }
-
-        public override void PrintLeft(TextWriter writer)
-        {
-            Child.Print(writer);
-            writer.Write(_postfixQualifier);
-        }
+    public override void PrintLeft(TextWriter writer)
+    {
+        Child.Print(writer);
+        writer.Write(_postfixQualifier);
     }
 }

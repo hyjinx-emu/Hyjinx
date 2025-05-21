@@ -1,7 +1,7 @@
-﻿using System;
+using LibHac.Common;
+using System;
 using System.Diagnostics;
 using System.Security.Cryptography;
-using LibHac.Common;
 
 namespace LibHac.Crypto.Impl;
 

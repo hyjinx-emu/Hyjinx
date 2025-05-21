@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Storage.Sf;
 using LibHac.Os;
@@ -49,82 +49,89 @@ internal class SdCardDeviceOperator : IStorageDeviceOperator
 
         using var scopedLock = new UniqueLockRef<SdkMutexType>();
         Result res = _storageDevice.Get.Lock(ref scopedLock.Ref());
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Port port = _storageDevice.Get.GetPort();
 
         switch (operation)
         {
             case SdCardOperationIdValue.GetSpeedMode:
-            {
-                if (buffer.Size < sizeof(SpeedMode))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < sizeof(SpeedMode))
+                        return ResultFs.InvalidArgument.Log();
 
-                res = GetFsResult(port, _sdmmc.GetDeviceSpeedMode(out buffer.As<SpeedMode>(), port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, _sdmmc.GetDeviceSpeedMode(out buffer.As<SpeedMode>(), port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                bytesWritten = sizeof(SpeedMode);
-                return Result.Success;
-            }
+                    bytesWritten = sizeof(SpeedMode);
+                    return Result.Success;
+                }
             case SdCardOperationIdValue.GetCid:
-            {
-                if (buffer.Size < DeviceCidSize)
-                    return ResultFs.InvalidSize.Log();
+                {
+                    if (buffer.Size < DeviceCidSize)
+                        return ResultFs.InvalidSize.Log();
 
-                res = GetFsResult(port, _sdmmc.GetDeviceCid(buffer.Buffer.Slice(0, DeviceCidSize), port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, _sdmmc.GetDeviceCid(buffer.Buffer.Slice(0, DeviceCidSize), port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                bytesWritten = DeviceCidSize;
-                return Result.Success;
-            }
+                    bytesWritten = DeviceCidSize;
+                    return Result.Success;
+                }
             case SdCardOperationIdValue.GetUserAreaNumSectors:
-            {
-                if (buffer.Size < sizeof(uint))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < sizeof(uint))
+                        return ResultFs.InvalidArgument.Log();
 
-                res = GetFsResult(port, _sdmmc.GetDeviceMemoryCapacity(out buffer.As<uint>(), port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, _sdmmc.GetDeviceMemoryCapacity(out buffer.As<uint>(), port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                bytesWritten = sizeof(uint);
-                return Result.Success;
-            }
+                    bytesWritten = sizeof(uint);
+                    return Result.Success;
+                }
             case SdCardOperationIdValue.GetUserAreaSize:
-            {
-                if (buffer.Size < sizeof(long))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < sizeof(long))
+                        return ResultFs.InvalidArgument.Log();
 
-                res = GetFsResult(port, _sdmmc.GetDeviceMemoryCapacity(out uint numSectors, port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, _sdmmc.GetDeviceMemoryCapacity(out uint numSectors, port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                buffer.As<long>() = numSectors * SectorSize;
-                bytesWritten = sizeof(long);
+                    buffer.As<long>() = numSectors * SectorSize;
+                    bytesWritten = sizeof(long);
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             case SdCardOperationIdValue.GetProtectedAreaNumSectors:
-            {
-                if (buffer.Size < sizeof(uint))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < sizeof(uint))
+                        return ResultFs.InvalidArgument.Log();
 
-                res = GetFsResult(port, _sdmmc.GetSdCardProtectedAreaCapacity(out buffer.As<uint>(), port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, _sdmmc.GetSdCardProtectedAreaCapacity(out buffer.As<uint>(), port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                bytesWritten = sizeof(uint);
-                return Result.Success;
-            }
+                    bytesWritten = sizeof(uint);
+                    return Result.Success;
+                }
             case SdCardOperationIdValue.GetProtectedAreaSize:
-            {
-                if (buffer.Size < sizeof(long))
-                    return ResultFs.InvalidArgument.Log();
+                {
+                    if (buffer.Size < sizeof(long))
+                        return ResultFs.InvalidArgument.Log();
 
-                res = GetFsResult(port, _sdmmc.GetSdCardProtectedAreaCapacity(out uint numSectors, port));
-                if (res.IsFailure()) return res.Miss();
+                    res = GetFsResult(port, _sdmmc.GetSdCardProtectedAreaCapacity(out uint numSectors, port));
+                    if (res.IsFailure())
+                        return res.Miss();
 
-                buffer.As<long>() = numSectors * SectorSize;
-                bytesWritten = sizeof(long);
+                    buffer.As<long>() = numSectors * SectorSize;
+                    bytesWritten = sizeof(long);
 
-                return Result.Success;
-            }
+                    return Result.Success;
+                }
             default:
                 return ResultFs.InvalidArgument.Log();
         }

@@ -1,14 +1,13 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Am.AppletAE
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE;
+
+[Flags]
+enum LibraryAppletMode : uint
 {
-    [Flags]
-    enum LibraryAppletMode : uint
-    {
-        AllForeground,
-        PartialForeground,
-        NoUi,
-        PartialForegroundWithIndirectDisplay,
-        AllForegroundInitiallyHidden,
-    }
+    AllForeground,
+    PartialForeground,
+    NoUi,
+    PartialForegroundWithIndirectDisplay,
+    AllForegroundInitiallyHidden,
 }

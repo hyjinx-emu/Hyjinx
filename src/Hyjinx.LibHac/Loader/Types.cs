@@ -1,6 +1,6 @@
-﻿using System;
 using LibHac.Common.FixedArrays;
 using LibHac.Ncm;
+using System;
 
 #pragma warning disable 169 // Unused private fields
 

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace LibHac.Bcat.Impl.Service.Core;
 
@@ -98,7 +98,8 @@ internal class DeliveryCacheFileMetaAccessor
 
                 // Verify the header value
                 res = fs.ReadFile(out long bytesRead, handle, 0, SpanHelpers.AsByteSpan(ref header));
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 if (bytesRead != sizeof(int) || header != MetaFileHeaderValue)
                     return ResultBcat.InvalidDeliveryCacheStorageFile.Log();
@@ -106,7 +107,8 @@ internal class DeliveryCacheFileMetaAccessor
                 // Read all the file entries
                 Span<byte> buffer = MemoryMarshal.Cast<DeliveryCacheFileMetaEntry, byte>(Entries);
                 res = fs.ReadFile(out bytesRead, handle, 4, buffer);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 Count = (int)((uint)bytesRead / Unsafe.SizeOf<DeliveryCacheFileMetaEntry>());
 

@@ -1,49 +1,48 @@
-using OpenTK.Graphics.OpenGL;
 using Hyjinx.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL;
 using SPB.Graphics;
 using SPB.Graphics.OpenGL;
 using SPB.Platform;
 using SPB.Windowing;
 
-namespace Hyjinx.Ava.UI.Renderer
+namespace Hyjinx.Ava.UI.Renderer;
+
+class SPBOpenGLContext : IOpenGLContext
 {
-    class SPBOpenGLContext : IOpenGLContext
+    private readonly OpenGLContextBase _context;
+    private readonly NativeWindowBase _window;
+
+    private SPBOpenGLContext(OpenGLContextBase context, NativeWindowBase window)
     {
-        private readonly OpenGLContextBase _context;
-        private readonly NativeWindowBase _window;
+        _context = context;
+        _window = window;
+    }
 
-        private SPBOpenGLContext(OpenGLContextBase context, NativeWindowBase window)
-        {
-            _context = context;
-            _window = window;
-        }
+    public void Dispose()
+    {
+        _context.Dispose();
+        _window.Dispose();
+    }
 
-        public void Dispose()
-        {
-            _context.Dispose();
-            _window.Dispose();
-        }
+    public void MakeCurrent()
+    {
+        _context.MakeCurrent(_window);
+    }
 
-        public void MakeCurrent()
-        {
-            _context.MakeCurrent(_window);
-        }
+    public bool HasContext() => _context.IsCurrent;
 
-        public bool HasContext() => _context.IsCurrent;
+    public static SPBOpenGLContext CreateBackgroundContext(OpenGLContextBase sharedContext)
+    {
+        OpenGLContextBase context = PlatformHelper.CreateOpenGLContext(FramebufferFormat.Default, 3, 3, OpenGLContextFlags.Compat, true, sharedContext);
+        NativeWindowBase window = PlatformHelper.CreateOpenGLWindow(FramebufferFormat.Default, 0, 0, 100, 100);
 
-        public static SPBOpenGLContext CreateBackgroundContext(OpenGLContextBase sharedContext)
-        {
-            OpenGLContextBase context = PlatformHelper.CreateOpenGLContext(FramebufferFormat.Default, 3, 3, OpenGLContextFlags.Compat, true, sharedContext);
-            NativeWindowBase window = PlatformHelper.CreateOpenGLWindow(FramebufferFormat.Default, 0, 0, 100, 100);
+        context.Initialize(window);
+        context.MakeCurrent(window);
 
-            context.Initialize(window);
-            context.MakeCurrent(window);
+        GL.LoadBindings(new OpenTKBindingsContext(context.GetProcAddress));
 
-            GL.LoadBindings(new OpenTKBindingsContext(context.GetProcAddress));
+        context.MakeCurrent(null);
 
-            context.MakeCurrent(null);
-
-            return new SPBOpenGLContext(context, window);
-        }
+        return new SPBOpenGLContext(context, window);
     }
 }

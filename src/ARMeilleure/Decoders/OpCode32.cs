@@ -1,34 +1,33 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+class OpCode32 : OpCode
 {
-    class OpCode32 : OpCode
+    public Condition Cond { get; protected set; }
+
+    public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCode32(inst, address, opCode);
+
+    public OpCode32(InstDescriptor inst, ulong address, int opCode) : base(inst, address, opCode)
     {
-        public Condition Cond { get; protected set; }
+        RegisterSize = RegisterSize.Int32;
 
-        public new static OpCode Create(InstDescriptor inst, ulong address, int opCode) => new OpCode32(inst, address, opCode);
+        Cond = (Condition)((uint)opCode >> 28);
+    }
 
-        public OpCode32(InstDescriptor inst, ulong address, int opCode) : base(inst, address, opCode)
+    public bool IsThumb { get; protected init; } = false;
+
+    public uint GetPc()
+    {
+        // Due to backwards compatibility and legacy behavior of ARMv4 CPUs pipeline,
+        // the PC actually points 2 instructions ahead.
+        if (IsThumb)
         {
-            RegisterSize = RegisterSize.Int32;
-
-            Cond = (Condition)((uint)opCode >> 28);
+            // PC is ahead by 4 in thumb mode whether or not the current instruction
+            // is 16 or 32 bit.
+            return (uint)Address + 4u;
         }
-
-        public bool IsThumb { get; protected init; } = false;
-
-        public uint GetPc()
+        else
         {
-            // Due to backwards compatibility and legacy behavior of ARMv4 CPUs pipeline,
-            // the PC actually points 2 instructions ahead.
-            if (IsThumb)
-            {
-                // PC is ahead by 4 in thumb mode whether or not the current instruction
-                // is 16 or 32 bit.
-                return (uint)Address + 4u;
-            }
-            else
-            {
-                return (uint)Address + 8u;
-            }
+            return (uint)Address + 8u;
         }
     }
 }

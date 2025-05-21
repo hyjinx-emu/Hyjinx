@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Kernel.Memory
+namespace Hyjinx.HLE.HOS.Kernel.Memory;
+
+enum MemoryFillValue : byte
 {
-    enum MemoryFillValue : byte
-    {
-        Zero = 0,
-        Stack = 0x58,
-        Ipc = 0x59,
-        Heap = 0x5A,
-    }
+    Zero = 0,
+    Stack = 0x58,
+    Ipc = 0x59,
+    Heap = 0x5A,
 }

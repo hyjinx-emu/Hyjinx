@@ -1,11 +1,10 @@
-namespace Hyjinx.Horizon.Common
+namespace Hyjinx.Horizon.Common;
+
+public interface IThreadContext
 {
-    public interface IThreadContext
-    {
-        bool Running { get; }
+    bool Running { get; }
 
-        ulong TlsAddress { get; }
+    ulong TlsAddress { get; }
 
-        ulong GetX(int index);
-    }
+    ulong GetX(int index);
 }

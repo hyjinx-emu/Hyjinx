@@ -1,14 +1,13 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Settings.System
+namespace Hyjinx.Horizon.Sdk.Settings.System;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x14, Pack = 0x1)]
+struct HomeMenuScheme
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x14, Pack = 0x1)]
-    struct HomeMenuScheme
-    {
-        public uint Main;
-        public uint Back;
-        public uint Sub;
-        public uint Bezel;
-        public uint Extra;
-    }
+    public uint Main;
+    public uint Back;
+    public uint Sub;
+    public uint Bezel;
+    public uint Extra;
 }

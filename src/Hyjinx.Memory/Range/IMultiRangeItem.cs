@@ -1,25 +1,24 @@
-namespace Hyjinx.Memory.Range
+namespace Hyjinx.Memory.Range;
+
+public interface IMultiRangeItem
 {
-    public interface IMultiRangeItem
+    MultiRange Range { get; }
+
+    ulong BaseAddress
     {
-        MultiRange Range { get; }
-
-        ulong BaseAddress
+        get
         {
-            get
+            for (int index = 0; index < Range.Count; index++)
             {
-                for (int index = 0; index < Range.Count; index++)
+                MemoryRange subRange = Range.GetSubRange(index);
+
+                if (!MemoryRange.IsInvalid(ref subRange))
                 {
-                    MemoryRange subRange = Range.GetSubRange(index);
-
-                    if (!MemoryRange.IsInvalid(ref subRange))
-                    {
-                        return subRange.Address;
-                    }
+                    return subRange.Address;
                 }
-
-                return MemoryRange.InvalidAddress;
             }
+
+            return MemoryRange.InvalidAddress;
         }
     }
 }

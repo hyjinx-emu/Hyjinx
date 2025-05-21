@@ -1,9 +1,8 @@
-namespace Hyjinx.UI.Common.Models.Github
+namespace Hyjinx.UI.Common.Models.Github;
+
+public class GithubReleaseAssetJsonResponse
 {
-    public class GithubReleaseAssetJsonResponse
-    {
-        public string Name { get; set; }
-        public string State { get; set; }
-        public string BrowserDownloadUrl { get; set; }
-    }
+    public string Name { get; set; }
+    public string State { get; set; }
+    public string BrowserDownloadUrl { get; set; }
 }

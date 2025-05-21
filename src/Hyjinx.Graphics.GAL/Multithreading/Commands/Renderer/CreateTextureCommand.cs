@@ -1,23 +1,22 @@
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 using Hyjinx.Graphics.GAL.Multithreading.Resources;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer;
+
+struct CreateTextureCommand : IGALCommand, IGALCommand<CreateTextureCommand>
 {
-    struct CreateTextureCommand : IGALCommand, IGALCommand<CreateTextureCommand>
+    public readonly CommandType CommandType => CommandType.CreateTexture;
+    private TableRef<ThreadedTexture> _texture;
+    private TextureCreateInfo _info;
+
+    public void Set(TableRef<ThreadedTexture> texture, TextureCreateInfo info)
     {
-        public readonly CommandType CommandType => CommandType.CreateTexture;
-        private TableRef<ThreadedTexture> _texture;
-        private TextureCreateInfo _info;
+        _texture = texture;
+        _info = info;
+    }
 
-        public void Set(TableRef<ThreadedTexture> texture, TextureCreateInfo info)
-        {
-            _texture = texture;
-            _info = info;
-        }
-
-        public static void Run(ref CreateTextureCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            command._texture.Get(threaded).Base = renderer.CreateTexture(command._info);
-        }
+    public static void Run(ref CreateTextureCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        command._texture.Get(threaded).Base = renderer.CreateTexture(command._info);
     }
 }

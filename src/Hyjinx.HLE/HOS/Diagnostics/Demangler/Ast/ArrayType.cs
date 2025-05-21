@@ -1,59 +1,58 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class ArrayType : BaseNode
 {
-    public class ArrayType : BaseNode
+    private readonly BaseNode _base;
+    private readonly BaseNode _dimensionExpression;
+    private readonly string _dimensionString;
+
+    public ArrayType(BaseNode Base, BaseNode dimensionExpression = null) : base(NodeType.ArrayType)
     {
-        private readonly BaseNode _base;
-        private readonly BaseNode _dimensionExpression;
-        private readonly string _dimensionString;
+        _base = Base;
+        _dimensionExpression = dimensionExpression;
+    }
 
-        public ArrayType(BaseNode Base, BaseNode dimensionExpression = null) : base(NodeType.ArrayType)
+    public ArrayType(BaseNode Base, string dimensionString) : base(NodeType.ArrayType)
+    {
+        _base = Base;
+        _dimensionString = dimensionString;
+    }
+
+    public override bool HasRightPart()
+    {
+        return true;
+    }
+
+    public override bool IsArray()
+    {
+        return true;
+    }
+
+    public override void PrintLeft(TextWriter writer)
+    {
+        _base.PrintLeft(writer);
+    }
+
+    public override void PrintRight(TextWriter writer)
+    {
+        // FIXME: detect if previous char was a ].
+        writer.Write(" ");
+
+        writer.Write("[");
+
+        if (_dimensionString != null)
         {
-            _base = Base;
-            _dimensionExpression = dimensionExpression;
+            writer.Write(_dimensionString);
+        }
+        else
+        {
+            _dimensionExpression?.Print(writer);
         }
 
-        public ArrayType(BaseNode Base, string dimensionString) : base(NodeType.ArrayType)
-        {
-            _base = Base;
-            _dimensionString = dimensionString;
-        }
+        writer.Write("]");
 
-        public override bool HasRightPart()
-        {
-            return true;
-        }
-
-        public override bool IsArray()
-        {
-            return true;
-        }
-
-        public override void PrintLeft(TextWriter writer)
-        {
-            _base.PrintLeft(writer);
-        }
-
-        public override void PrintRight(TextWriter writer)
-        {
-            // FIXME: detect if previous char was a ].
-            writer.Write(" ");
-
-            writer.Write("[");
-
-            if (_dimensionString != null)
-            {
-                writer.Write(_dimensionString);
-            }
-            else
-            {
-                _dimensionExpression?.Print(writer);
-            }
-
-            writer.Write("]");
-
-            _base.PrintRight(writer);
-        }
+        _base.PrintRight(writer);
     }
 }

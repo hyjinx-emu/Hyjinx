@@ -1,8 +1,8 @@
-﻿using System;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem.Impl;
 using LibHac.Os;
+using System;
 using Buffer = LibHac.Mem.Buffer;
 
 // Todo: Remove warning suppressions after implementing
@@ -102,7 +102,8 @@ public class BlockCacheBufferedStorage : IStorage
         Assert.SdkGreater(maxCacheEntries, 0);
 
         Result res = _cacheManager.Initialize(bufferManager, maxCacheEntries);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _mutex = mutex;
         _storageData = data;

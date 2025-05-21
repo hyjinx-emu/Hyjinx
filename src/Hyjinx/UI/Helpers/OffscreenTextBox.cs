@@ -3,40 +3,39 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using System;
 
-namespace Hyjinx.Ava.UI.Helpers
+namespace Hyjinx.Ava.UI.Helpers;
+
+public class OffscreenTextBox : TextBox
 {
-    public class OffscreenTextBox : TextBox
+    protected override Type StyleKeyOverride => typeof(TextBox);
+
+    public static RoutedEvent<KeyEventArgs> GetKeyDownRoutedEvent()
     {
-        protected override Type StyleKeyOverride => typeof(TextBox);
+        return KeyDownEvent;
+    }
 
-        public static RoutedEvent<KeyEventArgs> GetKeyDownRoutedEvent()
-        {
-            return KeyDownEvent;
-        }
+    public static RoutedEvent<KeyEventArgs> GetKeyUpRoutedEvent()
+    {
+        return KeyUpEvent;
+    }
 
-        public static RoutedEvent<KeyEventArgs> GetKeyUpRoutedEvent()
-        {
-            return KeyUpEvent;
-        }
+    public void SendKeyDownEvent(KeyEventArgs keyEvent)
+    {
+        OnKeyDown(keyEvent);
+    }
 
-        public void SendKeyDownEvent(KeyEventArgs keyEvent)
-        {
-            OnKeyDown(keyEvent);
-        }
+    public void SendKeyUpEvent(KeyEventArgs keyEvent)
+    {
+        OnKeyUp(keyEvent);
+    }
 
-        public void SendKeyUpEvent(KeyEventArgs keyEvent)
+    public void SendText(string text)
+    {
+        OnTextInput(new TextInputEventArgs
         {
-            OnKeyUp(keyEvent);
-        }
-
-        public void SendText(string text)
-        {
-            OnTextInput(new TextInputEventArgs
-            {
-                Text = text,
-                Source = this,
-                RoutedEvent = TextInputEvent,
-            });
-        }
+            Text = text,
+            Source = this,
+            RoutedEvent = TextInputEvent,
+        });
     }
 }

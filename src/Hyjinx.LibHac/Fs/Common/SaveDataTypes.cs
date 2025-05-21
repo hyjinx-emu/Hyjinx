@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.FsSrv.Impl;
 using LibHac.Ncm;
 using LibHac.Util;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 // ReSharper disable once CheckNamespace
 namespace LibHac.Fs;
@@ -197,15 +197,20 @@ public struct SaveDataAttribute : IEquatable<SaveDataAttribute>, IComparable<Sav
     public readonly int CompareTo(SaveDataAttribute other)
     {
         int titleIdComparison = ProgramId.CompareTo(other.ProgramId);
-        if (titleIdComparison != 0) return titleIdComparison;
+        if (titleIdComparison != 0)
+            return titleIdComparison;
         int typeComparison = ((int)Type).CompareTo((int)other.Type);
-        if (typeComparison != 0) return typeComparison;
+        if (typeComparison != 0)
+            return typeComparison;
         int userIdComparison = UserId.CompareTo(other.UserId);
-        if (userIdComparison != 0) return userIdComparison;
+        if (userIdComparison != 0)
+            return userIdComparison;
         int saveDataIdComparison = StaticSaveDataId.CompareTo(other.StaticSaveDataId);
-        if (saveDataIdComparison != 0) return saveDataIdComparison;
+        if (saveDataIdComparison != 0)
+            return saveDataIdComparison;
         int indexComparison = Index.CompareTo(other.Index);
-        if (indexComparison != 0) return indexComparison;
+        if (indexComparison != 0)
+            return indexComparison;
         return ((int)Rank).CompareTo((int)other.Rank);
     }
 }
@@ -386,19 +391,24 @@ internal static class SaveDataTypesValidity
     public static bool IsValid(in SaveDataCreationInfo2 creationInfo)
     {
         foreach (byte b in creationInfo.Reserved1.ItemsRo)
-            if (b != 0) return false;
+            if (b != 0)
+                return false;
 
         foreach (byte b in creationInfo.Reserved2.ItemsRo)
-            if (b != 0) return false;
+            if (b != 0)
+                return false;
 
         foreach (byte b in creationInfo.Reserved3.ItemsRo)
-            if (b != 0) return false;
+            if (b != 0)
+                return false;
 
         foreach (byte b in creationInfo.Reserved4.ItemsRo)
-            if (b != 0) return false;
+            if (b != 0)
+                return false;
 
         foreach (byte b in creationInfo.Attribute.Reserved.ItemsRo)
-            if (b != 0) return false;
+            if (b != 0)
+                return false;
 
         return IsValid(in creationInfo.Attribute)
                && creationInfo.Size >= 0

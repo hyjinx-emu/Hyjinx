@@ -1,26 +1,25 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class NestedName : ParentNode
 {
-    public class NestedName : ParentNode
+    private readonly BaseNode _name;
+
+    public NestedName(BaseNode name, BaseNode type) : base(NodeType.NestedName, type)
     {
-        private readonly BaseNode _name;
+        _name = name;
+    }
 
-        public NestedName(BaseNode name, BaseNode type) : base(NodeType.NestedName, type)
-        {
-            _name = name;
-        }
+    public override string GetName()
+    {
+        return _name.GetName();
+    }
 
-        public override string GetName()
-        {
-            return _name.GetName();
-        }
-
-        public override void PrintLeft(TextWriter writer)
-        {
-            Child.Print(writer);
-            writer.Write("::");
-            _name.Print(writer);
-        }
+    public override void PrintLeft(TextWriter writer)
+    {
+        Child.Print(writer);
+        writer.Write("::");
+        _name.Print(writer);
     }
 }

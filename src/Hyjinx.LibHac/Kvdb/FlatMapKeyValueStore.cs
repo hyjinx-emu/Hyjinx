@@ -1,10 +1,10 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Buffer = LibHac.Mem.Buffer;
 
 namespace LibHac.Kvdb;
@@ -53,7 +53,8 @@ public class FlatMapKeyValueStore<TKey> : IDisposable where TKey : unmanaged, IE
     {
         // The root path must be an existing directory
         Result res = fsClient.GetEntryType(out DirectoryEntryType rootEntryType, rootPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (rootEntryType == DirectoryEntryType.File)
             return ResultFs.PathNotFound.Log();
@@ -62,7 +63,8 @@ public class FlatMapKeyValueStore<TKey> : IDisposable where TKey : unmanaged, IE
         sb.Append(rootPath).Append(ArchiveFileName);
 
         res = _index.Initialize(capacity, memoryResource);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         _fsClient = fsClient;
         _memoryResource = memoryResource;
@@ -101,7 +103,8 @@ public class FlatMapKeyValueStore<TKey> : IDisposable where TKey : unmanaged, IE
             }
 
             res = LoadFrom(buffer.Get());
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -120,7 +123,8 @@ public class FlatMapKeyValueStore<TKey> : IDisposable where TKey : unmanaged, IE
         // Create a buffer to hold the archive.
         var buffer = new AutoBuffer();
         Result res = buffer.Initialize(CalculateArchiveSize(), _memoryResourceForAutoBuffers);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         try
         {
@@ -239,18 +243,22 @@ public class FlatMapKeyValueStore<TKey> : IDisposable where TKey : unmanaged, IE
     private Result ReadArchive(ref AutoBuffer buffer)
     {
         Result res = _fsClient.OpenFile(out FileHandle file, new U8Span(_archivePath.Get()), OpenMode.Read);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         try
         {
             res = _fsClient.GetFileSize(out long archiveSize, file);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = buffer.Initialize(archiveSize, _memoryResourceForAutoBuffers);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = _fsClient.ReadFile(file, 0, buffer.Get());
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -271,13 +279,15 @@ public class FlatMapKeyValueStore<TKey> : IDisposable where TKey : unmanaged, IE
         var reader = new KeyValueArchiveBufferReader(buffer);
 
         Result res = reader.ReadEntryCount(out int entryCount);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         for (int i = 0; i < entryCount; i++)
         {
             // Get size of key/value.
             res = reader.GetKeyValueSize(out _, out int valueSize);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             // Allocate memory for value.
             Buffer newValue = _memoryResource.Allocate(valueSize, Alignment);
@@ -291,10 +301,12 @@ public class FlatMapKeyValueStore<TKey> : IDisposable where TKey : unmanaged, IE
                 Unsafe.SkipInit(out TKey key);
 
                 res = reader.ReadKeyValue(SpanHelpers.AsByteSpan(ref key), newValue.Span);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 res = _index.AppendUnsafe(in key, newValue);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 success = true;
             }
@@ -332,16 +344,19 @@ public class FlatMapKeyValueStore<TKey> : IDisposable where TKey : unmanaged, IE
 
         // Create new archive.
         Result res = _fsClient.CreateFile(path, buffer.Length);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Write data to the archive.
         res = _fsClient.OpenFile(out FileHandle file, path, OpenMode.Write);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         try
         {
             res = _fsClient.WriteFile(file, 0, buffer, WriteOption.Flush);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
         finally
         {

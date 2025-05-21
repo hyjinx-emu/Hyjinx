@@ -1,6 +1,5 @@
 using System;
 
-namespace Hyjinx.Graphics.GAL
-{
-    public interface ISampler : IDisposable { }
-}
+namespace Hyjinx.Graphics.GAL;
+
+public interface ISampler : IDisposable { }

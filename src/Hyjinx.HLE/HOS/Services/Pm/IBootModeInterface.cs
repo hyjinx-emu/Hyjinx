@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Pm
+namespace Hyjinx.HLE.HOS.Services.Pm;
+
+[Service("pm:bm")]
+class IBootModeInterface : IpcService<IBootModeInterface>
 {
-    [Service("pm:bm")]
-    class IBootModeInterface : IpcService<IBootModeInterface>
-    {
-        public IBootModeInterface(ServiceCtx context) { }
-    }
+    public IBootModeInterface(ServiceCtx context) { }
 }

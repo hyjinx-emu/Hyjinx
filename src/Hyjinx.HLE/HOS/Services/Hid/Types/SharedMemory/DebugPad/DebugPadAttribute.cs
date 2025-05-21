@@ -1,11 +1,10 @@
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad
+namespace Hyjinx.HLE.HOS.Services.Hid.Types.SharedMemory.DebugPad;
+
+[Flags]
+enum DebugPadAttribute : uint
 {
-    [Flags]
-    enum DebugPadAttribute : uint
-    {
-        None = 0,
-        Connected = 1 << 0,
-    }
+    None = 0,
+    Connected = 1 << 0,
 }

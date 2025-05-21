@@ -1,8 +1,7 @@
-namespace Hyjinx.Horizon.Sdk.Audio.Detail
+namespace Hyjinx.Horizon.Sdk.Audio.Detail;
+
+enum AudioInProtocolName : byte
 {
-    enum AudioInProtocolName : byte
-    {
-        DeviceIn = 0,
-        UacIn = 1,
-    }
+    DeviceIn = 0,
+    UacIn = 1,
 }

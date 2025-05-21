@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.FsSystem;
+using System;
+using System.IO;
 
 namespace LibHac.FsSystem;
 
@@ -35,7 +35,8 @@ public class LocalFile : IFile
         bytesRead = 0;
 
         Result res = DryRead(out long toRead, offset, destination.Length, in option, Mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return File.Read(out bytesRead, offset, destination.Slice(0, (int)toRead), option);
     }
@@ -43,7 +44,8 @@ public class LocalFile : IFile
     protected override Result DoWrite(long offset, ReadOnlySpan<byte> source, in WriteOption option)
     {
         Result res = DryWrite(out _, offset, source.Length, in option, Mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return File.Write(offset, source, option);
     }

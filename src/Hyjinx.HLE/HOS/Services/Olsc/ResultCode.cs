@@ -1,13 +1,12 @@
-namespace Hyjinx.HLE.HOS.Services.Olsc
+namespace Hyjinx.HLE.HOS.Services.Olsc;
+
+enum ResultCode
 {
-    enum ResultCode
-    {
-        ModuleId = 179,
-        ErrorCodeShift = 9,
+    ModuleId = 179,
+    ErrorCodeShift = 9,
 
-        Success = 0,
+    Success = 0,
 
-        NullArgument = (100 << ErrorCodeShift) | ModuleId,
-        NotInitialized = (101 << ErrorCodeShift) | ModuleId,
-    }
+    NullArgument = (100 << ErrorCodeShift) | ModuleId,
+    NotInitialized = (101 << ErrorCodeShift) | ModuleId,
 }

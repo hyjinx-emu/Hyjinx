@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvHostChannel;
+
+enum NvChannelPriority : uint
 {
-    enum NvChannelPriority : uint
-    {
-        Low = 50,
-        Medium = 100,
-        High = 150,
-    }
+    Low = 50,
+    Medium = 100,
+    High = 150,
 }

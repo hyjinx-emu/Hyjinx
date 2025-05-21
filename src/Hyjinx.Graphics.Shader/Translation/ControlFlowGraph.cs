@@ -1,176 +1,175 @@
 using Hyjinx.Graphics.Shader.IntermediateRepresentation;
 using System.Collections.Generic;
 
-namespace Hyjinx.Graphics.Shader.Translation
+namespace Hyjinx.Graphics.Shader.Translation;
+
+class ControlFlowGraph
 {
-    class ControlFlowGraph
+    public BasicBlock[] Blocks { get; }
+    public BasicBlock[] PostOrderBlocks { get; }
+    public int[] PostOrderMap { get; }
+
+    public ControlFlowGraph(BasicBlock[] blocks)
     {
-        public BasicBlock[] Blocks { get; }
-        public BasicBlock[] PostOrderBlocks { get; }
-        public int[] PostOrderMap { get; }
+        Blocks = blocks;
 
-        public ControlFlowGraph(BasicBlock[] blocks)
+        HashSet<BasicBlock> visited = new();
+
+        Stack<BasicBlock> blockStack = new();
+
+        List<BasicBlock> postOrderBlocks = new(blocks.Length);
+
+        PostOrderMap = new int[blocks.Length];
+
+        visited.Add(blocks[0]);
+
+        blockStack.Push(blocks[0]);
+
+        while (blockStack.TryPop(out BasicBlock block))
         {
-            Blocks = blocks;
-
-            HashSet<BasicBlock> visited = new();
-
-            Stack<BasicBlock> blockStack = new();
-
-            List<BasicBlock> postOrderBlocks = new(blocks.Length);
-
-            PostOrderMap = new int[blocks.Length];
-
-            visited.Add(blocks[0]);
-
-            blockStack.Push(blocks[0]);
-
-            while (blockStack.TryPop(out BasicBlock block))
+            if (block.Next != null && visited.Add(block.Next))
             {
-                if (block.Next != null && visited.Add(block.Next))
-                {
-                    blockStack.Push(block);
-                    blockStack.Push(block.Next);
-                }
-                else if (block.Branch != null && visited.Add(block.Branch))
-                {
-                    blockStack.Push(block);
-                    blockStack.Push(block.Branch);
-                }
-                else
-                {
-                    PostOrderMap[block.Index] = postOrderBlocks.Count;
-
-                    postOrderBlocks.Add(block);
-                }
+                blockStack.Push(block);
+                blockStack.Push(block.Next);
             }
+            else if (block.Branch != null && visited.Add(block.Branch))
+            {
+                blockStack.Push(block);
+                blockStack.Push(block.Branch);
+            }
+            else
+            {
+                PostOrderMap[block.Index] = postOrderBlocks.Count;
 
-            PostOrderBlocks = postOrderBlocks.ToArray();
+                postOrderBlocks.Add(block);
+            }
         }
 
-        public static ControlFlowGraph Create(Operation[] operations)
+        PostOrderBlocks = postOrderBlocks.ToArray();
+    }
+
+    public static ControlFlowGraph Create(Operation[] operations)
+    {
+        Dictionary<Operand, BasicBlock> labels = new();
+
+        List<BasicBlock> blocks = new();
+
+        BasicBlock currentBlock = null;
+
+        void NextBlock(BasicBlock nextBlock)
         {
-            Dictionary<Operand, BasicBlock> labels = new();
-
-            List<BasicBlock> blocks = new();
-
-            BasicBlock currentBlock = null;
-
-            void NextBlock(BasicBlock nextBlock)
+            if (currentBlock != null && !EndsWithUnconditionalInst(currentBlock.GetLastOp()))
             {
-                if (currentBlock != null && !EndsWithUnconditionalInst(currentBlock.GetLastOp()))
-                {
-                    currentBlock.Next = nextBlock;
-                }
-
-                currentBlock = nextBlock;
+                currentBlock.Next = nextBlock;
             }
 
-            void NewNextBlock()
+            currentBlock = nextBlock;
+        }
+
+        void NewNextBlock()
+        {
+            BasicBlock block = new(blocks.Count);
+
+            blocks.Add(block);
+
+            NextBlock(block);
+        }
+
+        bool needsNewBlock = true;
+
+        for (int index = 0; index < operations.Length; index++)
+        {
+            Operation operation = operations[index];
+
+            if (operation.Inst == Instruction.MarkLabel)
             {
-                BasicBlock block = new(blocks.Count);
+                Operand label = operation.Dest;
 
-                blocks.Add(block);
-
-                NextBlock(block);
-            }
-
-            bool needsNewBlock = true;
-
-            for (int index = 0; index < operations.Length; index++)
-            {
-                Operation operation = operations[index];
-
-                if (operation.Inst == Instruction.MarkLabel)
+                if (labels.TryGetValue(label, out BasicBlock nextBlock))
                 {
-                    Operand label = operation.Dest;
+                    nextBlock.Index = blocks.Count;
 
-                    if (labels.TryGetValue(label, out BasicBlock nextBlock))
-                    {
-                        nextBlock.Index = blocks.Count;
+                    blocks.Add(nextBlock);
 
-                        blocks.Add(nextBlock);
-
-                        NextBlock(nextBlock);
-                    }
-                    else
-                    {
-                        NewNextBlock();
-
-                        labels.Add(label, currentBlock);
-                    }
+                    NextBlock(nextBlock);
                 }
                 else
                 {
-                    if (needsNewBlock)
-                    {
-                        NewNextBlock();
-                    }
+                    NewNextBlock();
 
-                    currentBlock.Operations.AddLast(operation);
+                    labels.Add(label, currentBlock);
                 }
-
-                needsNewBlock = operation.Inst == Instruction.Branch ||
-                                operation.Inst == Instruction.BranchIfTrue ||
-                                operation.Inst == Instruction.BranchIfFalse;
-
+            }
+            else
+            {
                 if (needsNewBlock)
                 {
-                    Operand label = operation.Dest;
-
-                    if (!labels.TryGetValue(label, out BasicBlock branchBlock))
-                    {
-                        branchBlock = new BasicBlock();
-
-                        labels.Add(label, branchBlock);
-                    }
-
-                    currentBlock.Branch = branchBlock;
+                    NewNextBlock();
                 }
+
+                currentBlock.Operations.AddLast(operation);
             }
 
-            // Remove unreachable blocks.
-            bool hasUnreachable;
+            needsNewBlock = operation.Inst == Instruction.Branch ||
+                            operation.Inst == Instruction.BranchIfTrue ||
+                            operation.Inst == Instruction.BranchIfFalse;
 
-            do
+            if (needsNewBlock)
             {
-                hasUnreachable = false;
+                Operand label = operation.Dest;
 
-                for (int blkIndex = 1; blkIndex < blocks.Count; blkIndex++)
+                if (!labels.TryGetValue(label, out BasicBlock branchBlock))
                 {
-                    BasicBlock block = blocks[blkIndex];
+                    branchBlock = new BasicBlock();
 
-                    if (block.Predecessors.Count == 0)
-                    {
-                        block.Next = null;
-                        block.Branch = null;
-                        blocks.RemoveAt(blkIndex--);
-                        hasUnreachable = true;
-                    }
-                    else
-                    {
-                        block.Index = blkIndex;
-                    }
+                    labels.Add(label, branchBlock);
                 }
-            } while (hasUnreachable);
 
-            return new ControlFlowGraph(blocks.ToArray());
+                currentBlock.Branch = branchBlock;
+            }
         }
 
-        private static bool EndsWithUnconditionalInst(INode node)
+        // Remove unreachable blocks.
+        bool hasUnreachable;
+
+        do
         {
-            if (node is Operation operation)
+            hasUnreachable = false;
+
+            for (int blkIndex = 1; blkIndex < blocks.Count; blkIndex++)
             {
-                switch (operation.Inst)
+                BasicBlock block = blocks[blkIndex];
+
+                if (block.Predecessors.Count == 0)
                 {
-                    case Instruction.Branch:
-                    case Instruction.Discard:
-                    case Instruction.Return:
-                        return true;
+                    block.Next = null;
+                    block.Branch = null;
+                    blocks.RemoveAt(blkIndex--);
+                    hasUnreachable = true;
+                }
+                else
+                {
+                    block.Index = blkIndex;
                 }
             }
+        } while (hasUnreachable);
 
-            return false;
+        return new ControlFlowGraph(blocks.ToArray());
+    }
+
+    private static bool EndsWithUnconditionalInst(INode node)
+    {
+        if (node is Operation operation)
+        {
+            switch (operation.Inst)
+            {
+                case Instruction.Branch:
+                case Instruction.Discard:
+                case Instruction.Return:
+                    return true;
+            }
         }
+
+        return false;
     }
 }

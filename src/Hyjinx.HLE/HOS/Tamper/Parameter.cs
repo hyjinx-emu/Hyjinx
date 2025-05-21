@@ -1,12 +1,11 @@
-namespace Hyjinx.HLE.HOS.Tamper
-{
-    class Parameter<T>
-    {
-        public T Value { get; set; }
+namespace Hyjinx.HLE.HOS.Tamper;
 
-        public Parameter(T value)
-        {
-            Value = value;
-        }
+class Parameter<T>
+{
+    public T Value { get; set; }
+
+    public Parameter(T value)
+    {
+        Value = value;
     }
 }

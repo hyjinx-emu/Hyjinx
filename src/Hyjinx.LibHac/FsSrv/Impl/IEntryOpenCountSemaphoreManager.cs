@@ -1,6 +1,6 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.FsSystem;
+using System;
 
 namespace LibHac.FsSrv.Impl;
 

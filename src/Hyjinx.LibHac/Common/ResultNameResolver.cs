@@ -1,10 +1,10 @@
-﻿using System;
+using LibHac.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.Util;
 
 namespace LibHac.Common;
 
@@ -50,7 +50,8 @@ internal partial class ResultNameResolver : Result.IResultNameResolver
         public Dictionary<Result, string> GetDictionary()
         {
             var dict = new Dictionary<Result, string>();
-            if (_data.Length < 8) return dict;
+            if (_data.Length < 8)
+                return dict;
 
             ReadOnlySpan<Element> elements = Elements;
 

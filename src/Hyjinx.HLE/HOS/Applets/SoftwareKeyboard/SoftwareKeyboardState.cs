@@ -1,28 +1,27 @@
-namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard
+namespace Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;
+
+/// <summary>
+/// Identifies the software keyboard state.
+/// </summary>
+enum SoftwareKeyboardState
 {
     /// <summary>
-    /// Identifies the software keyboard state.
+    /// swkbd is uninitialized.
     /// </summary>
-    enum SoftwareKeyboardState
-    {
-        /// <summary>
-        /// swkbd is uninitialized.
-        /// </summary>
-        Uninitialized,
+    Uninitialized,
 
-        /// <summary>
-        /// swkbd is ready to process data.
-        /// </summary>
-        Ready,
+    /// <summary>
+    /// swkbd is ready to process data.
+    /// </summary>
+    Ready,
 
-        /// <summary>
-        /// swkbd is awaiting an interactive reply with a validation status.
-        /// </summary>
-        ValidationPending,
+    /// <summary>
+    /// swkbd is awaiting an interactive reply with a validation status.
+    /// </summary>
+    ValidationPending,
 
-        /// <summary>
-        /// swkbd has completed.
-        /// </summary>
-        Complete,
-    }
+    /// <summary>
+    /// swkbd has completed.
+    /// </summary>
+    Complete,
 }

@@ -1,40 +1,39 @@
 using System.Threading;
 
-namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap
+namespace Hyjinx.HLE.HOS.Services.Nv.NvDrvServices.NvMap;
+
+class NvMapHandle
 {
-    class NvMapHandle
-    {
 #pragma warning disable CS0649 // Field is never assigned to
-        public int Handle;
-        public int Id;
+    public int Handle;
+    public int Id;
 #pragma warning restore CS0649
-        public uint Size;
-        public int Align;
-        public int Kind;
-        public ulong Address;
-        public bool Allocated;
-        public ulong DmaMapAddress;
+    public uint Size;
+    public int Align;
+    public int Kind;
+    public ulong Address;
+    public bool Allocated;
+    public ulong DmaMapAddress;
 
-        private long _dupes;
+    private long _dupes;
 
-        public NvMapHandle()
-        {
-            _dupes = 1;
-        }
+    public NvMapHandle()
+    {
+        _dupes = 1;
+    }
 
-        public NvMapHandle(uint size) : this()
-        {
-            Size = size;
-        }
+    public NvMapHandle(uint size) : this()
+    {
+        Size = size;
+    }
 
-        public void IncrementRefCount()
-        {
-            Interlocked.Increment(ref _dupes);
-        }
+    public void IncrementRefCount()
+    {
+        Interlocked.Increment(ref _dupes);
+    }
 
-        public long DecrementRefCount()
-        {
-            return Interlocked.Decrement(ref _dupes);
-        }
+    public long DecrementRefCount()
+    {
+        return Interlocked.Decrement(ref _dupes);
     }
 }

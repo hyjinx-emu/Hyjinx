@@ -3,117 +3,116 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+class BackgroundResource : IDisposable
 {
-    class BackgroundResource : IDisposable
+    private readonly VulkanRenderer _gd;
+    private Device _device;
+
+    private CommandBufferPool _pool;
+    private PersistentFlushBuffer _flushBuffer;
+
+    public BackgroundResource(VulkanRenderer gd, Device device)
     {
-        private readonly VulkanRenderer _gd;
-        private Device _device;
+        _gd = gd;
+        _device = device;
+    }
 
-        private CommandBufferPool _pool;
-        private PersistentFlushBuffer _flushBuffer;
-
-        public BackgroundResource(VulkanRenderer gd, Device device)
+    public CommandBufferPool GetPool()
+    {
+        if (_pool == null)
         {
-            _gd = gd;
-            _device = device;
+            bool useBackground = _gd.BackgroundQueue.Handle != 0 && _gd.Vendor != Vendor.Amd;
+            Queue queue = useBackground ? _gd.BackgroundQueue : _gd.Queue;
+            object queueLock = useBackground ? _gd.BackgroundQueueLock : _gd.QueueLock;
+
+            lock (queueLock)
+            {
+                _pool = new CommandBufferPool(
+                    _gd.Api,
+                    _device,
+                    queue,
+                    queueLock,
+                    _gd.QueueFamilyIndex,
+                    _gd.IsQualcommProprietary,
+                    isLight: true);
+            }
         }
 
-        public CommandBufferPool GetPool()
-        {
-            if (_pool == null)
-            {
-                bool useBackground = _gd.BackgroundQueue.Handle != 0 && _gd.Vendor != Vendor.Amd;
-                Queue queue = useBackground ? _gd.BackgroundQueue : _gd.Queue;
-                object queueLock = useBackground ? _gd.BackgroundQueueLock : _gd.QueueLock;
+        return _pool;
+    }
 
-                lock (queueLock)
+    public PersistentFlushBuffer GetFlushBuffer()
+    {
+        _flushBuffer ??= new PersistentFlushBuffer(_gd);
+
+        return _flushBuffer;
+    }
+
+    public void Dispose()
+    {
+        _pool?.Dispose();
+        _flushBuffer?.Dispose();
+    }
+}
+
+class BackgroundResources : IDisposable
+{
+    private readonly VulkanRenderer _gd;
+    private Device _device;
+
+    private readonly Dictionary<Thread, BackgroundResource> _resources;
+
+    public BackgroundResources(VulkanRenderer gd, Device device)
+    {
+        _gd = gd;
+        _device = device;
+
+        _resources = new Dictionary<Thread, BackgroundResource>();
+    }
+
+    private void Cleanup()
+    {
+        lock (_resources)
+        {
+            foreach (KeyValuePair<Thread, BackgroundResource> tuple in _resources)
+            {
+                if (!tuple.Key.IsAlive)
                 {
-                    _pool = new CommandBufferPool(
-                        _gd.Api,
-                        _device,
-                        queue,
-                        queueLock,
-                        _gd.QueueFamilyIndex,
-                        _gd.IsQualcommProprietary,
-                        isLight: true);
+                    tuple.Value.Dispose();
+                    _resources.Remove(tuple.Key);
                 }
             }
-
-            return _pool;
-        }
-
-        public PersistentFlushBuffer GetFlushBuffer()
-        {
-            _flushBuffer ??= new PersistentFlushBuffer(_gd);
-
-            return _flushBuffer;
-        }
-
-        public void Dispose()
-        {
-            _pool?.Dispose();
-            _flushBuffer?.Dispose();
         }
     }
 
-    class BackgroundResources : IDisposable
+    public BackgroundResource Get()
     {
-        private readonly VulkanRenderer _gd;
-        private Device _device;
+        Thread thread = Thread.CurrentThread;
 
-        private readonly Dictionary<Thread, BackgroundResource> _resources;
-
-        public BackgroundResources(VulkanRenderer gd, Device device)
+        lock (_resources)
         {
-            _gd = gd;
-            _device = device;
-
-            _resources = new Dictionary<Thread, BackgroundResource>();
-        }
-
-        private void Cleanup()
-        {
-            lock (_resources)
+            if (!_resources.TryGetValue(thread, out BackgroundResource resource))
             {
-                foreach (KeyValuePair<Thread, BackgroundResource> tuple in _resources)
-                {
-                    if (!tuple.Key.IsAlive)
-                    {
-                        tuple.Value.Dispose();
-                        _resources.Remove(tuple.Key);
-                    }
-                }
+                Cleanup();
+
+                resource = new BackgroundResource(_gd, _device);
+
+                _resources[thread] = resource;
             }
+
+            return resource;
         }
+    }
 
-        public BackgroundResource Get()
+    public void Dispose()
+    {
+        lock (_resources)
         {
-            Thread thread = Thread.CurrentThread;
-
-            lock (_resources)
+            foreach (var resource in _resources.Values)
             {
-                if (!_resources.TryGetValue(thread, out BackgroundResource resource))
-                {
-                    Cleanup();
-
-                    resource = new BackgroundResource(_gd, _device);
-
-                    _resources[thread] = resource;
-                }
-
-                return resource;
-            }
-        }
-
-        public void Dispose()
-        {
-            lock (_resources)
-            {
-                foreach (var resource in _resources.Values)
-                {
-                    resource.Dispose();
-                }
+                resource.Dispose();
             }
         }
     }

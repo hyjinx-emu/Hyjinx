@@ -1,40 +1,39 @@
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
+
+public class BracedExpression : BaseNode
 {
-    public class BracedExpression : BaseNode
+    private readonly BaseNode _element;
+    private readonly BaseNode _expression;
+    private readonly bool _isArrayExpression;
+
+    public BracedExpression(BaseNode element, BaseNode expression, bool isArrayExpression) : base(NodeType.BracedExpression)
     {
-        private readonly BaseNode _element;
-        private readonly BaseNode _expression;
-        private readonly bool _isArrayExpression;
+        _element = element;
+        _expression = expression;
+        _isArrayExpression = isArrayExpression;
+    }
 
-        public BracedExpression(BaseNode element, BaseNode expression, bool isArrayExpression) : base(NodeType.BracedExpression)
+    public override void PrintLeft(TextWriter writer)
+    {
+        if (_isArrayExpression)
         {
-            _element = element;
-            _expression = expression;
-            _isArrayExpression = isArrayExpression;
+            writer.Write("[");
+            _element.Print(writer);
+            writer.Write("]");
+        }
+        else
+        {
+            writer.Write(".");
+            _element.Print(writer);
         }
 
-        public override void PrintLeft(TextWriter writer)
+        if (!_expression.GetType().Equals(NodeType.BracedExpression) || !_expression.GetType().Equals(NodeType.BracedRangeExpression))
         {
-            if (_isArrayExpression)
-            {
-                writer.Write("[");
-                _element.Print(writer);
-                writer.Write("]");
-            }
-            else
-            {
-                writer.Write(".");
-                _element.Print(writer);
-            }
-
-            if (!_expression.GetType().Equals(NodeType.BracedExpression) || !_expression.GetType().Equals(NodeType.BracedRangeExpression))
-            {
-                writer.Write(" = ");
-            }
-
-            _expression.Print(writer);
+            writer.Write(" = ");
         }
+
+        _expression.Print(writer);
     }
 }

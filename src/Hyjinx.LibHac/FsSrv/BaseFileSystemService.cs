@@ -1,10 +1,10 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSrv.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.FsSystem;
 using LibHac.Sf;
+using System;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 using Path = LibHac.Fs.Path;
@@ -36,7 +36,8 @@ public readonly struct BaseFileSystemService
     private Result CheckCapabilityById(BaseFileSystemId id, ulong processId)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo, processId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (id == BaseFileSystemId.TemporaryDirectory)
         {
@@ -61,12 +62,14 @@ public readonly struct BaseFileSystemService
     public Result OpenBaseFileSystem(ref SharedRef<IFileSystemSf> outFileSystem, BaseFileSystemId fileSystemId)
     {
         Result res = CheckCapabilityById(fileSystemId, _processId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Open the file system
         using var fileSystem = new SharedRef<IFileSystem>();
         res = _serviceImpl.OpenBaseFileSystem(ref fileSystem.Ref, fileSystemId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Create an SF adapter for the file system
         using SharedRef<IFileSystemSf> fileSystemAdapter =
@@ -80,7 +83,8 @@ public readonly struct BaseFileSystemService
     public Result FormatBaseFileSystem(BaseFileSystemId fileSystemId)
     {
         Result res = CheckCapabilityById(fileSystemId, _processId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return _serviceImpl.FormatBaseFileSystem(fileSystemId);
     }
@@ -89,7 +93,8 @@ public readonly struct BaseFileSystemService
         BisPartitionId partitionId)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Get the permissions the caller needs
         AccessibilityType requiredAccess = partitionId switch
@@ -118,22 +123,26 @@ public readonly struct BaseFileSystemService
         // Normalize the path
         using var pathNormalized = new Path();
         res = pathNormalized.Initialize(rootPath.Str);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var pathFlags = new PathFlags();
         pathFlags.AllowEmptyPath();
         res = pathNormalized.Normalize(pathFlags);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Open the file system
         using var fileSystem = new SharedRef<IFileSystem>();
         res = _serviceImpl.OpenBisFileSystem(ref fileSystem.Ref, partitionId, false);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var subDirFileSystem = new SharedRef<IFileSystem>();
         res = Utility.CreateSubDirectoryFileSystem(ref subDirFileSystem.Ref, ref fileSystem.Ref,
             in pathNormalized);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Add all the file system wrappers
         using var typeSetFileSystem =
@@ -163,7 +172,8 @@ public readonly struct BaseFileSystemService
 
         // Caller must have the FillBis permission
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.FillBis))
             return ResultFs.PermissionDenied.Log();
@@ -175,7 +185,8 @@ public readonly struct BaseFileSystemService
     {
         // Caller must have the FillBis permission
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.FillBis))
             return ResultFs.PermissionDenied.Log();
@@ -187,7 +198,8 @@ public readonly struct BaseFileSystemService
         GameCardPartition partitionId)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.GetAccessibilityFor(AccessibilityType.MountGameCard).CanRead)
             return ResultFs.PermissionDenied.Log();
@@ -195,7 +207,8 @@ public readonly struct BaseFileSystemService
         using var fileSystem = new SharedRef<IFileSystem>();
 
         res = _serviceImpl.OpenGameCardFileSystem(ref fileSystem.Ref, handle, partitionId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var asyncFileSystem =
             new SharedRef<IFileSystem>(new AsynchronousAccessFileSystem(ref fileSystem.Ref));
@@ -211,7 +224,8 @@ public readonly struct BaseFileSystemService
     public Result OpenSdCardFileSystem(ref SharedRef<IFileSystemSf> outFileSystem)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Accessibility accessibility = programInfo.AccessControl.GetAccessibilityFor(AccessibilityType.MountSdCard);
 
@@ -223,7 +237,8 @@ public readonly struct BaseFileSystemService
 
         using var fileSystem = new SharedRef<IFileSystem>();
         res = _serviceImpl.OpenSdCardProxyFileSystem(ref fileSystem.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Add all the file system wrappers
         using var typeSetFileSystem =
@@ -244,7 +259,8 @@ public readonly struct BaseFileSystemService
     {
         // Caller must have the FormatSdCard permission
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.FormatSdCard))
             return ResultFs.PermissionDenied.Log();
@@ -272,7 +288,8 @@ public readonly struct BaseFileSystemService
     {
         // Caller must have the MountImageAndVideoStorage permission
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Accessibility accessibility =
             programInfo.AccessControl.GetAccessibilityFor(AccessibilityType.MountImageAndVideoStorage);
@@ -296,7 +313,8 @@ public readonly struct BaseFileSystemService
 
         using var baseFileSystem = new SharedRef<IFileSystem>();
         res = _serviceImpl.OpenBaseFileSystem(ref baseFileSystem.Ref, fileSystemId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using SharedRef<IFileSystemSf> fileSystemAdapter =
             FileSystemInterfaceAdapter.CreateShared(ref baseFileSystem.Ref, false);
@@ -311,14 +329,16 @@ public readonly struct BaseFileSystemService
     {
         // Caller must have the OpenBisWiper permission
         Result res = GetProgramInfo(out ProgramInfo programInfo);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.OpenBisWiper))
             return ResultFs.PermissionDenied.Log();
 
         using var bisWiper = new UniqueRef<IWiper>();
         res = _serviceImpl.OpenBisWiper(ref bisWiper.Ref, transferMemoryHandle, transferMemorySize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outBisWiper.Set(ref bisWiper.Ref);
 

@@ -1,39 +1,38 @@
 using Hyjinx.Cpu.LightningJit.CodeGen;
 using System;
 
-namespace Hyjinx.Cpu.LightningJit.Arm32
+namespace Hyjinx.Cpu.LightningJit.Arm32;
+
+readonly struct ScopedRegister : IDisposable
 {
-    readonly struct ScopedRegister : IDisposable
+    private readonly RegisterAllocator _registerAllocator;
+    private readonly Operand _operand;
+    private readonly bool _isAllocated;
+
+    public readonly Operand Operand => _operand;
+    public readonly bool IsAllocated => _isAllocated;
+
+    public ScopedRegister(RegisterAllocator registerAllocator, Operand operand, bool isAllocated = true)
     {
-        private readonly RegisterAllocator _registerAllocator;
-        private readonly Operand _operand;
-        private readonly bool _isAllocated;
+        _registerAllocator = registerAllocator;
+        _operand = operand;
+        _isAllocated = isAllocated;
+    }
 
-        public readonly Operand Operand => _operand;
-        public readonly bool IsAllocated => _isAllocated;
-
-        public ScopedRegister(RegisterAllocator registerAllocator, Operand operand, bool isAllocated = true)
+    public readonly void Dispose()
+    {
+        if (!_isAllocated)
         {
-            _registerAllocator = registerAllocator;
-            _operand = operand;
-            _isAllocated = isAllocated;
+            return;
         }
 
-        public readonly void Dispose()
+        if (_operand.Type.IsInteger())
         {
-            if (!_isAllocated)
-            {
-                return;
-            }
-
-            if (_operand.Type.IsInteger())
-            {
-                _registerAllocator.FreeTempGprRegister(_operand.AsInt32());
-            }
-            else
-            {
-                _registerAllocator.FreeTempFpSimdRegister(_operand.AsInt32());
-            }
+            _registerAllocator.FreeTempGprRegister(_operand.AsInt32());
+        }
+        else
+        {
+            _registerAllocator.FreeTempFpSimdRegister(_operand.AsInt32());
         }
     }
 }

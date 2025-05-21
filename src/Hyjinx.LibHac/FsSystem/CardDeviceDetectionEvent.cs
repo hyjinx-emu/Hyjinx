@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSrv.Sf;
 using LibHac.Os;
 using LibHac.Sf;
+using System;
+using System.Collections.Generic;
 
 namespace LibHac.FsSystem;
 
@@ -47,7 +47,7 @@ internal class CardDeviceDetectionEventManager : IDisposable
             return ResultFs.AllocationMemoryFailedInDeviceDetectionEventManagerA.Log();
 
         _events.AddLast(detectionEventImpl);
-        outDetectionEvent.SetByMove(ref detectionEvent.Ref );
+        outDetectionEvent.SetByMove(ref detectionEvent.Ref);
 
         return Result.Success;
     }

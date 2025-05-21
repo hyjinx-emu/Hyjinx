@@ -1,22 +1,21 @@
 using Hyjinx.Graphics.GAL.Multithreading.Model;
 
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands;
+
+struct SetScissorsCommand : IGALCommand, IGALCommand<SetScissorsCommand>
 {
-    struct SetScissorsCommand : IGALCommand, IGALCommand<SetScissorsCommand>
+    public readonly CommandType CommandType => CommandType.SetScissor;
+    private SpanRef<Rectangle<int>> _scissors;
+
+    public void Set(SpanRef<Rectangle<int>> scissors)
     {
-        public readonly CommandType CommandType => CommandType.SetScissor;
-        private SpanRef<Rectangle<int>> _scissors;
+        _scissors = scissors;
+    }
 
-        public void Set(SpanRef<Rectangle<int>> scissors)
-        {
-            _scissors = scissors;
-        }
+    public static void Run(ref SetScissorsCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        renderer.Pipeline.SetScissors(command._scissors.Get(threaded));
 
-        public static void Run(ref SetScissorsCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            renderer.Pipeline.SetScissors(command._scissors.Get(threaded));
-
-            command._scissors.Dispose(threaded);
-        }
+        command._scissors.Dispose(threaded);
     }
 }

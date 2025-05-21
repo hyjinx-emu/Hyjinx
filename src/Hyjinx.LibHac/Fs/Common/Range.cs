@@ -1,7 +1,7 @@
-﻿// ReSharper disable InconsistentNaming CheckNamespace
+// ReSharper disable InconsistentNaming CheckNamespace
 
-using System;
 using LibHac.Diag;
+using System;
 
 namespace LibHac.Fs;
 

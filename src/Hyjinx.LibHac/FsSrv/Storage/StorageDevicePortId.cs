@@ -1,4 +1,4 @@
-﻿namespace LibHac.FsSrv.Storage;
+namespace LibHac.FsSrv.Storage;
 
 public enum StorageDevicePortId : byte
 {

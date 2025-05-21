@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Caps
+namespace Hyjinx.HLE.HOS.Services.Caps;
+
+[Service("caps:ss")] // 2.0.0+
+class IScreenshotService : IpcService<IScreenshotService>
 {
-    [Service("caps:ss")] // 2.0.0+
-    class IScreenshotService : IpcService<IScreenshotService>
-    {
-        public IScreenshotService(ServiceCtx context) { }
-    }
+    public IScreenshotService(ServiceCtx context) { }
 }

@@ -1,10 +1,9 @@
-namespace ARMeilleure.Translation.PTC
+namespace ARMeilleure.Translation.PTC;
+
+enum PtcState
 {
-    enum PtcState
-    {
-        Enabled,
-        Continuing,
-        Closing,
-        Disabled,
-    }
+    Enabled,
+    Continuing,
+    Closing,
+    Disabled,
 }

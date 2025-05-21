@@ -1,12 +1,11 @@
-namespace Hyjinx.Cpu
+namespace Hyjinx.Cpu;
+
+/// <summary>
+/// Load state.
+/// </summary>
+public enum LoadState
 {
-    /// <summary>
-    /// Load state.
-    /// </summary>
-    public enum LoadState
-    {
-        Unloaded,
-        Loading,
-        Loaded,
-    }
+    Unloaded,
+    Loading,
+    Loaded,
 }

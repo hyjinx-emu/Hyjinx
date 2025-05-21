@@ -3,28 +3,27 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Hyjinx.Horizon.Sdk.Friends
+namespace Hyjinx.Horizon.Sdk.Friends;
+
+[StructLayout(LayoutKind.Sequential, Size = 0xA0, Pack = 0x1)]
+struct Url
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0xA0, Pack = 0x1)]
-    struct Url
+    public UrlStorage Path;
+
+    [InlineArray(0xA0)]
+    public struct UrlStorage
     {
-        public UrlStorage Path;
+        public byte Value;
+    }
 
-        [InlineArray(0xA0)]
-        public struct UrlStorage
+    public override readonly string ToString()
+    {
+        int length = ((ReadOnlySpan<byte>)Path).IndexOf((byte)0);
+        if (length < 0)
         {
-            public byte Value;
+            length = 33;
         }
 
-        public override readonly string ToString()
-        {
-            int length = ((ReadOnlySpan<byte>)Path).IndexOf((byte)0);
-            if (length < 0)
-            {
-                length = 33;
-            }
-
-            return Encoding.UTF8.GetString(((ReadOnlySpan<byte>)Path)[..length]);
-        }
+        return Encoding.UTF8.GetString(((ReadOnlySpan<byte>)Path)[..length]);
     }
 }

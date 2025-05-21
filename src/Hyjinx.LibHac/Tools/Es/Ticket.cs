@@ -1,10 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Util;
+using System;
+using System.IO;
+using System.Security.Cryptography;
 
 namespace LibHac.Tools.Es;
 
@@ -126,9 +126,11 @@ public class Ticket
         }
 
         stream.Position = bodyStart;
-        if (Issuer != null) writer.WriteUtf8(Issuer);
+        if (Issuer != null)
+            writer.WriteUtf8(Issuer);
         stream.Position = bodyStart + 0x40;
-        if (TitleKeyBlock?.Length <= 0x100) writer.Write(TitleKeyBlock);
+        if (TitleKeyBlock?.Length <= 0x100)
+            writer.Write(TitleKeyBlock);
         stream.Position = bodyStart + 0x140;
         writer.Write(FormatVersion);
         writer.Write((byte)TitleKeyType);
@@ -139,7 +141,8 @@ public class Ticket
         stream.Position = bodyStart + 0x150;
         writer.Write(TicketId);
         writer.Write(DeviceId);
-        if (RightsId?.Length <= 0x10) writer.Write(RightsId);
+        if (RightsId?.Length <= 0x10)
+            writer.Write(RightsId);
         writer.Write(AccountId);
         writer.Write(SectTotalSize);
         writer.Write(SectHeaderOffset);

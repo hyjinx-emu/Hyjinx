@@ -1,7 +1,7 @@
-﻿using System;
+using LibHac.Util;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using LibHac.Util;
 
 namespace LibHac.Common;
 
@@ -50,13 +50,15 @@ public struct Id128 : IEquatable<Id128>, IComparable<Id128>, IComparable
     public int CompareTo(Id128 other)
     {
         int highComparison = High.CompareTo(other.High);
-        if (highComparison != 0) return highComparison;
+        if (highComparison != 0)
+            return highComparison;
         return Low.CompareTo(other.Low);
     }
 
     public int CompareTo(object obj)
     {
-        if (obj is null) return 1;
+        if (obj is null)
+            return 1;
         return obj is Id128 other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(Id128)}");
     }
 

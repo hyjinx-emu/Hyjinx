@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -27,7 +27,8 @@ public class Xci
 
     public bool HasPartition(XciPartitionType type)
     {
-        if (type == XciPartitionType.Root) return true;
+        if (type == XciPartitionType.Root)
+            return true;
 
         return GetRootPartition().FileExists("/" + type.GetFileName());
     }
@@ -35,7 +36,8 @@ public class Xci
     public XciPartition OpenPartition(XciPartitionType type)
     {
         XciPartition root = GetRootPartition();
-        if (type == XciPartitionType.Root) return root;
+        if (type == XciPartitionType.Root)
+            return root;
         string partitionFileName = $"/{type.GetFileName()}";
 
         using var partitionFile = new UniqueRef<IFile>();
@@ -45,7 +47,8 @@ public class Xci
 
     private XciPartition GetRootPartition()
     {
-        if (RootPartition != null) return RootPartition;
+        if (RootPartition != null)
+            return RootPartition;
 
         InitializeRootPartition();
 
@@ -56,7 +59,8 @@ public class Xci
     {
         lock (InitLocker)
         {
-            if (RootPartition != null) return;
+            if (RootPartition != null)
+                return;
 
             IStorage rootStorage = BaseStorage.Slice(Header.RootPartitionOffset);
 

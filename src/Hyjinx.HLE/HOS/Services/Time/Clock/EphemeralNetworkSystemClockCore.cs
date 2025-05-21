@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Services.Time.Clock
+namespace Hyjinx.HLE.HOS.Services.Time.Clock;
+
+class EphemeralNetworkSystemClockCore : SystemClockCore
 {
-    class EphemeralNetworkSystemClockCore : SystemClockCore
-    {
-        public EphemeralNetworkSystemClockCore(SteadyClockCore steadyClockCore) : base(steadyClockCore) { }
-    }
+    public EphemeralNetworkSystemClockCore(SteadyClockCore steadyClockCore) : base(steadyClockCore) { }
 }

@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.Loaders.Elf
+namespace Hyjinx.HLE.Loaders.Elf;
+
+enum ElfSymbolVisibility
 {
-    enum ElfSymbolVisibility
-    {
-        StvDefault = 0,
-        StvInternal = 1,
-        StvHidden = 2,
-        StvProtected = 3,
-    }
+    StvDefault = 0,
+    StvInternal = 1,
+    StvHidden = 2,
+    StvProtected = 3,
 }

@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Sdb.Pdm.QueryService.Types
+namespace Hyjinx.HLE.HOS.Services.Sdb.Pdm.QueryService.Types;
+
+enum PlayLogQueryCapability
 {
-    enum PlayLogQueryCapability
-    {
-        None,
-        WhiteList,
-        All,
-    }
+    None,
+    WhiteList,
+    All,
 }

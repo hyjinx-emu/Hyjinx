@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd
+namespace Hyjinx.HLE.HOS.Services.Sockets.Nsd;
+
+class NsdSettings
 {
-    class NsdSettings
-    {
-        public bool Initialized;
-        public bool TestMode;
-        public string Environment;
-    }
+    public bool Initialized;
+    public bool TestMode;
+    public string Environment;
 }

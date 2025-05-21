@@ -1,42 +1,41 @@
 using System;
 using System.IO;
 
-namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast
-{
-    public class IntegerLiteral : BaseNode
-    {
-        private readonly string _literalName;
-        private readonly string _literalValue;
+namespace Hyjinx.HLE.HOS.Diagnostics.Demangler.Ast;
 
-        public IntegerLiteral(string literalName, string literalValue) : base(NodeType.IntegerLiteral)
+public class IntegerLiteral : BaseNode
+{
+    private readonly string _literalName;
+    private readonly string _literalValue;
+
+    public IntegerLiteral(string literalName, string literalValue) : base(NodeType.IntegerLiteral)
+    {
+        _literalValue = literalValue;
+        _literalName = literalName;
+    }
+
+    public override void PrintLeft(TextWriter writer)
+    {
+        if (_literalName.Length > 3)
         {
-            _literalValue = literalValue;
-            _literalName = literalName;
+            writer.Write("(");
+            writer.Write(_literalName);
+            writer.Write(")");
         }
 
-        public override void PrintLeft(TextWriter writer)
+        if (_literalValue[0] == 'n')
         {
-            if (_literalName.Length > 3)
-            {
-                writer.Write("(");
-                writer.Write(_literalName);
-                writer.Write(")");
-            }
+            writer.Write("-");
+            writer.Write(_literalValue.AsSpan(1));
+        }
+        else
+        {
+            writer.Write(_literalValue);
+        }
 
-            if (_literalValue[0] == 'n')
-            {
-                writer.Write("-");
-                writer.Write(_literalValue.AsSpan(1));
-            }
-            else
-            {
-                writer.Write(_literalValue);
-            }
-
-            if (_literalName.Length <= 3)
-            {
-                writer.Write(_literalName);
-            }
+        if (_literalName.Length <= 3)
+        {
+            writer.Write(_literalName);
         }
     }
 }

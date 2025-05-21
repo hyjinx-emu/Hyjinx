@@ -3,101 +3,100 @@ using Hyjinx.HLE.HOS.Services.Ldn.Types;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator.Types;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator
+namespace Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
+
+class AccessPoint : IDisposable
 {
-    class AccessPoint : IDisposable
+    private byte[] _advertiseData;
+
+    private readonly IUserLocalCommunicationService _parent;
+
+    public NetworkInfo NetworkInfo;
+    public Array8<NodeLatestUpdate> LatestUpdates = new();
+    public bool Connected { get; private set; }
+
+    public AccessPoint(IUserLocalCommunicationService parent)
     {
-        private byte[] _advertiseData;
+        _parent = parent;
 
-        private readonly IUserLocalCommunicationService _parent;
+        _parent.NetworkClient.NetworkChange += NetworkChanged;
+    }
 
-        public NetworkInfo NetworkInfo;
-        public Array8<NodeLatestUpdate> LatestUpdates = new();
-        public bool Connected { get; private set; }
+    public void Dispose()
+    {
+        _parent.NetworkClient.DisconnectNetwork();
 
-        public AccessPoint(IUserLocalCommunicationService parent)
+        _parent.NetworkClient.NetworkChange -= NetworkChanged;
+    }
+
+    private void NetworkChanged(object sender, NetworkChangeEventArgs e)
+    {
+        LatestUpdates.CalculateLatestUpdate(NetworkInfo.Ldn.Nodes, e.Info.Ldn.Nodes);
+
+        NetworkInfo = e.Info;
+
+        if (Connected != e.Connected)
         {
-            _parent = parent;
+            Connected = e.Connected;
 
-            _parent.NetworkClient.NetworkChange += NetworkChanged;
-        }
-
-        public void Dispose()
-        {
-            _parent.NetworkClient.DisconnectNetwork();
-
-            _parent.NetworkClient.NetworkChange -= NetworkChanged;
-        }
-
-        private void NetworkChanged(object sender, NetworkChangeEventArgs e)
-        {
-            LatestUpdates.CalculateLatestUpdate(NetworkInfo.Ldn.Nodes, e.Info.Ldn.Nodes);
-
-            NetworkInfo = e.Info;
-
-            if (Connected != e.Connected)
+            if (Connected)
             {
-                Connected = e.Connected;
-
-                if (Connected)
-                {
-                    _parent.SetState(NetworkState.AccessPointCreated);
-                }
-                else
-                {
-                    _parent.SetDisconnectReason(e.DisconnectReasonOrDefault(DisconnectReason.DestroyedBySystem));
-                }
+                _parent.SetState(NetworkState.AccessPointCreated);
             }
             else
             {
-                _parent.SetState();
+                _parent.SetDisconnectReason(e.DisconnectReasonOrDefault(DisconnectReason.DestroyedBySystem));
             }
         }
-
-        public ResultCode SetAdvertiseData(byte[] advertiseData)
+        else
         {
-            _advertiseData = advertiseData;
-
-            _parent.NetworkClient.SetAdvertiseData(_advertiseData);
-
-            return ResultCode.Success;
+            _parent.SetState();
         }
+    }
 
-        public ResultCode SetStationAcceptPolicy(AcceptPolicy acceptPolicy)
+    public ResultCode SetAdvertiseData(byte[] advertiseData)
+    {
+        _advertiseData = advertiseData;
+
+        _parent.NetworkClient.SetAdvertiseData(_advertiseData);
+
+        return ResultCode.Success;
+    }
+
+    public ResultCode SetStationAcceptPolicy(AcceptPolicy acceptPolicy)
+    {
+        _parent.NetworkClient.SetStationAcceptPolicy(acceptPolicy);
+
+        return ResultCode.Success;
+    }
+
+    public ResultCode CreateNetwork(SecurityConfig securityConfig, UserConfig userConfig, NetworkConfig networkConfig)
+    {
+        CreateAccessPointRequest request = new()
         {
-            _parent.NetworkClient.SetStationAcceptPolicy(acceptPolicy);
+            SecurityConfig = securityConfig,
+            UserConfig = userConfig,
+            NetworkConfig = networkConfig,
+        };
 
-            return ResultCode.Success;
-        }
+        bool success = _parent.NetworkClient.CreateNetwork(request, _advertiseData ?? Array.Empty<byte>());
 
-        public ResultCode CreateNetwork(SecurityConfig securityConfig, UserConfig userConfig, NetworkConfig networkConfig)
+        return success ? ResultCode.Success : ResultCode.InvalidState;
+    }
+
+    public ResultCode CreateNetworkPrivate(SecurityConfig securityConfig, SecurityParameter securityParameter, UserConfig userConfig, NetworkConfig networkConfig, AddressList addressList)
+    {
+        CreateAccessPointPrivateRequest request = new()
         {
-            CreateAccessPointRequest request = new()
-            {
-                SecurityConfig = securityConfig,
-                UserConfig = userConfig,
-                NetworkConfig = networkConfig,
-            };
+            SecurityConfig = securityConfig,
+            SecurityParameter = securityParameter,
+            UserConfig = userConfig,
+            NetworkConfig = networkConfig,
+            AddressList = addressList,
+        };
 
-            bool success = _parent.NetworkClient.CreateNetwork(request, _advertiseData ?? Array.Empty<byte>());
+        bool success = _parent.NetworkClient.CreateNetworkPrivate(request, _advertiseData);
 
-            return success ? ResultCode.Success : ResultCode.InvalidState;
-        }
-
-        public ResultCode CreateNetworkPrivate(SecurityConfig securityConfig, SecurityParameter securityParameter, UserConfig userConfig, NetworkConfig networkConfig, AddressList addressList)
-        {
-            CreateAccessPointPrivateRequest request = new()
-            {
-                SecurityConfig = securityConfig,
-                SecurityParameter = securityParameter,
-                UserConfig = userConfig,
-                NetworkConfig = networkConfig,
-                AddressList = addressList,
-            };
-
-            bool success = _parent.NetworkClient.CreateNetworkPrivate(request, _advertiseData);
-
-            return success ? ResultCode.Success : ResultCode.InvalidState;
-        }
+        return success ? ResultCode.Success : ResultCode.InvalidState;
     }
 }

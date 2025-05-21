@@ -1,18 +1,17 @@
-namespace Hyjinx.Audio.Integration
+namespace Hyjinx.Audio.Integration;
+
+/// <summary>
+/// Represent a writable event with manual clear.
+/// </summary>
+public interface IWritableEvent
 {
     /// <summary>
-    /// Represent a writable event with manual clear.
+    /// Signal the event.
     /// </summary>
-    public interface IWritableEvent
-    {
-        /// <summary>
-        /// Signal the event.
-        /// </summary>
-        void Signal();
+    void Signal();
 
-        /// <summary>
-        /// Clear the signaled state of the event.
-        /// </summary>
-        void Clear();
-    }
+    /// <summary>
+    /// Clear the signaled state of the event.
+    /// </summary>
+    void Clear();
 }

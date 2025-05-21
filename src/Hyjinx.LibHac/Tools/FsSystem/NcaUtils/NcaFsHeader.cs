@@ -1,7 +1,7 @@
-﻿using System;
+using LibHac.FsSystem;
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using LibHac.FsSystem;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;

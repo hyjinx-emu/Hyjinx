@@ -1,10 +1,9 @@
 using Hyjinx.Common.Memory;
 
-namespace Hyjinx.Graphics.Nvdec.Vp9.Types
+namespace Hyjinx.Graphics.Nvdec.Vp9.Types;
+
+internal struct MvRef
 {
-    internal struct MvRef
-    {
-        public Array2<Mv> Mv;
-        public Array2<sbyte> RefFrame;
-    }
+    public Array2<Mv> Mv;
+    public Array2<sbyte> RefFrame;
 }

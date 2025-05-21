@@ -1,7 +1,6 @@
-namespace ARMeilleure.Decoders
+namespace ARMeilleure.Decoders;
+
+interface IOpCodeCond : IOpCode
 {
-    interface IOpCodeCond : IOpCode
-    {
-        Condition Cond { get; }
-    }
+    Condition Cond { get; }
 }

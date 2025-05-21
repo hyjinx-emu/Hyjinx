@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 
 namespace LibHac.Fs.Fsa;

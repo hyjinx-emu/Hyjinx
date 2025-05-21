@@ -1,10 +1,9 @@
 using System;
 
-namespace Hyjinx.Graphics.Gpu.Synchronization
+namespace Hyjinx.Graphics.Gpu.Synchronization;
+
+public class SyncpointWaiterHandle
 {
-    public class SyncpointWaiterHandle
-    {
-        internal uint Threshold;
-        internal Action<SyncpointWaiterHandle> Callback;
-    }
+    internal uint Threshold;
+    internal Action<SyncpointWaiterHandle> Callback;
 }

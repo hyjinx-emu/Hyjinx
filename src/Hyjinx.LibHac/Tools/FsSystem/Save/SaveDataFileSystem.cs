@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.IO;
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System.Collections.Generic;
+using System.IO;
 using Path = LibHac.Fs.Path;
 
 namespace LibHac.Tools.FsSystem.Save;
@@ -282,7 +282,7 @@ public class SaveDataFileSystem : IFileSystem
         headerStream.Write(hash, 0, hash.Length);
 
         byte[] cmac = new byte[0x10];
-        
+
         headerStream.Position = 0;
         headerStream.Write(cmac, 0, 0x10);
         headerStream.Flush();
@@ -309,13 +309,16 @@ public class SaveDataFileSystem : IFileSystem
         Validity journalValidity = CoreDataIvfcStorage.Validate(true, logger);
         CoreDataIvfcStorage.SetLevelValidities(Header.Ivfc);
 
-        if (FatIvfcStorage == null) return journalValidity;
+        if (FatIvfcStorage == null)
+            return journalValidity;
 
         Validity fatValidity = FatIvfcStorage.Validate(true, logger);
         FatIvfcStorage.SetLevelValidities(Header.Ivfc);
 
-        if (journalValidity != Validity.Valid) return journalValidity;
-        if (fatValidity != Validity.Valid) return fatValidity;
+        if (journalValidity != Validity.Valid)
+            return journalValidity;
+        if (fatValidity != Validity.Valid)
+            return fatValidity;
 
         return journalValidity;
     }

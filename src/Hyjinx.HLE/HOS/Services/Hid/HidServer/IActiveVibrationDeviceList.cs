@@ -1,18 +1,17 @@
-namespace Hyjinx.HLE.HOS.Services.Hid.HidServer
-{
-    class IActiveApplicationDeviceList : IpcService<IActiveApplicationDeviceList>
-    {
-        public IActiveApplicationDeviceList() { }
+namespace Hyjinx.HLE.HOS.Services.Hid.HidServer;
 
-        [CommandCmif(0)]
-        // ActivateVibrationDevice(nn::hid::VibrationDeviceHandle)
-        public ResultCode ActivateVibrationDevice(ServiceCtx context)
-        {
+class IActiveApplicationDeviceList : IpcService<IActiveApplicationDeviceList>
+{
+    public IActiveApplicationDeviceList() { }
+
+    [CommandCmif(0)]
+    // ActivateVibrationDevice(nn::hid::VibrationDeviceHandle)
+    public ResultCode ActivateVibrationDevice(ServiceCtx context)
+    {
 #pragma warning disable IDE0059 // Remove unnecessary value assignment
-            int vibrationDeviceHandle = context.RequestData.ReadInt32();
+        int vibrationDeviceHandle = context.RequestData.ReadInt32();
 #pragma warning restore IDE0059
 
-            return ResultCode.Success;
-        }
+        return ResultCode.Success;
     }
 }

@@ -1,21 +1,20 @@
-namespace Hyjinx.Horizon.Ngc
+namespace Hyjinx.Horizon.Ngc;
+
+class NgcMain : IService
 {
-    class NgcMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            NgcIpcServer ipcServer = new();
+        NgcIpcServer ipcServer = new();
 
-            ipcServer.Initialize(HorizonStatic.Options.FsClient);
+        ipcServer.Initialize(HorizonStatic.Options.FsClient);
 
-            // TODO: Notification thread, requires implementing OpenSystemDataUpdateEventNotifier on FS.
-            // The notification thread seems to wait until the event returned by OpenSystemDataUpdateEventNotifier is signalled
-            // in a loop. When it receives the signal, it calls ContentsReader.Reload and then waits for the next signal.
+        // TODO: Notification thread, requires implementing OpenSystemDataUpdateEventNotifier on FS.
+        // The notification thread seems to wait until the event returned by OpenSystemDataUpdateEventNotifier is signalled
+        // in a loop. When it receives the signal, it calls ContentsReader.Reload and then waits for the next signal.
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

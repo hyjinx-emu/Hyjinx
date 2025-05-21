@@ -1,14 +1,13 @@
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+class MultiWaitHolderOfHandle : MultiWaitHolder
 {
-    class MultiWaitHolderOfHandle : MultiWaitHolder
+    private readonly int _handle;
+
+    public override int Handle => _handle;
+
+    public MultiWaitHolderOfHandle(int handle)
     {
-        private readonly int _handle;
-
-        public override int Handle => _handle;
-
-        public MultiWaitHolderOfHandle(int handle)
-        {
-            _handle = handle;
-        }
+        _handle = handle;
     }
 }

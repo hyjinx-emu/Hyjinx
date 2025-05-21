@@ -1,11 +1,10 @@
-namespace Hyjinx.Horizon.Friends
+namespace Hyjinx.Horizon.Friends;
+
+enum FriendsPortIndex
 {
-    enum FriendsPortIndex
-    {
-        Admin,
-        User,
-        Viewer,
-        Manager,
-        System,
-    }
+    Admin,
+    User,
+    Viewer,
+    Manager,
+    System,
 }

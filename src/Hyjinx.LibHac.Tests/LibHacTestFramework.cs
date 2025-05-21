@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using System.Linq;
 using LibHac.Diag;
 using LibHac.Tests;
+using System.Diagnostics;
+using System.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 

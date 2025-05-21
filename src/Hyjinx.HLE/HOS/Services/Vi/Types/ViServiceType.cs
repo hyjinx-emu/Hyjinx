@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Vi.Types
+namespace Hyjinx.HLE.HOS.Services.Vi.Types;
+
+enum ViServiceType
 {
-    enum ViServiceType
-    {
-        Application,
-        Manager,
-        System,
-    }
+    Application,
+    Manager,
+    System,
 }

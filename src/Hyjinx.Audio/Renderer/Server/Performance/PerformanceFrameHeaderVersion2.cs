@@ -1,117 +1,116 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Audio.Renderer.Server.Performance
+namespace Hyjinx.Audio.Renderer.Server.Performance;
+
+/// <summary>
+/// Implementation of <see cref="IPerformanceHeader"/> for performance metrics version 2.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Pack = 1, Size = 0x30)]
+public struct PerformanceFrameHeaderVersion2 : IPerformanceHeader
 {
     /// <summary>
-    /// Implementation of <see cref="IPerformanceHeader"/> for performance metrics version 2.
+    /// The magic of the performance header.
     /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 0x30)]
-    public struct PerformanceFrameHeaderVersion2 : IPerformanceHeader
+    public uint Magic;
+
+    /// <summary>
+    /// The total count of entries in this frame.
+    /// </summary>
+    public int EntryCount;
+
+    /// <summary>
+    /// The total count of detailed entries in this frame.
+    /// </summary>
+    public int EntryDetailCount;
+
+    /// <summary>
+    /// The offset of the next performance header.
+    /// </summary>
+    public int NextOffset;
+
+    /// <summary>
+    /// The total time taken by all the commands profiled.
+    /// </summary>
+    public int TotalProcessingTime;
+
+    /// <summary>
+    /// The count of voices that were dropped.
+    /// </summary>
+    public uint VoiceDropCount;
+
+    /// <summary>
+    /// The start ticks of the <see cref="Dsp.AudioProcessor"/>. (before sending commands)
+    /// </summary>
+    public ulong StartRenderingTicks;
+
+    /// <summary>
+    /// The index of this performance frame.
+    /// </summary>
+    public uint Index;
+
+    /// <summary>
+    /// If set to true, the DSP is running behind.
+    /// </summary>
+    [MarshalAs(UnmanagedType.I1)]
+    public bool IsDspRunningBehind;
+
+    public readonly int GetEntryCount()
     {
-        /// <summary>
-        /// The magic of the performance header.
-        /// </summary>
-        public uint Magic;
+        return EntryCount;
+    }
 
-        /// <summary>
-        /// The total count of entries in this frame.
-        /// </summary>
-        public int EntryCount;
+    public readonly int GetEntryCountOffset()
+    {
+        return 4;
+    }
 
-        /// <summary>
-        /// The total count of detailed entries in this frame.
-        /// </summary>
-        public int EntryDetailCount;
+    public readonly int GetEntryDetailCount()
+    {
+        return EntryDetailCount;
+    }
 
-        /// <summary>
-        /// The offset of the next performance header.
-        /// </summary>
-        public int NextOffset;
+    public void SetDspRunningBehind(bool isRunningBehind)
+    {
+        IsDspRunningBehind = isRunningBehind;
+    }
 
-        /// <summary>
-        /// The total time taken by all the commands profiled.
-        /// </summary>
-        public int TotalProcessingTime;
+    public void SetEntryCount(int entryCount)
+    {
+        EntryCount = entryCount;
+    }
 
-        /// <summary>
-        /// The count of voices that were dropped.
-        /// </summary>
-        public uint VoiceDropCount;
+    public void SetEntryDetailCount(int entryDetailCount)
+    {
+        EntryDetailCount = entryDetailCount;
+    }
 
-        /// <summary>
-        /// The start ticks of the <see cref="Dsp.AudioProcessor"/>. (before sending commands)
-        /// </summary>
-        public ulong StartRenderingTicks;
+    public void SetIndex(uint index)
+    {
+        Index = index;
+    }
 
-        /// <summary>
-        /// The index of this performance frame.
-        /// </summary>
-        public uint Index;
+    public void SetMagic(uint magic)
+    {
+        Magic = magic;
+    }
 
-        /// <summary>
-        /// If set to true, the DSP is running behind.
-        /// </summary>
-        [MarshalAs(UnmanagedType.I1)]
-        public bool IsDspRunningBehind;
+    public void SetNextOffset(int nextOffset)
+    {
+        NextOffset = nextOffset;
+    }
 
-        public readonly int GetEntryCount()
-        {
-            return EntryCount;
-        }
+    public void SetStartRenderingTicks(ulong startTicks)
+    {
+        StartRenderingTicks = startTicks;
+    }
 
-        public readonly int GetEntryCountOffset()
-        {
-            return 4;
-        }
+    public void SetTotalProcessingTime(int totalProcessingTime)
+    {
+        TotalProcessingTime = totalProcessingTime;
+    }
 
-        public readonly int GetEntryDetailCount()
-        {
-            return EntryDetailCount;
-        }
-
-        public void SetDspRunningBehind(bool isRunningBehind)
-        {
-            IsDspRunningBehind = isRunningBehind;
-        }
-
-        public void SetEntryCount(int entryCount)
-        {
-            EntryCount = entryCount;
-        }
-
-        public void SetEntryDetailCount(int entryDetailCount)
-        {
-            EntryDetailCount = entryDetailCount;
-        }
-
-        public void SetIndex(uint index)
-        {
-            Index = index;
-        }
-
-        public void SetMagic(uint magic)
-        {
-            Magic = magic;
-        }
-
-        public void SetNextOffset(int nextOffset)
-        {
-            NextOffset = nextOffset;
-        }
-
-        public void SetStartRenderingTicks(ulong startTicks)
-        {
-            StartRenderingTicks = startTicks;
-        }
-
-        public void SetTotalProcessingTime(int totalProcessingTime)
-        {
-            TotalProcessingTime = totalProcessingTime;
-        }
-
-        public void SetVoiceDropCount(uint voiceCount)
-        {
-            VoiceDropCount = voiceCount;
-        }
+    public void SetVoiceDropCount(uint voiceCount)
+    {
+        VoiceDropCount = voiceCount;
     }
 }

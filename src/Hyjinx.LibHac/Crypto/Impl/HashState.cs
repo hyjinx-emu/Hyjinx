@@ -1,4 +1,4 @@
-﻿namespace LibHac.Crypto.Impl;
+namespace LibHac.Crypto.Impl;
 
 internal enum HashState
 {

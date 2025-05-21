@@ -11,53 +11,52 @@ using Hyjinx.UI.Common.Helper;
 using System.Threading.Tasks;
 using Button = Avalonia.Controls.Button;
 
-namespace Hyjinx.Ava.UI.Windows
+namespace Hyjinx.Ava.UI.Windows;
+
+public partial class AboutWindow : UserControl
 {
-    public partial class AboutWindow : UserControl
+    public AboutWindow()
     {
-        public AboutWindow()
-        {
-            DataContext = new AboutWindowViewModel();
+        DataContext = new AboutWindowViewModel();
 
-            InitializeComponent();
+        InitializeComponent();
+    }
+
+    public static async Task Show()
+    {
+        ContentDialog contentDialog = new()
+        {
+            PrimaryButtonText = "",
+            SecondaryButtonText = "",
+            CloseButtonText = LocaleManager.Instance[LocaleKeys.UserProfilesClose],
+            Content = new AboutWindow(),
+        };
+
+        Style closeButton = new(x => x.Name("CloseButton"));
+        closeButton.Setters.Add(new Setter(WidthProperty, 80d));
+
+        Style closeButtonParent = new(x => x.Name("CommandSpace"));
+        closeButtonParent.Setters.Add(new Setter(HorizontalAlignmentProperty, HorizontalAlignment.Right));
+
+        contentDialog.Styles.Add(closeButton);
+        contentDialog.Styles.Add(closeButtonParent);
+
+        await ContentDialogHelper.ShowAsync(contentDialog);
+    }
+
+    private void Button_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button)
+        {
+            OpenHelper.OpenUrl(button.Tag.ToString());
         }
+    }
 
-        public static async Task Show()
+    private void AmiiboLabel_OnPointerPressed(object sender, PointerPressedEventArgs e)
+    {
+        if (sender is TextBlock)
         {
-            ContentDialog contentDialog = new()
-            {
-                PrimaryButtonText = "",
-                SecondaryButtonText = "",
-                CloseButtonText = LocaleManager.Instance[LocaleKeys.UserProfilesClose],
-                Content = new AboutWindow(),
-            };
-
-            Style closeButton = new(x => x.Name("CloseButton"));
-            closeButton.Setters.Add(new Setter(WidthProperty, 80d));
-
-            Style closeButtonParent = new(x => x.Name("CommandSpace"));
-            closeButtonParent.Setters.Add(new Setter(HorizontalAlignmentProperty, HorizontalAlignment.Right));
-
-            contentDialog.Styles.Add(closeButton);
-            contentDialog.Styles.Add(closeButtonParent);
-
-            await ContentDialogHelper.ShowAsync(contentDialog);
-        }
-
-        private void Button_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button)
-            {
-                OpenHelper.OpenUrl(button.Tag.ToString());
-            }
-        }
-
-        private void AmiiboLabel_OnPointerPressed(object sender, PointerPressedEventArgs e)
-        {
-            if (sender is TextBlock)
-            {
-                OpenHelper.OpenUrl("https://amiiboapi.com");
-            }
+            OpenHelper.OpenUrl("https://amiiboapi.com");
         }
     }
 }

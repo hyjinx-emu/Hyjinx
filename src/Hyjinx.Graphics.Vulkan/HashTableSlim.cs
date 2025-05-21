@@ -2,142 +2,141 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+interface IRefEquatable<T>
 {
-    interface IRefEquatable<T>
+    bool Equals(ref T other);
+}
+
+class HashTableSlim<TKey, TValue> where TKey : IRefEquatable<TKey>
+{
+    private const int TotalBuckets = 16; // Must be power of 2
+    private const int TotalBucketsMask = TotalBuckets - 1;
+
+    private struct Entry
     {
-        bool Equals(ref T other);
+        public int Hash;
+        public TKey Key;
+        public TValue Value;
     }
 
-    class HashTableSlim<TKey, TValue> where TKey : IRefEquatable<TKey>
+    private struct Bucket
     {
-        private const int TotalBuckets = 16; // Must be power of 2
-        private const int TotalBucketsMask = TotalBuckets - 1;
+        public int Length;
+        public Entry[] Entries;
 
-        private struct Entry
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Span<Entry> AsSpan()
         {
-            public int Hash;
-            public TKey Key;
-            public TValue Value;
+            return Entries == null ? Span<Entry>.Empty : Entries.AsSpan(0, Length);
         }
+    }
 
-        private struct Bucket
+    private readonly Bucket[] _hashTable = new Bucket[TotalBuckets];
+
+    public IEnumerable<TKey> Keys
+    {
+        get
         {
-            public int Length;
-            public Entry[] Entries;
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public readonly Span<Entry> AsSpan()
+            foreach (Bucket bucket in _hashTable)
             {
-                return Entries == null ? Span<Entry>.Empty : Entries.AsSpan(0, Length);
-            }
-        }
-
-        private readonly Bucket[] _hashTable = new Bucket[TotalBuckets];
-
-        public IEnumerable<TKey> Keys
-        {
-            get
-            {
-                foreach (Bucket bucket in _hashTable)
+                for (int i = 0; i < bucket.Length; i++)
                 {
-                    for (int i = 0; i < bucket.Length; i++)
-                    {
-                        yield return bucket.Entries[i].Key;
-                    }
+                    yield return bucket.Entries[i].Key;
                 }
             }
         }
+    }
 
-        public IEnumerable<TValue> Values
+    public IEnumerable<TValue> Values
+    {
+        get
         {
-            get
+            foreach (Bucket bucket in _hashTable)
             {
-                foreach (Bucket bucket in _hashTable)
+                for (int i = 0; i < bucket.Length; i++)
                 {
-                    for (int i = 0; i < bucket.Length; i++)
-                    {
-                        yield return bucket.Entries[i].Value;
-                    }
+                    yield return bucket.Entries[i].Value;
                 }
             }
         }
+    }
 
-        public void Add(ref TKey key, TValue value)
+    public void Add(ref TKey key, TValue value)
+    {
+        var entry = new Entry
         {
-            var entry = new Entry
+            Hash = key.GetHashCode(),
+            Key = key,
+            Value = value,
+        };
+
+        int hashCode = key.GetHashCode();
+        int bucketIndex = hashCode & TotalBucketsMask;
+
+        ref var bucket = ref _hashTable[bucketIndex];
+        if (bucket.Entries != null)
+        {
+            int index = bucket.Length;
+
+            if (index >= bucket.Entries.Length)
             {
-                Hash = key.GetHashCode(),
-                Key = key,
-                Value = value,
+                Array.Resize(ref bucket.Entries, index + 1);
+            }
+
+            bucket.Entries[index] = entry;
+        }
+        else
+        {
+            bucket.Entries = new[]
+            {
+                entry,
             };
-
-            int hashCode = key.GetHashCode();
-            int bucketIndex = hashCode & TotalBucketsMask;
-
-            ref var bucket = ref _hashTable[bucketIndex];
-            if (bucket.Entries != null)
-            {
-                int index = bucket.Length;
-
-                if (index >= bucket.Entries.Length)
-                {
-                    Array.Resize(ref bucket.Entries, index + 1);
-                }
-
-                bucket.Entries[index] = entry;
-            }
-            else
-            {
-                bucket.Entries = new[]
-                {
-                    entry,
-                };
-            }
-
-            bucket.Length++;
         }
 
-        public bool Remove(ref TKey key)
+        bucket.Length++;
+    }
+
+    public bool Remove(ref TKey key)
+    {
+        int hashCode = key.GetHashCode();
+
+        ref var bucket = ref _hashTable[hashCode & TotalBucketsMask];
+        var entries = bucket.AsSpan();
+        for (int i = 0; i < entries.Length; i++)
         {
-            int hashCode = key.GetHashCode();
+            ref var entry = ref entries[i];
 
-            ref var bucket = ref _hashTable[hashCode & TotalBucketsMask];
-            var entries = bucket.AsSpan();
-            for (int i = 0; i < entries.Length; i++)
+            if (entry.Hash == hashCode && entry.Key.Equals(ref key))
             {
-                ref var entry = ref entries[i];
+                entries[(i + 1)..].CopyTo(entries[i..]);
+                bucket.Length--;
 
-                if (entry.Hash == hashCode && entry.Key.Equals(ref key))
-                {
-                    entries[(i + 1)..].CopyTo(entries[i..]);
-                    bucket.Length--;
-
-                    return true;
-                }
+                return true;
             }
-
-            return false;
         }
 
-        public bool TryGetValue(ref TKey key, out TValue value)
+        return false;
+    }
+
+    public bool TryGetValue(ref TKey key, out TValue value)
+    {
+        int hashCode = key.GetHashCode();
+
+        var entries = _hashTable[hashCode & TotalBucketsMask].AsSpan();
+        for (int i = 0; i < entries.Length; i++)
         {
-            int hashCode = key.GetHashCode();
+            ref var entry = ref entries[i];
 
-            var entries = _hashTable[hashCode & TotalBucketsMask].AsSpan();
-            for (int i = 0; i < entries.Length; i++)
+            if (entry.Hash == hashCode && entry.Key.Equals(ref key))
             {
-                ref var entry = ref entries[i];
-
-                if (entry.Hash == hashCode && entry.Key.Equals(ref key))
-                {
-                    value = entry.Value;
-                    return true;
-                }
+                value = entry.Value;
+                return true;
             }
-
-            value = default;
-            return false;
         }
+
+        value = default;
+        return false;
     }
 }

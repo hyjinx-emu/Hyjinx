@@ -1,5 +1,5 @@
-﻿using System;
 using LibHac.Gc.Impl;
+using System;
 
 namespace LibHac.Gc.Writer;
 

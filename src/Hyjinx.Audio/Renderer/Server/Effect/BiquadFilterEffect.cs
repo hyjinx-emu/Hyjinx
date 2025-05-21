@@ -7,61 +7,60 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Audio.Renderer.Server.Effect
+namespace Hyjinx.Audio.Renderer.Server.Effect;
+
+/// <summary>
+/// Server state for a biquad filter effect.
+/// </summary>
+public class BiquadFilterEffect : BaseEffect
 {
     /// <summary>
-    /// Server state for a biquad filter effect.
+    /// The biquad filter parameter.
     /// </summary>
-    public class BiquadFilterEffect : BaseEffect
+    public BiquadFilterEffectParameter Parameter;
+
+    /// <summary>
+    /// The biquad filter state.
+    /// </summary>
+    public Memory<BiquadFilterState> State { get; }
+
+    /// <summary>
+    /// Create a new <see cref="BiquadFilterEffect"/>.
+    /// </summary>
+    public BiquadFilterEffect()
     {
-        /// <summary>
-        /// The biquad filter parameter.
-        /// </summary>
-        public BiquadFilterEffectParameter Parameter;
+        Parameter = new BiquadFilterEffectParameter();
+        State = new BiquadFilterState[Constants.ChannelCountMax];
+    }
 
-        /// <summary>
-        /// The biquad filter state.
-        /// </summary>
-        public Memory<BiquadFilterState> State { get; }
+    public override EffectType TargetEffectType => EffectType.BiquadFilter;
 
-        /// <summary>
-        /// Create a new <see cref="BiquadFilterEffect"/>.
-        /// </summary>
-        public BiquadFilterEffect()
-        {
-            Parameter = new BiquadFilterEffectParameter();
-            State = new BiquadFilterState[Constants.ChannelCountMax];
-        }
+    public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion1 parameter, PoolMapper mapper)
+    {
+        Update(out updateErrorInfo, in parameter, mapper);
+    }
 
-        public override EffectType TargetEffectType => EffectType.BiquadFilter;
+    public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion2 parameter, PoolMapper mapper)
+    {
+        Update(out updateErrorInfo, in parameter, mapper);
+    }
 
-        public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion1 parameter, PoolMapper mapper)
-        {
-            Update(out updateErrorInfo, in parameter, mapper);
-        }
+    public void Update<T>(out BehaviourParameter.ErrorInfo updateErrorInfo, in T parameter, PoolMapper mapper) where T : unmanaged, IEffectInParameter
+    {
+        Debug.Assert(IsTypeValid(in parameter));
 
-        public override void Update(out BehaviourParameter.ErrorInfo updateErrorInfo, in EffectInParameterVersion2 parameter, PoolMapper mapper)
-        {
-            Update(out updateErrorInfo, in parameter, mapper);
-        }
+        UpdateParameterBase(in parameter);
 
-        public void Update<T>(out BehaviourParameter.ErrorInfo updateErrorInfo, in T parameter, PoolMapper mapper) where T : unmanaged, IEffectInParameter
-        {
-            Debug.Assert(IsTypeValid(in parameter));
+        Parameter = MemoryMarshal.Cast<byte, BiquadFilterEffectParameter>(parameter.SpecificData)[0];
+        IsEnabled = parameter.IsEnabled;
 
-            UpdateParameterBase(in parameter);
+        updateErrorInfo = new BehaviourParameter.ErrorInfo();
+    }
 
-            Parameter = MemoryMarshal.Cast<byte, BiquadFilterEffectParameter>(parameter.SpecificData)[0];
-            IsEnabled = parameter.IsEnabled;
+    public override void UpdateForCommandGeneration()
+    {
+        UpdateUsageStateForCommandGeneration();
 
-            updateErrorInfo = new BehaviourParameter.ErrorInfo();
-        }
-
-        public override void UpdateForCommandGeneration()
-        {
-            UpdateUsageStateForCommandGeneration();
-
-            Parameter.Status = UsageState.Enabled;
-        }
+        Parameter.Status = UsageState.Enabled;
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
 using LibHac.Fs;
+using System;
+using System.Collections.Generic;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -40,7 +40,8 @@ public class CachedStorage : IStorage
         int outOffset = 0;
 
         Result res = CheckAccessRange(offset, destination.Length, Length);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         lock (Blocks)
         {
@@ -70,7 +71,8 @@ public class CachedStorage : IStorage
         int outOffset = 0;
 
         Result res = CheckAccessRange(offset, source.Length, Length);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         lock (Blocks)
         {
@@ -117,10 +119,12 @@ public class CachedStorage : IStorage
     public override Result SetSize(long size)
     {
         Result res = BaseStorage.SetSize(size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = BaseStorage.GetSize(out long newSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Length = newSize;
 
@@ -197,7 +201,8 @@ public class CachedStorage : IStorage
 
     private void FlushBlock(CacheBlock block)
     {
-        if (!block.Dirty) return;
+        if (!block.Dirty)
+            return;
 
         long offset = block.Index * BlockSize;
         BaseStorage.Write(offset, block.Buffer.AsSpan(0, block.Length)).ThrowIfFailure();

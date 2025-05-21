@@ -1,10 +1,9 @@
-namespace ARMeilleure.IntermediateRepresentation
+namespace ARMeilleure.IntermediateRepresentation;
+
+enum RegisterType
 {
-    enum RegisterType
-    {
-        Integer,
-        Vector,
-        Flag,
-        FpFlag,
-    }
+    Integer,
+    Vector,
+    Flag,
+    FpFlag,
 }

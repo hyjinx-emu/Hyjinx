@@ -1,4 +1,4 @@
-﻿using LibHac.Diag;
+using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSrv.FsCreator;
 using LibHac.FsSystem;
@@ -90,7 +90,8 @@ public class StatusReportServiceImpl
         Assert.SdkRequiresNotNull(_config.SaveDataFileSystemServiceImpl);
 
         Result res = _config.SaveDataFileSystemServiceImpl.GetSaveDataIndexCount(out int count);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         errorInfo.SaveDataIndexCount = count;
         return Result.Success;

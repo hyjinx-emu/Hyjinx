@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System;
+using System.IO;
 
 namespace LibHac.Tools.FsSystem.Save;
 
@@ -29,7 +29,8 @@ public class SaveDataFile : IFile
         UnsafeHelpers.SkipParamInit(out bytesRead);
 
         Result res = DryRead(out long toRead, offset, destination.Length, in option, Mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (toRead == 0)
         {
@@ -38,7 +39,8 @@ public class SaveDataFile : IFile
         }
 
         res = BaseStorage.Read(offset, destination.Slice(0, (int)toRead));
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         bytesRead = toRead;
         return Result.Success;
@@ -47,16 +49,19 @@ public class SaveDataFile : IFile
     protected override Result DoWrite(long offset, ReadOnlySpan<byte> source, in WriteOption option)
     {
         Result res = DryWrite(out bool isResizeNeeded, offset, source.Length, in option, Mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (isResizeNeeded)
         {
             res = DoSetSize(offset + source.Length);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         res = BaseStorage.Write(offset, source);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (option.HasFlushFlag())
         {
@@ -79,11 +84,14 @@ public class SaveDataFile : IFile
 
     protected override Result DoSetSize(long size)
     {
-        if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
-        if (Size == size) return Result.Success;
+        if (size < 0)
+            throw new ArgumentOutOfRangeException(nameof(size));
+        if (Size == size)
+            return Result.Success;
 
         Result res = BaseStorage.SetSize(size);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!FileTable.TryOpenFile(Path, out SaveFileInfo fileInfo))
         {

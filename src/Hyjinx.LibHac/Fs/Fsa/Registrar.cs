@@ -1,7 +1,7 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Impl;
+using System;
 
 namespace LibHac.Fs.Fsa;
 
@@ -114,7 +114,8 @@ public static class Registrar
             ref fileSystem, ref mountNameGenerator.Ref, ref attributeGetter.Ref));
 
         Result res = fs.Impl.Register(ref accessor.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -128,7 +129,8 @@ public static class Registrar
             ref fileSystem, ref mountNameGenerator, ref attributeGetter.Ref));
 
         Result res = fs.Impl.Register(ref accessor.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -143,7 +145,8 @@ public static class Registrar
         Result res = Register(fs, name, multiCommitTarget, ref fileSystem, ref mountNameGenerator,
             ref attributeGetter.Ref, useDataCache, storageForPurgeFileDataCache, usePathCache,
             ref unmountHookInvoker.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -157,7 +160,8 @@ public static class Registrar
 
         Result res = Register(fs, name, multiCommitTarget, ref fileSystem, ref mountNameGenerator,
             ref attributeGetter.Ref, useDataCache, storageForPurgeFileDataCache, usePathCache, ref unmountHook);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -172,7 +176,8 @@ public static class Registrar
         Result res = Register(fs, name, multiCommitTarget, ref fileSystem, ref mountNameGenerator,
             ref saveAttributeGetter, useDataCache, storageForPurgeFileDataCache, usePathCache,
             ref unmountHookInvoker.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -204,7 +209,8 @@ public static class Registrar
         accessor.Get.SetPathBasedFileDataCacheAttachable(usePathCache);
 
         Result res = fs.Impl.Register(ref accessor.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

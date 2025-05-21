@@ -1,14 +1,13 @@
-namespace Hyjinx.Graphics.Texture
-{
-    public readonly struct Region
-    {
-        public int Offset { get; }
-        public int Size { get; }
+namespace Hyjinx.Graphics.Texture;
 
-        public Region(int offset, int size)
-        {
-            Offset = offset;
-            Size = size;
-        }
+public readonly struct Region
+{
+    public int Offset { get; }
+    public int Size { get; }
+
+    public Region(int offset, int size)
+    {
+        Offset = offset;
+        Size = size;
     }
 }

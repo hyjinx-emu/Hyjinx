@@ -1,17 +1,16 @@
-namespace Hyjinx.Horizon.Bcat
+namespace Hyjinx.Horizon.Bcat;
+
+internal class BcatMain : IService
 {
-    internal class BcatMain : IService
+    public static void Main(ServiceTable serviceTable)
     {
-        public static void Main(ServiceTable serviceTable)
-        {
-            BcatIpcServer ipcServer = new();
+        BcatIpcServer ipcServer = new();
 
-            ipcServer.Initialize();
+        ipcServer.Initialize();
 
-            serviceTable.SignalServiceReady();
+        serviceTable.SignalServiceReady();
 
-            ipcServer.ServiceRequests();
-            ipcServer.Shutdown();
-        }
+        ipcServer.ServiceRequests();
+        ipcServer.Shutdown();
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace LibHac.Settings;
+namespace LibHac.Settings;
 
 public enum Language
 {

@@ -3,51 +3,50 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hyjinx.HLE.Kernel.Generators
+namespace Hyjinx.HLE.Kernel.Generators;
+
+class SyscallSyntaxReceiver : ISyntaxReceiver
 {
-    class SyscallSyntaxReceiver : ISyntaxReceiver
+    public List<MethodDeclarationSyntax> SvcImplementations { get; }
+
+    public SyscallSyntaxReceiver()
     {
-        public List<MethodDeclarationSyntax> SvcImplementations { get; }
+        SvcImplementations = new List<MethodDeclarationSyntax>();
+    }
 
-        public SyscallSyntaxReceiver()
+    public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+    {
+        if (!(syntaxNode is ClassDeclarationSyntax classDeclaration) || classDeclaration.AttributeLists.Count == 0)
         {
-            SvcImplementations = new List<MethodDeclarationSyntax>();
+            return;
         }
 
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+        if (!classDeclaration.AttributeLists.Any(attributeList =>
+                attributeList.Attributes.Any(x => x.Name.GetText().ToString() == "SvcImpl")))
         {
-            if (!(syntaxNode is ClassDeclarationSyntax classDeclaration) || classDeclaration.AttributeLists.Count == 0)
-            {
-                return;
-            }
-
-            if (!classDeclaration.AttributeLists.Any(attributeList =>
-                    attributeList.Attributes.Any(x => x.Name.GetText().ToString() == "SvcImpl")))
-            {
-                return;
-            }
-
-            foreach (var memberDeclaration in classDeclaration.Members)
-            {
-                if (memberDeclaration is MethodDeclarationSyntax methodDeclaration)
-                {
-                    VisitMethod(methodDeclaration);
-                }
-            }
+            return;
         }
 
-        private void VisitMethod(MethodDeclarationSyntax methodDeclaration)
+        foreach (var memberDeclaration in classDeclaration.Members)
         {
-            if (methodDeclaration.AttributeLists.Count == 0)
+            if (memberDeclaration is MethodDeclarationSyntax methodDeclaration)
             {
-                return;
+                VisitMethod(methodDeclaration);
             }
+        }
+    }
 
-            if (methodDeclaration.AttributeLists.Any(attributeList =>
-                    attributeList.Attributes.Any(x => x.Name.GetText().ToString() == "Svc")))
-            {
-                SvcImplementations.Add(methodDeclaration);
-            }
+    private void VisitMethod(MethodDeclarationSyntax methodDeclaration)
+    {
+        if (methodDeclaration.AttributeLists.Count == 0)
+        {
+            return;
+        }
+
+        if (methodDeclaration.AttributeLists.Any(attributeList =>
+                attributeList.Attributes.Any(x => x.Name.GetText().ToString() == "Svc")))
+        {
+            SvcImplementations.Add(methodDeclaration);
         }
     }
 }

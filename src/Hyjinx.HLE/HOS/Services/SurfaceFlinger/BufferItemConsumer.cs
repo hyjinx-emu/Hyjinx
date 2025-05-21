@@ -1,95 +1,94 @@
 using Hyjinx.Graphics.Gpu;
 using System;
 
-namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger
+namespace Hyjinx.HLE.HOS.Services.SurfaceFlinger;
+
+class BufferItemConsumer : ConsumerBase
 {
-    class BufferItemConsumer : ConsumerBase
+    private readonly GpuContext _gpuContext;
+
+    public BufferItemConsumer(Switch device,
+        BufferQueueConsumer consumer,
+        uint consumerUsage,
+        int bufferCount,
+        bool controlledByApp,
+        IConsumerListener listener = null) : base(consumer, controlledByApp, listener)
     {
-        private readonly GpuContext _gpuContext;
+        _gpuContext = device.Gpu;
 
-        public BufferItemConsumer(Switch device,
-            BufferQueueConsumer consumer,
-            uint consumerUsage,
-            int bufferCount,
-            bool controlledByApp,
-            IConsumerListener listener = null) : base(consumer, controlledByApp, listener)
+        Status status = Consumer.SetConsumerUsageBits(consumerUsage);
+
+        if (status != Status.Success)
         {
-            _gpuContext = device.Gpu;
+            throw new InvalidOperationException();
+        }
 
-            Status status = Consumer.SetConsumerUsageBits(consumerUsage);
+        if (bufferCount != -1)
+        {
+            status = Consumer.SetMaxAcquiredBufferCount(bufferCount);
 
             if (status != Status.Success)
             {
                 throw new InvalidOperationException();
             }
-
-            if (bufferCount != -1)
-            {
-                status = Consumer.SetMaxAcquiredBufferCount(bufferCount);
-
-                if (status != Status.Success)
-                {
-                    throw new InvalidOperationException();
-                }
-            }
         }
+    }
 
-        public Status AcquireBuffer(out BufferItem bufferItem, ulong expectedPresent, bool waitForFence = false)
+    public Status AcquireBuffer(out BufferItem bufferItem, ulong expectedPresent, bool waitForFence = false)
+    {
+        lock (Lock)
         {
-            lock (Lock)
+            Status status = AcquireBufferLocked(out BufferItem tmp, expectedPresent);
+
+            if (status != Status.Success)
             {
-                Status status = AcquireBufferLocked(out BufferItem tmp, expectedPresent);
+                bufferItem = null;
 
-                if (status != Status.Success)
-                {
-                    bufferItem = null;
-
-                    return status;
-                }
-
-                // Make sure to clone the object to not temper the real instance.
-                bufferItem = (BufferItem)tmp.Clone();
-
-                if (waitForFence)
-                {
-                    bufferItem.Fence.WaitForever(_gpuContext);
-                }
-
-                bufferItem.GraphicBuffer.Set(Slots[bufferItem.Slot].GraphicBuffer);
-
-                return Status.Success;
+                return status;
             }
+
+            // Make sure to clone the object to not temper the real instance.
+            bufferItem = (BufferItem)tmp.Clone();
+
+            if (waitForFence)
+            {
+                bufferItem.Fence.WaitForever(_gpuContext);
+            }
+
+            bufferItem.GraphicBuffer.Set(Slots[bufferItem.Slot].GraphicBuffer);
+
+            return Status.Success;
         }
+    }
 
-        public Status ReleaseBuffer(BufferItem bufferItem, ref AndroidFence fence)
+    public Status ReleaseBuffer(BufferItem bufferItem, ref AndroidFence fence)
+    {
+        lock (Lock)
         {
-            lock (Lock)
+            Status result = AddReleaseFenceLocked(bufferItem.Slot, ref bufferItem.GraphicBuffer, ref fence);
+
+            if (result == Status.Success)
             {
-                Status result = AddReleaseFenceLocked(bufferItem.Slot, ref bufferItem.GraphicBuffer, ref fence);
-
-                if (result == Status.Success)
-                {
-                    result = ReleaseBufferLocked(bufferItem.Slot, ref bufferItem.GraphicBuffer);
-                }
-
-                return result;
+                result = ReleaseBufferLocked(bufferItem.Slot, ref bufferItem.GraphicBuffer);
             }
+
+            return result;
         }
+    }
 
-        public Status SetDefaultBufferSize(uint width, uint height)
+    public Status SetDefaultBufferSize(uint width, uint height)
+    {
+        lock (Lock)
         {
-            lock (Lock)
-            {
-                return Consumer.SetDefaultBufferSize(width, height);
-            }
+            return Consumer.SetDefaultBufferSize(width, height);
         }
+    }
 
-        public Status SetDefaultBufferFormat(PixelFormat defaultFormat)
+    public Status SetDefaultBufferFormat(PixelFormat defaultFormat)
+    {
+        lock (Lock)
         {
-            lock (Lock)
-            {
-                return Consumer.SetDefaultBufferFormat(defaultFormat);
-            }
+            return Consumer.SetDefaultBufferFormat(defaultFormat);
         }
     }
 }

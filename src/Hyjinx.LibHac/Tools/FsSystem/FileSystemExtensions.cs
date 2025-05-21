@@ -1,14 +1,14 @@
-﻿using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tools.Fs;
 using LibHac.Util;
+using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.CompilerServices;
 using Path = LibHac.Fs.Path;
 using Utility = LibHac.FsSystem.Utility;
 
@@ -25,11 +25,13 @@ public static class FileSystemExtensions
 
         using var sourcePathNormalized = new Path();
         Result res = InitializeFromString(ref sourcePathNormalized.Ref(), sourcePath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var destPathNormalized = new Path();
         res = InitializeFromString(ref destPathNormalized.Ref(), destPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         byte[] workBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
@@ -52,10 +54,12 @@ public static class FileSystemExtensions
             ref Utility.FsIterationTaskClosure closure)
         {
             Result res = closure.DestinationPathBuffer.AppendChild(entry.Name);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = closure.DestFileSystem.CreateDirectory(in closure.DestinationPathBuffer);
-            if (res.IsFailure() && !ResultFs.PathAlreadyExists.Includes(res)) return res.Miss();
+            if (res.IsFailure() && !ResultFs.PathAlreadyExists.Includes(res))
+                return res.Miss();
 
             return Result.Success;
         }
@@ -70,11 +74,13 @@ public static class FileSystemExtensions
             logger?.LogMessage(path.ToString());
 
             Result result = closure.DestinationPathBuffer.AppendChild(entry.Name);
-            if (result.IsFailure()) return result;
+            if (result.IsFailure())
+                return result;
 
             result = CopyFile(closure.DestFileSystem, closure.SourceFileSystem, in closure.DestinationPathBuffer,
                 in path, closure.Buffer, logger, option);
-            if (result.IsFailure()) return result;
+            if (result.IsFailure())
+                return result;
 
             return closure.DestinationPathBuffer.RemoveChild();
         }
@@ -85,7 +91,8 @@ public static class FileSystemExtensions
         taskClosure.DestFileSystem = destinationFileSystem;
 
         Result res = taskClosure.DestinationPathBuffer.Initialize(destinationPath);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = Utility.IterateDirectoryRecursively(sourceFileSystem, in sourcePath, ref dirEntry, OnEnterDir,
             OnExitDir, OnFile, ref taskClosure);
@@ -101,17 +108,21 @@ public static class FileSystemExtensions
         // Open source file.
         using var sourceFile = new UniqueRef<IFile>();
         Result res = sourceFileSystem.OpenFile(ref sourceFile.Ref, sourcePath, OpenMode.Read);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = sourceFile.Get.GetSize(out long fileSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = CreateOrOverwriteFile(destFileSystem, in destPath, fileSize, option);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var destFile = new UniqueRef<IFile>();
         res = destFileSystem.OpenFile(ref destFile.Ref, in destPath, OpenMode.Write);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         // Read/Write file in work buffer sized chunks.
         long remaining = fileSize;
@@ -122,10 +133,12 @@ public static class FileSystemExtensions
         while (remaining > 0)
         {
             res = sourceFile.Get.Read(out long bytesRead, offset, workBuffer, ReadOption.None);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = destFile.Get.Write(offset, workBuffer.Slice(0, (int)bytesRead), WriteOption.None);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             remaining -= bytesRead;
             offset += bytesRead;
@@ -178,7 +191,8 @@ public static class FileSystemExtensions
             Unsafe.SkipInit(out DirectoryEntry dirEntry);
 
             directory.Get.Read(out long entriesRead, SpanHelpers.AsSpan(ref dirEntry)).ThrowIfFailure();
-            if (entriesRead == 0) break;
+            if (entriesRead == 0)
+                break;
 
             DirectoryEntryEx entry = GetDirectoryEntryEx(ref dirEntry, path);
 
@@ -187,7 +201,8 @@ public static class FileSystemExtensions
                 yield return entry;
             }
 
-            if (entry.Type != DirectoryEntryType.Directory || !recurse) continue;
+            if (entry.Type != DirectoryEntryType.Directory || !recurse)
+                continue;
 
             IEnumerable<DirectoryEntryEx> subEntries =
                 fileSystem.EnumerateEntries(PathTools.Combine(path, entry.Name), searchPattern,
@@ -228,7 +243,8 @@ public static class FileSystemExtensions
             while (true)
             {
                 file.Read(out long bytesRead, inOffset, buffer).ThrowIfFailure();
-                if (bytesRead == 0) break;
+                if (bytesRead == 0)
+                    break;
 
                 dest.Write(inOffset, buffer.AsSpan(0, (int)bytesRead)).ThrowIfFailure();
                 inOffset += bytesRead;
@@ -347,7 +363,8 @@ public static class FileSystemExtensions
     {
         using var pathNormalized = new Path();
         Result res = InitializeFromString(ref pathNormalized.Ref(), path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Utility.EnsureDirectory(fs, in pathNormalized);
     }
@@ -363,10 +380,12 @@ public static class FileSystemExtensions
                 return res;
 
             res = fileSystem.DeleteFile(in path);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = fileSystem.CreateFile(in path, size, option);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
         }
 
         return Result.Success;
@@ -377,12 +396,14 @@ public static class FileSystemExtensions
         ReadOnlySpan<byte> utf8Path = StringUtils.StringToUtf8(path);
 
         Result res = outPath.Initialize(utf8Path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var pathFlags = new PathFlags();
         pathFlags.AllowEmptyPath();
         outPath.Normalize(pathFlags);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

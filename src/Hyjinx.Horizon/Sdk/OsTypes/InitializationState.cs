@@ -1,8 +1,7 @@
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+enum InitializationState : byte
 {
-    enum InitializationState : byte
-    {
-        NotInitialized,
-        Initialized,
-    }
+    NotInitialized,
+    Initialized,
 }

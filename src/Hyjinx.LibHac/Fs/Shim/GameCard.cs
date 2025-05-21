@@ -1,5 +1,3 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
@@ -9,6 +7,8 @@ using LibHac.Gc;
 using LibHac.Os;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using static LibHac.Gc.Values;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
@@ -28,9 +28,12 @@ public static class GameCard
     {
         switch (partition)
         {
-            case GameCardPartition.Update: return CommonMountNames.GameCardFileSystemMountNameSuffixUpdate;
-            case GameCardPartition.Normal: return CommonMountNames.GameCardFileSystemMountNameSuffixNormal;
-            case GameCardPartition.Secure: return CommonMountNames.GameCardFileSystemMountNameSuffixSecure;
+            case GameCardPartition.Update:
+                return CommonMountNames.GameCardFileSystemMountNameSuffixUpdate;
+            case GameCardPartition.Normal:
+                return CommonMountNames.GameCardFileSystemMountNameSuffixNormal;
+            case GameCardPartition.Secure:
+                return CommonMountNames.GameCardFileSystemMountNameSuffixSecure;
             default:
                 Abort.UnexpectedDefault();
                 return default;
@@ -84,11 +87,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetGameCardHandle(out GameCardHandle handle);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outHandle = handle;
         return Result.Success;
@@ -121,7 +126,8 @@ public static class GameCard
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.System))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -131,13 +137,15 @@ public static class GameCard
         static Result Mount(FileSystemClient fs, U8Span mountName, GameCardHandle handle, GameCardPartition partitionId)
         {
             Result res = fs.Impl.CheckMountNameAcceptingReservedMountName(mountName);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using SharedRef<IFileSystemProxy> fileSystemProxy = fs.Impl.GetFileSystemProxyServiceObject();
             using var fileSystem = new SharedRef<IFileSystemSf>();
 
             res = fileSystemProxy.Get.OpenGameCardFileSystem(ref fileSystem.Ref, handle, partitionId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             using var fileSystemAdapter =
                 new UniqueRef<IFileSystem>(new FileSystemServiceObjectAdapter(ref fileSystem.Ref));
@@ -179,7 +187,8 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenGameCardStorage(ref storage.Ref, handle, partitionType);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using var storageAdapter = new UniqueRef<IStorage>(new StorageServiceObjectAdapter(ref storage.Ref));
 
@@ -197,11 +206,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.EraseGameCard((uint)cardSize, romAreaStartPageAddress);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -216,11 +227,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetGameCardUpdatePartitionInfo(out uint cupVersion, out ulong cupId, handle);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outPartitionInfo.CupVersion = cupVersion;
         outPartitionInfo.CupId = cupId;
@@ -252,11 +265,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetGameCardAttribute(out byte gameCardAttribute, handle);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outAttribute = (GameCardAttribute)gameCardAttribute;
 
@@ -273,11 +288,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetGameCardCompatibilityType(out byte gameCardCompatibilityType, handle);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outCompatibilityType = (GameCardCompatibilityType)gameCardCompatibilityType;
 
@@ -292,11 +309,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetGameCardDeviceCertificate(new OutBuffer(outBuffer), outBuffer.Length, handle);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -309,12 +328,14 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.ChallengeCardExistence(new OutBuffer(responseBuffer), new InBuffer(challengeSeedBuffer),
             new InBuffer(challengeValueBuffer), handle);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -329,14 +350,16 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Unsafe.SkipInit(out RmaInformation rmaInformation);
 
         res = deviceOperator.Get.GetGameCardAsicInfo(OutBuffer.FromStruct(ref rmaInformation),
             Unsafe.SizeOf<RmaInformation>(), new InBuffer(asicFirmwareBuffer), asicFirmwareBuffer.Length);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outRmaInfo = rmaInformation;
 
@@ -352,13 +375,15 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Unsafe.SkipInit(out GameCardIdSet gcIdSet);
 
         res = deviceOperator.Get.GetGameCardIdSet(OutBuffer.FromStruct(ref gcIdSet), Unsafe.SizeOf<GameCardIdSet>());
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outGcIdSet = gcIdSet;
 
@@ -381,13 +406,15 @@ public static class GameCard
 
         res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Unsafe.SkipInit(out GameCardIdSet gcIdSet);
 
         res = deviceOperator.Get.GetGameCardIdSet(OutBuffer.FromStruct(ref gcIdSet), Unsafe.SizeOf<GameCardIdSet>());
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         SpanHelpers.AsByteSpan(ref gcIdSet).CopyTo(outCidBuffer);
 
@@ -401,11 +428,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.WriteToGameCardDirectly(offset, new OutBuffer(buffer), buffer.Length);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -417,11 +446,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.SetVerifyWriteEnableFlag(isEnabled);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -433,11 +464,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetGameCardImageHash(new OutBuffer(outBuffer), outBuffer.Length, handle);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -450,12 +483,14 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetGameCardDeviceIdForProdCard(new OutBuffer(outIdBuffer), outIdBuffer.Length,
             new InBuffer(devHeaderBuffer), devHeaderBuffer.Length);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -467,11 +502,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.EraseAndWriteParamDirectly(new InBuffer(devParamBuffer), devParamBuffer.Length);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -483,11 +520,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.ReadParamDirectly(new OutBuffer(outBuffer), outBuffer.Length);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -499,11 +538,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.ForceEraseGameCard();
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -517,11 +558,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetGameCardErrorInfo(out GameCardErrorInfo gameCardErrorInfo);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outErrorInfo = gameCardErrorInfo;
 
@@ -537,11 +580,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.GetGameCardErrorReportInfo(out GameCardErrorReportInfo gameCardErrorReportInfo);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outErrorInfo = gameCardErrorReportInfo;
 
@@ -556,7 +601,8 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenGameCardFileSystem(ref fileSystem.Ref, handle, partitionId);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -578,13 +624,15 @@ public static class GameCard
 
         res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         Span<byte> buffer = stackalloc byte[GcCardDeviceIdSize];
 
         res = deviceOperator.Get.GetGameCardDeviceId(new OutBuffer(buffer), GcCardDeviceIdSize);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         buffer.CopyTo(outBuffer);
 
@@ -599,11 +647,13 @@ public static class GameCard
         using var deviceOperator = new SharedRef<IDeviceOperator>();
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.SetDeviceSimulationEvent((uint)SdmmcPort.GcAsic, (uint)simulatedOperationType,
             (uint)simulatedFailureType, failureResult.Value, autoClearEvent);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -615,7 +665,8 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.SimulateDeviceDetectionEvent(SdmmcPort.GcAsic, mode, signalEvent);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -627,7 +678,8 @@ public static class GameCard
         Result res = SetGameCardSimulationEventImpl(fs, simulatedOperationType, simulatedFailureType, Result.Success,
             autoClearEvent: false);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -639,7 +691,8 @@ public static class GameCard
         Result res = SetGameCardSimulationEventImpl(fs, simulatedOperationType, simulatedFailureType, Result.Success,
             autoClearEvent);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -650,7 +703,8 @@ public static class GameCard
         Result res = SetGameCardSimulationEventImpl(fs, simulatedOperationType,
             SimulatingDeviceAccessFailureEventType.AccessFailure, failureResult, autoClearEvent);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -662,11 +716,13 @@ public static class GameCard
 
         Result res = fileSystemProxy.Get.OpenDeviceOperator(ref deviceOperator.Ref);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = deviceOperator.Get.ClearDeviceSimulationEvent((uint)SdmmcPort.GcAsic);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

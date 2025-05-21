@@ -1,12 +1,11 @@
-namespace Hyjinx.Common.Memory
-{
-    public class Box<T> where T : unmanaged
-    {
-        public T Data;
+namespace Hyjinx.Common.Memory;
 
-        public Box()
-        {
-            Data = new T();
-        }
+public class Box<T> where T : unmanaged
+{
+    public T Data;
+
+    public Box()
+    {
+        Data = new T();
     }
 }

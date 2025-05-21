@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.Eupld
+namespace Hyjinx.HLE.HOS.Services.Eupld;
+
+[Service("eupld:r")]
+class IRequest : IpcService<IRequest>
 {
-    [Service("eupld:r")]
-    class IRequest : IpcService<IRequest>
-    {
-        public IRequest(ServiceCtx context) { }
-    }
+    public IRequest(ServiceCtx context) { }
 }

@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 
@@ -13,6 +13,6 @@ public interface IEncryptedFileSystemCreator
         CustomStorage = 2
     }
 
-    Result Create(ref SharedRef<IFileSystem> outEncryptedFileSystem, ref SharedRef<IFileSystem> baseFileSystem,
+    Result Create(ref SharedRef<IFileSystem> outFileSystem, ref SharedRef<IFileSystem> baseFileSystem,
         KeyId idIndex, in EncryptionSeed encryptionSeed);
 }

@@ -7,48 +7,47 @@ using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using System;
 
-namespace Hyjinx.Ava.UI.Views.Main
+namespace Hyjinx.Ava.UI.Views.Main;
+
+public partial class MainViewControls : UserControl
 {
-    public partial class MainViewControls : UserControl
+    public MainWindowViewModel ViewModel;
+
+    public MainViewControls()
     {
-        public MainWindowViewModel ViewModel;
+        InitializeComponent();
+    }
 
-        public MainViewControls()
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        if (VisualRoot is MainWindow window)
         {
-            InitializeComponent();
+            ViewModel = window.ViewModel;
         }
 
-        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        DataContext = ViewModel;
+    }
+
+    public void Sort_Checked(object sender, RoutedEventArgs args)
+    {
+        if (sender is RadioButton button)
         {
-            base.OnAttachedToVisualTree(e);
-
-            if (VisualRoot is MainWindow window)
-            {
-                ViewModel = window.ViewModel;
-            }
-
-            DataContext = ViewModel;
+            ViewModel.Sort(Enum.Parse<ApplicationSort>(button.Tag.ToString()));
         }
+    }
 
-        public void Sort_Checked(object sender, RoutedEventArgs args)
+    public void Order_Checked(object sender, RoutedEventArgs args)
+    {
+        if (sender is RadioButton button)
         {
-            if (sender is RadioButton button)
-            {
-                ViewModel.Sort(Enum.Parse<ApplicationSort>(button.Tag.ToString()));
-            }
+            ViewModel.Sort(button.Tag.ToString() != "Descending");
         }
+    }
 
-        public void Order_Checked(object sender, RoutedEventArgs args)
-        {
-            if (sender is RadioButton button)
-            {
-                ViewModel.Sort(button.Tag.ToString() != "Descending");
-            }
-        }
-
-        private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)
-        {
-            ViewModel.SearchText = SearchBox.Text;
-        }
+    private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)
+    {
+        ViewModel.SearchText = SearchBox.Text;
     }
 }

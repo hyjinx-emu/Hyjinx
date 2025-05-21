@@ -1,12 +1,11 @@
 using Hyjinx.Horizon.Common;
 using Hyjinx.Horizon.Sdk.Sf;
 
-namespace Hyjinx.Horizon.Sdk.Audio.Detail
+namespace Hyjinx.Horizon.Sdk.Audio.Detail;
+
+interface IAudioSnoopManager : IServiceObject
 {
-    interface IAudioSnoopManager : IServiceObject
-    {
-        Result EnableDspUsageMeasurement();
-        Result DisableDspUsageMeasurement();
-        Result GetDspUsage(out uint usage);
-    }
+    Result EnableDspUsageMeasurement();
+    Result DisableDspUsageMeasurement();
+    Result GetDspUsage(out uint usage);
 }

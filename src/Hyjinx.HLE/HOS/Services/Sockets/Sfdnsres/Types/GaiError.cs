@@ -1,22 +1,21 @@
-namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres
+namespace Hyjinx.HLE.HOS.Services.Sockets.Sfdnsres;
+
+enum GaiError
 {
-    enum GaiError
-    {
-        Success,
-        AddressFamily,
-        Again,
-        BadFlags,
-        Fail,
-        Family,
-        Memory,
-        NoData,
-        NoName,
-        Service,
-        SocketType,
-        System,
-        BadHints,
-        Protocol,
-        Overflow,
-        Max,
-    }
+    Success,
+    AddressFamily,
+    Again,
+    BadFlags,
+    Fail,
+    Family,
+    Memory,
+    NoData,
+    NoName,
+    Service,
+    SocketType,
+    System,
+    BadHints,
+    Protocol,
+    Overflow,
+    Max,
 }

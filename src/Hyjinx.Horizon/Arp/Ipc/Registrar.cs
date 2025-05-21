@@ -6,47 +6,46 @@ using Hyjinx.Horizon.Sdk.Sf;
 using Hyjinx.Horizon.Sdk.Sf.Hipc;
 using System;
 
-namespace Hyjinx.Horizon.Arp.Ipc
+namespace Hyjinx.Horizon.Arp.Ipc;
+
+partial class Registrar : IRegistrar, IServiceObject
 {
-    partial class Registrar : IRegistrar, IServiceObject
+    private readonly ApplicationInstance _applicationInstance;
+
+    public Registrar(ApplicationInstance applicationInstance)
     {
-        private readonly ApplicationInstance _applicationInstance;
+        _applicationInstance = applicationInstance;
+    }
 
-        public Registrar(ApplicationInstance applicationInstance)
+    [CmifCommand(0)]
+    public Result Issue(out ulong applicationInstanceId)
+    {
+        throw new NotImplementedException();
+    }
+
+    [CmifCommand(1)]
+    public Result SetApplicationLaunchProperty(ApplicationLaunchProperty applicationLaunchProperty)
+    {
+        if (_applicationInstance.LaunchProperty != null)
         {
-            _applicationInstance = applicationInstance;
+            return ArpResult.DataAlreadyBound;
         }
 
-        [CmifCommand(0)]
-        public Result Issue(out ulong applicationInstanceId)
+        _applicationInstance.LaunchProperty = applicationLaunchProperty;
+
+        return Result.Success;
+    }
+
+    [CmifCommand(2)]
+    public Result SetApplicationControlProperty([Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias | HipcBufferFlags.FixedSize, 0x4000)] in ApplicationControlProperty applicationControlProperty)
+    {
+        if (_applicationInstance.ControlProperty != null)
         {
-            throw new NotImplementedException();
+            return ArpResult.DataAlreadyBound;
         }
 
-        [CmifCommand(1)]
-        public Result SetApplicationLaunchProperty(ApplicationLaunchProperty applicationLaunchProperty)
-        {
-            if (_applicationInstance.LaunchProperty != null)
-            {
-                return ArpResult.DataAlreadyBound;
-            }
+        _applicationInstance.ControlProperty = applicationControlProperty;
 
-            _applicationInstance.LaunchProperty = applicationLaunchProperty;
-
-            return Result.Success;
-        }
-
-        [CmifCommand(2)]
-        public Result SetApplicationControlProperty([Buffer(HipcBufferFlags.In | HipcBufferFlags.MapAlias | HipcBufferFlags.FixedSize, 0x4000)] in ApplicationControlProperty applicationControlProperty)
-        {
-            if (_applicationInstance.ControlProperty != null)
-            {
-                return ArpResult.DataAlreadyBound;
-            }
-
-            _applicationInstance.ControlProperty = applicationControlProperty;
-
-            return Result.Success;
-        }
+        return Result.Success;
     }
 }

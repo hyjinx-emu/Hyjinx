@@ -1,5 +1,5 @@
-﻿using System;
 using LibHac.Fs;
+using System;
 
 namespace LibHac.FsSystem;
 
@@ -22,7 +22,8 @@ public class TruncatedSubStorage : SubStorage
             return Result.Success;
 
         Result res = BaseStorage.GetSize(out long baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         long availableSize = baseStorageSize - offset;
         long sizeToRead = Math.Min(destination.Length, availableSize);
@@ -36,7 +37,8 @@ public class TruncatedSubStorage : SubStorage
             return Result.Success;
 
         Result res = BaseStorage.GetSize(out long baseStorageSize);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         long availableSize = baseStorageSize - offset;
         long sizeToWrite = Math.Min(source.Length, availableSize);

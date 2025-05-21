@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Applets.Browser
+namespace Hyjinx.HLE.HOS.Applets.Browser;
+
+public struct WebArgHeader
 {
-    public struct WebArgHeader
-    {
-        public ushort Count;
-        public ushort Padding;
-        public ShimKind ShimKind;
-    }
+    public ushort Count;
+    public ushort Padding;
+    public ShimKind ShimKind;
 }

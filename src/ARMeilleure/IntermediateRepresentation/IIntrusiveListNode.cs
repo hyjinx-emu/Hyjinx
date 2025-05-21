@@ -1,8 +1,7 @@
-namespace ARMeilleure.IntermediateRepresentation
+namespace ARMeilleure.IntermediateRepresentation;
+
+interface IIntrusiveListNode<T>
 {
-    interface IIntrusiveListNode<T>
-    {
-        T ListPrevious { get; set; }
-        T ListNext { get; set; }
-    }
+    T ListPrevious { get; set; }
+    T ListNext { get; set; }
 }

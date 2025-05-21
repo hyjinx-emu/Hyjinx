@@ -1,23 +1,22 @@
-namespace Hyjinx.Graphics.Shader.IntermediateRepresentation
+namespace Hyjinx.Graphics.Shader.IntermediateRepresentation;
+
+class Function
 {
-    class Function
+    public BasicBlock[] Blocks { get; }
+
+    public string Name { get; }
+
+    public bool ReturnsValue { get; }
+
+    public int InArgumentsCount { get; }
+    public int OutArgumentsCount { get; }
+
+    public Function(BasicBlock[] blocks, string name, bool returnsValue, int inArgumentsCount, int outArgumentsCount)
     {
-        public BasicBlock[] Blocks { get; }
-
-        public string Name { get; }
-
-        public bool ReturnsValue { get; }
-
-        public int InArgumentsCount { get; }
-        public int OutArgumentsCount { get; }
-
-        public Function(BasicBlock[] blocks, string name, bool returnsValue, int inArgumentsCount, int outArgumentsCount)
-        {
-            Blocks = blocks;
-            Name = name;
-            ReturnsValue = returnsValue;
-            InArgumentsCount = inArgumentsCount;
-            OutArgumentsCount = outArgumentsCount;
-        }
+        Blocks = blocks;
+        Name = name;
+        ReturnsValue = returnsValue;
+        InArgumentsCount = inArgumentsCount;
+        OutArgumentsCount = outArgumentsCount;
     }
 }

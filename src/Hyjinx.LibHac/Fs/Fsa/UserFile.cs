@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Fs.Impl;
 using LibHac.Os;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 
 namespace LibHac.Fs.Fsa;
@@ -30,7 +30,8 @@ public static class UserFile
     {
         Result res = ReadFileImpl(fs, out long bytesRead, handle, offset, destination, in option);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (bytesRead == destination.Length)
             return Result.Success;
@@ -44,7 +45,8 @@ public static class UserFile
     {
         Result res = ReadFileImpl(fs, out long bytesRead, handle, offset, destination, ReadOption.None);
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (bytesRead == destination.Length)
             return Result.Success;
@@ -237,7 +239,8 @@ public static class UserFile
             ReadOnlySpan<byte>.Empty);
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         unpreparedRange = info.Range;
         return Result.Success;
@@ -253,7 +256,8 @@ public static class UserFile
             ReadOnlySpan<byte>.Empty);
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         unpreparedRangeInfo = info;
         return Result.Success;
@@ -271,7 +275,8 @@ public static class UserFile
             0, 0, SpanHelpers.AsReadOnlyByteSpan(in args));
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         completionRate = info.CompletionRate;
         return Result.Success;
@@ -286,7 +291,8 @@ public static class UserFile
             offset, size, ReadOnlySpan<byte>.Empty);
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

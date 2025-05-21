@@ -1,5 +1,3 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -8,6 +6,8 @@ using LibHac.Fs.Shim;
 using LibHac.FsSrv.Sf;
 using LibHac.Sf;
 using LibHac.Util;
+using System;
+using System.Runtime.CompilerServices;
 using static LibHac.Fs.SaveData;
 
 // ReSharper disable once CheckNamespace
@@ -62,7 +62,8 @@ namespace LibHac.Fs
 
             Result res = _baseInterface.Get.GetChallenge(OutBuffer.FromStruct(ref outChallenge));
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -71,7 +72,8 @@ namespace LibHac.Fs
         {
             Result res = _baseInterface.Get.SetKeySeedPackage(InBuffer.FromStruct(in keySeedPackage));
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -83,7 +85,8 @@ namespace LibHac.Fs
 
             Result res = _baseInterface.Get.OpenSaveDataExporter(ref exporterInterface.Ref, spaceId, saveDataId);
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outExporter.Reset(new SaveDataExporterVersion2(_fsClient, ref exporterInterface.Ref));
             return Result.Success;
@@ -98,7 +101,8 @@ namespace LibHac.Fs
                 InBuffer.FromStruct(in initialData), spaceId, saveDataId);
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outExporter.Reset(new SaveDataExporterVersion2(_fsClient, ref exporterInterface.Ref));
             return Result.Success;
@@ -113,7 +117,8 @@ namespace LibHac.Fs
                 InBuffer.FromStruct(in exportContext));
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outExporter.Reset(new SaveDataExporterVersion2(_fsClient, ref exporterInterface.Ref));
             return Result.Success;
@@ -128,7 +133,8 @@ namespace LibHac.Fs
                 InBuffer.FromStruct(in initialData), in userId, spaceId);
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outImporter.Reset(new SaveDataImporterVersion2(_fsClient, ref importerInterface.Ref));
             return Result.Success;
@@ -143,7 +149,8 @@ namespace LibHac.Fs
                 InBuffer.FromStruct(in initialData), spaceId, saveDataId);
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outImporter.Reset(new SaveDataImporterVersion2(_fsClient, ref importerInterface.Ref));
             return Result.Success;
@@ -158,7 +165,8 @@ namespace LibHac.Fs
                 InBuffer.FromStruct(in initialData), spaceId, saveDataId);
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outImporter.Reset(new SaveDataImporterVersion2(_fsClient, ref importerInterface.Ref));
             return Result.Success;
@@ -173,7 +181,8 @@ namespace LibHac.Fs
                 InBuffer.FromStruct(in initialData), in userId, spaceId, useSwap);
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outImporter.Reset(new SaveDataImporterVersion2(_fsClient, ref importerInterface.Ref));
             return Result.Success;
@@ -194,7 +203,8 @@ namespace LibHac.Fs
                 InBuffer.FromStruct(in importContext));
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             outImporter.Reset(new SaveDataImporterVersion2(_fsClient, ref importerInterface.Ref));
             return Result.Success;
@@ -226,7 +236,8 @@ namespace LibHac.Fs
             Result res = _baseInterface.Get.CancelSuspendingImportByAttribute(in attribute);
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -236,7 +247,8 @@ namespace LibHac.Fs
             Result res = _baseInterface.Get.CancelSuspendingImport(applicationId, in userId);
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -251,7 +263,8 @@ namespace LibHac.Fs
             Result res = _baseInterface.Get.SwapSecondary(in attribute, doSwap, commitId);
 
             _fsClient.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -306,7 +319,8 @@ namespace LibHac.Fs.Shim
         {
             Result res = fs.Impl.OpenSaveDataTransferProhibiterForCloudBackUp(ref outProhibiter, applicationId);
             fs.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -321,7 +335,8 @@ namespace LibHac.Fs.Shim
                     applicationIds[i]);
 
                 fs.Impl.LogResultErrorMessage(res);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
 
             return Result.Success;
@@ -338,7 +353,8 @@ namespace LibHac.Fs.Shim
                 OutBuffer.FromStruct(ref tempAppId), programId, startIndex: 0, bufferIdCount: 0);
 
             fs.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -354,11 +370,13 @@ namespace LibHac.Fs.Shim
                 userId: default, saveDataId: default, index: default, SaveDataRank.Secondary);
 
             fs.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = fs.Impl.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User, in filter);
             fs.Impl.LogResultErrorMessage(res);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             long workSize = 0;
 
@@ -370,7 +388,8 @@ namespace LibHac.Fs.Shim
                     iterator.Get);
 
                 fs.Impl.LogResultErrorMessage(res);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
 
                 // Break once we've iterated all saves
                 if (count == 0)

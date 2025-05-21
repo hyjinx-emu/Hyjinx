@@ -1,10 +1,9 @@
-namespace Hyjinx.HLE.HOS.Services.Caps.Types
+namespace Hyjinx.HLE.HOS.Services.Caps.Types;
+
+enum ContentType : byte
 {
-    enum ContentType : byte
-    {
-        Screenshot,
-        Movie,
-        ExtraMovie,
-        Unknown,
-    }
+    Screenshot,
+    Movie,
+    ExtraMovie,
+    Unknown,
 }

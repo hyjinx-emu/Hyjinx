@@ -1,9 +1,9 @@
 using Hyjinx.Common.Configuration.Hid;
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.Utilities;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Configuration.System;
 using Hyjinx.UI.Common.Configuration.UI;
 using System;
@@ -393,7 +393,7 @@ public record ConfigurationFileFormat
     /// <remarks>Kept for file format compatibility (to avoid possible failure when parsing configuration on old versions)</remarks>
     [Obsolete("Remove this when those older versions aren't in use anymore")]
     public List<JsonObject> ControllerConfig { get; set; } = [];
-    
+
     /// <summary>
     /// Input configurations.
     /// </summary>
@@ -436,7 +436,7 @@ public record ConfigurationFileFormat
         {
             throw new FileNotFoundException("The file does not exist.", fileName);
         }
-        
+
         return JsonHelper.DeserializeFromFile<ConfigurationFileFormat>(
             fileName, ConfigurationFileFormatSettings.SerializerContext.ConfigurationFileFormat);
     }
@@ -451,7 +451,7 @@ public record ConfigurationFileFormat
         {
             File.Delete(path);
         }
-        
+
         JsonHelper.SerializeToFile(path, this, ConfigurationFileFormatSettings.SerializerContext.ConfigurationFileFormat);
     }
 }

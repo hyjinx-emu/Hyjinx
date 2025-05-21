@@ -1,7 +1,6 @@
-namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy
+namespace Hyjinx.HLE.HOS.Services.Am.AppletAE.AllSystemAppletProxiesService.SystemAppletProxy;
+
+class IApplicationCreator : IpcService<IApplicationCreator>
 {
-    class IApplicationCreator : IpcService<IApplicationCreator>
-    {
-        public IApplicationCreator() { }
-    }
+    public IApplicationCreator() { }
 }

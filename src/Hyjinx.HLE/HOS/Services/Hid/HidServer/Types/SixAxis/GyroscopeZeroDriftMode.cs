@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Hid
+namespace Hyjinx.HLE.HOS.Services.Hid;
+
+public enum GyroscopeZeroDriftMode
 {
-    public enum GyroscopeZeroDriftMode
-    {
-        Loose,
-        Standard,
-        Tight,
-    }
+    Loose,
+    Standard,
+    Tight,
 }

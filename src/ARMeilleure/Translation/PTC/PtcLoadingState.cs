@@ -1,9 +1,8 @@
-namespace ARMeilleure.Translation.PTC
+namespace ARMeilleure.Translation.PTC;
+
+public enum PtcLoadingState
 {
-    public enum PtcLoadingState
-    {
-        Start,
-        Loading,
-        Loaded,
-    }
+    Start,
+    Loading,
+    Loaded,
 }

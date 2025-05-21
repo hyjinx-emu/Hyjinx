@@ -2,30 +2,29 @@ using Hyjinx.Horizon.Sdk.OsTypes;
 using System;
 using System.Threading;
 
-namespace Hyjinx.Horizon.Sdk.Arp.Detail
+namespace Hyjinx.Horizon.Sdk.Arp.Detail;
+
+class ApplicationInstanceManager : IDisposable
 {
-    class ApplicationInstanceManager : IDisposable
+    private int _disposalState;
+
+    public SystemEventType SystemEvent;
+    public int EventHandle;
+
+    public readonly ApplicationInstance[] Entries = new ApplicationInstance[2];
+
+    public ApplicationInstanceManager()
     {
-        private int _disposalState;
+        Os.CreateSystemEvent(out SystemEvent, EventClearMode.ManualClear, true).AbortOnFailure();
 
-        public SystemEventType SystemEvent;
-        public int EventHandle;
+        EventHandle = Os.GetReadableHandleOfSystemEvent(ref SystemEvent);
+    }
 
-        public readonly ApplicationInstance[] Entries = new ApplicationInstance[2];
-
-        public ApplicationInstanceManager()
+    public void Dispose()
+    {
+        if (EventHandle != 0 && Interlocked.Exchange(ref _disposalState, 1) == 0)
         {
-            Os.CreateSystemEvent(out SystemEvent, EventClearMode.ManualClear, true).AbortOnFailure();
-
-            EventHandle = Os.GetReadableHandleOfSystemEvent(ref SystemEvent);
-        }
-
-        public void Dispose()
-        {
-            if (EventHandle != 0 && Interlocked.Exchange(ref _disposalState, 1) == 0)
-            {
-                Os.DestroySystemEvent(ref SystemEvent);
-            }
+            Os.DestroySystemEvent(ref SystemEvent);
         }
     }
 }

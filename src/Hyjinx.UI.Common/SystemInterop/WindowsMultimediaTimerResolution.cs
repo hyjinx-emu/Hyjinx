@@ -5,132 +5,131 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.Common.SystemInterop
+namespace Hyjinx.Common.SystemInterop;
+
+/// <summary>
+/// Handle Windows Multimedia timer resolution.
+/// </summary>
+[SupportedOSPlatform("windows")]
+public partial class WindowsMultimediaTimerResolution : IDisposable
 {
-    /// <summary>
-    /// Handle Windows Multimedia timer resolution.
-    /// </summary>
-    [SupportedOSPlatform("windows")]
-    public partial class WindowsMultimediaTimerResolution : IDisposable
+    [StructLayout(LayoutKind.Sequential)]
+    public struct TimeCaps
     {
-        [StructLayout(LayoutKind.Sequential)]
-        public struct TimeCaps
+        public uint wPeriodMin;
+        public uint wPeriodMax;
+    }
+
+    [LibraryImport("winmm.dll", EntryPoint = "timeGetDevCaps", SetLastError = true)]
+    private static partial uint TimeGetDevCaps(ref TimeCaps timeCaps, uint sizeTimeCaps);
+
+    [LibraryImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+    private static partial uint TimeBeginPeriod(uint uMilliseconds);
+
+    [LibraryImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+    private static partial uint TimeEndPeriod(uint uMilliseconds);
+
+    private readonly ILogger<WindowsMultimediaTimerResolution> _logger = Logger.DefaultLoggerFactory.CreateLogger<WindowsMultimediaTimerResolution>();
+    private uint _targetResolutionInMilliseconds;
+    private bool _isActive;
+
+    /// <summary>
+    /// Create a new <see cref="WindowsMultimediaTimerResolution"/> and activate the given resolution.
+    /// </summary>
+    /// <param name="targetResolutionInMilliseconds"></param>
+    public WindowsMultimediaTimerResolution(uint targetResolutionInMilliseconds)
+    {
+        _targetResolutionInMilliseconds = targetResolutionInMilliseconds;
+
+        EnsureResolutionSupport();
+        Activate();
+    }
+
+    private void EnsureResolutionSupport()
+    {
+        TimeCaps timeCaps = default;
+
+        uint result = TimeGetDevCaps(ref timeCaps, (uint)Unsafe.SizeOf<TimeCaps>());
+
+        if (result != 0)
         {
-            public uint wPeriodMin;
-            public uint wPeriodMax;
+            LogTimeGetDevCapsFailed(result);
         }
-
-        [LibraryImport("winmm.dll", EntryPoint = "timeGetDevCaps", SetLastError = true)]
-        private static partial uint TimeGetDevCaps(ref TimeCaps timeCaps, uint sizeTimeCaps);
-
-        [LibraryImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
-        private static partial uint TimeBeginPeriod(uint uMilliseconds);
-
-        [LibraryImport("winmm.dll", EntryPoint = "timeEndPeriod")]
-        private static partial uint TimeEndPeriod(uint uMilliseconds);
-
-        private readonly ILogger<WindowsMultimediaTimerResolution> _logger = Logger.DefaultLoggerFactory.CreateLogger<WindowsMultimediaTimerResolution>();
-        private uint _targetResolutionInMilliseconds;
-        private bool _isActive;
-
-        /// <summary>
-        /// Create a new <see cref="WindowsMultimediaTimerResolution"/> and activate the given resolution.
-        /// </summary>
-        /// <param name="targetResolutionInMilliseconds"></param>
-        public WindowsMultimediaTimerResolution(uint targetResolutionInMilliseconds)
+        else
         {
-            _targetResolutionInMilliseconds = targetResolutionInMilliseconds;
+            uint supportedTargetResolutionInMilliseconds = Math.Min(Math.Max(timeCaps.wPeriodMin, _targetResolutionInMilliseconds), timeCaps.wPeriodMax);
 
-            EnsureResolutionSupport();
-            Activate();
+            if (supportedTargetResolutionInMilliseconds != _targetResolutionInMilliseconds)
+            {
+                LogResolutionNotSupported(supportedTargetResolutionInMilliseconds);
+
+                _targetResolutionInMilliseconds = supportedTargetResolutionInMilliseconds;
+            }
         }
+    }
 
-        private void EnsureResolutionSupport()
+    [LoggerMessage(LogLevel.Critical,
+        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+        Message = "timeGetDevCaps failed with result: {result}")]
+    private partial void LogTimeGetDevCapsFailed(uint result);
+
+    [LoggerMessage(LogLevel.Critical,
+        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+        Message = "Target resolution isn't supported by OS, using closest resolution: {supportedTargetResolutionInMilliseconds}ms")]
+    private partial void LogResolutionNotSupported(uint supportedTargetResolutionInMilliseconds);
+
+    private void Activate()
+    {
+        uint result = TimeBeginPeriod(_targetResolutionInMilliseconds);
+
+        if (result != 0)
         {
-            TimeCaps timeCaps = default;
+            LogTimeBeginPeriodFailed(result);
+        }
+        else
+        {
+            _isActive = true;
+        }
+    }
 
-            uint result = TimeGetDevCaps(ref timeCaps, (uint)Unsafe.SizeOf<TimeCaps>());
+    [LoggerMessage(LogLevel.Critical,
+        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+        Message = "timeBeginPeriod failed with result: {result}")]
+    private partial void LogTimeBeginPeriodFailed(uint result);
+
+    private void Disable()
+    {
+        if (_isActive)
+        {
+            uint result = TimeEndPeriod(_targetResolutionInMilliseconds);
 
             if (result != 0)
             {
-                LogTimeGetDevCapsFailed(result);
+                LogTimeEndPeriodFailed(result);
             }
             else
             {
-                uint supportedTargetResolutionInMilliseconds = Math.Min(Math.Max(timeCaps.wPeriodMin, _targetResolutionInMilliseconds), timeCaps.wPeriodMax);
-
-                if (supportedTargetResolutionInMilliseconds != _targetResolutionInMilliseconds)
-                {
-                    LogResolutionNotSupported(supportedTargetResolutionInMilliseconds);
-
-                    _targetResolutionInMilliseconds = supportedTargetResolutionInMilliseconds;
-                }
+                _isActive = false;
             }
         }
+    }
 
-        [LoggerMessage(LogLevel.Critical,
-            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-            Message = "timeGetDevCaps failed with result: {result}")]
-        private partial void LogTimeGetDevCapsFailed(uint result);
-        
-        [LoggerMessage(LogLevel.Critical,
-            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-            Message = "Target resolution isn't supported by OS, using closest resolution: {supportedTargetResolutionInMilliseconds}ms")]
-        private partial void LogResolutionNotSupported(uint supportedTargetResolutionInMilliseconds);
+    [LoggerMessage(LogLevel.Critical,
+        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+        Message = "timeEndPeriod failed with result: {result}")]
+    private partial void LogTimeEndPeriodFailed(uint result);
 
-        private void Activate()
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            uint result = TimeBeginPeriod(_targetResolutionInMilliseconds);
-
-            if (result != 0)
-            {
-                LogTimeBeginPeriodFailed(result);
-            }
-            else
-            {
-                _isActive = true;
-            }
-        }
-        
-        [LoggerMessage(LogLevel.Critical,
-            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-            Message = "timeBeginPeriod failed with result: {result}")]
-        private partial void LogTimeBeginPeriodFailed(uint result);
-
-        private void Disable()
-        {
-            if (_isActive)
-            {
-                uint result = TimeEndPeriod(_targetResolutionInMilliseconds);
-
-                if (result != 0)
-                {
-                    LogTimeEndPeriodFailed(result);
-                }
-                else
-                {
-                    _isActive = false;
-                }
-            }
-        }
-        
-        [LoggerMessage(LogLevel.Critical,
-            EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-            Message = "timeEndPeriod failed with result: {result}")]
-        private partial void LogTimeEndPeriodFailed(uint result);
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Disable();
-            }
+            Disable();
         }
     }
 }

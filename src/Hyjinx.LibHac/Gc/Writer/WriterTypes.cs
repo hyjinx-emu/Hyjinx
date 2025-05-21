@@ -1,4 +1,4 @@
-﻿namespace LibHac.Gc.Writer;
+namespace LibHac.Gc.Writer;
 
 public enum AsicMode : byte
 {

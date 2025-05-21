@@ -1,30 +1,29 @@
-namespace Hyjinx.Audio.Renderer.Dsp.Command
+namespace Hyjinx.Audio.Renderer.Dsp.Command;
+
+public class CopyMixBufferCommand : ICommand
 {
-    public class CopyMixBufferCommand : ICommand
+    public bool Enabled { get; set; }
+
+    public int NodeId { get; }
+
+    public CommandType CommandType => CommandType.CopyMixBuffer;
+
+    public uint EstimatedProcessingTime { get; set; }
+
+    public ushort InputBufferIndex { get; }
+    public ushort OutputBufferIndex { get; }
+
+    public CopyMixBufferCommand(uint inputBufferIndex, uint outputBufferIndex, int nodeId)
     {
-        public bool Enabled { get; set; }
+        Enabled = true;
+        NodeId = nodeId;
 
-        public int NodeId { get; }
+        InputBufferIndex = (ushort)inputBufferIndex;
+        OutputBufferIndex = (ushort)outputBufferIndex;
+    }
 
-        public CommandType CommandType => CommandType.CopyMixBuffer;
-
-        public uint EstimatedProcessingTime { get; set; }
-
-        public ushort InputBufferIndex { get; }
-        public ushort OutputBufferIndex { get; }
-
-        public CopyMixBufferCommand(uint inputBufferIndex, uint outputBufferIndex, int nodeId)
-        {
-            Enabled = true;
-            NodeId = nodeId;
-
-            InputBufferIndex = (ushort)inputBufferIndex;
-            OutputBufferIndex = (ushort)outputBufferIndex;
-        }
-
-        public void Process(CommandList context)
-        {
-            context.CopyBuffer(OutputBufferIndex, InputBufferIndex);
-        }
+    public void Process(CommandList context)
+    {
+        context.CopyBuffer(OutputBufferIndex, InputBufferIndex);
     }
 }

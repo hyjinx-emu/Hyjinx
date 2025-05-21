@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.Device
+namespace Hyjinx.Graphics.Device;
+
+public interface IDeviceState
 {
-    public interface IDeviceState
-    {
-        int Read(int offset);
-        void Write(int offset, int data);
-    }
+    int Read(int offset);
+    void Write(int offset, int data);
 }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Runtime.CompilerServices;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Sf;
 using LibHac.Time;
+using System;
+using System.Runtime.CompilerServices;
 
 // ReSharper disable once CheckNamespace
 namespace LibHac.Fs.Impl;
@@ -88,7 +88,8 @@ public class SaveDataChunkExporter : ISaveDataChunkExporter
             (ulong)destination.Length);
 
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outPulledSize = pulledSize;
         return Result.Success;
@@ -131,7 +132,8 @@ public class SaveDataChunkImporter : ISaveDataChunkImporter
     {
         Result res = _baseInterface.Get.Push(new InBuffer(source), (ulong)source.Length);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -165,7 +167,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
     {
         Result res = _baseInterface.Get.SetDivisionCount(divisionCount);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -176,7 +179,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
 
         Result res = _baseInterface.Get.OpenSaveDataDiffChunkIterator(ref iteratorObject.Ref);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outIterator.Reset(new SaveDataChunkIterator(_fsClient, ref iteratorObject.Ref));
         return Result.Success;
@@ -188,7 +192,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
 
         Result res = _baseInterface.Get.OpenSaveDataChunkExporter(ref exporterObject.Ref, chunkId);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outExporter.Reset(new SaveDataChunkExporter(_fsClient, ref exporterObject.Ref));
         return Result.Success;
@@ -200,7 +205,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
 
         Result res = _baseInterface.Get.GetKeySeed(out KeySeed keySeed);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outKeySeed = keySeed;
         return Result.Success;
@@ -212,7 +218,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
 
         Result res = _baseInterface.Get.GetInitialDataMac(out InitialDataMac initialDataMac);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outInitialDataMac = initialDataMac;
         return Result.Success;
@@ -224,7 +231,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
 
         Result res = _baseInterface.Get.GetInitialDataMacKeyGeneration(out int initialDataMacKeyGeneration);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outKeyGeneration = initialDataMacKeyGeneration;
         return Result.Success;
@@ -234,7 +242,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
     {
         Result res = _baseInterface.Get.FinalizeExport();
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -243,7 +252,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
     {
         Result res = _baseInterface.Get.CancelExport();
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -254,7 +264,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
 
         Result res = _baseInterface.Get.SuspendExport(OutBuffer.FromStruct(ref outContext));
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -265,7 +276,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
 
         Result res = _baseInterface.Get.GetImportInitialDataAad(out InitialDataAad initialDataAad);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outInitialDataAad = initialDataAad;
         return Result.Success;
@@ -275,7 +287,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
     {
         Result res = _baseInterface.Get.SetExportInitialDataAad(in initialDataAad);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -287,7 +300,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
 
         Result res = _baseInterface.Get.ReadSaveDataExtraData(OutBuffer.FromStruct(ref extraData));
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outCommitId = extraData.CommitId;
         return Result.Success;
@@ -300,7 +314,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
 
         Result res = _baseInterface.Get.ReadSaveDataExtraData(OutBuffer.FromStruct(ref extraData));
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outTimeStamp = new PosixTime(extraData.TimeStamp);
         return Result.Success;
@@ -310,7 +325,8 @@ public class SaveDataExporterVersion2 : ISaveDataDivisionExporter
     {
         Result res = _baseInterface.Get.GetReportInfo(out outReportInfo);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -344,7 +360,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
     {
         Result res = _baseInterface.Get.InitializeImport(out remaining, sizeToProcess);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -353,7 +370,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
     {
         Result res = _baseInterface.Get.FinalizeImport();
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -362,7 +380,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
     {
         Result res = _baseInterface.Get.FinalizeImportWithoutSwap();
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -371,7 +390,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
     {
         Result res = _baseInterface.Get.CancelImport();
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -382,7 +402,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
 
         Result res = _baseInterface.Get.GetImportContext(OutBuffer.FromStruct(ref outContext));
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -391,7 +412,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
     {
         Result res = _baseInterface.Get.SuspendImport();
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -402,7 +424,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
 
         Result res = _baseInterface.Get.OpenSaveDataDiffChunkIterator(ref iteratorObject.Ref);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outIterator.Reset(new SaveDataChunkIterator(_fsClient, ref iteratorObject.Ref));
         return Result.Success;
@@ -414,7 +437,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
 
         Result res = _baseInterface.Get.OpenSaveDataChunkImporter(ref importerObject.Ref, chunkId);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outImporter.Reset(new SaveDataChunkImporter(_fsClient, ref importerObject.Ref));
         return Result.Success;
@@ -426,7 +450,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
 
         Result res = _baseInterface.Get.GetImportInitialDataAad(out InitialDataAad initialDataAad);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outInitialDataAad = initialDataAad;
         return Result.Success;
@@ -439,7 +464,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
 
         Result res = _baseInterface.Get.ReadSaveDataExtraData(OutBuffer.FromStruct(ref extraData));
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outCommitId = extraData.CommitId;
         return Result.Success;
@@ -452,7 +478,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
 
         Result res = _baseInterface.Get.ReadSaveDataExtraData(OutBuffer.FromStruct(ref extraData));
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         outTimeStamp = new PosixTime(extraData.TimeStamp);
         return Result.Success;
@@ -462,7 +489,8 @@ public class SaveDataImporterVersion2 : ISaveDataDivisionImporter
     {
         Result res = _baseInterface.Get.GetReportInfo(out outReportInfo);
         _fsClient.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }

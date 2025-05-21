@@ -1,10 +1,10 @@
-﻿using System;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Shim;
 using LibHac.FsSrv.Impl;
 using LibHac.Os;
+using System;
 
 namespace LibHac.FsSrv;
 
@@ -38,7 +38,8 @@ public struct DebugConfigurationService
     public Result Register(uint key, long value)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo, _processId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.SetDebugConfiguration))
             return ResultFs.PermissionDenied.Log();
@@ -50,7 +51,8 @@ public struct DebugConfigurationService
     public Result Unregister(uint key)
     {
         Result res = GetProgramInfo(out ProgramInfo programInfo, _processId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (!programInfo.AccessControl.CanCall(OperationType.SetDebugConfiguration))
             return ResultFs.PermissionDenied.Log();

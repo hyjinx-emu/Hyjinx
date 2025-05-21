@@ -1,74 +1,73 @@
 using Hyjinx.HLE.HOS.Kernel.Common;
 using Hyjinx.Horizon.Common;
 
-namespace Hyjinx.HLE.HOS.Kernel.Ipc
+namespace Hyjinx.HLE.HOS.Kernel.Ipc;
+
+class KPort : KAutoObject
 {
-    class KPort : KAutoObject
-    {
-        public KServerPort ServerPort { get; }
-        public KClientPort ClientPort { get; }
+    public KServerPort ServerPort { get; }
+    public KClientPort ClientPort { get; }
 
 #pragma warning disable IDE0052 // Remove unread private member
-        private readonly string _name;
+    private readonly string _name;
 #pragma warning restore IDE0052
 
-        private readonly ChannelState _state;
+    private readonly ChannelState _state;
 
-        public bool IsLight { get; private set; }
+    public bool IsLight { get; private set; }
 
-        public KPort(KernelContext context, int maxSessions, bool isLight, string name) : base(context)
+    public KPort(KernelContext context, int maxSessions, bool isLight, string name) : base(context)
+    {
+        ServerPort = new KServerPort(context, this);
+        ClientPort = new KClientPort(context, this, maxSessions);
+
+        IsLight = isLight;
+        _name = name;
+
+        _state = ChannelState.Open;
+    }
+
+    public Result EnqueueIncomingSession(KServerSession session)
+    {
+        Result result;
+
+        KernelContext.CriticalSection.Enter();
+
+        if (_state == ChannelState.Open)
         {
-            ServerPort = new KServerPort(context, this);
-            ClientPort = new KClientPort(context, this, maxSessions);
+            ServerPort.EnqueueIncomingSession(session);
 
-            IsLight = isLight;
-            _name = name;
-
-            _state = ChannelState.Open;
+            result = Result.Success;
+        }
+        else
+        {
+            result = KernelResult.PortClosed;
         }
 
-        public Result EnqueueIncomingSession(KServerSession session)
+        KernelContext.CriticalSection.Leave();
+
+        return result;
+    }
+
+    public Result EnqueueIncomingLightSession(KLightServerSession session)
+    {
+        Result result;
+
+        KernelContext.CriticalSection.Enter();
+
+        if (_state == ChannelState.Open)
         {
-            Result result;
+            ServerPort.EnqueueIncomingLightSession(session);
 
-            KernelContext.CriticalSection.Enter();
-
-            if (_state == ChannelState.Open)
-            {
-                ServerPort.EnqueueIncomingSession(session);
-
-                result = Result.Success;
-            }
-            else
-            {
-                result = KernelResult.PortClosed;
-            }
-
-            KernelContext.CriticalSection.Leave();
-
-            return result;
+            result = Result.Success;
+        }
+        else
+        {
+            result = KernelResult.PortClosed;
         }
 
-        public Result EnqueueIncomingLightSession(KLightServerSession session)
-        {
-            Result result;
+        KernelContext.CriticalSection.Leave();
 
-            KernelContext.CriticalSection.Enter();
-
-            if (_state == ChannelState.Open)
-            {
-                ServerPort.EnqueueIncomingLightSession(session);
-
-                result = Result.Success;
-            }
-            else
-            {
-                result = KernelResult.PortClosed;
-            }
-
-            KernelContext.CriticalSection.Leave();
-
-            return result;
-        }
+        return result;
     }
 }

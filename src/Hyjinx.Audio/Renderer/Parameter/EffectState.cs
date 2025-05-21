@@ -1,18 +1,17 @@
-namespace Hyjinx.Audio.Renderer.Parameter
+namespace Hyjinx.Audio.Renderer.Parameter;
+
+/// <summary>
+/// The state of an effect.
+/// </summary>
+public enum EffectState : byte
 {
     /// <summary>
-    /// The state of an effect.
+    /// The effect is enabled.
     /// </summary>
-    public enum EffectState : byte
-    {
-        /// <summary>
-        /// The effect is enabled.
-        /// </summary>
-        Enabled = 3,
+    Enabled = 3,
 
-        /// <summary>
-        /// The effect is disabled.
-        /// </summary>
-        Disabled = 4,
-    }
+    /// <summary>
+    /// The effect is disabled.
+    /// </summary>
+    Disabled = 4,
 }

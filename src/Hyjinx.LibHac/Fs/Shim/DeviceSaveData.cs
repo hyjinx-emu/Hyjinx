@@ -1,4 +1,3 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
@@ -6,10 +5,11 @@ using LibHac.Fs.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.Ncm;
 using LibHac.Os;
-using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
-using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
+using System;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using static LibHac.Fs.SaveData;
+using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
+using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 
 namespace LibHac.Fs.Shim;
 
@@ -30,7 +30,8 @@ public static class DeviceSaveData
         {
             Result res = SaveDataAttribute.Make(out attribute, _programId, SaveDataType.Device, InvalidUserId,
                 InvalidSystemSaveDataId);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return Result.Success;
         }
@@ -42,13 +43,15 @@ public static class DeviceSaveData
         in SaveDataAttribute attribute)
     {
         Result res = fs.CheckMountName(mountName);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         using SharedRef<IFileSystemProxy> fileSystemProxy = fs.GetFileSystemProxyServiceObject();
         using var fileSystem = new SharedRef<IFileSystemSf>();
 
         res = fileSystemProxy.Get.OpenSaveDataFileSystem(ref fileSystem.Ref, DeviceSaveDataSpaceId, in attribute);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         var fileSystemAdapterRaw = new FileSystemServiceObjectAdapter(ref fileSystem.Ref);
         using var fileSystemAdapter = new UniqueRef<IFileSystem>(fileSystemAdapterRaw);
@@ -64,7 +67,8 @@ public static class DeviceSaveData
         res = fs.Fs.Register(mountName, fileSystemAdapterRaw, ref fileSystemAdapter.Ref, ref mountNameGenerator.Ref,
             ref saveDataAttributeGetter.Ref, useDataCache: false, storageForPurgeFileDataCache: null,
             usePathCache: true);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -77,7 +81,8 @@ public static class DeviceSaveData
             InvalidUserId, InvalidSystemSaveDataId);
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
         {
@@ -96,7 +101,8 @@ public static class DeviceSaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
@@ -113,7 +119,8 @@ public static class DeviceSaveData
             InvalidUserId, InvalidSystemSaveDataId);
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
         {
@@ -133,7 +140,8 @@ public static class DeviceSaveData
         }
 
         fs.Impl.AbortIfNeeded(res);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         if (fs.Impl.IsEnabledAccessLog(AccessLogTarget.Application))
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);

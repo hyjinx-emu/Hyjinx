@@ -1,9 +1,8 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Friends
+namespace Hyjinx.Horizon.Sdk.Friends;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x20, Pack = 0x1)]
+struct FriendCode
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x20, Pack = 0x1)]
-    struct FriendCode
-    {
-    }
 }

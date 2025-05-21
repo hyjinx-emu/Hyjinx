@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Tests.Fs;
+using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace LibHac.Tests.FsSystem;

@@ -3,137 +3,136 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Graphics.Vulkan
+namespace Hyjinx.Graphics.Vulkan;
+
+internal class IndexBufferPattern : IDisposable
 {
-    internal class IndexBufferPattern : IDisposable
+    public int PrimitiveVertices { get; }
+    public int PrimitiveVerticesOut { get; }
+    public int BaseIndex { get; }
+    public int[] OffsetIndex { get; }
+    public int IndexStride { get; }
+    public bool RepeatStart { get; }
+
+    private readonly VulkanRenderer _gd;
+    private int _currentSize;
+    private BufferHandle _repeatingBuffer;
+
+    public IndexBufferPattern(VulkanRenderer gd,
+        int primitiveVertices,
+        int primitiveVerticesOut,
+        int baseIndex,
+        int[] offsetIndex,
+        int indexStride,
+        bool repeatStart)
     {
-        public int PrimitiveVertices { get; }
-        public int PrimitiveVerticesOut { get; }
-        public int BaseIndex { get; }
-        public int[] OffsetIndex { get; }
-        public int IndexStride { get; }
-        public bool RepeatStart { get; }
+        PrimitiveVertices = primitiveVertices;
+        PrimitiveVerticesOut = primitiveVerticesOut;
+        BaseIndex = baseIndex;
+        OffsetIndex = offsetIndex;
+        IndexStride = indexStride;
+        RepeatStart = repeatStart;
 
-        private readonly VulkanRenderer _gd;
-        private int _currentSize;
-        private BufferHandle _repeatingBuffer;
+        _gd = gd;
+    }
 
-        public IndexBufferPattern(VulkanRenderer gd,
-            int primitiveVertices,
-            int primitiveVerticesOut,
-            int baseIndex,
-            int[] offsetIndex,
-            int indexStride,
-            bool repeatStart)
+    public int GetPrimitiveCount(int vertexCount)
+    {
+        return Math.Max(0, (vertexCount - BaseIndex) / IndexStride);
+    }
+
+    public int GetConvertedCount(int indexCount)
+    {
+        int primitiveCount = GetPrimitiveCount(indexCount);
+        return primitiveCount * OffsetIndex.Length;
+    }
+
+    public IEnumerable<int> GetIndexMapping(int indexCount)
+    {
+        int primitiveCount = GetPrimitiveCount(indexCount);
+        int index = BaseIndex;
+
+        for (int i = 0; i < primitiveCount; i++)
         {
-            PrimitiveVertices = primitiveVertices;
-            PrimitiveVerticesOut = primitiveVerticesOut;
-            BaseIndex = baseIndex;
-            OffsetIndex = offsetIndex;
-            IndexStride = indexStride;
-            RepeatStart = repeatStart;
-
-            _gd = gd;
-        }
-
-        public int GetPrimitiveCount(int vertexCount)
-        {
-            return Math.Max(0, (vertexCount - BaseIndex) / IndexStride);
-        }
-
-        public int GetConvertedCount(int indexCount)
-        {
-            int primitiveCount = GetPrimitiveCount(indexCount);
-            return primitiveCount * OffsetIndex.Length;
-        }
-
-        public IEnumerable<int> GetIndexMapping(int indexCount)
-        {
-            int primitiveCount = GetPrimitiveCount(indexCount);
-            int index = BaseIndex;
-
-            for (int i = 0; i < primitiveCount; i++)
+            if (RepeatStart)
             {
-                if (RepeatStart)
-                {
-                    // Used for triangle fan
-                    yield return 0;
-                }
-
-                for (int j = RepeatStart ? 1 : 0; j < OffsetIndex.Length; j++)
-                {
-                    yield return index + OffsetIndex[j];
-                }
-
-                index += IndexStride;
-            }
-        }
-
-        public BufferHandle GetRepeatingBuffer(int vertexCount, out int indexCount)
-        {
-            int primitiveCount = GetPrimitiveCount(vertexCount);
-            indexCount = primitiveCount * PrimitiveVerticesOut;
-
-            int expectedSize = primitiveCount * OffsetIndex.Length;
-
-            if (expectedSize <= _currentSize && _repeatingBuffer != BufferHandle.Null)
-            {
-                return _repeatingBuffer;
+                // Used for triangle fan
+                yield return 0;
             }
 
-            // Expand the repeating pattern to the number of requested primitives.
-            BufferHandle newBuffer = _gd.BufferManager.CreateWithHandle(_gd, expectedSize * sizeof(int));
-
-            // Copy the old data to the new one.
-            if (_repeatingBuffer != BufferHandle.Null)
+            for (int j = RepeatStart ? 1 : 0; j < OffsetIndex.Length; j++)
             {
-                _gd.Pipeline.CopyBuffer(_repeatingBuffer, newBuffer, 0, 0, _currentSize * sizeof(int));
-                _gd.DeleteBuffer(_repeatingBuffer);
+                yield return index + OffsetIndex[j];
             }
 
-            _repeatingBuffer = newBuffer;
+            index += IndexStride;
+        }
+    }
 
-            // Add the additional repeats on top.
-            int newPrimitives = primitiveCount;
-            int oldPrimitives = (_currentSize) / OffsetIndex.Length;
+    public BufferHandle GetRepeatingBuffer(int vertexCount, out int indexCount)
+    {
+        int primitiveCount = GetPrimitiveCount(vertexCount);
+        indexCount = primitiveCount * PrimitiveVerticesOut;
 
-            int[] newData;
+        int expectedSize = primitiveCount * OffsetIndex.Length;
 
-            newPrimitives -= oldPrimitives;
-            newData = new int[expectedSize - _currentSize];
-
-            int outOffset = 0;
-            int index = oldPrimitives * IndexStride + BaseIndex;
-
-            for (int i = 0; i < newPrimitives; i++)
-            {
-                if (RepeatStart)
-                {
-                    // Used for triangle fan
-                    newData[outOffset++] = 0;
-                }
-
-                for (int j = RepeatStart ? 1 : 0; j < OffsetIndex.Length; j++)
-                {
-                    newData[outOffset++] = index + OffsetIndex[j];
-                }
-
-                index += IndexStride;
-            }
-
-            _gd.SetBufferData(newBuffer, _currentSize * sizeof(int), MemoryMarshal.Cast<int, byte>(newData));
-            _currentSize = expectedSize;
-
-            return newBuffer;
+        if (expectedSize <= _currentSize && _repeatingBuffer != BufferHandle.Null)
+        {
+            return _repeatingBuffer;
         }
 
-        public void Dispose()
+        // Expand the repeating pattern to the number of requested primitives.
+        BufferHandle newBuffer = _gd.BufferManager.CreateWithHandle(_gd, expectedSize * sizeof(int));
+
+        // Copy the old data to the new one.
+        if (_repeatingBuffer != BufferHandle.Null)
         {
-            if (_repeatingBuffer != BufferHandle.Null)
+            _gd.Pipeline.CopyBuffer(_repeatingBuffer, newBuffer, 0, 0, _currentSize * sizeof(int));
+            _gd.DeleteBuffer(_repeatingBuffer);
+        }
+
+        _repeatingBuffer = newBuffer;
+
+        // Add the additional repeats on top.
+        int newPrimitives = primitiveCount;
+        int oldPrimitives = (_currentSize) / OffsetIndex.Length;
+
+        int[] newData;
+
+        newPrimitives -= oldPrimitives;
+        newData = new int[expectedSize - _currentSize];
+
+        int outOffset = 0;
+        int index = oldPrimitives * IndexStride + BaseIndex;
+
+        for (int i = 0; i < newPrimitives; i++)
+        {
+            if (RepeatStart)
             {
-                _gd.DeleteBuffer(_repeatingBuffer);
-                _repeatingBuffer = BufferHandle.Null;
+                // Used for triangle fan
+                newData[outOffset++] = 0;
             }
+
+            for (int j = RepeatStart ? 1 : 0; j < OffsetIndex.Length; j++)
+            {
+                newData[outOffset++] = index + OffsetIndex[j];
+            }
+
+            index += IndexStride;
+        }
+
+        _gd.SetBufferData(newBuffer, _currentSize * sizeof(int), MemoryMarshal.Cast<int, byte>(newData));
+        _currentSize = expectedSize;
+
+        return newBuffer;
+    }
+
+    public void Dispose()
+    {
+        if (_repeatingBuffer != BufferHandle.Null)
+        {
+            _gd.DeleteBuffer(_repeatingBuffer);
+            _repeatingBuffer = BufferHandle.Null;
         }
     }
 }

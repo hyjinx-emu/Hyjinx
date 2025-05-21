@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Ncm;
 using LibHac.Os;
+using System;
+using System.Collections.Generic;
 
 namespace LibHac.FsSrv.Impl;
 

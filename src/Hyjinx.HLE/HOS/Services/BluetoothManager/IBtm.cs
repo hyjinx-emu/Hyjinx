@@ -1,8 +1,7 @@
-namespace Hyjinx.HLE.HOS.Services.BluetoothManager
+namespace Hyjinx.HLE.HOS.Services.BluetoothManager;
+
+[Service("btm")]
+class IBtm : IpcService<IBtm>
 {
-    [Service("btm")]
-    class IBtm : IpcService<IBtm>
-    {
-        public IBtm(ServiceCtx context) { }
-    }
+    public IBtm(ServiceCtx context) { }
 }

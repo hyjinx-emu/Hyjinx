@@ -1,15 +1,15 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.Options;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Versioning;
 
 namespace Hyjinx.Logging.Console;
 
@@ -29,7 +29,7 @@ public static class ConsoleLoggerExtensions
     public static ILoggingBuilder AddConsole(this ILoggingBuilder builder)
     {
         builder.AddConfiguration();
-        
+
         builder.AddConsoleFormatter<SimpleConsoleFormatter, SimpleConsoleFormatterOptions, SimpleConsoleFormatterConfigureOptions>();
 
         builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, ConsoleLoggerProvider>());
@@ -142,8 +142,9 @@ internal sealed class ConsoleLoggerFormatterConfigureOptions<TFormatter, [Dynami
 {
     [RequiresDynamicCode(ConsoleLoggerExtensions.RequiresDynamicCodeMessage)]
     [RequiresUnreferencedCode(ConsoleLoggerExtensions.TrimmingRequiresUnreferencedCodeMessage)]
-    public  ConsoleLoggerFormatterConfigureOptions(ILoggerProviderConfiguration<ConsoleLoggerProvider> providerConfiguration) :
-        base(providerConfiguration.GetFormatterOptionsSection()) { }
+    public ConsoleLoggerFormatterConfigureOptions(ILoggerProviderConfiguration<ConsoleLoggerProvider> providerConfiguration) :
+        base(providerConfiguration.GetFormatterOptionsSection())
+    { }
 }
 
 internal sealed class ConsoleLoggerFormatterOptionsChangeTokenSource<TFormatter, TOptions> : ConfigurationChangeTokenSource<TOptions>

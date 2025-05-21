@@ -3,60 +3,59 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Horizon.Sdk.Account
+namespace Hyjinx.Horizon.Sdk.Account;
+
+[StructLayout(LayoutKind.Sequential, Size = 0x10, Pack = 0x8)]
+public readonly record struct Uid
 {
-    [StructLayout(LayoutKind.Sequential, Size = 0x10, Pack = 0x8)]
-    public readonly record struct Uid
+    public readonly ulong High;
+    public readonly ulong Low;
+
+    public bool IsNull => (Low | High) == 0;
+
+    public static Uid Null => new(0, 0);
+
+    public Uid(ulong low, ulong high)
     {
-        public readonly ulong High;
-        public readonly ulong Low;
+        Low = low;
+        High = high;
+    }
 
-        public bool IsNull => (Low | High) == 0;
+    public Uid(byte[] bytes)
+    {
+        High = BitConverter.ToUInt64(bytes, 0);
+        Low = BitConverter.ToUInt64(bytes, 8);
+    }
 
-        public static Uid Null => new(0, 0);
-
-        public Uid(ulong low, ulong high)
+    public Uid(string hex)
+    {
+        if (hex == null || hex.Length != 32 || !hex.All("0123456789abcdefABCDEF".Contains))
         {
-            Low = low;
-            High = high;
+            throw new ArgumentException("Invalid Hex value!", nameof(hex));
         }
 
-        public Uid(byte[] bytes)
-        {
-            High = BitConverter.ToUInt64(bytes, 0);
-            Low = BitConverter.ToUInt64(bytes, 8);
-        }
+        Low = Convert.ToUInt64(hex[16..], 16);
+        High = Convert.ToUInt64(hex[..16], 16);
+    }
 
-        public Uid(string hex)
-        {
-            if (hex == null || hex.Length != 32 || !hex.All("0123456789abcdefABCDEF".Contains))
-            {
-                throw new ArgumentException("Invalid Hex value!", nameof(hex));
-            }
+    public void Write(BinaryWriter binaryWriter)
+    {
+        binaryWriter.Write(High);
+        binaryWriter.Write(Low);
+    }
 
-            Low = Convert.ToUInt64(hex[16..], 16);
-            High = Convert.ToUInt64(hex[..16], 16);
-        }
+    public override string ToString()
+    {
+        return High.ToString("x16") + Low.ToString("x16");
+    }
 
-        public void Write(BinaryWriter binaryWriter)
-        {
-            binaryWriter.Write(High);
-            binaryWriter.Write(Low);
-        }
+    public LibHac.Account.Uid ToLibHacUid()
+    {
+        return new LibHac.Account.Uid((ulong)High, (ulong)Low);
+    }
 
-        public override string ToString()
-        {
-            return High.ToString("x16") + Low.ToString("x16");
-        }
-
-        public LibHac.Account.Uid ToLibHacUid()
-        {
-            return new LibHac.Account.Uid((ulong)High, (ulong)Low);
-        }
-
-        public UInt128 ToUInt128()
-        {
-            return new UInt128((ulong)High, (ulong)Low);
-        }
+    public UInt128 ToUInt128()
+    {
+        return new UInt128((ulong)High, (ulong)Low);
     }
 }

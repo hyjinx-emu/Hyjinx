@@ -1,9 +1,8 @@
-namespace Hyjinx.Graphics.Device
+namespace Hyjinx.Graphics.Device;
+
+public interface IDeviceStateWithContext : IDeviceState
 {
-    public interface IDeviceStateWithContext : IDeviceState
-    {
-        long CreateContext();
-        void DestroyContext(long id);
-        void BindContext(long id);
-    }
+    long CreateContext();
+    void DestroyContext(long id);
+    void BindContext(long id);
 }

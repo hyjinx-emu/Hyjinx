@@ -1,9 +1,8 @@
-namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager
+namespace Hyjinx.HLE.HOS.Services.Nfc.Nfp.NfpManager;
+
+enum MountTarget : uint
 {
-    enum MountTarget : uint
-    {
-        Rom = 1,
-        Ram = 2,
-        All = 3,
-    }
+    Rom = 1,
+    Ram = 2,
+    All = 3,
 }

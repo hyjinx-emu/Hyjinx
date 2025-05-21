@@ -1,10 +1,10 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Kvdb;
 using LibHac.Tests.Fs.FileSystemClientTests;
 using LibHac.Tools.Fs;
+using System;
 using Xunit;
 using TTest = System.Int32;
 
@@ -65,7 +65,8 @@ public class FlatMapKeyValueStoreTests
             for (TTest i = 0; i < count; i++)
             {
                 Result res = kvStore.Set(in i, values[i]);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
         }
         else
@@ -76,7 +77,8 @@ public class FlatMapKeyValueStoreTests
             {
                 TTest index = rng.Next();
                 Result res = kvStore.Set(in index, values[index]);
-                if (res.IsFailure()) return res.Miss();
+                if (res.IsFailure())
+                    return res.Miss();
             }
         }
 

@@ -1,4 +1,3 @@
-﻿using System;
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -7,6 +6,7 @@ using LibHac.Lr;
 using LibHac.Ncm;
 using LibHac.Os;
 using LibHac.Util;
+using System;
 
 namespace LibHac.FsSrv.Impl;
 
@@ -83,10 +83,12 @@ internal class LocationResolverSet : IDisposable
             pathFlags.AllowWindowsPath();
 
         Result res = outPath.InitializeWithReplaceUnc(lrPath.Value);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = outPath.Normalize(pathFlags);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return Result.Success;
     }
@@ -138,7 +140,8 @@ internal class LocationResolverSet : IDisposable
         if (!_aocResolver.HasValue)
         {
             Result res = Hos.Lr.OpenAddOnContentLocationResolver(out AddOnContentLocationResolver lr);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             _aocResolver.Set(in lr);
         }
@@ -150,10 +153,12 @@ internal class LocationResolverSet : IDisposable
     public Result ResolveApplicationControlPath(ref Fs.Path outPath, Ncm.ApplicationId applicationId, StorageId storageId)
     {
         Result res = GetLocationResolver(out LocationResolver resolver, storageId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = resolver.ResolveApplicationControlPath(out Lr.Path path, applicationId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return SetUpFsPath(ref outPath, in path);
     }
@@ -163,10 +168,12 @@ internal class LocationResolverSet : IDisposable
         UnsafeHelpers.SkipParamInit(out isDirectory);
 
         Result res = GetLocationResolver(out LocationResolver resolver, storageId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = resolver.ResolveApplicationHtmlDocumentPath(out Lr.Path path, applicationId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         isDirectory = PathUtility.IsDirectoryPath(path.Value);
 
@@ -178,10 +185,12 @@ internal class LocationResolverSet : IDisposable
         UnsafeHelpers.SkipParamInit(out isDirectory);
 
         Result res = GetLocationResolver(out LocationResolver resolver, storageId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = resolver.ResolveProgramPath(out Lr.Path path, programId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         isDirectory = PathUtility.IsDirectoryPath(path.Value);
 
@@ -193,10 +202,12 @@ internal class LocationResolverSet : IDisposable
         UnsafeHelpers.SkipParamInit(out isDirectory);
 
         Result res = GetLocationResolver(out LocationResolver resolver, storageId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = resolver.ResolveProgramPathForDebug(out Lr.Path path, programId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         isDirectory = PathUtility.IsDirectoryPath(path.Value);
 
@@ -206,10 +217,12 @@ internal class LocationResolverSet : IDisposable
     public Result ResolveAddOnContentPath(ref Fs.Path outPath, DataId dataId)
     {
         Result res = GetAddOnContentLocationResolver(out AddOnContentLocationResolver resolver);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = resolver.ResolveAddOnContentPath(out Lr.Path path, dataId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return SetUpFsPath(ref outPath, in path);
     }
@@ -220,10 +233,12 @@ internal class LocationResolverSet : IDisposable
             return ResultFs.InvalidAlignment.Log();
 
         Result res = GetLocationResolver(out LocationResolver resolver, storageId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         res = resolver.ResolveDataPath(out Lr.Path path, dataId);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return SetUpFsPath(ref outPath, in path);
     }
@@ -234,10 +249,12 @@ internal class LocationResolverSet : IDisposable
         try
         {
             Result res = GetRegisteredLocationResolver(out resolver);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = resolver.ResolveProgramPath(out Lr.Path path, new ProgramId(id));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return SetUpFsPath(ref outPath, in path);
         }
@@ -253,10 +270,12 @@ internal class LocationResolverSet : IDisposable
         try
         {
             Result res = GetRegisteredLocationResolver(out resolver);
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             res = resolver.ResolveHtmlDocumentPath(out Lr.Path path, new ProgramId(id));
-            if (res.IsFailure()) return res.Miss();
+            if (res.IsFailure())
+                return res.Miss();
 
             return SetUpFsPath(ref outPath, in path);
         }

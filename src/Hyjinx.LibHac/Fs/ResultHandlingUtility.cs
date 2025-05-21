@@ -1,5 +1,5 @@
-﻿using System.Runtime.CompilerServices;
 using LibHac.Diag;
+using System.Runtime.CompilerServices;
 
 namespace LibHac.Fs;
 

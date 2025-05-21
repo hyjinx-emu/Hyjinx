@@ -1,12 +1,11 @@
-namespace Hyjinx.Graphics.Shader.StructuredIr
-{
-    class AstComment : AstNode
-    {
-        public string Comment { get; }
+namespace Hyjinx.Graphics.Shader.StructuredIr;
 
-        public AstComment(string comment)
-        {
-            Comment = comment;
-        }
+class AstComment : AstNode
+{
+    public string Comment { get; }
+
+    public AstComment(string comment)
+    {
+        Comment = comment;
     }
 }

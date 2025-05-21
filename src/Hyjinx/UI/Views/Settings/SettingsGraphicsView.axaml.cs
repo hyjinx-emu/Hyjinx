@@ -1,12 +1,11 @@
 using Avalonia.Controls;
 
-namespace Hyjinx.Ava.UI.Views.Settings
+namespace Hyjinx.Ava.UI.Views.Settings;
+
+public partial class SettingsGraphicsView : UserControl
 {
-    public partial class SettingsGraphicsView : UserControl
+    public SettingsGraphicsView()
     {
-        public SettingsGraphicsView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,18 +1,17 @@
-namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer
+namespace Hyjinx.Graphics.GAL.Multithreading.Commands.Renderer;
+
+struct ResetCounterCommand : IGALCommand, IGALCommand<ResetCounterCommand>
 {
-    struct ResetCounterCommand : IGALCommand, IGALCommand<ResetCounterCommand>
+    public readonly CommandType CommandType => CommandType.ResetCounter;
+    private CounterType _type;
+
+    public void Set(CounterType type)
     {
-        public readonly CommandType CommandType => CommandType.ResetCounter;
-        private CounterType _type;
+        _type = type;
+    }
 
-        public void Set(CounterType type)
-        {
-            _type = type;
-        }
-
-        public static void Run(ref ResetCounterCommand command, ThreadedRenderer threaded, IRenderer renderer)
-        {
-            renderer.ResetCounter(command._type);
-        }
+    public static void Run(ref ResetCounterCommand command, ThreadedRenderer threaded, IRenderer renderer)
+    {
+        renderer.ResetCounter(command._type);
     }
 }

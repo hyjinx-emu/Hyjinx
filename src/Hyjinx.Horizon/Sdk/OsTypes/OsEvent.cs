@@ -2,129 +2,128 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Hyjinx.Horizon.Sdk.OsTypes
+namespace Hyjinx.Horizon.Sdk.OsTypes;
+
+static partial class Os
 {
-    static partial class Os
+    public static void InitializeEvent(out EventType evnt, bool signaled, EventClearMode clearMode)
     {
-        public static void InitializeEvent(out EventType evnt, bool signaled, EventClearMode clearMode)
+        evnt = new EventType
         {
-            evnt = new EventType
+            MultiWaitHolders = new LinkedList<MultiWaitHolderBase>(),
+            Signaled = signaled,
+            InitiallySignaled = signaled,
+            ClearMode = clearMode,
+            State = InitializationState.Initialized,
+            Lock = new object(),
+        };
+    }
+
+    public static void FinalizeEvent(ref EventType evnt)
+    {
+        evnt.State = InitializationState.NotInitialized;
+    }
+
+    public static void WaitEvent(ref EventType evnt)
+    {
+        lock (evnt.Lock)
+        {
+            ulong currentCounter = evnt.BroadcastCounter;
+
+            while (!evnt.Signaled)
             {
-                MultiWaitHolders = new LinkedList<MultiWaitHolderBase>(),
-                Signaled = signaled,
-                InitiallySignaled = signaled,
-                ClearMode = clearMode,
-                State = InitializationState.Initialized,
-                Lock = new object(),
-            };
-        }
-
-        public static void FinalizeEvent(ref EventType evnt)
-        {
-            evnt.State = InitializationState.NotInitialized;
-        }
-
-        public static void WaitEvent(ref EventType evnt)
-        {
-            lock (evnt.Lock)
-            {
-                ulong currentCounter = evnt.BroadcastCounter;
-
-                while (!evnt.Signaled)
+                if (currentCounter != evnt.BroadcastCounter)
                 {
-                    if (currentCounter != evnt.BroadcastCounter)
-                    {
-                        break;
-                    }
-
-                    Monitor.Wait(evnt.Lock);
+                    break;
                 }
 
-                if (evnt.ClearMode == EventClearMode.AutoClear)
-                {
-                    evnt.Signaled = false;
-                }
-            }
-        }
-
-        public static bool TryWaitEvent(ref EventType evnt)
-        {
-            lock (evnt.Lock)
-            {
-                bool signaled = evnt.Signaled;
-
-                if (evnt.ClearMode == EventClearMode.AutoClear)
-                {
-                    evnt.Signaled = false;
-                }
-
-                return signaled;
-            }
-        }
-
-        public static bool TimedWaitEvent(ref EventType evnt, TimeSpan timeout)
-        {
-            lock (evnt.Lock)
-            {
-                ulong currentCounter = evnt.BroadcastCounter;
-
-                while (!evnt.Signaled)
-                {
-                    if (currentCounter != evnt.BroadcastCounter)
-                    {
-                        break;
-                    }
-
-                    bool wasSignaledInTime = Monitor.Wait(evnt.Lock, timeout);
-                    if (!wasSignaledInTime)
-                    {
-                        return false;
-                    }
-                }
-
-                if (evnt.ClearMode == EventClearMode.AutoClear)
-                {
-                    evnt.Signaled = false;
-                }
+                Monitor.Wait(evnt.Lock);
             }
 
-            return true;
-        }
-
-        public static void SignalEvent(ref EventType evnt)
-        {
-            lock (evnt.Lock)
-            {
-                if (evnt.Signaled)
-                {
-                    return;
-                }
-
-                evnt.Signaled = true;
-
-                if (evnt.ClearMode == EventClearMode.ManualClear)
-                {
-                    evnt.BroadcastCounter++;
-                    Monitor.PulseAll(evnt.Lock);
-                }
-                else
-                {
-                    Monitor.Pulse(evnt.Lock);
-                }
-
-                foreach (MultiWaitHolderBase holder in evnt.MultiWaitHolders)
-                {
-                    holder.GetMultiWait().NotifyAndWakeUpThread(holder);
-                }
-            }
-        }
-
-        public static void ClearEvent(ref EventType evnt)
-        {
-            lock (evnt.Lock)
+            if (evnt.ClearMode == EventClearMode.AutoClear)
             {
                 evnt.Signaled = false;
             }
+        }
+    }
+
+    public static bool TryWaitEvent(ref EventType evnt)
+    {
+        lock (evnt.Lock)
+        {
+            bool signaled = evnt.Signaled;
+
+            if (evnt.ClearMode == EventClearMode.AutoClear)
+            {
+                evnt.Signaled = false;
+            }
+
+            return signaled;
+        }
+    }
+
+    public static bool TimedWaitEvent(ref EventType evnt, TimeSpan timeout)
+    {
+        lock (evnt.Lock)
+        {
+            ulong currentCounter = evnt.BroadcastCounter;
+
+            while (!evnt.Signaled)
+            {
+                if (currentCounter != evnt.BroadcastCounter)
+                {
+                    break;
+                }
+
+                bool wasSignaledInTime = Monitor.Wait(evnt.Lock, timeout);
+                if (!wasSignaledInTime)
+                {
+                    return false;
+                }
+            }
+
+            if (evnt.ClearMode == EventClearMode.AutoClear)
+            {
+                evnt.Signaled = false;
+            }
+        }
+
+        return true;
+    }
+
+    public static void SignalEvent(ref EventType evnt)
+    {
+        lock (evnt.Lock)
+        {
+            if (evnt.Signaled)
+            {
+                return;
+            }
+
+            evnt.Signaled = true;
+
+            if (evnt.ClearMode == EventClearMode.ManualClear)
+            {
+                evnt.BroadcastCounter++;
+                Monitor.PulseAll(evnt.Lock);
+            }
+            else
+            {
+                Monitor.Pulse(evnt.Lock);
+            }
+
+            foreach (MultiWaitHolderBase holder in evnt.MultiWaitHolders)
+            {
+                holder.GetMultiWait().NotifyAndWakeUpThread(holder);
+            }
+        }
+    }
+
+    public static void ClearEvent(ref EventType evnt)
+    {
+        lock (evnt.Lock)
+        {
+            evnt.Signaled = false;
         }
     }
 }

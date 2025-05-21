@@ -1,8 +1,7 @@
-namespace Hyjinx.Graphics.GAL
+namespace Hyjinx.Graphics.GAL;
+
+public enum DepthMode
 {
-    public enum DepthMode
-    {
-        MinusOneToOne,
-        ZeroToOne,
-    }
+    MinusOneToOne,
+    ZeroToOne,
 }

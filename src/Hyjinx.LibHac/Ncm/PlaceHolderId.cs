@@ -1,7 +1,7 @@
-﻿using System;
+using LibHac.Common;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using LibHac.Common;
 
 namespace LibHac.Ncm;
 
@@ -31,7 +31,8 @@ public struct PlaceHolderId : IEquatable<PlaceHolderId>, IComparable<PlaceHolder
 
     public int CompareTo(object obj)
     {
-        if (obj is null) return 1;
+        if (obj is null)
+            return 1;
         return obj is PlaceHolderId other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(PlaceHolderId)}");
     }
 

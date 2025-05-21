@@ -1,16 +1,15 @@
 using System;
 
-namespace Hyjinx.Cpu.LightningJit
-{
-    readonly ref struct CompiledFunction
-    {
-        public readonly ReadOnlySpan<byte> Code;
-        public readonly int GuestCodeLength;
+namespace Hyjinx.Cpu.LightningJit;
 
-        public CompiledFunction(ReadOnlySpan<byte> code, int guestCodeLength)
-        {
-            Code = code;
-            GuestCodeLength = guestCodeLength;
-        }
+readonly ref struct CompiledFunction
+{
+    public readonly ReadOnlySpan<byte> Code;
+    public readonly int GuestCodeLength;
+
+    public CompiledFunction(ReadOnlySpan<byte> code, int guestCodeLength)
+    {
+        Code = code;
+        GuestCodeLength = guestCodeLength;
     }
 }
