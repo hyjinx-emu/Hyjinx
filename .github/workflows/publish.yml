@@ -1,22 +1,24 @@
 name: publish
 
 on:
-  workflow_dispatch:
+#  workflow_dispatch:
   push:
-    branches:
-      - main
+#    branches:
+#      - main
   release:
     types: [published]
 
 env:
   POWERSHELL_TELEMETRY_OPTOUT: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  IS_RELEASE_EVENT: ${{ github.event_name == 'release' }}
   
 jobs:
   build:
     name: ${{ matrix.platform.name }} (Release)
     runs-on: ${{ matrix.platform.os }}
     timeout-minutes: 60
+    
     strategy:
       matrix:
         platform:
@@ -24,8 +26,8 @@ jobs:
           - { name: linux-x64,   os: ubuntu-latest,  zip_os_name: linux_x64   }
           - { name: linux-arm64, os: ubuntu-latest,  zip_os_name: linux_arm64 }
 #          - { name: osx-x64,     os: macos-13,       zip_os_name: osx_x64     }
-
       fail-fast: false
+      
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,24 +36,49 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-
-      - name: Determine git hash
-        id: git_short_hash
-        run: echo "result=$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
+  
+      - id: get_preview_suffix
+        name: Determine preview suffix
+        run: echo "result=preview.${GITHUB_RUN_NUMBER}+$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
         shell: bash
-
-      - name: Build as Preview
-        run: dotnet build -c "Release" --version-suffix "${{ steps.git_short_hash.outputs.result }}"
-
-      - name: Run tests
-        run: dotnet test --no-build -c "Release"
-        timeout-minutes: 30
-
+        
+      - id: bump_preview_version
+        name: Bump version
+        if: env.IS_RELEASE_EVENT == 'false'
+        uses: vers-one/dotnet-project-version-updater@1
+        with:
+          file: "src/.build/common.props"
+          version: bump-minor
+        
+      - name: Publish preview
+        if: env.IS_RELEASE_EVENT == 'false'
+        run:  dotnet publish -c "Release" -r "${{ matrix.platform.name }}" -o ./dist --self-contained --version-suffix "${{ steps.get_preview_suffix.outputs.result }}" src/Hyjinx
+        
+      - id: update_version
+        name: Update version
+        uses: vers-one/dotnet-project-version-updater@1
+        if: env.IS_RELEASE_EVENT == 'true'
+        with:
+          file: "src/.build/common.props"
+          version: ${{ github.event.inputs.version }}
+        
+      - name: Publish release
+        if: env.IS_RELEASE_EVENT == 'true'
+        run: dotnet publish -c "Release" -r "${{ matrix.platform.name }}" -o ./dist --self-contained src/Hyjinx
+        
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: "${{ matrix.platform.zip_os_name }}-Release"
-          path: "src/Hyjinx/bin/Release/${{ matrix.platform.name }}/"
+          path: "dist/"
+          
+      - name: Commit version
+        if: env.IS_RELEASE_EVENT == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git commit -am "Bumping version"
+          git push origin HEAD:main
 
 #name: publish
 #
