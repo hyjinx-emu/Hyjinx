@@ -19,6 +19,7 @@ jobs:
     outputs:
       version_number: ${{ steps.prepared.outputs.version_number }}
       version_suffix: ${{ steps.prepared.outputs.version_suffix }}
+      full_version: ${{ steps.prepared.outputs.full_version }}
     
     steps:
       - name: Checkout
@@ -43,7 +44,7 @@ jobs:
       matrix:
         platform:
           - { name: win-x64,     builds-on: windows-latest, target-os: windows }
-          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux   }
+#          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux   }
 #          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux   }
 #          - { name: osx-x64,     builds-on: macos-13,       target-os: macos   }
       fail-fast: false
@@ -68,7 +69,7 @@ jobs:
         with:
           runtime_identifier: ${{ matrix.platform.name }}
           packager: ${{ matrix.platform.target-os }}
-          version: ${{ needs.prepare.outputs.version_number }}
+          version: ${{ needs.prepare.outputs.full_version }}
           staging_dir: ${{ env.STAGING_DIR }}
   
   release:
