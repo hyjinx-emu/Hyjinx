@@ -1,4 +1,4 @@
-name: labeler
+name: triage
 
 on:
   pull_request:
