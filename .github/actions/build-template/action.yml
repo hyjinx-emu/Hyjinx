@@ -57,7 +57,7 @@ runs:
       if: inputs.run_tests == 'true'
       shell: bash
       run: |
-        ./.sonar/dotnet-sonarscanner begin /k:"hyjinx-emu_Hyjinx" /o:"hyjinx-emu" /d:sonar.projectBaseDir="${{ github.workspace }}/src" /d:sonar.analysis.platform="${{ inputs.runtime_identifier }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.c.file.suffixes=- /d:sonar.cpp.file.suffixes=- /d:sonar.objc.file.suffixes=-
+        ./.sonar/dotnet-sonarscanner begin /k:"hyjinx-emu_Hyjinx" /o:"hyjinx-emu" /d:sonar.projectBaseDir="${{ github.workspace }}/src" /d:sonar.analysis.platform="${{ inputs.runtime_identifier }}" /d:sonar.token="${{ env.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.c.file.suffixes=- /d:sonar.cpp.file.suffixes=- /d:sonar.objc.file.suffixes=-
             
     - name: Build
       if: inputs.run_tests == 'true'
@@ -85,4 +85,4 @@ runs:
     - name: Publish analysis
       shell: bash
       run: |
-        ./.sonar/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        ./.sonar/dotnet-sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
