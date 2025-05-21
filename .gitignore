@@ -8,6 +8,7 @@
 *.sln.DotSettings
 .vs
 .vscode
+dist/
 
 # Build results
 
