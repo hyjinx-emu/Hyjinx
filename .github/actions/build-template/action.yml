@@ -67,6 +67,7 @@ runs:
         dotnet build -c "${{ inputs.configuration }}"
 
     - name: Run tests
+      if: inputs.run_tests == 'true'
       shell: bash
       run: |
         dotnet test --no-build -c "${{ inputs.configuration }}"
@@ -84,6 +85,7 @@ runs:
         dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -o ${{ inputs.output_dir }} --self-contained
 
     - name: Publish analysis
+      if: inputs.run_tests == 'true'
       shell: bash
       run: |
         ./.sonar/dotnet-sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
