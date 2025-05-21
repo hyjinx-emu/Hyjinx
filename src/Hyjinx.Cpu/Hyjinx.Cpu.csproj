@@ -3,7 +3,6 @@
   
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <RootNamespace>Hyjinx.Cpu</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
