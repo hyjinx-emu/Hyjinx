@@ -36,7 +36,6 @@ runs:
         echo "ARCHIVE_NAME=$archive_name" >> $GITHUB_ENV
         
         pushd "${{ inputs.staging_dir }}"
-        chmod +x Hyjinx.sh Hyjinx
         tar -czvf ../out/$archive_name" .
         popd
       shell: bash
