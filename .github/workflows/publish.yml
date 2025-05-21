@@ -11,7 +11,6 @@ on:
 env:
   POWERSHELL_TELEMETRY_OPTOUT: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
-  IS_RELEASE_EVENT: ${{ github.event_name == 'release' }}
   
 jobs:      
   build:
@@ -31,7 +30,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+      
+      - name: Prepare version
+        id: prepared
+        uses: ./.github/actions/prepare-version
+        with:
+          explicit_version: ${{ github.event.inputs.version }}
+          
       - name: Build
         uses: ./.github/actions/build-template
         env:
@@ -40,9 +45,21 @@ jobs:
           project: src/Hyjinx/Hyjinx.csproj
           runtime_identifier: ${{ matrix.platform.name }}
           output_dir: dist
-          version: "0.1.0"
-          version_suffix: "preview.${{ github.run_number }}"
+          version: ${{ steps.prepared.outputs.version_number }}
+          version_suffix: ${{ steps.prepared.outputs.version_suffix }}
           run_tests: false
+          
+#      - name: Build for Release
+#        if: env.IS_RELEASE_EVENT == 'true'
+#        uses: ./.github/actions/build-template
+#        env:
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#        with:
+#          project: src/Hyjinx/Hyjinx.csproj
+#          runtime_identifier: ${{ matrix.platform.name }}
+#          output_dir: dist
+#          version: "0.1.0"
+#          run_tests: false
           
       - name: Package
         uses: ./.github/actions/package-template
