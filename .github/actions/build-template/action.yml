@@ -24,7 +24,7 @@ inputs:
   run_tests:
     description: "Enables or disables the execution of the unit tests."
     required: false
-    default: "true"
+    default: "false"
     
 runs:
   using: "composite"

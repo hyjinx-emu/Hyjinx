@@ -62,7 +62,6 @@ jobs:
           staging_dir: ${{ env.STAGING_DIR }}
           version: ${{ needs.prepare.outputs.version_number }}
           version_suffix: ${{ needs.prepare.outputs.version_suffix }}
-          run_tests: false
           
       - name: Package
         uses: ./.github/actions/package-template
