@@ -14,7 +14,7 @@ env:
   
 jobs:
   build:
-    name: ${{ matrix.platform.name }} (${{ matrix.configuration }})
+    name: ${{ matrix.platform.name }} (Release)
     runs-on: ${{ matrix.platform.os }}
     timeout-minutes: 60
     strategy:
@@ -50,7 +50,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ matrix.platform.name }}-Release"
+          name: "${{ matrix.platform.zip_os_name }}-Release"
           path: "src/Hyjinx/bin/Release/${{ matrix.platform.name }}/"
 
 #name: publish
