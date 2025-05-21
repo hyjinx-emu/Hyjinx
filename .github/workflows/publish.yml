@@ -1,7 +1,7 @@
 name: publish
 
 on:
-#  workflow_dispatch:
+  workflow_dispatch:
   push:
 #    branches:
 #      - main
@@ -37,22 +37,26 @@ jobs:
         with:
           global-json-file: global.json
   
-      - id: get_preview_suffix
-        name: Determine preview suffix
-        run: echo "result=preview.${GITHUB_RUN_NUMBER}+$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
+      - id: get_git_hash
+        name: Get Git hash
+        run: echo "hash=$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
         shell: bash
         
       - id: bump_preview_version
-        name: Bump version
+        name: Bump preview version
         if: env.IS_RELEASE_EVENT == 'false'
         uses: vers-one/dotnet-project-version-updater@v1.7
         with:
           file: "src/.build/common.props"
           version: bump-minor
         
+      - name: Set preview version
+        if: env.IS_RELEASE_EVENT == 'false'
+        run: echo "NEW_VERSION=${{ steps.bump_preview_version.outputs.newVersion }}-preview.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+        
       - name: Publish preview
         if: env.IS_RELEASE_EVENT == 'false'
-        run:  dotnet publish -c "Release" -r "${{ matrix.platform.name }}" -o ./dist --self-contained --version-suffix "${{ steps.get_preview_suffix.outputs.result }}" src/Hyjinx
+        run: dotnet publish -c "Release" -r "${{ matrix.platform.name }}" -o ./dist --self-contained --version-suffix "preview.${GITHUB_RUN_NUMBER}+${{ steps.get_git_hash.outputs.hash }}" src/Hyjinx
         
       - id: update_version
         name: Update version
@@ -61,6 +65,10 @@ jobs:
         with:
           file: "src/.build/common.props"
           version: ${{ github.event.inputs.version }}
+          
+      - name: Set release version
+        if: env.IS_RELEASE_EVENT == 'true'
+        run: echo "NEW_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
         
       - name: Publish release
         if: env.IS_RELEASE_EVENT == 'true'
@@ -69,7 +77,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ matrix.platform.zip_os_name }}-Release"
+          name: "hyjinx-${NEW_VERSION}-${{ matrix.platform.zip_os_name }}"
           path: "dist/"
           
       - name: Commit version
