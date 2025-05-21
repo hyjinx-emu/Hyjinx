@@ -19,6 +19,7 @@ jobs:
     name: ${{ matrix.platform.name }} (${{ matrix.configuration }})
     runs-on: ${{ matrix.platform.os }}
     timeout-minutes: 60
+    
     strategy:
       matrix:
         configuration: [Release]
@@ -27,8 +28,8 @@ jobs:
           - { name: linux-x64,   os: ubuntu-latest,  zip_os_name: linux_x64   }
           - { name: linux-arm64, os: ubuntu-latest,  zip_os_name: linux_arm64 }
 #          - { name: osx-x64,     os: macos-13,       zip_os_name: osx_x64     }
-
       fail-fast: false
+      
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
