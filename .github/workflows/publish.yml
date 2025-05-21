@@ -81,7 +81,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: "hyjinx-${{ env.NEW_VERSION }}-${{ matrix.platform.zip_os_name }}.zip"
+          name: "hyjinx-${{ env.NEW_VERSION }}-${{ matrix.platform.zip_os_name }}"
           path: "dist/"
           
       - name: Commit version
