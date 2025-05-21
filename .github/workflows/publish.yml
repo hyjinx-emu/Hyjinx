@@ -52,12 +52,12 @@ jobs:
         
       - name: Set preview version
         if: env.IS_RELEASE_EVENT == 'false'
-        run: echo "NEW_VERSION=${{ steps.bump_preview_version.outputs.newVersion }}-preview.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+        run: echo "NEW_VERSION=${{ steps.bump_preview_version.outputs.newVersion }}-preview.${{ github.run_number }}" >> $GITHUB_ENV
         shell: bash
         
       - name: Publish preview
         if: env.IS_RELEASE_EVENT == 'false'
-        run: dotnet publish -c "Release" -r "${{ matrix.platform.name }}" -o ./dist --self-contained --version-suffix "preview.${GITHUB_RUN_NUMBER}+${{ steps.get_git_hash.outputs.hash }}" src/Hyjinx
+        run: dotnet publish -c "Release" -r "${{ matrix.platform.name }}" -o ./dist --self-contained --version-suffix "preview.${{ github.run_number }}+${{ steps.get_git_hash.outputs.hash }}" src/Hyjinx
         shell: bash
         
       - id: update_version
