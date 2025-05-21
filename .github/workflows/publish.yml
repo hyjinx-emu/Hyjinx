@@ -53,10 +53,12 @@ jobs:
       - name: Set preview version
         if: env.IS_RELEASE_EVENT == 'false'
         run: echo "NEW_VERSION=${{ steps.bump_preview_version.outputs.newVersion }}-preview.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+        shell: bash
         
       - name: Publish preview
         if: env.IS_RELEASE_EVENT == 'false'
         run: dotnet publish -c "Release" -r "${{ matrix.platform.name }}" -o ./dist --self-contained --version-suffix "preview.${GITHUB_RUN_NUMBER}+${{ steps.get_git_hash.outputs.hash }}" src/Hyjinx
+        shell: bash
         
       - id: update_version
         name: Update version
@@ -69,15 +71,17 @@ jobs:
       - name: Set release version
         if: env.IS_RELEASE_EVENT == 'true'
         run: echo "NEW_VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+        shell: bash
         
       - name: Publish release
         if: env.IS_RELEASE_EVENT == 'true'
         run: dotnet publish -c "Release" -r "${{ matrix.platform.name }}" -o ./dist --self-contained src/Hyjinx
+        shell: bash
         
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: "hyjinx-${{ env.NEW_VERSION }}-${{ matrix.platform.zip_os_name }}"
+          name: "hyjinx-${{ env.NEW_VERSION }}-${{ matrix.platform.zip_os_name }}.zip"
           path: "dist/"
           
       - name: Commit version
@@ -87,6 +91,7 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git commit -am "Bumping version"
           git push origin HEAD:main
+        shell: bash
 
 #name: publish
 #
