@@ -1,39 +1,39 @@
-#audio:
-#- changed-files:
-#  - any-glob-to-any-file: 'src/Hyjinx.Audio*/**'
-#
-#cpu:
-#- changed-files:
-#  - any-glob-to-any-file: ['src/ARMeilleure/**', 'src/Hyjinx.Cpu/**', 'src/Hyjinx.Memory/**']
-#
-#gpu:
-#- changed-files:
-#  - any-glob-to-any-file: ['src/Hyjinx.Graphics.*/**', 'src/Spv.Generator/**', 'src/Hyjinx.ShaderTools/**']
-#
-#opengl:
-#- changed-files:
-#  - any-glob-to-any-file: 'src/Hyjinx.Graphics.OpenGL/**'
-#
-#vulkan:
-#- changed-files:
-#  - any-glob-to-any-file: ['src/Hyjinx.Graphics.Vulkan/**', 'src/Spv.Generator/**']
-#
-#gui:
-#- changed-files:
-#  - any-glob-to-any-file: ['src/Hyjinx/**', 'src/Hyjinx.UI.Common/**', 'src/Hyjinx.UI.LocaleGenerator/**', 'src/Hyjinx.Gtk3/**']
-#
-#horizon:
-#- changed-files:
-#  - any-glob-to-any-file: ['src/Hyjinx.HLE/**', 'src/Hyjinx.Horizon/**']
-#
-#kernel:
-#- changed-files:
-#  - any-glob-to-any-file: 'src/Hyjinx.HLE/HOS/Kernel/**'
+"audio":
+- changed-files:
+  - any-glob-to-any-file: 'src/Hyjinx.Audio*/**'
 
-#infra:
-#- changed-files:
-#  - any-glob-to-any-file: ['.github/**', 'distribution/**', 'Directory.Packages.props']
+"cpu":
+- changed-files:
+  - any-glob-to-any-file: ['src/ARMeilleure/**', 'src/Hyjinx.Cpu/**', 'src/Hyjinx.Memory/**']
 
-#meta:
-#- changed-files:
-#  - any-glob-to-any-file: ['docs/**', 'README.md', 'CONTRIBUTING.md']
+"gpu":
+- changed-files:
+  - any-glob-to-any-file: ['src/Hyjinx.Graphics.*/**', 'src/Spv.Generator/**', 'src/Hyjinx.ShaderTools/**']
+
+"opengl":
+- changed-files:
+  - any-glob-to-any-file: 'src/Hyjinx.Graphics.OpenGL/**'
+
+"vulkan":
+- changed-files:
+  - any-glob-to-any-file: ['src/Hyjinx.Graphics.Vulkan/**', 'src/Spv.Generator/**']
+
+"gui":
+- changed-files:
+  - any-glob-to-any-file: ['src/Hyjinx/**', 'src/Hyjinx.UI.Common/**', 'src/Hyjinx.UI.LocaleGenerator/**', 'src/Hyjinx.Gtk3/**']
+
+"horizon":
+- changed-files:
+  - any-glob-to-any-file: ['src/Hyjinx.HLE/**', 'src/Hyjinx.Horizon/**']
+
+"kernel":
+- changed-files:
+  - any-glob-to-any-file: 'src/Hyjinx.HLE/HOS/Kernel/**'
+
+"infra":
+- changed-files:
+  - any-glob-to-any-file: ['.github/**', 'distribution/**', 'Directory.Packages.props']
+
+"meta":
+- changed-files:
+  - any-glob-to-any-file: ['docs/**', 'README.md', 'CONTRIBUTING.md']

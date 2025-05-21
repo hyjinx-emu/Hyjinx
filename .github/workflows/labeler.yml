@@ -13,7 +13,7 @@ permissions:
   pull-requests: write
   
 jobs:
-  triage:
+  label:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +27,3 @@ jobs:
 
       - name: Apply labels
         uses: actions/labeler@v5
-        with:
-          sync-labels: true
-          dot: false
