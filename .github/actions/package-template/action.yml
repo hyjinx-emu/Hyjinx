@@ -18,7 +18,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Package for Windows
+    - name: Package for Windows (Portable)
       if: inputs.packager == 'windows'
       shell: bash
       run: |
@@ -29,29 +29,25 @@ runs:
         7z a "../out/$archive_name" .
         popd
         
-    - name: Upload artifacts
+    - name: Package for Linux (Portable)
+      if: inputs.packager == 'linux'
+      run: |
+        archive_name="hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.tar.gz"
+        echo "ARCHIVE_NAME=$archive_name" >> $GITHUB_ENV
+        
+        pushd "${{ inputs.staging_dir }}"
+        chmod +x Hyjinx.sh Hyjinx
+        tar -czvf ../out/$archive_name" .
+        popd
+      shell: bash
+        
+    - name: Upload Artifacts (Portable)
       if: env.ARCHIVE_NAME != ''
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.ARCHIVE_NAME }}
         path: out/${{ env.ARCHIVE_NAME }}
-        
-#      - name: Packing Windows builds
-#        if: matrix.platform.os == 'windows-latest'
-#        run: |
-#          BUILD_VERSION="${{ steps.version_info.outputs.build_version }}"
-#          ZIP_OS_NAME="${{ matrix.platform.zip_os_name }}"
-#
-#          pushd publish_ava
-#          cp Ryujinx.exe Ryujinx.Ava.exe
-#          7z a ../release_output/ryujinx-$BUILD_VERSION-$ZIP_OS_NAME.zip *
-#          popd
-#
-#          pushd publish_sdl2_headless
-#          7z a ../release_output/sdl2-ryujinx-headless-$BUILD_VERSION-$ZIP_OS_NAME.zip *
-#          popd
-#        shell: bash
-#
+
 #      - name: Build AppImage (Linux)
 #        if: matrix.platform.os == 'ubuntu-latest'
 #        run: |
@@ -86,23 +82,5 @@ runs:
 #          pushd publish_ava_appimage
 #          mv Ryujinx.AppImage ../release_output/ryujinx-$BUILD_VERSION-$ARCH_NAME.AppImage
 #          mv Ryujinx.AppImage.zsync ../release_output/ryujinx-$BUILD_VERSION-$ARCH_NAME.AppImage.zsync
-#          popd
-#        shell: bash
-#
-#      - name: Packing Linux builds
-#        if: matrix.platform.os == 'ubuntu-latest'
-#        run: |
-#          BUILD_VERSION="${{ steps.version_info.outputs.build_version }}"
-#          ZIP_OS_NAME="${{ matrix.platform.zip_os_name }}"
-#
-#          pushd publish_ava
-#          cp Ryujinx Ryujinx.Ava
-#          chmod +x Ryujinx.sh Ryujinx Ryujinx.Ava
-#          tar -czvf ../release_output/ryujinx-$BUILD_VERSION-$ZIP_OS_NAME.tar.gz *
-#          popd
-#
-#          pushd publish_sdl2_headless
-#          chmod +x Ryujinx.sh Ryujinx.Headless.SDL2
-#          tar -czvf ../release_output/sdl2-ryujinx-headless-$BUILD_VERSION-$ZIP_OS_NAME.tar.gz *
 #          popd
 #        shell: bash

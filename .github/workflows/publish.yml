@@ -44,8 +44,8 @@ jobs:
       matrix:
         platform:
           - { name: win-x64,     builds-on: windows-latest, target-os: windows }
-#          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux   }
-#          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux   }
+          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux   }
+          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux   }
 #          - { name: osx-x64,     builds-on: macos-13,       target-os: macos   }
       fail-fast: false
 
