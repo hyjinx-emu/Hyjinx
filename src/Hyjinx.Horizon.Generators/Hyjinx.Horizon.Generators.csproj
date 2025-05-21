@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../.build/netstandard.props" />
+  <Import Project="../.build/library.props" />
   
   <PropertyGroup>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>

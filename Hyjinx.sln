@@ -80,7 +80,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{996E745A
 		src\.build\exe.props = src\.build\exe.props
 		src\.build\common.props = src\.build\common.props
 		src\.build\library.props = src\.build\library.props
-		src\.build\netstandard.props = src\.build\netstandard.props
 		src\.build\unittest.props = src\.build\unittest.props
 	EndProjectSection
 EndProject
