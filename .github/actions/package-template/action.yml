@@ -36,7 +36,7 @@ runs:
         echo "ARCHIVE_NAME=$archive_name" >> $GITHUB_ENV
         
         pushd "${{ inputs.staging_dir }}"
-        tar -czvf ../out/$archive_name" .
+        tar -czvf "../out/$archive_name" .
         popd
       shell: bash
         
