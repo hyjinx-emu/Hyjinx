@@ -34,8 +34,8 @@ runs:
       if: inputs.explicit_version == ''
       shell: bash
       run: |
-        echo "version_number=${{ steps.bump_preview_version.outputs.newVersion }}" >> $GITHUB_ENV
-        echo "version_suffix=preview.${{ github.run_number }}+${{ steps.get_git_hash.outputs.short_hash }}" >> $GITHUB_ENV
+        echo "version_number=${{ steps.bump_preview_version.outputs.newVersion }}" >> $GITHUB_OUTPUT
+        echo "version_suffix=preview.${{ github.run_number }}+${{ steps.get_git_hash.outputs.short_hash }}" >> $GITHUB_OUTPUT
 
     - id: update_version
       name: Update version
@@ -49,4 +49,4 @@ runs:
       if: inputs.explicit_version != ''
       shell: bash
       run: |
-        echo "version_number=${{ inputs.explicit_version }}" >> $GITHUB_ENV
+        echo "version_number=${{ inputs.explicit_version }}" >> $GITHUB_OUTPUT
