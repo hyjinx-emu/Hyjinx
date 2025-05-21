@@ -25,7 +25,7 @@ public partial class App : Application
 
     public override void Initialize()
     {
-        Name = $"Hyjinx {Program.Version}";
+        Name = $"Hyjinx";
 
         AvaloniaXamlLoader.Load(this);
 

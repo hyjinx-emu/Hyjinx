@@ -117,7 +117,7 @@ internal partial class Program : IDisposable
     {
         if (OperatingSystem.IsWindows() && !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17134))
         {
-            _ = MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nHyjinx supports Windows 10 version 1803 and newer.\n", $"Hyjinx {Version}", MbIconwarning);
+            _ = MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nHyjinx supports Windows 10 version 1803 and newer.\n", $"Hyjinx", MbIconwarning);
             return -1;
         }
 
@@ -246,7 +246,7 @@ internal partial class Program : IDisposable
     private void PrintSystemInfo()
     {
         _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-            "Hyjinx Version: {Version}", Version);
+            "Version: {Version}", Version);
         SystemInfo.Gather().Print();
 
         if (AppDataManager.Mode == AppDataManager.LaunchMode.Custom)

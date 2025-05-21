@@ -101,7 +101,7 @@ public class MainWindowViewModel : BaseModel
     private string _backendText;
 
     private Cursor _cursor;
-    private string _title;
+    private string _title = "Hyjinx";
     private ApplicationData _currentApplicationData;
     private readonly AutoResetEvent _rendererWaitEvent;
     private WindowState _windowState;
@@ -1683,13 +1683,7 @@ public class MainWindowViewModel : BaseModel
 
         RendererHostControl.WindowCreated -= RendererHost_Created;
         RendererHostControl = null;
-
         SelectedIcon = null;
-
-        Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Title = $"Hyjinx {Program.Version}";
-        });
     }
 
     public void ToggleFullscreen()

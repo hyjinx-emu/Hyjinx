@@ -14,7 +14,7 @@ public partial class SettingsWindow : StyleableWindow
 
     public SettingsWindow(VirtualFileSystem virtualFileSystem, ContentManager contentManager)
     {
-        Title = $"Hyjinx {Program.Version} - {LocaleManager.Instance[LocaleKeys.Settings]}";
+        Title = $"Hyjinx - {LocaleManager.Instance[LocaleKeys.Settings]}";
 
         ViewModel = new SettingsViewModel(virtualFileSystem, contentManager);
         DataContext = ViewModel;

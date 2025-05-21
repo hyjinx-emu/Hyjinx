@@ -18,7 +18,7 @@ public partial class AmiiboWindow : StyleableWindow
 
         InitializeComponent();
 
-        Title = $"Hyjinx {Program.Version} - " + LocaleManager.Instance[LocaleKeys.Amiibo];
+        Title = $"Hyjinx - {LocaleManager.Instance[LocaleKeys.Amiibo]}";
     }
 
     public AmiiboWindow()
@@ -31,7 +31,7 @@ public partial class AmiiboWindow : StyleableWindow
 
         if (Program.PreviewerDetached)
         {
-            Title = $"Hyjinx {Program.Version} - " + LocaleManager.Instance[LocaleKeys.Amiibo];
+            Title = $"Hyjinx - {LocaleManager.Instance[LocaleKeys.Amiibo]}";
         }
     }
 
