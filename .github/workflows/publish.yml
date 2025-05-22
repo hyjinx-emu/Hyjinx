@@ -2,13 +2,13 @@ name: publish
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - '.github/actions/**'
-      - '.github/workflows/publish.yml'
-      - 'src/**'
-      - 'Directory.Packages.props'
+   branches:
+     - main
+   paths:
+     - '.github/actions/**'
+     - '.github/workflows/publish.yml'
+     - 'src/**'
+     - 'Directory.Packages.props'
   release:
     types: [ published ]
 
@@ -49,9 +49,9 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: win-x64,     builds-on: windows-latest, target-os: windows }
-          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux   }
-          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux   }
+          - { name: win-x64,     builds-on: windows-latest, target-os: windows, zip_os_name: win_x64     }
+          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux,   zip_os_name: linux_x64   }
+          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux,   zip_os_name: linux_arm64 }
       fail-fast: false
 
     steps:
@@ -74,6 +74,7 @@ jobs:
         uses: ./.github/actions/package-template
         with:
           runtime_identifier: ${{ matrix.platform.name }}
+          package_suffix: ${{ matrix.platform.zip_os_name }}
           packager: ${{ matrix.platform.target-os }}
           version: ${{ needs.prepare.outputs.full_version }}
           staging_dir: ${{ env.STAGING_DIR }}
@@ -84,27 +85,27 @@ jobs:
         with:
           name: ${{ matrix.platform.name }}
           path: "${{ env.PACKAGE_DIR }}/"
-  
+          
   release:
     runs-on: ubuntu-latest
-    
+
     env:
       STAGING_DIR: dist
-    
+
     needs:
       - prepare
       - build
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Download dist
         uses: actions/download-artifact@v4
         with:
           path: ${{ env.STAGING_DIR }}/
           merge-multiple: true
-      
+
       - name: Publish
         uses: ncipollo/release-action@v1
         with:
@@ -112,14 +113,14 @@ jobs:
           artifacts: ${{ env.STAGING_DIR }}/**
           prerelease: ${{ github.event.name != 'release' }}
           generateReleaseNotes: true
-          
+
       - name: Update version
         if: github.event.name == 'release'
         uses: vers-one/dotnet-project-version-updater@v1.7
         with:
           file: "src/.build/common.props"
           version: ${{ needs.prepare.outputs.version_number }}
-          
+
       - name: Commit version
         if: github.event.name == 'release'
         shell: bash
