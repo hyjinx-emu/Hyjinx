@@ -42,7 +42,7 @@ runs:
       shell: bash
       run: |
         echo "VERSION_NUMBER=${{ steps.bump_preview_version.outputs.newVersion }}" >> $GITHUB_ENV
-        echo "VERSION_SUFFIX=preview.${{ github.run_number }}+${{ steps.get_git_hash.outputs.short_hash }}" >> $GITHUB_ENV
+        echo "VERSION_SUFFIX=preview.${{ github.run_number }}" >> $GITHUB_ENV
 
     - id: update_version
       name: Update version

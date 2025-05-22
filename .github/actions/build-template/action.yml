@@ -21,6 +21,9 @@ inputs:
   version_suffix:
     description: "The suffix of the version (if applicable)."
     required: false
+  short_hash:
+    description: "The short hash of the commit."
+    required: false
   run_tests:
     description: "Enables or disables the execution of the unit tests."
     required: false
@@ -76,7 +79,7 @@ runs:
       if: inputs.version_suffix != ''
       shell: bash
       run: |
-        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}"
+        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}+${{ inputs.short_hash }}"
       
     - name: Publish for Release
       if: inputs.version_suffix == ''

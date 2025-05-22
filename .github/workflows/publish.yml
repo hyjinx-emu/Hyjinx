@@ -20,6 +20,7 @@ jobs:
       version_number: ${{ steps.prepared.outputs.version_number }}
       version_suffix: ${{ steps.prepared.outputs.version_suffix }}
       full_version: ${{ steps.prepared.outputs.full_version }}
+      short_hash: ${{ steps.prepared.outputs.short_hash }}
     
     steps:
       - name: Checkout
@@ -64,6 +65,7 @@ jobs:
           staging_dir: ${{ env.STAGING_DIR }}
           version: ${{ needs.prepare.outputs.version_number }}
           version_suffix: ${{ needs.prepare.outputs.version_suffix }}
+          short_hash: ${{ needs.prepare.outputs.short_hash }}
           
       - name: Package
         uses: ./.github/actions/package-template
@@ -90,7 +92,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+      
+      - name: Publish
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.prepare.outputs.full_version }}
+          generateReleaseNotes: true
+          
       - name: Update version
         if: github.event.name == 'release'
         uses: vers-one/dotnet-project-version-updater@v1.7
@@ -308,14 +316,4 @@ jobs:
 #          echo "build_version=r.`echo ${{ github.sha }} | cut -c1-7`" >> $GITHUB_OUTPUT
 #        shell: bash
 #
-#      - name: Update release
-#        uses: ncipollo/release-action@v1
-#        with:
-#          name: ${{ steps.version_info.outputs.build_version }}
-#          tag: ${{ steps.version_info.outputs.build_version }}
-#          makeLatest: "true"
-#          omitBody: true
-#          allowUpdates: true
-#          #owner: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_OWNER }}
-#          #repo: ${{ env.RYUJINX_TARGET_RELEASE_CHANNEL_REPO }}
-#          token: ${{ secrets.GITHUB_TOKEN }}
+
