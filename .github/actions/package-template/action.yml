@@ -33,6 +33,7 @@ runs:
       shell: bash
       run: |
         cp -a distribution/windows/. "${{ inputs.staging_dir }}/"
+        cp -a distribution/legal/. "${{ inputs.staging_dir }}/"
         
         pushd "${{ inputs.staging_dir }}"
         7z a "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.package_suffix }}.zip" .
@@ -43,6 +44,7 @@ runs:
       shell: bash
       run: |
         cp -a distribution/linux/portable/. "${{ inputs.staging_dir }}/"
+        cp -a distribution/legal/. "${{ inputs.staging_dir }}/"
         
         pushd "${{ inputs.staging_dir }}"
         tar -czvf "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.package_suffix }}.tar.gz" .
