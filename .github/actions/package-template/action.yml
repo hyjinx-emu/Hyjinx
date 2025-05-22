@@ -1,0 +1,42 @@
+name: Package
+description: Packages the application
+
+inputs:
+  runtime_identifier:
+    description: "The runtime identifier."
+    required: true
+  packager:
+    description: "The target operating system. (windows, linux, macos)"
+    required: true
+  staging_dir:
+    description: "The location where the package contents is located."
+    required: true
+  version:
+    description: "The version of the package."
+    required: true
+  package_dir:
+    description: "The location where the packages will be placed."
+    required: true    
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create output directory
+      shell: bash
+      run: mkdir "${{ inputs.package_dir }}"
+        
+    - name: Package for Windows (Portable)
+      if: inputs.packager == 'windows'
+      shell: bash
+      run: |
+        pushd "${{ inputs.staging_dir }}"
+        7z a "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.zip" .
+        popd
+        
+    - name: Package for Linux (Portable)
+      if: inputs.packager == 'linux'
+      shell: bash
+      run: |
+        pushd "${{ inputs.staging_dir }}"
+        tar -czvf "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.tar.gz" .
+        popd

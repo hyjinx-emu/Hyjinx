@@ -7,7 +7,6 @@
     <NoWarn>$(NoWarn);SYSLIB1100;SYSLIB1101</NoWarn>
     <IncludePlatformAttributes>true</IncludePlatformAttributes>
     <PackageDescription>Logger provider implementation for Microsoft.Extensions.Logging.</PackageDescription>
-    <RootNamespace>Hyjinx.Logging</RootNamespace>
   </PropertyGroup>
   
   <ItemGroup>

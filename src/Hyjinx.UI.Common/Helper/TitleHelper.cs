@@ -17,7 +17,7 @@ public static class TitleHelper
         string titleIdSection = $" ({activeProcess.ProgramIdText.ToUpper()})";
         string titleArchSection = activeProcess.Is64Bit ? " (64-bit)" : " (32-bit)";
 
-        string appTitle = $"Hyjinx {applicationVersion} -{titleNameSection}{titleVersionSection}{titleIdSection}{titleArchSection}";
+        string appTitle = $"Hyjinx -{titleNameSection}{titleVersionSection}{titleIdSection}{titleArchSection}";
 
         if (!string.IsNullOrEmpty(pauseString))
         {

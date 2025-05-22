@@ -1,0 +1,94 @@
+name: Build
+description: Builds the application
+
+inputs:
+  project:
+    description: "The path to the project file."
+    required: true
+  runtime_identifier:
+    description: "The target runtime identifier."
+    required: true
+  configuration:
+    description: "The build configuration. Eg: Debug or Release"
+    required: false
+    default: "Release"
+  staging_dir:
+    description: "The output directory where the published files should be dropped."
+    required: true
+  version:
+    description: "The version which will be used during compilation."
+    required: true  
+  version_suffix:
+    description: "The suffix of the version (if applicable)."
+    required: false
+  short_hash:
+    description: "The short hash of the commit."
+    required: false
+  run_tests:
+    description: "Enables or disables the execution of the unit tests."
+    required: false
+    default: "false"
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Set up JDK 17
+      if: inputs.run_tests == 'true'
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: 'zulu' # Alternative distribution options are available.
+      
+    - name: Set up .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: global.json
+
+    - name: Install SonarScanner
+      if: inputs.run_tests == 'true'
+      shell: bash
+      run: |
+        mkdir ./.sonar
+        dotnet tool update dotnet-sonarscanner --tool-path ./.sonar
+    
+    - name: Update version
+      uses: vers-one/dotnet-project-version-updater@v1.7
+      with:
+        file: "src/.build/common.props"
+        version: ${{ inputs.version }}
+
+    - name: Prepare analysis
+      if: inputs.run_tests == 'true'
+      shell: bash
+      run: |
+        ./.sonar/dotnet-sonarscanner begin /k:"hyjinx-emu_Hyjinx" /o:"hyjinx-emu" /d:sonar.projectBaseDir="${{ github.workspace }}/src" /d:sonar.analysis.platform="${{ inputs.runtime_identifier }}" /d:sonar.token="${{ env.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.c.file.suffixes=- /d:sonar.cpp.file.suffixes=- /d:sonar.objc.file.suffixes=-
+            
+    - name: Build
+      if: inputs.run_tests == 'true'
+      shell: bash
+      run: |
+        dotnet build -c "${{ inputs.configuration }}"
+
+    - name: Run tests
+      if: inputs.run_tests == 'true'
+      shell: bash
+      run: |
+        dotnet test --no-build -c "${{ inputs.configuration }}"
+
+    - name: Publish for Preview
+      if: inputs.version_suffix != ''
+      shell: bash
+      run: |
+        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}+${{ inputs.short_hash }}"
+      
+    - name: Publish for Release
+      if: inputs.version_suffix == ''
+      shell: bash
+      run: |
+        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -o ${{ inputs.staging_dir }} --self-contained
+
+    - name: Publish analysis
+      if: inputs.run_tests == 'true'
+      shell: bash
+      run: |
+        ./.sonar/dotnet-sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"

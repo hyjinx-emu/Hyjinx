@@ -30,7 +30,7 @@ public partial class CheatWindow : StyleableWindow
 
         InitializeComponent();
 
-        Title = $"Hyjinx {Program.Version} - " + LocaleManager.Instance[LocaleKeys.CheatWindowTitle];
+        Title = $"Hyjinx - {LocaleManager.Instance[LocaleKeys.CheatWindowTitle]}";
     }
 
     public CheatWindow(VirtualFileSystem virtualFileSystem, string titleId, string titleName, string titlePath)
@@ -95,7 +95,7 @@ public partial class CheatWindow : StyleableWindow
 
         DataContext = this;
 
-        Title = $"Hyjinx {Program.Version} - " + LocaleManager.Instance[LocaleKeys.CheatWindowTitle];
+        Title = $"Hyjinx - {LocaleManager.Instance[LocaleKeys.CheatWindowTitle]}";
     }
 
     public void Save()

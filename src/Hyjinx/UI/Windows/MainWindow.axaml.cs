@@ -79,8 +79,6 @@ public partial class MainWindow : StyleableWindow
 
         UiHandler = new AvaHostUIHandler(this);
 
-        ViewModel.Title = $"Hyjinx {Program.Version}";
-
         // NOTE: Height of MenuBar and StatusBar is not usable here, since it would still be 0 at this point.
         StatusBarHeight = StatusBarView.StatusBar.MinHeight;
         MenuBarHeight = MenuBar.MinHeight;
