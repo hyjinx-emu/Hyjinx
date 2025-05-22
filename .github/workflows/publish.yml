@@ -77,7 +77,7 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform.target-os }}
+          name: ${{ matrix.platform.name }}
           path: "${{ env.PACKAGE_DIR }}/"
   
   release:
