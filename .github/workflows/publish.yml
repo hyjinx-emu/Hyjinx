@@ -85,6 +85,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     
+    env:
+      STAGING_DIR: dist
+    
     needs:
       - prepare
       - build
@@ -92,11 +95,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ env.STAGING_DIR }}/
+          merge-multiple: true
       
       - name: Publish
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ needs.prepare.outputs.full_version }}
+          artifacts: ${{ env.STAGING_DIR }}/**
           generateReleaseNotes: true
           
       - name: Update version
