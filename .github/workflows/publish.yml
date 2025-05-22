@@ -49,9 +49,9 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: win-x64,     builds-on: windows-latest, target-os: windows }
-          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux   }
-          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux   }
+          - { name: win-x64,     builds-on: windows-latest, target-os: windows, zip_os_name: win_x64     }
+          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux,   zip_os_name: linux_x64   }
+          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux,   zip_os_name: linux_arm64 }
       fail-fast: false
 
     steps:
@@ -74,6 +74,7 @@ jobs:
         uses: ./.github/actions/package-template
         with:
           runtime_identifier: ${{ matrix.platform.name }}
+          package_suffix: ${{ matrix.platform.zip_os_name }}
           packager: ${{ matrix.platform.target-os }}
           version: ${{ needs.prepare.outputs.full_version }}
           staging_dir: ${{ env.STAGING_DIR }}

@@ -5,6 +5,9 @@ inputs:
   runtime_identifier:
     description: "The runtime identifier."
     required: true
+  package_suffix:
+    description: "The package suffix (typically the OS identifier)."
+    required: true
   packager:
     description: "The target operating system. (windows, linux, macos)"
     required: true
@@ -30,7 +33,7 @@ runs:
       shell: bash
       run: |
         pushd "${{ inputs.staging_dir }}"
-        7z a "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.zip" .
+        7z a "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.package_suffix }}.zip" .
         popd
         
     - name: Package for Linux (Portable)
@@ -38,5 +41,5 @@ runs:
       shell: bash
       run: |
         pushd "${{ inputs.staging_dir }}"
-        tar -czvf "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.tar.gz" .
+        tar -czvf "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.package_suffix }}.tar.gz" .
         popd
