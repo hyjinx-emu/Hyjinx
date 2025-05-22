@@ -107,6 +107,7 @@ jobs:
         with:
           tag: ${{ needs.prepare.outputs.full_version }}
           artifacts: ${{ env.STAGING_DIR }}/**
+          prerelease: ${{ github.event.name != 'release' }}
           generateReleaseNotes: true
           
       - name: Update version
