@@ -74,7 +74,7 @@ jobs:
           staging_dir: ${{ env.STAGING_DIR }}
           package_dir: ${{ env.PACKAGE_DIR }}
           
-      - name: Upload Package(s)
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform.target-os }}
