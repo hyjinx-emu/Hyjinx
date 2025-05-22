@@ -25,22 +25,18 @@ runs:
       shell: bash
       run: mkdir "${{ inputs.package_dir }}"
         
-    - name: Enter staging directory
-      shell: bash
-      run: pushd "${{ inputs.staging_dir }}"
-        
     - name: Package for Windows (Portable)
       if: inputs.packager == 'windows'
       shell: bash
       run: |
+        pushd "${{ inputs.staging_dir }}"
         7z a "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.zip" .
+        popd
         
     - name: Package for Linux (Portable)
       if: inputs.packager == 'linux'
       shell: bash
       run: |
+        pushd "${{ inputs.staging_dir }}"
         tar -czvf "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.tar.gz" .
-        
-    - name: Leave staging directory
-      shell: bash
-      run: popd
+        popd
