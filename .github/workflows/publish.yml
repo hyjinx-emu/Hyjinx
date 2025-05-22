@@ -39,6 +39,7 @@ jobs:
 
     env:
       STAGING_DIR: dist
+      PACKAGE_DIR: out
       
     strategy:
       matrix:
@@ -71,6 +72,13 @@ jobs:
           packager: ${{ matrix.platform.target-os }}
           version: ${{ needs.prepare.outputs.full_version }}
           staging_dir: ${{ env.STAGING_DIR }}
+          package_dir: ${{ env.PACKAGE_DIR }}
+          
+      - name: Upload Package(s)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform.target-os }}
+          path: "${{ env.PACKAGE_DIR }}/"
   
   release:
     runs-on: ubuntu-latest

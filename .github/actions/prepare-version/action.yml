@@ -58,7 +58,7 @@ runs:
       run: |
         echo "VERSION_NUMBER=${{ inputs.explicit_version }}" >> $GITHUB_ENV
         
-    - name: Export version details
+    - name: Export output parameters
       id: exports
       shell: bash
       run: |

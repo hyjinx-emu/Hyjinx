@@ -9,79 +9,38 @@ inputs:
     description: "The target operating system. (windows, linux, macos)"
     required: true
   staging_dir:
-    description: "The location where the package is located."
+    description: "The location where the package contents is located."
     required: true
   version:
     description: "The version of the package."
     required: true
+  package_dir:
+    description: "The location where the packages will be placed."
+    required: true    
 
 runs:
   using: "composite"
   steps:
+    - name: Create output directory
+      shell: bash
+      run: mkdir "${{ inputs.package_dir }}"
+        
+    - name: Enter staging directory
+      shell: bash
+      run: pushd "${{ inputs.staging_dir }}"
+        
     - name: Package for Windows (Portable)
       if: inputs.packager == 'windows'
       shell: bash
       run: |
-        archive_name="hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.zip"
-        echo "ARCHIVE_NAME=$archive_name" >> $GITHUB_ENV
-        
-        mkdir out
-        pushd "${{ inputs.staging_dir }}"
-        7z a "../out/$archive_name" .
-        popd
+        7z a "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.zip" .
         
     - name: Package for Linux (Portable)
       if: inputs.packager == 'linux'
-      run: |
-        archive_name="hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.tar.gz"
-        echo "ARCHIVE_NAME=$archive_name" >> $GITHUB_ENV
-        
-        mkdir out
-        pushd "${{ inputs.staging_dir }}"
-        tar -czvf "../out/$archive_name" .
-        popd
       shell: bash
+      run: |
+        tar -czvf "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.runtime_identifier }}.tar.gz" .
         
-    - name: Upload Artifacts (Portable)
-      if: env.ARCHIVE_NAME != ''
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.ARCHIVE_NAME }}
-        path: out/${{ env.ARCHIVE_NAME }}
-
-#      - name: Build AppImage (Linux)
-#        if: matrix.platform.os == 'ubuntu-latest'
-#        run: |
-#          BUILD_VERSION="${{ steps.version_info.outputs.build_version }}"
-#          PLATFORM_NAME="${{ matrix.platform.name }}"
-#
-#          sudo apt install -y zsync desktop-file-utils appstream
-#
-#          mkdir -p tools
-#          export PATH="$PATH:$(readlink -f tools)"
-#
-#          # Setup appimagetool
-#          wget -q -O tools/appimagetool "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage"
-#          chmod +x tools/appimagetool
-#
-#          # Explicitly set $ARCH for appimagetool ($ARCH_NAME is for the file name)
-#          if [ "$PLATFORM_NAME" = "linux-x64" ]; then
-#            ARCH_NAME=x64
-#            export ARCH=x86_64
-#          elif [ "$PLATFORM_NAME" = "linux-arm64" ]; then
-#            ARCH_NAME=arm64
-#            export ARCH=aarch64
-#          else
-#            echo "Unexpected PLATFORM_NAME "$PLATFORM_NAME""
-#            exit 1
-#          fi
-#
-#          export UFLAG="gh-releases-zsync|${{ github.repository_owner }}|${{ github.event.repository.name }}|latest|*-$ARCH_NAME.AppImage.zsync"
-#          BUILDDIR=publish_ava OUTDIR=publish_ava_appimage distribution/linux/appimage/build-appimage.sh
-#
-#          # Add to release output
-#          pushd publish_ava_appimage
-#          mv Ryujinx.AppImage ../release_output/ryujinx-$BUILD_VERSION-$ARCH_NAME.AppImage
-#          mv Ryujinx.AppImage.zsync ../release_output/ryujinx-$BUILD_VERSION-$ARCH_NAME.AppImage.zsync
-#          popd
-#        shell: bash
+    - name: Leave staging directory
+      shell: bash
+      run: popd
