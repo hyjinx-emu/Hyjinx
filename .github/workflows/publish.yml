@@ -2,13 +2,13 @@ name: publish
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - '.github/actions/**'
-      - '.github/workflows/publish.yml'
-      - 'src/**'
-      - 'Directory.Packages.props'
+#    branches:
+#      - main
+#    paths:
+#      - '.github/actions/**'
+#      - '.github/workflows/publish.yml'
+#      - 'src/**'
+#      - 'Directory.Packages.props'
   release:
     types: [ published ]
 
@@ -86,46 +86,46 @@ jobs:
           name: ${{ matrix.platform.name }}
           path: "${{ env.PACKAGE_DIR }}/"
   
-  release:
-    runs-on: ubuntu-latest
-    
-    env:
-      STAGING_DIR: dist
-    
-    needs:
-      - prepare
-      - build
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Download dist
-        uses: actions/download-artifact@v4
-        with:
-          path: ${{ env.STAGING_DIR }}/
-          merge-multiple: true
-      
-      - name: Publish
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ needs.prepare.outputs.full_version }}
-          artifacts: ${{ env.STAGING_DIR }}/**
-          prerelease: ${{ github.event.name != 'release' }}
-          generateReleaseNotes: true
-          
-      - name: Update version
-        if: github.event.name == 'release'
-        uses: vers-one/dotnet-project-version-updater@v1.7
-        with:
-          file: "src/.build/common.props"
-          version: ${{ needs.prepare.outputs.version_number }}
-          
-      - name: Commit version
-        if: github.event.name == 'release'
-        shell: bash
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "Bumping version"
-          git push origin HEAD:main
+#  release:
+#    runs-on: ubuntu-latest
+#    
+#    env:
+#      STAGING_DIR: dist
+#    
+#    needs:
+#      - prepare
+#      - build
+#    
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        
+#      - name: Download dist
+#        uses: actions/download-artifact@v4
+#        with:
+#          path: ${{ env.STAGING_DIR }}/
+#          merge-multiple: true
+#      
+#      - name: Publish
+#        uses: ncipollo/release-action@v1
+#        with:
+#          tag: ${{ needs.prepare.outputs.full_version }}
+#          artifacts: ${{ env.STAGING_DIR }}/**
+#          prerelease: ${{ github.event.name != 'release' }}
+#          generateReleaseNotes: true
+#          
+#      - name: Update version
+#        if: github.event.name == 'release'
+#        uses: vers-one/dotnet-project-version-updater@v1.7
+#        with:
+#          file: "src/.build/common.props"
+#          version: ${{ needs.prepare.outputs.version_number }}
+#          
+#      - name: Commit version
+#        if: github.event.name == 'release'
+#        shell: bash
+#        run: |
+#          git config user.name 'github-actions[bot]'
+#          git config user.email 'github-actions[bot]@users.noreply.github.com'
+#          git commit -am "Bumping version"
+#          git push origin HEAD:main
