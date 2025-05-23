@@ -63,7 +63,7 @@ mkdir -p "$HOME/.local/share/applications"
 cat > "$HOME/.local/share/applications/${EMULATOR_NAME}.desktop" <<EOF
 [Desktop Entry]
 Name=$EMULATOR_NAME
-Exec=$EXECUTABLE
+Exec=$EXECUTABLE.sh
 Icon=$INSTALL_DIR/Logo.png
 Type=Application
 Categories=Game;
