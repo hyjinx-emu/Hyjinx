@@ -44,6 +44,11 @@ runs:
       with:
         global-json-file: global.json
     
+    - name: Setup AOT workload
+      shell: bash
+      run: |
+        dotnet workload install nativeaot
+
     - name: Echo workloads
       shell: bash
       run: |
