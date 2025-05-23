@@ -33,6 +33,7 @@ runs:
       shell: bash
       run: |
         cp -a distribution/windows/. "${{ inputs.staging_dir }}/"
+        cp -a distribution/misc/Logo.png "${{ inputs.staging_dir }}/"
         cp -a distribution/legal/. "${{ inputs.staging_dir }}/"
         
         pushd "${{ inputs.staging_dir }}"
@@ -44,6 +45,7 @@ runs:
       shell: bash
       run: |
         cp -a distribution/linux/portable/. "${{ inputs.staging_dir }}/"
+        cp -a distribution/misc/Logo.png "${{ inputs.staging_dir }}/"
         cp -a distribution/legal/. "${{ inputs.staging_dir }}/"
         
         pushd "${{ inputs.staging_dir }}"
