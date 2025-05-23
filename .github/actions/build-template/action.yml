@@ -43,10 +43,6 @@ runs:
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
-    
-    - name: Setup AOT workload
-      run: |
-        dotnet workload install nativeaot
 
     - name: Echo workloads
       shell: bash
