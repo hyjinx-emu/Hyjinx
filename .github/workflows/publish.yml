@@ -50,7 +50,6 @@ jobs:
         platform:
           - { name: win-x64,     builds-on: windows-latest, target-os: windows, zip_os_name: win_x64     }
           - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux,   zip_os_name: linux_x64   }
-          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux,   zip_os_name: linux_arm64 }
       fail-fast: false
 
     steps:
