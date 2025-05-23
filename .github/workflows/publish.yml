@@ -7,6 +7,7 @@ on:
      - '.github/workflows/publish.yml'
      - 'src/**'
      - 'Directory.Packages.props'
+     - 'global.json'
   release:
     types: [ published ]
 
