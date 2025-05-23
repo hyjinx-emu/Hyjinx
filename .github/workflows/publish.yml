@@ -55,7 +55,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-          
+
+      - name: Echo workloads
+        shell: bash
+        run: |
+          dotnet workload list
+
       - name: Build
         uses: ./.github/actions/build-template
         env:
