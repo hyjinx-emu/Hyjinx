@@ -55,7 +55,7 @@ tar -xzf "$TMP_DIR/$ASSET_NAME" -C "$INSTALL_DIR"
 
 # Find executable
 EXECUTABLE="$INSTALL_DIR/$EMULATOR_NAME"
-chmod +x "$EXECUTABLE"
+chmod +x "$EXECUTABLE" "$EXECUTABLE.sh"
 
 # Create .desktop shortcut
 echo "🖥 Creating desktop shortcut..."
