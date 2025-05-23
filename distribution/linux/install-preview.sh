@@ -8,12 +8,13 @@ TMP_DIR="/tmp/$EMULATOR_NAME"
 CONFIG_DIR="$HOME/.config/$EMULATOR_NAME"
 VERSION_FILE="$CONFIG_DIR/.version"
 
-# Get latest version tag from GitHub
-echo "🔍 Checking for latest version..."
-LATEST_VERSION=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | grep tag_name | cut -d '"' -f4)
+# Get latest prerelease version tag from GitHub
+echo "🔍 Checking for latest prerelease..."
+LATEST_VERSION=$(curl -s "https://api.github.com/repos/$REPO/releases" \
+  | jq -r '[.[] | select(.prerelease)][0].tag_name')
 
-if [[ -z "$LATEST_VERSION" ]]; then
-    echo "❌ Failed to get latest version from GitHub."
+if [[ -z "$LATEST_VERSION" || "$LATEST_VERSION" == "null" ]]; then
+    echo "❌ Failed to get latest prerelease version from GitHub."
     exit 1
 fi
 
