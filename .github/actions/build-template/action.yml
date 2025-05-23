@@ -43,6 +43,11 @@ runs:
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
+    
+    - name: Echo workloads
+      shell: bash
+      run: |
+        dotnet workload list
 
     - name: Install SonarScanner
       if: inputs.run_tests == 'true'
