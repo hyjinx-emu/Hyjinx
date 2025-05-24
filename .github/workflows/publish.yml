@@ -111,16 +111,17 @@ jobs:
           merge-multiple: true
 
       - name: Debug Directory Contents
+        shell: bash
         run: ls -la "${{ env.STAGING_DIR }}"
 
-#      - name: Publish
-#        uses: ncipollo/release-action@v1
-#        with:
-#          tag: ${{ needs.prepare.outputs.full_version }}
-#          artifacts: "${{ env.STAGING_DIR }}/*"
-#          prerelease: ${{ github.event.name != 'release' }}
-#          generateReleaseNotes: true
-#          allowUpdates: true
+      - name: Publish
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.prepare.outputs.full_version }}
+          artifacts: "${{ env.STAGING_DIR }}/*.*"
+          prerelease: ${{ github.event.name != 'release' }}
+          generateReleaseNotes: ${{ github.event.name == 'release' }}
+          allowUpdates: true
 #
 #      - name: Update version
 #        if: github.event.name == 'published'
