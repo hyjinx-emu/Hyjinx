@@ -26,7 +26,7 @@ failing to meet this requirement may result in a poor gameplay experience or une
 These builds are compiled automatically for each commit on the main branch.
 While we strive to ensure optimal stability and performance prior to pushing an update, our automated builds **may be unstable or completely broken**.
 
-See the [Releases](https://github.com/hyjinx-emu/Hyjinx/releases) page for automatic builds for Windows, macOS, and Linux.
+See the [Releases](https://github.com/hyjinx-emu/Hyjinx/releases) page for automatic builds for supported operating systems.
 
 ## Features
 - **DMCA Compliance**
