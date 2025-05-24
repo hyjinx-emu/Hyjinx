@@ -14,7 +14,7 @@ public static class EmbeddedResources
 
     static EmbeddedResources()
     {
-        _resourceAssembly = Assembly.GetAssembly(typeof(EmbeddedResources));
+        _resourceAssembly = typeof(EmbeddedResources).Assembly;
     }
 
     public static byte[] Read(string filename)
