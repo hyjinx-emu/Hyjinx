@@ -13,6 +13,9 @@ on:
   release:
     types: [ published ]
 
+permissions: 
+  contents: write
+  
 env:
   POWERSHELL_TELEMETRY_OPTOUT: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -111,9 +114,10 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ needs.prepare.outputs.full_version }}
-          artifacts: ${{ env.STAGING_DIR }}/**
+          artifacts: "${{ env.STAGING_DIR }}/*"
           prerelease: ${{ github.event.name != 'release' }}
           generateReleaseNotes: true
+          allowUpdates: true
 
       - name: Update version
         if: github.event.name == 'release'
