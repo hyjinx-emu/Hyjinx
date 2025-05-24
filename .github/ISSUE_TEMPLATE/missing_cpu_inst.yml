@@ -1,5 +1,5 @@
 name: Missing CPU Instruction
-description: CPU Instruction is missing in Ryujinx.
+description: CPU Instruction is missing in Hyjinx.
 title: "[CPU]"
 labels: [cpu, not-implemented]
 body:
