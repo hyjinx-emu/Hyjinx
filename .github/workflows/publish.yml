@@ -109,10 +109,6 @@ jobs:
           path: ${{ env.STAGING_DIR }}/
           merge-multiple: true
 
-      - name: Debug Directory Contents
-        shell: bash
-        run: ls -la "${{ env.STAGING_DIR }}"
-
       - name: Publish
         uses: ncipollo/release-action@v1
         with:
