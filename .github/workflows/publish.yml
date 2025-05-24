@@ -2,6 +2,8 @@ name: publish
 
 on:
   push:
+    branches:
+      - main
    paths:
      - '.github/actions/**'
      - '.github/workflows/publish.yml'
@@ -111,7 +113,7 @@ jobs:
           tag: ${{ needs.prepare.outputs.full_version }}
           artifacts: ${{ env.STAGING_DIR }}/**
           prerelease: ${{ github.event.name != 'release' }}
-          # generateReleaseNotes: true
+          generateReleaseNotes: true
 
       - name: Update version
         if: github.event.name == 'release'
