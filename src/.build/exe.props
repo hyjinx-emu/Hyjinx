@@ -6,9 +6,11 @@
     <RuntimeIdentifiers>win-x64;osx-x64;linux-x64</RuntimeIdentifiers>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
-  
+
   <PropertyGroup>
-    <PublishAot>true</PublishAot>
+    <PublishSingleFile>true</PublishSingleFile>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   
 </Project>

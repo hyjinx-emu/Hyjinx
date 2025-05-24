@@ -84,13 +84,13 @@ runs:
       if: inputs.version_suffix != ''
       shell: bash
       run: |
-        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishAot=true -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}+${{ inputs.short_hash }}"
+        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}+${{ inputs.short_hash }}"
       
     - name: Publish for Release
       if: inputs.version_suffix == ''
       shell: bash
       run: |
-        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishAot=true -o ${{ inputs.staging_dir }} --self-contained
+        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained
 
     - name: Publish analysis
       if: inputs.run_tests == 'true'
