@@ -44,6 +44,14 @@ internal partial class Program : IDisposable
 
     public static int Main(string[] args)
     {
+        Console.WriteLine($"Is Windows: {RuntimeInformation.IsOSPlatform(OSPlatform.Windows)}");
+        Console.WriteLine($"Is Linux:   {RuntimeInformation.IsOSPlatform(OSPlatform.Linux)}");
+        Console.WriteLine($"Is OSX:     {RuntimeInformation.IsOSPlatform(OSPlatform.OSX)}");
+
+        Console.WriteLine($"OS Description: {RuntimeInformation.OSDescription}");
+        Console.WriteLine($"Architecture:   {RuntimeInformation.ProcessArchitecture}");
+        Console.WriteLine($"Framework:      {RuntimeInformation.FrameworkDescription}");
+        
         Arguments = args;
         Version = ReleaseInformation.Version;
         PreviewerDetached = true;
