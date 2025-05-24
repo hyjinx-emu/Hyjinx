@@ -1,5 +1,5 @@
 name: Missing Service Call
-description: Service call is missing in Ryujinx.
+description: Service call is missing in Hyjinx.
 labels: not-implemented
 body:
   - type: textarea
