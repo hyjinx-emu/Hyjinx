@@ -38,7 +38,7 @@ jobs:
         id: prepared
         uses: ./.github/actions/prepare-version
         with:
-          explicit_version: ${{ github.event.inputs.version }}
+          explicit_version: ${{ github.event.release.tag_name }}
           
   build:
     name: build (${{ matrix.platform.name }})
