@@ -120,14 +120,14 @@ jobs:
           allowUpdates: true
 
       - name: Update version
-        if: github.event.name == 'release'
+        if: github.event.name == 'published'
         uses: vers-one/dotnet-project-version-updater@v1.7
         with:
           file: "src/.build/common.props"
           version: ${{ needs.prepare.outputs.version_number }}
 
       - name: Commit version
-        if: github.event.name == 'release'
+        if: github.event.name == 'published'
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
