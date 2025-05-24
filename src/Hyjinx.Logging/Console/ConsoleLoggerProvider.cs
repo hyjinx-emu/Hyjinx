@@ -53,7 +53,7 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
         ReloadLoggerOptions(options.CurrentValue);
     }
 
-    [UnsupportedOSPlatformGuard("windows")]
+    // [UnsupportedOSPlatformGuard("windows")]
     private static bool DoesConsoleSupportAnsi()
     {
         string? envVar = Environment.GetEnvironmentVariable("DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION");
@@ -63,13 +63,8 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
             // found in System.ConsoleUtils.EmitAnsiColorCodes.
             return true;
         }
-        if (
-#if NETFRAMEWORK
-            Environment.OSVersion.Platform != PlatformID.Win32NT
-#else
-            !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-#endif
-            )
+        
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             return true;
         }
