@@ -23,7 +23,7 @@ body:
     attributes:
       label: Log file
       description: A log file will help us to better diagnose and fix the issue.
-      placeholder: Logs files can be found under "Logs" folder in the Ryujinx program folder. They can also be accessed by opening Ryujinx, then going to File > Open Logs Folder. You can drag and drop the log on to the text area (do not copy paste).
+      placeholder: Logs files can be found under "Logs" folder in the Hyjinx program folder. They can also be accessed by opening Hyjinx, then going to File > Open Logs Folder. You can drag and drop the log on to the text area (do not copy paste).
     validations:
       required: true
   - type: input
@@ -34,9 +34,9 @@ body:
     validations:
       required: true
   - type: input
-    id: ryujinx-version
+    id: hyjinx-version
     attributes:
-      label: Ryujinx version (revision hash)
+      label: Hyjinx version (revision hash)
       placeholder: "e.g. r67111a5"
     validations:
       required: true
