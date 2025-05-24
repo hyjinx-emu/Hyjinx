@@ -9,7 +9,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 
 namespace Hyjinx.Logging.Console;
 
@@ -52,14 +51,14 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
 
         ReloadLoggerOptions(options.CurrentValue);
     }
-    
+
     private static bool DoesConsoleSupportAnsi()
     {
         if (IsSystemConsoleAnsiRedirectionEnabled())
         {
             return true;
         }
-        
+
         var windows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         if (windows)
         {
@@ -90,8 +89,8 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
         {
             return false;
         }
-        
-        return (consoleMode & Interop.Kernel32.ENABLE_VIRTUAL_TERMINAL_PROCESSING) == Interop.Kernel32.ENABLE_VIRTUAL_TERMINAL_PROCESSING;   
+
+        return (consoleMode & Interop.Kernel32.ENABLE_VIRTUAL_TERMINAL_PROCESSING) == Interop.Kernel32.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     }
 
     [MemberNotNull(nameof(_formatters))]
