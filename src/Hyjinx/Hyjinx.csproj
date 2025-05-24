@@ -16,13 +16,6 @@
     <Exec Command="codesign --entitlements '$(ProjectDir)..\..\distribution\macos\entitlements.xml' -f --deep -s $(SigningCertificate) '$(TargetDir)$(TargetName)'" />
   </Target>
 
-  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
-    <PublishSingleFile>true</PublishSingleFile>
-    <TrimmerSingleWarn>false</TrimmerSingleWarn>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>partial</TrimMode>
-  </PropertyGroup>
-
   <!--
     FluentAvalonia, used in the Avalonia UI, requires a workaround for the json serializer used internally when using .NET 8+ System.Text.Json.
     See:

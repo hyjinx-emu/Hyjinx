@@ -1,8 +1,5 @@
-using System.Text.Json.Serialization;
-
 namespace Hyjinx.Common.Configuration.Hid;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Key
 {
     Unknown,

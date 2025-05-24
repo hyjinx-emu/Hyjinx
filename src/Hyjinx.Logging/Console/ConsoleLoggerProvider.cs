@@ -9,7 +9,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 
 namespace Hyjinx.Logging.Console;
 
@@ -53,27 +52,37 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
         ReloadLoggerOptions(options.CurrentValue);
     }
 
-    [UnsupportedOSPlatformGuard("windows")]
     private static bool DoesConsoleSupportAnsi()
     {
-        string? envVar = Environment.GetEnvironmentVariable("DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION");
-        if (envVar is not null && (envVar == "1" || envVar.Equals("true", StringComparison.OrdinalIgnoreCase)))
+        if (IsSystemConsoleAnsiRedirectionEnabled())
+        {
+            return true;
+        }
+
+        var windows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        if (windows)
+        {
+            return DoesWindowsConsoleSupportAnsi();
+        }
+
+        return true;
+    }
+
+    private static bool IsSystemConsoleAnsiRedirectionEnabled()
+    {
+        var envVar = Environment.GetEnvironmentVariable("DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION");
+        if (!string.IsNullOrEmpty(envVar) && (envVar == "1" || envVar.Equals("true", StringComparison.OrdinalIgnoreCase)))
         {
             // ANSI color support forcibly enabled via environment variable. This logic matches the behaviour
             // found in System.ConsoleUtils.EmitAnsiColorCodes.
             return true;
         }
-        if (
-#if NETFRAMEWORK
-            Environment.OSVersion.Platform != PlatformID.Win32NT
-#else
-            !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-#endif
-            )
-        {
-            return true;
-        }
 
+        return false;
+    }
+
+    private static bool DoesWindowsConsoleSupportAnsi()
+    {
         // for Windows, check the console mode
         var stdOutHandle = Interop.Kernel32.GetStdHandle(Interop.Kernel32.STD_OUTPUT_HANDLE);
         if (!Interop.Kernel32.GetConsoleMode(stdOutHandle, out int consoleMode))

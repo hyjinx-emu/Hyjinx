@@ -2,13 +2,14 @@ name: publish
 
 on:
   push:
-   branches:
-     - main
-   paths:
-     - '.github/actions/**'
-     - '.github/workflows/publish.yml'
-     - 'src/**'
-     - 'Directory.Packages.props'
+    branches:
+      - main
+    paths:
+      - '.github/actions/**'
+      - '.github/workflows/publish.yml'
+      - 'src/**'
+      - 'Directory.Packages.props'
+      - 'global.json'
   release:
     types: [ published ]
 
@@ -38,7 +39,7 @@ jobs:
           
   build:
     name: build (${{ matrix.platform.name }})
-    runs-on: ${{ matrix.platform.builds-on }}
+    runs-on: ${{ matrix.platform.runs-on }}
     timeout-minutes: 60
     needs: prepare
 
@@ -49,15 +50,15 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: win-x64,     builds-on: windows-latest, target-os: windows, zip_os_name: win_x64     }
-          - { name: linux-x64,   builds-on: ubuntu-latest,  target-os: linux,   zip_os_name: linux_x64   }
-          - { name: linux-arm64, builds-on: ubuntu-latest,  target-os: linux,   zip_os_name: linux_arm64 }
+          - { name: win-x64,     runs-on: windows-latest,      os: windows, zip_os_name: win_x64     }
+          - { name: linux-x64,   runs-on: ubuntu-latest,       os: linux,   zip_os_name: linux_x64   }
+#          - { name: linux-arm64, runs-on: ubuntu-latest-arm64, os: linux,   zip_os_name: linux_arm64 }
       fail-fast: false
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-          
+
       - name: Build
         uses: ./.github/actions/build-template
         env:
@@ -75,7 +76,7 @@ jobs:
         with:
           runtime_identifier: ${{ matrix.platform.name }}
           package_suffix: ${{ matrix.platform.zip_os_name }}
-          packager: ${{ matrix.platform.target-os }}
+          packager: ${{ matrix.platform.os }}
           version: ${{ needs.prepare.outputs.full_version }}
           staging_dir: ${{ env.STAGING_DIR }}
           package_dir: ${{ env.PACKAGE_DIR }}

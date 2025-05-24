@@ -1,11 +1,9 @@
 using System;
-using System.Text.Json.Serialization;
 
 namespace Hyjinx.Common.Configuration.Hid;
 
 // This enum was duplicated from Hyjinx.HLE.HOS.Services.Hid.PlayerIndex and should be kept identical
 [Flags]
-[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ControllerType
 {
     None,

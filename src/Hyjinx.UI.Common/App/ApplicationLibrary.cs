@@ -68,8 +68,8 @@ public partial class ApplicationLibrary
 
     private static byte[] GetResourceBytes(string resourceName)
     {
-        Stream resourceStream = Assembly.GetCallingAssembly().GetManifestResourceStream(resourceName);
-        byte[] resourceByteArray = new byte[resourceStream.Length];
+        using var resourceStream = Assembly.GetExecutingAssembly()!.GetManifestResourceStream(resourceName);
+        byte[] resourceByteArray = new byte[resourceStream!.Length];
 
         resourceStream.ReadExactly(resourceByteArray);
 

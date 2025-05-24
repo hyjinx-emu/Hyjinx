@@ -19,7 +19,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.Ava;
