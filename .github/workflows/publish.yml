@@ -55,7 +55,6 @@ jobs:
         platform:
           - { name: win-x64,     runs-on: windows-latest,      os: windows, zip_os_name: win_x64     }
           - { name: linux-x64,   runs-on: ubuntu-latest,       os: linux,   zip_os_name: linux_x64   }
-#          - { name: linux-arm64, runs-on: ubuntu-latest-arm64, os: linux,   zip_os_name: linux_arm64 }
       fail-fast: false
 
     steps:
