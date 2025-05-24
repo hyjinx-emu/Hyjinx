@@ -56,27 +56,31 @@ internal sealed class ConsoleLoggerProvider : AbstractLoggerProvider<ConsoleLogg
     // [UnsupportedOSPlatformGuard("windows")]
     private static bool DoesConsoleSupportAnsi()
     {
-        string? envVar = Environment.GetEnvironmentVariable("DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION");
-        if (envVar is not null && (envVar == "1" || envVar.Equals("true", StringComparison.OrdinalIgnoreCase)))
-        {
-            // ANSI color support forcibly enabled via environment variable. This logic matches the behaviour
-            // found in System.ConsoleUtils.EmitAnsiColorCodes.
-            return true;
-        }
-        
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            return true;
-        }
+        // string? envVar = Environment.GetEnvironmentVariable("DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION");
+        // if (envVar is not null && (envVar == "1" || envVar.Equals("true", StringComparison.OrdinalIgnoreCase)))
+        // {
+        //     // ANSI color support forcibly enabled via environment variable. This logic matches the behaviour
+        //     // found in System.ConsoleUtils.EmitAnsiColorCodes.
+        //     return true;
+        // }
 
-        // for Windows, check the console mode
-        var stdOutHandle = Interop.Kernel32.GetStdHandle(Interop.Kernel32.STD_OUTPUT_HANDLE);
-        if (!Interop.Kernel32.GetConsoleMode(stdOutHandle, out int consoleMode))
-        {
-            return false;
-        }
+        var windows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        System.Console.WriteLine($"Is Windows?: {windows}");
 
-        return (consoleMode & Interop.Kernel32.ENABLE_VIRTUAL_TERMINAL_PROCESSING) == Interop.Kernel32.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+        return !windows;
+        // if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        // {
+        //     return true;
+        // }
+        //
+        // // for Windows, check the console mode
+        // var stdOutHandle = Interop.Kernel32.GetStdHandle(Interop.Kernel32.STD_OUTPUT_HANDLE);
+        // if (!Interop.Kernel32.GetConsoleMode(stdOutHandle, out int consoleMode))
+        // {
+        //     return false;
+        // }
+        //
+        // return (consoleMode & Interop.Kernel32.ENABLE_VIRTUAL_TERMINAL_PROCESSING) == Interop.Kernel32.ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     }
 
     [MemberNotNull(nameof(_formatters))]
