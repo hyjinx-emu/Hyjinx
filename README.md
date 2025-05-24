@@ -28,10 +28,6 @@ While we strive to ensure optimal stability and performance prior to pushing an 
 
 See the [Releases](https://github.com/hyjinx-emu/Hyjinx/releases) page for automatic builds for Windows, macOS, and Linux.
 
-## Documentation
-
-If you are planning to contribute or just want to learn more about this project please read through our [documentation](docs/README.md).
-
 ## Features
 - **DMCA Compliance**
 
