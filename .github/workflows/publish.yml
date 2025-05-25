@@ -125,3 +125,4 @@ jobs:
         with:
           target_file: "src/.build/common.props"
           new_version: ${{ needs.prepare.outputs.full_version }}
+          token: ${{ github.token }}
