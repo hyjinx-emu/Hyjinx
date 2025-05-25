@@ -44,8 +44,6 @@ runs:
 
     - name: Create pull request
       uses: gr2m/create-or-update-pull-request-action@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         title: "Bump version to ${{ inputs.new_version }}"
         body: "This PR was automatically generated to bump the version in `${{ inputs.target_file }}` to `${{ inputs.new_version }}`."
