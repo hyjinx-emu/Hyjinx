@@ -149,6 +149,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "prepare-version", "prepare-
 		.github\actions\prepare-version\action.yml = .github\actions\prepare-version\action.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bump-version", "bump-version", "{20EEEBDB-431F-4360-BDA5-4B80CB3CA816}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\bump-version\action.yml = .github\actions\bump-version\action.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -378,5 +383,6 @@ Global
 		{9E8ECAF0-C80F-4932-868D-A9F6E8D8DC86} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
 		{EA899FDF-BE78-4543-99F1-76A7BCD15A84} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
 		{69929F7E-A42E-47D7-8A2A-69BEBF0B19ED} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
+		{20EEEBDB-431F-4360-BDA5-4B80CB3CA816} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
 	EndGlobalSection
 EndGlobal
