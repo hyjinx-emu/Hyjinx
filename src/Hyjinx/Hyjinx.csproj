@@ -39,7 +39,7 @@
     <PackageReference Include="OpenTK.Core" />
     <PackageReference Include="Hyjinx.Audio.OpenAL.Dependencies" />
     <PackageReference Include="Ryujinx.Graphics.Nvdec.Dependencies" />
-    <PackageReference Include="Ryujinx.Graphics.Vulkan.Dependencies.MoltenVK" Condition="'$(RuntimeIdentifier)' != 'linux-x64' AND '$(RuntimeIdentifier)' != 'linux-arm64' AND '$(RuntimeIdentifier)' != 'win-x64'" />
+    <PackageReference Include="Hyjinx.Graphics.Vulkan.Dependencies.MoltenVK" />
     <PackageReference Include="Silk.NET.Vulkan" />
     <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" />
     <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" />
@@ -49,7 +49,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.SPB\Hyjinx.SPB.csproj" />
     <ProjectReference Include="..\Hyjinx.UI.Common\Hyjinx.UI.Common.csproj" />
-    <ProjectReference Include="..\Hyjinx.UI.LocaleGenerator\Hyjinx.UI.LocaleGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Hyjinx.UI.LocaleGenerator\Hyjinx.UI.LocaleGenerator.csproj" 
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
