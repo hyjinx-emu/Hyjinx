@@ -31,7 +31,7 @@ See the [Releases](https://github.com/hyjinx-emu/Hyjinx/releases) page for autom
 ## Features
 - **DMCA Compliance**
 
-  The main goal of this fork was to provide a DMCA compliant emulator that allows the community to continue to tinker, while staying compliant with applicable laws. With this in mind, this emulator is unable to decrypt anything. If any encrypted files are used, a warning or error will be shown to the user.
+  The main goal of this fork was to provide a DMCA compliant emulator that allows the community to continue to tinker, while staying compliant with applicable laws. With this in mind, **this emulator is incapable of decrypting anything**. If any encrypted files are used, a warning or error will be shown to the user.
 
 - **Audio**
 
