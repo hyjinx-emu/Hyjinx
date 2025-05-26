@@ -15,6 +15,7 @@ on:
 
 permissions: 
   contents: write
+  pull-requests: write
   
 env:
   POWERSHELL_TELEMETRY_OPTOUT: 1
@@ -38,6 +39,7 @@ jobs:
         id: prepared
         uses: ./.github/actions/prepare-version
         with:
+          target_file: "src/.build/common.props"
           explicit_version: ${{ github.event.release.tag_name }}
           
   build:
@@ -83,7 +85,7 @@ jobs:
           staging_dir: ${{ env.STAGING_DIR }}
           package_dir: ${{ env.PACKAGE_DIR }}
           
-      - name: Upload
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform.name }}
@@ -103,7 +105,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download dist
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: ${{ env.STAGING_DIR }}/
@@ -118,18 +120,10 @@ jobs:
           generateReleaseNotes: ${{ github.event.action != 'published' }}
           allowUpdates: true
 
-      - name: Update version
+      - name: Bump version
+        uses: ./.github/actions/bump-version
         if: github.event.action == 'published'
-        uses: vers-one/dotnet-project-version-updater@v1.7
         with:
-          file: "src/.build/common.props"
-          version: ${{ needs.prepare.outputs.full_version }}
-
-      - name: Commit version
-        if: github.event.action == 'published'
-        shell: bash
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "Bumping version"
-          git push origin HEAD:main
+          target_file: "src/.build/common.props"
+          new_version: ${{ needs.prepare.outputs.full_version }}
+          token: ${{ github.token }}

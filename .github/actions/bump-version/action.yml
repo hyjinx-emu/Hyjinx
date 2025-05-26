@@ -1,0 +1,33 @@
+name: Bump Version
+description: Bumps the version to the specified value.
+
+inputs:
+  target_file:
+    description: "The name of the file to update."
+    required: true
+  new_version:
+    description: "The new version to use."
+    required: true
+  token:
+    description: "The GitHub token to use."
+    required: true
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Update version
+      uses: vers-one/dotnet-project-version-updater@v1.7
+      with:
+        file: ${{ inputs.target_file }}
+        version: ${{ inputs.new_version }}
+
+    - name: Create pull request
+      uses: gr2m/create-or-update-pull-request-action@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      with:
+        title: "Bump version to ${{ inputs.new_version }}"
+        body: "This PR was automatically generated to bump the version in `${{ inputs.target_file }}` to `${{ inputs.new_version }}`."
+        branch: "bump-version-${{ inputs.new_version }}"
+        author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+        commit-message: "Bumping version to ${{ inputs.new_version }}"

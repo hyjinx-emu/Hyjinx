@@ -2,6 +2,9 @@ name: Prepare Version
 description: Identifies the version number being compiled.
 
 inputs:
+  target_file:
+    description: "The target file whose version to update."
+    required: true
   explicit_version:
     description: "The explicit version use (if defined)."
     required: false
@@ -33,7 +36,7 @@ runs:
       if: inputs.explicit_version == ''
       uses: vers-one/dotnet-project-version-updater@v1.7
       with:
-        file: "src/.build/common.props"
+        file: ${{ inputs.target_file }}
         version: bump-minor
         
     - name: Set preview version
@@ -49,7 +52,7 @@ runs:
       if: inputs.explicit_version != ''
       uses: vers-one/dotnet-project-version-updater@v1.7
       with:
-        file: "src/.build/common.props"
+        file: ${{ inputs.target_file }}
         version: ${{ inputs.explicit_version }}
         
     - name: Set release version
