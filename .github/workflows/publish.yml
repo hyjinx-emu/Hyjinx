@@ -119,6 +119,7 @@ jobs:
           prerelease: ${{ github.event.action != 'published' }}
           generateReleaseNotes: ${{ github.event.action != 'published' }}
           allowUpdates: true
+          omitBodyDuringUpdate: true
 
       - name: Bump version
         uses: ./.github/actions/bump-version
