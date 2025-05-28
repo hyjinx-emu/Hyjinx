@@ -2,7 +2,7 @@
   <Import Project="../.build/library.props" />
 
   <ItemGroup>
-    <PackageReference Include="Ryujinx.SDL2-CS" />
+    <PackageReference Include="Hyjinx.SDL2-CS" />
   </ItemGroup>
 
   <ItemGroup>
