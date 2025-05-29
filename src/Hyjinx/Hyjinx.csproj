@@ -37,7 +37,6 @@
     <PackageReference Include="DynamicData" />
     <PackageReference Include="FluentAvaloniaUI" />
     <PackageReference Include="OpenTK.Core" />
-    <PackageReference Include="Hyjinx.OpenAL.native" />
     <PackageReference Include="Ryujinx.Graphics.Nvdec.Dependencies" />
     <PackageReference Include="Hyjinx.Graphics.Vulkan.Dependencies.MoltenVK" />
     <PackageReference Include="Silk.NET.Vulkan" />
