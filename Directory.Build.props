@@ -5,6 +5,12 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <!-- Identifies the source generator configuration settings for consuming projects. -->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(IntermediateOutputPath)obj/Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
 
   <PropertyGroup>
     <!-- Identifies whether any code that has been placed in any *.Legacy.cs files are being compiled. -->
