@@ -9,7 +9,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <RootNamespace>Hyjinx.Ava</RootNamespace>
     <ApplicationIcon>Assets/Hyjinx.ico</ApplicationIcon>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
