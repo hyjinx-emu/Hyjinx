@@ -78,7 +78,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{996E745A-5BDB-432F-ADF9-2BE3F00BCB43}"
 	ProjectSection(SolutionItems) = preProject
 		src\.build\exe.props = src\.build\exe.props
-		src\.build\common.props = src\.build\common.props
 		src\.build\library.props = src\.build\library.props
 		src\.build\unittest.props = src\.build\unittest.props
 		src\.build\generator.props = src\.build\generator.props
@@ -104,10 +103,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{EEB9FB42
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		Directory.Packages.props = Directory.Packages.props
 		nuget.config = nuget.config
 		README.md = README.md
 		global.json = global.json
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.LibHac", "src\Hyjinx.LibHac\Hyjinx.LibHac.csproj", "{6B0A68D2-64F0-4792-8234-E38943C58A3E}"
@@ -153,6 +153,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bump-version", "bump-versio
 	ProjectSection(SolutionItems) = preProject
 		.github\actions\bump-version\action.yml = .github\actions\bump-version\action.yml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generators", "Generators", "{29DE5C9B-669A-41EB-A889-5E97C6D22D17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -368,7 +370,6 @@ Global
 		{716364DE-B988-41A6-BAB4-327964266ECC} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
 		{C3002C3C-7B09-4FE7-894A-372EDA22FC6E} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
 		{E1B1AD28-289D-47B7-A106-326972240207} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
-		{2BCB3D7A-38C0-4FE7-8FDA-374C6AD56D0E} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
 		{DFAB6F2D-B9BF-4AFF-B22B-7684A328EBA3} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
 		{2D5D3A1D-5730-4648-B0AB-06C53CB910C0} = {0BA89F51-4EA2-495D-A732-FAABFE0A9725}
 		{6BC3E1B4-0627-467A-B46E-F4B44BF00583} = {0533BEC5-3CB3-44CF-9948-34CE6D11015C}
@@ -384,5 +385,10 @@ Global
 		{EA899FDF-BE78-4543-99F1-76A7BCD15A84} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
 		{69929F7E-A42E-47D7-8A2A-69BEBF0B19ED} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
 		{20EEEBDB-431F-4360-BDA5-4B80CB3CA816} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
+		{2BCB3D7A-38C0-4FE7-8FDA-374C6AD56D0E} = {29DE5C9B-669A-41EB-A889-5E97C6D22D17}
+		{77D01AD9-2C98-478E-AE1D-8F7100738FB4} = {29DE5C9B-669A-41EB-A889-5E97C6D22D17}
+		{6AE2A5E8-4C5A-48B9-997B-E1455C0355C6} = {29DE5C9B-669A-41EB-A889-5E97C6D22D17}
+		{7F55A45D-4E1D-4A36-ADD3-87F29A285AA2} = {29DE5C9B-669A-41EB-A889-5E97C6D22D17}
+		{B575BCDE-2FD8-4A5D-8756-31CDD7FE81F0} = {29DE5C9B-669A-41EB-A889-5E97C6D22D17}
 	EndGlobalSection
 EndGlobal
