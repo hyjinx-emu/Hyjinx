@@ -33,14 +33,14 @@ namespace SDL2;
 
 public static class SDL_mixer
 {
-	#region SDL2# Variables
+    #region SDL2# Variables
 
 	/* Used by DllImport to load the native library. */
 	private const string nativeLibName = "SDL2_mixer";
 
-	#endregion
+    #endregion
 
-	#region SDL_mixer.h
+    #region SDL_mixer.h
 
 	/* Similar to the headers, this is the version we're expecting to be
 	 * running with. You will likely want to check this somewhere in your
@@ -659,7 +659,7 @@ public static class SDL_mixer
 		SDL.SDL_ClearError();
 	}
 	
-	#endregion
+    #endregion
 }
 
 #endif

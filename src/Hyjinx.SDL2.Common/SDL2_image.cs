@@ -33,14 +33,14 @@ namespace SDL2;
 
 public static class SDL_image
 {
-	#region SDL2# Variables
+    #region SDL2# Variables
 
 	/* Used by DllImport to load the native library. */
 	private const string nativeLibName = "SDL2_image";
 
-	#endregion
+    #endregion
 
-	#region SDL_image.h
+    #region SDL_image.h
 
 	/* Similar to the headers, this is the version we're expecting to be
 	 * running with. You will likely want to check this somewhere in your
@@ -262,7 +262,7 @@ public static class SDL_image
 		SDL.SDL_SetError(fmtAndArglist);
 	}
 
-	#region Animated Image Support
+    #region Animated Image Support
 
 	/* This region is only available in 2.0.6 or higher. */
 
@@ -308,9 +308,9 @@ public static class SDL_image
 	[DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
 	public static extern IntPtr IMG_LoadGIFAnimation_RW(IntPtr src);
 
-	#endregion
+    #endregion
 
-	#endregion
+    #endregion
 }
 
 #endif

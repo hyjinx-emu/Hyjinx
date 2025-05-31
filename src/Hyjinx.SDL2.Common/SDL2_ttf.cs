@@ -33,14 +33,14 @@ namespace SDL2;
 
 public static class SDL_ttf
 {
-	#region SDL2# Variables
+    #region SDL2# Variables
 
 	/* Used by DllImport to load the native library. */
 	private const string nativeLibName = "SDL2_ttf";
 
-	#endregion
+    #endregion
 
-	#region SDL_ttf.h
+    #region SDL_ttf.h
 
 	/* Similar to the headers, this is the version we're expecting to be
 	 * running with. You will likely want to check this somewhere in your
@@ -762,7 +762,7 @@ public static class SDL_ttf
 		SDL.SDL_SetError(fmtAndArglist);
 	}
 	
-	#endregion
+    #endregion
 }
 
 #endif

@@ -33,16 +33,16 @@ namespace SDL2;
 
 public static class SDL_gfx
 {
-	#region SDL2# Variables
+    #region SDL2# Variables
 
 	/* Used by DllImport to load the native library. */
 	private const string nativeLibName = "SDL2_gfx";
 
-	#endregion
+    #endregion
 	
 	public const double M_PI = 3.1415926535897932384626433832795;
 	
-	#region SDL2_gfxPrimitives.h
+    #region SDL2_gfxPrimitives.h
 	
 	public const uint SDL2_GFXPRIMITIVES_MAJOR = 1;
 	public const uint SDL2_GFXPRIMITIVES_MINOR = 0;
@@ -225,9 +225,9 @@ public static class SDL_gfx
 	[DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
 	public static extern int stringRGBA(IntPtr renderer, short x, short y, string s, byte r, byte g, byte b, byte a);
 
-	#endregion
+    #endregion
 
-	#region SDL2_rotozoom.h
+    #region SDL2_rotozoom.h
 
 	public const int SMOOTHING_OFF = 0;
 	public const int SMOOTHING_ON = 1;
@@ -256,9 +256,9 @@ public static class SDL_gfx
 	[DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
 	public static extern IntPtr rotateSurface90Degrees(IntPtr src, int numClockwiseTurns);
 
-	#endregion
+    #endregion
 
-	#region SDL2_framerate.h
+    #region SDL2_framerate.h
 
 	public const int FPS_UPPER_LIMIT = 200;
 	public const int FPS_LOWER_LIMIT = 1;
@@ -289,9 +289,9 @@ public static class SDL_gfx
 	[DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
 	public static extern uint SDL_framerateDelay(ref FPSmanager manager);
 
-	#endregion
+    #endregion
 
-	#region SDL2_imageFilter.h
+    #region SDL2_imageFilter.h
 
 	[DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
 	public static extern int SDL_imageFilterMMXdetect();
@@ -383,7 +383,7 @@ public static class SDL_gfx
 	[DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
 	public static extern int SDL_imageFilterNormalizeLinear([In] byte[] src1, [Out] byte[] dest, uint length, int cmin, int cmax, int nmin, int nmax);
 
-	#endregion
+    #endregion
 }
 
 #endif
