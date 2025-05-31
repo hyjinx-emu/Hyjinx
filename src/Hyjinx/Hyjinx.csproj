@@ -36,7 +36,7 @@
     <PackageReference Include="DynamicData" />
     <PackageReference Include="FluentAvaloniaUI" />
     <PackageReference Include="Hyjinx.FFmpeg.native" />
-    <PackageReference Include="Hyjinx.Graphics.Vulkan.Dependencies.MoltenVK" />
+    <PackageReference Include="Hyjinx.MoltenVK.native" />
     <PackageReference Include="OpenTK.Core" />
     <PackageReference Include="Silk.NET.Vulkan" />
     <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" />
