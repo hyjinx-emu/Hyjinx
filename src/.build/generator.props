@@ -1,16 +1,13 @@
 <Project>
-  <Import Project="./common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <!-- Rider and other IDEs may prefer this to be netstandard2.0 even if targetting .NET 9 projects. -->
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <PublishAot>false</PublishAot>
   </PropertyGroup>
   
   <PropertyGroup>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
     <IsRoslynComponent>true</IsRoslynComponent>
   </PropertyGroup>
 

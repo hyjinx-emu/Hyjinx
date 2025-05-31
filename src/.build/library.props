@@ -1,9 +1,7 @@
 <Project>
-  <Import Project="./common.props" />
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RuntimeIdentifiers>win-x64;osx-x64;linux-x64</RuntimeIdentifiers>
     <OutputType>Library</OutputType>
   </PropertyGroup>
   

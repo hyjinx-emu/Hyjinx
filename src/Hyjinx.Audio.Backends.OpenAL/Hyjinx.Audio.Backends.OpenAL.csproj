@@ -2,6 +2,7 @@
   <Import Project="../.build/library.props" />
 
   <ItemGroup>
+    <PackageReference Include="Hyjinx.OpenAL.native" />
     <PackageReference Include="OpenTK.Audio.OpenAL" />
   </ItemGroup>
 

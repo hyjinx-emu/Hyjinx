@@ -4,7 +4,6 @@
   <PropertyGroup>
     <RootNamespace>LibHac.Tests</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

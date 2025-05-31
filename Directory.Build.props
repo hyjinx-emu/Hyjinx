@@ -1,21 +1,27 @@
 <Project>
-  
+
   <PropertyGroup>
     <Version>0.1.0</Version>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <!-- Identifies the source generator configuration settings for consuming projects. -->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(IntermediateOutputPath)obj/Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
 
   <PropertyGroup>
     <!-- Identifies whether any code that has been placed in any *.Legacy.cs files are being compiled. -->
-    <IsLegacyEnabled>false</IsLegacyEnabled>    
+    <IsLegacyEnabled>false</IsLegacyEnabled>
     <DefineConstants Condition=" '$(IsLegacyEnabled)' == 'true' ">$(DefineConstants);IS_LEGACY_ENABLED</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugType>none</DebugType>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <NoWarn>SYSLIB1025</NoWarn>
   </PropertyGroup>
@@ -28,5 +34,5 @@
       <_Parameter1>$(MSBuildProjectName).Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
-  
+
 </Project>

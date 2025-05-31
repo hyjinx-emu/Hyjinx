@@ -1,10 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../.build/library.props" />
-
+  
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  
   <ItemGroup>
-    <PackageReference Include="Hyjinx.SDL2-CS" />
+    <PackageReference Include="Hyjinx.SDL2.native" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Common\Hyjinx.Common.csproj" />
   </ItemGroup>

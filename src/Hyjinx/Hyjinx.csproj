@@ -9,12 +9,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <RootNamespace>Hyjinx.Ava</RootNamespace>
     <ApplicationIcon>Assets/Hyjinx.ico</ApplicationIcon>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-    <Exec Command="codesign --entitlements '$(ProjectDir)..\..\distribution\macos\entitlements.xml' -f --deep -s $(SigningCertificate) '$(TargetDir)$(TargetName)'" />
-  </Target>
 
   <!--
     FluentAvalonia, used in the Avalonia UI, requires a workaround for the json serializer used internally when using .NET 8+ System.Text.Json.
@@ -36,10 +31,9 @@
     <PackageReference Include="Avalonia.Svg.Skia" />
     <PackageReference Include="DynamicData" />
     <PackageReference Include="FluentAvaloniaUI" />
+    <PackageReference Include="Hyjinx.FFmpeg.native" />
+    <PackageReference Include="Hyjinx.MoltenVK.native" />
     <PackageReference Include="OpenTK.Core" />
-    <PackageReference Include="Hyjinx.Audio.OpenAL.Dependencies" />
-    <PackageReference Include="Ryujinx.Graphics.Nvdec.Dependencies" />
-    <PackageReference Include="Hyjinx.Graphics.Vulkan.Dependencies.MoltenVK" />
     <PackageReference Include="Silk.NET.Vulkan" />
     <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" />
     <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" />

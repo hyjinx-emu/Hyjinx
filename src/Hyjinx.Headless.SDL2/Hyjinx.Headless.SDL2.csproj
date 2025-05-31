@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTK.Core" />
-    <PackageReference Include="Ryujinx.Graphics.Nvdec.Dependencies" />
+    <PackageReference Include="Hyjinx.FFmpeg.native" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
