@@ -11,10 +11,6 @@
     <ApplicationIcon>Assets/Hyjinx.ico</ApplicationIcon>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-    <Exec Command="codesign --entitlements '$(ProjectDir)..\..\distribution\macos\entitlements.xml' -f --deep -s $(SigningCertificate) '$(TargetDir)$(TargetName)'" />
-  </Target>
-
   <!--
     FluentAvalonia, used in the Avalonia UI, requires a workaround for the json serializer used internally when using .NET 8+ System.Text.Json.
     See:
