@@ -39,7 +39,7 @@ jobs:
         id: prepared
         uses: ./.github/actions/prepare-version
         with:
-          target_file: "src/.build/common.props"
+          target_file: "Directory.Build.props"
           explicit_version: ${{ github.event.release.tag_name }}
           
   build:
@@ -125,6 +125,6 @@ jobs:
         uses: ./.github/actions/bump-version
         if: github.event.action == 'published'
         with:
-          target_file: "src/.build/common.props"
+          target_file: "Directory.Build.props"
           new_version: ${{ needs.prepare.outputs.full_version }}
           token: ${{ github.token }}
