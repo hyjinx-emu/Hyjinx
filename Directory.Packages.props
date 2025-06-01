@@ -20,7 +20,7 @@
     <PackageVersion Include="DiscordRichPresence" Version="1.2.1.24" />
     <PackageVersion Include="DynamicData" Version="9.0.4" />
     <PackageVersion Include="FluentAvaloniaUI" Version="2.3.0" />
-    <PackageVersion Include="Hyjinx.ARMeilleure.native" Version="1.0.0-preview.4" />
+    <PackageVersion Include="Hyjinx.ARMeilleure.native" Version="1.0.0" />
     <PackageVersion Include="Hyjinx.FFmpeg.native" Version="5.1.4" />
     <PackageVersion Include="Hyjinx.MoltenVK.native" Version="1.2.0" />
     <PackageVersion Include="Hyjinx.OpenAL.native" Version="1.21.0" />
