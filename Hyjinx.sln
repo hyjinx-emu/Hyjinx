@@ -156,6 +156,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bump-version", "bump-versio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generators", "Generators", "{29DE5C9B-669A-41EB-A889-5E97C6D22D17}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget-template", "nuget-template", "{9AC84A10-F6E8-4EAF-85A6-6AFEB32F0574}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\nuget-template\action.yml = .github\actions\nuget-template\action.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -390,5 +395,6 @@ Global
 		{6AE2A5E8-4C5A-48B9-997B-E1455C0355C6} = {29DE5C9B-669A-41EB-A889-5E97C6D22D17}
 		{7F55A45D-4E1D-4A36-ADD3-87F29A285AA2} = {29DE5C9B-669A-41EB-A889-5E97C6D22D17}
 		{B575BCDE-2FD8-4A5D-8756-31CDD7FE81F0} = {29DE5C9B-669A-41EB-A889-5E97C6D22D17}
+		{9AC84A10-F6E8-4EAF-85A6-6AFEB32F0574} = {31742FB0-858D-44B9-AAC1-92DA971B4C96}
 	EndGlobalSection
 EndGlobal

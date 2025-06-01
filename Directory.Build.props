@@ -10,6 +10,8 @@
     <!-- Identifies the source generator configuration settings for consuming projects. -->
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>$(IntermediateOutputPath)obj/Generated</CompilerGeneratedFilesOutputPath>
+    <!-- Disables packaging for all projects and then explicitly enabled for those to be published. -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>

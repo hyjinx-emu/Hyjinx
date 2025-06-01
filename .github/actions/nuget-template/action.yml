@@ -1,0 +1,50 @@
+name: Pack
+description: Pack all nuget projects
+
+inputs:
+  configuration:
+    description: "The build configuration. Eg: Debug or Release"
+    required: false
+    default: "Release"
+  staging_dir:
+    description: "The output directory where the published files should be dropped."
+    required: true
+  version:
+    description: "The version which will be used during compilation."
+    required: true
+  version_suffix:
+    description: "The suffix of the version (if applicable)."
+    required: false
+  short_hash:
+    description: "The short hash of the commit."
+    required: false
+  run_tests:
+    description: "Enables or disables the execution of the unit tests."
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: global.json
+
+    - name: Update version
+      uses: vers-one/dotnet-project-version-updater@v1.7
+      with:
+        file: "Directory.Build.props"
+        version: ${{ inputs.version }}
+
+    - name: Pack for Preview
+      if: inputs.version_suffix != ''
+      shell: bash
+      run: |
+        dotnet pack -c "${{ inputs.configuration }}" -o ${{ inputs.staging_dir }} --version-suffix "${{ inputs.version_suffix }}+${{ inputs.short_hash }}"
+
+    - name: Pack for Release
+      if: inputs.version_suffix == ''
+      shell: bash
+      run: |
+        dotnet pack -c "${{ inputs.configuration }}" -o ${{ inputs.staging_dir }}
