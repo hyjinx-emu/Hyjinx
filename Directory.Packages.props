@@ -24,6 +24,7 @@
     <PackageVersion Include="Hyjinx.MoltenVK.native" Version="1.2.0" />
     <PackageVersion Include="Hyjinx.OpenAL.native" Version="1.21.0" />
     <PackageVersion Include="Hyjinx.SDL2.native" Version="2.30.0" />
+    <PackageVersion Include="Hyjinx.SoundIO.native" Version="1.1.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
     <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.9.0" />
