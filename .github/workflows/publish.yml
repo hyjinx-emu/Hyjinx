@@ -68,6 +68,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
+          version_file: 'Directory.Build.props'
           project: src/Hyjinx/Hyjinx.csproj
           runtime_identifier: ${{ matrix.platform.name }}
           staging_dir: ${{ env.STAGING_DIR }}
@@ -107,6 +108,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
+          version_file: 'Directory.Build.props'
           staging_dir: ${{ env.STAGING_DIR }}
           version: ${{ needs.prepare.outputs.version_number }}
           version_suffix: ${{ needs.prepare.outputs.version_suffix }}

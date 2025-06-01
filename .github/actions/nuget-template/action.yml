@@ -2,6 +2,9 @@ name: Pack
 description: Pack all nuget projects
 
 inputs:
+  version_file:
+    description: "The file which will have the version updated."
+    required: true
   configuration:
     description: "The build configuration. Eg: Debug or Release"
     required: false
@@ -34,8 +37,13 @@ runs:
     - name: Update version
       uses: vers-one/dotnet-project-version-updater@v1.7
       with:
-        file: "Directory.Build.props"
+        file: "${{ inputs.version_file }}"
         version: ${{ inputs.version }}
+        
+    - name: Build
+      shell: bash
+      run: |
+        dotnet build -c "${{ inputs.configuration }}"
 
     - name: Pack for Preview
       if: inputs.version_suffix != ''

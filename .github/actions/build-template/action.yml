@@ -8,6 +8,9 @@ inputs:
   runtime_identifier:
     description: "The target runtime identifier."
     required: true
+  version_file:
+    description: "The file which will have the version updated."
+    required: true
   configuration:
     description: "The build configuration. Eg: Debug or Release"
     required: false
@@ -54,7 +57,7 @@ runs:
     - name: Update version
       uses: vers-one/dotnet-project-version-updater@v1.7
       with:
-        file: "Directory.Build.props"
+        file: "${{ inputs.version_file }}"
         version: ${{ inputs.version }}
 
     - name: Prepare analysis
