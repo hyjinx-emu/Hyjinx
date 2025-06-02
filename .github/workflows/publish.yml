@@ -2,14 +2,14 @@ name: publish
 
 on:
   push:
-#    branches:
-#      - main
-#    paths:
-#      - '.github/actions/**'
-#      - '.github/workflows/publish.yml'
-#      - 'src/**'
-#      - 'Directory.Packages.props'
-#      - 'global.json'
+    branches:
+      - main
+    paths:
+      - '.github/actions/**'
+      - '.github/workflows/publish.yml'
+      - 'src/**'
+      - 'Directory.Packages.props'
+      - 'global.json'
   release:
     types: [ published ]
 
@@ -120,10 +120,9 @@ jobs:
           name: nupkg
           path: "${{ env.STAGING_DIR }}/"
           
-  release:
-    runs-on: ubuntu-latest
+  publish:
+    runs-on: windows-latest
     needs: [ prepare, build-native, build-nuget ]
-    if: true == false
 
     env:
       STAGING_DIR: dist
@@ -137,6 +136,20 @@ jobs:
         with:
           path: ${{ env.STAGING_DIR }}/
           merge-multiple: true
+          
+      - name: Set up NuGet
+        uses: nuget/setup-nuget@v2
+        with:
+          nuget-api-key: ${{ secrets.NUGET_TOKEN }}
+          nuget-version: latest
+          
+      - name: Push package(s)
+        shell: powershell
+        run: |
+          Get-ChildItem -Path "${{ env.STAGING_DIR }}" -Filter *.nupkg | ForEach-Object {
+            Write-Host "Pushing $($_.FullName)"
+            nuget push $_.FullName -Source https://api.nuget.org/v3/index.json
+          }
 
       - name: Publish
         uses: ncipollo/release-action@v1
@@ -148,6 +161,14 @@ jobs:
           allowUpdates: true
           omitBodyDuringUpdate: true
 
+  post-release:
+    runs-on: ubuntu-latest
+    needs: [ prepare, publish ]
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
       - name: Bump version
         uses: ./.github/actions/bump-version
         if: github.event.action == 'published'
@@ -155,7 +176,3 @@ jobs:
           target_file: "Directory.Build.props"
           new_version: ${{ needs.prepare.outputs.full_version }}
           token: ${{ github.token }}
-
-  post-release:
-    runs-on: ubuntu-latest
-    needs: [ prepare, release ]
