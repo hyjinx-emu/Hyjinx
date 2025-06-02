@@ -4,7 +4,7 @@ using LibHac.FsSrv;
 namespace LibHac.Common.Keys;
 
 /// <summary>
-/// Describes a set of keys used by the host.
+/// Represents a set of keys.
 /// </summary>
 /// <remarks>This class has been intentionally left blank.</remarks>
 public class KeySet
