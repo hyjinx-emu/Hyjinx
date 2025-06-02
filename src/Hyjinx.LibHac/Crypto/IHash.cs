@@ -2,7 +2,7 @@ using System;
 
 namespace LibHac.Crypto;
 
-internal interface IHash
+public interface IHash
 {
     void Initialize();
     void Update(ReadOnlySpan<byte> data);
