@@ -42,9 +42,9 @@ jobs:
           target_file: "Directory.Build.props"
           explicit_version: ${{ github.event.release.tag_name }}
           
-  build:
+  build-native:
     name: build (${{ matrix.platform.name }})
-    runs-on: ${{ matrix.platform.runs-on }}
+    runs-on: ${{ matrix.platform.runner }}-latest
     timeout-minutes: 60
     needs: prepare
 
@@ -55,8 +55,8 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: win-x64,     runs-on: windows-latest,      os: windows, zip_os_name: win_x64     }
-          - { name: linux-x64,   runs-on: ubuntu-latest,       os: linux,   zip_os_name: linux_x64   }
+          - { name: win-x64,    runner: windows,  zip_os_name: win_x64     }
+          - { name: linux-x64,  runner: ubuntu,   zip_os_name: linux_x64   }
       fail-fast: false
 
     steps:
@@ -68,6 +68,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
+          version_file: 'Directory.Build.props'
           project: src/Hyjinx/Hyjinx.csproj
           runtime_identifier: ${{ matrix.platform.name }}
           staging_dir: ${{ env.STAGING_DIR }}
@@ -80,7 +81,7 @@ jobs:
         with:
           runtime_identifier: ${{ matrix.platform.name }}
           package_suffix: ${{ matrix.platform.zip_os_name }}
-          packager: ${{ matrix.platform.os }}
+          packager: ${{ matrix.platform.runner }}
           version: ${{ needs.prepare.outputs.full_version }}
           staging_dir: ${{ env.STAGING_DIR }}
           package_dir: ${{ env.PACKAGE_DIR }}
@@ -90,16 +91,41 @@ jobs:
         with:
           name: ${{ matrix.platform.name }}
           path: "${{ env.PACKAGE_DIR }}/"
-          
-  release:
+
+  build-nuget:
     runs-on: ubuntu-latest
+    needs: [ prepare ]
+    
+    env:
+      STAGING_DIR: dist
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Package
+        uses: ./.github/actions/nuget-template
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          version_file: 'Directory.Build.props'
+          staging_dir: ${{ env.STAGING_DIR }}
+          version: ${{ needs.prepare.outputs.version_number }}
+          version_suffix: ${{ needs.prepare.outputs.version_suffix }}
+          short_hash: ${{ needs.prepare.outputs.short_hash }}
+          
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nupkg
+          path: "${{ env.STAGING_DIR }}/"
+          
+  publish:
+    runs-on: windows-latest
+    needs: [ prepare, build-native, build-nuget ]
 
     env:
       STAGING_DIR: dist
-
-    needs:
-      - prepare
-      - build
 
     steps:
       - name: Checkout
@@ -110,6 +136,20 @@ jobs:
         with:
           path: ${{ env.STAGING_DIR }}/
           merge-multiple: true
+          
+      - name: Set up NuGet
+        uses: nuget/setup-nuget@v2
+        with:
+          nuget-api-key: ${{ secrets.NUGET_TOKEN }}
+          nuget-version: latest
+          
+      - name: Push package(s)
+        shell: powershell
+        run: |
+          Get-ChildItem -Path "${{ env.STAGING_DIR }}" -Filter *.nupkg | ForEach-Object {
+            Write-Host "Pushing $($_.FullName)"
+            nuget push $_.FullName -Source https://api.nuget.org/v3/index.json
+          }
 
       - name: Publish
         uses: ncipollo/release-action@v1
@@ -121,6 +161,14 @@ jobs:
           allowUpdates: true
           omitBodyDuringUpdate: true
 
+  post-release:
+    runs-on: ubuntu-latest
+    needs: [ prepare, publish ]
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
       - name: Bump version
         uses: ./.github/actions/bump-version
         if: github.event.action == 'published'

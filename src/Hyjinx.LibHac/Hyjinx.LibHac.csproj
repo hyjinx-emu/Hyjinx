@@ -3,12 +3,12 @@
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    
-    <!-- For backwards compatibility -->
     <RootNamespace>LibHac</RootNamespace>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
+    <PackageId>Hyjinx.LibHac</PackageId>
     <Authors>Alex Barney</Authors>
     <Copyright>Copyright © 2018-2022 Alex Barney</Copyright>
     <Description>A library that reimplements select portions of the Nintendo Switch operating system and allows reading content formats used by the OS.</Description>
@@ -19,12 +19,21 @@
     <DefineConstants>$(DefineConstants);ENABLE_ASSERTS</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Condition="Exists('Common\ResultNameResolver.Generated.cs')" Remove="Common\ResultNameResolver.Archive.cs" />
-  </ItemGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/hyjinx-emu/Hyjinx</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hyjinx-emu/Hyjinx.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
   
   <ItemGroup>
-    <Compile Condition="Exists('Legacy\Common\Keys\DefaultKeySet.Generated.cs')" Remove="Legacy\Common\Keys\DefaultKeySet.Empty.cs" />
+    <None Include="README.md" Pack="true" PackagePath="" />
+    <None Include="LICENSE.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Condition="Exists('Common\ResultNameResolver.Generated.cs')" Remove="Common\ResultNameResolver.Archive.cs" />
   </ItemGroup>
 
 </Project>
