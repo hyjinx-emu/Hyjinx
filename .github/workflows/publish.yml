@@ -2,14 +2,14 @@ name: publish
 
 on:
   push:
-#    branches:
-#      - main
-#    paths:
-#      - '.github/actions/**'
-#      - '.github/workflows/publish.yml'
-#      - 'src/**'
-#      - 'Directory.Packages.props'
-#      - 'global.json'
+    branches:
+      - main
+    paths:
+      - '.github/actions/**'
+      - '.github/workflows/publish.yml'
+      - 'src/**'
+      - 'Directory.Packages.props'
+      - 'global.json'
   release:
     types: [ published ]
 
@@ -123,7 +123,6 @@ jobs:
   publish:
     runs-on: windows-latest
     needs: [ prepare, build-native, build-nuget ]
-    if: true == false
 
     env:
       STAGING_DIR: dist
