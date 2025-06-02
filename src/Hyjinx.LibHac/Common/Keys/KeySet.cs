@@ -22,7 +22,7 @@ public class KeySet
     /// <summary>
     /// Initializes a new instance of the class.
     /// </summary>
-    protected KeySet() { }
+    protected internal KeySet() { }
 
     /// <summary>
     /// Returns a new <see cref="KeySet"/> containing any keys that have been compiled into the library.
