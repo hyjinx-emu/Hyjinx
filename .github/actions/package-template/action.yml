@@ -41,7 +41,7 @@ runs:
         popd
         
     - name: Package for Linux (Portable)
-      if: inputs.packager == 'linux'
+      if: inputs.packager == 'ubuntu'
       shell: bash
       run: |
         cp -a distribution/linux/portable/. "${{ inputs.staging_dir }}/"

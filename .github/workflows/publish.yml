@@ -44,7 +44,7 @@ jobs:
           
   build-native:
     name: build (${{ matrix.platform.name }})
-    runs-on: ${{ matrix.platform.runs-on }}
+    runs-on: ${{ matrix.platform.runner }}-latest
     timeout-minutes: 60
     needs: prepare
 
@@ -55,8 +55,8 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: win-x64,     runs-on: windows-latest,      os: windows, zip_os_name: win_x64     }
-          - { name: linux-x64,   runs-on: ubuntu-latest,       os: linux,   zip_os_name: linux_x64   }
+          - { name: win-x64,    runner: windows,  zip_os_name: win_x64     }
+          - { name: linux-x64,  runner: ubuntu,   zip_os_name: linux_x64   }
       fail-fast: false
 
     steps:
@@ -81,7 +81,7 @@ jobs:
         with:
           runtime_identifier: ${{ matrix.platform.name }}
           package_suffix: ${{ matrix.platform.zip_os_name }}
-          packager: ${{ matrix.platform.os }}
+          packager: ${{ matrix.platform.runner }}
           version: ${{ needs.prepare.outputs.full_version }}
           staging_dir: ${{ env.STAGING_DIR }}
           package_dir: ${{ env.PACKAGE_DIR }}
@@ -155,3 +155,7 @@ jobs:
           target_file: "Directory.Build.props"
           new_version: ${{ needs.prepare.outputs.full_version }}
           token: ${{ github.token }}
+
+  post-release:
+    runs-on: ubuntu-latest
+    needs: [ prepare, release ]
