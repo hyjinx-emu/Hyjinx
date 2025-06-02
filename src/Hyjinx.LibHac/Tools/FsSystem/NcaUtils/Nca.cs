@@ -9,21 +9,20 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public partial class Nca
+public class Nca
 {
     private KeySet KeySet { get; }
     public IStorage BaseStorage { get; }
     public NcaHeader Header { get; }
 
-    public Nca(KeySet keySet, IStorage storage)
+    public Nca(KeySet keySet, IStorage storage, NcaHeader? header = null)
     {
         KeySet = keySet;
         BaseStorage = storage;
-        Header = new NcaHeader(storage);
+        Header = header ?? new NcaHeader(storage);
     }
 
     public bool CanOpenSection(NcaSectionType type)
