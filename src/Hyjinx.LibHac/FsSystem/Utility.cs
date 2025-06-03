@@ -28,7 +28,7 @@ public class DummyEventNotifier : IEventNotifier
 /// Various utility functions used by the <see cref="LibHac.FsSystem"/> namespace.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-internal static class Utility
+public static class Utility
 {
     public delegate Result FsIterationTask(in Path path, in DirectoryEntry entry, ref FsIterationTaskClosure closure);
 

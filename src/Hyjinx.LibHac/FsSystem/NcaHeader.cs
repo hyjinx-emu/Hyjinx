@@ -160,7 +160,7 @@ public struct NcaAesCtrUpperIv
     [FieldOffset(0)] public uint Generation;
     [FieldOffset(4)] public uint SecureValue;
 
-    internal NcaAesCtrUpperIv(ulong value)
+    public NcaAesCtrUpperIv(ulong value)
     {
         Unsafe.SkipInit(out Generation);
         Unsafe.SkipInit(out SecureValue);

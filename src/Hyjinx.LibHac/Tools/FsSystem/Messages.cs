@@ -1,6 +1,6 @@
 namespace LibHac.Tools.FsSystem;
 
-internal static class Messages
+public static class Messages
 {
     public static string DestSpanTooSmall => "Destination array is not long enough to hold the requested data.";
     public static string NcaSectionMissing => "NCA section {0} does not exist.";

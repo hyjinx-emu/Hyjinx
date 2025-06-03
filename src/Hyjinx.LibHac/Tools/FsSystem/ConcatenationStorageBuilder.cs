@@ -1,5 +1,3 @@
-#if IS_LEGACY_ENABLED
-
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -65,5 +63,3 @@ public class ConcatenationStorageSegment
         Offset = offset;
     }
 }
-
-#endif

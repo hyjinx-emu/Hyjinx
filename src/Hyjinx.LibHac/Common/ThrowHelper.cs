@@ -2,7 +2,7 @@ using System;
 
 namespace LibHac.Common;
 
-internal static class ThrowHelper
+public static class ThrowHelper
 {
     public static void ThrowResult(Result result) => throw new HorizonResultException(result);
 

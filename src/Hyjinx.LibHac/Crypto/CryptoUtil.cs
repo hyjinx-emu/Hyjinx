@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace LibHac.Crypto;
 
-internal static class CryptoUtil
+public static class CryptoUtil
 {
     public static bool IsSameBytes(ReadOnlySpan<byte> buffer1, ReadOnlySpan<byte> buffer2, int length)
     {
