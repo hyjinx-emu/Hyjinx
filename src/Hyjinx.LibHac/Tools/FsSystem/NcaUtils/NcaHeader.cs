@@ -31,8 +31,6 @@ public class NcaHeader
         _header = buf;
         FormatVersion = DetectNcaVersion(_header.Span);
     }
-    
-    protected NcaHeader() { }
 
     public uint Magic
     {
