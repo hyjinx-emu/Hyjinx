@@ -76,7 +76,7 @@ public class NcaHeader
     {
         ValidateSectionIndex(index);
 
-        int offset = SectionEntriesOffset + NcaSectionEntryStruct.SectionEntrySize * index;
+        int offset = SectionEntriesOffset + SectionEntrySize * index;
         return ref Unsafe.As<byte, NcaSectionEntryStruct>(ref _header.Span[offset]);
     }
 

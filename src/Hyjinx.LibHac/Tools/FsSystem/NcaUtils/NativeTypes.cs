@@ -15,6 +15,7 @@ public static class NativeTypes
     public const int RightsIdOffset = 0x230;
     public const int RightsIdSize = 0x10;
     public const int SectionEntriesOffset = 0x240;
+    public const int SectionEntrySize = 0x10;
     public const int FsHeaderHashOffset = 0x280;
     public const int FsHeaderHashSize = 0x20;
     public const int KeyAreaOffset = 0x300;
@@ -30,7 +31,8 @@ public static class NativeTypes
     public const int SparseInfoSize = 0x30;
     public const int CompressionInfoOffset = 0x178;
     public const int CompressionInfoSize = 0x28;
-
+    public const int SignatureSize = 0x100;
+    
     [StructLayout(LayoutKind.Explicit)]
     public struct FsHeaderStruct
     {
@@ -64,8 +66,6 @@ public static class NativeTypes
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = SectionEntrySize)]
     public struct NcaSectionEntryStruct
     {
-        public const int SectionEntrySize = 0x10;
-
         public int StartBlock;
         public int EndBlock;
         public bool IsEnabled;
