@@ -94,13 +94,13 @@ public static class Assert
         ExecuteAssertionFailureOperation(operation, in assertionInfo);
     }
 
-    internal static void OnAssertionFailure(AssertionType assertionType, string condition, string functionName,
+    public static void OnAssertionFailure(AssertionType assertionType, string condition, string functionName,
         string fileName, int lineNumber)
     {
         OnAssertionFailure(assertionType, condition, functionName, fileName, lineNumber, string.Empty);
     }
 
-    internal static void OnAssertionFailure(AssertionType assertionType, string condition, string functionName,
+    public static void OnAssertionFailure(AssertionType assertionType, string condition, string functionName,
         string fileName, int lineNumber, string message)
     {
         // Invalidate the IPC message buffer and call SynchronizePreemptionState if necessary
@@ -200,7 +200,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNotNull<T>([NotNull] T value,
+    public static void SdkNotNull<T>([NotNull] T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -211,7 +211,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNotNull<T>([NotNull] T value,
+    public static void SdkRequiresNotNull<T>([NotNull] T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -245,7 +245,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNotNull<T>([NotNull] ref T value,
+    public static void SdkNotNull<T>([NotNull] ref T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -255,7 +255,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNotNull<T>([NotNull] ref T value,
+    public static void SdkRequiresNotNull<T>([NotNull] ref T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -290,7 +290,7 @@ public static class Assert
         NotNullOutImpl(AssertionType.UserAssert, out value, valueText, functionName, fileName, lineNumber);
     }
 
-    internal static void SdkNotNullOut<T>([NotNull] out T value,
+    public static void SdkNotNullOut<T>([NotNull] out T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -299,7 +299,7 @@ public static class Assert
         NotNullOutImpl(AssertionType.SdkAssert, out value, valueText, functionName, fileName, lineNumber);
     }
 
-    internal static void SdkRequiresNotNullOut<T>([NotNull] out T value,
+    public static void SdkRequiresNotNullOut<T>([NotNull] out T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -332,7 +332,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNotNull<T>(Span<T> value,
+    public static void SdkNotNull<T>(Span<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -342,7 +342,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNotNull<T>(Span<T> value,
+    public static void SdkRequiresNotNull<T>(Span<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -375,7 +375,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNotNull<T>(ReadOnlySpan<T> value,
+    public static void SdkNotNull<T>(ReadOnlySpan<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -385,7 +385,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNotNull<T>(ReadOnlySpan<T> value,
+    public static void SdkRequiresNotNull<T>(ReadOnlySpan<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -419,7 +419,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNotNull<T>(in UniqueRef<T> value,
+    public static void SdkNotNull<T>(in UniqueRef<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -430,7 +430,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNotNull<T>(in UniqueRef<T> value,
+    public static void SdkRequiresNotNull<T>(in UniqueRef<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -465,7 +465,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNotNull<T>(in SharedRef<T> value,
+    public static void SdkNotNull<T>(in SharedRef<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -476,7 +476,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNotNull<T>(in SharedRef<T> value,
+    public static void SdkRequiresNotNull<T>(in SharedRef<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -511,7 +511,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNull<T>(T value,
+    public static void SdkNull<T>(T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -522,7 +522,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNull<T>(T value,
+    public static void SdkRequiresNull<T>(T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -556,7 +556,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNull<T>(ref T value,
+    public static void SdkNull<T>(ref T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -566,7 +566,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNull<T>(ref T value,
+    public static void SdkRequiresNull<T>(ref T value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -600,7 +600,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNull<T>(in UniqueRef<T> value,
+    public static void SdkNull<T>(in UniqueRef<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -611,7 +611,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNull<T>(in UniqueRef<T> value,
+    public static void SdkRequiresNull<T>(in UniqueRef<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -646,7 +646,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNull<T>(in SharedRef<T> value,
+    public static void SdkNull<T>(in SharedRef<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -657,7 +657,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNull<T>(in SharedRef<T> value,
+    public static void SdkRequiresNull<T>(in SharedRef<T> value,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerMemberName] string functionName = "",
         [CallerFilePath] string fileName = "",
@@ -697,7 +697,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkInRange<T>(T value, T lowerInclusive, T upperExclusive,
+    public static void SdkInRange<T>(T value, T lowerInclusive, T upperExclusive,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerArgumentExpression(nameof(lowerInclusive))] string lowerInclusiveText = "",
         [CallerArgumentExpression(nameof(upperExclusive))] string upperExclusiveText = "",
@@ -711,7 +711,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresInRange<T>(T value, T lowerInclusive, T upperExclusive,
+    public static void SdkRequiresInRange<T>(T value, T lowerInclusive, T upperExclusive,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerArgumentExpression(nameof(lowerInclusive))] string lowerInclusiveText = "",
         [CallerArgumentExpression(nameof(upperExclusive))] string upperExclusiveText = "",
@@ -754,7 +754,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkWithinMinMax<T>(T value, T min, T max,
+    public static void SdkWithinMinMax<T>(T value, T min, T max,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerArgumentExpression(nameof(min))] string minText = "",
         [CallerArgumentExpression(nameof(max))] string maxText = "",
@@ -768,7 +768,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresWithinMinMax<T>(T value, T min, T max,
+    public static void SdkRequiresWithinMinMax<T>(T value, T min, T max,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerArgumentExpression(nameof(min))] string minText = "",
         [CallerArgumentExpression(nameof(max))] string maxText = "",
@@ -807,7 +807,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkEqual<T>(T lhs, T rhs,
+    public static void SdkEqual<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -819,7 +819,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresEqual<T>(T lhs, T rhs,
+    public static void SdkRequiresEqual<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -856,7 +856,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkEqual<T>(ref T lhs, ref T rhs,
+    public static void SdkEqual<T>(ref T lhs, ref T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -868,7 +868,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresEqual<T>(ref T lhs, ref T rhs,
+    public static void SdkRequiresEqual<T>(ref T lhs, ref T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -884,7 +884,7 @@ public static class Assert
     // Not equal
     // ---------------------------------------------------------------------
 
-    private static void NotEqualImpl<T>(AssertionType assertionType, T lhs, T rhs, string lhsText, string rhsText,
+    public static void NotEqualImpl<T>(AssertionType assertionType, T lhs, T rhs, string lhsText, string rhsText,
         string functionName, string fileName, int lineNumber) where T : IEquatable<T>
     {
         if (AssertImpl.NotEqual(lhs, rhs))
@@ -906,7 +906,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNotEqual<T>(T lhs, T rhs,
+    public static void SdkNotEqual<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -918,7 +918,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNotEqual<T>(T lhs, T rhs,
+    public static void SdkRequiresNotEqual<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -956,7 +956,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkNotEqual<T>(ref T lhs, ref T rhs,
+    public static void SdkNotEqual<T>(ref T lhs, ref T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -969,7 +969,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresNotEqual<T>(ref T lhs, ref T rhs,
+    public static void SdkRequiresNotEqual<T>(ref T lhs, ref T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -1007,7 +1007,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkLess<T>(T lhs, T rhs,
+    public static void SdkLess<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -1019,7 +1019,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresLess<T>(T lhs, T rhs,
+    public static void SdkRequiresLess<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -1056,7 +1056,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkLessEqual<T>(T lhs, T rhs,
+    public static void SdkLessEqual<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -1068,7 +1068,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresLessEqual<T>(T lhs, T rhs,
+    public static void SdkRequiresLessEqual<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -1105,7 +1105,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkGreater<T>(T lhs, T rhs,
+    public static void SdkGreater<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -1117,7 +1117,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresGreater<T>(T lhs, T rhs,
+    public static void SdkRequiresGreater<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -1154,7 +1154,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkGreaterEqual<T>(T lhs, T rhs,
+    public static void SdkGreaterEqual<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -1166,7 +1166,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresGreaterEqual<T>(T lhs, T rhs,
+    public static void SdkRequiresGreaterEqual<T>(T lhs, T rhs,
         [CallerArgumentExpression(nameof(lhs))] string lhsText = "",
         [CallerArgumentExpression(nameof(rhs))] string rhsText = "",
         [CallerMemberName] string functionName = "",
@@ -1205,7 +1205,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkAligned<T>(T value, int alignment,
+    public static void SdkAligned<T>(T value, int alignment,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerArgumentExpression(nameof(alignment))] string alignmentText = "",
         [CallerMemberName] string functionName = "",
@@ -1218,7 +1218,7 @@ public static class Assert
     }
 
     [Conditional(AssertCondition)]
-    internal static void SdkRequiresAligned<T>(T value, int alignment,
+    public static void SdkRequiresAligned<T>(T value, int alignment,
         [CallerArgumentExpression(nameof(value))] string valueText = "",
         [CallerArgumentExpression(nameof(alignment))] string alignmentText = "",
         [CallerMemberName] string functionName = "",

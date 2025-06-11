@@ -9,21 +9,20 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public partial class Nca
+public class Nca
 {
-    private KeySet KeySet { get; }
+    protected KeySet KeySet { get; }
     public IStorage BaseStorage { get; }
     public NcaHeader Header { get; }
 
-    public Nca(KeySet keySet, IStorage storage)
+    public Nca(KeySet keySet, IStorage storage, NcaHeader? header = null)
     {
         KeySet = keySet;
         BaseStorage = storage;
-        Header = new NcaHeader(storage);
+        Header = header ?? new NcaHeader(storage);
     }
 
     public bool CanOpenSection(NcaSectionType type)
@@ -35,12 +34,18 @@ public partial class Nca
 
         return CanOpenSection(index);
     }
-
+    
     public bool CanOpenSection(int index)
     {
         if (!SectionExists(index))
             return false;
-        if (GetFsHeader(index).EncryptionType == NcaEncryptionType.None)
+
+        return CanOpenSectionCore(index);
+    }
+
+    protected virtual bool CanOpenSectionCore(int index)
+    {
+        if (GetFsHeader(index).EncryptionType == 1) // None
             return true;
 
         return false;
@@ -56,12 +61,12 @@ public partial class Nca
         return SectionExists(index);
     }
 
-    internal bool SectionExists(int index)
+    public bool SectionExists(int index)
     {
         return Header.IsSectionEnabled(index);
     }
 
-    internal NcaFsHeader GetFsHeader(int index)
+    public NcaFsHeader GetFsHeader(int index)
     {
         if (Header.IsNca0())
             return GetNca0FsHeader(index);
@@ -69,7 +74,7 @@ public partial class Nca
         return Header.GetFsHeader(index);
     }
 
-    private IStorage OpenSectionStorage(int index)
+    protected virtual IStorage OpenSectionStorage(int index)
     {
         if (!SectionExists(index))
             throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
@@ -87,8 +92,13 @@ public partial class Nca
 
         return BaseStorage.Slice(offset, size);
     }
+    
+    public IStorage OpenRawStorage(NcaSectionType type)
+    {
+        return OpenRawStorage(GetSectionIndexFromType(type));
+    }
 
-    internal IStorage OpenRawStorage(int index)
+    public virtual IStorage OpenRawStorage(int index)
     {
         if (Header.IsNca0())
             return OpenNca0RawStorage(index);
@@ -96,7 +106,7 @@ public partial class Nca
         return OpenSectionStorage(index);
     }
 
-    private IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
+    public IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
     {
         IStorage patchStorage = patchNca.OpenRawStorage(index);
         IStorage baseStorage = SectionExists(index) ? OpenRawStorage(index) : new NullStorage();
@@ -132,7 +142,7 @@ public partial class Nca
         return storage;
     }
 
-    public IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
+    public virtual IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
     {
         IStorage rawStorage = OpenRawStorage(index);
         NcaFsHeader header = GetFsHeader(index);
@@ -162,7 +172,7 @@ public partial class Nca
         return returnStorage;
     }
 
-    private static IStorage OpenCompressedStorage(NcaFsHeader header, IStorage baseStorage)
+    protected static IStorage OpenCompressedStorage(NcaFsHeader header, IStorage baseStorage)
     {
         ref NcaCompressionInfo compressionInfo = ref header.GetCompressionInfo();
 
@@ -189,7 +199,7 @@ public partial class Nca
         return new CachedStorage(compressedStorage, 0x4000, 32, true);
     }
 
-    private IStorage CreateVerificationStorage(IntegrityCheckLevel integrityCheckLevel, NcaFsHeader header, IStorage rawStorage)
+    protected IStorage CreateVerificationStorage(IntegrityCheckLevel integrityCheckLevel, NcaFsHeader header, IStorage rawStorage)
     {
         switch (header.HashType)
         {
@@ -259,7 +269,7 @@ public partial class Nca
         return OpenStorageWithPatch(patchNca, GetSectionIndexFromType(type), integrityCheckLevel);
     }
 
-    private int GetSectionIndexFromType(NcaSectionType type)
+    protected int GetSectionIndexFromType(NcaSectionType type)
     {
         return GetSectionIndexFromType(type, Header.ContentType);
     }
@@ -274,7 +284,7 @@ public partial class Nca
         return index;
     }
 
-    private static bool TryGetSectionIndexFromType(NcaSectionType type, NcaContentType contentType, out int index)
+    public static bool TryGetSectionIndexFromType(NcaSectionType type, NcaContentType contentType, out int index)
     {
         switch (type)
         {
@@ -292,6 +302,38 @@ public partial class Nca
                 return true;
             default:
                 index = 0;
+                return false;
+        }
+    }
+    
+    public static NcaSectionType GetSectionTypeFromIndex(int index, NcaContentType contentType)
+    {
+        if (!TryGetSectionTypeFromIndex(index, contentType, out NcaSectionType type))
+        {
+            throw new ArgumentOutOfRangeException(nameof(type), "NCA type does not contain this index.");
+        }
+
+        return type;
+    }
+
+    public static bool TryGetSectionTypeFromIndex(int index, NcaContentType contentType, out NcaSectionType type)
+    {
+        switch (index)
+        {
+            case 0 when contentType == NcaContentType.Program:
+                type = NcaSectionType.Code;
+                return true;
+            case 1 when contentType == NcaContentType.Program:
+                type = NcaSectionType.Data;
+                return true;
+            case 2 when contentType == NcaContentType.Program:
+                type = NcaSectionType.Logo;
+                return true;
+            case 0:
+                type = NcaSectionType.Data;
+                return true;
+            default:
+                UnsafeHelpers.SkipParamInit(out type);
                 return false;
         }
     }

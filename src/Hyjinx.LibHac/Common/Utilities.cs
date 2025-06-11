@@ -56,54 +56,6 @@ public static class Utilities
         return true;
     }
 
-    public static void XorArrays(Span<byte> transformData, ReadOnlySpan<byte> xorData)
-    {
-        int sisdStart = 0;
-        if (Vector.IsHardwareAccelerated)
-        {
-            Span<Vector<byte>> dataVec = MemoryMarshal.Cast<byte, Vector<byte>>(transformData);
-            ReadOnlySpan<Vector<byte>> xorVec = MemoryMarshal.Cast<byte, Vector<byte>>(xorData);
-            sisdStart = dataVec.Length * Vector<byte>.Count;
-
-            for (int i = 0; i < dataVec.Length; i++)
-            {
-                dataVec[i] ^= xorVec[i];
-            }
-        }
-
-        for (int i = sisdStart; i < transformData.Length; i++)
-        {
-            transformData[i] ^= xorData[i];
-        }
-    }
-
-    public static void XorArrays(Span<byte> output, ReadOnlySpan<byte> input1, ReadOnlySpan<byte> input2)
-    {
-        int length = Math.Min(input1.Length, input2.Length);
-
-        int sisdStart = 0;
-        if (Vector.IsHardwareAccelerated)
-        {
-            int lengthVec = length / Vector<byte>.Count;
-
-            Span<Vector<byte>> outputVec = MemoryMarshal.Cast<byte, Vector<byte>>(output);
-            ReadOnlySpan<Vector<byte>> input1Vec = MemoryMarshal.Cast<byte, Vector<byte>>(input1);
-            ReadOnlySpan<Vector<byte>> input2Vec = MemoryMarshal.Cast<byte, Vector<byte>>(input2);
-
-            sisdStart = lengthVec * Vector<byte>.Count;
-
-            for (int i = 0; i < lengthVec; i++)
-            {
-                outputVec[i] = input1Vec[i] ^ input2Vec[i];
-            }
-        }
-
-        for (int i = sisdStart; i < length; i++)
-        {
-            output[i] = (byte)(input1[i] ^ input2[i]);
-        }
-    }
-
     public static void CopyStream(this Stream input, Stream output, long length, IProgressReport progress = null)
     {
         const int bufferSize = 0x8000;
