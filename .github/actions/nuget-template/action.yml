@@ -39,6 +39,7 @@ runs:
       with:
         file: "${{ inputs.version_file }}"
         version: ${{ inputs.version }}
+        version-property: VersionPrefix
         
     - name: Build
       shell: bash

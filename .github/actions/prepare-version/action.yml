@@ -38,6 +38,7 @@ runs:
       with:
         file: ${{ inputs.target_file }}
         version: bump-minor
+        version-property: VersionPrefix
         
     - name: Set preview version
       id: set_preview_version
@@ -54,6 +55,7 @@ runs:
       with:
         file: ${{ inputs.target_file }}
         version: ${{ inputs.explicit_version }}
+        version-property: VersionPrefix
         
     - name: Set release version
       if: inputs.explicit_version != ''

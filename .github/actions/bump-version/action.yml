@@ -20,6 +20,7 @@ runs:
       with:
         file: ${{ inputs.target_file }}
         version: ${{ inputs.new_version }}
+        version-property: VersionPrefix
 
     - name: Create pull request
       uses: gr2m/create-or-update-pull-request-action@v1
