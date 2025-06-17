@@ -5,6 +5,14 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>hyjinx-emu</Authors>
+    <Copyright>Copyright © 2025 Hyjinx Emulator team</Copyright>
+    <PackageProjectUrl>https://github.com/hyjinx-emu/Hyjinx</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hyjinx-emu/Hyjinx.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
   
   <PropertyGroup>
     <!-- Identifies the source generator configuration settings for consuming projects. -->
