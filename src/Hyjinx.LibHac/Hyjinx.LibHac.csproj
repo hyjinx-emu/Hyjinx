@@ -9,8 +9,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Authors>Alex Barney</Authors>
-    <Copyright>Copyright © 2018-2022 Alex Barney</Copyright>
     <Description>A library that reimplements select portions of the Nintendo Switch operating system and allows reading content formats used by the OS.</Description>
   </PropertyGroup>
 
@@ -21,7 +19,7 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <PackageId>Hyjinx.LibHac</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/hyjinx-emu/Hyjinx</PackageProjectUrl>
     <RepositoryUrl>https://github.com/hyjinx-emu/Hyjinx.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
