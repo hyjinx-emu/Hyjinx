@@ -8,15 +8,18 @@
 
   <PropertyGroup>
     <Authors>hyjinx-emu</Authors>
-    <Copyright>Copyright © 2025 Hyjinx Emulator</Copyright>
-    <!-- Disables packaging for all projects and then explicitly enabled for those to be published. -->
-    <IsPackable>false</IsPackable>
+    <Copyright>Copyright © 2025 Hyjinx Emulator team</Copyright>
+    <PackageProjectUrl>https://github.com/hyjinx-emu/Hyjinx</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hyjinx-emu/Hyjinx.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
   
   <PropertyGroup>
     <!-- Identifies the source generator configuration settings for consuming projects. -->
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>$(IntermediateOutputPath)obj/Generated</CompilerGeneratedFilesOutputPath>
+    <!-- Disables packaging for all projects and then explicitly enabled for those to be published. -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
