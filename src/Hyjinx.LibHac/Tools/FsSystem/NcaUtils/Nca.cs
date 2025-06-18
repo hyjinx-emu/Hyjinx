@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
+[Obsolete($"This class is no longer supported, please use the {nameof(Nca2)} variant instead.")]
 public class Nca
 {
     protected KeySet KeySet { get; }
