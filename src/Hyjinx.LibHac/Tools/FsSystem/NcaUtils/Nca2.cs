@@ -1,17 +1,58 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using LibHac.Common.Keys;
+using System;
+using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 /// <summary>
 /// Provides a mechanism to interact with content archive (NCA) files.
 /// </summary>
+public class Nca2 : Nca2<KeySet, NcaHeader2, NcaFsHeader2>
+{
+    private Nca2(Stream stream, KeySet keySet, NcaHeader2 header, Dictionary<NcaSectionType, NcaFsHeader2> sections) 
+        : base(stream, keySet, header, sections) { }
+    
+    /// <summary>
+    /// Loads the archive.
+    /// </summary>
+    /// <param name="keySet">The key set to load.</param>
+    /// <param name="stream">The stream to load.</param>
+    /// <returns>The new <see cref="Nca2"/> file.</returns>
+    public static Nca2 Load(KeySet keySet, Stream stream)
+    {
+        if (stream.Length < HeaderSize)
+        {
+            throw new NotSupportedException("The stream contains less bytes than expected.");
+        }
+        
+        // Read the header out of the file.
+        Span<byte> headerBytes = stackalloc byte[HeaderSize];
+        stream.ReadExactly(headerBytes);
+        
+        // Deserialize the header.
+        var deserializer = new NcaHeader2Deserializer();
+        var header = deserializer.Deserialize(headerBytes);
+        
+        // Deserialize the entries.
+        var entriesDeserializer = new NcaFsHeader2Deserializer(header);
+        var entries = entriesDeserializer.Deserialize(headerBytes);
+
+        return new Nca2(stream, keySet, header, entries);
+    }
+}
+
+/// <summary>
+/// Provides a mechanism to interact with content archive (NCA) files.
+/// </summary>
 /// <typeparam name="TKeySet">The type of key set.</typeparam>
 /// <typeparam name="THeader">The type of archive header.</typeparam>
-public class Nca2<TKeySet, THeader>
+/// <typeparam name="TFsHeader">The type of file entry header.</typeparam>
+public class Nca2<TKeySet, THeader, TFsHeader>
     where TKeySet : KeySet
     where THeader : NcaHeader2
+    where TFsHeader : NcaFsHeader2
 {
     /// <summary>
     /// Gets the underlying stream for the NCA file.
@@ -31,9 +72,9 @@ public class Nca2<TKeySet, THeader>
     /// <summary>
     /// Gets the sections.
     /// </summary>
-    public IDictionary<NcaSectionType, NcaFsHeader2> Sections { get; }
+    public IDictionary<NcaSectionType, TFsHeader> Sections { get; }
     
-    protected Nca2(Stream stream, TKeySet keySet, THeader header, Dictionary<NcaSectionType, NcaFsHeader2> sections)
+    protected Nca2(Stream stream, TKeySet keySet, THeader header, Dictionary<NcaSectionType, TFsHeader> sections)
     {
         UnderlyingStream = stream;
         KeySet = keySet;
