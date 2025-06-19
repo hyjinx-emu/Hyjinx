@@ -11,8 +11,14 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// <param name="header">The header containing the data to deserialize.</param>
 public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deserializer<NcaHeader2, NcaFsHeader2>(header)
 {
-    protected override NcaFsHeader2 DeserializeCore(in Span<byte> fsHeaderBytes, in Span<byte> hashBytes, NcaSectionEntryStruct fsEntry)
+    protected override NcaFsHeader2 DeserializeCore(in Span<byte> bytes, int sectionIndex, NcaSectionEntryStruct fsEntry)
     {
+        // Find the hash bytes.
+        var hashBytes = bytes.Slice(FsHeaderHashOffset + (sectionIndex * FsHeaderHashSize), FsHeaderHashSize);
+            
+        // Find the file system header entry.
+        var fsHeaderBytes = bytes.Slice(FsHeadersOffset + (sectionIndex * FsHeaderSize), FsHeaderSize);
+        
         scoped ref var fsHeader = ref Unsafe.As<byte, FsHeaderStruct>(ref fsHeaderBytes[0]);
         
         return new NcaFsHeader2
@@ -36,10 +42,24 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
 /// </summary>
 /// <typeparam name="THeader">The type of the parent <see cref="NcaHeader2"/>.</typeparam>
 /// <typeparam name="T">The type of <see cref="NcaFsHeader2"/> to deserialize.</typeparam>
-public abstract class NcaFsHeader2Deserializer<THeader, T>(THeader header) : IDeserializer<Dictionary<NcaSectionType, T>>
+public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dictionary<NcaSectionType, T>>
     where THeader : NcaHeader2
     where T : NcaFsHeader2
 {
+    /// <summary>
+    /// Gets the root header.
+    /// </summary>
+    protected THeader Header { get; }
+
+    /// <summary>
+    /// Initializes an instance of the class.
+    /// </summary>
+    /// <param name="header">The header containing the data to deserialize.</param>
+    protected NcaFsHeader2Deserializer(THeader header)
+    {
+        Header = header;
+    }
+    
     public Dictionary<NcaSectionType, T> Deserialize(in Span<byte> bytes)
     {
         var result = new Dictionary<NcaSectionType, T>();
@@ -53,18 +73,12 @@ public abstract class NcaFsHeader2Deserializer<THeader, T>(THeader header) : IDe
                 continue;
             }
 
-            if (!TryGetSectionTypeFromIndex(i, header.ContentType, out var sectionType))
+            if (!TryGetSectionTypeFromIndex(i, Header.ContentType, out var sectionType))
             {
-                throw new NotSupportedException($"The section type could not be determined. (Index: {i}, ContentType: {header.ContentType})");
+                throw new NotSupportedException($"The section type could not be determined. (Index: {i}, ContentType: {Header.ContentType})");
             }
 
-            // Find the hash bytes.
-            var hashBytes = bytes.Slice(FsHeaderHashOffset + (i * FsHeaderHashSize), FsHeaderHashSize);
-            
-            // Find the FsHeader entry.
-            var fsHeaderBytes = bytes.Slice(FsHeadersOffset + (FsHeaderSize * i), FsHeaderSize);
-
-            result[sectionType] = DeserializeCore(fsHeaderBytes, hashBytes, fsEntry);
+            result[sectionType] = DeserializeCore(bytes, i, fsEntry);
         }
 
         return result;
@@ -73,11 +87,11 @@ public abstract class NcaFsHeader2Deserializer<THeader, T>(THeader header) : IDe
     /// <summary>
     /// Performs the deserialization.
     /// </summary>
-    /// <param name="fsHeaderBytes">The header bytes.</param>
-    /// <param name="hashBytes">The hash bytes.</param>
+    /// <param name="bytes">The header bytes.</param>
+    /// <param name="sectionIndex">The zero based index of the section.</param>
     /// <param name="fsEntry">The section entry.</param>
     /// <returns>The deserialized <typeparamref name="T"/> instance.</returns>
-    protected abstract T DeserializeCore(in Span<byte> fsHeaderBytes, in Span<byte> hashBytes, NcaSectionEntryStruct fsEntry);
+    protected abstract T DeserializeCore(in Span<byte> bytes, int sectionIndex, NcaSectionEntryStruct fsEntry);
     
     private bool TryGetSectionTypeFromIndex(int index, NcaContentType contentType, out NcaSectionType type)
     {
@@ -99,5 +113,31 @@ public abstract class NcaFsHeader2Deserializer<THeader, T>(THeader header) : IDe
                 type = default;
                 return false;
         }
-    } 
+    }
+
+    /// <summary>
+    /// Extracts the hash bytes from the <see cref="NcaHeader2"/> bytes.
+    /// </summary>
+    /// <param name="bytes">The bytes of the header.</param>
+    /// <param name="sectionIndex">The zero-based index of the section header.</param>
+    /// <returns>The hash bytes.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static Span<byte> ExtractHashBytes(in Span<byte> bytes, int sectionIndex)
+    {
+        // Find the hash bytes.
+        return bytes.Slice(FsHeaderHashOffset + (sectionIndex * FsHeaderHashSize), FsHeaderHashSize);
+    }
+
+    /// <summary>
+    /// Extracts the <see cref="NcaFsHeader2"/> bytes from the <see cref="NcaHeader2"/> bytes.
+    /// </summary>
+    /// <param name="bytes">The bytes of the header.</param>
+    /// <param name="sectionIndex">The zero-based index of the section header.</param>
+    /// <returns>The hash bytes.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static Span<byte> ExtractHeaderBytes(in Span<byte> bytes, int sectionIndex)
+    {
+        // Find the file system header entry.
+        return bytes.Slice(FsHeadersOffset + (sectionIndex * FsHeaderSize), FsHeaderSize);
+    }
 }
