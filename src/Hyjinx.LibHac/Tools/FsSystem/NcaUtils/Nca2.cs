@@ -2,6 +2,9 @@
 using System.IO;
 using LibHac.Common.Keys;
 using System;
+using System.Buffers;
+using System.Threading;
+using System.Threading.Tasks;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
@@ -13,23 +16,29 @@ public class Nca2 : Nca2<KeySet, NcaHeader2, NcaFsHeader2>
 {
     private Nca2(Stream stream, KeySet keySet, NcaHeader2 header, Dictionary<NcaSectionType, NcaFsHeader2> sections) 
         : base(stream, keySet, header, sections) { }
-    
+
     /// <summary>
     /// Loads the archive.
     /// </summary>
     /// <param name="keySet">The key set to load.</param>
     /// <param name="stream">The stream to load.</param>
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new <see cref="Nca2"/> file.</returns>
-    public static Nca2 Load(KeySet keySet, Stream stream)
+    public static async Task<Nca2> LoadAsync(KeySet keySet, Stream stream, CancellationToken cancellationToken)
     {
         if (stream.Length < HeaderSize)
         {
             throw new NotSupportedException("The stream contains less bytes than expected.");
         }
+
+        using var owner = MemoryPool<byte>.Shared.Rent(HeaderSize);
         
-        // Read the header out of the file.
-        Span<byte> headerBytes = stackalloc byte[HeaderSize];
-        stream.ReadExactly(headerBytes);
+        // Make sure it's the expected size before reading the data.
+        var block = owner.Memory[..HeaderSize];
+        await stream.ReadExactlyAsync(block, cancellationToken);
+        
+        // Prepare it for read access.
+        var headerBytes = block.Span;
         
         // Deserialize the header.
         var deserializer = new NcaHeader2Deserializer();
@@ -38,7 +47,7 @@ public class Nca2 : Nca2<KeySet, NcaHeader2, NcaFsHeader2>
         // Deserialize the entries.
         var entriesDeserializer = new NcaFsHeader2Deserializer(header);
         var entries = entriesDeserializer.Deserialize(headerBytes);
-
+        
         return new Nca2(stream, keySet, header, entries);
     }
 }
