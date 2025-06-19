@@ -26,8 +26,9 @@ public class StreamStorage2 : AsyncStorage
     /// </summary>
     /// <param name="stream">The stream to wrap.</param>
     /// <param name="length">The length of the storage block.</param>
+    /// <param name="startPosition">The starting position of the storage within the stream. Default: Uses the current stream position when unset.</param>
     /// <param name="leaveOpen"><c>true</c> to leave the stream open upon dispose, otherwise <c>false</c></param>
-    public StreamStorage2(Stream stream, long length, bool leaveOpen = false)
+    public StreamStorage2(Stream stream, long length, long? startPosition = null, bool leaveOpen = false)
     {
         if (stream.Position + length > stream.Length)
         {
@@ -40,7 +41,7 @@ public class StreamStorage2 : AsyncStorage
         }
         
         _stream = stream;
-        _startPosition = stream.Position;
+        _startPosition = startPosition ?? stream.Position;
         _length = length;
         _leaveOpen = leaveOpen;
         _remaining = length;
