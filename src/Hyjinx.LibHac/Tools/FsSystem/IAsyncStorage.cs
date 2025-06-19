@@ -27,7 +27,7 @@ public interface IAsyncStorage : IAsyncDisposable
     /// <param name="buffer">The buffer which should receive the data.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The number of bytes read. This will typically match the buffer size, however it may not as the end of the storage region is being reached. A return value of 0 will always occur when the end of the region has been reached.</returns>
-    ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken);
+    ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default);
         
     /// <summary>
     /// Seeks position within the storage.

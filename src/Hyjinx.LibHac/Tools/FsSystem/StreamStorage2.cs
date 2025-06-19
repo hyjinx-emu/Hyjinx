@@ -47,7 +47,7 @@ public class StreamStorage2 : AsyncStorage
         _remaining = length;
     }
     
-    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken)
+    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         var remaining = (int)Math.Min(_remaining, buffer.Length);
         if (remaining == 0)

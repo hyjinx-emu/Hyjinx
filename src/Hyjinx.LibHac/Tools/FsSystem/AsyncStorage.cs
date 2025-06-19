@@ -29,7 +29,7 @@ public abstract class AsyncStorage : IAsyncStorage
         return ValueTask.CompletedTask;
     }
     
-    public abstract ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken);
+    public abstract ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default);
 
     public abstract long Seek(long offset, SeekOrigin origin);
 }
