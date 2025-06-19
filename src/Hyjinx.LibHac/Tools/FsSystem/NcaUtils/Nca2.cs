@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using LibHac.Common.Keys;
 using System;
 using System.Buffers;
 using System.Threading;
@@ -23,7 +22,7 @@ public class Nca2 : Nca2<NcaHeader2, NcaFsHeader2>
     /// <param name="stream">The stream to load.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new <see cref="Nca2"/> file.</returns>
-    public static async Task<Nca2> LoadAsync(Stream stream, CancellationToken cancellationToken)
+    public static async Task<Nca2> LoadAsync(Stream stream, CancellationToken cancellationToken = default)
     {
         if (stream.Length < HeaderSize)
         {
