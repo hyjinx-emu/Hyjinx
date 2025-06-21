@@ -11,6 +11,7 @@ namespace LibHac.Tools.FsSystem;
 public class StreamStorage2 : AsyncStorage
 {
     private readonly Stream _stream;
+    private readonly bool _leaveOpen;
     
     public override long Length => _stream.Length;
 
@@ -20,9 +21,11 @@ public class StreamStorage2 : AsyncStorage
     /// Initializes an instance of the class.
     /// </summary>
     /// <param name="stream">The stream to wrap.</param>
-    public StreamStorage2(Stream stream)
+    /// <param name="leaveOpen"><c>true</c> if the stream should be left open upon dispose, otherwise <c>false</c>.</param>
+    public StreamStorage2(Stream stream, bool leaveOpen = true)
     {
         _stream = stream;
+        _leaveOpen = leaveOpen;
     }
     
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
@@ -33,5 +36,15 @@ public class StreamStorage2 : AsyncStorage
     public override long Seek(long offset, SeekOrigin origin)
     {
         return _stream.Seek(offset, origin);
+    }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        if (!_leaveOpen)
+        {
+            await _stream.DisposeAsync();
+        }
+        
+        await base.DisposeAsyncCore();
     }
 }

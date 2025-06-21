@@ -12,7 +12,7 @@ namespace LibHac.Tools.FsSystem;
 public class SubStorage2 : AsyncStorage
 {
     private readonly IAsyncStorage _baseStorage;
-    private readonly long _startPosition;
+    private readonly long _offset;
     private readonly long _length;
 
     /// <summary>
@@ -28,10 +28,15 @@ public class SubStorage2 : AsyncStorage
     /// Initializes an instance of the class.
     /// </summary>
     /// <param name="baseStorage">The base storage to wrap.</param>
+    /// <param name="offset">The offset of the storage within the stream.</param>
     /// <param name="length">The length of the storage block.</param>
-    /// <param name="startPosition">The starting position of the storage within the stream. Default: Uses the current stream position when unset.</param>
-    public SubStorage2(IAsyncStorage baseStorage, long length, long? startPosition = null)
+    public SubStorage2(IAsyncStorage baseStorage, long offset, long length)
     {
+        if (offset < 0)
+        {
+            throw new ArgumentException("The value must be greater than or equal to zero.", nameof(offset));
+        }
+        
         if (baseStorage.Position + length > baseStorage.Length)
         {
             throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(length));
@@ -43,7 +48,7 @@ public class SubStorage2 : AsyncStorage
         }
 
         _baseStorage = baseStorage;
-        _startPosition = startPosition ?? baseStorage.Position;
+        _offset = offset;
         _length = length;
         _remaining = length;
     }
@@ -76,8 +81,8 @@ public class SubStorage2 : AsyncStorage
     {
         return origin switch
         {
-            SeekOrigin.Begin => _startPosition,
-            SeekOrigin.End => _startPosition + _length,
+            SeekOrigin.Begin => _offset,
+            SeekOrigin.End => _offset + _length,
             SeekOrigin.Current => _baseStorage.Position,
             _ => throw new NotSupportedException($"The origin {origin} is not supported.")
         };
@@ -86,16 +91,23 @@ public class SubStorage2 : AsyncStorage
     private long CalculateOffsetForSeek(long originOffset, long offset)
     {
         var newOffset = originOffset + offset;
-        if (newOffset < _startPosition)
+        if (newOffset < _offset)
         {
             throw new ArgumentException("The offset would be before the beginning of the stream.", nameof(offset));
         }
 
-        if (newOffset > _startPosition + _length)
+        if (newOffset > _offset + _length)
         {
             throw new ArgumentException("The offset would be past the end of the stream.", nameof(offset));
         }
 
         return newOffset;
+    }
+
+    protected async override ValueTask DisposeAsyncCore()
+    {
+        await _baseStorage.DisposeAsync();
+
+        await base.DisposeAsyncCore();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LibHac.Tools.FsSystem;
+using Moq;
 using System;
 using System.IO;
 using System.Threading;
@@ -15,8 +16,23 @@ public class SubStorage2Tests
         Assert.Throws<ArgumentException>(() =>
         {
             using var ms = new MemoryStream();
-            _ = new SubStorage2(new StreamStorage2(ms), 1);
+            _ = new SubStorage2(new StreamStorage2(ms), 0, 1);
         });
+    }
+
+    [Fact]
+    public async Task DisposesTheBaseStorage()
+    {
+        Mock<IAsyncStorage> baseStorage = new();
+        
+        baseStorage.Setup(o => o.Position).Returns(0);
+        baseStorage.Setup(o => o.Length).Returns(1);
+        baseStorage.Setup(o => o.DisposeAsync()).Returns(ValueTask.CompletedTask).Verifiable();
+
+        var target = new SubStorage2(baseStorage.Object, 0, 1);
+        await target.DisposeAsync();
+
+        baseStorage.Verify();
     }
 
     [Fact]
@@ -28,7 +44,7 @@ public class SubStorage2Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ]);
         
-        await using var storage = new SubStorage2(new StreamStorage2(ms), 1);
+        await using var storage = new SubStorage2(new StreamStorage2(ms), 0, 1);
 
         var buffer = new byte[16];
         var result = await storage.ReadAsync(buffer, CancellationToken.None);
@@ -54,19 +70,19 @@ public class SubStorage2Tests
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length - offset);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), offset, ms.Length - offset);
             storage.Seek(-1, SeekOrigin.Begin);
         });
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length - offset);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), offset, ms.Length - offset);
             storage.Seek(int.MinValue, SeekOrigin.Current);
         });
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length - offset);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), offset, ms.Length - offset);
             storage.Seek(int.MinValue, SeekOrigin.End);
         });
     }
@@ -82,7 +98,7 @@ public class SubStorage2Tests
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), 0, ms.Length);
             storage.Seek(ms.Length + 1, SeekOrigin.Begin);
         });
 
@@ -91,13 +107,13 @@ public class SubStorage2Tests
 
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new SubStorage2(new StreamStorage2(ms), 1);
+            await using var storage = new SubStorage2(new StreamStorage2(ms),0, 1);
             storage.Seek(2, SeekOrigin.Current);
         });
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new SubStorage2(new StreamStorage2(ms), 1);
+            await using var storage = new SubStorage2(new StreamStorage2(ms),0, 1);
             storage.Seek(1, SeekOrigin.End);
         });
     }
@@ -112,7 +128,7 @@ public class SubStorage2Tests
         ]);
 
         byte[] buffer = new byte[1];
-        await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length);
+        await using var storage = new SubStorage2(new StreamStorage2(ms),0, ms.Length);
 
         // Reposition to the 4th index, and read the value.
         var pos = storage.Seek(4, SeekOrigin.Begin);
@@ -142,7 +158,7 @@ public class SubStorage2Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ]);
 
-        await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length);
+        await using var storage = new SubStorage2(new StreamStorage2(ms),0, ms.Length);
 
         // Read the first value.
         byte[] buffer = new byte[1];
@@ -157,7 +173,7 @@ public class SubStorage2Tests
     {
         await using var ms = new MemoryStream([1]);
 
-        await using var storage = new SubStorage2(new StreamStorage2(ms), 1);
+        await using var storage = new SubStorage2(new StreamStorage2(ms),0, 1);
         storage.Seek(1, SeekOrigin.Begin);
 
         var buffer = new byte[16];

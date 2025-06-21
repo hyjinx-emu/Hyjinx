@@ -9,6 +9,32 @@ namespace LibHac.Tests.Tools.FsSystem;
 public class StreamStorage2Tests
 {
     [Fact]
+    public async Task DoesNotDisposeTheStream()
+    {
+        Mock<Stream> stream = new();
+
+        stream.Setup(o => o.DisposeAsync()).Returns(ValueTask.CompletedTask).Verifiable(Times.Never);
+
+        var target = new StreamStorage2(stream.Object, true);
+        await target.DisposeAsync();
+
+        stream.Verify();
+    }
+    
+    [Fact]
+    public async Task DisposesTheStream()
+    {
+        Mock<Stream> stream = new();
+
+        stream.Setup(o => o.DisposeAsync()).Returns(ValueTask.CompletedTask).Verifiable();
+
+        var target = new StreamStorage2(stream.Object, false);
+        await target.DisposeAsync();
+
+        stream.Verify();
+    }
+
+    [Fact]
     public async Task ReadsTheDataFromBeginning()
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
