@@ -7,7 +7,7 @@ using Xunit;
 
 namespace LibHac.Tests.Tools.FsSystem;
 
-public class StreamStorage2Tests
+public class SubStorage2Tests
 {
     [Fact]
     public void ConstructorGuards()
@@ -15,7 +15,7 @@ public class StreamStorage2Tests
         Assert.Throws<ArgumentException>(() =>
         {
             using var ms = new MemoryStream();
-            _ = new StreamStorage2(ms, 1);
+            _ = new SubStorage2(new StreamStorage2(ms), 1);
         });
     }
 
@@ -28,7 +28,7 @@ public class StreamStorage2Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ]);
         
-        await using var storage = new StreamStorage2(ms, 1);
+        await using var storage = new SubStorage2(new StreamStorage2(ms), 1);
 
         var buffer = new byte[16];
         var result = await storage.ReadAsync(buffer, CancellationToken.None);
@@ -54,19 +54,19 @@ public class StreamStorage2Tests
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new StreamStorage2(ms, ms.Length - offset);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length - offset);
             storage.Seek(-1, SeekOrigin.Begin);
         });
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new StreamStorage2(ms, ms.Length - offset);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length - offset);
             storage.Seek(int.MinValue, SeekOrigin.Current);
         });
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new StreamStorage2(ms, ms.Length - offset);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length - offset);
             storage.Seek(int.MinValue, SeekOrigin.End);
         });
     }
@@ -82,7 +82,7 @@ public class StreamStorage2Tests
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new StreamStorage2(ms, ms.Length);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length);
             storage.Seek(ms.Length + 1, SeekOrigin.Begin);
         });
 
@@ -91,13 +91,13 @@ public class StreamStorage2Tests
 
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new StreamStorage2(ms, 1);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), 1);
             storage.Seek(2, SeekOrigin.Current);
         });
         
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await using var storage = new StreamStorage2(ms, 1);
+            await using var storage = new SubStorage2(new StreamStorage2(ms), 1);
             storage.Seek(1, SeekOrigin.End);
         });
     }
@@ -112,7 +112,7 @@ public class StreamStorage2Tests
         ]);
 
         byte[] buffer = new byte[1];
-        await using var storage = new StreamStorage2(ms, ms.Length);
+        await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length);
 
         // Reposition to the 4th index, and read the value.
         var pos = storage.Seek(4, SeekOrigin.Begin);
@@ -142,7 +142,7 @@ public class StreamStorage2Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ]);
 
-        await using var storage = new StreamStorage2(ms, ms.Length);
+        await using var storage = new SubStorage2(new StreamStorage2(ms), ms.Length);
 
         // Read the first value.
         byte[] buffer = new byte[1];
@@ -157,7 +157,7 @@ public class StreamStorage2Tests
     {
         await using var ms = new MemoryStream([1]);
 
-        await using var storage = new StreamStorage2(ms, 1);
+        await using var storage = new SubStorage2(new StreamStorage2(ms), 1);
         storage.Seek(1, SeekOrigin.Begin);
 
         var buffer = new byte[16];
