@@ -3,7 +3,7 @@ LibHac is a .NET library that reimplements some parts of the Nintendo Switch ope
 
 One of the other main functions of the library is opening and extracting common content file formats used by Horizon.
 
-Most content is imported and exported using a standard `IStorage` interface. This means that reading nested file types and encryptions can easily be done by linking different file readers together.
+Most content is imported and exported using a standard IStorage interface. This means that reading nested file types and encryptions can easily be done by linking different file readers together.
 For example, the files from a title stored on the external SD card can be read or extracted in this way.
 NAX0 Reader -> NCA Reader -> RomFS Reader -> Individual Files
 
@@ -16,5 +16,7 @@ The maintainers of this project do not condone or support any use of this softwa
 
 If any encrypted files are detected, an exception will be thrown indicating an encrypted file is detected and prevent working with the file.
 
-## Attribution
-Originally developed by Alex Barney (aka @thealexbarney) and is a continuation of his works.
+## Credits
+This code was originally developed by Alex Barney (aka @thealexbarney) and is a continuation of his works.
+
+None of this would be possible without his efforts!
