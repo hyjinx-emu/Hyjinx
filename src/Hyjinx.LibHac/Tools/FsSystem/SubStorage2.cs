@@ -30,16 +30,12 @@ public class SubStorage2 : AsyncStorage
     /// <param name="baseStorage">The base storage to wrap.</param>
     /// <param name="offset">The offset of the storage within the stream.</param>
     /// <param name="length">The length of the storage block.</param>
+    /// <exception cref="ArgumentException"><paramref name="offset"/> is less than or equal to zero, <paramref name="length"/> is equal to zero, or the the position and length provided exceeds the length of <paramref name="baseStorage"/> available.</exception>
     public SubStorage2(IAsyncStorage baseStorage, long offset, long length)
     {
         if (offset < 0)
         {
             throw new ArgumentException("The value must be greater than or equal to zero.", nameof(offset));
-        }
-        
-        if (baseStorage.Position + length > baseStorage.Length)
-        {
-            throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(length));
         }
 
         if (length == 0)
@@ -47,6 +43,11 @@ public class SubStorage2 : AsyncStorage
             throw new ArgumentException("The length must be greater than zero.", nameof(length));
         }
 
+        if (baseStorage.Position + length > baseStorage.Length)
+        {
+            throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(length));
+        }
+        
         _baseStorage = baseStorage;
         _offset = offset;
         _length = length;
