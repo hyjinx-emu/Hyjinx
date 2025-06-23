@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace LibHac.Common;
 
+[Obsolete($"This type is no longer supported, please use the {nameof(RentedArray2<T>)} instead.")]
 public readonly ref struct RentedArray<T>
 {
     // It's faster to create new smaller arrays than rent them
