@@ -77,38 +77,26 @@ public class IntegrityVerificationStorage2 : SubStorage2
 
     private async ValueTask<Validity> CheckSectorValidityAsync(int sectorIndex, CancellationToken cancellationToken)
     {
-        // Grab the starting position so we can move back there if necessary.
+        // Grab the starting position so we can move back there before exiting the method.
         var position = Position;
         
         try
         {
-            var buffer = ArrayPool<byte>.Shared.Rent(_sectorSize);
-        
-            try
-            {
-                var expectedHash = ArrayPool<byte>.Shared.Rent(Sha256.DigestSize);
-
-                try
-                {
-                    // Position the hash storage to read the hash sector.
-                    _hashStorage.Seek(sectorIndex * Sha256.DigestSize, SeekOrigin.Begin);
-                    await _hashStorage.ReadAsync(expectedHash, cancellationToken);
-                
-                    // Position the stream and read the data sector.
-                    Seek(sectorIndex * _sectorSize, SeekOrigin.Begin);
-                    await base.ReadAsync(buffer, cancellationToken);
+            using var dataBuffer = new RentedArray2<byte>(_sectorSize);
+            using var expectedBuffer = new RentedArray2<byte>(Sha256.DigestSize);
             
-                    return CompareHashes(buffer.AsSpan(0, _sectorSize), expectedHash);
-                }
-                finally
-                {
-                    ArrayPool<byte>.Shared.Return(expectedHash);
-                }
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(buffer);
-            }
+            var buffer = dataBuffer.Memory;
+            var expectedHash = expectedBuffer.Memory;
+
+            // Position the hash storage to read the hash sector.
+            _hashStorage.Seek(sectorIndex * Sha256.DigestSize, SeekOrigin.Begin);
+            await _hashStorage.ReadAsync(expectedHash, cancellationToken);
+        
+            // Position the stream and read the data sector.
+            Seek(sectorIndex * _sectorSize, SeekOrigin.Begin);
+            await base.ReadAsync(buffer, cancellationToken);
+    
+            return CompareHashes(buffer, expectedHash);
         }
         finally
         {
@@ -123,12 +111,12 @@ public class IntegrityVerificationStorage2 : SubStorage2
     /// <param name="buffer">The buffer whose data to be hashed.</param>
     /// <param name="expected">The expected hash.</param>
     /// <returns><see cref="Validity.Valid"/> if the hashes match, otherwise <see cref="Validity.Invalid"/> if the hashes do not match.</returns>
-    private static Validity CompareHashes(Span<byte> buffer, Span<byte> expected)
+    private static Validity CompareHashes(Memory<byte> buffer, Memory<byte> expected)
     {
         Span<byte> hash = stackalloc byte[Sha256.DigestSize];
-        Sha256.GenerateSha256Hash(buffer, hash);
+        Sha256.GenerateSha256Hash(buffer.Span, hash);
 
-        return Utilities.SpansEqual(expected, hash) ? 
+        return Utilities.SpansEqual(expected.Span, hash) ? 
             Validity.Valid : Validity.Invalid;
     }
 }
