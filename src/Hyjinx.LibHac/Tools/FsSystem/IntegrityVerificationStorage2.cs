@@ -98,7 +98,7 @@ public class IntegrityVerificationStorage2 : SubStorage2
                     Seek(sectorIndex * _sectorSize, SeekOrigin.Begin);
                     await base.ReadAsync(buffer, cancellationToken);
             
-                    return VerifySectorCore(buffer, expectedHash);
+                    return CompareHashes(buffer.AsSpan(0, _sectorSize), expectedHash);
                 }
                 finally
                 {
@@ -117,7 +117,13 @@ public class IntegrityVerificationStorage2 : SubStorage2
         }
     }
 
-    private static Validity VerifySectorCore(Span<byte> buffer, Span<byte> expected)
+    /// <summary>
+    /// Compares hashes for equality.
+    /// </summary>
+    /// <param name="buffer">The buffer whose data to be hashed.</param>
+    /// <param name="expected">The expected hash.</param>
+    /// <returns><see cref="Validity.Valid"/> if the hashes match, otherwise <see cref="Validity.Invalid"/> if the hashes do not match.</returns>
+    private static Validity CompareHashes(Span<byte> buffer, Span<byte> expected)
     {
         Span<byte> hash = stackalloc byte[Sha256.DigestSize];
         Sha256.GenerateSha256Hash(buffer, hash);
