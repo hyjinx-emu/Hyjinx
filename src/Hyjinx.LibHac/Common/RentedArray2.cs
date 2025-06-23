@@ -9,28 +9,42 @@ namespace LibHac.Common;
 /// </summary>
 public sealed class RentedArray2<T> : IDisposable
 {
+    /// <summary>
+    /// The threshold upon which arrays are rented when requested, rather than created directly.
+    /// </summary>
+    private const int RentalThreshold = 512;
+    
     private readonly ArrayPool<T> _pool;
     private readonly T[] _buffer;
     private readonly int _size;
+    private readonly bool _rented;
+    private readonly bool _clearArray;
     
     /// <summary>
     /// Initializes a new instance of the class.
     /// </summary>
     /// <param name="size">The size of the buffer.</param>
-    public RentedArray2(int size)
-        : this(size, ArrayPool<T>.Shared)
+    /// <param name="clearArray">true if the array should be cleared when returned, otherwise false. This is typically true when interfacing with critical data, such as decryption.</param>
+    public RentedArray2(int size, bool clearArray = false)
+        : this(size, clearArray, ArrayPool<T>.Shared)
     { }
-
-    /// <summary>
-    /// Initializes a new instance of the class.
-    /// </summary>
-    /// <param name="size">The size of the buffer.</param>
-    /// <param name="pool">The pool which will own the buffer.</param>
-    private RentedArray2(int size, ArrayPool<T> pool)
+    
+    private RentedArray2(int size, bool clearArray, ArrayPool<T> pool)
     {
-        _buffer = pool.Rent(size);
-        _pool = pool;
         _size = size;
+        _clearArray = clearArray;
+        _pool = pool;
+
+        if (_size > RentalThreshold)
+        {
+            _buffer = pool.Rent(size);
+            _rented = true;
+        }
+        else
+        {
+            _buffer = new T[size];
+            _rented = false;
+        }
     }
 
     /// <summary>
@@ -73,7 +87,17 @@ public sealed class RentedArray2<T> : IDisposable
     {
         if (disposing)
         {
-            _pool.Return(_buffer);
+            if (_rented)
+            {
+                _pool.Return(_buffer, _clearArray);
+            }
+            else if (_clearArray)
+            {
+                for (var i = 0; i < _buffer.Length; i++)
+                {
+                    _buffer[i] = default!;
+                }
+            }
         }
     }
 }
