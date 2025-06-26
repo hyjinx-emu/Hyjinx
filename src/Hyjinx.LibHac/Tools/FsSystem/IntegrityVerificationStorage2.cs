@@ -2,7 +2,6 @@
 using LibHac.Crypto;
 using LibHac.Util;
 using System;
-using System.Buffers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +13,7 @@ namespace LibHac.Tools.FsSystem;
 /// </summary>
 public class IntegrityVerificationStorage2 : SubStorage2
 {
+    private readonly int _level;
     private readonly IAsyncStorage _hashStorage;
     private readonly IntegrityCheckLevel _integrityCheckLevel;
     private readonly Validity[]? _sectors;
@@ -22,6 +22,7 @@ public class IntegrityVerificationStorage2 : SubStorage2
     /// <summary>
     /// Initializes an instance of the class.
     /// </summary>
+    /// <param name="level">The zero-based level of the storage.</param>
     /// <param name="dataStorage">The data storage whose integrity will be verified.</param>
     /// <param name="hashStorage">The hash storage containing the integrity verification data for the <paramref name="dataStorage"/> provided.</param>
     /// <param name="integrityCheckLevel">The verification level to use while reading data from the storage.</param>
@@ -29,7 +30,7 @@ public class IntegrityVerificationStorage2 : SubStorage2
     /// <param name="length">The length of the storage block.</param>
     /// <param name="sectorSize">The size of the sector.</param>
     /// <exception cref="ArgumentException"><paramref name="sectorSize"/> is less than or equal to zero.</exception>
-    public IntegrityVerificationStorage2(IAsyncStorage dataStorage, IAsyncStorage hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
+    public IntegrityVerificationStorage2(int level, IAsyncStorage dataStorage, IAsyncStorage hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
         : base(dataStorage, offset, length)
     {
         if (sectorSize <= 0)
@@ -37,6 +38,7 @@ public class IntegrityVerificationStorage2 : SubStorage2
             throw new ArgumentException("The value must be greater than zero.", nameof(sectorSize));
         }
 
+        _level = level;
         _hashStorage = hashStorage;
         _integrityCheckLevel = integrityCheckLevel;
         _sectorSize = sectorSize;
@@ -67,7 +69,7 @@ public class IntegrityVerificationStorage2 : SubStorage2
 
                 if (validity == Validity.Invalid && _integrityCheckLevel == IntegrityCheckLevel.ErrorOnInvalid)
                 {
-                    throw new InvalidSectorDetectedException("The sector was invalid.", sectorIndex);
+                    throw new InvalidSectorDetectedException("The sector was invalid.", _level, sectorIndex);
                 }
             }
         }
@@ -91,11 +93,16 @@ public class IntegrityVerificationStorage2 : SubStorage2
             // Position the hash storage to read the hash sector.
             _hashStorage.Seek(sectorIndex * Sha256.DigestSize, SeekOrigin.Begin);
             await _hashStorage.ReadAsync(expectedHash, cancellationToken);
-        
+
             // Position the stream and read the data sector.
             Seek(sectorIndex * _sectorSize, SeekOrigin.Begin);
-            await base.ReadAsync(buffer, cancellationToken);
-    
+            
+            var bytesRead = await base.ReadAsync(buffer, cancellationToken);
+            if (bytesRead < buffer.Length)
+            {
+                buffer[bytesRead..].Span.Clear();
+            }
+            
             return CompareHashes(buffer, expectedHash);
         }
         finally
