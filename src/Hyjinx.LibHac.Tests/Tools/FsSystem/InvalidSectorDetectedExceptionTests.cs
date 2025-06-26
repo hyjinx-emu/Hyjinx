@@ -9,11 +9,13 @@ public class InvalidSectorDetectedExceptionTests
     public void ConstructorWorks()
     {
         var message = "Hello world";
+        var level = 1;
         var sectorIndex = 1;
 
-        var target = new InvalidSectorDetectedException(message, sectorIndex);
+        var target = new InvalidSectorDetectedException(message, level, sectorIndex);
         
         Assert.Equal(message, target.Message);
+        Assert.Equal(level, target.Level);
         Assert.Equal(sectorIndex, target.SectorIndex);
     }
 }
