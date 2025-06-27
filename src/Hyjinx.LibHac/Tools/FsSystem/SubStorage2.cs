@@ -43,7 +43,7 @@ public class SubStorage2 : AsyncStorage
             throw new ArgumentException("The length must be greater than zero.", nameof(length));
         }
 
-        if (baseStorage.Position + length > baseStorage.Length)
+        if (offset + length > baseStorage.Length)
         {
             throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(length));
         }
@@ -73,9 +73,10 @@ public class SubStorage2 : AsyncStorage
         var originOffset = CalculateOriginOffsetForSeek(origin);
         var newOffset = CalculateOffsetForSeek(originOffset, offset);
         
-        _remaining = _length - offset;
+        _remaining = _length - newOffset;
         
-        return _baseStorage.Seek(newOffset, origin);
+        _baseStorage.Seek(newOffset, SeekOrigin.Begin);
+        return newOffset;
     }
     
     private long CalculateOriginOffsetForSeek(SeekOrigin origin)
