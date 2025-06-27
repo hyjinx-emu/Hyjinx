@@ -24,6 +24,16 @@ public class StreamStorage2 : AsyncStorage
     /// <param name="leaveOpen"><c>true</c> if the stream should be left open upon dispose, otherwise <c>false</c>.</param>
     public StreamStorage2(Stream stream, bool leaveOpen = true)
     {
+        if (!stream.CanRead)
+        {
+            throw new ArgumentException("The stream must support read.", nameof(stream));
+        }
+        
+        if (!stream.CanSeek)
+        {
+            throw new ArgumentException("The stream must support seek.", nameof(stream));
+        }
+        
         _stream = stream;
         _leaveOpen = leaveOpen;
     }
