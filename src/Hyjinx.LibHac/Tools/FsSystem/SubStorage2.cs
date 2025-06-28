@@ -14,31 +14,36 @@ public class SubStorage2 : AsyncStorage
     private readonly IAsyncStorage _baseStorage;
     private readonly long _offset;
     private readonly long _length;
-
-    /// <summary>
-    /// The number of bytes remaining within the section.
-    /// </summary>
-    private long _remaining;
+    private long _position;
 
     public override long Length => _length;
     
-    public override long Position => _length - _remaining;
+    public override long Position => _position;
+
+    protected SubStorage2(IAsyncStorage baseStorage, long offset, long length)
+    {
+        _baseStorage = baseStorage;
+        _offset = offset;
+        _length = length;
+        _position = 0;
+    }
 
     /// <summary>
-    /// Initializes an instance of the class.
+    /// Creates a new instance.
     /// </summary>
     /// <param name="baseStorage">The base storage to wrap.</param>
     /// <param name="offset">The offset of the storage within the stream.</param>
     /// <param name="length">The length of the storage block.</param>
     /// <exception cref="ArgumentException"><paramref name="offset"/> is less than or equal to zero, <paramref name="length"/> is equal to zero, or the the position and length provided exceeds the length of <paramref name="baseStorage"/> available.</exception>
-    public SubStorage2(IAsyncStorage baseStorage, long offset, long length)
+    /// <returns>The new <see cref="SubStorage2"/> instance.</returns>
+    public static SubStorage2 Create(IAsyncStorage baseStorage, long offset, long length)
     {
         if (offset < 0)
         {
             throw new ArgumentException("The value must be greater than or equal to zero.", nameof(offset));
         }
 
-        if (length == 0)
+        if (length <= 0)
         {
             throw new ArgumentException("The length must be greater than zero.", nameof(length));
         }
@@ -47,36 +52,36 @@ public class SubStorage2 : AsyncStorage
         {
             throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(length));
         }
+
+        var result = new SubStorage2(baseStorage, offset, length);
+        result.Seek(0, SeekOrigin.Begin);
         
-        _baseStorage = baseStorage;
-        _offset = offset;
-        _length = length;
-        _remaining = length;
+        return result;
     }
     
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        var remaining = (int)Math.Min(_remaining, buffer.Length);
+        var remaining = (int)Math.Min(_length - _position, buffer.Length);
         if (remaining == 0)
         {
             return 0;
         }
         
-        var result = await _baseStorage.ReadAsync(buffer[..remaining], cancellationToken);
-        _remaining -= result;
-
-        return result;
+        var bytesRead = await _baseStorage.ReadAsync(buffer[..remaining], cancellationToken);
+        _position += bytesRead;
+        
+        return bytesRead;
     }
     
     public override long Seek(long offset, SeekOrigin origin)
     {
         var originOffset = CalculateOriginOffsetForSeek(origin);
         var newOffset = CalculateOffsetForSeek(originOffset, offset);
-        
-        _remaining = _length - newOffset;
+
+        _position = newOffset - _offset;
         
         _baseStorage.Seek(newOffset, SeekOrigin.Begin);
-        return newOffset;
+        return _position;
     }
     
     private long CalculateOriginOffsetForSeek(SeekOrigin origin)

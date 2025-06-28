@@ -22,8 +22,22 @@ public class MemoryStorage2 : AsyncStorage
     /// </summary>
     /// <param name="data">The data for the storage.</param>
     public MemoryStorage2(Span<byte> data)
+        : this(data.ToArray()) { }
+
+    /// <summary>
+    /// Initializes a new instance of the class.
+    /// </summary>
+    /// <param name="data">The data for the storage.</param>
+    public MemoryStorage2(Memory<byte> data)
+        : this(data.ToArray()) { }
+
+    /// <summary>
+    /// Initializes a new instance of the class.
+    /// </summary>
+    /// <param name="data">The data for the storage.</param>
+    public MemoryStorage2(byte[] data)
     {
-        _memoryStream = new MemoryStream(data.ToArray());
+        _memoryStream = new MemoryStream(data);
     }
     
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
