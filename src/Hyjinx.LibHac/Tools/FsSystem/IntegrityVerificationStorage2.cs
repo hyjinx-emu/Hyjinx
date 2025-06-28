@@ -91,35 +91,38 @@ public class IntegrityVerificationStorage2 : SubStorage2
 
     private async ValueTask<Validity> CheckSectorValidityAsync(int sectorIndex, CancellationToken cancellationToken)
     {
-        // Grab the starting position so we can move back there before exiting the method.
+        // Grab the starting position.
         var position = Position;
-        
+
         try
         {
-            using var dataBuffer = new RentedArray2<byte>(_sectorSize);
             using var expectedBuffer = new RentedArray2<byte>(Sha256.DigestSize);
-            
-            var buffer = dataBuffer.Memory;
             var expectedHash = expectedBuffer.Memory;
 
-            // Position the hash storage to read the hash sector.
-            _hashStorage.Seek(sectorIndex * Sha256.DigestSize, SeekOrigin.Begin);
-            await _hashStorage.ReadAsync(expectedHash, cancellationToken);
-
-            // Position the stream and read the data sector.
+            // Read the expected hash from the file.
+            var bytesRead = await _hashStorage.ReadOnceAsync(sectorIndex * Sha256.DigestSize, expectedHash, cancellationToken);
+            if (bytesRead < Sha256.DigestSize)
+            {
+                throw new InvalidSectorDetectedException("The expected hash was not the correct size.", _level, sectorIndex);
+            }
+        
+            // Position the stream and read the entire data sector.
             Seek(sectorIndex * _sectorSize, SeekOrigin.Begin);
-            
-            var bytesRead = await base.ReadAsync(buffer, cancellationToken);
+
+            using var dataBuffer = new RentedArray2<byte>(_sectorSize);
+            var buffer = dataBuffer.Memory;
+        
+            bytesRead = await base.ReadAsync(buffer, cancellationToken);
             if (bytesRead < buffer.Length)
             {
                 buffer[bytesRead..].Span.Clear();
             }
-            
+
             return CompareHashes(buffer, expectedHash);
         }
         finally
         {
-            // Make sure the stream is repositioned where it started at upon leaving the method.
+            // Ensure the storage is placed back into the correct state.
             Seek(position, SeekOrigin.Begin);
         }
     }
