@@ -100,6 +100,7 @@ public class IntegrityVerificationStorage2 : SubStorage2
             var bytesRead = await base.ReadAsync(buffer, cancellationToken);
             if (bytesRead < buffer.Length)
             {
+                // There are occasions when the data within the sector is less than the sector size.
                 buffer[bytesRead..].Span.Clear();
             }
             
