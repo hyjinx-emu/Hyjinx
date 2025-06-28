@@ -17,12 +17,20 @@ public class StreamStorage2 : AsyncStorage
 
     public override long Position => _stream.Position;
 
+    protected StreamStorage2(Stream stream, bool leaveOpen = true)
+    {
+        _stream = stream;
+        _leaveOpen = leaveOpen;
+    }
+
     /// <summary>
-    /// Initializes an instance of the class.
+    /// Creates a new instance.
     /// </summary>
     /// <param name="stream">The stream to wrap.</param>
     /// <param name="leaveOpen"><c>true</c> if the stream should be left open upon dispose, otherwise <c>false</c>.</param>
-    public StreamStorage2(Stream stream, bool leaveOpen = true)
+    /// <exception cref="ArgumentException"><paramref name="stream"/> must support read and seek operations.</exception>
+    /// <returns>The new <see cref="SubStorage2"/> instance.</returns>
+    public static StreamStorage2 Create(Stream stream, bool leaveOpen = true)
     {
         if (!stream.CanRead)
         {
@@ -33,9 +41,11 @@ public class StreamStorage2 : AsyncStorage
         {
             throw new ArgumentException("The stream must support seek.", nameof(stream));
         }
+
+        var result = new StreamStorage2(stream, leaveOpen);
+        result.Seek(0, SeekOrigin.Begin);
         
-        _stream = stream;
-        _leaveOpen = leaveOpen;
+        return result;
     }
     
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)

@@ -14,12 +14,12 @@ public class StreamStorage2Tests
         Mock<Stream> stream = new();
         stream.Setup(o => o.CanRead).Returns(false);
 
-        Assert.Throws<ArgumentException>(() => _ = new StreamStorage2(stream.Object));
+        Assert.Throws<ArgumentException>(() => _ = StreamStorage2.Create(stream.Object));
         
         stream.Setup(o => o.CanRead).Returns(true);
         stream.Setup(o => o.CanSeek).Returns(false);
         
-        Assert.Throws<ArgumentException>(() => _ = new StreamStorage2(stream.Object));
+        Assert.Throws<ArgumentException>(() => _ = StreamStorage2.Create(stream.Object));
     }
     
     [Fact]
@@ -30,7 +30,7 @@ public class StreamStorage2Tests
         stream.Setup(o => o.CanSeek).Returns(true);
         stream.Setup(o => o.DisposeAsync()).Returns(ValueTask.CompletedTask).Verifiable(Times.Never);
 
-        var target = new StreamStorage2(stream.Object);
+        var target = StreamStorage2.Create(stream.Object);
         await target.DisposeAsync();
 
         stream.Verify();
@@ -44,7 +44,7 @@ public class StreamStorage2Tests
         stream.Setup(o => o.CanSeek).Returns(true);
         stream.Setup(o => o.DisposeAsync()).Returns(ValueTask.CompletedTask).Verifiable();
 
-        var target = new StreamStorage2(stream.Object, false);
+        var target = StreamStorage2.Create(stream.Object, false);
         await target.DisposeAsync();
 
         stream.Verify();
@@ -55,7 +55,7 @@ public class StreamStorage2Tests
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-        var storage = new StreamStorage2(ms);
+        var storage = StreamStorage2.Create(ms);
         
         var buffer = new Memory<byte>(new byte[10]);
         var result = await storage.ReadAsync(buffer);
@@ -72,7 +72,7 @@ public class StreamStorage2Tests
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-        var storage = new StreamStorage2(ms);
+        var storage = StreamStorage2.Create(ms);
         storage.Seek(5, SeekOrigin.Begin);
         
         var buffer = new Memory<byte>(new byte[10]);
@@ -90,7 +90,7 @@ public class StreamStorage2Tests
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-        var storage = new StreamStorage2(ms);
+        var storage = StreamStorage2.Create(ms);
         storage.Seek(9, SeekOrigin.Begin);
         
         var buffer = new Memory<byte>(new byte[10]);
@@ -107,7 +107,7 @@ public class StreamStorage2Tests
     public void SeekUpdatesUnderlyingStreamPosition()
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
-        var target = new StreamStorage2(ms);
+        var target = StreamStorage2.Create(ms);
         
         var position = target.Seek(1, SeekOrigin.Begin);
         Assert.Equal(1, ms.Position);
@@ -131,7 +131,7 @@ public class StreamStorage2Tests
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-        var target = new StreamStorage2(ms);
+        var target = StreamStorage2.Create(ms);
         ms.Seek(1, SeekOrigin.Begin);
         Assert.Equal(1, target.Position);
         
