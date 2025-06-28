@@ -17,7 +17,7 @@ public class MemoryStorage2Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ];
 
-        await using var target = new MemoryStorage2(data);
+        await using var target = MemoryStorage2.Create(data);
         
         target.Seek(1, SeekOrigin.Begin);
         
@@ -40,7 +40,7 @@ public class MemoryStorage2Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ];
 
-        await using var target = new MemoryStorage2(data);
+        await using var target = MemoryStorage2.Create(data);
 
         var buffer = new Memory<byte>(new byte[32]);
         var result = await target.ReadAsync(buffer);

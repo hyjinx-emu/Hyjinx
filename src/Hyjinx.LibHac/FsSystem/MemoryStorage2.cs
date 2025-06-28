@@ -16,28 +16,45 @@ public class MemoryStorage2 : AsyncStorage
     public override long Length => _memoryStream.Length;
     
     public override long Position => _memoryStream.Position;
-
-    /// <summary>
-    /// Initializes a new instance of the class.
-    /// </summary>
-    /// <param name="data">The data for the storage.</param>
-    public MemoryStorage2(Span<byte> data)
-        : this(data.ToArray()) { }
-
-    /// <summary>
-    /// Initializes a new instance of the class.
-    /// </summary>
-    /// <param name="data">The data for the storage.</param>
-    public MemoryStorage2(Memory<byte> data)
-        : this(data.ToArray()) { }
-
-    /// <summary>
-    /// Initializes a new instance of the class.
-    /// </summary>
-    /// <param name="data">The data for the storage.</param>
-    public MemoryStorage2(byte[] data)
+    
+    private MemoryStorage2(byte[] data)
     {
         _memoryStream = new MemoryStream(data);
+    }
+
+    /// <summary>
+    /// Creates a new instance.
+    /// </summary>
+    /// <param name="data">The data for the storage.</param>
+    /// <returns>The new instance.</returns>
+    public static MemoryStorage2 Create(Span<byte> data)
+    {
+        return Create(data.ToArray());
+    }
+    
+    /// <summary>
+    /// Creates a new instance.
+    /// </summary>
+    /// <param name="data">The data for the storage.</param>
+    /// <returns>The new instance.</returns>
+    public static MemoryStorage2 Create(Memory<byte> data)
+    {
+        return Create(data.ToArray());
+    }
+    
+    /// <summary>
+    /// Creates a new instance.
+    /// </summary>
+    /// <param name="data">The data for the storage.</param>
+    /// <returns>The new instance.</returns>
+    public static MemoryStorage2 Create(byte[] data)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+        
+        var result = new MemoryStorage2(data);
+        result.Seek(0, SeekOrigin.Begin);
+
+        return result;
     }
     
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)

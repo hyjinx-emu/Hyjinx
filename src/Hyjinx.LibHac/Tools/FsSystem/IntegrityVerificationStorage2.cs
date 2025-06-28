@@ -19,8 +19,18 @@ public class IntegrityVerificationStorage2 : SubStorage2
     private readonly Validity[]? _sectors;
     private readonly int _sectorSize;
     
+    private IntegrityVerificationStorage2(int level, IAsyncStorage dataStorage, IAsyncStorage hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize, Validity[]? sectors)
+        : base(dataStorage, offset, length)
+    {
+        _level = level;
+        _hashStorage = hashStorage;
+        _integrityCheckLevel = integrityCheckLevel;
+        _sectorSize = sectorSize;
+        _sectors = sectors;
+    }
+
     /// <summary>
-    /// Initializes an instance of the class.
+    /// Creates an instance.
     /// </summary>
     /// <param name="level">The zero-based level of the storage.</param>
     /// <param name="dataStorage">The data storage whose integrity will be verified.</param>
@@ -30,31 +40,33 @@ public class IntegrityVerificationStorage2 : SubStorage2
     /// <param name="length">The length of the storage block.</param>
     /// <param name="sectorSize">The size of the sector.</param>
     /// <exception cref="ArgumentException"><paramref name="sectorSize"/> is less than or equal to zero.</exception>
-    public IntegrityVerificationStorage2(int level, IAsyncStorage dataStorage, IAsyncStorage hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
-        : base(dataStorage, offset, length)
+    public static IntegrityVerificationStorage2 Create(int level, IAsyncStorage dataStorage, IAsyncStorage hashStorage,
+        IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
     {
         if (sectorSize <= 0)
         {
             throw new ArgumentException("The value must be greater than zero.", nameof(sectorSize));
         }
 
-        _level = level;
-        _hashStorage = hashStorage;
-        _integrityCheckLevel = integrityCheckLevel;
-        _sectorSize = sectorSize;
-
+        Validity[]? sectors = null;
         if (integrityCheckLevel != IntegrityCheckLevel.None)
         {
             // Only initialize the sector validation checks if enabled to reduce memory consumption.
             var sectorCount = BitUtil.DivideUp(length, sectorSize);
             
-            _sectors = new Validity[sectorCount];
+            sectors = new Validity[sectorCount];
 
             for (var i = 0; i < sectorCount; i++)
             {
-                _sectors[i] = Validity.Unchecked;
+                sectors[i] = Validity.Unchecked;
             }
         }
+
+        var result = new IntegrityVerificationStorage2(level, dataStorage, hashStorage,
+            integrityCheckLevel, offset, length, sectorSize, sectors);
+        
+        result.Seek(0, SeekOrigin.Begin);
+        return result;
     }
 
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)

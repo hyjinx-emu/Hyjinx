@@ -13,23 +13,25 @@ public class SubStorage2Tests
     [Fact]
     public void ConstructorGuards()
     {
+        var baseStorage = MemoryStorage2.Create([]);
+        
         // Throws an exception when offset is negative.
-        Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(new MemoryStorage2([]), -1, 1));
+        Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(baseStorage, -1, 1));
         
         // Throws an exception when length is negative.
-        Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(new MemoryStorage2([]), 0, -1));
+        Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(baseStorage, 0, -1));
         
         // Throws an exception when length is zero.
-        Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(new MemoryStorage2([]), 0, 0));
+        Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(baseStorage, 0, 0));
         
         // Throws an exception when window exceeds the capacity of the base storage.
-        Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(new MemoryStorage2([]), 0, 1));
+        Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(baseStorage, 0, 1));
     }
 
     [Fact]
     public async Task InitializesCorrectlyWithOffsets()
     {
-        await using var target = SubStorage2.Create(new MemoryStorage2(
+        await using var target = SubStorage2.Create(MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -42,7 +44,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task ReadsTheBytesAsExpected()
     {
-        var ms = new MemoryStorage2(
+        var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -63,7 +65,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task ReadsTheBytesFromOffsetAsExpected()
     {
-        var ms = new MemoryStorage2(
+        var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -99,7 +101,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task CannotReadPastTheEnd()
     {
-        await using var ms = new MemoryStorage2(
+        await using var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -120,7 +122,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task ThrowsAnExceptionWhenSeekingBeforeTheStartOffsetWithBegin()
     {
-        await using var ms = new MemoryStorage2(
+        await using var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -138,7 +140,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task ThrowsAnExceptionWhenSeekingBeforeTheStartOffsetWithCurrent()
     {
-        await using var ms = new MemoryStorage2(
+        await using var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -156,7 +158,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task ThrowsAnExceptionWhenSeekingBeforeTheStartOffsetWithEnd()
     {
-        await using var ms = new MemoryStorage2(
+        await using var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -174,7 +176,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task ThrowsAnExceptionWhenSeekingAfterTheEndFromBegin()
     {
-        await using var ms = new MemoryStorage2(
+        await using var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -190,7 +192,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task ThrowsAnExceptionWhenSeekingAfterTheEndFromCurrent()
     {
-        await using var ms = new MemoryStorage2(
+        await using var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -206,7 +208,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task ThrowsAnExceptionWhenSeekingAfterTheEndFromEnd()
     {
-        await using var ms = new MemoryStorage2(
+        await using var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -222,7 +224,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task SeeksTheStreamFromTheBeginningAsExpected()
     {
-        await using var ms = new MemoryStorage2(
+        await using var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -267,7 +269,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task SeeksTheStreamFromTheEndAsExpected()
     {
-        await using var ms = new MemoryStorage2(
+        await using var ms = MemoryStorage2.Create(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
@@ -306,7 +308,7 @@ public class SubStorage2Tests
     [Fact]
     public async Task ReadAtEndOfStreamReturnsZero()
     {
-        await using var ms = new MemoryStorage2([1]);
+        await using var ms = MemoryStorage2.Create([1]);
 
         await using var target = SubStorage2.Create(ms, 0, 1);
         target.Seek(1, SeekOrigin.Begin);
