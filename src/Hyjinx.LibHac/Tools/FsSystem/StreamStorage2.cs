@@ -17,7 +17,7 @@ public class StreamStorage2 : AsyncStorage
 
     public override long Position => _stream.Position;
 
-    protected StreamStorage2(Stream stream, bool leaveOpen = true)
+    private StreamStorage2(Stream stream, bool leaveOpen = true)
     {
         _stream = stream;
         _leaveOpen = leaveOpen;

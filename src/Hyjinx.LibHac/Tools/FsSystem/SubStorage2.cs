@@ -20,7 +20,7 @@ public class SubStorage2 : AsyncStorage
     
     public override long Position => _position;
 
-    protected SubStorage2(IAsyncStorage baseStorage, long offset, long length)
+    private SubStorage2(IAsyncStorage baseStorage, long offset, long length)
     {
         _baseStorage = baseStorage;
         _offset = offset;

@@ -11,6 +11,18 @@ namespace LibHac.Tools.FsSystem;
 public static class AsyncStorageExtensions
 {
     /// <summary>
+    /// Creates a new slice of storage.
+    /// </summary>
+    /// <param name="storage">The storage.</param>
+    /// <param name="offset">The zero-index offset within the storage.</param>
+    /// <param name="length">The length of data within the storage section.</param>
+    /// <returns>The new storage slice.</returns>
+    public static IAsyncStorage Slice(this IAsyncStorage storage, long offset, long length)
+    {
+        return SubStorage2.Create(storage, offset, length);
+    }
+    
+    /// <summary>
     /// Reads the data once.
     /// </summary>
     /// <remarks><b>CAUTION! </b>This method will cause random access to the underlying storage as the position is being reset after use.</remarks>
@@ -26,10 +38,8 @@ public static class AsyncStorageExtensions
         
         try
         {
-            if (offset != storage.Position)
-            {
-                storage.Seek(offset, SeekOrigin.Begin);
-            }
+            // Do the seek, but do not check position in case the underlying storage has to be repositioned.
+            storage.Seek(offset, SeekOrigin.Begin);
 
             return await storage.ReadAsync(buffer, cancellationToken);
         }
