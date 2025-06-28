@@ -26,7 +26,10 @@ public static class AsyncStorageExtensions
         
         try
         {
-            storage.Seek(offset, SeekOrigin.Begin);
+            if (offset != storage.Position)
+            {
+                storage.Seek(offset, SeekOrigin.Begin);
+            }
 
             return await storage.ReadAsync(buffer, cancellationToken);
         }
