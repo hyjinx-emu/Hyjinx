@@ -46,7 +46,7 @@ internal struct ScopedStorageLayoutTypeSetter : IDisposable
 /// This is used to determine which storage speed emulation parameters to use for the current thread.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-internal class StorageLayoutTypeSetStorage : IStorage
+internal class StorageLayoutTypeSetStorage : Storage
 {
     private SharedRef<IStorage> _baseStorage;
     private StorageLayoutType _storageFlag;

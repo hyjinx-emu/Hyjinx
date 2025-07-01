@@ -5,7 +5,7 @@ using System.IO;
 
 namespace LibHac.Tools.FsSystem.Save;
 
-public class AllocationTableStorage : IStorage
+public class AllocationTableStorage : Storage
 {
     private IStorage BaseStorage { get; }
     private int BlockSize { get; }

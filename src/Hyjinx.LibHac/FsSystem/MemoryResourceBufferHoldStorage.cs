@@ -10,7 +10,7 @@ namespace LibHac.FsSystem;
 /// when the <see cref="MemoryResourceBufferHoldStorage"/> is disposed.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-public class MemoryResourceBufferHoldStorage : IStorage
+public class MemoryResourceBufferHoldStorage : Storage
 {
     private SharedRef<IStorage> _storage;
     private MemoryResource _memoryResource;

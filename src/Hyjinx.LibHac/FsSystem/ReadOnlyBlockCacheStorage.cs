@@ -16,7 +16,7 @@ namespace LibHac.FsSystem;
 /// be passed down to the base <see cref="IStorage"/> to be handled without caching.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-public class ReadOnlyBlockCacheStorage : IStorage
+public class ReadOnlyBlockCacheStorage : Storage
 {
     private SdkMutexType _mutex;
     private BlockCache _blockCache;

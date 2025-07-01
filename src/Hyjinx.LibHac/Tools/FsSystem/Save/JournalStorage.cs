@@ -6,7 +6,7 @@ using System.IO;
 
 namespace LibHac.Tools.FsSystem.Save;
 
-public class JournalStorage : IStorage
+public class JournalStorage : Storage
 {
     private IStorage BaseStorage { get; }
     private IStorage HeaderStorage { get; }

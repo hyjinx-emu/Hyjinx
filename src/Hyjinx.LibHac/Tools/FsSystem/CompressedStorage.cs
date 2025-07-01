@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace LibHac.Tools.FsSystem;
 
-internal class CompressedStorage : IStorage
+internal class CompressedStorage : Storage
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Entry

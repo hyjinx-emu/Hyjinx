@@ -114,7 +114,7 @@ public struct ValueSubStorage : IDisposable
         if (destination.Length == 0)
             return Result.Success;
 
-        Result res = IStorage.CheckAccessRange(offset, destination.Length, _size);
+        Result res = Storage.CheckAccessRange(offset, destination.Length, _size);
         if (res.IsFailure())
             return res.Miss();
 
@@ -132,7 +132,7 @@ public struct ValueSubStorage : IDisposable
         if (source.Length == 0)
             return Result.Success;
 
-        Result res = IStorage.CheckAccessRange(offset, source.Length, _size);
+        Result res = Storage.CheckAccessRange(offset, source.Length, _size);
         if (res.IsFailure())
             return res.Miss();
 
@@ -162,7 +162,7 @@ public struct ValueSubStorage : IDisposable
         if (!_isResizable)
             return ResultFs.UnsupportedSetSizeForNotResizableSubStorage.Log();
 
-        Result res = IStorage.CheckOffsetAndSize(_offset, size);
+        Result res = Storage.CheckOffsetAndSize(_offset, size);
         if (res.IsFailure())
             return res.Miss();
 
@@ -211,7 +211,7 @@ public struct ValueSubStorage : IDisposable
             if (size == 0)
                 return Result.Success;
 
-            Result res = IStorage.CheckOffsetAndSize(_offset, size);
+            Result res = Storage.CheckOffsetAndSize(_offset, size);
             if (res.IsFailure())
                 return res.Miss();
         }

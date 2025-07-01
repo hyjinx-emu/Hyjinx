@@ -9,7 +9,7 @@ namespace LibHac.FsSrv.Impl;
 /// An <see cref="IStorage"/> for simulating device failures
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-internal class DeviceEventSimulationStorage : IStorage
+internal class DeviceEventSimulationStorage : LibHac.Fs.Storage
 {
     private SharedRef<IStorage> _baseStorage;
     private IDeviceEventSimulator _deviceEventSimulator;

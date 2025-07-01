@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LibHac.Tools.FsSystem;
 
-public class ConcatenationStorage : IStorage
+public class ConcatenationStorage : Storage
 {
     private ConcatSource[] Sources { get; }
     private long Length { get; }

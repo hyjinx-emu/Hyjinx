@@ -26,7 +26,7 @@ namespace LibHac.FsSystem;
 /// };
 /// </code></para>
 /// <para>Based on nnSdk 13.4.0 (FS 13.1.0)</para></remarks>
-public class UnionStorage : IStorage
+public class UnionStorage : Storage
 {
     private const long Sentinel = -1;
     private const int LogHeaderSize = 8;

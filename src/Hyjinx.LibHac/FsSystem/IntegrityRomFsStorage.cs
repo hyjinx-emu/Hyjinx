@@ -14,7 +14,7 @@ namespace LibHac.FsSystem;
 /// from a RomFs.
 /// </summary>
 /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
-public class IntegrityRomFsStorage : IStorage
+public class IntegrityRomFsStorage : Storage
 {
     private HierarchicalIntegrityVerificationStorage _integrityStorage;
     private FileSystemBufferManagerSet _bufferManagerSet;
