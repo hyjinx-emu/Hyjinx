@@ -1,5 +1,6 @@
 ﻿using LibHac.Common;
 using LibHac.Crypto;
+using LibHac.Fs;
 using LibHac.Util;
 using System;
 using System.IO;

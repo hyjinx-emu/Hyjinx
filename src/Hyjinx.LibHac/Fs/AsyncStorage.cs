@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LibHac.Tools.FsSystem;
+namespace LibHac.Fs;
 
 /// <summary>
 /// A base <see cref="IAsyncStorage"/> implementation. This class must be inherited.

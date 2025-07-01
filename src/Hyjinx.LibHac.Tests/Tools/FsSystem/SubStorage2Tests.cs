@@ -1,4 +1,5 @@
-﻿using LibHac.FsSystem;
+﻿using LibHac.Fs;
+using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
 using System;
 using System.IO;

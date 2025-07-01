@@ -1,4 +1,4 @@
-﻿using LibHac.Tools.FsSystem;
+﻿using LibHac.Fs;
 using System;
 using System.IO;
 using System.Threading;

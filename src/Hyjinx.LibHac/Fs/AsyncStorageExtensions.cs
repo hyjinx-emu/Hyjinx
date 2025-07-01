@@ -1,9 +1,11 @@
-﻿using System;
+﻿using LibHac.Fs;
+using LibHac.Tools.FsSystem;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LibHac.Tools.FsSystem;
+namespace LibHac.Fs;
 
 /// <summary>
 /// Contains extension methods for the <see cref="IAsyncStorage"/> interface.

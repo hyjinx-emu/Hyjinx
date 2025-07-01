@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LibHac.Tools.FsSystem;
+namespace LibHac.Fs;
 
 /// <summary>
 /// Provides an interface for asynchronously reading a sequence of bytes within a region of storage.
