@@ -1,5 +1,4 @@
-﻿using LibHac.Fs;
-using LibHac.Tools.FsSystem;
+﻿using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
 using System.Threading;
@@ -18,10 +17,37 @@ public static class AsyncStorageExtensions
     /// <param name="storage">The storage.</param>
     /// <param name="offset">The zero-index offset within the storage.</param>
     /// <param name="length">The length of data within the storage section.</param>
-    /// <returns>The new storage slice.</returns>
-    public static IAsyncStorage Slice(this IAsyncStorage storage, long offset, long length)
+    /// <returns>The new <see cref="IAsyncStorage"/> slice.</returns>
+    public static IAsyncStorage SliceAsAsync(this IAsyncStorage storage, long offset, long length)
     {
         return SubStorage2.Create(storage, offset, length);
+    }
+
+    /// <summary>
+    /// Reads the data once.
+    /// </summary>
+    /// <remarks><b>CAUTION! </b>This method will cause random access to the underlying storage as the position is being reset after use.</remarks>
+    /// <param name="storage">The storage.</param>
+    /// <param name="offset">The zero-index offset within the storage from the beginning of the storage.</param>
+    /// <param name="buffer">The buffer which should receive the data.</param>
+    /// <returns>The number of bytes read. This will typically match the buffer size, however it may not as the end of the storage region is being reached. A return value of 0 will always occur when the end of the region has been reached.</returns>
+    public static int ReadOnce(this IAsyncStorage storage, long offset, Span<byte> buffer)
+    {
+        // Grab the starting position so we can move back there before exiting the method.
+        long position = storage.Position;
+        
+        try
+        {
+            // Do the seek, but do not check position in case the underlying storage has to be repositioned.
+            storage.Seek(offset, SeekOrigin.Begin);
+
+            return storage.Read(buffer);
+        }
+        finally
+        {
+            // Make sure the stream is repositioned where it started at upon leaving the method.
+            storage.Seek(position, SeekOrigin.Begin);
+        }
     }
     
     /// <summary>

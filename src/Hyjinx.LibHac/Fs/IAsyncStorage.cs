@@ -9,7 +9,7 @@ namespace LibHac.Fs;
 /// Provides an interface for asynchronously reading a sequence of bytes within a region of storage.
 /// </summary>
 /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
-public interface IAsyncStorage : IAsyncDisposable
+public interface IAsyncStorage : IStorage, IAsyncDisposable
 {
     /// <summary>
     /// Gets the length of the storage region.
@@ -20,6 +20,13 @@ public interface IAsyncStorage : IAsyncDisposable
     /// Gets the current position within the storage region.
     /// </summary>
     long Position { get; }
+
+    /// <summary>
+    /// Reads the data.
+    /// </summary>
+    /// <param name="buffer">The buffer which should receive the data.</param>
+    /// <returns>The number of bytes read. This will typically match the buffer size, however it may not as the end of the storage region is being reached. A return value of 0 will always occur when the end of the region has been reached.</returns>
+    int Read(Span<byte> buffer);
     
     /// <summary>
     /// Reads the data.

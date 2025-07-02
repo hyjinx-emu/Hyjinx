@@ -56,7 +56,12 @@ public class MemoryStorage2 : AsyncStorage
 
         return result;
     }
-    
+
+    public override int Read(Span<byte> buffer)
+    {
+        return _memoryStream.Read(buffer);
+    }
+
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         return await _memoryStream.ReadAsync(buffer, cancellationToken);

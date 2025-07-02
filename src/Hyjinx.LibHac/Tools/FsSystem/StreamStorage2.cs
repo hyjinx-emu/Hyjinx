@@ -48,7 +48,12 @@ public class StreamStorage2 : AsyncStorage
         
         return result;
     }
-    
+
+    public override int Read(Span<byte> buffer)
+    {
+        return _stream.Read(buffer);
+    }
+
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         return await _stream.ReadAsync(buffer, cancellationToken);
@@ -56,7 +61,20 @@ public class StreamStorage2 : AsyncStorage
     
     public override long Seek(long offset, SeekOrigin origin)
     {
+        if ((origin == SeekOrigin.Begin && offset == Position) || (origin == SeekOrigin.End && Length + offset == Position))
+        {
+            return Position;
+        }
+        
         return _stream.Seek(offset, origin);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (!_leaveOpen)
+        {
+            _stream.Dispose();
+        }
     }
 
     protected override async ValueTask DisposeAsyncCore()

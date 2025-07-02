@@ -8,7 +8,7 @@ namespace LibHac.Fs;
 /// <summary>
 /// A base <see cref="IAsyncStorage"/> implementation. This class must be inherited.
 /// </summary>
-public abstract class AsyncStorage : IAsyncStorage
+public abstract partial class AsyncStorage : IAsyncStorage
 {
     public abstract long Length { get; }
     
@@ -28,6 +28,8 @@ public abstract class AsyncStorage : IAsyncStorage
     {
         return ValueTask.CompletedTask;
     }
+
+    public abstract int Read(Span<byte> buffer);
     
     public abstract ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default);
 

@@ -4,6 +4,7 @@ using LibHac.Fs;
 using LibHac.Util;
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -64,7 +65,7 @@ public class IntegrityVerificationStorage2 : AsyncStorage
         }
         
         var result = new IntegrityVerificationStorage2(level, 
-            dataStorage.Slice(offset, length), 
+            dataStorage.SliceAsAsync(offset, length), 
             hashStorage,
             integrityCheckLevel, sectorSize, sectors);
         
@@ -72,14 +73,22 @@ public class IntegrityVerificationStorage2 : AsyncStorage
         return result;
     }
 
-    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    public override int Read(Span<byte> buffer)
+    {
+        GuardSectorMustBeValid();
+
+        return _dataStorage.Read(buffer);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void GuardSectorMustBeValid()
     {
         if (_integrityCheckLevel != IntegrityCheckLevel.None)
         {
             var sectorIndex = (int)(Position / _sectorSize);
             if (_sectors![sectorIndex] == Validity.Unchecked)
             {
-                var validity = await CheckSectorValidityAsync(sectorIndex, cancellationToken);
+                var validity = CheckSectorValidity(sectorIndex);
                 _sectors[sectorIndex] = validity;
         
                 if (validity == Validity.Invalid && _integrityCheckLevel == IntegrityCheckLevel.ErrorOnInvalid)
@@ -88,7 +97,12 @@ public class IntegrityVerificationStorage2 : AsyncStorage
                 }
             }
         }
-
+    }
+    
+    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        GuardSectorMustBeValid();
+        
         return await _dataStorage.ReadAsync(buffer, cancellationToken);
     }
 
@@ -97,31 +111,29 @@ public class IntegrityVerificationStorage2 : AsyncStorage
         return _dataStorage.Seek(offset, origin);
     }
     
-    private async ValueTask<Validity> CheckSectorValidityAsync(int sectorIndex, CancellationToken cancellationToken)
+    private Validity CheckSectorValidity(int sectorIndex)
     {
-        using var expectedBuffer = new RentedArray2<byte>(Sha256.DigestSize);
-        var expectedHash = expectedBuffer.Memory;
-
+        Span<byte> expectedHash = stackalloc byte[Sha256.DigestSize];
         var hashOffset = sectorIndex * Sha256.DigestSize;
         
         // Read the expected hash from the file.
-        var bytesRead = await _hashStorage.ReadOnceAsync(hashOffset, expectedHash, cancellationToken);
+        var bytesRead = _hashStorage.ReadOnce(hashOffset, expectedHash);
         if (bytesRead < Sha256.DigestSize)
         {
             throw new InvalidSectorDetectedException("The expected hash was not the correct size.", _level, sectorIndex);
         }
         
         using var dataBuffer = new RentedArray2<byte>(_sectorSize);
-        var data = dataBuffer.Memory;
+        var data = dataBuffer.Span;
 
         var dataOffset = sectorIndex * _sectorSize;
         
         // Read the entire sector from the file.
-        bytesRead = await _dataStorage.ReadOnceAsync(dataOffset, data, cancellationToken);
+        bytesRead = _dataStorage.ReadOnce(dataOffset, data);
         if (bytesRead < data.Length)
         {
             // There are occasions when the data within the sector is less than the sector size.
-            data[bytesRead..].Span.Clear();
+            data[bytesRead..].Clear();
         }
         
         return CompareHashes(data, expectedHash);
@@ -133,12 +145,12 @@ public class IntegrityVerificationStorage2 : AsyncStorage
     /// <param name="buffer">The buffer whose data to be hashed.</param>
     /// <param name="expected">The expected hash.</param>
     /// <returns><see cref="Validity.Valid"/> if the hashes match, otherwise <see cref="Validity.Invalid"/> if the hashes do not match.</returns>
-    private static Validity CompareHashes(Memory<byte> buffer, Memory<byte> expected)
+    private static Validity CompareHashes(Span<byte> buffer, Span<byte> expected)
     {
         Span<byte> hash = stackalloc byte[Sha256.DigestSize];
-        Sha256.GenerateSha256Hash(buffer.Span, hash);
+        Sha256.GenerateSha256Hash(buffer, hash);
         
-        return Utilities.SpansEqual(expected.Span, hash) ? 
+        return Utilities.SpansEqual(expected, hash) ? 
             Validity.Valid : Validity.Invalid;
     }
 

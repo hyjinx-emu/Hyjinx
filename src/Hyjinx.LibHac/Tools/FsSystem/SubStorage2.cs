@@ -59,7 +59,21 @@ public class SubStorage2 : AsyncStorage
         
         return result;
     }
-    
+
+    public override int Read(Span<byte> buffer)
+    {
+        var remaining = (int)Math.Min(_length - _position, buffer.Length);
+        if (remaining == 0)
+        {
+            return 0;
+        }
+        
+        var bytesRead = _baseStorage.Read(buffer[..remaining]);
+        _position += bytesRead;
+        
+        return bytesRead;
+    }
+
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         var remaining = (int)Math.Min(_length - _position, buffer.Length);
@@ -110,6 +124,13 @@ public class SubStorage2 : AsyncStorage
         }
 
         return newOffset;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _baseStorage.Dispose();
+        
+        base.Dispose(disposing);
     }
 
     protected async override ValueTask DisposeAsyncCore()
