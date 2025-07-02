@@ -9,7 +9,7 @@
 </h1>
 
 <p align="center">
-  Hyjinx is an open-source Nintendo Switch emulator, originally known as Ryujinx and created by gdkchan, written in C#.
+  Hyjinx is an open-source Nintendo Switch emulator, based upon Ryujinx which was created by gdkchan and written in C#.
   This emulator aims at providing excellent accuracy and performance, a user-friendly interface, and consistent builds.
   It was written from scratch, and development on the project began in September 2017.
 </p>
