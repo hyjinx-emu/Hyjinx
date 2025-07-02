@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibHac.Common;
+using System;
 using System.IO;
 
 namespace LibHac.Fs;
@@ -19,6 +20,17 @@ public abstract partial class AsyncStorage
     protected virtual void Dispose(bool disposing)
     {
         // This method intentionally left blank.
+    }
+    
+    public virtual int Read(Span<byte> buffer)
+    {
+        using var tempBuffer = new RentedArray2<byte>(buffer.Length);
+        var temp = tempBuffer.Memory;
+        
+        var result = ReadAsync(temp).ConfigureAwait(false).GetAwaiter().GetResult();
+
+        temp[..buffer.Length].Span.CopyTo(buffer);
+        return result;
     }
 
     Result IStorage.Read(long offset, Span<byte> destination)

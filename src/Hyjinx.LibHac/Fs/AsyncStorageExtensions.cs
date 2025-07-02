@@ -31,6 +31,7 @@ public static class AsyncStorageExtensions
     /// <param name="offset">The zero-index offset within the storage from the beginning of the storage.</param>
     /// <param name="buffer">The buffer which should receive the data.</param>
     /// <returns>The number of bytes read. This will typically match the buffer size, however it may not as the end of the storage region is being reached. A return value of 0 will always occur when the end of the region has been reached.</returns>
+    [Obsolete($"This method is no longer supported and is only provided for backwards compatibility. Usage of this method is likely to impact performance, please use the {nameof(ReadOnceAsync)} variant instead.")]
     public static int ReadOnce(this IAsyncStorage storage, long offset, Span<byte> buffer)
     {
         // Grab the starting position so we can move back there before exiting the method.

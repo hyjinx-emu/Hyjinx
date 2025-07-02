@@ -28,8 +28,6 @@ public abstract partial class AsyncStorage : IAsyncStorage
     {
         return ValueTask.CompletedTask;
     }
-
-    public abstract int Read(Span<byte> buffer);
     
     public abstract ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default);
 

@@ -16,33 +16,37 @@ public sealed class RentedArray2<T> : IDisposable
     
     private readonly ArrayPool<T> _pool;
     private readonly T[] _buffer;
-    private readonly int _size;
     private readonly bool _rented;
     private readonly bool _clearArray;
+
+    /// <summary>
+    /// The length of the buffer.
+    /// </summary>
+    public int Length { get; }
     
     /// <summary>
     /// Initializes a new instance of the class.
     /// </summary>
-    /// <param name="size">The size of the buffer.</param>
+    /// <param name="length">The length of the buffer.</param>
     /// <param name="clearArray">true if the array should be cleared when returned, otherwise false. This is typically true when interfacing with critical data, such as decryption.</param>
-    public RentedArray2(int size, bool clearArray = false)
-        : this(size, clearArray, ArrayPool<T>.Shared)
+    public RentedArray2(int length, bool clearArray = false)
+        : this(length, clearArray, ArrayPool<T>.Shared)
     { }
     
-    private RentedArray2(int size, bool clearArray, ArrayPool<T> pool)
+    private RentedArray2(int length, bool clearArray, ArrayPool<T> pool)
     {
-        _size = size;
+        Length = length;
         _clearArray = clearArray;
         _pool = pool;
 
-        if (_size > RentalThreshold)
+        if (Length > RentalThreshold)
         {
-            _buffer = pool.Rent(size);
+            _buffer = pool.Rent(length);
             _rented = true;
         }
         else
         {
-            _buffer = new T[size];
+            _buffer = new T[length];
             _rented = false;
         }
     }
@@ -60,13 +64,13 @@ public sealed class RentedArray2<T> : IDisposable
     /// Gets the buffer as a contiguous region of arbitrary memory.
     /// </summary>
     /// <remarks>This property is typically used for synchronous method executions.</remarks>
-    public Span<T> Span => _buffer.AsSpan(0, _size);
+    public Span<T> Span => _buffer.AsSpan(0, Length);
 
     /// <summary>
     /// Gets the buffer as a contiguous region of memory.
     /// </summary>
     /// <remarks>This property is typically used for asynchronous method executions.</remarks>
-    public Memory<T> Memory => _buffer.AsMemory(0, _size);
+    public Memory<T> Memory => _buffer.AsMemory(0, Length);
 
     /// <summary>
     /// Returns the rented array buffer.

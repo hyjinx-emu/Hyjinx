@@ -60,20 +60,6 @@ public class SubStorage2 : AsyncStorage
         return result;
     }
 
-    public override int Read(Span<byte> buffer)
-    {
-        var remaining = (int)Math.Min(_length - _position, buffer.Length);
-        if (remaining == 0)
-        {
-            return 0;
-        }
-        
-        var bytesRead = _baseStorage.Read(buffer[..remaining]);
-        _position += bytesRead;
-        
-        return bytesRead;
-    }
-
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         var remaining = (int)Math.Min(_length - _position, buffer.Length);

@@ -26,6 +26,7 @@ public interface IAsyncStorage : IStorage, IAsyncDisposable
     /// </summary>
     /// <param name="buffer">The buffer which should receive the data.</param>
     /// <returns>The number of bytes read. This will typically match the buffer size, however it may not as the end of the storage region is being reached. A return value of 0 will always occur when the end of the region has been reached.</returns>
+    [Obsolete($"This method is no longer supported and is only provided for backwards compatibility. Usage of this method is likely to impact performance, please use the {nameof(ReadAsync)} variant instead.")]
     int Read(Span<byte> buffer);
     
     /// <summary>

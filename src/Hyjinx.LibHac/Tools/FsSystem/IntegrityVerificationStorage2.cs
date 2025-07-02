@@ -4,7 +4,6 @@ using LibHac.Fs;
 using LibHac.Util;
 using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -72,23 +71,15 @@ public class IntegrityVerificationStorage2 : AsyncStorage
         result.Seek(0, SeekOrigin.Begin);
         return result;
     }
-
-    public override int Read(Span<byte> buffer)
-    {
-        GuardSectorMustBeValid();
-
-        return _dataStorage.Read(buffer);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void GuardSectorMustBeValid()
+    
+    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         if (_integrityCheckLevel != IntegrityCheckLevel.None)
         {
             var sectorIndex = (int)(Position / _sectorSize);
             if (_sectors![sectorIndex] == Validity.Unchecked)
             {
-                var validity = CheckSectorValidity(sectorIndex);
+                var validity = await CheckSectorValidityAsync(sectorIndex, cancellationToken);
                 _sectors[sectorIndex] = validity;
         
                 if (validity == Validity.Invalid && _integrityCheckLevel == IntegrityCheckLevel.ErrorOnInvalid)
@@ -97,11 +88,6 @@ public class IntegrityVerificationStorage2 : AsyncStorage
                 }
             }
         }
-    }
-    
-    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-    {
-        GuardSectorMustBeValid();
         
         return await _dataStorage.ReadAsync(buffer, cancellationToken);
     }
@@ -111,32 +97,30 @@ public class IntegrityVerificationStorage2 : AsyncStorage
         return _dataStorage.Seek(offset, origin);
     }
     
-    private Validity CheckSectorValidity(int sectorIndex)
+    private async Task<Validity> CheckSectorValidityAsync(int sectorIndex, CancellationToken cancellationToken)
     {
-        Span<byte> expectedHash = stackalloc byte[Sha256.DigestSize];
+        using var hashBuffer = new RentedArray2<byte>(Sha256.DigestSize);
         var hashOffset = sectorIndex * Sha256.DigestSize;
         
         // Read the expected hash from the file.
-        var bytesRead = _hashStorage.ReadOnce(hashOffset, expectedHash);
+        var bytesRead = await _hashStorage.ReadOnceAsync(hashOffset, hashBuffer.Memory, cancellationToken);
         if (bytesRead < Sha256.DigestSize)
         {
             throw new InvalidSectorDetectedException("The expected hash was not the correct size.", _level, sectorIndex);
         }
         
         using var dataBuffer = new RentedArray2<byte>(_sectorSize);
-        var data = dataBuffer.Span;
-
         var dataOffset = sectorIndex * _sectorSize;
         
         // Read the entire sector from the file.
-        bytesRead = _dataStorage.ReadOnce(dataOffset, data);
-        if (bytesRead < data.Length)
+        bytesRead = await _dataStorage.ReadOnceAsync(dataOffset, dataBuffer.Memory, cancellationToken);
+        if (bytesRead < dataBuffer.Length)
         {
             // There are occasions when the data within the sector is less than the sector size.
-            data[bytesRead..].Clear();
+            dataBuffer.Span[bytesRead..].Clear();
         }
         
-        return CompareHashes(data, expectedHash);
+        return CompareHashes(dataBuffer.Span, hashBuffer.Span);
     }
 
     /// <summary>
