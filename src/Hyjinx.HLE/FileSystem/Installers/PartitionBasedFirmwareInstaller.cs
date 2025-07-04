@@ -1,5 +1,6 @@
 using Hyjinx.HLE.Exceptions;
 using LibHac.Common;
+using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Ncm;
@@ -20,8 +21,7 @@ namespace Hyjinx.HLE.FileSystem.Installers;
 /// <summary>
 /// An abstract <see cref="IFirmwareInstaller"/> which is capable of processing partitioned firmware.
 /// </summary>
-/// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
-public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualFileSystem) : IFirmwareInstaller
+public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
 {
     public abstract ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default);
 
@@ -64,7 +64,7 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
         return file.Release();
     }
 
-    protected SystemVersion? VerifyAndGetVersion(IFileSystem filesystem)
+    protected async ValueTask<SystemVersion?> VerifyAndGetVersionAsync(IFileSystem filesystem, CancellationToken cancellationToken)
     {
         SystemVersion? systemVersion = null;
 
@@ -73,14 +73,15 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
 
         foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
         {
-            IStorage ncaStorage = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read).AsStorage();
+            await using var ncaStorage = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read).AsStream();
 
-            Nca nca = new(virtualFileSystem.KeySet, ncaStorage);
+            var nca = await Nca2.LoadAsync(ncaStorage, cancellationToken);
 
-            if (nca.Header.TitleId == ContentManager.SystemUpdateTitleId && nca.Header.ContentType == NcaContentType.Meta)
+            if (nca.Header is { TitleId: ContentManager.SystemUpdateTitleId, ContentType: NcaContentType.Meta })
             {
                 // TODO: Viper - This should be enforcing integrity levels.
-                IFileSystem fs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
+                var fs = await nca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid,
+                    cancellationToken);
 
                 string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
 
@@ -98,10 +99,11 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
 
                 continue;
             }
-            else if (nca.Header.TitleId == ContentManager.SystemVersionTitleId && nca.Header.ContentType == NcaContentType.Data)
+            
+            if (nca.Header is { TitleId: ContentManager.SystemVersionTitleId, ContentType: NcaContentType.Data })
             {
                 // TODO: Viper - This should be enforcing integrity levels.
-                var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
+                var romfs = await nca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid, cancellationToken);
 
                 using var systemVersionFile = new UniqueRef<IFile>();
 
@@ -120,8 +122,6 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
                 updateNcas.Add(nca.Header.TitleId, new List<(NcaContentType, string)>());
                 updateNcas[nca.Header.TitleId].Add((nca.Header.ContentType, entry.FullPath));
             }
-
-            ncaStorage.Dispose();
         }
 
         if (metaEntries == null)
@@ -145,13 +145,13 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
                     continue;
                 }
 
-                IStorage metaStorage = OpenPossibleFragmentedFile(filesystem, metaNcaPath, OpenMode.Read).AsStorage();
-                IStorage contentStorage = OpenPossibleFragmentedFile(filesystem, contentPath, OpenMode.Read).AsStorage();
+                await using var metaStorage = OpenPossibleFragmentedFile(filesystem, metaNcaPath, OpenMode.Read).AsStream();
+                await using var contentStorage = OpenPossibleFragmentedFile(filesystem, contentPath, OpenMode.Read).AsStream();
 
-                Nca metaNca = new(virtualFileSystem.KeySet, metaStorage);
+                Nca2 metaNca = await Nca2.LoadAsync(metaStorage, cancellationToken);
 
                 // TODO: Viper - This should be enforcing integrity levels.
-                IFileSystem fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
+                var fs = await metaNca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid, cancellationToken);
 
                 string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
 
@@ -161,22 +161,15 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
                 {
                     var meta = new Cnmt(metaFile.Get.AsStream());
 
-                    if (contentStorage.GetSize(out long size).IsSuccess())
+                    using var contentData = new RentedArray2<byte>((int)contentStorage.Length);
+                    await contentStorage.ReadExactlyAsync(contentData.Memory, cancellationToken);
+
+                    Span<byte> hash = new byte[Sha256.DigestSize];
+                    Sha256.GenerateSha256Hash(contentData.Span, hash);
+
+                    if (LibHac.Common.Utilities.ArraysEqual(hash.ToArray(), meta.ContentEntries[0].Hash))
                     {
-                        byte[] contentData = new byte[size];
-
-                        Span<byte> content = new(contentData);
-
-                        contentStorage.Read(0, content);
-
-                        Span<byte> hash = new(new byte[32]);
-
-                        LibHac.Crypto.Sha256.GenerateSha256Hash(content, hash);
-
-                        if (LibHac.Common.Utilities.ArraysEqual(hash.ToArray(), meta.ContentEntries[0].Hash))
-                        {
-                            updateNcas.Remove(metaEntry.TitleId);
-                        }
+                        updateNcas.Remove(metaEntry.TitleId);
                     }
                 }
             }

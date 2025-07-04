@@ -427,7 +427,7 @@ public partial class ContentManager : IContentManager
     {
         if (Directory.Exists(firmwareSource))
         {
-            return new DirectoryFirmwareInstaller(_virtualFileSystem);
+            return new DirectoryFirmwareInstaller();
         }
 
         var file = new FileInfo(firmwareSource);
