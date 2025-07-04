@@ -14,28 +14,26 @@ namespace Hyjinx.HLE.FileSystem.Installers;
 /// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
 public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : PartitionBasedFirmwareInstaller(virtualFileSystem)
 {
-    public override ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default)
+    public override async ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default)
     {
         if (!File.Exists(source))
         {
             throw new FileNotFoundException("The file does not exist.");
         }
 
-        using var file = File.OpenRead(source);
+        await using var file = File.OpenRead(source);
 
         var xci = new Xci(virtualFileSystem.KeySet, file.AsStorage());
-        InstallFromCart(xci, destination);
-        
-        return ValueTask.CompletedTask;
+        await InstallFromCartAsync(xci, destination, cancellationToken);
     }
 
-    private void InstallFromCart(Xci gameCard, DirectoryInfo destination)
+    private async ValueTask InstallFromCartAsync(Xci gameCard, DirectoryInfo destination, CancellationToken cancellationToken)
     {
         if (gameCard.HasPartition(XciPartitionType.Update))
         {
             XciPartition partition = gameCard.OpenPartition(XciPartitionType.Update);
 
-            InstallFromPartition(partition, destination.FullName);
+            await InstallFromPartitionAsync(partition, destination.FullName, cancellationToken);
         }
         else
         {

@@ -12,16 +12,14 @@ namespace Hyjinx.HLE.FileSystem.Installers;
 /// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
 public class DirectoryFirmwareInstaller(VirtualFileSystem virtualFileSystem) : PartitionBasedFirmwareInstaller(virtualFileSystem)
 {
-    public override ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default)
+    public override async ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default)
     {
         if (!Directory.Exists(source))
         {
             throw new DirectoryNotFoundException("The directory does not exist.");
         }
 
-        InstallFromPartition(new LocalFileSystem(source), destination.FullName);
-        
-        return ValueTask.CompletedTask;
+        await InstallFromPartitionAsync(new LocalFileSystem(source), destination.FullName, cancellationToken);
     }
 
     public override ValueTask<SystemVersion> VerifyAsync(string source, CancellationToken cancellationToken = default)

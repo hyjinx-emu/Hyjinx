@@ -92,6 +92,19 @@ public class Nca2<THeader, TFsHeader>
     }
 
     /// <summary>
+    /// Copies the entire archive to a destination.
+    /// </summary>
+    /// <remarks>This method includes both the header along with all associated data blocks preserving their original format.</remarks>
+    /// <param name="destination">The destination stream.</param>
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+    public async ValueTask CopyToAsync(Stream destination, CancellationToken cancellationToken = default)
+    {
+        UnderlyingStream.Seek(0, SeekOrigin.Begin);
+
+        await UnderlyingStream.CopyToAsync(destination, cancellationToken);
+    }
+
+    /// <summary>
     /// Opens the file system.
     /// </summary>
     /// <param name="section">The section.</param>

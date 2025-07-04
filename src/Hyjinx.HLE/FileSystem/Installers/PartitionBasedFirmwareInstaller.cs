@@ -27,24 +27,25 @@ public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualF
 
     public abstract ValueTask<SystemVersion> VerifyAsync(string source, CancellationToken cancellationToken = default);
 
-    protected void InstallFromPartition(IFileSystem filesystem, string temporaryDirectory)
+    protected async ValueTask InstallFromPartitionAsync(IFileSystem filesystem, string temporaryDirectory, CancellationToken cancellationToken)
     {
         foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
         {
-            Nca nca = new(virtualFileSystem.KeySet, OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read).AsStorage());
+            await using var file = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read).AsStream();
+            Nca2 nca = await Nca2.LoadAsync(file, cancellationToken);
 
-            SaveNca(nca, entry.Name.Remove(entry.Name.IndexOf('.')), temporaryDirectory);
+            await SaveNcaAsync(nca, entry.Name.Remove(entry.Name.IndexOf('.')), temporaryDirectory, cancellationToken);
         }
     }
 
-    private static void SaveNca(Nca nca, string ncaId, string temporaryDirectory)
+    private static async ValueTask SaveNcaAsync(Nca2 nca, string ncaId, string temporaryDirectory, CancellationToken cancellationToken)
     {
         string newPath = Path.Combine(temporaryDirectory, ncaId + ".nca");
 
         Directory.CreateDirectory(newPath);
 
-        using FileStream file = File.Create(Path.Combine(newPath, "00"));
-        nca.BaseStorage.AsStream().CopyTo(file);
+        await using FileStream file = File.Create(Path.Combine(newPath, "00"));
+        await nca.CopyToAsync(file, cancellationToken);
     }
 
     private static IFile OpenPossibleFragmentedFile(IFileSystem filesystem, string path, OpenMode mode)
