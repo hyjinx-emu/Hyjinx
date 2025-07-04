@@ -1,6 +1,8 @@
 using Hyjinx.HLE.Exceptions;
 using LibHac.FsSystem;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hyjinx.HLE.FileSystem.Installers;
 
@@ -10,7 +12,7 @@ namespace Hyjinx.HLE.FileSystem.Installers;
 /// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
 public class DirectoryFirmwareInstaller(VirtualFileSystem virtualFileSystem) : PartitionBasedFirmwareInstaller(virtualFileSystem)
 {
-    public override void Install(string source, DirectoryInfo destination)
+    public override ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default)
     {
         if (!Directory.Exists(source))
         {
@@ -18,9 +20,11 @@ public class DirectoryFirmwareInstaller(VirtualFileSystem virtualFileSystem) : P
         }
 
         InstallFromPartition(new LocalFileSystem(source), destination.FullName);
+        
+        return ValueTask.CompletedTask;
     }
 
-    public override SystemVersion Verify(string source)
+    public override ValueTask<SystemVersion> VerifyAsync(string source, CancellationToken cancellationToken = default)
     {
         if (!Directory.Exists(source))
         {
@@ -33,6 +37,6 @@ public class DirectoryFirmwareInstaller(VirtualFileSystem virtualFileSystem) : P
             throw new InvalidFirmwarePackageException("The directory does not contain a valid firmware package.");
         }
 
-        return result;
+        return ValueTask.FromResult(result);
     }
 }

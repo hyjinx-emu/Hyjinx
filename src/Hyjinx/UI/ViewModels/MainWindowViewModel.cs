@@ -1024,11 +1024,11 @@ public class MainWindowViewModel : BaseModel
         return false;
     }
 
-    private async Task HandleFirmwareInstallation(string filename)
+    private async ValueTask HandleFirmwareInstallationAsync(string filename, CancellationToken cancellationToken = default)
     {
         try
         {
-            SystemVersion firmwareVersion = ContentManager.VerifyFirmwarePackage(filename);
+            SystemVersion firmwareVersion = await ContentManager.VerifyFirmwarePackageAsync(filename, cancellationToken);
 
             if (firmwareVersion == null)
             {
@@ -1070,7 +1070,7 @@ public class MainWindowViewModel : BaseModel
                     new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                     "Installing firmware {firmwareVersion}", firmwareVersion.VersionString);
 
-                Thread thread = new(() =>
+                await Task.Run(async () =>
                 {
                     Dispatcher.UIThread.InvokeAsync(delegate
                     {
@@ -1079,7 +1079,7 @@ public class MainWindowViewModel : BaseModel
 
                     try
                     {
-                        ContentManager.InstallFirmware(filename);
+                        await ContentManager.InstallFirmwareAsync(filename, cancellationToken);
 
                         Dispatcher.UIThread.InvokeAsync(async delegate
                         {
@@ -1120,10 +1120,7 @@ public class MainWindowViewModel : BaseModel
                     {
                         RefreshFirmwareStatus();
                     }
-                })
-                { Name = "GUI.FirmwareInstallerThread", };
-
-                thread.Start();
+                }, cancellationToken);
             }
         }
         catch (EncryptedFileDetectedException)
@@ -1383,7 +1380,7 @@ public class MainWindowViewModel : BaseModel
 
         if (result.Count > 0)
         {
-            await HandleFirmwareInstallation(result[0].Path.LocalPath);
+            await HandleFirmwareInstallationAsync(result[0].Path.LocalPath);
         }
     }
 
@@ -1396,7 +1393,7 @@ public class MainWindowViewModel : BaseModel
 
         if (result.Count > 0)
         {
-            await HandleFirmwareInstallation(result[0].Path.LocalPath);
+            await HandleFirmwareInstallationAsync(result[0].Path.LocalPath);
         }
     }
 

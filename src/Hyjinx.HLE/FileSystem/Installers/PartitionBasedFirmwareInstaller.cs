@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem.Installers;
@@ -21,9 +23,9 @@ namespace Hyjinx.HLE.FileSystem.Installers;
 /// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
 public abstract class PartitionBasedFirmwareInstaller(VirtualFileSystem virtualFileSystem) : IFirmwareInstaller
 {
-    public abstract void Install(string source, DirectoryInfo destination);
+    public abstract ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default);
 
-    public abstract SystemVersion Verify(string source);
+    public abstract ValueTask<SystemVersion> VerifyAsync(string source, CancellationToken cancellationToken = default);
 
     protected void InstallFromPartition(IFileSystem filesystem, string temporaryDirectory)
     {

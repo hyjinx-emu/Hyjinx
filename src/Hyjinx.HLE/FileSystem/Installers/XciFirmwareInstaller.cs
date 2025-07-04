@@ -3,6 +3,8 @@ using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hyjinx.HLE.FileSystem.Installers;
 
@@ -12,7 +14,7 @@ namespace Hyjinx.HLE.FileSystem.Installers;
 /// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
 public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : PartitionBasedFirmwareInstaller(virtualFileSystem)
 {
-    public override void Install(string source, DirectoryInfo destination)
+    public override ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default)
     {
         if (!File.Exists(source))
         {
@@ -23,6 +25,8 @@ public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : Partiti
 
         var xci = new Xci(virtualFileSystem.KeySet, file.AsStorage());
         InstallFromCart(xci, destination);
+        
+        return ValueTask.CompletedTask;
     }
 
     private void InstallFromCart(Xci gameCard, DirectoryInfo destination)
@@ -39,7 +43,7 @@ public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : Partiti
         }
     }
 
-    public override SystemVersion Verify(string source)
+    public override ValueTask<SystemVersion> VerifyAsync(string source, CancellationToken cancellationToken = default)
     {
         if (!File.Exists(source))
         {
@@ -62,6 +66,6 @@ public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : Partiti
             throw new InvalidFirmwarePackageException("The file provided was not a valid firmware package.");
         }
 
-        return result;
+        return ValueTask.FromResult(result);
     }
 }

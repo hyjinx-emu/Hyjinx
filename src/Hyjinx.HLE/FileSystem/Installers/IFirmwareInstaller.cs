@@ -1,3 +1,6 @@
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Hyjinx.HLE.FileSystem.Installers;
 
 /// <summary>
@@ -9,6 +12,7 @@ public interface IFirmwareInstaller : IContentInstaller
     /// Verifies the firmware package.
     /// </summary>
     /// <param name="source">The source of the firmware.</param>
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="SystemVersion"/> information.</returns>
-    SystemVersion Verify(string source);
+    ValueTask<SystemVersion> VerifyAsync(string source, CancellationToken cancellationToken = default);
 }

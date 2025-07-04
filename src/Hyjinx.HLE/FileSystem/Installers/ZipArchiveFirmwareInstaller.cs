@@ -13,6 +13,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem.Installers;
@@ -23,7 +25,7 @@ namespace Hyjinx.HLE.FileSystem.Installers;
 /// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
 public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : IFirmwareInstaller
 {
-    public void Install(string source, DirectoryInfo destination)
+    public ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default)
     {
         if (!File.Exists(source))
         {
@@ -32,6 +34,8 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
 
         using var archive = ZipFile.OpenRead(source);
         InstallFromZip(archive, destination.FullName);
+        
+        return ValueTask.CompletedTask;
     }
 
     private static void InstallFromZip(ZipArchive archive, string temporaryDirectory)
@@ -64,7 +68,7 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
         }
     }
 
-    public SystemVersion Verify(string source)
+    public ValueTask<SystemVersion> VerifyAsync(string source, CancellationToken cancellationToken = default)
     {
         if (!File.Exists(source))
         {
@@ -79,7 +83,7 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
             throw new InvalidFirmwarePackageException("The file provided was not a valid firmware package.");
         }
 
-        return result;
+        return ValueTask.FromResult(result);
     }
 
     private SystemVersion? VerifyAndGetVersionZip(ZipArchive archive)

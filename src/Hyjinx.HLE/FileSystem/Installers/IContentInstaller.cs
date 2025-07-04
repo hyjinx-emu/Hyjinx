@@ -1,4 +1,6 @@
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hyjinx.HLE.FileSystem.Installers;
 
@@ -12,5 +14,6 @@ public interface IContentInstaller
     /// </summary>
     /// <param name="source">The content source to install.</param>
     /// <param name="destination">The destination.</param>
-    void Install(string source, DirectoryInfo destination);
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+    ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default);
 }
