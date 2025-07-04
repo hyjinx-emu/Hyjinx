@@ -25,7 +25,7 @@ namespace Hyjinx.HLE.FileSystem.Installers;
 /// <param name="virtualFileSystem">The <see cref="VirtualFileSystem"/> used to access the firmware.</param>
 public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : IFirmwareInstaller
 {
-    public ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default)
+    public async ValueTask InstallAsync(string source, DirectoryInfo destination, CancellationToken cancellationToken = default)
     {
         if (!File.Exists(source))
         {
@@ -33,19 +33,18 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
         }
 
         using var archive = ZipFile.OpenRead(source);
-        InstallFromZip(archive, destination.FullName);
-        
-        return ValueTask.CompletedTask;
+        await InstallFromZipAsync(archive, destination.FullName, cancellationToken);
     }
 
-    private static void InstallFromZip(ZipArchive archive, string temporaryDirectory)
+    private static async ValueTask InstallFromZipAsync(ZipArchive archive, string temporaryDirectory, CancellationToken cancellationToken)
     {
         foreach (var entry in archive.Entries)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             if (entry.FullName.EndsWith(".nca") || entry.FullName.EndsWith(".nca/00"))
             {
                 // Clean up the name and get the NcaId
-
                 string[] pathComponents = entry.FullName.Replace(".cnmt", "").Split('/');
 
                 string ncaId = pathComponents[^1];
@@ -59,10 +58,12 @@ public class ZipArchiveFirmwareInstaller(VirtualFileSystem virtualFileSystem) : 
                 if (ncaId.Contains(".nca"))
                 {
                     string newPath = Path.Combine(temporaryDirectory, ncaId);
-
                     Directory.CreateDirectory(newPath);
 
-                    entry.ExtractToFile(Path.Combine(newPath, "00"));
+                    await using var destination = File.Open(Path.Combine(newPath, "00"), FileMode.Create);
+                    await using var entryStream = entry.Open();
+
+                    await entryStream.CopyToAsync(destination, cancellationToken);
                 }
             }
         }
