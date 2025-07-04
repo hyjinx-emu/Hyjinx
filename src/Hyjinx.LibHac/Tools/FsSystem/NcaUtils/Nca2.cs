@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using LibHac.Fs;
+using LibHac.Fs.Fsa;
+using LibHac.FsSystem;
+using LibHac.Tools.FsSystem.RomFs;
+using System.Collections.Generic;
 using System.IO;
 using System;
 using System.Buffers;
@@ -62,18 +66,18 @@ public class Nca2<THeader, TFsHeader>
     /// <summary>
     /// Gets the underlying stream for the NCA file.
     /// </summary>
-    protected Stream UnderlyingStream { get; }
-    
+    private Stream UnderlyingStream { get; }
+
     /// <summary>
     /// Gets the header.
     /// </summary>
     public THeader Header { get; }
-    
+
     /// <summary>
     /// Gets the sections.
     /// </summary>
     public IDictionary<NcaSectionType, TFsHeader> Sections { get; }
-    
+
     /// <summary>
     /// Initializes an instance of the class.
     /// </summary>
@@ -85,5 +89,170 @@ public class Nca2<THeader, TFsHeader>
         UnderlyingStream = stream;
         Header = header;
         Sections = sections.AsReadOnly();
+    }
+
+    /// <summary>
+    /// Opens the file system.
+    /// </summary>
+    /// <param name="section">The section.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+    /// <returns>The <see cref="IFileSystem"/> instance.</returns>
+    /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
+    public async ValueTask<IFileSystem> OpenFileSystemAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
+    {
+        if (!Sections.TryGetValue(section, out var fsHeader))
+        {
+            throw new ArgumentException($"The section '{section}' does not exist.", nameof(section));
+        }
+
+        var storage = await OpenStorageCoreAsync(fsHeader, integrityCheckLevel, cancellationToken);
+        return fsHeader.FormatType switch
+        {
+            NcaFormatType.Pfs0 => CreateFileSystemForPfs0(storage),
+            NcaFormatType.Romfs => CreateFileSystemForRomFs(storage),
+            _ => throw new NotSupportedException($"The format {fsHeader.FormatType} is not supported.")
+        };
+    }
+
+    private IFileSystem CreateFileSystemForPfs0(IAsyncStorage storage)
+    {
+        var fs = new PartitionFileSystem();
+        fs.Initialize(storage).ThrowIfFailure();
+
+        return fs;
+    }
+
+    private IFileSystem CreateFileSystemForRomFs(IAsyncStorage storage)
+    {
+        return new RomFsFileSystem(storage);
+    }
+
+    /// <summary>
+    /// Opens the section storage.
+    /// </summary>
+    /// <param name="section">The section.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to enforce when opening the section. Unused for sections which do not support hash verification.</param>
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+    /// <returns>The new <see cref="IAsyncStorage"/> instance.</returns>
+    /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
+    /// <exception cref="NotSupportedException">The encryption format used by <paramref name="section"/> is not supported.</exception>
+    public async ValueTask<IAsyncStorage> OpenStorageAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
+    {
+        if (!Sections.TryGetValue(section, out var fsHeader))
+        {
+            throw new ArgumentException($"The section '{section}' does not exist.", nameof(section));
+        }
+
+        return await OpenStorageCoreAsync(fsHeader, integrityCheckLevel, cancellationToken);
+    }
+
+    private async ValueTask<IAsyncStorage> OpenStorageCoreAsync(TFsHeader fsHeader, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var result = await OpenRawStorageAsync(fsHeader, cancellationToken);
+
+        if (fsHeader.HashType != NcaHashType.None)
+        {
+            result = await CreateVerificationStorageAsync(result, integrityCheckLevel, fsHeader, cancellationToken);
+        }
+
+        // TODO: Viper - Add compression support.
+
+        return result;
+    }
+
+    protected virtual async ValueTask<IAsyncStorage> OpenRawStorageAsync(TFsHeader fsHeader, CancellationToken cancellationToken)
+    {
+        var rootStorage = StreamStorage2.Create(UnderlyingStream);
+
+        try
+        {
+            return SubStorage2.Create(rootStorage, fsHeader.SectionStartOffset, fsHeader.SectionSize);
+        }
+        catch (Exception)
+        {
+            await rootStorage.DisposeAsync();
+            throw;
+        }
+    }
+
+    private async ValueTask<IAsyncStorage> CreateVerificationStorageAsync(IAsyncStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        return fsHeader.HashType switch
+        {
+            NcaHashType.Sha256 => await CreateIvfcForPartitionFsAsync(baseStorage, integrityCheckLevel, fsHeader, cancellationToken),
+            NcaHashType.Ivfc => await CreateIvfcStorageForRomFsAsync(baseStorage, integrityCheckLevel, fsHeader, cancellationToken),
+            _ => throw new NotSupportedException($"The hash type '{fsHeader.HashType}' is not supported.")
+        };
+    }
+
+    private async ValueTask<IAsyncStorage> CreateIvfcForPartitionFsAsync(IAsyncStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var ivfc = new NcaFsIntegrityInfoSha256(fsHeader.Checksum);
+
+        IAsyncStorage result = MemoryStorage2.Create(ivfc.MasterHash);
+
+        try
+        {
+            for (var i = 1; i <= ivfc.LevelCount; i++)
+            {
+                var level = i - 1;
+
+                var offset = ivfc.GetLevelOffset(level);
+                var length = ivfc.GetLevelSize(level);
+
+                // The sector size does not always match the block size specified as there isn't any padding.
+                var sectorSize = (int)Math.Min(length, ivfc.BlockSize);
+
+                result = IntegrityVerificationStorage2.Create(level, baseStorage, result,
+                    integrityCheckLevel, offset, length, sectorSize);
+            }
+            
+            return result;
+        }
+        catch (Exception)
+        {
+            await result.DisposeAsync();
+            throw;
+        }
+    }
+
+    private async ValueTask<IAsyncStorage> CreateIvfcStorageForRomFsAsync(IAsyncStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var ivfc = new NcaFsIntegrityInfoIvfc(fsHeader.Checksum);
+
+        // Creates a nested set of storages based on the master hash being the root, with the final
+        // result being the actual section storing the data to be used.
+        IAsyncStorage result = MemoryStorage2.Create(ivfc.MasterHash);
+
+        try
+        {
+            for (var i = 1; i < ivfc.LevelCount; i++)
+            {
+                var level = i - 1;
+
+                var offset = ivfc.GetLevelOffset(level);
+                var length = ivfc.GetLevelSize(level);
+                var sectorSize = 1 << ivfc.GetLevelBlockSize(level);
+
+                result = IntegrityVerificationStorage2.Create(level, baseStorage, result,
+                    integrityCheckLevel, offset, length, sectorSize);
+            }
+
+            return result;
+        }
+        catch (Exception)
+        {
+            await result.DisposeAsync();
+            throw;
+        }
     }
 }
