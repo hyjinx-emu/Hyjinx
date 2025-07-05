@@ -1,4 +1,5 @@
 using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.FileSystem;
 using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using System;
@@ -6,7 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.HLE.FileSystem.Installers;
+namespace Hyjinx.HLE.Utilities.Installers;
 
 /// <summary>
 /// An <see cref="IFirmwareInstaller"/> which is capable of extracting the firmware from an Xci cart.

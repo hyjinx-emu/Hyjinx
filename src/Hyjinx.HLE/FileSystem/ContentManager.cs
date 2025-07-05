@@ -1,11 +1,10 @@
 using Hyjinx.HLE.Exceptions;
-using Hyjinx.HLE.FileSystem.Installers;
 using Hyjinx.HLE.HOS.Services.Ssl;
 using Hyjinx.HLE.HOS.Services.Time;
 using Hyjinx.HLE.Utilities;
+using Hyjinx.HLE.Utilities.Installers;
 using Hyjinx.Logging.Abstractions;
 using LibHac.Common;
-using LibHac.Common.Keys;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;

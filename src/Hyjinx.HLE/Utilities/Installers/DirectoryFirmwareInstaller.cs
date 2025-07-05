@@ -1,10 +1,11 @@
 using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.FileSystem;
 using LibHac.FsSystem;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.HLE.FileSystem.Installers;
+namespace Hyjinx.HLE.Utilities.Installers;
 
 /// <summary>
 /// An <see cref="IFirmwareInstaller"/> which uses a directory as the source for the firmware.

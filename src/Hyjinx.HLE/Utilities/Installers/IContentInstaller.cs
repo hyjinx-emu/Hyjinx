@@ -2,7 +2,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.HLE.FileSystem.Installers;
+namespace Hyjinx.HLE.Utilities.Installers;
 
 /// <summary>
 /// A mechanism which is capable of installing content into the emulator.

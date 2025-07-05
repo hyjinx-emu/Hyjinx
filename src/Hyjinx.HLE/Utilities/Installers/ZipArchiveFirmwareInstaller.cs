@@ -1,3 +1,4 @@
+using Hyjinx.HLE.FileSystem;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -5,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Path = System.IO.Path;
 
-namespace Hyjinx.HLE.FileSystem.Installers;
+namespace Hyjinx.HLE.Utilities.Installers;
 
 /// <summary>
 /// An <see cref="IFirmwareInstaller"/> which is capable of extracting and installing firmware from a ZIP archive.

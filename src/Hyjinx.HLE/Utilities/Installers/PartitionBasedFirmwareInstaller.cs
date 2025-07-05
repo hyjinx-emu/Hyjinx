@@ -1,4 +1,5 @@
 using Hyjinx.HLE.Exceptions;
+using Hyjinx.HLE.FileSystem;
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
@@ -16,7 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Path = System.IO.Path;
 
-namespace Hyjinx.HLE.FileSystem.Installers;
+namespace Hyjinx.HLE.Utilities.Installers;
 
 /// <summary>
 /// An abstract <see cref="IFirmwareInstaller"/> which is capable of processing partitioned firmware.

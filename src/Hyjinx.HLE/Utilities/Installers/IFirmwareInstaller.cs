@@ -1,7 +1,8 @@
+using Hyjinx.HLE.FileSystem;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Hyjinx.HLE.FileSystem.Installers;
+namespace Hyjinx.HLE.Utilities.Installers;
 
 /// <summary>
 /// An <see cref="IContentInstaller"/> which specifically handles the installation of firmware.
