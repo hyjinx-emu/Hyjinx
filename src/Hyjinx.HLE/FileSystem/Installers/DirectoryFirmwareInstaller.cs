@@ -28,7 +28,9 @@ public class DirectoryFirmwareInstaller : PartitionBasedFirmwareInstaller
             throw new DirectoryNotFoundException("The directory does not exist.");
         }
 
-        var result = await VerifyAndGetVersionAsync(new LocalFileSystem(source), cancellationToken);
+        using var fileSystem = new LocalFileSystem(source);
+        
+        var result = await VerifyAndGetVersionAsync(fileSystem, cancellationToken);
         if (result == null)
         {
             throw new InvalidFirmwarePackageException("The directory does not contain a valid firmware package.");

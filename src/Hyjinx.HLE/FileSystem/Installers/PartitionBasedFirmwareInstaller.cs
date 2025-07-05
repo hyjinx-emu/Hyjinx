@@ -31,8 +31,8 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
     {
         foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
         {
-            await using var file = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read).AsStream();
-            Nca2 nca = await Nca2.LoadAsync(file, cancellationToken);
+            using var file = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read);
+            Nca2 nca = await Nca2.LoadAsync(file.AsStream(), cancellationToken);
 
             await SaveNcaAsync(nca, entry.Name.Remove(entry.Name.IndexOf('.')), temporaryDirectory, cancellationToken);
         }
@@ -73,24 +73,22 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
 
         foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
         {
-            await using var ncaStorage = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read).AsStream();
+            using var ncaStorageFile = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read);
 
-            var nca = await Nca2.LoadAsync(ncaStorage, cancellationToken);
-
+            var nca = await Nca2.LoadAsync(ncaStorageFile.AsStream(), cancellationToken);
             if (nca.Header is { TitleId: ContentManager.SystemUpdateTitleId, ContentType: NcaContentType.Meta })
             {
                 // TODO: Viper - This should be enforcing integrity levels.
-                var fs = await nca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid,
-                    cancellationToken);
+                var fs = await nca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid, cancellationToken);
 
-                string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
-
-                using var metaFile = new UniqueRef<IFile>();
-
-                if (fs.OpenFile(ref metaFile.Ref, cnmtPath.ToU8Span(), OpenMode.Read).IsSuccess())
+                var cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
+                
+                using var metaFileRef = new UniqueRef<IFile>();
+                if (fs.OpenFile(ref metaFileRef.Ref, cnmtPath.ToU8Span(), OpenMode.Read).IsSuccess())
                 {
-                    var meta = new Cnmt(metaFile.Get.AsStream());
-
+                    using var metaFile = metaFileRef.Get;
+                    
+                    var meta = new Cnmt(metaFile.AsStream());
                     if (meta.Type == ContentMetaType.SystemUpdate)
                     {
                         metaEntries = meta.MetaEntries;
@@ -104,15 +102,15 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
             {
                 // TODO: Viper - This should be enforcing integrity levels.
                 var romfs = await nca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid, cancellationToken);
-
-                using var systemVersionFile = new UniqueRef<IFile>();
-
-                if (romfs.OpenFile(ref systemVersionFile.Ref, "/file".ToU8Span(), OpenMode.Read).IsSuccess())
+            
+                using var systemVersionFileRef = new UniqueRef<IFile>();
+                if (romfs.OpenFile(ref systemVersionFileRef.Ref, "/file".ToU8Span(), OpenMode.Read).IsSuccess())
                 {
-                    systemVersion = new SystemVersion(systemVersionFile.Get.AsStream());
+                    using var systemVersionFile = systemVersionFileRef.Get;
+                    systemVersion = new SystemVersion(systemVersionFile.AsStream());
                 }
             }
-
+            
             if (updateNcas.TryGetValue(nca.Header.TitleId, out var updateNcasItem))
             {
                 updateNcasItem.Add((nca.Header.ContentType, entry.FullPath));
@@ -128,45 +126,48 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
         {
             throw new FileNotFoundException("System update title was not found in the firmware package.");
         }
-
+        
         foreach (CnmtContentMetaEntry metaEntry in metaEntries)
         {
             if (updateNcas.TryGetValue(metaEntry.TitleId, out var ncaEntry))
             {
-                string metaNcaPath = ncaEntry.Find(x => x.type == NcaContentType.Meta).path;
-                string contentPath = ncaEntry.Find(x => x.type != NcaContentType.Meta).path;
-
+                var metaNcaPath = ncaEntry.Find(x => x.type == NcaContentType.Meta).path;
+                var contentPath = ncaEntry.Find(x => x.type != NcaContentType.Meta).path;
+        
                 // Nintendo in 9.0.0, removed PPC and only kept the meta nca of it.
                 // This is a perfect valid case, so we should just ignore the missing content nca and continue.
                 if (contentPath == null)
                 {
                     updateNcas.Remove(metaEntry.TitleId);
-
+        
                     continue;
                 }
-
-                await using var metaStorage = OpenPossibleFragmentedFile(filesystem, metaNcaPath, OpenMode.Read).AsStream();
-                await using var contentStorage = OpenPossibleFragmentedFile(filesystem, contentPath, OpenMode.Read).AsStream();
-
-                Nca2 metaNca = await Nca2.LoadAsync(metaStorage, cancellationToken);
-
+        
+                using var metaStorage = OpenPossibleFragmentedFile(filesystem, metaNcaPath, OpenMode.Read);
+        
+                var metaNca = await Nca2.LoadAsync(metaStorage.AsStream(), cancellationToken);
+        
                 // TODO: Viper - This should be enforcing integrity levels.
                 var fs = await metaNca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid, cancellationToken);
-
+        
                 string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
-
-                using var metaFile = new UniqueRef<IFile>();
-
-                if (fs.OpenFile(ref metaFile.Ref, cnmtPath.ToU8Span(), OpenMode.Read).IsSuccess())
+        
+                using var metaFileRef = new UniqueRef<IFile>();
+                if (fs.OpenFile(ref metaFileRef.Ref, cnmtPath.ToU8Span(), OpenMode.Read).IsSuccess())
                 {
-                    var meta = new Cnmt(metaFile.Get.AsStream());
-
-                    using var contentData = new RentedArray2<byte>((int)contentStorage.Length);
-                    await contentStorage.ReadExactlyAsync(contentData.Memory, cancellationToken);
-
+                    using var contentStorage = OpenPossibleFragmentedFile(filesystem, contentPath, OpenMode.Read);
+                    
+                    using var metaFile = metaFileRef.Get;
+                    var meta = new Cnmt(metaFile.AsStream());
+                    
+                    var contentStream = contentStorage.AsStream();
+                    
+                    using var contentData = new RentedArray2<byte>((int)contentStream.Length);
+                    await contentStream.ReadExactlyAsync(contentData.Memory, cancellationToken);
+        
                     Span<byte> hash = new byte[Sha256.DigestSize];
                     Sha256.GenerateSha256Hash(contentData.Span, hash);
-
+        
                     if (LibHac.Common.Utilities.ArraysEqual(hash.ToArray(), meta.ContentEntries[0].Hash))
                     {
                         updateNcas.Remove(metaEntry.TitleId);
@@ -174,21 +175,21 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
                 }
             }
         }
-
-        if (updateNcas.Count > 0)
-        {
-            StringBuilder extraNcas = new();
-
-            foreach (var entry in updateNcas)
-            {
-                foreach (var (type, path) in entry.Value)
-                {
-                    extraNcas.AppendLine(path);
-                }
-            }
-
-            throw new InvalidFirmwarePackageException($"Firmware package contains unrelated archives. Please remove these paths: {Environment.NewLine}{extraNcas}");
-        }
+        //
+        // if (updateNcas.Count > 0)
+        // {
+        //     StringBuilder extraNcas = new();
+        //
+        //     foreach (var entry in updateNcas)
+        //     {
+        //         foreach (var (type, path) in entry.Value)
+        //         {
+        //             extraNcas.AppendLine(path);
+        //         }
+        //     }
+        //
+        //     throw new InvalidFirmwarePackageException($"Firmware package contains unrelated archives. Please remove these paths: {Environment.NewLine}{extraNcas}");
+        // }
 
         return systemVersion;
     }

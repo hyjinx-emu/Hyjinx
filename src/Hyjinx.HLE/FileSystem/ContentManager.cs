@@ -438,7 +438,7 @@ public partial class ContentManager : IContentManager
 
         return file.Extension switch
         {
-            ".zip" => new ZipArchiveFirmwareInstaller(_virtualFileSystem),
+            ".zip" => new ZipArchiveFirmwareInstaller(),
             ".xci" => new XciFirmwareInstaller(_virtualFileSystem),
             _ => throw new InvalidFirmwarePackageException("Input file is not a valid firmware package")
         };
