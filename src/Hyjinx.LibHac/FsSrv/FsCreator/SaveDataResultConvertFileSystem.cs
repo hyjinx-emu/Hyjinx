@@ -48,15 +48,15 @@ public class SaveDataResultConvertDirectory : IResultConvertDirectory
 }
 
 /// <summary>
-/// Wraps an <see cref="ISaveDataFileSystem"/>, converting its returned <see cref="Result"/>s
+/// Wraps an <see cref="SaveDataFileSystem"/>, converting its returned <see cref="Result"/>s
 /// to save-data-specific <see cref="Result"/>s.
 /// </summary>
 /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
-public class SaveDataResultConvertFileSystem : IResultConvertFileSystem<ISaveDataFileSystem>
+public class SaveDataResultConvertFileSystem : IResultConvertFileSystem<SaveDataFileSystem>
 {
     private bool _isReconstructible;
 
-    public SaveDataResultConvertFileSystem(ref SharedRef<ISaveDataFileSystem> baseFileSystem, bool isReconstructible) :
+    public SaveDataResultConvertFileSystem(ref SharedRef<SaveDataFileSystem> baseFileSystem, bool isReconstructible) :
         base(ref baseFileSystem)
     {
         _isReconstructible = isReconstructible;

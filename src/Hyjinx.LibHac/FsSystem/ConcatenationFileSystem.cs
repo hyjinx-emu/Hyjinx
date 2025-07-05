@@ -30,7 +30,7 @@ namespace LibHac.FsSystem;
 /// </para>
 /// <para>Based on nnSdk 13.4.0 (FS 13.1.0)</para>
 /// </remarks>
-public class ConcatenationFileSystem : IFileSystem
+public class ConcatenationFileSystem : FileSystem
 {
     private class ConcatenationFile : IFile
     {

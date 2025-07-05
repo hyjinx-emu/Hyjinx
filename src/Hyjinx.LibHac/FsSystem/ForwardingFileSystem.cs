@@ -74,7 +74,7 @@ public class ForwardingDirectory : IDirectory
 /// Primarily meant for use as a base class when the derived class only needs to override some of the methods.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-public class ForwardingFileSystem : IFileSystem
+public class ForwardingFileSystem : FileSystem
 {
     protected SharedRef<IFileSystem> BaseFileSystem;
 

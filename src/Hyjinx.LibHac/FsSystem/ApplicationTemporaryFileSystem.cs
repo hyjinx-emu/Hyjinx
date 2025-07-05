@@ -5,7 +5,7 @@ using System;
 
 namespace LibHac.FsSystem;
 
-public class ApplicationTemporaryFileSystem : IFileSystem, ISaveDataExtraDataAccessor
+public class ApplicationTemporaryFileSystem : FileSystem, ISaveDataExtraDataAccessor
 {
     protected override Result DoCreateFile(in Path path, long size, CreateFileOptions option)
     {

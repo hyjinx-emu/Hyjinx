@@ -182,7 +182,7 @@ public class SaveDataFileSystemServiceImpl : IDisposable
                 return res.Miss();
         }
 
-        using var saveDataFs = new SharedRef<ISaveDataFileSystem>();
+        using var saveDataFs = new SharedRef<SaveDataFileSystem>();
 
         using (_saveFileSystemCacheManager.GetScopedLock())
         using (_saveExtraDataCacheManager.GetScopedLock())

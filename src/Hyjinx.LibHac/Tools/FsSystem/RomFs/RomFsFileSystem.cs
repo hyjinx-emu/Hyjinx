@@ -5,7 +5,7 @@ using System;
 
 namespace LibHac.Tools.FsSystem.RomFs;
 
-public class RomFsFileSystem : IFileSystem
+public class RomFsFileSystem : FileSystem
 {
     public RomfsHeader Header { get; }
 

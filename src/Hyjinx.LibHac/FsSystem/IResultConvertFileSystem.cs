@@ -102,7 +102,7 @@ public abstract class IResultConvertDirectory : IDirectory
 /// <see cref="Result"/>s based on the <see cref="ConvertResult"/> function.
 /// </summary>
 /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
-public abstract class IResultConvertFileSystem<T> : ISaveDataFileSystem where T : IFileSystem
+public abstract class IResultConvertFileSystem<T> : SaveDataFileSystem where T : FileSystem
 {
     private SharedRef<T> _baseFileSystem;
 

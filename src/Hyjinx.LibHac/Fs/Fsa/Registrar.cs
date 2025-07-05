@@ -26,7 +26,7 @@ public interface IUnmountHookInvoker : IDisposable
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
 public static class Registrar
 {
-    private class UnmountHookFileSystem : IFileSystem
+    private class UnmountHookFileSystem : FileSystem
     {
         private UniqueRef<IFileSystem> _fileSystem;
         private UniqueRef<IUnmountHookInvoker> _unmountHookInvoker;

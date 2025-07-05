@@ -230,7 +230,7 @@ internal class StorageLayoutTypeSetDirectory : IDirectory
 /// Wraps an <see cref="IFileSystem"/>, automatically setting the thread's storage type when accessing the file system.
 /// This is used to determine which storage speed emulation parameters to use for the current thread.
 /// </summary>
-internal class StorageLayoutTypeSetFileSystem : IFileSystem
+internal class StorageLayoutTypeSetFileSystem : FileSystem
 {
     private SharedRef<IFileSystem> _baseFileSystem;
     private StorageLayoutType _storageFlag;

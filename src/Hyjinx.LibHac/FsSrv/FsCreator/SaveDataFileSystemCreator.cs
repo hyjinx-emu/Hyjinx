@@ -39,7 +39,7 @@ public class SaveDataFileSystemCreator : ISaveDataFileSystemCreator
         throw new NotImplementedException();
     }
 
-    public Result Create(ref SharedRef<ISaveDataFileSystem> outFileSystem, ref SharedRef<IFileSystem> baseFileSystem,
+    public Result Create(ref SharedRef<SaveDataFileSystem> outFileSystem, ref SharedRef<IFileSystem> baseFileSystem,
         SaveDataSpaceId spaceId, ulong saveDataId, bool allowDirectorySaveData, bool isDeviceUniqueMac,
         bool isJournalingSupported, bool isMultiCommitSupported, bool openReadOnly, bool openShared,
         ISaveDataCommitTimeStampGetter timeStampGetter, bool isReconstructible)
@@ -58,7 +58,7 @@ public class SaveDataFileSystemCreator : ISaveDataFileSystemCreator
             return ResultFs.PathNotFound.Includes(res) ? ResultFs.TargetNotFound.LogConverted(res) : res.Miss();
         }
 
-        using var saveDataFs = new SharedRef<ISaveDataFileSystem>();
+        using var saveDataFs = new SharedRef<SaveDataFileSystem>();
 
         if (type == DirectoryEntryType.Directory)
         {

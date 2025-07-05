@@ -26,7 +26,7 @@ internal struct DirectorySaveDataFileSystemGlobals
 /// underlying <see cref="IFileSystem"/> is atomic.
 /// <para>Based on nnSdk 14.3.0 (FS 14.1.0)</para>
 /// </remarks>
-public class DirectorySaveDataFileSystem : ISaveDataFileSystem
+public class DirectorySaveDataFileSystem : SaveDataFileSystem
 {
     private const int IdealWorkBufferSize = 0x100000; // 1 MiB
 

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace LibHac.Tools.FsSystem;
 
-public class LayeredFileSystem : IFileSystem
+public class LayeredFileSystem : FileSystem
 {
     /// <summary>
     /// List of source <see cref="IFileSystem"/>s.

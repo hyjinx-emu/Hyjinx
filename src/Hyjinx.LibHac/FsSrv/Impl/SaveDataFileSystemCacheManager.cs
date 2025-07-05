@@ -17,7 +17,7 @@ public class SaveDataFileSystemCacheManager : IDisposable
     [NonCopyable]
     private struct Cache
     {
-        private SharedRef<ISaveDataFileSystem> _fileSystem;
+        private SharedRef<SaveDataFileSystem> _fileSystem;
         private ulong _saveDataId;
         private SaveDataSpaceId _spaceId;
 
@@ -31,12 +31,12 @@ public class SaveDataFileSystemCacheManager : IDisposable
             return _fileSystem.HasValue && _spaceId == spaceId && _saveDataId == saveDataId;
         }
 
-        public SharedRef<ISaveDataFileSystem> Move()
+        public SharedRef<SaveDataFileSystem> Move()
         {
-            return SharedRef<ISaveDataFileSystem>.CreateMove(ref _fileSystem);
+            return SharedRef<SaveDataFileSystem>.CreateMove(ref _fileSystem);
         }
 
-        public void Register(ref SharedRef<ISaveDataFileSystem> fileSystem, SaveDataSpaceId spaceId, ulong saveDataId)
+        public void Register(ref SharedRef<SaveDataFileSystem> fileSystem, SaveDataSpaceId spaceId, ulong saveDataId)
         {
             _fileSystem.SetByMove(ref fileSystem);
             _spaceId = spaceId;
@@ -95,7 +95,7 @@ public class SaveDataFileSystemCacheManager : IDisposable
         return new UniqueLockRef<SdkRecursiveMutexType>(ref _mutex);
     }
 
-    public bool GetCache(ref SharedRef<ISaveDataFileSystem> outFileSystem, SaveDataSpaceId spaceId, ulong saveDataId)
+    public bool GetCache(ref SharedRef<SaveDataFileSystem> outFileSystem, SaveDataSpaceId spaceId, ulong saveDataId)
     {
         Assert.SdkRequiresGreaterEqual(_maxCachedFileSystemCount, 0);
 
@@ -105,7 +105,7 @@ public class SaveDataFileSystemCacheManager : IDisposable
         {
             if (_cachedFileSystems[i].IsCached(spaceId, saveDataId))
             {
-                using SharedRef<ISaveDataFileSystem> cachedFs = _cachedFileSystems[i].Move();
+                using SharedRef<SaveDataFileSystem> cachedFs = _cachedFileSystems[i].Move();
                 outFileSystem.SetByMove(ref cachedFs.Ref);
 
                 return true;
@@ -115,7 +115,7 @@ public class SaveDataFileSystemCacheManager : IDisposable
         return false;
     }
 
-    public void Register(ref SharedRef<ISaveDataFileSystem> fileSystem, SaveDataSpaceId spaceId, ulong saveDataId)
+    public void Register(ref SharedRef<SaveDataFileSystem> fileSystem, SaveDataSpaceId spaceId, ulong saveDataId)
     {
         Assert.SdkRequiresNotNull(in fileSystem);
 

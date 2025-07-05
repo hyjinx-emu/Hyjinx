@@ -3,8 +3,7 @@ using LibHac.Fs.Fsa;
 
 namespace LibHac.FsSystem;
 
-// ReSharper disable once InconsistentNaming
-public abstract class ISaveDataFileSystem : IFileSystem, ICacheableSaveDataFileSystem, ISaveDataExtraDataAccessor
+public abstract class SaveDataFileSystem : FileSystem, ICacheableSaveDataFileSystem, ISaveDataExtraDataAccessor
 {
     public abstract bool IsSaveDataFileSystemCacheEnabled();
     public abstract Result RollbackOnlyModified();

@@ -6,26 +6,14 @@ using System.Runtime.InteropServices;
 
 namespace LibHac.Fs.Fsa;
 
-// ReSharper disable once InconsistentNaming
 /// <summary>
-/// Provides an interface for accessing a file system. <c>/</c> is used as the path delimiter.
+/// Provides a base implementation for accessing a file system. <c>/</c> is used as the path delimiter.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-public abstract class IFileSystem : IDisposable
+public abstract class FileSystem : IFileSystem
 {
     public virtual void Dispose() { }
-
-    /// <summary>
-    /// Creates or overwrites a file at the specified path.
-    /// </summary>
-    /// <param name="path">The full path of the file to create.</param>
-    /// <param name="size">The initial size of the created file.</param>
-    /// <param name="option">Flags to control how the file is created.
-    /// Should usually be <see cref="CreateFileOptions.None"/></param>
-    /// <returns><see cref="Result.Success"/>: The operation was successful.<br/>
-    /// <see cref="ResultFs.PathNotFound"/>: The parent directory of the specified path does not exist.<br/>
-    /// <see cref="ResultFs.PathAlreadyExists"/>: Specified path already exists as either a file or directory.<br/>
-    /// <see cref="ResultFs.UsableSpaceNotEnough"/>: Insufficient free space to create the file.</returns>
+    
     public Result CreateFile(in Path path, long size, CreateFileOptions option)
     {
         if (size < 0)
@@ -33,53 +21,22 @@ public abstract class IFileSystem : IDisposable
 
         return DoCreateFile(in path, size, option);
     }
-
-    /// <summary>
-    /// Creates or overwrites a file at the specified path.
-    /// </summary>
-    /// <param name="path">The full path of the file to create.</param>
-    /// <param name="size">The initial size of the created file.
-    /// Should usually be <see cref="CreateFileOptions.None"/></param>
-    /// <returns><see cref="Result.Success"/>: The operation was successful.<br/>
-    /// <see cref="ResultFs.PathNotFound"/>: The parent directory of the specified path does not exist.<br/>
-    /// <see cref="ResultFs.PathAlreadyExists"/>: Specified path already exists as either a file or directory.<br/>
-    /// <see cref="ResultFs.UsableSpaceNotEnough"/>: Insufficient free space to create the file.</returns>
+    
     public Result CreateFile(in Path path, long size)
     {
         return CreateFile(in path, size, CreateFileOptions.None);
     }
-
-    /// <summary>
-    /// Deletes the specified file.
-    /// </summary>
-    /// <param name="path">The full path of the file to delete.</param>
-    /// <returns><see cref="Result.Success"/>: The operation was successful.<br/>
-    /// <see cref="ResultFs.PathNotFound"/>: The specified path does not exist or is a directory.</returns>
+    
     public Result DeleteFile(in Path path)
     {
         return DoDeleteFile(in path);
     }
-
-    /// <summary>
-    /// Creates all directories and subdirectories in the specified path unless they already exist.
-    /// </summary>
-    /// <param name="path">The full path of the directory to create.</param>
-    /// <returns><see cref="Result.Success"/>: The operation was successful.<br/>
-    /// <see cref="ResultFs.PathNotFound"/>: The parent directory of the specified path does not exist.<br/>
-    /// <see cref="ResultFs.PathAlreadyExists"/>: Specified path already exists as either a file or directory.<br/>
-    /// <see cref="ResultFs.UsableSpaceNotEnough"/>: Insufficient free space to create the directory.</returns>
+    
     public Result CreateDirectory(in Path path)
     {
         return DoCreateDirectory(in path);
     }
 
-    /// <summary>
-    /// Deletes the specified directory.
-    /// </summary>
-    /// <param name="path">The full path of the directory to delete.</param>
-    /// <returns><see cref="Result.Success"/>: The operation was successful.<br/>
-    /// <see cref="ResultFs.PathNotFound"/>: The specified path does not exist or is a file.<br/>
-    /// <see cref="ResultFs.DirectoryNotEmpty"/>: The specified directory is not empty.</returns>
     public Result DeleteDirectory(in Path path)
     {
         return DoDeleteDirectory(in path);
