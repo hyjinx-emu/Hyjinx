@@ -8,7 +8,6 @@ namespace LibHac.Fs;
 /// <summary>
 /// Provides an interface for asynchronously reading a sequence of bytes within a region of storage.
 /// </summary>
-/// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
 public interface IAsyncStorage : IStorage, IAsyncDisposable
 {
     /// <summary>
