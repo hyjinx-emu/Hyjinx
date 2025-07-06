@@ -122,18 +122,15 @@ public class Nca2<THeader, TFsHeader>
         var storage = await OpenStorageCoreAsync(fsHeader, integrityCheckLevel, cancellationToken);
         return fsHeader.FormatType switch
         {
-            NcaFormatType.Pfs0 => CreateFileSystemForPfs0(storage),
-            NcaFormatType.Romfs => CreateFileSystemForRomFs(storage),
+            NcaFormatType.Pfs0 => await CreateFileSystemForPfs0Async(storage, cancellationToken),
+            NcaFormatType.RomFs => CreateFileSystemForRomFs(storage),
             _ => throw new NotSupportedException($"The format {fsHeader.FormatType} is not supported.")
         };
     }
 
-    private IFileSystem CreateFileSystemForPfs0(IAsyncStorage storage)
+    private async ValueTask<IFileSystem> CreateFileSystemForPfs0Async(IAsyncStorage storage, CancellationToken cancellationToken)
     {
-        var fs = new PartitionFileSystem();
-        fs.Initialize(storage).ThrowIfFailure();
-
-        return fs;
+        return await PartitionedFileSystem2.CreateAsync(storage, cancellationToken);
     }
 
     private IFileSystem CreateFileSystemForRomFs(IAsyncStorage storage)

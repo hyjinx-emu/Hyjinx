@@ -243,7 +243,7 @@ public class Nca
                 var pfs = new PartitionFileSystem();
                 pfs.Initialize(storage).ThrowIfFailure();
                 return pfs;
-            case NcaFormatType.Romfs:
+            case NcaFormatType.RomFs:
                 return new RomFsFileSystem(storage);
             default:
                 throw new ArgumentOutOfRangeException();

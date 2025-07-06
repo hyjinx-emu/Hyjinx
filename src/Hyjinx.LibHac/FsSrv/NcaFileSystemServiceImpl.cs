@@ -190,7 +190,7 @@ public class NcaFileSystemServiceImpl
 
         switch (fsType)
         {
-            case NcaFormatType.Romfs:
+            case NcaFormatType.RomFs:
                 return _config.RomFsCreator.Create(ref outFileSystem, ref ncaSectionStorage.Ref);
             case NcaFormatType.Pfs0:
                 return _config.PartitionFsCreator.Create(ref outFileSystem, ref ncaSectionStorage.Ref);
