@@ -6,6 +6,8 @@ using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,25 +17,29 @@ namespace LibHac.FsSystem;
 /// <summary>
 /// A partitioned file system.
 /// </summary>
-public class PartitionedFileSystem2 : FileSystem2
+public class PartitionFileSystem2 : FileSystem2
 {
+    private readonly List<DirectoryEntryEx> _entries = new();
+    
     private readonly IAsyncStorage _baseStorage;
     private readonly PartitionFileSystemFormat.PartitionFileSystemHeaderImpl _header;
+    private readonly string _rootPath;
 
-    private PartitionedFileSystem2(IAsyncStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
+    private PartitionFileSystem2(IAsyncStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header, string rootPath)
     {
         _baseStorage = baseStorage;
         _header = header;
+        _rootPath = rootPath;
     }
     
     /// <summary>
-    /// Creates a new instance.
+    /// Loads the file system from storage.
     /// </summary>
     /// <param name="baseStorage">The base storage for the file system.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="InvalidOperationException">The header size read was not the expected size.</exception>
-    public static async ValueTask<PartitionedFileSystem2> CreateAsync(IAsyncStorage baseStorage, CancellationToken cancellationToken = default)
+    public static async ValueTask<PartitionFileSystem2> LoadAsync(IAsyncStorage baseStorage, CancellationToken cancellationToken = default)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         using var headerBuffer = new RentedArray2<byte>(headerSize);
@@ -46,39 +52,68 @@ public class PartitionedFileSystem2 : FileSystem2
 
         var header = Unsafe.As<byte, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>(ref headerBuffer.Span[0]);
 
-        return new PartitionedFileSystem2(baseStorage, header);
+        var result = new PartitionFileSystem2(baseStorage, header, "/");
+        await result.InitializeAsync(cancellationToken);
+
+        return result;
     }
-    
-    public override async IAsyncEnumerable<DirectoryEntryEx> EnumerateFileInfosAsync(string? searchPattern = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+
+    private async ValueTask InitializeAsync(CancellationToken cancellationToken)
     {
-        var startOffset = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
+        var fsHeaderSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         var entryHeaderSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionEntry>();
-        var nameTableOffset = startOffset + _header.EntryCount * entryHeaderSize;
+        var nameTableOffset = fsHeaderSize + _header.EntryCount * entryHeaderSize;
+        
+        // The header is organized in blocks as: [FileSystemHeader][EntryTable][NameTable]
+        var metadataSize = nameTableOffset + _header.NameTableSize;
         
         var index = 0;
-        while (index < _header.EntryCount && !cancellationToken.IsCancellationRequested)
+        while (index < _header.EntryCount)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             // Read the entry details.
             using var entryBuffer = new RentedArray2<byte>(entryHeaderSize * 2);
-            await _baseStorage.ReadOnceAsync(startOffset + (index * entryHeaderSize), entryBuffer.Memory, cancellationToken);
+            await _baseStorage.ReadOnceAsync(fsHeaderSize + (index * entryHeaderSize), entryBuffer.Memory, cancellationToken);
 
             (PartitionFileSystemFormat.PartitionEntry entry, int nameLength) = GetEntryDetails(index, entryHeaderSize, entryBuffer.Span);
-
+            
             // Read the entry name.
             using var nameBuffer = new RentedArray2<byte>(nameLength);
             await _baseStorage.ReadOnceAsync(nameTableOffset + entry.NameOffset, nameBuffer.Memory, cancellationToken);
 
-            var fullName = $"/{new U8Span(nameBuffer.Span).ToString()}";
-            if (searchPattern == null || PathTools.MatchesPattern(searchPattern, fullName, true))
-            {
-                yield return new DirectoryEntryEx(
-                    System.IO.Path.GetFileName(fullName),
-                    fullName,
-                    DirectoryEntryType.File, entry.Size
-                );
-            }
+            var fullName = $"{_rootPath}{new U8Span(nameBuffer.Span).ToString()}";
+
+            _entries.Add(new DirectoryEntryEx(
+                System.IO.Path.GetFileName(fullName),
+                fullName,
+                DirectoryEntryType.File,
+                entry.Size, 
+                entry.Offset + metadataSize));
             
             index++;
+        }
+    }
+
+    public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
+    {
+        var entry = _entries.SingleOrDefault(o => o.FullPath == fileName);
+        if (entry == null)
+        {
+            throw new FileNotFoundException("The file does not exist.", fileName);
+        }
+
+        return new NxFileStream2(_baseStorage.SliceAsAsync(entry.Offset, entry.Size));
+    }
+
+    public override IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? searchPattern = null)
+    {
+        foreach (var entry in _entries)
+        {
+            if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullPath, false))
+            {
+                yield return entry;
+            }
         }
     }
 

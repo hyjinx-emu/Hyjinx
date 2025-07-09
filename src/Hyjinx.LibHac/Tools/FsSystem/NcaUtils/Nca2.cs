@@ -130,7 +130,7 @@ public class Nca2<THeader, TFsHeader>
 
     private async ValueTask<IFileSystem> CreateFileSystemForPfs0Async(IAsyncStorage storage, CancellationToken cancellationToken)
     {
-        return await PartitionedFileSystem2.CreateAsync(storage, cancellationToken);
+        return await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
     }
 
     private IFileSystem CreateFileSystemForRomFs(IAsyncStorage storage)

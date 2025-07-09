@@ -1,6 +1,6 @@
 ﻿using LibHac.Tools.Fs;
 using System.Collections.Generic;
-using System.Threading;
+using System.IO;
 
 namespace LibHac.Fs.Fsa;
 
@@ -9,5 +9,7 @@ namespace LibHac.Fs.Fsa;
 /// </summary>
 public abstract partial class FileSystem2 : IReadableFileSystem
 {
-    public abstract IAsyncEnumerable<DirectoryEntryEx> EnumerateFileInfosAsync(string? searchPattern = null, CancellationToken cancellationToken = default);
+    public abstract Stream OpenFile(string fileName, FileAccess access = FileAccess.Read);
+
+    public abstract IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? searchPattern = null);
 }
