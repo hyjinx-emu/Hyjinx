@@ -16,5 +16,5 @@ The maintainers of this project do not condone or support any use of this softwa
 
 If any encrypted files are detected, an exception will be thrown indicating an encrypted file is detected and prevent working with the file.
 
-## Attribution
+## Credits
 Originally developed by Alex Barney (aka @thealexbarney) and is a continuation of his works.
