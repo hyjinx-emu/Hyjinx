@@ -16,7 +16,8 @@ public interface IReadableFileSystem
     /// <param name="fileName">The full, or relative path, of the file name to open.</param>
     /// <param name="access">The access level required for the file.</param>
     /// <returns>The stream to the file.</returns>
-    /// <exception cref="UnauthorizedAccessException">The access level requested is not allowed for the caller.</exception>
+    /// <exception cref="FileNotFoundException">The file does not exist.</exception>
+    /// <exception cref="UnauthorizedAccessException">The access level requested is not allowed.</exception>
     Stream OpenFile(string fileName, FileAccess access = FileAccess.Read);
     
     /// <summary>

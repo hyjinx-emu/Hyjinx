@@ -123,7 +123,7 @@ public class Nca2<THeader, TFsHeader>
         return fsHeader.FormatType switch
         {
             NcaFormatType.Pfs0 => await CreateFileSystemForPfs0Async(storage, cancellationToken),
-            NcaFormatType.RomFs => CreateFileSystemForRomFs(storage),
+            NcaFormatType.RomFs => await CreateFileSystemForRomFs(storage, cancellationToken),
             _ => throw new NotSupportedException($"The format {fsHeader.FormatType} is not supported.")
         };
     }
@@ -133,9 +133,9 @@ public class Nca2<THeader, TFsHeader>
         return await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
     }
 
-    private IFileSystem CreateFileSystemForRomFs(IAsyncStorage storage)
+    private async ValueTask<IFileSystem> CreateFileSystemForRomFs(IAsyncStorage storage, CancellationToken cancellationToken)
     {
-        return new RomFsFileSystem(storage);
+        return await RomFsFileSystem2.LoadAsync(storage, cancellationToken);
     }
 
     /// <summary>
