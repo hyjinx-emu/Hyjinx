@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibHac.Tools.FsSystem.NcaUtils;
+namespace LibHac.Tools.FsSystem;
 
 /// <summary>
 /// A mechanism which deserializes a series of bytes into an object.

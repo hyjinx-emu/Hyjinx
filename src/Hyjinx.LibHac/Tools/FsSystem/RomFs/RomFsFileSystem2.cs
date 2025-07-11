@@ -1,6 +1,7 @@
 ﻿using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.Fs;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -21,6 +22,32 @@ public class RomFsFileSystem2 : FileSystem2
     /// <returns>The new instance.</returns>
     public static ValueTask<RomFsFileSystem2> LoadAsync(IAsyncStorage baseStorage, CancellationToken cancellationToken = default)
     {
+        var reader = new BinaryReader(baseStorage.AsStream());
+        Func<long> next;
+        
+        if (reader.PeekChar() == 40) // A 32-bit header is being used.
+        {
+            next = () => reader.ReadInt32();
+        }
+        else
+        {
+            next = reader.ReadInt64;
+        }
+
+        var header = new RomFsHeader2
+        {
+            HeaderSize = next(),
+            DirHashTableOffset = next(),
+            DirHashTableSize = next(),
+            DirEntryTableOffset = next(),
+            DirEntryTableSize = next(),
+            FileHashTableOffset = next(),
+            FileHashTableSize = next(),
+            FileEntryTableOffset = next(),
+            FileEntryTableSize = next(),
+            DataOffset = next()
+        };
+        
         return ValueTask.FromResult(new RomFsFileSystem2());
     }
 
