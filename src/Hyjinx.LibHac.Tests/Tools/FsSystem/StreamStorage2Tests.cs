@@ -35,20 +35,6 @@ public class StreamStorage2Tests
 
         stream.Verify();
     }
-    
-    [Fact]
-    public async Task DisposesTheStream()
-    {
-        Mock<Stream> stream = new();
-        stream.Setup(o => o.CanRead).Returns(true);
-        stream.Setup(o => o.CanSeek).Returns(true);
-        stream.Setup(o => o.DisposeAsync()).Returns(ValueTask.CompletedTask).Verifiable();
-
-        var target = StreamStorage2.Create(stream.Object, false);
-        await target.DisposeAsync();
-
-        stream.Verify();
-    }
 
     [Fact]
     public async Task ReadsTheDataFromBeginning()

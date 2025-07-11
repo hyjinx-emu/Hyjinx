@@ -1,15 +1,14 @@
-﻿using LibHac.Fs;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LibHac.FsSystem;
+namespace LibHac.Fs;
 
 /// <summary>
-/// An <see cref="IAsyncStorage"/> which sources data already held in memory.
+/// An <see cref="IStorage2"/> which sources data already held in memory.
 /// </summary>
-public class MemoryStorage2 : AsyncStorage
+public class MemoryStorage2 : Storage2
 {
     private readonly MemoryStream _memoryStream;
 
@@ -62,7 +61,7 @@ public class MemoryStorage2 : AsyncStorage
         return _memoryStream.Read(buffer);
     }
 
-    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    public override async Task<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         return await _memoryStream.ReadAsync(buffer, cancellationToken);
     }
@@ -72,10 +71,10 @@ public class MemoryStorage2 : AsyncStorage
         return _memoryStream.Seek(offset, origin);
     }
 
-    protected override async ValueTask DisposeAsyncCore()
+    protected override void Dispose(bool disposing)
     {
-        await _memoryStream.DisposeAsync();
+        _memoryStream.Dispose();
         
-        await base.DisposeAsyncCore();
+        base.Dispose(disposing);
     }
 }

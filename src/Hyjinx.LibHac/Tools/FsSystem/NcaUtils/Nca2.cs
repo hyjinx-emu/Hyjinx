@@ -128,12 +128,12 @@ public class Nca2<THeader, TFsHeader>
         };
     }
 
-    private async ValueTask<IFileSystem> CreateFileSystemForPfs0Async(IAsyncStorage storage, CancellationToken cancellationToken)
+    private async ValueTask<IFileSystem> CreateFileSystemForPfs0Async(IStorage2 storage, CancellationToken cancellationToken)
     {
         return await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
     }
 
-    private async ValueTask<IFileSystem> CreateFileSystemForRomFs(IAsyncStorage storage, CancellationToken cancellationToken)
+    private async ValueTask<IFileSystem> CreateFileSystemForRomFs(IStorage2 storage, CancellationToken cancellationToken)
     {
         return await RomFsFileSystem2.LoadAsync(storage, cancellationToken);
     }
@@ -144,10 +144,10 @@ public class Nca2<THeader, TFsHeader>
     /// <param name="section">The section.</param>
     /// <param name="integrityCheckLevel">The integrity check level to enforce when opening the section. Unused for sections which do not support hash verification.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    /// <returns>The new <see cref="IAsyncStorage"/> instance.</returns>
+    /// <returns>The new <see cref="IStorage2"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
     /// <exception cref="NotSupportedException">The encryption format used by <paramref name="section"/> is not supported.</exception>
-    public async ValueTask<IAsyncStorage> OpenStorageAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
+    public async ValueTask<IStorage2> OpenStorageAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
     {
         if (!Sections.TryGetValue(section, out var fsHeader))
         {
@@ -157,7 +157,7 @@ public class Nca2<THeader, TFsHeader>
         return await OpenStorageCoreAsync(fsHeader, integrityCheckLevel, cancellationToken);
     }
 
-    private async ValueTask<IAsyncStorage> OpenStorageCoreAsync(TFsHeader fsHeader, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken)
+    private async ValueTask<IStorage2> OpenStorageCoreAsync(TFsHeader fsHeader, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -173,7 +173,7 @@ public class Nca2<THeader, TFsHeader>
         return result;
     }
 
-    protected virtual async ValueTask<IAsyncStorage> OpenRawStorageAsync(TFsHeader fsHeader, CancellationToken cancellationToken)
+    protected virtual async ValueTask<IStorage2> OpenRawStorageAsync(TFsHeader fsHeader, CancellationToken cancellationToken)
     {
         var rootStorage = StreamStorage2.Create(UnderlyingStream);
 
@@ -188,7 +188,7 @@ public class Nca2<THeader, TFsHeader>
         }
     }
 
-    private async ValueTask<IAsyncStorage> CreateVerificationStorageAsync(IAsyncStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
+    private async ValueTask<IStorage2> CreateVerificationStorageAsync(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -200,13 +200,13 @@ public class Nca2<THeader, TFsHeader>
         };
     }
 
-    private async ValueTask<IAsyncStorage> CreateIvfcForPartitionFsAsync(IAsyncStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
+    private async ValueTask<IStorage2> CreateIvfcForPartitionFsAsync(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         var ivfc = new NcaFsIntegrityInfoSha256(fsHeader.Checksum);
 
-        IAsyncStorage result = MemoryStorage2.Create(ivfc.MasterHash);
+        IStorage2 result = MemoryStorage2.Create(ivfc.MasterHash);
 
         try
         {
@@ -233,7 +233,7 @@ public class Nca2<THeader, TFsHeader>
         }
     }
 
-    private async ValueTask<IAsyncStorage> CreateIvfcStorageForRomFsAsync(IAsyncStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
+    private async ValueTask<IStorage2> CreateIvfcStorageForRomFsAsync(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -241,7 +241,7 @@ public class Nca2<THeader, TFsHeader>
 
         // Creates a nested set of storages based on the master hash being the root, with the final
         // result being the actual section storing the data to be used.
-        IAsyncStorage result = MemoryStorage2.Create(ivfc.MasterHash);
+        IStorage2 result = MemoryStorage2.Create(ivfc.MasterHash);
 
         try
         {

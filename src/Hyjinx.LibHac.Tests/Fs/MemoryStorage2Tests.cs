@@ -1,10 +1,10 @@
-﻿using LibHac.FsSystem;
+﻿using LibHac.Fs;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace LibHac.Tests.FsSystem;
+namespace LibHac.Tests.Fs;
 
 public class MemoryStorage2Tests
 {

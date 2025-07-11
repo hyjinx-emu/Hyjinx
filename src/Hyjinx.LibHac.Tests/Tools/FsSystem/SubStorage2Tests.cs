@@ -1,5 +1,4 @@
 ﻿using LibHac.Fs;
-using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
@@ -87,11 +86,11 @@ public class SubStorage2Tests
     [Fact]
     public async Task DisposesTheBaseStorage()
     {
-        Mock<IAsyncStorage> baseStorage = new();
+        Mock<IStorage2> baseStorage = new();
         
         baseStorage.Setup(o => o.Position).Returns(0);
         baseStorage.Setup(o => o.Length).Returns(1);
-        baseStorage.Setup(o => o.DisposeAsync()).Returns(ValueTask.CompletedTask).Verifiable();
+        baseStorage.Setup(o => o.Dispose()).Verifiable();
     
         var target = SubStorage2.Create(baseStorage.Object, 0, 1);
         await target.DisposeAsync();

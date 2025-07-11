@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace LibHac.Tools.FsSystem;
 
 /// <summary>
-/// An <see cref="IAsyncStorage"/> which wraps a <see cref="Stream"/>.
+/// An <see cref="IStorage2"/> which wraps a <see cref="Stream"/>.
 /// </summary>
-public class StreamStorage2 : AsyncStorage
+public class StreamStorage2 : Storage2
 {
     private readonly Stream _stream;
     private readonly bool _leaveOpen;
@@ -54,7 +54,7 @@ public class StreamStorage2 : AsyncStorage
         return _stream.Read(buffer);
     }
 
-    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    public override async Task<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         return await _stream.ReadAsync(buffer, cancellationToken);
     }
@@ -75,15 +75,7 @@ public class StreamStorage2 : AsyncStorage
         {
             _stream.Dispose();
         }
-    }
-
-    protected override async ValueTask DisposeAsyncCore()
-    {
-        if (!_leaveOpen)
-        {
-            await _stream.DisposeAsync();
-        }
         
-        await base.DisposeAsyncCore();
+        base.Dispose(disposing);
     }
 }

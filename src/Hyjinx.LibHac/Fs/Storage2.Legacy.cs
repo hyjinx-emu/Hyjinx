@@ -1,17 +1,16 @@
-﻿using LibHac.Common;
-using System;
+﻿using System;
 using System.IO;
 
 namespace LibHac.Fs;
 
-public abstract partial class AsyncStorage
+public abstract partial class Storage2
 {
-    ~AsyncStorage()
+    ~Storage2()
     {
         Dispose(false);
     }
     
-    void IDisposable.Dispose()
+    public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
@@ -20,17 +19,6 @@ public abstract partial class AsyncStorage
     protected virtual void Dispose(bool disposing)
     {
         // This method intentionally left blank.
-    }
-    
-    public virtual int Read(Span<byte> buffer)
-    {
-        using var tempBuffer = new RentedArray2<byte>(buffer.Length);
-        var temp = tempBuffer.Memory;
-        
-        var result = ReadAsync(temp).ConfigureAwait(false).GetAwaiter().GetResult();
-
-        temp[..buffer.Length].Span.CopyTo(buffer);
-        return result;
     }
 
     Result IStorage.Read(long offset, Span<byte> destination)
@@ -43,17 +31,17 @@ public abstract partial class AsyncStorage
 
     Result IStorage.Write(long offset, ReadOnlySpan<byte> source)
     {
-        throw new NotSupportedException();
+        return ResultFs.NotImplemented.Log();
     }
 
     Result IStorage.Flush()
     {
-        throw new NotSupportedException();
+        return ResultFs.NotImplemented.Log();
     }
 
     Result IStorage.SetSize(long size)
     {
-        throw new NotSupportedException();
+        return ResultFs.NotImplemented.Log();
     }
 
     Result IStorage.GetSize(out long size)
@@ -64,11 +52,11 @@ public abstract partial class AsyncStorage
 
     Result IStorage.OperateRange(Span<byte> outBuffer, OperationId operationId, long offset, long size, ReadOnlySpan<byte> inBuffer)
     {
-        throw new NotSupportedException();
+        return ResultFs.NotImplemented.Log();
     }
 
     Result IStorage.OperateRange(OperationId operationId, long offset, long size)
     {
-        throw new NotSupportedException();
+        return ResultFs.NotImplemented.Log();
     }
 }

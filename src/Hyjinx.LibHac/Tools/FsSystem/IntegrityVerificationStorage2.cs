@@ -4,8 +4,6 @@ using LibHac.Fs;
 using LibHac.Util;
 using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -13,11 +11,11 @@ namespace LibHac.Tools.FsSystem;
 /// A storage which provides integrity verification support of data contained within the data storage.
 /// </summary>
 /// <remarks>This class uses two independent storages, one containing the verification hashes and another for the actual data to read.</remarks>
-public class IntegrityVerificationStorage2 : AsyncStorage
+public class IntegrityVerificationStorage2 : Storage2
 {
     private readonly int _level;
-    private readonly IAsyncStorage _dataStorage;
-    private readonly IAsyncStorage _hashStorage;
+    private readonly IStorage2 _dataStorage;
+    private readonly IStorage2 _hashStorage;
     private readonly IntegrityCheckLevel _integrityCheckLevel;
     private readonly Validity[]? _sectors;
     private readonly int _sectorSize;
@@ -26,7 +24,7 @@ public class IntegrityVerificationStorage2 : AsyncStorage
 
     public override long Length => _dataStorage.Length;
 
-    private IntegrityVerificationStorage2(int level, IAsyncStorage dataStorage, IAsyncStorage hashStorage, IntegrityCheckLevel integrityCheckLevel, int sectorSize, Validity[]? sectors)
+    private IntegrityVerificationStorage2(int level, IStorage2 dataStorage, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, int sectorSize, Validity[]? sectors)
     {
         _level = level;
         _dataStorage = dataStorage;
@@ -47,7 +45,7 @@ public class IntegrityVerificationStorage2 : AsyncStorage
     /// <param name="length">The length of the storage block.</param>
     /// <param name="sectorSize">The size of the sector.</param>
     /// <exception cref="ArgumentException"><paramref name="sectorSize"/> is less than or equal to zero.</exception>
-    public static IntegrityVerificationStorage2 Create(int level, IAsyncStorage dataStorage, IAsyncStorage hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
+    public static IntegrityVerificationStorage2 Create(int level, IStorage2 dataStorage, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
     {
         if (sectorSize <= 0)
         {
@@ -72,14 +70,14 @@ public class IntegrityVerificationStorage2 : AsyncStorage
         return result;
     }
     
-    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    public override int Read(Span<byte> buffer)
     {
         if (_integrityCheckLevel != IntegrityCheckLevel.None)
         {
             var sectorIndex = (int)(Position / _sectorSize);
             if (_sectors![sectorIndex] == Validity.Unchecked)
             {
-                var validity = await CheckSectorValidityAsync(sectorIndex, cancellationToken);
+                var validity = CheckSectorValidity(sectorIndex);
                 _sectors[sectorIndex] = validity;
         
                 if (validity == Validity.Invalid && _integrityCheckLevel == IntegrityCheckLevel.ErrorOnInvalid)
@@ -89,7 +87,7 @@ public class IntegrityVerificationStorage2 : AsyncStorage
             }
         }
         
-        return await _dataStorage.ReadAsync(buffer, cancellationToken);
+        return _dataStorage.Read(buffer);
     }
 
     public override long Seek(long offset, SeekOrigin origin)
@@ -97,13 +95,13 @@ public class IntegrityVerificationStorage2 : AsyncStorage
         return _dataStorage.Seek(offset, origin);
     }
     
-    private async Task<Validity> CheckSectorValidityAsync(int sectorIndex, CancellationToken cancellationToken)
+    private Validity CheckSectorValidity(int sectorIndex)
     {
-        using var hashBuffer = new RentedArray2<byte>(Sha256.DigestSize);
+        Span<byte> hashBuffer = stackalloc byte[Sha256.DigestSize];
         var hashOffset = sectorIndex * Sha256.DigestSize;
         
         // Read the expected hash from the file.
-        var bytesRead = await _hashStorage.ReadOnceAsync(hashOffset, hashBuffer.Memory, cancellationToken);
+        var bytesRead = _hashStorage.ReadOnce(hashOffset, hashBuffer);
         if (bytesRead < Sha256.DigestSize)
         {
             throw new InvalidSectorDetectedException("The expected hash was not the correct size.", _level, sectorIndex);
@@ -113,14 +111,14 @@ public class IntegrityVerificationStorage2 : AsyncStorage
         var dataOffset = sectorIndex * _sectorSize;
         
         // Read the entire sector from the file.
-        bytesRead = await _dataStorage.ReadOnceAsync(dataOffset, dataBuffer.Memory, cancellationToken);
+        bytesRead = _dataStorage.ReadOnce(dataOffset, dataBuffer.Span);
         if (bytesRead < dataBuffer.Length)
         {
             // There are occasions when the data within the sector is less than the sector size.
             dataBuffer.Span[bytesRead..].Clear();
         }
         
-        return CompareHashes(dataBuffer.Span, hashBuffer.Span);
+        return CompareHashes(dataBuffer.Span, hashBuffer);
     }
 
     /// <summary>
@@ -138,11 +136,11 @@ public class IntegrityVerificationStorage2 : AsyncStorage
             Validity.Valid : Validity.Invalid;
     }
 
-    protected override async ValueTask DisposeAsyncCore()
+    protected override void Dispose(bool disposing)
     {
-        await _dataStorage.DisposeAsync();
-        await _hashStorage.DisposeAsync();
+        _dataStorage.Dispose();
+        _hashStorage.Dispose();
         
-        await base.DisposeAsyncCore();
+        base.Dispose(disposing);
     }
 }

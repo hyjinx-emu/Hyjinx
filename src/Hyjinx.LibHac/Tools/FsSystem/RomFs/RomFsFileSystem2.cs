@@ -20,7 +20,7 @@ public class RomFsFileSystem2 : FileSystem2
     /// <param name="baseStorage">The base storage for the file system.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new instance.</returns>
-    public static ValueTask<RomFsFileSystem2> LoadAsync(IAsyncStorage baseStorage, CancellationToken cancellationToken = default)
+    public static ValueTask<RomFsFileSystem2> LoadAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
     {
         var reader = new BinaryReader(baseStorage.AsStream());
         Func<long> next;

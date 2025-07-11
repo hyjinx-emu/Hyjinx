@@ -4,14 +4,14 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LibHac.FsSystem;
+namespace LibHac.Tools.FsSystem;
 
 /// <summary>
-/// A <see cref="Stream"/> which wraps an <see cref="IAsyncStorage"/>.
+/// A <see cref="Stream"/> which wraps an <see cref="IStorage2"/>.
 /// </summary>
 public class NxFileStream2 : Stream
 {
-    private readonly IAsyncStorage _baseStorage;
+    private readonly IStorage2 _baseStorage;
     private readonly FileAccess _access;
 
     public override bool CanRead => _access is FileAccess.Read or FileAccess.ReadWrite;
@@ -24,7 +24,7 @@ public class NxFileStream2 : Stream
     /// </summary>
     /// <param name="baseStorage">The storage which will be accessed by the stream.</param>
     /// <param name="access">The access to the storage.</param>
-    public NxFileStream2(IAsyncStorage baseStorage, FileAccess access = FileAccess.Read)
+    public NxFileStream2(IStorage2 baseStorage, FileAccess access = FileAccess.Read)
     {
         this._baseStorage = baseStorage;
         this._access = access;

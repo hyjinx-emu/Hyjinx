@@ -21,11 +21,11 @@ public class PartitionFileSystem2 : FileSystem2
 {
     private readonly List<DirectoryEntryEx> _entries = new();
     
-    private readonly IAsyncStorage _baseStorage;
+    private readonly IStorage2 _baseStorage;
     private readonly PartitionFileSystemFormat.PartitionFileSystemHeaderImpl _header;
     private readonly string _rootPath;
 
-    private PartitionFileSystem2(IAsyncStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header, string rootPath)
+    private PartitionFileSystem2(IStorage2 baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header, string rootPath)
     {
         _baseStorage = baseStorage;
         _header = header;
@@ -39,7 +39,7 @@ public class PartitionFileSystem2 : FileSystem2
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="InvalidOperationException">The header size read was not the expected size.</exception>
-    public static async ValueTask<PartitionFileSystem2> LoadAsync(IAsyncStorage baseStorage, CancellationToken cancellationToken = default)
+    public static async Task<PartitionFileSystem2> LoadAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         using var headerBuffer = new RentedArray2<byte>(headerSize);
@@ -58,7 +58,7 @@ public class PartitionFileSystem2 : FileSystem2
         return result;
     }
 
-    private async ValueTask InitializeAsync(CancellationToken cancellationToken)
+    private async Task InitializeAsync(CancellationToken cancellationToken)
     {
         var fsHeaderSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         var entryHeaderSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionEntry>();

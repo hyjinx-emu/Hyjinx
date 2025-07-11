@@ -1,18 +1,19 @@
 ﻿using LibHac.Fs;
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace LibHac.Tools.FsSystem;
 
 /// <summary>
-/// A storage implementation which wraps another <see cref="IAsyncStorage"/> within known offset and length range.
+/// A storage implementation which wraps another <see cref="IStorage2"/> within known offset and length range.
 /// </summary>
 /// <remarks>The use of this class depends on where the relative positioning of any offsets should be applied during calculations. Higher or lower in the call stack will change behavior, use caution when deciding placement if this class is to be used.</remarks>
-public class SubStorage2 : AsyncStorage
+public class SubStorage2 : Storage2
 {
-    private readonly IAsyncStorage _baseStorage;
+    private readonly IStorage2 _baseStorage;
     private readonly long _offset;
     private readonly long _length;
     private long _position;
@@ -21,7 +22,7 @@ public class SubStorage2 : AsyncStorage
     
     public override long Position => _position;
 
-    private SubStorage2(IAsyncStorage baseStorage, long offset, long length)
+    private SubStorage2(IStorage2 baseStorage, long offset, long length)
     {
         _baseStorage = baseStorage;
         _offset = offset;
@@ -37,7 +38,7 @@ public class SubStorage2 : AsyncStorage
     /// <param name="length">The length of the storage block.</param>
     /// <exception cref="ArgumentException"><paramref name="offset"/> is less than or equal to zero, <paramref name="length"/> is equal to zero, or the the position and length provided exceeds the length of <paramref name="baseStorage"/> available.</exception>
     /// <returns>The new <see cref="SubStorage2"/> instance.</returns>
-    public static SubStorage2 Create(IAsyncStorage baseStorage, long offset, long length)
+    public static SubStorage2 Create(IStorage2 baseStorage, long offset, long length)
     {
         if (offset < 0)
         {
@@ -59,10 +60,30 @@ public class SubStorage2 : AsyncStorage
         
         return result;
     }
-
-    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    
+    public override int Read(Span<byte> buffer)
     {
-        var remaining = (int)Math.Min(_length - _position, buffer.Length);
+        var remaining = CalculateBytesToRead(buffer.Length);
+        if (remaining == 0)
+        {
+            return 0;
+        }
+        
+        var bytesRead = _baseStorage.Read(buffer[..remaining]);
+        _position += bytesRead;
+        
+        return bytesRead;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int CalculateBytesToRead(int bufferLength)
+    {
+        return (int)Math.Min(_length - _position, bufferLength);
+    }
+    
+    public override async Task<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        var remaining = CalculateBytesToRead(buffer.Length);
         if (remaining == 0)
         {
             return 0;
@@ -73,7 +94,7 @@ public class SubStorage2 : AsyncStorage
         
         return bytesRead;
     }
-    
+
     public override long Seek(long offset, SeekOrigin origin)
     {
         var originOffset = CalculateOriginOffsetForSeek(origin);
@@ -117,12 +138,5 @@ public class SubStorage2 : AsyncStorage
         _baseStorage.Dispose();
         
         base.Dispose(disposing);
-    }
-
-    protected async override ValueTask DisposeAsyncCore()
-    {
-        await _baseStorage.DisposeAsync();
-
-        await base.DisposeAsyncCore();
     }
 }
