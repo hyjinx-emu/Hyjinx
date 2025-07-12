@@ -97,7 +97,7 @@ public class Nca2<THeader, TFsHeader>
     /// <remarks>This method includes both the header along with all associated data blocks preserving their original format.</remarks>
     /// <param name="destination">The destination stream.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    public async ValueTask CopyToAsync(Stream destination, CancellationToken cancellationToken = default)
+    public async Task CopyToAsync(Stream destination, CancellationToken cancellationToken = default)
     {
         UnderlyingStream.Seek(0, SeekOrigin.Begin);
 
@@ -112,7 +112,7 @@ public class Nca2<THeader, TFsHeader>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
-    public async ValueTask<IFileSystem> OpenFileSystemAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
+    public async Task<IFileSystem> OpenFileSystemAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
     {
         if (!Sections.TryGetValue(section, out var fsHeader))
         {
@@ -128,12 +128,12 @@ public class Nca2<THeader, TFsHeader>
         };
     }
 
-    private async ValueTask<IFileSystem> CreateFileSystemForPfs0Async(IStorage2 storage, CancellationToken cancellationToken)
+    private async Task<IFileSystem> CreateFileSystemForPfs0Async(IStorage2 storage, CancellationToken cancellationToken)
     {
         return await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
     }
 
-    private async ValueTask<IFileSystem> CreateFileSystemForRomFs(IStorage2 storage, CancellationToken cancellationToken)
+    private async Task<IFileSystem> CreateFileSystemForRomFs(IStorage2 storage, CancellationToken cancellationToken)
     {
         return await RomFsFileSystem2.LoadAsync(storage, cancellationToken);
     }
@@ -147,7 +147,7 @@ public class Nca2<THeader, TFsHeader>
     /// <returns>The new <see cref="IStorage2"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
     /// <exception cref="NotSupportedException">The encryption format used by <paramref name="section"/> is not supported.</exception>
-    public async ValueTask<IStorage2> OpenStorageAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
+    public async Task<IStorage2> OpenStorageAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
     {
         if (!Sections.TryGetValue(section, out var fsHeader))
         {
@@ -157,7 +157,7 @@ public class Nca2<THeader, TFsHeader>
         return await OpenStorageCoreAsync(fsHeader, integrityCheckLevel, cancellationToken);
     }
 
-    private async ValueTask<IStorage2> OpenStorageCoreAsync(TFsHeader fsHeader, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken)
+    private async Task<IStorage2> OpenStorageCoreAsync(TFsHeader fsHeader, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -173,7 +173,7 @@ public class Nca2<THeader, TFsHeader>
         return result;
     }
 
-    protected virtual async ValueTask<IStorage2> OpenRawStorageAsync(TFsHeader fsHeader, CancellationToken cancellationToken)
+    protected virtual async Task<IStorage2> OpenRawStorageAsync(TFsHeader fsHeader, CancellationToken cancellationToken)
     {
         var rootStorage = StreamStorage2.Create(UnderlyingStream);
 
@@ -188,7 +188,7 @@ public class Nca2<THeader, TFsHeader>
         }
     }
 
-    private async ValueTask<IStorage2> CreateVerificationStorageAsync(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
+    private async Task<IStorage2> CreateVerificationStorageAsync(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -200,7 +200,7 @@ public class Nca2<THeader, TFsHeader>
         };
     }
 
-    private async ValueTask<IStorage2> CreateIvfcForPartitionFsAsync(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
+    private async Task<IStorage2> CreateIvfcForPartitionFsAsync(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -233,7 +233,7 @@ public class Nca2<THeader, TFsHeader>
         }
     }
 
-    private async ValueTask<IStorage2> CreateIvfcStorageForRomFsAsync(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
+    private async Task<IStorage2> CreateIvfcStorageForRomFsAsync(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
