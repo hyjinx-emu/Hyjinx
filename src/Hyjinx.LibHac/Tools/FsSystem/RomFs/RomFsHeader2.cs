@@ -11,14 +11,14 @@ public class RomFsHeader2
     public required long HeaderSize { get; init; }
     
     /// <summary>
-    /// The offset of the directory hash table.
+    /// The offset of the directory root table.
     /// </summary>
-    public required long DirHashTableOffset { get; init; }
+    public required long DirRootTableOffset { get; init; }
     
     /// <summary>
-    /// The size of the directory hash table.
+    /// The size of the directory root table.
     /// </summary>
-    public required long DirHashTableSize { get; init; }
+    public required long DirRootTableSize { get; init; }
     
     /// <summary>
     /// The offset of the directory entries table.
@@ -31,14 +31,14 @@ public class RomFsHeader2
     public required long DirEntryTableSize { get; init; }
     
     /// <summary>
-    /// The offset of the file hash table.
+    /// The offset of the file root table.
     /// </summary>
-    public required long FileHashTableOffset { get; init; }
+    public required long FileRootTableOffset { get; init; }
     
     /// <summary>
-    /// The size of the file hash table.
+    /// The size of the file root table.
     /// </summary>
-    public required long FileHashTableSize { get; init; }
+    public required long FileRootTableSize { get; init; }
     
     /// <summary>
     /// The offset of the file entry table.
