@@ -62,7 +62,7 @@ public class IntegrityVerificationStorage2 : Storage2
         }
         
         var result = new IntegrityVerificationStorage2(level, 
-            dataStorage.SliceAsAsync(offset, length), 
+            dataStorage.Slice2(offset, length), 
             hashStorage,
             integrityCheckLevel, sectorSize, sectors);
         

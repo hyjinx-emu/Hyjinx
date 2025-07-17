@@ -103,14 +103,16 @@ public class PartitionFileSystem2 : FileSystem2
             throw new FileNotFoundException("The file does not exist.", fileName);
         }
 
-        return new NxFileStream2(_baseStorage.SliceAsAsync(entry.Offset, entry.Size));
+        return new NxFileStream2(_baseStorage.Slice2(entry.Offset, entry.Size));
     }
 
-    public override IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? searchPattern = null)
+    public override IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
     {
+        var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
+        
         foreach (var entry in _entries)
         {
-            if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullPath, false))
+            if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullPath, ignoreCase))
             {
                 yield return entry;
             }

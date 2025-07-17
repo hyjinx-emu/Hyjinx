@@ -1,4 +1,5 @@
 ﻿using LibHac.Tools.Fs;
+using LibHac.Tools.FsSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +24,9 @@ public interface IReadableFileSystem
     /// <summary>
     /// Enumerates the file infos.
     /// </summary>
+    /// <param name="path">Optional. The path which to begin enumeration.</param>
     /// <param name="searchPattern">Optional. The search pattern to use.</param>
+    /// <param name="options">Optional. The search options to use.</param>
     /// <returns>An enumerable of file infos.</returns>
-    IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? searchPattern = null);
+    IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default);
 }

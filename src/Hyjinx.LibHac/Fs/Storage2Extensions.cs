@@ -18,7 +18,7 @@ public static class Storage2Extensions
     /// <param name="offset">The zero-index offset within the storage.</param>
     /// <param name="length">The length of data within the storage section.</param>
     /// <returns>The new <see cref="IStorage2"/> slice.</returns>
-    public static IStorage2 SliceAsAsync(this IStorage2 storage, long offset, long length)
+    public static IStorage2 Slice2(this IStorage2 storage, long offset, long length)
     {
         return SubStorage2.Create(storage, offset, length);
     }
