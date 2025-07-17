@@ -19,7 +19,16 @@ namespace LibHac.FsSystem;
 /// </summary>
 public class PartitionFileSystem2 : FileSystem2
 {
-    private readonly List<DirectoryEntryEx> _entries = new();
+    private readonly List<LookupEntry> _lookup = new();
+    
+    private class LookupEntry
+    {
+        public required string Name { get; init; }
+        public required string FullName { get; init; }
+        public required DirectoryEntryType EntryType { get; init; }
+        public required long Size { get; init; }
+        public required long Offset { get; init; }
+    }
     
     private readonly IStorage2 _baseStorage;
     private readonly PartitionFileSystemFormat.PartitionFileSystemHeaderImpl _header;
@@ -83,13 +92,15 @@ public class PartitionFileSystem2 : FileSystem2
             await _baseStorage.ReadOnceAsync(nameTableOffset + entry.NameOffset, nameBuffer.Memory, cancellationToken);
 
             var fullName = $"{_rootPath}{new U8Span(nameBuffer.Span).ToString()}";
-
-            _entries.Add(new DirectoryEntryEx(
-                System.IO.Path.GetFileName(fullName),
-                fullName,
-                DirectoryEntryType.File,
-                entry.Size, 
-                entry.Offset + metadataSize));
+            
+            _lookup.Add(new LookupEntry
+            {
+                Name = System.IO.Path.GetFileName(fullName),
+                FullName = fullName,
+                EntryType = DirectoryEntryType.File,
+                Size = entry.Size,
+                Offset = entry.Offset + metadataSize
+            });
             
             index++;
         }
@@ -97,7 +108,7 @@ public class PartitionFileSystem2 : FileSystem2
 
     public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
     {
-        var entry = _entries.SingleOrDefault(o => o.FullPath == fileName);
+        var entry = _lookup.SingleOrDefault(o => o.FullName == fileName);
         if (entry == null)
         {
             throw new FileNotFoundException("The file does not exist.", fileName);
@@ -110,11 +121,11 @@ public class PartitionFileSystem2 : FileSystem2
     {
         var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
         
-        foreach (var entry in _entries)
+        foreach (var entry in _lookup)
         {
-            if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullPath, ignoreCase))
+            if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullName, ignoreCase))
             {
-                yield return entry;
+                yield return new DirectoryEntryEx(entry.Name, entry.FullName, entry.EntryType, entry.Size);
             }
         }
     }

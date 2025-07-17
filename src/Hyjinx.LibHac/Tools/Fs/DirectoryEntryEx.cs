@@ -32,11 +32,6 @@ public class DirectoryEntryEx
     /// The size of the file.
     /// </summary>
     public long Size { get; }
-    
-    /// <summary>
-    /// The offset position of the entry within the file.
-    /// </summary>
-    public long Offset { get; }
 
     /// <summary>
     /// Initializes a new instance of the class.
@@ -45,13 +40,11 @@ public class DirectoryEntryEx
     /// <param name="fullPath">The full path of the file.</param>
     /// <param name="type">The type of entry.</param>
     /// <param name="size">The size of the file.</param>
-    /// <param name="offset">The offset position of the entry within the file.</param>
-    public DirectoryEntryEx(string name, string fullPath, DirectoryEntryType type, long size, long offset = 0)
+    public DirectoryEntryEx(string name, string fullPath, DirectoryEntryType type, long size)
     {
         Name = name;
         FullPath = PathTools.Normalize(fullPath);
         Type = type;
         Size = size;
-        Offset = offset;
     }
 }
