@@ -112,7 +112,7 @@ public class Nca2<THeader, TFsHeader>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
-    public async Task<IFileSystem> OpenFileSystemAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
+    public async Task<IFileSystem2> OpenFileSystemAsync(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
     {
         if (!Sections.TryGetValue(section, out var fsHeader))
         {
@@ -128,12 +128,12 @@ public class Nca2<THeader, TFsHeader>
         };
     }
 
-    private async Task<IFileSystem> CreateFileSystemForPfs0Async(IStorage2 storage, CancellationToken cancellationToken)
+    private async Task<IFileSystem2> CreateFileSystemForPfs0Async(IStorage2 storage, CancellationToken cancellationToken)
     {
         return await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
     }
 
-    private async Task<IFileSystem> CreateFileSystemForRomFs(IStorage2 storage, CancellationToken cancellationToken)
+    private async Task<IFileSystem2> CreateFileSystemForRomFs(IStorage2 storage, CancellationToken cancellationToken)
     {
         return await RomFsFileSystem2.LoadAsync(storage, cancellationToken);
     }

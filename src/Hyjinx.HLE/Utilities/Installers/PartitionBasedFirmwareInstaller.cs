@@ -82,18 +82,14 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
                 // TODO: Viper - This should be enforcing integrity levels.
                 var fs = await nca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid, cancellationToken);
 
-                var cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
-                
-                using var metaFileRef = new UniqueRef<IFile>();
-                if (fs.OpenFile(ref metaFileRef.Ref, cnmtPath.ToU8Span(), OpenMode.Read).IsSuccess())
+                var cnmtPath = fs.EnumerateFileInfos("/", "*.cnmt").Single().FullPath;
+
+                await using var metaFile = fs.OpenFile(cnmtPath);
+
+                var meta = new Cnmt(metaFile);
+                if (meta.Type == ContentMetaType.SystemUpdate)
                 {
-                    using var metaFile = metaFileRef.Get;
-                    
-                    var meta = new Cnmt(metaFile.AsStream());
-                    if (meta.Type == ContentMetaType.SystemUpdate)
-                    {
-                        metaEntries = meta.MetaEntries;
-                    }
+                    metaEntries = meta.MetaEntries;
                 }
 
                 continue;
@@ -103,13 +99,9 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
             {
                 // TODO: Viper - This should be enforcing integrity levels.
                 var romfs = await nca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid, cancellationToken);
-            
-                using var systemVersionFileRef = new UniqueRef<IFile>();
-                if (romfs.OpenFile(ref systemVersionFileRef.Ref, "/file".ToU8Span(), OpenMode.Read).IsSuccess())
-                {
-                    using var systemVersionFile = systemVersionFileRef.Get;
-                    systemVersion = new SystemVersion(systemVersionFile.AsStream());
-                }
+
+                await using var systemVersionFile = romfs.OpenFile("/file");
+                systemVersion = new SystemVersion(systemVersionFile);
             }
             
             if (updateNcas.TryGetValue(nca.Header.TitleId, out var updateNcasItem))
@@ -151,46 +143,43 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
                 // TODO: Viper - This should be enforcing integrity levels.
                 var fs = await metaNca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid, cancellationToken);
         
-                string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
-        
-                using var metaFileRef = new UniqueRef<IFile>();
-                if (fs.OpenFile(ref metaFileRef.Ref, cnmtPath.ToU8Span(), OpenMode.Read).IsSuccess())
+                string cnmtPath = fs.EnumerateFileInfos("/", "*.cnmt").Single().FullPath;
+                
+                // Reopens the original file again to transfer it into the destination.
+                using var contentStorage = OpenPossibleFragmentedFile(filesystem, contentPath, OpenMode.Read);
+                var contentStream = contentStorage.AsStream();
+                
+                using var contentData = new RentedArray2<byte>((int)contentStream.Length);
+                await contentStream.ReadExactlyAsync(contentData.Memory, cancellationToken);
+                
+                Span<byte> hash = new byte[Sha256.DigestSize];
+                Sha256.GenerateSha256Hash(contentData.Span, hash);
+                
+                // Grab the hash from the original meta file.
+                await using var metaFile = fs.OpenFile(cnmtPath);
+                var meta = new Cnmt(metaFile);
+                
+                if (LibHac.Common.Utilities.ArraysEqual(hash.ToArray(), meta.ContentEntries[0].Hash))
                 {
-                    using var contentStorage = OpenPossibleFragmentedFile(filesystem, contentPath, OpenMode.Read);
-                    
-                    using var metaFile = metaFileRef.Get;
-                    var meta = new Cnmt(metaFile.AsStream());
-                    
-                    var contentStream = contentStorage.AsStream();
-                    
-                    using var contentData = new RentedArray2<byte>((int)contentStream.Length);
-                    await contentStream.ReadExactlyAsync(contentData.Memory, cancellationToken);
-        
-                    Span<byte> hash = new byte[Sha256.DigestSize];
-                    Sha256.GenerateSha256Hash(contentData.Span, hash);
-        
-                    if (LibHac.Common.Utilities.ArraysEqual(hash.ToArray(), meta.ContentEntries[0].Hash))
-                    {
-                        updateNcas.Remove(metaEntry.TitleId);
-                    }
+                    updateNcas.Remove(metaEntry.TitleId);
                 }
             }
         }
-        //
-        // if (updateNcas.Count > 0)
-        // {
-        //     StringBuilder extraNcas = new();
-        //
-        //     foreach (var entry in updateNcas)
-        //     {
-        //         foreach (var (type, path) in entry.Value)
-        //         {
-        //             extraNcas.AppendLine(path);
-        //         }
-        //     }
-        //
-        //     throw new InvalidFirmwarePackageException($"Firmware package contains unrelated archives. Please remove these paths: {Environment.NewLine}{extraNcas}");
-        // }
+        
+        if (updateNcas.Count > 0)
+        {
+            StringBuilder extraNcas = new();
+        
+            foreach (var entry in updateNcas)
+            {
+                foreach (var (type, path) in entry.Value)
+                {
+                    extraNcas.AppendLine(path);
+                }
+            }
+        
+            throw new InvalidFirmwarePackageException($"Firmware package contains unrelated archives. Please remove these paths: {Environment.NewLine}{extraNcas}");
+        }
 
         return systemVersion;
     }

@@ -3,7 +3,7 @@ using System;
 
 namespace LibHac.Fs.Fsa;
 
-public partial class FileSystem2 : FileSystem
+partial class FileSystem2 : FileSystem
 {
     protected override Result DoCreateFile(in Path path, long size, CreateFileOptions option)
     {

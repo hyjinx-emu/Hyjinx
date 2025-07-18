@@ -8,7 +8,7 @@ namespace LibHac.Fs.Fsa;
 /// <summary>
 /// Represents a file system.
 /// </summary>
-public abstract partial class FileSystem2 : IReadableFileSystem
+public abstract partial class FileSystem2 : IFileSystem2
 {
     public abstract Stream OpenFile(string fileName, FileAccess access = FileAccess.Read);
 

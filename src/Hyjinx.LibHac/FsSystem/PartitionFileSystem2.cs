@@ -17,7 +17,7 @@ namespace LibHac.FsSystem;
 /// <summary>
 /// A partitioned file system.
 /// </summary>
-public class PartitionFileSystem2 : FileSystem2
+public partial class PartitionFileSystem2 : FileSystem2
 {
     private readonly List<LookupEntry> _lookup = new();
     

@@ -4,6 +4,7 @@ using LibHac.Tools.Fs;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,23 +14,25 @@ namespace LibHac.Tools.FsSystem.RomFs;
 /// <summary>
 /// A RomFS file system.
 /// </summary>
-public class RomFsFileSystem2 : FileSystem2
+public partial class RomFsFileSystem2 : FileSystem2
 {
     private readonly IStorage2 _baseStorage;
     
     private readonly RomFsIndex<DirectoryNodeInfo> _directoriesIndex;
     private readonly RomFsIndex<FileNodeInfo> _filesIndex;
+    private readonly long _dataOffset;
     
     /// <summary>
     /// Contains the lookup map of files and directories to the entry.
     /// </summary>
     private readonly Dictionary<string, object> _lookup;
 
-    private RomFsFileSystem2(IStorage2 baseStorage, RomFsIndex<DirectoryNodeInfo> directoriesIndex, RomFsIndex<FileNodeInfo> fileIndex)
+    private RomFsFileSystem2(IStorage2 baseStorage, RomFsIndex<DirectoryNodeInfo> directoriesIndex, RomFsIndex<FileNodeInfo> fileIndex, long dataOffset)
     {
         _baseStorage = baseStorage;
         _directoriesIndex = directoriesIndex;
         _filesIndex = fileIndex;
+        _dataOffset = dataOffset;
         _lookup = new Dictionary<string, object>();
     }
     
@@ -85,12 +88,17 @@ public class RomFsFileSystem2 : FileSystem2
                 EntryTableSize = header.FileEntryTableSize
             }, cancellationToken);
         
-        return new RomFsFileSystem2(baseStorage, directoriesIndex, fileIndex);
+        return new RomFsFileSystem2(baseStorage, directoriesIndex, fileIndex, header.DataOffset);
     }
 
     public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
     {
-        throw new NotImplementedException();
+        var parts = fileName.Split('/');
+        
+        var entry = _filesIndex.Enumerate(0).Single(o => o.Name == parts[^1]);
+        
+        // The offset here might not be the correct offset
+        return new NxFileStream2(_baseStorage.Slice2(_dataOffset + entry.Info.Offset, entry.Info.Length), access);
     }
 
     public override IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
