@@ -72,6 +72,7 @@ public class NxFileStream2 : Stream
         {
             throw new NotSupportedException("The stream does not support the write operation.");
         }
+        
         throw new NotSupportedException();
     }
 
