@@ -15,6 +15,4 @@ Users are solely responsible for ensuring that their use of this library complie
 If any encrypted files are detected, an exception will be thrown indicating an encrypted file is detected and prevent working with the file.
 
 ## Credits
-This code was originally developed by Alex Barney (aka @thealexbarney) and is a continuation of his works.
-
-None of this would be possible without his efforts!
+Originally developed by Alex Barney (aka @thealexbarney) and is a continuation of his works.
