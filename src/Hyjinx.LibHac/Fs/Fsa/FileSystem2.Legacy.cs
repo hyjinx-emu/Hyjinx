@@ -1,4 +1,6 @@
-﻿using LibHac.Common;
+﻿#if IS_LEGACY_ENABLED
+
+using LibHac.Common;
 using System;
 
 namespace LibHac.Fs.Fsa;
@@ -65,3 +67,5 @@ partial class FileSystem2 : FileSystem
         throw new NotSupportedException();
     }
 }
+
+#endif

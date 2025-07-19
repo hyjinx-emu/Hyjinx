@@ -1,26 +1,12 @@
-﻿using System;
+﻿#if IS_LEGACY_ENABLED
+
+using System;
 using System.IO;
 
 namespace LibHac.Fs;
 
 public abstract partial class Storage2
 {
-    ~Storage2()
-    {
-        Dispose(false);
-    }
-    
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        // This method intentionally left blank.
-    }
-
     Result IStorage.Read(long offset, Span<byte> destination)
     {
         Seek(offset, SeekOrigin.Begin);
@@ -60,3 +46,5 @@ public abstract partial class Storage2
         return ResultFs.NotImplemented.Log();
     }
 }
+
+#endif

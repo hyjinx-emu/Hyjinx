@@ -12,6 +12,16 @@ namespace LibHac.Fs;
 public static class Storage2Extensions
 {
     /// <summary>
+    /// Creates a <see cref="Stream"/> from the storage.
+    /// </summary>
+    /// <param name="storage">The storage.</param>
+    /// <returns>The new <see cref="Stream"/> instance.</returns>
+    public static Stream AsStream(this IStorage2 storage)
+    {
+        return new NxFileStream2(storage);
+    }
+    
+    /// <summary>
     /// Creates a new slice of storage.
     /// </summary>
     /// <param name="storage">The storage.</param>

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -24,3 +26,5 @@ partial class PartitionFileSystem2
         return Result.Success;
     }
 }
+
+#endif

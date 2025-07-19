@@ -74,7 +74,7 @@ public class RomFsIndex<T>
         var entry = Unsafe.As<byte, RomFsEntry>(ref entryBytes[0]);
 
         Span<byte> nameBytes = stackalloc byte[entry.NameLength];
-        _entryStorage.Read(offset + _entrySize, nameBytes);
+        _entryStorage.ReadOnce(offset + _entrySize, nameBytes);
 
         return new RomFsIndexEntry
         {

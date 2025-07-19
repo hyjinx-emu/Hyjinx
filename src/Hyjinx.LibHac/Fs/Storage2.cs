@@ -14,6 +14,22 @@ public abstract partial class Storage2 : IStorage2
     
     public abstract long Position { get; }
     
+    ~Storage2()
+    {
+        Dispose(false);
+    }
+    
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        // This method intentionally left blank.
+    }
+    
     public ValueTask DisposeAsync()
     {
         Dispose(true);
