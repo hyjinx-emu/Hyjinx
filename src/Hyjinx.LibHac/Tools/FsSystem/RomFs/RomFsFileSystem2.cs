@@ -106,7 +106,7 @@ public partial class RomFsFileSystem2 : FileSystem2
 
                 _lookupCache.Add($"/{entry.Name}", new LookupEntry
                 {
-                    Offset = entry.Offset,
+                    Offset = entry.Info.Offset,
                     EntryType = DirectoryEntryType.File,
                     Length = entry.Info.Length,
                     FirstSubDirectoryOffset = -1,
