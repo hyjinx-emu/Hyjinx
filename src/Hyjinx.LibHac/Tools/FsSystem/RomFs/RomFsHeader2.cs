@@ -1,4 +1,8 @@
-﻿namespace LibHac.Tools.FsSystem.RomFs;
+﻿using LibHac.Fs;
+using System;
+using System.IO;
+
+namespace LibHac.Tools.FsSystem.RomFs;
 
 /// <summary>
 /// Describes the header use by a RomFs file system.
@@ -54,4 +58,40 @@ public class RomFsHeader2
     /// The offset of the data section.
     /// </summary>
     public required long DataOffset { get; init; }
+
+    /// <summary>
+    /// Reads the header.
+    /// </summary>
+    /// <param name="storage">The storage containing the header.</param>
+    /// <returns>The new <see cref="RomFsHeader2"/> instance.</returns>
+    public static RomFsHeader2 Read(IStorage2 storage)
+    {
+        using var stream = storage.AsStream();
+        
+        var reader = new BinaryReader(stream);
+        Func<long> next;
+        
+        if (reader.PeekChar() == 40) // A 32-bit header is being used.
+        {
+            next = () => reader.ReadInt32();
+        }
+        else
+        {
+            next = reader.ReadInt64;
+        }
+        
+        return new RomFsHeader2
+        {
+            HeaderSize = next(),
+            DirRootTableOffset = next(),
+            DirRootTableSize = next(),
+            DirEntryTableOffset = next(),
+            DirEntryTableSize = next(),
+            FileRootTableOffset = next(),
+            FileRootTableSize = next(),
+            FileEntryTableOffset = next(),
+            FileEntryTableSize = next(),
+            DataOffset = next()
+        };
+    }
 }

@@ -4,7 +4,6 @@ using LibHac.Tools.Fs;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,18 +21,26 @@ public partial class RomFsFileSystem2 : FileSystem2
     private readonly RomFsIndex<FileNodeInfo> _filesIndex;
     private readonly long _dataOffset;
     
-    /// <summary>
-    /// Contains the lookup map of files and directories to the entry.
-    /// </summary>
-    private readonly Dictionary<string, object> _lookup;
-
+    private readonly Dictionary<string, LookupEntry> _lookupCache;
+    
+    private readonly record struct LookupEntry
+    {
+        public static readonly LookupEntry Empty = new();
+        
+        public long Offset { get; init; }
+        public long Length { get; init; }
+        public DirectoryEntryType EntryType { get; init; }
+        public int FirstFileOffset { get; init; }
+        public int FirstSubDirectoryOffset { get; init; }
+    }
+    
     private RomFsFileSystem2(IStorage2 baseStorage, RomFsIndex<DirectoryNodeInfo> directoriesIndex, RomFsIndex<FileNodeInfo> fileIndex, long dataOffset)
     {
         _baseStorage = baseStorage;
         _directoriesIndex = directoriesIndex;
         _filesIndex = fileIndex;
         _dataOffset = dataOffset;
-        _lookup = new Dictionary<string, object>();
+        _lookupCache = new Dictionary<string, LookupEntry>();
     }
     
     /// <summary>
@@ -44,32 +51,8 @@ public partial class RomFsFileSystem2 : FileSystem2
     /// <returns>The new instance.</returns>
     public static async Task<RomFsFileSystem2> LoadAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
     {
-        var reader = new BinaryReader(baseStorage.AsStream());
-        Func<long> next;
+        var header = RomFsHeader2.Read(baseStorage);
         
-        if (reader.PeekChar() == 40) // A 32-bit header is being used.
-        {
-            next = () => reader.ReadInt32();
-        }
-        else
-        {
-            next = reader.ReadInt64;
-        }
-
-        var header = new RomFsHeader2
-        {
-            HeaderSize = next(),
-            DirRootTableOffset = next(),
-            DirRootTableSize = next(),
-            DirEntryTableOffset = next(),
-            DirEntryTableSize = next(),
-            FileRootTableOffset = next(),
-            FileRootTableSize = next(),
-            FileEntryTableOffset = next(),
-            FileEntryTableSize = next(),
-            DataOffset = next()
-        };
-
         var directoriesIndex = await RomFsIndex<DirectoryNodeInfo>.CreateAsync(baseStorage, 
             new RomFsIndexDefinition
             {
@@ -88,18 +71,294 @@ public partial class RomFsFileSystem2 : FileSystem2
                 EntryTableSize = header.FileEntryTableSize
             }, cancellationToken);
         
-        return new RomFsFileSystem2(baseStorage, directoriesIndex, fileIndex, header.DataOffset);
+        var result = new RomFsFileSystem2(baseStorage, directoriesIndex, fileIndex, header.DataOffset);
+        await result.InitializeAsync(cancellationToken);
+        
+        return result;
+    }
+
+    private Task InitializeAsync(CancellationToken cancellationToken)
+    {
+        var rootEntry = _directoriesIndex.Get(0);
+
+        if (rootEntry.Info.FirstSubDirectoryOffset != -1)
+        {
+            foreach (var entry in _directoriesIndex.Enumerate(rootEntry.Info.FirstSubDirectoryOffset))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                _lookupCache.Add($"/{entry.Name}", new LookupEntry
+                {
+                    Offset = entry.Offset,
+                    EntryType = DirectoryEntryType.Directory,
+                    FirstSubDirectoryOffset = entry.Info.FirstSubDirectoryOffset,
+                    FirstFileOffset = entry.Info.FirstFileOffset,
+                    Length = -1
+                });
+            }
+        }
+
+        if (rootEntry.Info.FirstFileOffset != -1)
+        {
+            foreach (var entry in _filesIndex.Enumerate(rootEntry.Info.FirstFileOffset))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                _lookupCache.Add($"/{entry.Name}", new LookupEntry
+                {
+                    Offset = entry.Offset,
+                    EntryType = DirectoryEntryType.File,
+                    Length = entry.Info.Length,
+                    FirstSubDirectoryOffset = -1,
+                    FirstFileOffset = -1
+                });
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private bool TryFindDirectoryOffset(Span<string> parts, out LookupEntry result)
+    {
+        var found = false;
+        var entry = LookupEntry.Empty;
+        
+        string current = "";
+        
+        var segmentIndex = parts.Length;
+        while (segmentIndex > 0)
+        {
+            current = $"/{string.Join('/', parts.Slice(0, segmentIndex)!)}";
+            if (_lookupCache.TryGetValue(current, out entry))
+            {
+                found = true;
+                break;
+            }
+
+            segmentIndex--;
+        }
+
+        if (!found)
+        {
+            result = LookupEntry.Empty;
+        }
+        else if (segmentIndex < parts.Length)
+        {
+            // We've found a start point.
+            var startEntry = _directoriesIndex.Get((int)entry.Offset);
+
+            // Now recursively find the directory within the start point.
+            found = TryFindDirectoryOffset(segmentIndex, parts, startEntry, out result);
+        }
+        else
+        {
+            result = entry;
+        }
+
+        return found;
+    }
+    
+    private bool TryFindDirectoryOffset(int segmentIndex, Span<string> parts, RomFsIndex<DirectoryNodeInfo>.RomFsIndexEntry startEntry, out LookupEntry result)
+    {
+        foreach (var entry in _directoriesIndex.Enumerate(startEntry.Info.FirstSubDirectoryOffset))
+        {
+            if (parts[segmentIndex] != entry.Name)
+            {
+                continue;
+            }
+
+            if (segmentIndex == parts.Length - 1)
+            {
+                // We're at the end of the directory tree.
+                result = new LookupEntry
+                {
+                    FirstSubDirectoryOffset = entry.Info.FirstSubDirectoryOffset,
+                    FirstFileOffset = entry.Info.FirstFileOffset,
+                    Offset = entry.Offset,
+                    Length = -1,
+                    EntryType = DirectoryEntryType.Directory
+                };
+
+                return true;
+            }
+
+            if (TryFindDirectoryOffset(segmentIndex + 1, parts, entry, out result))
+            {
+                // It was nested somewhere in this directory, and we found it!
+                return true;
+            }
+
+            break;
+        }
+
+        result = LookupEntry.Empty;
+        return false;
+    }
+
+    private bool TryFindFileInDirectory(string fileName, LookupEntry parent, out LookupEntry result)
+    {
+        foreach (var entry in _filesIndex.Enumerate(parent.FirstFileOffset))
+        {
+            if (entry.Name != fileName)
+            {
+                continue;
+            }
+
+            result = new LookupEntry
+            {
+                Offset = entry.Info.Offset,
+                EntryType = DirectoryEntryType.File,
+                Length = entry.Info.Length,
+                FirstSubDirectoryOffset = -1,
+                FirstFileOffset = -1
+            };
+
+            return true;
+        }
+
+        result = LookupEntry.Empty;
+        return false;
     }
 
     public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
     {
-        var parts = fileName.Split('/');
+        bool found;
         
-        var entry = _filesIndex.Enumerate(0).Single(o => o.Name == parts[^1]);
+        if (!(found = _lookupCache.TryGetValue(fileName, out var entry)))
+        {
+            Span<string> parts = fileName.Split('/');
+            var dirParts = parts[1..^1];
+            
+            // Find the directory at which the scan must begin.
+            found = TryFindDirectoryOffset(dirParts, out entry);
+            if (found)
+            {
+                // Add the item into the cache.
+                _lookupCache[$"/{string.Join('/', dirParts!)}"] = entry;
+                
+                // Find the file within the directory.
+                found = TryFindFileInDirectory(parts[^1], entry, out entry);
+                if (found)
+                {
+                    // Add the item into the cache.
+                    _lookupCache[fileName] = entry;
+                }
+            }
+        }
+
+        if (!found)
+        {
+            throw new FileNotFoundException("The file does not exist.", fileName);
+        }
         
-        // The offset here might not be the correct offset
-        return new NxFileStream2(_baseStorage.Slice2(_dataOffset + entry.Info.Offset, entry.Info.Length), access);
+        return new NxFileStream2(_baseStorage.Slice2(
+            _dataOffset + entry.Offset, entry.Length), access);
     }
+
+    // public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
+    // {
+    //     // See if the whole entry has already been found.
+    //     bool found;
+    //     if (!(found = _lookupCache.TryGetValue(fileName, out var item)))
+    //     {
+    //         var foundPath = "";
+    //         
+    //         Span<string> parts = fileName.Split('/');
+    //         
+    //         Span<string> directories = parts[1..^1];
+    //         string fileNamePart = parts[^1];
+    //         // Try to find the nearest known directory.
+    //         var pos = directories.Length;
+    //         for (; pos >= 0; pos--)
+    //         {
+    //             var current = $"/{string.Join('/', directories[..pos]!)}";
+    //             if (_lookupCache.TryGetValue(current, out item))
+    //             {
+    //                 // The nearest directory was located.
+    //                 foundPath = current;
+    //                 break;
+    //             }
+    //         }
+    //
+    //         if (pos > 0)
+    //         {
+    //             var offset = item.FirstSubDirectoryOffset;
+    //             while (offset != -1)
+    //             {
+    //                 // We've found somewhere to begin looking.
+    //                 foreach (var entry in _directoriesIndex.Enumerate(offset))
+    //                 {
+    //                     if (entry.Name == directories[pos])
+    //                     {
+    //                         foundPath += $"/{entry.Name}";
+    //
+    //                         _lookupCache[foundPath] = new LookupEntry
+    //                         {
+    //                             Offset = entry.Offset,
+    //                             EntryType = DirectoryEntryType.Directory,
+    //                             FirstSubDirectoryOffset = entry.Info.FirstSubDirectoryOffset,
+    //                             FirstFileOffset = entry.Info.FirstFileOffset,
+    //                             Length = -1  
+    //                         };
+    //                         
+    //                         if (pos == directories.Length - 1)
+    //                         {
+    //                             // We've found the last directory.
+    //                             offset = entry.Info.FirstFileOffset;
+    //                             found = true;
+    //                         }
+    //                         else
+    //                         {
+    //                             // We've found the next part.
+    //                             offset = entry.Info.FirstSubDirectoryOffset;
+    //                             pos++;
+    //                         }
+    //                         
+    //                         break;
+    //                     }
+    //                 }
+    //
+    //                 if (found)
+    //                 {
+    //                     break;
+    //                 }
+    //             }
+    //
+    //             if (found)
+    //             {
+    //                 // Flip it back as we have not yet actually found the file.
+    //                 found = false;
+    //                 
+    //                 foreach (var entry in _filesIndex.Enumerate(offset))
+    //                 {
+    //                     if (entry.Name == fileNamePart)
+    //                     {
+    //                         item = new LookupEntry
+    //                         {
+    //                             Offset = entry.Info.Offset,
+    //                             EntryType = DirectoryEntryType.File,
+    //                             Length = entry.Info.Length,
+    //                             FirstSubDirectoryOffset = -1,
+    //                             FirstFileOffset = -1
+    //                         };
+    //
+    //                         _lookupCache[fileName] = item;
+    //                         found = true;
+    //
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     
+    //     if (!found)
+    //     {
+    //         throw new FileNotFoundException("The file does not exist.", fileName);
+    //     }
+    //     
+    //     return new NxFileStream2(_baseStorage.Slice2(_dataOffset + item.Offset, item.Length), access);
+    // }
 
     public override IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
     {
@@ -110,6 +369,11 @@ public partial class RomFsFileSystem2 : FileSystem2
         
         foreach (var entry in EnumerateEntries(root.Info.FirstSubDirectoryOffset, "", recursive))
         {
+            if (entry.Type == DirectoryEntryType.Directory)
+            {
+                continue;
+            }
+            
             if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullPath, ignoreCase))
             {
                 yield return entry;

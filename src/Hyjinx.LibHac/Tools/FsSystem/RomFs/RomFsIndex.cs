@@ -16,13 +16,11 @@ namespace LibHac.Tools.FsSystem.RomFs;
 public class RomFsIndex<T>
     where T : unmanaged, INodeInfo
 {
-    private readonly int[] _rootOffsets;
     private readonly IStorage2 _entryStorage;
     private readonly int _entrySize;
 
-    private RomFsIndex(int[] rootOffsets, IStorage2 entryStorage)
+    private RomFsIndex(IStorage2 entryStorage)
     {
-        _rootOffsets = rootOffsets;
         _entryStorage = entryStorage;
         _entrySize = Unsafe.SizeOf<RomFsEntry>();
     }
@@ -41,6 +39,7 @@ public class RomFsIndex<T>
     /// </summary>
     public readonly struct RomFsIndexEntry
     {
+        public int Offset { get; init; }
         public string Name { get; init; }
         public T Info { get; init; }
         public int Parent { get; init; }
@@ -58,11 +57,8 @@ public class RomFsIndex<T>
     {
         using var arr = new RentedArray2<byte>((int)definition.RootTableSize);
         await baseStorage.ReadOnceAsync(definition.RootTableOffset, arr.Memory, cancellationToken);
-
-        // Stores the root offsets for the nodes within the table.
-        var rootOffsets = MemoryMarshal.Cast<byte, int>(arr.Span).ToArray();
-
-        return new RomFsIndex<T>(rootOffsets, baseStorage.Slice2(definition.EntryTableOffset, definition.EntryTableSize));
+        
+        return new RomFsIndex<T>(baseStorage.Slice2(definition.EntryTableOffset, definition.EntryTableSize));
     }
     
     /// <summary>
@@ -109,6 +105,7 @@ public class RomFsIndex<T>
             
             yield return new RomFsIndexEntry
             {
+                Offset = current,
                 Parent = entry.Parent,
                 Info = entry.Info,
                 Name = Encoding.UTF8.GetString(nameBytes),
