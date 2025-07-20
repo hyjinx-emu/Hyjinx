@@ -28,5 +28,5 @@ public interface IFileSystem2
     /// <param name="searchPattern">Optional. The search pattern to use.</param>
     /// <param name="options">Optional. The search options to use.</param>
     /// <returns>An enumerable of file infos.</returns>
-    IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default);
+    IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default);
 }

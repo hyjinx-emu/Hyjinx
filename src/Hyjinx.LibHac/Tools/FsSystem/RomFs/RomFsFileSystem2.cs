@@ -254,120 +254,15 @@ public partial class RomFsFileSystem2 : FileSystem2
         return new NxFileStream2(_baseStorage.Slice2(
             _dataOffset + entry.Offset, entry.Length), access);
     }
-
-    // public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
-    // {
-    //     // See if the whole entry has already been found.
-    //     bool found;
-    //     if (!(found = _lookupCache.TryGetValue(fileName, out var item)))
-    //     {
-    //         var foundPath = "";
-    //         
-    //         Span<string> parts = fileName.Split('/');
-    //         
-    //         Span<string> directories = parts[1..^1];
-    //         string fileNamePart = parts[^1];
-    //         // Try to find the nearest known directory.
-    //         var pos = directories.Length;
-    //         for (; pos >= 0; pos--)
-    //         {
-    //             var current = $"/{string.Join('/', directories[..pos]!)}";
-    //             if (_lookupCache.TryGetValue(current, out item))
-    //             {
-    //                 // The nearest directory was located.
-    //                 foundPath = current;
-    //                 break;
-    //             }
-    //         }
-    //
-    //         if (pos > 0)
-    //         {
-    //             var offset = item.FirstSubDirectoryOffset;
-    //             while (offset != -1)
-    //             {
-    //                 // We've found somewhere to begin looking.
-    //                 foreach (var entry in _directoriesIndex.Enumerate(offset))
-    //                 {
-    //                     if (entry.Name == directories[pos])
-    //                     {
-    //                         foundPath += $"/{entry.Name}";
-    //
-    //                         _lookupCache[foundPath] = new LookupEntry
-    //                         {
-    //                             Offset = entry.Offset,
-    //                             EntryType = DirectoryEntryType.Directory,
-    //                             FirstSubDirectoryOffset = entry.Info.FirstSubDirectoryOffset,
-    //                             FirstFileOffset = entry.Info.FirstFileOffset,
-    //                             Length = -1  
-    //                         };
-    //                         
-    //                         if (pos == directories.Length - 1)
-    //                         {
-    //                             // We've found the last directory.
-    //                             offset = entry.Info.FirstFileOffset;
-    //                             found = true;
-    //                         }
-    //                         else
-    //                         {
-    //                             // We've found the next part.
-    //                             offset = entry.Info.FirstSubDirectoryOffset;
-    //                             pos++;
-    //                         }
-    //                         
-    //                         break;
-    //                     }
-    //                 }
-    //
-    //                 if (found)
-    //                 {
-    //                     break;
-    //                 }
-    //             }
-    //
-    //             if (found)
-    //             {
-    //                 // Flip it back as we have not yet actually found the file.
-    //                 found = false;
-    //                 
-    //                 foreach (var entry in _filesIndex.Enumerate(offset))
-    //                 {
-    //                     if (entry.Name == fileNamePart)
-    //                     {
-    //                         item = new LookupEntry
-    //                         {
-    //                             Offset = entry.Info.Offset,
-    //                             EntryType = DirectoryEntryType.File,
-    //                             Length = entry.Info.Length,
-    //                             FirstSubDirectoryOffset = -1,
-    //                             FirstFileOffset = -1
-    //                         };
-    //
-    //                         _lookupCache[fileName] = item;
-    //                         found = true;
-    //
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     
-    //     if (!found)
-    //     {
-    //         throw new FileNotFoundException("The file does not exist.", fileName);
-    //     }
-    //     
-    //     return new NxFileStream2(_baseStorage.Slice2(_dataOffset + item.Offset, item.Length), access);
-    // }
-
-    public override IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
+    
+    public override IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
     {
         var root = _directoriesIndex.Get(0);
 
         var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
         var recursive = options.HasFlag(SearchOptions.RecurseSubdirectories);
         
-        foreach (var entry in EnumerateEntries(root.Info.FirstSubDirectoryOffset, "", recursive))
+        foreach (var entry in EnumerateFileSystemInfos(root.Info.FirstSubDirectoryOffset, "", recursive))
         {
             if (entry.Type == DirectoryEntryType.Directory)
             {
@@ -376,23 +271,23 @@ public partial class RomFsFileSystem2 : FileSystem2
             
             if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullPath, ignoreCase))
             {
-                yield return entry;
+                yield return new FileInfoEx(entry.Name, entry.FullPath, entry.Length);
             }
         }
     }
     
-    private IEnumerable<DirectoryEntryEx> EnumerateEntries(int offset, string path, bool recursive)
+    private IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(int offset, string path, bool recursive)
     {
         foreach (var directory in _directoriesIndex.Enumerate(offset))
         {
             string fullPath = $"{path}/{directory.Name}";
             
-            yield return new DirectoryEntryEx(
+            yield return new FileSystemInfoEx(
                 directory.Name, fullPath, DirectoryEntryType.Directory, 0);
 
             if (recursive && directory.Info.FirstSubDirectoryOffset != -1)
             {
-                foreach (var subdirectory in EnumerateEntries(directory.Info.FirstSubDirectoryOffset, fullPath, true))
+                foreach (var subdirectory in EnumerateFileSystemInfos(directory.Info.FirstSubDirectoryOffset, fullPath, true))
                 {
                     yield return subdirectory;
                 }
@@ -402,7 +297,7 @@ public partial class RomFsFileSystem2 : FileSystem2
             {
                 foreach (var file in _filesIndex.Enumerate(directory.Info.FirstFileOffset))
                 {
-                    yield return new DirectoryEntryEx(file.Name, $"{fullPath}/{file.Name}", DirectoryEntryType.File, file.Info.Length);
+                    yield return new FileSystemInfoEx(file.Name, $"{fullPath}/{file.Name}", DirectoryEntryType.File, file.Info.Length);
                 }
             }
         }

@@ -1,11 +1,11 @@
-﻿using LibHac.Fs;
+﻿using LibHac.Common;
+using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tools.FsSystem.RomFs;
 using System.Collections.Generic;
 using System.IO;
 using System;
-using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
@@ -33,22 +33,18 @@ public class Nca2 : Nca2<NcaHeader2, NcaFsHeader2>
             throw new NotSupportedException("The stream contains less bytes than expected.");
         }
 
-        using var owner = MemoryPool<byte>.Shared.Rent(HeaderSize);
+        using var buffer = new RentedArray2<byte>(HeaderSize);
         
         // Make sure it's the expected size before reading the data.
-        var block = owner.Memory[..HeaderSize];
-        await stream.ReadExactlyAsync(block, cancellationToken);
-        
-        // Prepare it for read access.
-        var headerBytes = block.Span;
+        await stream.ReadExactlyAsync(buffer.Memory, cancellationToken);
         
         // Deserialize the header.
         var deserializer = new NcaHeader2Deserializer();
-        var header = deserializer.Deserialize(headerBytes);
+        var header = deserializer.Deserialize(buffer.Span);
         
         // Deserialize the entries.
         var entriesDeserializer = new NcaFsHeader2Deserializer(header);
-        var entries = entriesDeserializer.Deserialize(headerBytes);
+        var entries = entriesDeserializer.Deserialize(buffer.Span);
         
         return new Nca2(stream, header, entries);
     }

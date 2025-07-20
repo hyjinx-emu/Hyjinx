@@ -117,7 +117,7 @@ public partial class PartitionFileSystem2 : FileSystem2
         return new NxFileStream2(_baseStorage.Slice2(entry.Offset, entry.Size));
     }
 
-    public override IEnumerable<DirectoryEntryEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
+    public override IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
     {
         var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
         
@@ -125,7 +125,7 @@ public partial class PartitionFileSystem2 : FileSystem2
         {
             if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullName, ignoreCase))
             {
-                yield return new DirectoryEntryEx(entry.Name, entry.FullName, entry.EntryType, entry.Size);
+                yield return new FileInfoEx(entry.Name, entry.FullName, entry.Size);
             }
         }
     }
