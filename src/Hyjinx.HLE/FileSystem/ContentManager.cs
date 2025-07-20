@@ -230,7 +230,7 @@ public partial class ContentManager : IContentManager
             switch (Path.GetExtension(aoc.ContainerPath))
             {
                 case ".xci":
-                    var xci = new Xci(_virtualFileSystem.KeySet, file.AsStorage()).OpenPartition(XciPartitionType.Secure);
+                    var xci = new Xci(file.AsStorage()).OpenPartition(XciPartitionType.Secure);
                     xci.OpenFile(ref ncaFile.Ref, aoc.NcaPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
                     break;
                 case ".nsp":

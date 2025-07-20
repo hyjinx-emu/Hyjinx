@@ -188,7 +188,7 @@ internal static partial class ApplicationHelper
 
                 if (extension == ".xci")
                 {
-                    pfs = new Xci(_virtualFileSystem.KeySet, file.AsStorage()).OpenPartition(XciPartitionType.Secure);
+                    pfs = new Xci(file.AsStorage()).OpenPartition(XciPartitionType.Secure);
                 }
                 else
                 {

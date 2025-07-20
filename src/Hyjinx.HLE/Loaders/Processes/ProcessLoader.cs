@@ -37,7 +37,7 @@ public partial class ProcessLoader
     public bool LoadXci(string path, ulong applicationId)
     {
         FileStream stream = new(path, FileMode.Open, FileAccess.Read);
-        Xci xci = new(_device.Configuration.VirtualFileSystem.KeySet, stream.AsStorage());
+        Xci xci = new(stream.AsStorage());
 
         if (!xci.HasPartition(XciPartitionType.Secure))
         {

@@ -308,7 +308,7 @@ public partial class ApplicationLibrary
             {
                 case ".xci":
                     {
-                        Xci xci = new(_virtualFileSystem.KeySet, file.AsStorage());
+                        Xci xci = new(file.AsStorage());
 
                         applications = GetApplicationsFromPfs(xci.OpenPartition(XciPartitionType.Secure), applicationPath);
 
@@ -746,7 +746,7 @@ public partial class ApplicationLibrary
 
                         if (extension == ".xci")
                         {
-                            Xci xci = new(_virtualFileSystem.KeySet, file.AsStorage());
+                            Xci xci = new(file.AsStorage());
 
                             pfs = xci.OpenPartition(XciPartitionType.Secure);
                         }
