@@ -8,7 +8,7 @@ namespace LibHac.Fs;
 /// <summary>
 /// Provides an interface for asynchronously reading a sequence of bytes within a region of storage.
 /// </summary>
-public partial interface IStorage2 : IDisposable, IAsyncDisposable
+public partial interface IStorage2 : IAsyncDisposable, IDisposable
 {
     /// <summary>
     /// Gets the length of the storage region.
