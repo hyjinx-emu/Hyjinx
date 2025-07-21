@@ -12,6 +12,13 @@ namespace LibHac.Fs.Fsa;
 public interface IFileSystem2
 {
     /// <summary>
+    /// Identifies whether a path exists.
+    /// </summary>
+    /// <param name="path">The path to check.</param>
+    /// <returns><c>true</c> if the path exists, otherwise <c>false</c>.</returns>
+    bool Exists(string path);
+    
+    /// <summary>
     /// Opens a file.
     /// </summary>
     /// <param name="fileName">The full, or relative path, of the file name to open.</param>

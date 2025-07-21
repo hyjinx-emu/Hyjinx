@@ -10,6 +10,8 @@ namespace LibHac.Fs.Fsa;
 /// </summary>
 public abstract partial class FileSystem2 : IFileSystem2
 {
+    public abstract bool Exists(string path);
+
     public abstract Stream OpenFile(string fileName, FileAccess access = FileAccess.Read);
 
     public abstract IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default);

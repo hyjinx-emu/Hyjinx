@@ -1,4 +1,7 @@
-﻿using LibHac.Fs.Fsa;
+﻿using LibHac.Fs;
+using LibHac.Fs.Fsa;
+using LibHac.FsSystem;
+using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
 using System.Threading;
@@ -25,8 +28,7 @@ public class Xci2
     /// Gets the header.
     /// </summary>
     public XciHeader Header { get; }
-
-
+    
     private Xci2(Stream stream, IFileSystem2 rootFileSystem, XciHeader header)
     {
         UnderlyingStream = stream;
@@ -40,9 +42,34 @@ public class Xci2
     /// <param name="stream">The stream to load.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new <see cref="Xci2"/> file.</returns>
-    public static Task<Xci2> LoadAsync(Stream stream, CancellationToken cancellationToken = default)
+    public static async Task<Xci2> LoadAsync(Stream stream, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(new Xci2(stream, null!, new XciHeader(stream)));
+        var storage = StreamStorage2.Create(stream);
+
+        try
+        {
+            var header = new XciHeader(stream);
+            
+            var rootFs = await Sha256PartitionFileSystem2.LoadAsync(storage.Slice2(header.RootPartitionOffset, storage.Length - header.RootPartitionOffset), 
+                cancellationToken);
+        
+            return new Xci2(stream, rootFs, header);
+        }
+        catch (Exception)
+        {
+            await storage.DisposeAsync();
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Identifies whether the partition exists.
+    /// </summary>
+    /// <param name="partition">The partition to check.</param>
+    /// <returns><c>true</c> if the partition exists, otherwise <c>false</c>.</returns>
+    public bool HasPartition(XciPartitionType partition)
+    {
+        return RootFileSystem.Exists($"/{partition.GetFileName()}");
     }
     
     /// <summary>
@@ -52,13 +79,16 @@ public class Xci2
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="partition"/> does not exist.</exception>
-    public async Task<IFileSystem2> OpenFileSystemAsync(XciPartitionType partition, CancellationToken cancellationToken = default)
+    public async Task<IFileSystem2> OpenPartitionAsync(XciPartitionType partition, CancellationToken cancellationToken = default)
     {
         var stream = RootFileSystem.OpenFile($"/{partition.GetFileName()}");
 
         try
         {
-            return null!;
+            var storage = StreamStorage2.Create(stream);
+
+            return await Sha256PartitionFileSystem2.LoadAsync(
+                storage, cancellationToken);
         }
         catch (Exception)
         {

@@ -4,6 +4,7 @@ using LibHac.Tools.Fs;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace LibHac.Tools.FsSystem.RomFs;
 /// <summary>
 /// A RomFS file system.
 /// </summary>
-public partial class RomFsFileSystem2 : FileSystem2
+public class RomFsFileSystem2 : FileSystem2
 {
     private readonly IStorage2 _baseStorage;
     
@@ -123,12 +124,10 @@ public partial class RomFsFileSystem2 : FileSystem2
         var found = false;
         var entry = LookupEntry.Empty;
         
-        string current = "";
-        
         var segmentIndex = parts.Length;
         while (segmentIndex > 0)
         {
-            current = $"/{string.Join('/', parts.Slice(0, segmentIndex)!)}";
+            var current = $"/{string.Join('/', parts.Slice(0, segmentIndex)!)}";
             if (_lookupCache.TryGetValue(current, out entry))
             {
                 found = true;
@@ -218,6 +217,14 @@ public partial class RomFsFileSystem2 : FileSystem2
 
         result = LookupEntry.Empty;
         return false;
+    }
+
+    public override bool Exists(string path)
+    {
+        var root = _directoriesIndex.Get(0);
+
+        return EnumerateFileSystemInfos(root.Info.FirstSubDirectoryOffset, "", true)
+            .Any(o => o.FullPath == path);
     }
 
     public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
