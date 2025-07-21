@@ -4,7 +4,7 @@ using LibHac.Tools.FsSystem;
 using System.Collections.Generic;
 using System.IO;
 
-namespace LibHac.Fs;
+namespace LibHac.FsSystem;
 
 public class Sha256PartitionFileSystem2 : FileSystem2
 {
