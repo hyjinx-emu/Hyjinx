@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.Loaders.Processes;
@@ -76,6 +78,11 @@ public partial class ProcessLoader
         Message = nameof(PartitionFileSystemExtensions.TryLoad) + ": {message}")]
     private partial void LogTryLoadFailed(string message);
 
+    public Task<bool> LoadNspAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(LoadNsp(path, applicationId));
+    }
+    
     public bool LoadNsp(string path, ulong applicationId)
     {
         FileStream file = new(path, FileMode.Open, FileAccess.Read);

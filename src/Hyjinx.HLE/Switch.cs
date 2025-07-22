@@ -89,9 +89,9 @@ public class Switch : IDisposable
         return Task.FromResult(LoadNca(ncaFile));
     }
 
-    public Task<bool> LoadNspAsync(string nspFile, ulong applicationId = 0, CancellationToken cancellationToken = default)
+    public async Task<bool> LoadNspAsync(string nspFile, ulong applicationId = 0, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(Processes.LoadNsp(nspFile, applicationId));
+        return await Processes.LoadNspAsync(nspFile, applicationId, cancellationToken);
     }
 
     public Task<bool> LoadProgramAsync(string fileName, CancellationToken cancellationToken = default)
