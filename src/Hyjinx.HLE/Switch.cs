@@ -1,6 +1,5 @@
 using Hyjinx.Audio.Backends.CompatLayer;
 using Hyjinx.Audio.Integration;
-using Hyjinx.Common.Configuration;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
@@ -10,6 +9,8 @@ using Hyjinx.HLE.Loaders.Processes;
 using Hyjinx.HLE.UI;
 using Hyjinx.Memory;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hyjinx.HLE;
 
@@ -68,29 +69,34 @@ public class Switch : IDisposable
 #pragma warning restore IDE0055
     }
 
-    public bool LoadCart(string exeFsDir, string romFsFile = null)
+    public Task<bool> LoadCartAsync(string exeFsDir, string romFsFile = null, CancellationToken cancellationToken = default)
     {
-        return Processes.LoadUnpackedNca(exeFsDir, romFsFile);
+        return Task.FromResult(Processes.LoadUnpackedNca(exeFsDir, romFsFile));
     }
 
-    public bool LoadXci(string xciFile, ulong applicationId = 0)
+    public Task<bool> LoadXciAsync(string xciFile, ulong applicationId = 0, CancellationToken cancellationToken = default)
     {
-        return Processes.LoadXci(xciFile, applicationId);
+        return Task.FromResult(Processes.LoadXci(xciFile, applicationId));
     }
 
     public bool LoadNca(string ncaFile)
     {
         return Processes.LoadNca(ncaFile);
     }
-
-    public bool LoadNsp(string nspFile, ulong applicationId = 0)
+    
+    public Task<bool> LoadNcaAsync(string ncaFile, CancellationToken cancellationToken = default)
     {
-        return Processes.LoadNsp(nspFile, applicationId);
+        return Task.FromResult(LoadNca(ncaFile));
     }
 
-    public bool LoadProgram(string fileName)
+    public Task<bool> LoadNspAsync(string nspFile, ulong applicationId = 0, CancellationToken cancellationToken = default)
     {
-        return Processes.LoadNxo(fileName);
+        return Task.FromResult(Processes.LoadNsp(nspFile, applicationId));
+    }
+
+    public Task<bool> LoadProgramAsync(string fileName, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(Processes.LoadNxo(fileName));
     }
 
     public bool WaitFifo()
