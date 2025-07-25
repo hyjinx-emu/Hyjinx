@@ -25,7 +25,7 @@
             </Menu.ItemsPanel>
             <MenuItem VerticalAlignment="Center" Header="{locale:Locale MenuBarFile}">
                 <MenuItem
-                    Command="{Binding OpenFile}"
+                    Command="{Binding OpenFileAsync}"
                     Header="{locale:Locale MenuBarFileOpenFromFile}"
                     IsEnabled="{Binding EnableNonGameRunningControls}"
                     ToolTip.Tip="{locale:Locale LoadApplicationFileTooltip}" />

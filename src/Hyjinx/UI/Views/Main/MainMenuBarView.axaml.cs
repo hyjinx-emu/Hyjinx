@@ -142,7 +142,7 @@ public partial class MainMenuBarView : UserControl
                 Path = contentPath,
             };
 
-            await ViewModel.LoadApplication(applicationData, ViewModel.IsFullScreen || ViewModel.StartGamesInFullscreen);
+            await ViewModel.LoadApplicationAsync(applicationData, ViewModel.IsFullScreen || ViewModel.StartGamesInFullscreen);
         }
     }
 
