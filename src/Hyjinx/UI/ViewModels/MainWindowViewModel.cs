@@ -1224,7 +1224,7 @@ public class MainWindowViewModel : BaseModel
         {
             UserChannelPersistence.ShouldRestart = false;
 
-            await LoadApplication(_currentApplicationData);
+            await LoadApplicationAsync(_currentApplicationData);
         }
         else
         {
@@ -1454,7 +1454,7 @@ public class MainWindowViewModel : BaseModel
         AppHost.Device.System.SimulateWakeUpMessage();
     }
 
-    public async Task OpenFile()
+    public async Task OpenFileAsync()
     {
         var result = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -1520,7 +1520,7 @@ public class MainWindowViewModel : BaseModel
             if (ApplicationLibrary.TryGetApplicationsFromFile(result[0].Path.LocalPath,
                     out List<ApplicationData> applications))
             {
-                await LoadApplication(applications[0]);
+                await LoadApplicationAsync(applications[0]);
             }
             else
             {
@@ -1545,11 +1545,11 @@ public class MainWindowViewModel : BaseModel
                 Path = result[0].Path.LocalPath,
             };
 
-            await LoadApplication(applicationData);
+            await LoadApplicationAsync(applicationData);
         }
     }
 
-    public async Task LoadApplication(ApplicationData application, bool startFullscreen = false)
+    public async Task LoadApplicationAsync(ApplicationData application, bool startFullscreen = false, CancellationToken cancellationToken = default)
     {
         if (AppHost != null)
         {
@@ -1585,7 +1585,7 @@ public class MainWindowViewModel : BaseModel
             this,
             TopLevel);
 
-        if (!await AppHost.LoadGuestApplication())
+        if (!await AppHost.LoadGuestApplicationAsync(cancellationToken))
         {
             AppHost.DisposeContext();
             AppHost = null;

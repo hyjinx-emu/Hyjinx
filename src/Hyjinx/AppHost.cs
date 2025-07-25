@@ -608,7 +608,7 @@ internal class AppHost
         _cursorState = CursorStates.ForceChangeCursor;
     }
 
-    public async Task<bool> LoadGuestApplication()
+    public async Task<bool> LoadGuestApplicationAsync(CancellationToken cancellationToken = default)
     {
         InitializeSwitchInstance();
         MainWindow.UpdateGraphicsConfig();
@@ -633,7 +633,7 @@ internal class AppHost
         {
             Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as Firmware Title (NCA).");
 
-            if (!await Device.LoadNcaAsync(ApplicationPath))
+            if (!await Device.LoadNcaAsync(ApplicationPath, cancellationToken))
             {
                 Device.Dispose();
 
@@ -653,7 +653,7 @@ internal class AppHost
             {
                 Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as cart with RomFS.");
 
-                if (!await Device.LoadCartAsync(ApplicationPath, romFsFiles[0]))
+                if (!await Device.LoadCartAsync(ApplicationPath, romFsFiles[0], cancellationToken))
                 {
                     Device.Dispose();
 
@@ -664,7 +664,7 @@ internal class AppHost
             {
                 Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as cart WITHOUT RomFS.");
 
-                if (!await Device.LoadCartAsync(ApplicationPath))
+                if (!await Device.LoadCartAsync(ApplicationPath, cancellationToken: cancellationToken))
                 {
                     Device.Dispose();
 
@@ -680,7 +680,7 @@ internal class AppHost
                     {
                         Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as XCI.");
 
-                        if (!await Device.LoadXciAsync(ApplicationPath, ApplicationId))
+                        if (!await Device.LoadXciAsync(ApplicationPath, ApplicationId, cancellationToken))
                         {
                             Device.Dispose();
 
@@ -693,7 +693,7 @@ internal class AppHost
                     {
                         Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NCA.");
 
-                        if (!await Device.LoadNcaAsync(ApplicationPath))
+                        if (!await Device.LoadNcaAsync(ApplicationPath, cancellationToken))
                         {
                             Device.Dispose();
 
@@ -707,7 +707,7 @@ internal class AppHost
                     {
                         Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NSP.");
 
-                        if (!await Device.LoadNspAsync(ApplicationPath, ApplicationId))
+                        if (!await Device.LoadNspAsync(ApplicationPath, ApplicationId, cancellationToken))
                         {
                             Device.Dispose();
 
@@ -722,7 +722,7 @@ internal class AppHost
 
                         try
                         {
-                            if (!await Device.LoadProgramAsync(ApplicationPath))
+                            if (!await Device.LoadProgramAsync(ApplicationPath, cancellationToken))
                             {
                                 Device.Dispose();
 
