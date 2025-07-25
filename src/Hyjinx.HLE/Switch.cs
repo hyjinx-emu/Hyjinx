@@ -28,7 +28,7 @@ public class Switch : IDisposable
     public TamperMachine TamperMachine { get; }
     public IHostUIHandler UIHandler { get; }
 
-    public bool EnableDeviceVsync { get; set; } = true;
+    public bool EnableDeviceVsync { get; set; }
 
     public bool IsFrameAvailable => Gpu.Window.IsFrameAvailable;
 
@@ -69,24 +69,19 @@ public class Switch : IDisposable
 #pragma warning restore IDE0055
     }
 
-    public Task<bool> LoadCartAsync(string exeFsDir, string romFsFile = null, CancellationToken cancellationToken = default)
+    public async Task<bool> LoadCartAsync(string exeFsDir, string? romFsFile = null, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(Processes.LoadUnpackedNca(exeFsDir, romFsFile));
+        return await Processes.LoadUnpackedNcaAsync(exeFsDir, romFsFile, cancellationToken);
     }
 
-    public Task<bool> LoadXciAsync(string xciFile, ulong applicationId = 0, CancellationToken cancellationToken = default)
+    public async Task<bool> LoadXciAsync(string xciFile, ulong applicationId = 0, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(Processes.LoadXci(xciFile, applicationId));
-    }
-
-    public bool LoadNca(string ncaFile)
-    {
-        return Processes.LoadNca(ncaFile);
+        return await Processes.LoadXciAsync(xciFile, applicationId, cancellationToken);
     }
     
-    public Task<bool> LoadNcaAsync(string ncaFile, CancellationToken cancellationToken = default)
+    public async Task<bool> LoadNcaAsync(string ncaFile, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(LoadNca(ncaFile));
+        return await Processes.LoadNcaAsync(ncaFile, cancellationToken);
     }
 
     public async Task<bool> LoadNspAsync(string nspFile, ulong applicationId = 0, CancellationToken cancellationToken = default)
@@ -94,9 +89,9 @@ public class Switch : IDisposable
         return await Processes.LoadNspAsync(nspFile, applicationId, cancellationToken);
     }
 
-    public Task<bool> LoadProgramAsync(string fileName, CancellationToken cancellationToken = default)
+    public async Task<bool> LoadProgramAsync(string fileName, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(Processes.LoadNxo(fileName));
+        return await Processes.LoadNxoAsync(fileName, cancellationToken);
     }
 
     public bool WaitFifo()
@@ -152,7 +147,7 @@ public class Switch : IDisposable
         Dispose(true);
     }
 
-    protected virtual void Dispose(bool disposing)
+    protected void Dispose(bool disposing)
     {
         if (disposing)
         {

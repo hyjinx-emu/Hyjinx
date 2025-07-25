@@ -36,7 +36,12 @@ public partial class ProcessLoader
         _processesByPid = new ConcurrentDictionary<ulong, ProcessResult>();
     }
 
-    public bool LoadXci(string path, ulong applicationId)
+    public Task<bool> LoadXciAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(LoadXci(path, applicationId));
+    }
+    
+    private bool LoadXci(string path, ulong applicationId)
     {
         FileStream stream = new(path, FileMode.Open, FileAccess.Read);
         Xci xci = new(stream.AsStorage());
@@ -83,7 +88,7 @@ public partial class ProcessLoader
         return Task.FromResult(LoadNsp(path, applicationId));
     }
     
-    public bool LoadNsp(string path, ulong applicationId)
+    private bool LoadNsp(string path, ulong applicationId)
     {
         FileStream file = new(path, FileMode.Open, FileAccess.Read);
         PartitionFileSystem partitionFileSystem = new();
@@ -115,7 +120,12 @@ public partial class ProcessLoader
         return false;
     }
 
-    public bool LoadNca(string path)
+    public Task<bool> LoadNcaAsync(string path, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(LoadNca(path));
+    }
+    
+    private bool LoadNca(string path)
     {
         FileStream file = new(path, FileMode.Open, FileAccess.Read);
         Nca nca = new(_device.Configuration.VirtualFileSystem.KeySet, file.AsStorage(false));
@@ -139,7 +149,12 @@ public partial class ProcessLoader
         return false;
     }
 
-    public bool LoadUnpackedNca(string exeFsDirPath, string romFsPath = null)
+    public Task<bool> LoadUnpackedNcaAsync(string exeFsDirPath, string? romFsPath = null, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(LoadUnpackedNca(exeFsDirPath, romFsPath));
+    }
+    
+    private bool LoadUnpackedNca(string exeFsDirPath, string? romFsPath = null)
     {
         ProcessResult processResult = new LocalFileSystem(exeFsDirPath).Load(_device, romFsPath);
 
@@ -156,7 +171,12 @@ public partial class ProcessLoader
         return false;
     }
 
-    public bool LoadNxo(string path)
+    public Task<bool> LoadNxoAsync(string path, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(LoadNxo(path));
+    }
+    
+    private bool LoadNxo(string path)
     {
         var nacpData = new BlitStruct<ApplicationControlProperty>(1);
         IFileSystem dummyExeFs = null;
@@ -221,7 +241,7 @@ public partial class ProcessLoader
         }
 
         // Explicitly null TitleId to disable the shader cache.
-        Hyjinx.Graphics.Gpu.GraphicsConfig.TitleId = null;
+        Graphics.Gpu.GraphicsConfig.TitleId = null;
         _device.Gpu.HostInitalized.Set();
 
         ProcessResult processResult = ProcessLoaderHelper.LoadNsos(_device,
