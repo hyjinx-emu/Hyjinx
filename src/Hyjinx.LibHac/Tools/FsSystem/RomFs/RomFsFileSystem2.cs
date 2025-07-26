@@ -311,13 +311,13 @@ public class RomFsFileSystem2 : FileSystem2
     }
     
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    private struct DirectoryNodeInfo : INodeInfo
+    private struct DirectoryNodeInfo : IRomFsIndexNode
     {
         public int NextSibling;
         public int FirstSubDirectoryOffset;
         public int FirstFileOffset;
 
-        int INodeInfo.NextSibling => NextSibling;
+        int IRomFsIndexNode.NextSibling => NextSibling;
         
         public override string ToString()
         {
@@ -326,13 +326,13 @@ public class RomFsFileSystem2 : FileSystem2
     }
     
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    private struct FileNodeInfo : INodeInfo
+    private struct FileNodeInfo : IRomFsIndexNode
     {
         public int NextSibling;
         public long Offset;
         public long Length;
 
-        int INodeInfo.NextSibling => NextSibling;
+        int IRomFsIndexNode.NextSibling => NextSibling;
         
         public override string ToString()
         {

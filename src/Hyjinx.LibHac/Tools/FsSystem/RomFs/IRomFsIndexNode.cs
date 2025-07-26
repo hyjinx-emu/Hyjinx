@@ -3,7 +3,7 @@
 /// <summary>
 /// Describes node information within the index.
 /// </summary>
-public interface INodeInfo
+internal interface IRomFsIndexNode
 {
     /// <summary>
     /// The offset of the next sibling.
