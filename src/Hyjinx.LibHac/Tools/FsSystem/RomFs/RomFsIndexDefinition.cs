@@ -4,7 +4,7 @@
 /// Describes the definition of a RomFs index.
 /// </summary>
 /// <remarks>There are two different tables in use for each definition, one that contains all the root nodes, and another which contains all the entries within that node.</remarks>
-public readonly struct RomFsIndexDefinition
+internal readonly struct RomFsIndexDefinition
 {
     /// <summary>
     /// The offset of the table containing all the root entries.

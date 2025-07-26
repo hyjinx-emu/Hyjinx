@@ -14,7 +14,7 @@ namespace LibHac.Tools.FsSystem.RomFs;
 /// Represents an index used by the RomFs file system.
 /// </summary>
 /// <typeparam name="T">The type of structure held within the index.</typeparam>
-public class RomFsIndex<T>
+internal sealed class RomFsIndex<T>
     where T : unmanaged, INodeInfo
 {
     private readonly IStorage2 _entryStorage;
