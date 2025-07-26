@@ -152,7 +152,7 @@ public class Ticket
         return stream.ToArray();
     }
 
-    public byte[] GetTitleKey(KeySet keySet)
+    public byte[]? GetTitleKey(KeySet keySet)
     {
         if (TitleKeyType == TitleKeyType.Common)
         {
@@ -161,7 +161,7 @@ public class Ticket
             return commonKey;
         }
 
-        return null!;
+        return null;
     }
 }
 
