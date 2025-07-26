@@ -38,6 +38,11 @@ public abstract class NcaHeader2Deserializer<T> : IDeserializer<T>
 {
     public abstract T Deserialize(in Span<byte> bytes);
     
+    /// <summary>
+    /// Detects the <see cref="NcaVersion"/> from the header.
+    /// </summary>
+    /// <param name="header">The binary header data to use.</param>
+    /// <returns>The detected <see cref="NcaVersion"/> value.</returns>
     protected virtual NcaVersion DetectNcaVersion(ReadOnlySpan<byte> header)
     {
         var version = header[0x203] - '0';
