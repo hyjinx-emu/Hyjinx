@@ -18,6 +18,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ApplicationId = LibHac.Ncm.ApplicationId;
 using ContentType = LibHac.Ncm.ContentType;
 using Path = System.IO.Path;
@@ -109,9 +111,19 @@ public static partial class NcaExtensions
         Message = "No RomFS found in NCA")]
     private static partial void LogNoRomFsFoundInNca(ILogger logger);
 
+    public static ulong GetProgramIdBase(this Nca2 nca)
+    {
+        return nca.Header.TitleId & ~0x1FFFUL;
+    }
+    
     public static ulong GetProgramIdBase(this Nca nca)
     {
         return nca.Header.TitleId & ~0x1FFFUL;
+    }
+
+    public static int GetProgramIndex(this Nca2 nca)
+    {
+        return (int)(nca.Header.TitleId & 0xF);
     }
 
     public static int GetProgramIndex(this Nca nca)
@@ -119,6 +131,11 @@ public static partial class NcaExtensions
         return (int)(nca.Header.TitleId & 0xF);
     }
 
+    public static bool IsProgram(this Nca2 nca)
+    {
+        return nca.Header.ContentType == NcaContentType.Program;
+    }
+    
     public static bool IsProgram(this Nca nca)
     {
         return nca.Header.ContentType == NcaContentType.Program;
@@ -134,11 +151,6 @@ public static partial class NcaExtensions
         int dataIndex = Nca.GetSectionIndexFromType(NcaSectionType.Data, NcaContentType.Program);
 
         return nca.IsProgram() && nca.SectionExists(NcaSectionType.Data) && nca.Header.GetFsHeader(dataIndex).IsPatchSection();
-    }
-
-    public static bool IsControl(this Nca nca)
-    {
-        return nca.Header.ContentType == NcaContentType.Control;
     }
 
     public static (Nca, Nca) GetUpdateData(this Nca mainNca, VirtualFileSystem fileSystem, IntegrityCheckLevel checkLevel, int programIndex, out string updatePath)
@@ -220,6 +232,18 @@ public static partial class NcaExtensions
         }
 
         return romFs;
+    }
+
+    public static async Task<BlitStruct<ApplicationControlProperty>> FindNacpAsync(this Nca2 controlNca, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
+    {
+        var nacpData = new BlitStruct<ApplicationControlProperty>(1);
+
+        var dataFs = await controlNca.OpenFileSystemAsync(NcaSectionType.Data, integrityCheckLevel, cancellationToken);
+
+        await using var controlFile = dataFs.OpenFile("/control.nacp");
+        controlFile.ReadExactly(nacpData.ByteSpan);
+
+        return nacpData;
     }
 
     public static BlitStruct<ApplicationControlProperty> GetNacp(this Nca controlNca, Switch device)

@@ -90,7 +90,7 @@ public partial class ProcessLoader
 
         var fileSystem = await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
 
-        var loader = new FileSystemProcessLoader(_device.FileSystem);
+        var loader = new ProcessLoader2(_device);
         
         var processResult = await loader.LoadAsync(fileSystem, cancellationToken);
         if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
