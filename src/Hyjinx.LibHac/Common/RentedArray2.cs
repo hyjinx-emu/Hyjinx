@@ -73,9 +73,8 @@ public sealed class RentedArray2<T> : IDisposable
     public Memory<T> Memory => _buffer.AsMemory(0, Length);
 
     /// <summary>
-    /// Returns the rented array buffer.
+    /// Returns the rented array.
     /// </summary>
-    /// <returns>The rented array buffer. Be advised, the array returned may be larger than the original size requested.</returns>
     public T[] ToArray()
     {
         return _buffer[..Length];

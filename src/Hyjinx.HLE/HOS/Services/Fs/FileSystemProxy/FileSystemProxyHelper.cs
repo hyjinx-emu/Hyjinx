@@ -128,7 +128,9 @@ static class FileSystemProxyHelper
 
             if (result.IsSuccess())
             {
-                Ticket ticket = new(ticketFile.Get.AsStream());
+                using var stream = ticketFile.Get.AsStream();
+
+                Ticket ticket = Ticket.ReadFrom(stream);
                 var titleKey = ticket.GetTitleKey(keySet);
 
                 if (titleKey != null)
