@@ -83,9 +83,27 @@ public partial class ProcessLoader
         Message = nameof(PartitionFileSystemExtensions.TryLoad) + ": {message}")]
     private partial void LogTryLoadFailed(string message);
 
-    public Task<bool> LoadNspAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
+    public async Task<bool> LoadNspAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(LoadNsp(path, applicationId));
+        await using var file = File.OpenRead(path);
+        await using var storage = StreamStorage2.Create(file);
+
+        var fileSystem = await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
+
+        var loader = new FileSystemProcessLoader(_device.FileSystem);
+        
+        var processResult = await loader.LoadAsync(fileSystem, cancellationToken);
+        if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
+        {
+            if (processResult.Start(_device))
+            {
+                _latestPid = processResult.ProcessId;
+                return true;
+            }
+        }
+
+        LogTryLoadFailed("Unable to load the file.");
+        return false;
     }
     
     private bool LoadNsp(string path, ulong applicationId)

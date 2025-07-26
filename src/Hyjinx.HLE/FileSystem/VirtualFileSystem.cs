@@ -203,12 +203,7 @@ public partial class VirtualFileSystem : IVirtualFileSystem, IDisposable
 
         FileSystemServerInitializer.InitializeWithConfig(fsServerClient, fsServer, fsServerConfig);
     }
-
-    /// <summary>
-    /// Imports the tickets.
-    /// </summary>
-    /// <param name="fileSystem">The file system whose tickets to import.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+    
     public async Task ImportTicketsAsync(IFileSystem2 fileSystem, CancellationToken cancellationToken = default)
     {
         foreach (var ticketEntry in fileSystem.EnumerateFileInfos("/", "*.tik"))

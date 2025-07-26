@@ -1,4 +1,7 @@
+using LibHac.Fs.Fsa;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Hyjinx.HLE.FileSystem;
 
@@ -27,4 +30,17 @@ public interface IVirtualFileSystem
     /// <param name="pid">The process id.</param>
     /// <returns>The <see cref="Stream"/> to the ROM file system.</returns>
     Stream GetRomFs(ulong pid);
+
+    /// <summary>-
+    /// Imports the tickets.
+    /// </summary>
+    /// <param name="fileSystem">The file system whose tickets to import.</param>
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+    Task ImportTicketsAsync(IFileSystem2 fileSystem, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Imports the tickets.
+    /// </summary>
+    /// <param name="fs">The file system whose tickets to import.</param>
+    void ImportTickets(IFileSystem fs);
 }
