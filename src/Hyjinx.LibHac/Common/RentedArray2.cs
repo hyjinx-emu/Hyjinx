@@ -78,7 +78,7 @@ public sealed class RentedArray2<T> : IDisposable
     /// <returns>The rented array buffer. Be advised, the array returned may be larger than the original size requested.</returns>
     public T[] ToArray()
     {
-        return _buffer;
+        return _buffer[..Length];
     }
     
     public void Dispose()

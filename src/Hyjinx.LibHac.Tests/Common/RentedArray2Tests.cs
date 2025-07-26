@@ -11,10 +11,23 @@ public class RentedArray2Tests
         using var target = new RentedArray2<byte>(6080);
 
         var array = target.ToArray();
-        Assert.Equal(8192, array.Length);
+        Assert.Equal(6080, array.Length);
         
         Assert.Equal(6080, target.Span.Length);
         Assert.Equal(6080, target.Memory.Length);
+    }
+
+    [Fact]
+    public void AlwaysReturnsTheRightSize2()
+    {
+        var expected = 516;
+        using var target = new RentedArray2<byte>(expected);
+
+        var array = target.ToArray();
+        Assert.Equal(expected, array.Length);
+        
+        Assert.Equal(expected, target.Span.Length);
+        Assert.Equal(expected, target.Memory.Length);
     }
     
     [Fact]
