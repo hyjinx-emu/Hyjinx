@@ -13,6 +13,7 @@ namespace LibHac.Tools.FsSystem.RomFs;
 /// <summary>
 /// Represents an index used by the RomFs file system.
 /// </summary>
+/// <typeparam name="T">The type of structure held within the index.</typeparam>
 public class RomFsIndex<T>
     where T : unmanaged, INodeInfo
 {
