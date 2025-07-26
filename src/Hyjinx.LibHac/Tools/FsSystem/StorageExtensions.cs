@@ -196,6 +196,17 @@ public static class StorageExtensions
         CopyToStream(input, output, inputSize, bufferSize: bufferSize);
     }
 
+    /// <summary>
+    /// Adapts a <see cref="Stream"/> to an <see cref="IStorage2"/> interface.
+    /// </summary>
+    /// <param name="stream">The <see cref="Stream"/> to adapt.</param>
+    /// <param name="leaveOpen"><c>true</c> if <paramref name="stream"/> should be kept open when the storage is disposed, otherwise <c>false</c>.</param>
+    /// <returns>A new <see cref="StreamStorage2"/> instance.</returns>
+    public static IStorage2 AsStorage2(this Stream stream, bool leaveOpen = true)
+    {
+        return StreamStorage2.Create(stream, leaveOpen);
+    }
+
     public static IStorage AsStorage(this Stream stream)
     {
         if (stream == null)
