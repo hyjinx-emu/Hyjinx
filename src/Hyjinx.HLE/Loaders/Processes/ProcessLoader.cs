@@ -82,17 +82,24 @@ public partial class ProcessLoader
         EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
         Message = nameof(PartitionFileSystemExtensions.TryLoad) + ": {message}")]
     private partial void LogTryLoadFailed(string message);
-
+    
     public async Task<bool> LoadNspAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
     {
-        await using var file = File.OpenRead(path);
-        await using var storage = StreamStorage2.Create(file);
-
+        var file = File.OpenRead(path);
+        var storage = StreamStorage2.Create(file);
+    
         var fileSystem = await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
-
+    
         var loader = new ProcessLoader2(_device);
-        
         var processResult = await loader.LoadAsync(fileSystem, cancellationToken);
+        
+        // TODO: Viper - Fix this.
+        // if (processResult.ProcessId == 0)
+        // {
+        //     // This is not a normal NSP, it's actually a ExeFS as a NSP
+        //     processResult = partitionFileSystem.Load(_device, new BlitStruct<ApplicationControlProperty>(1), partitionFileSystem.GetNpdm(), 0, true);
+        // }
+
         if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
         {
             if (processResult.Start(_device))
@@ -101,42 +108,47 @@ public partial class ProcessLoader
                 return true;
             }
         }
-
+    
         LogTryLoadFailed("Unable to load the file.");
         return false;
     }
     
-    private bool LoadNsp(string path, ulong applicationId)
-    {
-        FileStream file = new(path, FileMode.Open, FileAccess.Read);
-        PartitionFileSystem partitionFileSystem = new();
-        partitionFileSystem.Initialize(file.AsStorage()).ThrowIfFailure();
-
-        (bool success, ProcessResult processResult) = partitionFileSystem.TryLoad(_device, path, applicationId, out string errorMessage);
-
-        if (processResult.ProcessId == 0)
-        {
-            // This is not a normal NSP, it's actually a ExeFS as a NSP
-            processResult = partitionFileSystem.Load(_device, new BlitStruct<ApplicationControlProperty>(1), partitionFileSystem.GetNpdm(), 0, true);
-        }
-
-        if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
-        {
-            if (processResult.Start(_device))
-            {
-                _latestPid = processResult.ProcessId;
-
-                return true;
-            }
-        }
-
-        if (!success)
-        {
-            LogTryLoadFailed(errorMessage);
-        }
-
-        return false;
-    }
+    // public Task<bool> LoadNspAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
+    // {
+    //     return Task.FromResult(LoadNsp(path, applicationId));
+    // }
+    
+    // private bool LoadNsp(string path, ulong applicationId)
+    // {
+    //     FileStream file = new(path, FileMode.Open, FileAccess.Read);
+    //     PartitionFileSystem partitionFileSystem = new();
+    //     partitionFileSystem.Initialize(file.AsStorage()).ThrowIfFailure();
+    //
+    //     (bool success, ProcessResult processResult) = partitionFileSystem.TryLoad(_device, path, applicationId, out string errorMessage);
+    //
+    //     if (processResult.ProcessId == 0)
+    //     {
+    //         // This is not a normal NSP, it's actually a ExeFS as a NSP
+    //         processResult = partitionFileSystem.Load(_device, new BlitStruct<ApplicationControlProperty>(1), partitionFileSystem.GetNpdm(), 0, true);
+    //     }
+    //
+    //     if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
+    //     {
+    //         if (processResult.Start(_device))
+    //         {
+    //             _latestPid = processResult.ProcessId;
+    //
+    //             return true;
+    //         }
+    //     }
+    //
+    //     if (!success)
+    //     {
+    //         LogTryLoadFailed(errorMessage);
+    //     }
+    //
+    //     return false;
+    // }
 
     public Task<bool> LoadNcaAsync(string path, CancellationToken cancellationToken = default)
     {

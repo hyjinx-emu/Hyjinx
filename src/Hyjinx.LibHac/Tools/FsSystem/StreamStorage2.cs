@@ -61,10 +61,11 @@ public class StreamStorage2 : Storage2
     
     public override long Seek(long offset, SeekOrigin origin)
     {
-        if ((origin == SeekOrigin.Begin && offset == Position) || (origin == SeekOrigin.End && Length + offset == Position))
-        {
-            return Position;
-        }
+        // TODO: Viper - Fix this.
+        // if ((origin == SeekOrigin.Begin && offset == Position) || (origin == SeekOrigin.End && Length + offset == Position))
+        // {
+        //     return Position;
+        // }
         
         return _stream.Seek(offset, origin);
     }

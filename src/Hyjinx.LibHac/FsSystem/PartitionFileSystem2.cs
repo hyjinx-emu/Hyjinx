@@ -157,7 +157,20 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
             throw new FileNotFoundException("The file does not exist.", fileName);
         }
 
-        return new NxFileStream2(BaseStorage.Slice2(entry.Offset, entry.Length));
+        var result = new NxFileStream2(BaseStorage.Slice2(entry.Offset, entry.Length));
+
+        // TODO: Viper - Fix this, as this shouldn't be necessary.
+        try
+        {
+            result.Seek(0, SeekOrigin.Begin);
+            
+            return result;
+        }
+        catch (Exception)
+        {
+            result.Dispose();
+            throw;
+        }
     }
 
     public override IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)

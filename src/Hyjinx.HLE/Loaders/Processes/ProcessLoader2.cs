@@ -7,9 +7,11 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Loader;
 using LibHac.Ncm;
+using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Tools.Ncm;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,24 +59,21 @@ internal class ProcessLoader2(Switch device)
         // FileSystemExtensions.Load(this IFileSystem exeFs, Switch device, BlitStruct<ApplicationControlProperty> nacpData, MetaLoader metaLoader, byte programIndex, bool isHomebrew = false)
         // **************************************************************************************************************************************************************
         var programId = metaLoader.GetProgramId();
-        var executables = new IExecutable[ProcessConst.ExeFsPrefixes.Length];
 
-        for (var i = 0; i < executables.Length; i++)
+        List<IExecutable> executables = new();
+        foreach (var prefix in ProcessConst.ExeFsPrefixes)
         {
-            var nsoPath = $"/{ProcessConst.ExeFsPrefixes[i]}";
+            var nsoPath = $"/{prefix}";
             if (!exeFs.Exists(nsoPath))
             {
                 // The file doesn't exist, skip it.
                 continue;
             }
 
-            await using var nsoFile = exeFs.OpenFile(nsoPath);
-
-            // TODO: Viper - Fix this.
-            executables[i] = new NsoExecutable(null, null);
+            var nsoFile = exeFs.OpenFile(nsoPath);
+            executables.Add(new NsoExecutable(new StreamFile(nsoFile, OpenMode.Read)));
         }
-        
-        
+
         string programName = "";
         if (programId > 0x010000000000FFFF)
         {
@@ -108,7 +107,7 @@ internal class ProcessLoader2(Switch device)
             metaLoader.GetProgramId(),
             (byte)programNca.GetProgramIndex(),
             null!,
-            executables);
+            executables.ToArray());
 
         // TODO: This should be stored using ProcessId instead.
         device.System.LibHacHorizonManager.ArpIReader.ApplicationId = new LibHac.ApplicationId(metaLoader.GetProgramId());
