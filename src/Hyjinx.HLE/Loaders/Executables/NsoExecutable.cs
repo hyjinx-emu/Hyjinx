@@ -1,6 +1,7 @@
 using Hyjinx.Logging.Abstractions;
 using LibHac.Common.FixedArrays;
 using LibHac.Fs;
+using LibHac.Fs.Fsa;
 using LibHac.Loader;
 using LibHac.Tools.FsSystem;
 using Microsoft.Extensions.Logging;
@@ -40,11 +41,14 @@ partial class NsoExecutable : IExecutable
     [GeneratedRegex(@"SDK MW[ -~]*")]
     private static partial Regex SdkMwRegex();
 
-    public NsoExecutable(IStorage inStorage, string name = null)
+    public NsoExecutable(IStorage inStorage, string? name = null)
+        : this(inStorage.AsFile(OpenMode.Read), name) { }
+
+    public NsoExecutable(IFile file, string? name = null)
     {
         NsoReader reader = new();
 
-        reader.Initialize(inStorage.AsFile(OpenMode.Read)).ThrowIfFailure();
+        reader.Initialize(file).ThrowIfFailure();
 
         TextOffset = reader.Header.Segments[0].MemoryOffset;
         RoOffset = reader.Header.Segments[1].MemoryOffset;
@@ -59,7 +63,7 @@ partial class NsoExecutable : IExecutable
         RoSize = DecompressSection(reader, NsoReader.SegmentType.Ro, RoOffset);
         DataSize = DecompressSection(reader, NsoReader.SegmentType.Data, DataOffset);
 
-        Name = name;
+        Name = name!;
         BuildId = reader.Header.ModuleId;
 
         PrintRoSectionInfo();
