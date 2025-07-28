@@ -19,6 +19,20 @@ public class NxFileStream2 : Stream
     public override bool CanWrite => false;
     public override long Length => _baseStorage.Length;
 
+    public override long Position
+    {
+        get => _baseStorage.Position;
+        set
+        {
+            if (!CanSeek)
+            {
+                throw new NotSupportedException("The stream does not support seek.");
+            }
+            
+            _baseStorage.Seek(value, SeekOrigin.Begin);
+        }
+    }
+    
     /// <summary>
     /// Initializes an instance of the class.
     /// </summary>
@@ -74,19 +88,5 @@ public class NxFileStream2 : Stream
         }
         
         throw new NotSupportedException();
-    }
-
-    public override long Position
-    {
-        get => _baseStorage.Position;
-        set
-        {
-            if (!CanSeek)
-            {
-                throw new NotSupportedException("The stream does not support seek.");
-            }
-            
-            _baseStorage.Seek(value, SeekOrigin.Begin);
-        }
     }
 }
