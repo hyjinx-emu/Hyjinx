@@ -12,7 +12,7 @@ public class KeySet
     /// <summary>
     /// Defines an empty key set.
     /// </summary>
-    public static readonly KeySet Empty = new();
+    private static readonly KeySet Empty = new();
 
     /// <summary>
     /// Gets the external key set.
