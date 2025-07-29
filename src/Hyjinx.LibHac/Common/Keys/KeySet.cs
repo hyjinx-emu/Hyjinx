@@ -12,7 +12,7 @@ public class KeySet
     /// <summary>
     /// Defines an empty key set.
     /// </summary>
-    private static readonly KeySet Empty = new();
+    private static readonly KeySet _empty = new();
 
     /// <summary>
     /// Gets the external key set.
@@ -30,6 +30,6 @@ public class KeySet
     /// <returns>The created <see cref="KeySet"/>.</returns>
     public static KeySet CreateDefaultKeySet()
     {
-        return Empty;
+        return _empty;
     }
 }
