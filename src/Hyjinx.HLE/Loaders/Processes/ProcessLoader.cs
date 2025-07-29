@@ -19,22 +19,14 @@ using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.Loaders.Processes;
 
-public partial class ProcessLoader
+public partial class ProcessLoader(Switch device)
 {
-    private readonly Switch _device;
-
     private readonly ILogger<ProcessLoader> _logger = Logger.DefaultLoggerFactory.CreateLogger<ProcessLoader>();
-    private readonly ConcurrentDictionary<ulong, ProcessResult> _processesByPid;
+    private readonly ConcurrentDictionary<ulong, ProcessResult> _processesByPid = new();
 
     private ulong _latestPid;
-
+    
     public ProcessResult ActiveApplication => _processesByPid[_latestPid];
-
-    public ProcessLoader(Switch device)
-    {
-        _device = device;
-        _processesByPid = new ConcurrentDictionary<ulong, ProcessResult>();
-    }
 
     public async Task<bool> LoadXciAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
     {
@@ -48,12 +40,12 @@ public partial class ProcessLoader
         }
 
         var fileSystem = await xci.OpenPartitionAsync(XciPartitionType.Secure, cancellationToken);
-        var loader = new ProcessLoader2(_device);
+        var loader = new FileSystemLoader(device);
         
         var processResult = await loader.LoadAsync(fileSystem, cancellationToken);
         if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
         {
-            if (processResult.Start(_device))
+            if (processResult.Start(device))
             {
                 _latestPid = processResult.ProcessId;
                 return true;
@@ -63,43 +55,6 @@ public partial class ProcessLoader
         LogTryLoadFailed("Unable to load the file.");
         return false;
     }
-    
-    // public Task<bool> LoadXciAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
-    // {
-    //     return Task.FromResult(LoadXci(path, applicationId));
-    // }
-    
-    // private bool LoadXci(string path, ulong applicationId)
-    // {
-    //     FileStream stream = new(path, FileMode.Open, FileAccess.Read);
-    //     Xci xci = new(stream.AsStorage());
-    //
-    //     if (!xci.HasPartition(XciPartitionType.Secure))
-    //     {
-    //         LogCannotFindSecurePartition();
-    //         return false;
-    //     }
-    //
-    //     (bool success, ProcessResult processResult) = xci.OpenPartition(XciPartitionType.Secure).TryLoad(_device, path, applicationId, out string errorMessage);
-    //
-    //     if (!success)
-    //     {
-    //         LogTryLoadFailed(errorMessage);
-    //         return false;
-    //     }
-    //
-    //     if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
-    //     {
-    //         if (processResult.Start(_device))
-    //         {
-    //             _latestPid = processResult.ProcessId;
-    //
-    //             return true;
-    //         }
-    //     }
-    //
-    //     return false;
-    // }
 
     [LoggerMessage(LogLevel.Error,
         EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
@@ -118,7 +73,7 @@ public partial class ProcessLoader
     
         var fileSystem = await PartitionFileSystem2.CreateAsync(storage, cancellationToken);
     
-        var loader = new ProcessLoader2(_device);
+        var loader = new FileSystemLoader(device);
         var processResult = await loader.LoadAsync(fileSystem, cancellationToken);
         
         // TODO: Viper - Fix this.
@@ -130,7 +85,7 @@ public partial class ProcessLoader
 
         if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
         {
-            if (processResult.Start(_device))
+            if (processResult.Start(device))
             {
                 _latestPid = processResult.ProcessId;
                 return true;
@@ -140,43 +95,6 @@ public partial class ProcessLoader
         LogTryLoadFailed("Unable to load the file.");
         return false;
     }
-    
-    // public Task<bool> LoadNspAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
-    // {
-    //     return Task.FromResult(LoadNsp(path, applicationId));
-    // }
-    
-    // private bool LoadNsp(string path, ulong applicationId)
-    // {
-    //     FileStream file = new(path, FileMode.Open, FileAccess.Read);
-    //     PartitionFileSystem partitionFileSystem = new();
-    //     partitionFileSystem.Initialize(file.AsStorage()).ThrowIfFailure();
-    //
-    //     (bool success, ProcessResult processResult) = partitionFileSystem.TryLoad(_device, path, applicationId, out string errorMessage);
-    //
-    //     if (processResult.ProcessId == 0)
-    //     {
-    //         // This is not a normal NSP, it's actually a ExeFS as a NSP
-    //         processResult = partitionFileSystem.Load(_device, new BlitStruct<ApplicationControlProperty>(1), partitionFileSystem.GetNpdm(), 0, true);
-    //     }
-    //
-    //     if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
-    //     {
-    //         if (processResult.Start(_device))
-    //         {
-    //             _latestPid = processResult.ProcessId;
-    //
-    //             return true;
-    //         }
-    //     }
-    //
-    //     if (!success)
-    //     {
-    //         LogTryLoadFailed(errorMessage);
-    //     }
-    //
-    //     return false;
-    // }
 
     public Task<bool> LoadNcaAsync(string path, CancellationToken cancellationToken = default)
     {
@@ -186,13 +104,13 @@ public partial class ProcessLoader
     private bool LoadNca(string path)
     {
         FileStream file = new(path, FileMode.Open, FileAccess.Read);
-        Nca nca = new(_device.Configuration.VirtualFileSystem.KeySet, file.AsStorage(false));
+        Nca nca = new(device.Configuration.VirtualFileSystem.KeySet, file.AsStorage(false));
 
-        ProcessResult processResult = nca.Load(_device, null, null);
+        var processResult = nca.Load(device, null, null);
 
         if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
         {
-            if (processResult.Start(_device))
+            if (processResult.Start(device))
             {
                 // NOTE: Check if process is SystemApplicationId or ApplicationId
                 if (processResult.ProgramId > 0x01000000000007FF)
@@ -214,11 +132,11 @@ public partial class ProcessLoader
     
     private bool LoadUnpackedNca(string exeFsDirPath, string? romFsPath = null)
     {
-        ProcessResult processResult = new LocalFileSystem(exeFsDirPath).Load(_device, romFsPath);
+        ProcessResult processResult = new LocalFileSystem(exeFsDirPath).Load(device, romFsPath);
 
         if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
         {
-            if (processResult.Start(_device))
+            if (processResult.Start(device))
             {
                 _latestPid = processResult.ProcessId;
 
@@ -268,7 +186,7 @@ public partial class ProcessLoader
             {
                 nacpStorage.Read(0, nacpData.ByteSpan);
 
-                programName = nacpData.Value.Title[(int)_device.System.State.DesiredTitleLanguage].NameString.ToString();
+                programName = nacpData.Value.Title[(int)device.System.State.DesiredTitleLanguage].NameString.ToString();
 
                 if (string.IsNullOrWhiteSpace(programName))
                 {
@@ -300,10 +218,10 @@ public partial class ProcessLoader
 
         // Explicitly null TitleId to disable the shader cache.
         Graphics.Gpu.GraphicsConfig.TitleId = null;
-        _device.Gpu.HostInitalized.Set();
+        device.Gpu.HostInitalized.Set();
 
-        ProcessResult processResult = ProcessLoaderHelper.LoadNsos(_device,
-                                                                   _device.System.KernelContext,
+        ProcessResult processResult = ProcessLoaderHelper.LoadNsos(device,
+                                                                   device.System.KernelContext,
                                                                    dummyExeFs.GetNpdm(),
                                                                    nacpData,
                                                                    diskCacheEnabled: false,
@@ -320,13 +238,13 @@ public partial class ProcessLoader
             // Load RomFS.
             if (romfsStream != null)
             {
-                _device.Configuration.VirtualFileSystem.SetRomFs(processResult.ProcessId, romfsStream);
+                device.Configuration.VirtualFileSystem.SetRomFs(processResult.ProcessId, romfsStream);
             }
 
             // Start process.
             if (_processesByPid.TryAdd(processResult.ProcessId, processResult))
             {
-                if (processResult.Start(_device))
+                if (processResult.Start(device))
                 {
                     _latestPid = processResult.ProcessId;
 

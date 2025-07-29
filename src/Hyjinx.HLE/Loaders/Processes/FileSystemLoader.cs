@@ -21,10 +21,10 @@ using ContentType = LibHac.Ncm.ContentType;
 namespace Hyjinx.HLE.Loaders.Processes;
 
 /// <summary>
-/// A mechanism which is capable of loading content from from the file system provided to a <see cref="Switch"/> device.
+/// A mechanism which is capable of loading content from from the <see cref="IFileSystem2"/> provided to a <see cref="Switch"/> device.
 /// </summary>
 /// <param name="device">The device to which the content will be loaded.</param>
-internal class ProcessLoader2(Switch device)
+internal class FileSystemLoader(Switch device)
 {
     /// <summary>
     /// Loads the process.

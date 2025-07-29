@@ -678,7 +678,7 @@ partial class IApplicationFunctions : IpcService<IApplicationFunctions>
                 throw new InvalidSystemResourceException("JIT (010000000000003B) system title not found! The JIT will not work, provide the system archive to fix this error. (See https://github.com/hyjinx-emu/Hyjinx#requirements for more information)");
             }
 
-            context.Device.LoadNcaAsync(filePath)
+            context.Device.Processes.LoadNcaAsync(filePath)
                 .ConfigureAwait(false).GetAwaiter().GetResult();
 
             // FIXME: Most likely not how this should be done?

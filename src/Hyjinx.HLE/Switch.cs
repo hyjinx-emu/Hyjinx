@@ -9,8 +9,6 @@ using Hyjinx.HLE.Loaders.Processes;
 using Hyjinx.HLE.UI;
 using Hyjinx.Memory;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Hyjinx.HLE;
 
@@ -68,32 +66,7 @@ public class Switch : IDisposable
         System.GlobalAccessLogMode              = Configuration.FsGlobalAccessLogMode;
 #pragma warning restore IDE0055
     }
-
-    public async Task<bool> LoadCartAsync(string exeFsDir, string? romFsFile = null, CancellationToken cancellationToken = default)
-    {
-        return await Processes.LoadUnpackedNcaAsync(exeFsDir, romFsFile, cancellationToken);
-    }
-
-    public async Task<bool> LoadXciAsync(string xciFile, ulong applicationId = 0, CancellationToken cancellationToken = default)
-    {
-        return await Processes.LoadXciAsync(xciFile, applicationId, cancellationToken);
-    }
     
-    public async Task<bool> LoadNcaAsync(string ncaFile, CancellationToken cancellationToken = default)
-    {
-        return await Processes.LoadNcaAsync(ncaFile, cancellationToken);
-    }
-
-    public async Task<bool> LoadNspAsync(string nspFile, ulong applicationId = 0, CancellationToken cancellationToken = default)
-    {
-        return await Processes.LoadNspAsync(nspFile, applicationId, cancellationToken);
-    }
-
-    public async Task<bool> LoadProgramAsync(string fileName, CancellationToken cancellationToken = default)
-    {
-        return await Processes.LoadNxoAsync(fileName, cancellationToken);
-    }
-
     public bool WaitFifo()
     {
         return Gpu.GPFifo.WaitForCommands();
@@ -147,7 +120,7 @@ public class Switch : IDisposable
         Dispose(true);
     }
 
-    protected void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (disposing)
         {
