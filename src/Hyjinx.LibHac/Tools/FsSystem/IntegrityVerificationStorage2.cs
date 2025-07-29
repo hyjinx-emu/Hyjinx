@@ -108,7 +108,7 @@ public class IntegrityVerificationStorage2 : Storage2
         }
         
         using var dataBuffer = new RentedArray2<byte>(_sectorSize);
-        var dataOffset = sectorIndex * _sectorSize;
+        var dataOffset = (long)sectorIndex * _sectorSize;
         
         // Read the entire sector from the file.
         bytesRead = _dataStorage.ReadOnce(dataOffset, dataBuffer.Span);

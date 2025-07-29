@@ -20,6 +20,12 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
         var fsHeaderBytes = bytes.Slice(FsHeadersOffset + (sectionIndex * FsHeaderSize), FsHeaderSize);
         
         scoped ref var fsHeader = ref Unsafe.As<byte, FsHeaderStruct>(ref fsHeaderBytes[0]);
+
+        var blockCount = (fsEntry.EndBlock - fsEntry.StartBlock);
+        if (blockCount < 0)
+        {
+            throw new InvalidOperationException("The block count cannot be a negative value.");
+        }
         
         return new NcaFsHeader2
         {
@@ -27,7 +33,7 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
             FormatType = (NcaFormatType)fsHeader.FormatType,
             HashType = (NcaHashType)fsHeader.HashType,
             SectionStartOffset = fsEntry.StartBlock * BlockSize,
-            SectionSize = (fsEntry.EndBlock - fsEntry.StartBlock) * BlockSize,
+            SectionSize = (long)blockCount * BlockSize,
             Checksum = fsHeaderBytes.Slice(IntegrityInfoOffset, IntegrityInfoSize).ToArray(),
             Hash = hashBytes.ToArray(),
             PatchInfo = null,
