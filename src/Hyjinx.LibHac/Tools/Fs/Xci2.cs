@@ -37,12 +37,12 @@ public class Xci2
     }
     
     /// <summary>
-    /// Loads the archive.
+    /// Creates an <see cref="Xci2"/>.
     /// </summary>
-    /// <param name="stream">The stream to load.</param>
+    /// <param name="stream">The <see cref="Stream"/> to use.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new <see cref="Xci2"/> file.</returns>
-    public static async Task<Xci2> LoadAsync(Stream stream, CancellationToken cancellationToken = default)
+    public static async Task<Xci2> CreateAsync(Stream stream, CancellationToken cancellationToken = default)
     {
         var storage = StreamStorage2.Create(stream);
 
@@ -50,7 +50,7 @@ public class Xci2
         {
             var header = new XciHeader(stream);
             
-            var rootFs = await Sha256PartitionFileSystem2.LoadAsync(storage.Slice2(header.RootPartitionOffset, storage.Length - header.RootPartitionOffset), 
+            var rootFs = await Sha256PartitionFileSystem2.CreateAsync(storage.Slice2(header.RootPartitionOffset, storage.Length - header.RootPartitionOffset), 
                 cancellationToken);
         
             return new Xci2(stream, rootFs, header);
@@ -87,7 +87,7 @@ public class Xci2
         {
             var storage = StreamStorage2.Create(stream);
 
-            return await Sha256PartitionFileSystem2.LoadAsync(
+            return await Sha256PartitionFileSystem2.CreateAsync(
                 storage, cancellationToken);
         }
         catch (Exception)

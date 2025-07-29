@@ -196,13 +196,13 @@ public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemForm
         : base(baseStorage, header) { }
     
     /// <summary>
-    /// Loads the file system from storage.
+    /// Creates a <see cref="PartitionFileSystem"/> from storage.
     /// </summary>
     /// <param name="baseStorage">The base storage for the file system.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="InvalidOperationException">The header size read was not the expected size.</exception>
-    public static async Task<PartitionFileSystem2> LoadAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
+    public static async Task<PartitionFileSystem2> CreateAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         using var headerBuffer = new RentedArray2<byte>(headerSize);

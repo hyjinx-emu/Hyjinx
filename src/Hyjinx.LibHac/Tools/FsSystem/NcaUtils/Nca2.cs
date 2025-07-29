@@ -21,12 +21,12 @@ public class Nca2 : Nca2<NcaHeader2, NcaFsHeader2>
         : base(stream, header, sections) { }
 
     /// <summary>
-    /// Loads the archive.
+    /// Creates an <see cref="Nca2"/>.
     /// </summary>
-    /// <param name="stream">The stream to load.</param>
+    /// <param name="stream">The <see cref="Stream"/> to use.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    /// <returns>The new <see cref="Nca2"/> file.</returns>
-    public static async Task<Nca2> LoadAsync(Stream stream, CancellationToken cancellationToken = default)
+    /// <returns>The new <see cref="Nca2"/>.</returns>
+    public static async Task<Nca2> CreateAsync(Stream stream, CancellationToken cancellationToken = default)
     {
         if (stream.Length < HeaderSize)
         {
@@ -126,12 +126,12 @@ public class Nca2<THeader, TFsHeader>
 
     private async Task<IFileSystem2> CreateFileSystemForPfs0Async(IStorage2 storage, CancellationToken cancellationToken)
     {
-        return await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
+        return await PartitionFileSystem2.CreateAsync(storage, cancellationToken);
     }
 
     private async Task<IFileSystem2> CreateFileSystemForRomFs(IStorage2 storage, CancellationToken cancellationToken)
     {
-        return await RomFsFileSystem2.LoadAsync(storage, cancellationToken);
+        return await RomFsFileSystem2.CreateAsync(storage, cancellationToken);
     }
 
     /// <summary>

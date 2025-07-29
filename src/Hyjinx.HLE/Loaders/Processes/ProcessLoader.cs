@@ -36,15 +36,10 @@ public partial class ProcessLoader
         _processesByPid = new ConcurrentDictionary<ulong, ProcessResult>();
     }
 
-    public Task<bool> LoadXciAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
+    public async Task<bool> LoadXciAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(LoadXci(path, applicationId));
-    }
-    
-    private bool LoadXci(string path, ulong applicationId)
-    {
-        FileStream stream = new(path, FileMode.Open, FileAccess.Read);
-        Xci xci = new(stream.AsStorage());
+        var file = File.OpenRead(path);
+        var xci = await Xci2.CreateAsync(file, cancellationToken);
 
         if (!xci.HasPartition(XciPartitionType.Secure))
         {
@@ -52,26 +47,59 @@ public partial class ProcessLoader
             return false;
         }
 
-        (bool success, ProcessResult processResult) = xci.OpenPartition(XciPartitionType.Secure).TryLoad(_device, path, applicationId, out string errorMessage);
-
-        if (!success)
-        {
-            LogTryLoadFailed(errorMessage);
-            return false;
-        }
-
+        var fileSystem = await xci.OpenPartitionAsync(XciPartitionType.Secure, cancellationToken);
+        var loader = new ProcessLoader2(_device);
+        
+        var processResult = await loader.LoadAsync(fileSystem, cancellationToken);
         if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
         {
             if (processResult.Start(_device))
             {
                 _latestPid = processResult.ProcessId;
-
                 return true;
             }
         }
-
+    
+        LogTryLoadFailed("Unable to load the file.");
         return false;
     }
+    
+    // public Task<bool> LoadXciAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
+    // {
+    //     return Task.FromResult(LoadXci(path, applicationId));
+    // }
+    
+    // private bool LoadXci(string path, ulong applicationId)
+    // {
+    //     FileStream stream = new(path, FileMode.Open, FileAccess.Read);
+    //     Xci xci = new(stream.AsStorage());
+    //
+    //     if (!xci.HasPartition(XciPartitionType.Secure))
+    //     {
+    //         LogCannotFindSecurePartition();
+    //         return false;
+    //     }
+    //
+    //     (bool success, ProcessResult processResult) = xci.OpenPartition(XciPartitionType.Secure).TryLoad(_device, path, applicationId, out string errorMessage);
+    //
+    //     if (!success)
+    //     {
+    //         LogTryLoadFailed(errorMessage);
+    //         return false;
+    //     }
+    //
+    //     if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
+    //     {
+    //         if (processResult.Start(_device))
+    //         {
+    //             _latestPid = processResult.ProcessId;
+    //
+    //             return true;
+    //         }
+    //     }
+    //
+    //     return false;
+    // }
 
     [LoggerMessage(LogLevel.Error,
         EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
@@ -88,7 +116,7 @@ public partial class ProcessLoader
         var file = File.OpenRead(path);
         var storage = StreamStorage2.Create(file);
     
-        var fileSystem = await PartitionFileSystem2.LoadAsync(storage, cancellationToken);
+        var fileSystem = await PartitionFileSystem2.CreateAsync(storage, cancellationToken);
     
         var loader = new ProcessLoader2(_device);
         var processResult = await loader.LoadAsync(fileSystem, cancellationToken);

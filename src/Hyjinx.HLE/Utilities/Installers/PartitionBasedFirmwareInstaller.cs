@@ -33,7 +33,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
         foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
         {
             using var file = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read);
-            Nca2 nca = await Nca2.LoadAsync(file.AsStream(), cancellationToken);
+            Nca2 nca = await Nca2.CreateAsync(file.AsStream(), cancellationToken);
 
             await SaveNcaAsync(nca, entry.Name.Remove(entry.Name.IndexOf('.')), temporaryDirectory, cancellationToken);
         }
@@ -76,7 +76,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
         {
             using var ncaStorageFile = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read);
 
-            var nca = await Nca2.LoadAsync(ncaStorageFile.AsStream(), cancellationToken);
+            var nca = await Nca2.CreateAsync(ncaStorageFile.AsStream(), cancellationToken);
             if (nca.Header is { TitleId: ContentManager.SystemUpdateTitleId, ContentType: NcaContentType.Meta })
             {
                 // TODO: Viper - This should be enforcing integrity levels.
@@ -138,7 +138,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
         
                 using var metaStorage = OpenPossibleFragmentedFile(filesystem, metaNcaPath, OpenMode.Read);
         
-                var metaNca = await Nca2.LoadAsync(metaStorage.AsStream(), cancellationToken);
+                var metaNca = await Nca2.CreateAsync(metaStorage.AsStream(), cancellationToken);
         
                 // TODO: Viper - This should be enforcing integrity levels.
                 var fs = await metaNca.OpenFileSystemAsync(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid, cancellationToken);

@@ -161,7 +161,7 @@ internal class ProcessLoader2(Switch device)
         // TODO: Viper - This may cause a leak.
         var fs = fileSystem.OpenFile(fileName);
 
-        return await Nca2.LoadAsync(fs, cancellationToken);
+        return await Nca2.CreateAsync(fs, cancellationToken);
     }
 
     private async Task<Cnmt?> FindApplicationMetadataAsync(IFileSystem2 fileSystem, ContentMetaType contentMetaType, CancellationToken cancellationToken)
@@ -170,7 +170,7 @@ internal class ProcessLoader2(Switch device)
         {
             await using var file = fileSystem.OpenFile(entry.FullPath);
             
-            var nca = await Nca2.LoadAsync(file, cancellationToken);
+            var nca = await Nca2.CreateAsync(file, cancellationToken);
             
             // Find the data within the file.
             var cnmtFs = await nca.OpenFileSystemAsync(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel, cancellationToken);

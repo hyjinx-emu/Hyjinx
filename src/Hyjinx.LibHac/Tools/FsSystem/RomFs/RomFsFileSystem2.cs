@@ -45,12 +45,12 @@ public class RomFsFileSystem2 : FileSystem2
     }
     
     /// <summary>
-    /// Loads the file system from storage.
+    /// Creates an <see cref="RomFsFileSystem2"/> from storage.
     /// </summary>
     /// <param name="baseStorage">The base storage for the file system.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    /// <returns>The new instance.</returns>
-    public static async Task<RomFsFileSystem2> LoadAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
+    /// <returns>The new <see cref="RomFsFileSystem2"/> instance.</returns>
+    public static async Task<RomFsFileSystem2> CreateAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
     {
         var header = RomFsHeader2.Read(baseStorage);
         
