@@ -157,7 +157,7 @@ public class Nca2<THeader, TFsHeader>
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var result = await OpenRawStorageAsync(fsHeader, cancellationToken);
+        var result = await OpenRawStorageAsync(fsHeader, integrityCheckLevel, cancellationToken);
 
         if (fsHeader.HashType != NcaHashType.None)
         {
@@ -169,8 +169,21 @@ public class Nca2<THeader, TFsHeader>
         return result;
     }
 
-    protected virtual async Task<IStorage2> OpenRawStorageAsync(TFsHeader fsHeader, CancellationToken cancellationToken)
+    /// <summary>
+    /// Opens the raw storage.
+    /// </summary>
+    /// <param name="fsHeader">The header of the storage entry.</param>
+    /// <param name="integrityCheckLevel">The <see cref="IntegrityCheckLevel"/> to enforce.</param>
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+    /// <returns>The <see cref="IStorage2"/> instance.</returns>
+    /// <exception cref="InvalidHashDetectedException">The header hash did not match the expected value.</exception>
+    protected virtual async Task<IStorage2> OpenRawStorageAsync(TFsHeader fsHeader, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken)
     {
+        if (integrityCheckLevel is IntegrityCheckLevel.ErrorOnInvalid && fsHeader.HashValidity is not Validity.Valid)
+        {
+            throw new InvalidHashDetectedException("The header hash does not match the expected value.");
+        }
+        
         var rootStorage = StreamStorage2.Create(UnderlyingStream);
 
         try

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using LibHac.Common;
+using System.Diagnostics;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
@@ -42,5 +43,9 @@ public record NcaFsHeader2
     public required byte[]? PatchInfo { get; init; }
     public required byte[]? SparseInfo { get; init; }
     public required byte[]? CompressionInfo { get; init; }
-    public required byte[] Hash { get; init; }
+    
+    /// <summary>
+    /// Indicates the validity of the header.
+    /// </summary>
+    public Validity HashValidity { get; init; } = Validity.Unchecked;
 }

@@ -45,7 +45,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
 
         Directory.CreateDirectory(newPath);
 
-        await using FileStream file = File.Create(Path.Combine(newPath, "00"));
+        await using var file = File.Create(Path.Combine(newPath, "00"));
         await nca.CopyToAsync(file, cancellationToken);
     }
 
@@ -172,7 +172,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
         
             foreach (var entry in updateNcas)
             {
-                foreach (var (type, path) in entry.Value)
+                foreach (var (_, path) in entry.Value)
                 {
                     extraNcas.AppendLine(path);
                 }

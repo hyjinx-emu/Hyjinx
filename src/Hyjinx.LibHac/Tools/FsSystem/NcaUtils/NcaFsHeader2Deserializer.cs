@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LibHac.Common;
+using LibHac.Crypto;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
@@ -13,11 +15,11 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
 {
     protected override NcaFsHeader2 DeserializeCore(in Span<byte> bytes, int sectionIndex, NcaSectionEntryStruct fsEntry)
     {
-        // Find the hash bytes.
-        var hashBytes = bytes.Slice(FsHeaderHashOffset + (sectionIndex * FsHeaderHashSize), FsHeaderHashSize);
-            
         // Find the file system header entry.
         var fsHeaderBytes = bytes.Slice(FsHeadersOffset + (sectionIndex * FsHeaderSize), FsHeaderSize);
+        
+        // Find the hash bytes.
+        var hashBytes = ExtractHashBytes(bytes, sectionIndex);
         
         scoped ref var fsHeader = ref Unsafe.As<byte, FsHeaderStruct>(ref fsHeaderBytes[0]);
 
@@ -35,7 +37,7 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
             SectionStartOffset = fsEntry.StartBlock * BlockSize,
             SectionSize = (long)blockCount * BlockSize,
             Checksum = fsHeaderBytes.Slice(IntegrityInfoOffset, IntegrityInfoSize).ToArray(),
-            Hash = hashBytes.ToArray(),
+            HashValidity = CheckHeaderHashMatchesAsExpected(fsHeaderBytes, hashBytes),
             PatchInfo = null,
             SparseInfo = null,
             CompressionInfo = null
@@ -130,7 +132,6 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static Span<byte> ExtractHashBytes(in Span<byte> bytes, int sectionIndex)
     {
-        // Find the hash bytes.
         return bytes.Slice(FsHeaderHashOffset + (sectionIndex * FsHeaderHashSize), FsHeaderHashSize);
     }
 
@@ -145,5 +146,25 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
     {
         // Find the file system header entry.
         return bytes.Slice(FsHeadersOffset + (sectionIndex * FsHeaderSize), FsHeaderSize);
+    }
+    
+    /// <summary>
+    /// Checks whether the header bytes matches the expected hash.
+    /// </summary>
+    /// <param name="fsHeaderBytes">The bytes of the header.</param>
+    /// <param name="expectedHash">The expected hash of the header.</param>
+    /// <returns>The <see cref="Validity"/>.</returns>
+    protected static Validity CheckHeaderHashMatchesAsExpected(in Span<byte> fsHeaderBytes, in Span<byte> expectedHash)
+    {
+        Span<byte> actualHash = stackalloc byte[Sha256.DigestSize];
+        
+        // Compare the hash to the raw FsHeader
+        Sha256.GenerateSha256Hash(fsHeaderBytes, actualHash);
+        if (!Utilities.SpansEqual(expectedHash, actualHash))
+        {
+            return Validity.Invalid;
+        }
+
+        return Validity.Valid;
     }
 }
