@@ -40,7 +40,11 @@ public record NcaFsHeader2
     /// </summary>
     /// <remarks>The contents of this array varies by the <see cref="HashType"/> used to validate the section.</remarks>
     public required byte[] Checksum { get; init; }
-    public required byte[]? PatchInfo { get; init; }
+    
+    /// <summary>
+    /// The patch information (if available).
+    /// </summary>
+    public required NcaFsPatchInfo2? PatchInfo { get; init; }
     public required byte[]? SparseInfo { get; init; }
     public required byte[]? CompressionInfo { get; init; }
     
