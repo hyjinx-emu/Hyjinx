@@ -70,4 +70,13 @@ public static class NativeTypes
         public int EndBlock;
         public bool IsEnabled;
     }
+    
+    [StructLayout(LayoutKind.Explicit)]
+    public struct NcaFsPatchInfoStruct
+    {
+        [FieldOffset(0x00)] public long RelocationTreeOffset;
+        [FieldOffset(0x08)] public long RelocationTreeSize;
+        [FieldOffset(0x20)] public long EncryptionTreeOffset;
+        [FieldOffset(0x28)] public long EncryptionTreeSize;
+    }
 }

@@ -149,6 +149,28 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
     }
     
     /// <summary>
+    /// Deserializes the patch information (if present).
+    /// </summary>
+    /// <param name="bytes">The bytes of the header.</param>
+    /// <returns>The <see cref="NcaFsPatchInfo2"/> if present, otherwise a null value.</returns>
+    protected static NcaFsPatchInfo2? DeserializePatchInfo(in Span<byte> bytes)
+    {
+        scoped ref var patchStruct = ref Unsafe.As<byte, NcaFsPatchInfoStruct>(ref bytes[0]);
+        if (patchStruct.EncryptionTreeSize != 0 || patchStruct.RelocationTreeSize != 0)
+        {
+            return new NcaFsPatchInfo2
+            {
+                EncryptionTreeSize = patchStruct.EncryptionTreeSize,
+                EncryptionTreeOffset = patchStruct.EncryptionTreeOffset,
+                RelocationTreeOffset = patchStruct.RelocationTreeOffset,
+                RelocationTreeSize = patchStruct.RelocationTreeSize
+            };
+        }
+
+        return null;
+    }
+    
+    /// <summary>
     /// Checks whether the header bytes matches the expected hash.
     /// </summary>
     /// <param name="fsHeaderBytes">The bytes of the header.</param>
