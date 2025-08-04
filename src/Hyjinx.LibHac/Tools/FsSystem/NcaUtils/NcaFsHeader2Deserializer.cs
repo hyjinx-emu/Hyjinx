@@ -38,7 +38,7 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
             SectionSize = (long)blockCount * BlockSize,
             Checksum = fsHeaderBytes.Slice(IntegrityInfoOffset, IntegrityInfoSize).ToArray(),
             HashValidity = CheckHeaderHashMatchesAsExpected(fsHeaderBytes, hashBytes),
-            PatchInfo = null,
+            PatchInfo = DeserializePatchInfo(fsHeaderBytes.Slice(PatchInfoOffset, PatchInfoSize)),
             SparseInfo = null,
             CompressionInfo = null
         };
