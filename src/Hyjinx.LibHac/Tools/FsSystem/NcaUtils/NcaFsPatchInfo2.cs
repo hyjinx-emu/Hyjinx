@@ -24,4 +24,14 @@ public class NcaFsPatchInfo2
     /// The size of the relocation tree.
     /// </summary>
     public long RelocationTreeSize { get; init; }
+    
+    /// <summary>
+    /// The relocation tree header.
+    /// </summary>
+    public byte[] RelocationTreeHeader { get; init; }
+    
+    /// <summary>
+    /// The encryption tree header.
+    /// </summary>
+    public byte[] EncryptionTreeHeader { get; init; }
 }

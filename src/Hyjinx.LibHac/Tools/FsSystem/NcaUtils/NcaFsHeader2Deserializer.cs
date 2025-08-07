@@ -162,8 +162,10 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
             {
                 EncryptionTreeSize = patchStruct.EncryptionTreeSize,
                 EncryptionTreeOffset = patchStruct.EncryptionTreeOffset,
+                EncryptionTreeHeader = bytes.Slice(0x30,0x10).ToArray(),
                 RelocationTreeOffset = patchStruct.RelocationTreeOffset,
-                RelocationTreeSize = patchStruct.RelocationTreeSize
+                RelocationTreeSize = patchStruct.RelocationTreeSize,
+                RelocationTreeHeader = bytes.Slice(0x10, 0x10).ToArray()
             };
         }
 
