@@ -3,6 +3,7 @@
 /// <summary>
 /// Describes patch section data for an Nca header.
 /// </summary>
+/// <remarks>For more information, see: https://switchbrew.org/wiki/NCA#PatchInfo</remarks>
 public class NcaFsPatchInfo2
 {
     /// <summary>
@@ -28,10 +29,10 @@ public class NcaFsPatchInfo2
     /// <summary>
     /// The relocation tree header.
     /// </summary>
-    public byte[] RelocationTreeHeader { get; init; }
+    public required byte[] RelocationTreeHeader { get; init; }
     
     /// <summary>
     /// The encryption tree header.
     /// </summary>
-    public byte[] EncryptionTreeHeader { get; init; }
+    public required byte[] EncryptionTreeHeader { get; init; }
 }

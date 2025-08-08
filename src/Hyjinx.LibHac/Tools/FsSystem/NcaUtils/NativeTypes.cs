@@ -71,12 +71,31 @@ public static class NativeTypes
         public bool IsEnabled;
     }
     
+    /// <summary>
+    /// Describes a patch info structure.
+    /// </summary>
+    /// <remarks>This is typically used for RomFs patching. For more information see: https://switchbrew.org/wiki/NCA#RomFs_Patching</remarks>
     [StructLayout(LayoutKind.Explicit)]
     public struct NcaFsPatchInfoStruct
     {
+        /// <summary>
+        /// Indirect offset
+        /// </summary>
         [FieldOffset(0x00)] public long RelocationTreeOffset;
+        
+        /// <summary>
+        /// Indirect size
+        /// </summary>
         [FieldOffset(0x08)] public long RelocationTreeSize;
+        
+        /// <summary>
+        /// AesCtrEx offset
+        /// </summary>
         [FieldOffset(0x20)] public long EncryptionTreeOffset;
+        
+        /// <summary>
+        /// AesCtrEx size
+        /// </summary>
         [FieldOffset(0x28)] public long EncryptionTreeSize;
     }
 }

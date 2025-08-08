@@ -204,6 +204,9 @@ public partial class BucketTree : IDisposable
         public TEntry Entry;
     }
 
+    /// <summary>
+    /// Subsection bucket definition.
+    /// </summary>
     public struct NodeHeader
     {
         public int Index;
