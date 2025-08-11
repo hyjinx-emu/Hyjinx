@@ -64,6 +64,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.ILLink.Tasks" />
     <AdditionalFiles Include="Assets\Locales\en_US.json" />
   </ItemGroup>
 </Project>
