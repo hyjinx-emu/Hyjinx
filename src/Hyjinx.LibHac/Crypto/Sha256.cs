@@ -1,25 +1,22 @@
-using LibHac.Crypto.Impl;
+using Org.BouncyCastle.Crypto.Digests;
 using System;
 
 namespace LibHac.Crypto;
 
+/// <summary>
+/// Represents the SHA-256 hashing algorithm.
+/// </summary>
 public class Sha256 : IHash
 {
+    /// <summary>
+    /// Defines the size of the digest.
+    /// </summary>
     public const int DigestSize = 0x20;
 
-    private readonly Sha256Impl sha256 = new();
-    
-    /// <summary>
-    /// Creates an uninitialized SHA-256 <see cref="IHash"/> object.
-    /// </summary>
-    /// <returns> The new uninitialized SHA-256 <see cref="IHash"/> object.</returns>
-    internal static Sha256 CreateSha256Generator()
-    {
-        return new Sha256();
-    }
+    private readonly Sha256Digest sha256 = new();
 
     /// <summary>
-    /// Generates a Sha256 hash for the data.
+    /// Generates a SHA-256 hash for the data.
     /// </summary>
     /// <param name="data">The data to hash.</param>
     /// <param name="hashBuffer">The buffer to receive the hash.</param>
@@ -34,16 +31,16 @@ public class Sha256 : IHash
 
     public void Initialize()
     {
-        sha256.Initialize();
+        sha256.Reset();
     }
 
     public void Update(ReadOnlySpan<byte> data)
     {
-        sha256.Update(data);
+        sha256.BlockUpdate(data);
     }
 
     public void GetHash(Span<byte> hashBuffer)
     {
-        sha256.GetHash(hashBuffer);
+        sha256.DoFinal(hashBuffer);
     }
 }

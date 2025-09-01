@@ -19,7 +19,7 @@ public class IntegrityVerificationStorage : SectorStorage
     private byte[] Salt { get; }
     private IntegrityStorageType Type { get; }
 
-    private readonly IHash _hash = Sha256.CreateSha256Generator();
+    private readonly IHash _hash = new Sha256();
     private readonly object _locker = new object();
 
     public IntegrityVerificationStorage(IntegrityVerificationInfo info, IStorage hashStorage,

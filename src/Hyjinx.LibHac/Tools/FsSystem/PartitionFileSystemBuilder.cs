@@ -166,7 +166,7 @@ public class PartitionFileSystemBuilder
 
     private void CalculateHashes()
     {
-        IHash sha = Sha256.CreateSha256Generator();
+        IHash sha = new Sha256();
 
         foreach (Entry entry in Entries)
         {
