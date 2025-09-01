@@ -238,8 +238,8 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
                     return ResultFs.OutOfRange.Log();
 
                 // Prepare a buffer for our calculated hash.
-                Span<byte> hash = stackalloc byte[Sha256Generator.HashSize];
-                var sha = new Sha256Generator();
+                Span<byte> hash = stackalloc byte[Sha256.DigestSize];
+                var sha = new Sha256();
 
                 if (offset <= hashTargetStart && hashTargetEnd <= readEnd)
                 {

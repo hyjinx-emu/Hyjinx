@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 
 namespace LibHac.Crypto.Impl;
 
-internal struct Sha256Impl
+internal class Sha256Impl
 {
     private SHA256 _baseHash;
     private HashState _state;
