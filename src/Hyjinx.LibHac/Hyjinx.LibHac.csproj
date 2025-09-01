@@ -28,5 +28,9 @@
   <ItemGroup>
     <Compile Condition="Exists('Common\ResultNameResolver.Generated.cs')" Remove="Common\ResultNameResolver.Archive.cs" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" />
+  </ItemGroup>
 
 </Project>
