@@ -20,6 +20,6 @@ jobs:
           fetch-depth: 0
 
       - name: Apply labels
-        uses: actions/labeler@v5
+        uses: actions/labeler@v6
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
