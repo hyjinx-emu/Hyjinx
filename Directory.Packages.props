@@ -5,7 +5,7 @@
   <PropertyGroup>
     <AvaloniaVersion>11.2.5</AvaloniaVersion>
     <AvaloniaSvgVersion>11.2.0.2</AvaloniaSvgVersion>
-    <MicrosoftExtensionsVersion>9.0.4</MicrosoftExtensionsVersion>
+    <MicrosoftExtensionsVersion>9.0.10</MicrosoftExtensionsVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
@@ -26,9 +26,9 @@
     <PackageVersion Include="Hyjinx.OpenAL.native" Version="1.21.0" />
     <PackageVersion Include="Hyjinx.SDL2.native" Version="2.30.0" />
     <PackageVersion Include="Hyjinx.SoundIO.native" Version="1.1.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
-    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.9.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.14.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="$(MicrosoftExtensionsVersion)" />
@@ -41,12 +41,12 @@
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="$(MicrosoftExtensionsVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftExtensionsVersion)" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
     <PackageVersion Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     <PackageVersion Include="MsgPack.Cli" Version="1.0.1" />
     <PackageVersion Include="NetCoreServer" Version="8.0.7" />
-    <PackageVersion Include="NUnit" Version="4.3.2" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageVersion Include="NUnit" Version="4.4.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
     <PackageVersion Include="OpenTK.Core" Version="4.9.4" />
     <PackageVersion Include="OpenTK.Graphics" Version="4.9.4" />
     <PackageVersion Include="OpenTK.Audio.OpenAL" Version="4.9.4" />
