@@ -99,29 +99,33 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
     {
         var span = CollectionsMarshal.AsSpan(_entries);
 
-        var lo = 0;
-        var hi = span.Length - 1;
+        int lo = 0;
+        int hi = span.Length - 1;
+
+        int bestIndex = -1;
 
         while (lo <= hi)
         {
-            var mid = lo + ((hi - lo) >> 1);
+            int mid = lo + ((hi - lo) >> 1);
 
-            ref readonly TEntry entry = ref span[mid];
-            var value = entry.Offset;
+            ref readonly TEntry current = ref span[mid];
+            long value = current.Offset;
 
-            if (value == offset)
+            if (value <= offset)
             {
-                return entry;
-            }
-
-            if (value < offset)
-            {
+                // Valid candidate — move right to find a larger one
+                bestIndex = mid;
                 lo = mid + 1;
             }
             else
             {
                 hi = mid - 1;
             }
+        }
+
+        if (bestIndex >= 0)
+        {
+            return span[bestIndex];
         }
 
         throw new ArgumentOutOfRangeException(nameof(offset), $"The value {offset} does not exist.");
