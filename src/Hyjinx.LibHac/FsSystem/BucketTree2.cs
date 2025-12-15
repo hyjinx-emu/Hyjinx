@@ -78,24 +78,24 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
     /// </summary>
     private const uint HeaderSignature = 1381256002;
     
-    private readonly List<TEntry> _entries;
+    private readonly List<BucketTreeEntry> _entries;
 
     /// <summary>
     /// Gets the number of entries within the tree.
     /// </summary>
     public int Count => _entries.Count;
     
-    private BucketTree2(List<TEntry> entries)
+    private BucketTree2(List<BucketTreeEntry> entries)
     {
         _entries = entries;
     }
-
+    
     /// <summary>
     /// Finds the entry.
     /// </summary>
     /// <param name="offset">The offset of the entry.</param>
     /// <exception cref="ArgumentOutOfRangeException">The <paramref name="offset"/> provided does not exist within the bucket tree.</exception>
-    public TEntry Find(long offset)
+    public BucketTreeEntry Find(long offset)
     {
         var span = CollectionsMarshal.AsSpan(_entries);
 
@@ -108,8 +108,8 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
         {
             int mid = lo + ((hi - lo) >> 1);
 
-            ref readonly TEntry current = ref span[mid];
-            long value = current.Offset;
+            ref readonly BucketTreeEntry current = ref span[mid];
+            long value = current.StartOffset;
 
             if (value <= offset)
             {
@@ -166,7 +166,7 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
         }
         
         // Size the list based on what the header says is available (before filtering occurs).
-        List<TEntry> entries = new(entryHeader.EntryCount);
+        List<BucketTreeEntry> entries = new(entryHeader.EntryCount);
         
         var sectionEntries = MemoryMarshal.Cast<byte, TEntry>(
             buffer.Span.Slice(0x4010, Unsafe.SizeOf<TEntry>() * entryHeader.EntryCount));
@@ -174,7 +174,26 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
         for (var index = 0; index < sectionEntries.Length; index++)
         {
             ref var entry = ref sectionEntries[index];
-            entries.Add(entry);
+
+            long endOffset;
+            
+            var nextIndex = index + 1;
+            if (nextIndex < sectionEntries.Length)
+            {
+                ref var next = ref sectionEntries[nextIndex];
+                endOffset = next.Offset - 1;
+            }
+            else
+            {
+                endOffset = -1; // The end offset is not known.
+            }
+            
+            entries.Add(new BucketTreeEntry
+            {
+                StartOffset = entry.Offset,
+                EndOffset = endOffset,
+                Value = entry
+            });
         }
         
         return new BucketTree2<TEntry>(entries);
@@ -200,5 +219,26 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
         /// The end offset for this section.
         /// </summary>
         public long EndOffset;
+    }
+    
+    /// <summary>
+    /// Describes a bucket tree entry.
+    /// </summary>
+    public struct BucketTreeEntry
+    {
+        /// <summary>
+        /// The start offset of this section.
+        /// </summary>
+        public long StartOffset;
+        
+        /// <summary>
+        /// The end offset of this section.
+        /// </summary>
+        public long EndOffset;
+        
+        /// <summary>
+        /// The value.
+        /// </summary>
+        public TEntry Value;
     }
 }
