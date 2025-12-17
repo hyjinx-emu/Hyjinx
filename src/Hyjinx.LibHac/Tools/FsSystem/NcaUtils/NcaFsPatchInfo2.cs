@@ -29,10 +29,10 @@ public class NcaFsPatchInfo2
     /// <summary>
     /// The relocation tree header.
     /// </summary>
-    public required byte[] RelocationTreeHeader { get; init; }
+    public byte[]? RelocationTreeHeader { get; init; }
     
     /// <summary>
     /// The encryption tree header.
     /// </summary>
-    public required byte[] EncryptionTreeHeader { get; init; }
+    public byte[]? EncryptionTreeHeader { get; init; }
 }

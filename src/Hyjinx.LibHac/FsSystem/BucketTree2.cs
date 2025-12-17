@@ -152,7 +152,7 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
             throw new InvalidOperationException("The tree storage failed to read the expected amount of data.");
         }
 
-        // TODO: Unsure how this ties into the other data set, removing it.
+        // TODO: Viper - Unsure how this ties into the other data set, removing it.
         // ref var nodeHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer.Span[0]);
         
         ref var entryHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer[0x4000]);
@@ -178,7 +178,7 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
             if (nextIndex < sectionEntries.Length)
             {
                 ref var next = ref sectionEntries[nextIndex];
-                endOffset = next.Offset - 1;
+                endOffset = next.Offset;
             }
             else
             {
