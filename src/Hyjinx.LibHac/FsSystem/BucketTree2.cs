@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.FsSystem;
 
@@ -136,20 +134,19 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
     /// </summary>
     /// <param name="baseStorage">The base storage with the bucket tree data.</param>
     /// <param name="definition">The definition of the bucket tree.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="ArgumentException">The definition does not match the expected values.</exception>
     /// <exception cref="InvalidOperationException">The bucket tree validation failed.</exception>
-    public static async Task<BucketTree2<TEntry>> CreateAsync(IStorage2 baseStorage, BucketTreeDefinition definition, CancellationToken cancellationToken = default)
+    public static BucketTree2<TEntry> Create(IStorage2 baseStorage, BucketTreeDefinition definition)
     {
         if (definition.Header.HeaderSignature != HeaderSignature)
         {
             throw new ArgumentException("The header signature provided does not match the expected header signature.", nameof(definition));
         }
         
-        Memory<byte> buffer = new byte[definition.Length];
+        Span<byte> buffer = new byte[definition.Length];
         
-        var bytesRead = await baseStorage.ReadAsync(buffer, cancellationToken);
+        var bytesRead = baseStorage.Read(buffer);
         if (bytesRead != buffer.Length)
         {
             throw new InvalidOperationException("The tree storage failed to read the expected amount of data.");
@@ -158,7 +155,7 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
         // TODO: Unsure how this ties into the other data set, removing it.
         // ref var nodeHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer.Span[0]);
         
-        ref var entryHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer.Span[0x4000]);
+        ref var entryHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer[0x4000]);
         if (definition.Header.EntryCount != entryHeader.EntryCount)
         {
             // The definition should match what's being loaded.
@@ -169,7 +166,7 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
         List<BucketTreeEntry> entries = new(entryHeader.EntryCount);
         
         var sectionEntries = MemoryMarshal.Cast<byte, TEntry>(
-            buffer.Span.Slice(0x4010, Unsafe.SizeOf<TEntry>() * entryHeader.EntryCount));
+            buffer.Slice(0x4010, Unsafe.SizeOf<TEntry>() * entryHeader.EntryCount));
         
         for (var index = 0; index < sectionEntries.Length; index++)
         {
