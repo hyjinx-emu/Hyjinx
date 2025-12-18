@@ -46,8 +46,14 @@ public record NcaFsHeader2
     /// </summary>
     public NcaFsPatchInfo2? PatchInfo { get; init; }
     
+    /// <summary>
+    /// The sparse information (if available).
+    /// </summary>
     public byte[]? SparseInfo { get; init; }
     
+    /// <summary>
+    /// The compression information (if available).
+    /// </summary>
     public byte[]? CompressionInfo { get; init; }
     
     /// <summary>

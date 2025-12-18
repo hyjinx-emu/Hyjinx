@@ -4,8 +4,6 @@ using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Tools.Fs;
 
