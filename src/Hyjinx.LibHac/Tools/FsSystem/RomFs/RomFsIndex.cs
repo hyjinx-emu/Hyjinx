@@ -52,12 +52,11 @@ internal sealed class RomFsIndex<T>
     /// </summary>
     /// <param name="baseStorage">The base storage with the index data.</param>
     /// <param name="definition">The definition of the index.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new instance.</returns>
-    public static async Task<RomFsIndex<T>> CreateAsync(IStorage2 baseStorage, RomFsIndexDefinition definition, CancellationToken cancellationToken = default)
+    public static RomFsIndex<T> Create(IStorage2 baseStorage, RomFsIndexDefinition definition)
     {
         using var arr = new RentedArray2<byte>((int)definition.RootTableSize);
-        await baseStorage.ReadOnceAsync(definition.RootTableOffset, arr.Memory, cancellationToken);
+        baseStorage.ReadOnce(definition.RootTableOffset, arr.Span);
         
         return new RomFsIndex<T>(baseStorage.Slice2(definition.EntryTableOffset, definition.EntryTableSize));
     }

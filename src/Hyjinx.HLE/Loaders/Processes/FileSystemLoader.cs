@@ -50,8 +50,8 @@ internal class FileSystemLoader(Switch device)
         
         // NcaExtensions.Load(this Nca nca, Switch device, Nca patchNca, Nca controlNca)
         // **************************************************************************************************************************************************************
-        var romFs = await programNca.OpenStorageAsync(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel, cancellationToken);
-        var exeFs = await programNca.OpenFileSystemAsync(NcaSectionType.Code, device.Configuration.FsIntegrityCheckLevel, cancellationToken);
+        var romFs = programNca.OpenStorage(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
+        var exeFs = programNca.OpenFileSystem(NcaSectionType.Code, device.Configuration.FsIntegrityCheckLevel);
 
         var metaLoader = GetMetaLoader(exeFs);
         var nacpData = await controlNca.FindNacpAsync(device.Configuration.FsIntegrityCheckLevel, cancellationToken);
@@ -144,16 +144,16 @@ internal class FileSystemLoader(Switch device)
     {
         // Find the program file.
         var programEntry = cnmt.ContentEntries.Single(o => o.Type == ContentType.Program);
-        var programNca = await FindNcaForContent(fileSystem, programEntry, cancellationToken);
+        var programNca = await FindNcaForContentAsync(fileSystem, programEntry, cancellationToken);
         
         // Find the control file.
         var controlEntry = cnmt.ContentEntries.Single(o => o.Type == ContentType.Control);
-        var controlNca = await FindNcaForContent(fileSystem, controlEntry, cancellationToken);
+        var controlNca = await FindNcaForContentAsync(fileSystem, controlEntry, cancellationToken);
 
         return (programNca, controlNca);
     }
 
-    private async Task<Nca2> FindNcaForContent(IFileSystem2 fileSystem, CnmtContentEntry entry, CancellationToken cancellationToken)
+    private Task<Nca2> FindNcaForContentAsync(IFileSystem2 fileSystem, CnmtContentEntry entry, CancellationToken cancellationToken)
     {
         var ncaId = BitConverter.ToString(entry.NcaId).Replace("-", null).ToLower();
         var fileName = $"/{ncaId}.nca";
@@ -161,7 +161,8 @@ internal class FileSystemLoader(Switch device)
         // TODO: Viper - This may cause a leak.
         var fs = fileSystem.OpenFile(fileName);
 
-        return await Nca2.CreateAsync(fs, cancellationToken);
+        var nca = Nca2.Create(fs);
+        return Task.FromResult(nca);
     }
 
     private async Task<Cnmt?> FindApplicationMetadataAsync(IFileSystem2 fileSystem, ContentMetaType contentMetaType, CancellationToken cancellationToken)
@@ -170,10 +171,10 @@ internal class FileSystemLoader(Switch device)
         {
             await using var file = fileSystem.OpenFile(entry.FullPath);
             
-            var nca = await Nca2.CreateAsync(file, cancellationToken);
+            var nca = Nca2.Create(file);
             
             // Find the data within the file.
-            var cnmtFs = await nca.OpenFileSystemAsync(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel, cancellationToken);
+            var cnmtFs = nca.OpenFileSystem(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
             
             var cnmtPath = $"/{contentMetaType}_{nca.Header.TitleId:x16}.cnmt";
             if (cnmtFs.Exists(cnmtPath))

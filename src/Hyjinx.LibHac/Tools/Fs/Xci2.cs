@@ -40,9 +40,8 @@ public class Xci2
     /// Creates an <see cref="Xci2"/>.
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to use.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new <see cref="Xci2"/> file.</returns>
-    public static async Task<Xci2> CreateAsync(Stream stream, CancellationToken cancellationToken = default)
+    public static Xci2 Create(Stream stream)
     {
         var storage = StreamStorage2.Create(stream);
 
@@ -50,14 +49,13 @@ public class Xci2
         {
             var header = new XciHeader(stream);
             
-            var rootFs = await Sha256PartitionFileSystem2.CreateAsync(storage.Slice2(header.RootPartitionOffset, storage.Length - header.RootPartitionOffset), 
-                cancellationToken);
+            var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storage.Length - header.RootPartitionOffset));
         
             return new Xci2(stream, rootFs, header);
         }
         catch (Exception)
         {
-            await storage.DisposeAsync();
+            storage.Dispose();
             throw;
         }
     }
@@ -76,10 +74,9 @@ public class Xci2
     /// Opens the file system.
     /// </summary>
     /// <param name="partition">The section.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="partition"/> does not exist.</exception>
-    public async Task<IFileSystem2> OpenPartitionAsync(XciPartitionType partition, CancellationToken cancellationToken = default)
+    public IFileSystem2 OpenPartition(XciPartitionType partition)
     {
         var stream = RootFileSystem.OpenFile($"/{partition.GetFileName()}");
 
@@ -87,12 +84,11 @@ public class Xci2
         {
             var storage = StreamStorage2.Create(stream);
 
-            return await Sha256PartitionFileSystem2.CreateAsync(
-                storage, cancellationToken);
+            return Sha256PartitionFileSystem2.Create(storage);
         }
         catch (Exception)
         {
-            await stream.DisposeAsync();
+            stream.Dispose();
             throw;
         }
     }

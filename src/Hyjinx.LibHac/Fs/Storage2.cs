@@ -30,20 +30,7 @@ public abstract partial class Storage2 : IStorage2
         // This method intentionally left blank.
     }
     
-    public ValueTask DisposeAsync()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-
-        return ValueTask.CompletedTask;
-    }
-    
     public abstract int Read(Span<byte> buffer);
-    
-    public virtual async Task<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-    {
-        return await Task.Run(() => Read(buffer.Span), cancellationToken);
-    }
 
     public abstract long Seek(long offset, SeekOrigin origin);
 }

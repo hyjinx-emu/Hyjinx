@@ -61,11 +61,6 @@ public class MemoryStorage2 : Storage2
         return _memoryStream.Read(buffer);
     }
 
-    public override async Task<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-    {
-        return await _memoryStream.ReadAsync(buffer, cancellationToken);
-    }
-
     public override long Seek(long offset, SeekOrigin origin)
     {
         return _memoryStream.Seek(offset, origin);

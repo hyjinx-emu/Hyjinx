@@ -20,15 +20,14 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
     /// Creates an <see cref="Sha256PartitionFileSystem2"/> from storage.
     /// </summary>
     /// <param name="baseStorage">The base storage for the file system.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="InvalidOperationException">The header size read was not the expected size.</exception>
-    public static async Task<Sha256PartitionFileSystem2> CreateAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
+    public static Sha256PartitionFileSystem2 Create(IStorage2 baseStorage)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         using var headerBuffer = new RentedArray2<byte>(headerSize);
 
-        var bytesRead = await baseStorage.ReadOnceAsync(0, headerBuffer.Memory, cancellationToken);
+        var bytesRead = baseStorage.ReadOnce(0, headerBuffer.Span);
         if (bytesRead != headerSize)
         {
             throw new InvalidOperationException("The header size read did not match the expected size.");
@@ -36,23 +35,23 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
 
         var header = Unsafe.As<byte, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>(ref headerBuffer.Span[0]);
 
-        var result = new Sha256PartitionFileSystem2(baseStorage, header);
-        await result.InitializeAsync(cancellationToken);
+        var result = new Sha256PartitionFileSystem2(baseStorage, header); 
+        result.Initialize();
 
         return result;
     }
     
-    protected override async Task<LookupEntry> ReadEntryAsync(int index, PartitionFileSystemLayout layout, CancellationToken cancellationToken)
+    protected override LookupEntry Read(int index, PartitionFileSystemLayout layout)
     {
         // Read the entry details.
         using var entryBuffer = new RentedArray2<byte>(layout.EntryHeaderSize * 2);
-        await BaseStorage.ReadOnceAsync(layout.FsHeaderSize + (index * layout.EntryHeaderSize), entryBuffer.Memory, cancellationToken);
+        BaseStorage.ReadOnce(layout.FsHeaderSize + (index * layout.EntryHeaderSize), entryBuffer.Span);
         
         (Sha256PartitionFileSystemFormat.PartitionEntry entry, int nameLength) = GetEntryDetails(index, layout.EntryHeaderSize, entryBuffer.Span);
         
         // Read the entry name.
         using var nameBuffer = new RentedArray2<byte>(nameLength);
-        await BaseStorage.ReadOnceAsync(layout.NameTableOffset + entry.NameOffset, nameBuffer.Memory, cancellationToken);
+        BaseStorage.ReadOnce(layout.NameTableOffset + entry.NameOffset, nameBuffer.Span);
         
         var fullName = $"/{new U8Span(nameBuffer.Span).ToString()}";
         

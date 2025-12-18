@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Tools.FsSystem.RomFs;
 
@@ -48,37 +46,36 @@ public class RomFsFileSystem2 : FileSystem2
     /// Creates an <see cref="RomFsFileSystem2"/> from storage.
     /// </summary>
     /// <param name="baseStorage">The base storage for the file system.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new <see cref="RomFsFileSystem2"/> instance.</returns>
-    public static async Task<RomFsFileSystem2> CreateAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
+    public static RomFsFileSystem2 Create(IStorage2 baseStorage)
     {
         var header = RomFsHeader2.Read(baseStorage);
         
-        var directoriesIndex = await RomFsIndex<DirectoryNodeInfo>.CreateAsync(baseStorage, 
+        var directoriesIndex = RomFsIndex<DirectoryNodeInfo>.Create(baseStorage, 
             new RomFsIndexDefinition
             {
                 RootTableOffset = header.DirRootTableOffset,
                 RootTableSize = header.DirRootTableSize,
                 EntryTableOffset = header.DirEntryTableOffset,
                 EntryTableSize = header.FileEntryTableSize
-            }, cancellationToken);
+            });
         
-        var fileIndex = await RomFsIndex<FileNodeInfo>.CreateAsync(baseStorage,
+        var fileIndex = RomFsIndex<FileNodeInfo>.Create(baseStorage,
             new RomFsIndexDefinition
             {
                 RootTableOffset = header.FileRootTableOffset,
                 RootTableSize = header.FileRootTableSize,
                 EntryTableOffset = header.FileEntryTableOffset,
                 EntryTableSize = header.FileEntryTableSize
-            }, cancellationToken);
+            });
         
         var result = new RomFsFileSystem2(baseStorage, directoriesIndex, fileIndex, header.DataOffset);
-        await result.InitializeAsync(cancellationToken);
+        result.Initialize();
         
         return result;
     }
 
-    private Task InitializeAsync(CancellationToken cancellationToken)
+    private void Initialize()
     {
         var rootEntry = _directoriesIndex.Get(0);
 
@@ -86,8 +83,6 @@ public class RomFsFileSystem2 : FileSystem2
         {
             foreach (var entry in _directoriesIndex.Enumerate(rootEntry.Info.FirstSubDirectoryOffset))
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
                 _lookupCache.Add($"/{entry.Name}", new LookupEntry
                 {
                     Offset = entry.Offset,
@@ -103,8 +98,6 @@ public class RomFsFileSystem2 : FileSystem2
         {
             foreach (var entry in _filesIndex.Enumerate(rootEntry.Info.FirstFileOffset))
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
                 _lookupCache.Add($"/{entry.Name}", new LookupEntry
                 {
                     Offset = entry.Info.Offset,
@@ -115,8 +108,6 @@ public class RomFsFileSystem2 : FileSystem2
                 });
             }
         }
-
-        return Task.CompletedTask;
     }
 
     private bool TryFindDirectoryOffset(Span<string> parts, out LookupEntry result)

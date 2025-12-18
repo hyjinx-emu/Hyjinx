@@ -238,7 +238,7 @@ public static partial class NcaExtensions
     {
         var nacpData = new BlitStruct<ApplicationControlProperty>(1);
 
-        var dataFs = await controlNca.OpenFileSystemAsync(NcaSectionType.Data, integrityCheckLevel, cancellationToken);
+        var dataFs = controlNca.OpenFileSystem(NcaSectionType.Data, integrityCheckLevel);
 
         await using var controlFile = dataFs.OpenFile("/control.nacp");
         controlFile.ReadExactly(nacpData.ByteSpan);

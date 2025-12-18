@@ -1,7 +1,6 @@
 ﻿using LibHac.Fs;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LibHac.Tests.Fs;
@@ -9,7 +8,7 @@ namespace LibHac.Tests.Fs;
 public class MemoryStorage2Tests
 {
     [Fact]
-    public async Task SeeksTheStorage()
+    public void SeeksTheStorage()
     {
         byte[] data =
         [
@@ -17,12 +16,12 @@ public class MemoryStorage2Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ];
 
-        await using var target = MemoryStorage2.Create(data);
+        using var target = MemoryStorage2.Create(data);
         
         target.Seek(1, SeekOrigin.Begin);
         
         var buffer = new Memory<byte>(new byte[32]);
-        var result = await target.ReadAsync(buffer);
+        var result = target.Read(buffer.Span);
         
         Assert.Equal(31, result);
         Assert.Equal([
@@ -32,7 +31,7 @@ public class MemoryStorage2Tests
     }
     
     [Fact]
-    public async Task ReadsTheData()
+    public void ReadsTheData()
     {
         byte[] data =
         [
@@ -40,10 +39,10 @@ public class MemoryStorage2Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ];
 
-        await using var target = MemoryStorage2.Create(data);
+        using var target = MemoryStorage2.Create(data);
 
         var buffer = new Memory<byte>(new byte[32]);
-        var result = await target.ReadAsync(buffer);
+        var result = target.Read(buffer.Span);
         
         Assert.Equal(32, result);
         Assert.Equal([

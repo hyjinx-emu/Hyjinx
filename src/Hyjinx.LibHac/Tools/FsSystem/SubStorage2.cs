@@ -2,8 +2,6 @@
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -79,20 +77,6 @@ public class SubStorage2 : Storage2
     private int CalculateBytesToRead(int bufferLength)
     {
         return (int)Math.Min(_length - _position, bufferLength);
-    }
-    
-    public override async Task<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-    {
-        var remaining = CalculateBytesToRead(buffer.Length);
-        if (remaining == 0)
-        {
-            return 0;
-        }
-        
-        var bytesRead = await _baseStorage.ReadAsync(buffer[..remaining], cancellationToken);
-        _position += bytesRead;
-        
-        return bytesRead;
     }
 
     public override long Seek(long offset, SeekOrigin origin)

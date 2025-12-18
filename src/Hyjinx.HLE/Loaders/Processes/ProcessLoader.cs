@@ -31,7 +31,7 @@ public partial class ProcessLoader(Switch device)
     public async Task<bool> LoadXciAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
     {
         var file = File.OpenRead(path);
-        var xci = await Xci2.CreateAsync(file, cancellationToken);
+        var xci = Xci2.Create(file);
 
         if (!xci.HasPartition(XciPartitionType.Secure))
         {
@@ -39,7 +39,7 @@ public partial class ProcessLoader(Switch device)
             return false;
         }
 
-        var fileSystem = await xci.OpenPartitionAsync(XciPartitionType.Secure, cancellationToken);
+        var fileSystem = xci.OpenPartition(XciPartitionType.Secure);
         var loader = new FileSystemLoader(device);
         
         var processResult = await loader.LoadAsync(fileSystem, cancellationToken);
@@ -71,7 +71,7 @@ public partial class ProcessLoader(Switch device)
         var file = File.OpenRead(path);
         var storage = StreamStorage2.Create(file);
     
-        var fileSystem = await PartitionFileSystem2.CreateAsync(storage, cancellationToken);
+        var fileSystem = PartitionFileSystem2.Create(storage);
     
         var loader = new FileSystemLoader(device);
         var processResult = await loader.LoadAsync(fileSystem, cancellationToken);

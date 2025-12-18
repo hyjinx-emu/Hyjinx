@@ -53,11 +53,6 @@ public class StreamStorage2 : Storage2
     {
         return _stream.Read(buffer);
     }
-
-    public override async Task<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-    {
-        return await _stream.ReadAsync(buffer, cancellationToken);
-    }
     
     public override long Seek(long offset, SeekOrigin origin)
     {

@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.FsSystem;
 
@@ -104,8 +102,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     /// <summary>
     /// Initializes the file system.
     /// </summary>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    protected async Task InitializeAsync(CancellationToken cancellationToken)
+    protected void Initialize()
     {
         var fsHeaderSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         var entryHeaderSize = Unsafe.SizeOf<TMetadata>();
@@ -122,9 +119,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         var index = 0;
         while (index < Header.EntryCount)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var entry = await ReadEntryAsync(index, definition, cancellationToken);
+            var entry = Read(index, definition);
             _lookupTable.Add(entry);
             
             index++;
@@ -136,9 +131,8 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     /// </summary>
     /// <param name="index">The zero-based index of the file to read.</param>
     /// <param name="layout">The layout of the file system.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns></returns>
-    protected abstract Task<LookupEntry> ReadEntryAsync(int index, PartitionFileSystemLayout layout, CancellationToken cancellationToken);
+    protected abstract LookupEntry Read(int index, PartitionFileSystemLayout layout);
 
     public override bool Exists(string path)
     {
@@ -199,15 +193,14 @@ public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemForm
     /// Creates a <see cref="PartitionFileSystem"/> from storage.
     /// </summary>
     /// <param name="baseStorage">The base storage for the file system.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="InvalidOperationException">The header size read was not the expected size.</exception>
-    public static async Task<PartitionFileSystem2> CreateAsync(IStorage2 baseStorage, CancellationToken cancellationToken = default)
+    public static PartitionFileSystem2 Create(IStorage2 baseStorage)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         using var headerBuffer = new RentedArray2<byte>(headerSize);
 
-        var bytesRead = await baseStorage.ReadOnceAsync(0, headerBuffer.Memory, cancellationToken);
+        var bytesRead = baseStorage.ReadOnce(0, headerBuffer.Span);
         if (bytesRead != headerSize)
         {
             throw new InvalidOperationException("The header size read did not match the expected size.");
@@ -216,22 +209,22 @@ public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemForm
         var header = Unsafe.As<byte, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>(ref headerBuffer.Span[0]);
 
         var result = new PartitionFileSystem2(baseStorage, header);
-        await result.InitializeAsync(cancellationToken);
+        result.Initialize();
 
         return result;
     }
 
-    protected override async Task<LookupEntry> ReadEntryAsync(int index, PartitionFileSystemLayout layout, CancellationToken cancellationToken)
+    protected override LookupEntry Read(int index, PartitionFileSystemLayout layout)
     {
         // Read the entry details.
         using var entryBuffer = new RentedArray2<byte>(layout.EntryHeaderSize * 2);
-        await BaseStorage.ReadOnceAsync(layout.FsHeaderSize + (index * layout.EntryHeaderSize), entryBuffer.Memory, cancellationToken);
+        BaseStorage.ReadOnce(layout.FsHeaderSize + (index * layout.EntryHeaderSize), entryBuffer.Span);
         
         (PartitionFileSystemFormat.PartitionEntry entry, int nameLength) = GetEntryDetails(index, layout.EntryHeaderSize, entryBuffer.Span);
         
         // Read the entry name.
         using var nameBuffer = new RentedArray2<byte>(nameLength);
-        await BaseStorage.ReadOnceAsync(layout.NameTableOffset + entry.NameOffset, nameBuffer.Memory, cancellationToken);
+        BaseStorage.ReadOnce(layout.NameTableOffset + entry.NameOffset, nameBuffer.Span);
         
         var fullName = $"/{new U8Span(nameBuffer.Span).ToString()}";
         

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Fs;
 
 /// <summary>
 /// Provides an interface for asynchronously reading a sequence of bytes within a region of storage.
 /// </summary>
-public partial interface IStorage2 : IAsyncDisposable, IDisposable
+public partial interface IStorage2 : IDisposable
 {
     /// <summary>
     /// Gets the length of the storage region.
@@ -26,14 +24,6 @@ public partial interface IStorage2 : IAsyncDisposable, IDisposable
     /// <param name="buffer">The buffer which should receive the data.</param>
     /// <returns>The number of bytes read. This will typically match the buffer size, however it may not as the end of the storage region is being reached. A return value of 0 will always occur when the end of the region has been reached.</returns>
     int Read(Span<byte> buffer);
-
-    /// <summary>
-    /// Reads the data.
-    /// </summary>
-    /// <param name="buffer">The buffer which should receive the data.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    /// <returns>The number of bytes read. This will typically match the buffer size, however it may not as the end of the storage region is being reached. A return value of 0 will always occur when the end of the region has been reached.</returns>
-    Task<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default);
         
     /// <summary>
     /// Seeks position within the storage.

@@ -1,8 +1,6 @@
 ﻿using LibHac.Fs;
 using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -57,17 +55,6 @@ public class NxFileStream2 : Stream
         }
         
         return _baseStorage.Read(buffer.AsSpan(offset, count));
-    }
-
-    public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-    {
-        if (!CanRead)
-        {
-            throw new NotSupportedException("The stream does not support the read operation.");
-        }
-        
-        var temp = buffer.AsMemory(offset, count);
-        return await _baseStorage.ReadAsync(temp, cancellationToken);
     }
 
     public override long Seek(long offset, SeekOrigin origin)

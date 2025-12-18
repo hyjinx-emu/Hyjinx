@@ -23,7 +23,7 @@ public class StreamStorage2Tests
     }
     
     [Fact]
-    public async Task DoesNotDisposeTheStreamByDefault()
+    public void DoesNotDisposeTheStreamByDefault()
     {
         Mock<Stream> stream = new();
         stream.Setup(o => o.CanRead).Returns(true);
@@ -31,20 +31,20 @@ public class StreamStorage2Tests
         stream.Setup(o => o.DisposeAsync()).Returns(ValueTask.CompletedTask).Verifiable(Times.Never);
 
         var target = StreamStorage2.Create(stream.Object);
-        await target.DisposeAsync();
+        target.Dispose();
 
         stream.Verify();
     }
 
     [Fact]
-    public async Task ReadsTheDataFromBeginning()
+    public void ReadsTheDataFromBeginning()
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
         var storage = StreamStorage2.Create(ms);
         
         var buffer = new Memory<byte>(new byte[10]);
-        var result = await storage.ReadAsync(buffer);
+        var result = storage.Read(buffer.Span);
         
         Assert.Equal(10, result);
         Assert.Equal(
@@ -54,7 +54,7 @@ public class StreamStorage2Tests
     }
     
     [Fact]
-    public async Task ReadsTheDataFromMiddle()
+    public void ReadsTheDataFromMiddle()
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
@@ -62,7 +62,7 @@ public class StreamStorage2Tests
         storage.Seek(5, SeekOrigin.Begin);
         
         var buffer = new Memory<byte>(new byte[10]);
-        var result = await storage.ReadAsync(buffer);
+        var result = storage.Read(buffer.Span);
         
         Assert.Equal(5, result);
         Assert.Equal(
@@ -72,7 +72,7 @@ public class StreamStorage2Tests
     }
     
     [Fact]
-    public async Task ReadsTheDataFromEnd()
+    public void ReadsTheDataFromEnd()
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
@@ -80,7 +80,7 @@ public class StreamStorage2Tests
         storage.Seek(9, SeekOrigin.Begin);
         
         var buffer = new Memory<byte>(new byte[10]);
-        var result = await storage.ReadAsync(buffer);
+        var result = storage.Read(buffer.Span);
         
         Assert.Equal(1, result);
         Assert.Equal(
