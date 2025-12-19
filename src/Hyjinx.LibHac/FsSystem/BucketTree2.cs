@@ -1,6 +1,8 @@
 ﻿using LibHac.Fs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -11,11 +13,6 @@ namespace LibHac.FsSystem;
 /// </summary>
 public struct BucketTreeDefinition
 {
-    /// <summary>
-    /// The offset of the tree.
-    /// </summary>
-    public long Offset { get; init; }
-    
     /// <summary>
     /// The length of the tree.
     /// </summary>
@@ -69,7 +66,8 @@ public interface IBucketTreeEntry
 /// A bucket tree.
 /// </summary>
 /// <typeparam name="TEntry">The type of entries contained within the entry storage.</typeparam>
-public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
+public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEntry> 
+    where TEntry: struct, IBucketTreeEntry
 {
     /// <summary>
     /// Defines the expected "BKTR" header signature for a bucket tree.
@@ -87,7 +85,17 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
     {
         _entries = entries;
     }
-    
+
+    public IEnumerator<BucketTreeEntry> GetEnumerator()
+    {
+        foreach (var entry in _entries)
+        {
+            yield return entry;
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
     /// <summary>
     /// Finds the entry.
     /// </summary>
@@ -130,6 +138,18 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
     }
     
     /// <summary>
+    /// Writes the entries to the debug output.
+    /// </summary>
+    [Conditional("DEBUG")]
+    public void WriteToDebug()
+    {
+        for (var i = 0; i < _entries.Count; i++)
+        {
+            Debug.WriteLine($"[BucketTree2:{typeof(TEntry).Name}] Entry {i}: {_entries[i]}");
+        }
+    }
+    
+    /// <summary>
     /// Creates a bucket tree.
     /// </summary>
     /// <param name="baseStorage">The base storage with the bucket tree data.</param>
@@ -153,7 +173,7 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
         }
 
         // TODO: Viper - Unsure how this ties into the other data set, removing it.
-        // ref var nodeHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer.Span[0]);
+        // ref var nodeHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer[0x00]);
         
         ref var entryHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer[0x4000]);
         if (definition.Header.EntryCount != entryHeader.EntryCount)
@@ -237,5 +257,10 @@ public class BucketTree2<TEntry> where TEntry: struct, IBucketTreeEntry
         /// The value.
         /// </summary>
         public TEntry Value;
+
+        public override string ToString()
+        {
+            return $"{{ StartOffset={StartOffset}, EndOffset={EndOffset}, Value={Value} }}";
+        }
     }
 }
