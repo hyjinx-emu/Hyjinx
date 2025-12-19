@@ -213,8 +213,9 @@ public class RomFsFileSystem2 : FileSystem2
     public override bool Exists(string path)
     {
         var root = _directoriesIndex.Get(0);
-
-        return EnumerateFileSystemInfos(root.Info.FirstSubDirectoryOffset, "", true)
+        
+        return EnumerateFileSystemInfos(
+                root.Info.FirstSubDirectoryOffset, root.Info.FirstFileOffset, "", true)
             .Any(o => o.FullPath == path);
     }
 
@@ -254,13 +255,13 @@ public class RomFsFileSystem2 : FileSystem2
     }
     
     public override IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
-    {
-        var root = _directoriesIndex.Get(0);
-
+    { 
         var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
         var recursive = options.HasFlag(SearchOptions.RecurseSubdirectories);
+
+        var root = _directoriesIndex.Get(0);
         
-        foreach (var entry in EnumerateFileSystemInfos(root.Info.FirstSubDirectoryOffset, "", recursive))
+        foreach (var entry in EnumerateFileSystemInfos(root.Info.FirstSubDirectoryOffset, root.Info.FirstFileOffset, "", recursive))
         {
             if (entry.Type == DirectoryEntryType.Directory)
             {
@@ -274,29 +275,30 @@ public class RomFsFileSystem2 : FileSystem2
         }
     }
     
-    private IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(int offset, string path, bool recursive)
+    private IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(int directoryOffset, int filesOffset, string path, bool recursive)
     {
-        foreach (var directory in _directoriesIndex.Enumerate(offset))
+        if (directoryOffset != -1)
         {
-            string fullPath = $"{path}/{directory.Name}";
-            
-            yield return new FileSystemInfoEx(
-                directory.Name, fullPath, DirectoryEntryType.Directory, 0);
-
-            if (recursive && directory.Info.FirstSubDirectoryOffset != -1)
+            foreach (var directory in _directoriesIndex.Enumerate(directoryOffset))
             {
-                foreach (var subdirectory in EnumerateFileSystemInfos(directory.Info.FirstSubDirectoryOffset, fullPath, true))
+                string directoryPath = $"{path}/{directory.Name}";
+                yield return new FileSystemInfoEx(directory.Name, directoryPath, DirectoryEntryType.Directory, 0);
+
+                if (recursive)
                 {
-                    yield return subdirectory;
+                    foreach (var child in EnumerateFileSystemInfos(directory.Info.FirstSubDirectoryOffset, directory.Info.FirstFileOffset, directoryPath, recursive))
+                    {
+                        yield return child;
+                    }
                 }
             }
+        }
 
-            if (directory.Info.FirstFileOffset != -1)
+        if (filesOffset != -1)
+        {
+            foreach (var file in _filesIndex.Enumerate(filesOffset))
             {
-                foreach (var file in _filesIndex.Enumerate(directory.Info.FirstFileOffset))
-                {
-                    yield return new FileSystemInfoEx(file.Name, $"{fullPath}/{file.Name}", DirectoryEntryType.File, file.Info.Length);
-                }
+                yield return new FileSystemInfoEx(file.Name, $"{path}/{file.Name}", DirectoryEntryType.File, file.Info.Length);
             }
         }
     }
