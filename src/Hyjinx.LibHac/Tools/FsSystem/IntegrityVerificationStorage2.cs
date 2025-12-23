@@ -98,7 +98,7 @@ public class IntegrityVerificationStorage2 : Storage2
     private Validity CheckSectorValidity(int sectorIndex)
     {
         Span<byte> hashBuffer = stackalloc byte[Sha256.DigestSize];
-        var hashOffset = sectorIndex * Sha256.DigestSize;
+        var hashOffset = (long)sectorIndex * Sha256.DigestSize;
         
         // Read the expected hash from the file.
         var bytesRead = _hashStorage.ReadOnce(hashOffset, hashBuffer);

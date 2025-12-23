@@ -54,17 +54,17 @@ public class RomFsFileSystem2 : FileSystem2
         var directoriesIndex = RomFsIndex<DirectoryNodeInfo>.Create(baseStorage, 
             new RomFsIndexDefinition
             {
-                RootTableOffset = header.DirRootTableOffset,
-                RootTableSize = header.DirRootTableSize,
+                RootTableOffset = header.DirHashTableOffset,
+                RootTableSize = header.DirHashTableSize,
                 EntryTableOffset = header.DirEntryTableOffset,
-                EntryTableSize = header.FileEntryTableSize
+                EntryTableSize = header.DirEntryTableSize
             });
         
         var fileIndex = RomFsIndex<FileNodeInfo>.Create(baseStorage,
             new RomFsIndexDefinition
             {
-                RootTableOffset = header.FileRootTableOffset,
-                RootTableSize = header.FileRootTableSize,
+                RootTableOffset = header.FileHashTableOffset,
+                RootTableSize = header.FileHashTableSize,
                 EntryTableOffset = header.FileEntryTableOffset,
                 EntryTableSize = header.FileEntryTableSize
             });

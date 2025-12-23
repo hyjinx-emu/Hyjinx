@@ -15,14 +15,14 @@ public class RomFsHeader2
     public required long HeaderSize { get; init; }
     
     /// <summary>
-    /// The offset of the directory root table.
+    /// The offset of the directory hash table.
     /// </summary>
-    public required long DirRootTableOffset { get; init; }
+    public required long DirHashTableOffset { get; init; }
     
     /// <summary>
-    /// The size of the directory root table.
+    /// The size of the directory hash table.
     /// </summary>
-    public required long DirRootTableSize { get; init; }
+    public required long DirHashTableSize { get; init; }
     
     /// <summary>
     /// The offset of the directory entries table.
@@ -35,14 +35,14 @@ public class RomFsHeader2
     public required long DirEntryTableSize { get; init; }
     
     /// <summary>
-    /// The offset of the file root table.
+    /// The offset of the file hash table.
     /// </summary>
-    public required long FileRootTableOffset { get; init; }
+    public required long FileHashTableOffset { get; init; }
     
     /// <summary>
-    /// The size of the file root table.
+    /// The size of the file hash table.
     /// </summary>
-    public required long FileRootTableSize { get; init; }
+    public required long FileHashTableSize { get; init; }
     
     /// <summary>
     /// The offset of the file entry table.
@@ -83,12 +83,12 @@ public class RomFsHeader2
         return new RomFsHeader2
         {
             HeaderSize = next(),
-            DirRootTableOffset = next(),
-            DirRootTableSize = next(),
+            DirHashTableOffset = next(),
+            DirHashTableSize = next(),
             DirEntryTableOffset = next(),
             DirEntryTableSize = next(),
-            FileRootTableOffset = next(),
-            FileRootTableSize = next(),
+            FileHashTableOffset = next(),
+            FileHashTableSize = next(),
             FileEntryTableOffset = next(),
             FileEntryTableSize = next(),
             DataOffset = next()
