@@ -167,7 +167,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         }
     }
 
-    public override IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
+    public override IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
     {
         var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
         
@@ -175,7 +175,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         {
             if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullName, ignoreCase))
             {
-                yield return new FileInfoEx(entry.Name, entry.FullName, entry.Length);
+                yield return new FileSystemInfoEx(entry.Name, entry.FullName, entry.EntryType, entry.Length);
             }
         }
     }

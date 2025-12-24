@@ -36,4 +36,13 @@ public interface IFileSystem2
     /// <param name="options">Optional. The search options to use.</param>
     /// <returns>An enumerable of file infos.</returns>
     IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default);
+    
+    /// <summary>
+    /// Enumerates the file system infos.
+    /// </summary>
+    /// <param name="path">Optional. The path which to begin enumeration.</param>
+    /// <param name="searchPattern">Optional. The search pattern to use.</param>
+    /// <param name="options">Optional. The search options to use.</param>
+    /// <returns>An enumerable of file infos.</returns>
+    IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default);
 }

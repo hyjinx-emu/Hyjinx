@@ -254,7 +254,7 @@ public class RomFsFileSystem2 : FileSystem2
             _dataOffset + entry.Offset, entry.Length), access);
     }
     
-    public override IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
+    public override IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
     { 
         var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
         var recursive = options.HasFlag(SearchOptions.RecurseSubdirectories);
@@ -263,14 +263,9 @@ public class RomFsFileSystem2 : FileSystem2
         
         foreach (var entry in EnumerateFileSystemInfos(root.Info.FirstSubDirectoryOffset, root.Info.FirstFileOffset, "", recursive))
         {
-            if (entry.Type == DirectoryEntryType.Directory)
-            {
-                continue;
-            }
-            
             if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullPath, ignoreCase))
             {
-                yield return new FileInfoEx(entry.Name, entry.FullPath, entry.Length);
+                yield return entry;
             }
         }
     }
