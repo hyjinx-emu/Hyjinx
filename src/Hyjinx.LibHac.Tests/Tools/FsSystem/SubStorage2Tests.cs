@@ -19,11 +19,21 @@ public class SubStorage2Tests
         // Throws an exception when length is negative.
         Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(baseStorage, 0, -1));
         
-        // Throws an exception when length is zero.
-        Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(baseStorage, 0, 0));
-        
         // Throws an exception when window exceeds the capacity of the base storage.
         Assert.Throws<ArgumentException>(() => _ = SubStorage2.Create(baseStorage, 0, 1));
+    }
+    
+    /// <summary>
+    /// This is typically used by an empty file being present on a file system.
+    /// </summary>
+    [Fact]
+    public void SupportsZeroLengthValues()
+    {
+        var baseStorage = MemoryStorage2.Create([]);
+
+        var target = SubStorage2.Create(baseStorage, 0, 0);
+        
+        Assert.Equal(0, target.Length);
     }
 
     [Fact]
