@@ -19,15 +19,17 @@ public class IntegrityVerificationStorage2 : Storage2
     private readonly IntegrityCheckLevel _integrityCheckLevel;
     private readonly Validity[]? _sectors;
     private readonly int _sectorSize;
+    private readonly bool _usePartialBlockHashes;
 
     public override long Position => _dataStorage.Position;
 
     public override long Length => _dataStorage.Length;
 
-    private IntegrityVerificationStorage2(int level, IStorage2 dataStorage, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, int sectorSize, Validity[]? sectors)
+    private IntegrityVerificationStorage2(int level, IStorage2 dataStorage, bool partialBlockHashes, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, int sectorSize, Validity[]? sectors)
     {
         _level = level;
         _dataStorage = dataStorage;
+        _usePartialBlockHashes = partialBlockHashes;
         _hashStorage = hashStorage;
         _integrityCheckLevel = integrityCheckLevel;
         _sectorSize = sectorSize;
@@ -39,13 +41,14 @@ public class IntegrityVerificationStorage2 : Storage2
     /// </summary>
     /// <param name="level">The zero-based level of the storage.</param>
     /// <param name="dataStorage">The data storage whose integrity will be verified.</param>
+    /// <param name="usePartialBlockHashes"><c>true</c> enables partial block hashes which if a full block is not used, only the remaining data read is hashed.</param>
     /// <param name="hashStorage">The hash storage containing the integrity verification data for the <paramref name="dataStorage"/> provided.</param>
     /// <param name="integrityCheckLevel">The verification level to use while reading data from the storage.</param>
     /// <param name="offset">The offset of the storage within the stream.</param>
     /// <param name="length">The length of the storage block.</param>
     /// <param name="sectorSize">The size of the sector.</param>
     /// <exception cref="ArgumentException"><paramref name="sectorSize"/> is less than or equal to zero.</exception>
-    public static IntegrityVerificationStorage2 Create(int level, IStorage2 dataStorage, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
+    public static IntegrityVerificationStorage2 Create(int level, IStorage2 dataStorage, bool usePartialBlockHashes, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
     {
         if (sectorSize <= 0)
         {
@@ -62,7 +65,7 @@ public class IntegrityVerificationStorage2 : Storage2
         }
         
         var result = new IntegrityVerificationStorage2(level, 
-            dataStorage.Slice2(offset, length), 
+            dataStorage.Slice2(offset, length), usePartialBlockHashes,
             hashStorage,
             integrityCheckLevel, sectorSize, sectors);
         
@@ -112,13 +115,27 @@ public class IntegrityVerificationStorage2 : Storage2
         
         // Read the entire sector from the file.
         bytesRead = _dataStorage.ReadOnce(dataOffset, dataBuffer.Span);
-        if (bytesRead < dataBuffer.Length)
+
+        return CheckSectorValidityCore(
+            bytesRead, 
+            dataBuffer.Span, 
+            hashBuffer);
+    }
+
+    private Validity CheckSectorValidityCore(int dataBytesRead, Span<byte> dataBuffer, Span<byte> hashBuffer)
+    {
+        if (_usePartialBlockHashes)
         {
-            // There are occasions when the data within the sector is less than the sector size.
-            dataBuffer.Span[bytesRead..].Clear();
+            return CompareHashes(dataBuffer[..dataBytesRead], hashBuffer);
         }
         
-        return CompareHashes(dataBuffer.Span, hashBuffer);
+        if (dataBytesRead < dataBuffer.Length)
+        {
+            // There are occasions when the data within the sector is less than the full sector size.
+            dataBuffer[dataBytesRead..].Clear();
+        }
+
+        return CompareHashes(dataBuffer, hashBuffer);
     }
 
     /// <summary>

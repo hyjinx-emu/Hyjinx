@@ -219,7 +219,7 @@ public class Nca2<THeader, TFsHeader>
                 // The sector size does not always match the block size specified as there isn't any padding.
                 var sectorSize = (int)Math.Min(length, ivfc.BlockSize);
 
-                result = IntegrityVerificationStorage2.Create(level, baseStorage, result,
+                result = IntegrityVerificationStorage2.Create(level, baseStorage, true, result,
                     integrityCheckLevel, offset, length, sectorSize);
             }
             
@@ -250,7 +250,7 @@ public class Nca2<THeader, TFsHeader>
                 var length = ivfc.GetLevelSize(level);
                 var sectorSize = 1 << ivfc.GetLevelBlockSize(level);
 
-                result = IntegrityVerificationStorage2.Create(level, baseStorage, result,
+                result = IntegrityVerificationStorage2.Create(level, baseStorage, false, result,
                     integrityCheckLevel, offset, length, sectorSize);
             }
 
