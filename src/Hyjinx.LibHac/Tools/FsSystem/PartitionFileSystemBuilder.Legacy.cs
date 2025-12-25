@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
@@ -13,12 +15,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace LibHac.Tools.FsSystem;
-
-public enum PartitionFileSystemType
-{
-    Standard,
-    Hashed
-}
 
 public class PartitionFileSystemBuilder
 {
@@ -215,3 +211,5 @@ public class PartitionFileSystemBuilder
         public byte[] Hash;
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -207,3 +209,5 @@ public class LayeredFileSystemTests
         Assert.Equal(0, entryCount);
     }
 }
+
+#endif
