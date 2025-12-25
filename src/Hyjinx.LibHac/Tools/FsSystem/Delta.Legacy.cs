@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using System;
@@ -169,3 +171,5 @@ public class DeltaHeader
         BodySize = reader.ReadInt64();
     }
 }
+
+#endif
