@@ -81,6 +81,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{996E745A
 		src\.build\library.props = src\.build\library.props
 		src\.build\unittest.props = src\.build\unittest.props
 		src\.build\generator.props = src\.build\generator.props
+		src\.build\nupkg.props = src\.build\nupkg.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{0533BEC5-3CB3-44CF-9948-34CE6D11015C}"
