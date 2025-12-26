@@ -14,7 +14,7 @@ public class StreamStorage2 : Storage2
     private readonly Stream _stream;
     private readonly bool _leaveOpen;
     
-    public override long Length => _stream.Length;
+    public override long Size => _stream.Length;
 
     public override long Position => _stream.Position;
 

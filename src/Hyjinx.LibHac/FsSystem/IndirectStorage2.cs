@@ -68,7 +68,7 @@ public class IndirectStorage2 : Storage2
             new BucketTreeDefinition
             {
                 Header = header,
-                Length = relocationTreeStorage.Length
+                Length = relocationTreeStorage.Size
             });
         
         // We cannot verify the storages are provided correctly, but we can at least verify the number provided matches.
@@ -83,7 +83,7 @@ public class IndirectStorage2 : Storage2
         return new IndirectStorage2(storages, relocationTree);
     }
     
-    public override long Length => throw new NotImplementedException();
+    public override long Size => throw new NotImplementedException();
     
     public override long Position => throw new NotImplementedException();
     

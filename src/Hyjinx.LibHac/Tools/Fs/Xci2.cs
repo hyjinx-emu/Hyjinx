@@ -47,7 +47,7 @@ public class Xci2
         {
             var header = new XciHeader(stream);
             
-            var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storage.Length - header.RootPartitionOffset));
+            var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storage.Size - header.RootPartitionOffset));
         
             return new Xci2(stream, rootFs, header);
         }

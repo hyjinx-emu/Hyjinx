@@ -23,7 +23,7 @@ public class IntegrityVerificationStorage2 : Storage2
 
     public override long Position => _dataStorage.Position;
 
-    public override long Length => _dataStorage.Length;
+    public override long Size => _dataStorage.Size;
 
     private IntegrityVerificationStorage2(int level, IStorage2 dataStorage, bool partialBlockHashes, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, int sectorSize, Validity[]? sectors)
     {

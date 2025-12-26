@@ -15,7 +15,7 @@ public class NxFileStream2 : Stream
     public override bool CanRead => _access is FileAccess.Read or FileAccess.ReadWrite;
     public override bool CanSeek => true;
     public override bool CanWrite => false;
-    public override long Length => _baseStorage.Length;
+    public override long Length => _baseStorage.Size;
 
     public override long Position
     {

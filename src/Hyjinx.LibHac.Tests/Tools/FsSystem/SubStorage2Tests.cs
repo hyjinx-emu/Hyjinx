@@ -33,7 +33,7 @@ public class SubStorage2Tests
 
         var target = SubStorage2.Create(baseStorage, 0, 0);
         
-        Assert.Equal(0, target.Length);
+        Assert.Equal(0, target.Size);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class SubStorage2Tests
         ]), 1, 10);
 
         Assert.Equal(0, target.Position);
-        Assert.Equal(10, target.Length);
+        Assert.Equal(10, target.Size);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class SubStorage2Tests
         Mock<IStorage2> baseStorage = new();
         
         baseStorage.Setup(o => o.Position).Returns(0);
-        baseStorage.Setup(o => o.Length).Returns(1);
+        baseStorage.Setup(o => o.Size).Returns(1);
         baseStorage.Setup(o => o.Dispose()).Verifiable();
     
         var target = SubStorage2.Create(baseStorage.Object, 0, 1);
@@ -140,7 +140,7 @@ public class SubStorage2Tests
     
             var offset = 1;
             
-            using var target = SubStorage2.Create(ms, offset, ms.Length - offset);
+            using var target = SubStorage2.Create(ms, offset, ms.Size - offset);
             target.Seek(-1, SeekOrigin.Begin);
         });
     }
@@ -158,7 +158,7 @@ public class SubStorage2Tests
     
             var offset = 1;
             
-            using var target = SubStorage2.Create(ms, offset, ms.Length - offset);
+            using var target = SubStorage2.Create(ms, offset, ms.Size - offset);
             target.Seek(int.MinValue, SeekOrigin.Current);
         });
     }
@@ -176,7 +176,7 @@ public class SubStorage2Tests
 
             var offset = 1;
             
-            using var target = SubStorage2.Create(ms, offset, ms.Length - offset);
+            using var target = SubStorage2.Create(ms, offset, ms.Size - offset);
             target.Seek(int.MinValue, SeekOrigin.End);
         });
     }
@@ -192,8 +192,8 @@ public class SubStorage2Tests
                 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
             ]);
             
-            using var target = SubStorage2.Create(ms, 0, ms.Length);
-            target.Seek(ms.Length + 1, SeekOrigin.Begin);
+            using var target = SubStorage2.Create(ms, 0, ms.Size);
+            target.Seek(ms.Size + 1, SeekOrigin.Begin);
         });
     }
 
@@ -241,7 +241,7 @@ public class SubStorage2Tests
         var offset = 1;
         var length = 10;
         
-        byte[] buffer = new byte[ms.Length];
+        byte[] buffer = new byte[ms.Size];
         using var target = SubStorage2.Create(ms, offset, length);
     
         // Reposition to the 4th index, and read the value.
@@ -290,7 +290,7 @@ public class SubStorage2Tests
         Assert.Equal(9, target.Position);
         
         // Read the first value.
-        byte[] buffer = new byte[ms.Length];
+        byte[] buffer = new byte[ms.Size];
         
         var bytesRead = target.Read(buffer);
         Assert.Equal(1, bytesRead);

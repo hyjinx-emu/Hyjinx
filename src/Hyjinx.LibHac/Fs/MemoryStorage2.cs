@@ -12,7 +12,7 @@ public class MemoryStorage2 : Storage2
 {
     private readonly MemoryStream _memoryStream;
 
-    public override long Length => _memoryStream.Length;
+    public override long Size => _memoryStream.Length;
     
     public override long Position => _memoryStream.Position;
     

@@ -10,7 +10,7 @@ namespace LibHac.Fs;
 /// </summary>
 public abstract partial class Storage2 : IStorage2
 {
-    public abstract long Length { get; }
+    public abstract long Size { get; }
     
     public abstract long Position { get; }
     

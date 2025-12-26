@@ -16,7 +16,7 @@ public class SubStorage2 : Storage2
     private readonly long _length;
     private long _position;
 
-    public override long Length => _length;
+    public override long Size => _length;
     
     public override long Position => _position;
 
@@ -43,7 +43,7 @@ public class SubStorage2 : Storage2
             throw new ArgumentException("The value must be greater than or equal to zero.", nameof(offset));
         }
 
-        if (offset + length > baseStorage.Length)
+        if (offset + length > baseStorage.Size)
         {
             throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(length));
         }
