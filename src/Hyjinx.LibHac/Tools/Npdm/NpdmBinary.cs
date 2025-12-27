@@ -1,10 +1,10 @@
 // ReSharper disable UnusedVariable
 
+using LibHac.Common;
+using LibHac.Common.Keys;
 using System;
 using System.Buffers.Binary;
 using System.IO;
-using LibHac.Common;
-using LibHac.Common.Keys;
 
 namespace LibHac.Tools.Npdm;
 
