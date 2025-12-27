@@ -111,9 +111,9 @@ public static partial class NcaExtensions
         Message = "No RomFS found in NCA")]
     private static partial void LogNoRomFsFoundInNca(ILogger logger);
 
-    public static ulong GetProgramIdBase(this Nca2 nca)
+    public static ulong GetProgramIdBase(this BasicNca2 nca)
     {
-        return nca.TitleId & ~0x1FFFUL;
+        return nca.Header.TitleId & ~0x1FFFUL;
     }
     
     public static ulong GetProgramIdBase(this Nca nca)
@@ -121,9 +121,9 @@ public static partial class NcaExtensions
         return nca.Header.TitleId & ~0x1FFFUL;
     }
 
-    public static int GetProgramIndex(this Nca2 nca)
+    public static int GetProgramIndex(this BasicNca2 nca)
     {
-        return (int)(nca.TitleId & 0xF);
+        return (int)(nca.Header.TitleId & 0xF);
     }
 
     public static int GetProgramIndex(this Nca nca)
@@ -131,9 +131,9 @@ public static partial class NcaExtensions
         return (int)(nca.Header.TitleId & 0xF);
     }
 
-    public static bool IsProgram(this Nca2 nca)
+    public static bool IsProgram(this BasicNca2 nca)
     {
-        return nca.ContentType == NcaContentType.Program;
+        return nca.Header.ContentType == NcaContentType.Program;
     }
     
     public static bool IsProgram(this Nca nca)

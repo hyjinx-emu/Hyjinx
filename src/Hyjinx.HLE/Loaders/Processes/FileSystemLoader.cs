@@ -140,7 +140,7 @@ internal class FileSystemLoader(Switch device)
         return result;
     }
 
-    private async Task<(Nca2, Nca2)> FindContentFilesAsync(IFileSystem2 fileSystem, Cnmt cnmt, CancellationToken cancellationToken)
+    private async Task<(BasicNca2, BasicNca2)> FindContentFilesAsync(IFileSystem2 fileSystem, Cnmt cnmt, CancellationToken cancellationToken)
     {
         // Find the program file.
         var programEntry = cnmt.ContentEntries.Single(o => o.Type == ContentType.Program);
@@ -153,7 +153,7 @@ internal class FileSystemLoader(Switch device)
         return (programNca, controlNca);
     }
 
-    private Task<Nca2> FindNcaForContentAsync(IFileSystem2 fileSystem, CnmtContentEntry entry, CancellationToken cancellationToken)
+    private Task<BasicNca2> FindNcaForContentAsync(IFileSystem2 fileSystem, CnmtContentEntry entry, CancellationToken cancellationToken)
     {
         var ncaId = BitConverter.ToString(entry.NcaId).Replace("-", null).ToLower();
         var fileName = $"/{ncaId}.nca";
@@ -162,7 +162,7 @@ internal class FileSystemLoader(Switch device)
         var fs = fileSystem.OpenFile(fileName);
 
         var nca = BasicNca2.Create(fs);
-        return Task.FromResult<Nca2>(nca);
+        return Task.FromResult(nca);
     }
 
     private async Task<Cnmt?> FindApplicationMetadataAsync(IFileSystem2 fileSystem, ContentMetaType contentMetaType, CancellationToken cancellationToken)
@@ -176,7 +176,7 @@ internal class FileSystemLoader(Switch device)
             // Find the data within the file.
             var cnmtFs = nca.OpenFileSystem(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
             
-            var cnmtPath = $"/{contentMetaType}_{nca.TitleId:x16}.cnmt";
+            var cnmtPath = $"/{contentMetaType}_{nca.Header.TitleId:x16}.cnmt";
             if (cnmtFs.Exists(cnmtPath))
             {
                 await using var cnmtFile = cnmtFs.OpenFile(cnmtPath);

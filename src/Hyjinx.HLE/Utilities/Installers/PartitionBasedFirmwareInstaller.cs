@@ -77,7 +77,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
             using var ncaStorageFile = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read);
 
             var nca = BasicNca2.Create(ncaStorageFile.AsStream());
-            if (nca is { TitleId: ContentManager.SystemUpdateTitleId, ContentType: NcaContentType.Meta })
+            if (nca.Header is { TitleId: ContentManager.SystemUpdateTitleId, ContentType: NcaContentType.Meta })
             {
                 // TODO: Viper - This should be enforcing integrity levels.
                 var fs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
@@ -95,7 +95,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
                 continue;
             }
             
-            if (nca is { TitleId: ContentManager.SystemVersionTitleId, ContentType: NcaContentType.Data })
+            if (nca.Header is { TitleId: ContentManager.SystemVersionTitleId, ContentType: NcaContentType.Data })
             {
                 // TODO: Viper - This should be enforcing integrity levels.
                 var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
@@ -104,14 +104,14 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
                 systemVersion = new SystemVersion(systemVersionFile);
             }
             
-            if (updateNcas.TryGetValue(nca.TitleId, out var updateNcasItem))
+            if (updateNcas.TryGetValue(nca.Header.TitleId, out var updateNcasItem))
             {
-                updateNcasItem.Add((nca.ContentType, entry.FullPath));
+                updateNcasItem.Add((nca.Header.ContentType, entry.FullPath));
             }
             else
             {
-                updateNcas.Add(nca.TitleId, new List<(NcaContentType, string)>());
-                updateNcas[nca.TitleId].Add((nca.ContentType, entry.FullPath));
+                updateNcas.Add(nca.Header.TitleId, new List<(NcaContentType, string)>());
+                updateNcas[nca.Header.TitleId].Add((nca.Header.ContentType, entry.FullPath));
             }
         }
 

@@ -60,16 +60,6 @@ public abstract class Nca2
     protected Stream UnderlyingStream { get; }
 
     /// <summary>
-    /// Gets the content type.
-    /// </summary>
-    public abstract NcaContentType ContentType { get; }
-    
-    /// <summary>
-    /// Gets the title id.
-    /// </summary>
-    public abstract ulong TitleId { get; }
-
-    /// <summary>
     /// Initializes an instance of the class.
     /// </summary>
     /// <param name="stream">The stream containing the NCA contents.</param>
@@ -120,19 +110,15 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
     where THeader : NcaHeader2
     where TFsHeader : NcaFsHeader2
 {
-    public override ulong TitleId => Header.TitleId;
-
-    public override NcaContentType ContentType => Header.ContentType;
-
     /// <summary>
     /// Gets the header.
     /// </summary>
-    protected THeader Header { get; }
+    public THeader Header { get; }
 
     /// <summary>
     /// Gets the sections.
     /// </summary>
-    protected IDictionary<NcaSectionType, TFsHeader> Sections { get; }
+    public IDictionary<NcaSectionType, TFsHeader> Sections { get; }
     
     /// <summary>
     /// Initializes an instance of the class.
