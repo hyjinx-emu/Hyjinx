@@ -25,7 +25,7 @@ public partial class ProcessLoader(Switch device)
     private readonly ConcurrentDictionary<ulong, ProcessResult> _processesByPid = new();
 
     private ulong _latestPid;
-    
+
     public ProcessResult ActiveApplication => _processesByPid[_latestPid];
 
     public async Task<bool> LoadXciAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
@@ -41,7 +41,7 @@ public partial class ProcessLoader(Switch device)
 
         var fileSystem = xci.OpenPartition(XciPartitionType.Secure);
         var loader = new FileSystemLoader(device);
-        
+
         var processResult = await loader.LoadAsync(fileSystem, cancellationToken);
         if (processResult.ProcessId != 0 && _processesByPid.TryAdd(processResult.ProcessId, processResult))
         {
@@ -51,7 +51,7 @@ public partial class ProcessLoader(Switch device)
                 return true;
             }
         }
-    
+
         LogTryLoadFailed("Unable to load the file.");
         return false;
     }
@@ -65,17 +65,17 @@ public partial class ProcessLoader(Switch device)
         EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
         Message = nameof(PartitionFileSystemExtensions.TryLoad) + ": {message}")]
     private partial void LogTryLoadFailed(string message);
-    
+
     public async Task<bool> LoadNspAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
     {
         var file = File.OpenRead(path);
         var storage = StreamStorage2.Create(file);
-    
+
         var fileSystem = PartitionFileSystem2.Create(storage);
-    
+
         var loader = new FileSystemLoader(device);
         var processResult = await loader.LoadAsync(fileSystem, cancellationToken);
-        
+
         // TODO: Viper - Fix this.
         // if (processResult.ProcessId == 0)
         // {
@@ -91,7 +91,7 @@ public partial class ProcessLoader(Switch device)
                 return true;
             }
         }
-    
+
         LogTryLoadFailed("Unable to load the file.");
         return false;
     }
@@ -100,7 +100,7 @@ public partial class ProcessLoader(Switch device)
     {
         return Task.FromResult(LoadNca(path));
     }
-    
+
     private bool LoadNca(string path)
     {
         FileStream file = new(path, FileMode.Open, FileAccess.Read);
@@ -129,7 +129,7 @@ public partial class ProcessLoader(Switch device)
     {
         return Task.FromResult(LoadUnpackedNca(exeFsDirPath, romFsPath));
     }
-    
+
     private bool LoadUnpackedNca(string exeFsDirPath, string? romFsPath = null)
     {
         ProcessResult processResult = new LocalFileSystem(exeFsDirPath).Load(device, romFsPath);
@@ -151,7 +151,7 @@ public partial class ProcessLoader(Switch device)
     {
         return Task.FromResult(LoadNxo(path));
     }
-    
+
     private bool LoadNxo(string path)
     {
         var nacpData = new BlitStruct<ApplicationControlProperty>(1);

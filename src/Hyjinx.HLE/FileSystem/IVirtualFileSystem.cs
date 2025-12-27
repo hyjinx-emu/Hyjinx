@@ -37,7 +37,7 @@ public interface IVirtualFileSystem
     /// <param name="fileSystem">The file system whose tickets to import.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     Task ImportTicketsAsync(IFileSystem2 fileSystem, CancellationToken cancellationToken = default);
-    
+
     /// <summary>
     /// Imports the tickets.
     /// </summary>

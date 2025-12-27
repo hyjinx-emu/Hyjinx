@@ -30,7 +30,7 @@ public class DirectoryFirmwareInstaller : PartitionBasedFirmwareInstaller
         }
 
         using var fileSystem = new LocalFileSystem(source);
-        
+
         var result = await VerifyAndGetVersionAsync(fileSystem, cancellationToken);
         if (result == null)
         {

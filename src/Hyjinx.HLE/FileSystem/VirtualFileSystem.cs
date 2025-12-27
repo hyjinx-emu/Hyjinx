@@ -203,20 +203,20 @@ public partial class VirtualFileSystem : IVirtualFileSystem, IDisposable
 
         FileSystemServerInitializer.InitializeWithConfig(fsServerClient, fsServer, fsServerConfig);
     }
-    
+
     public async Task ImportTicketsAsync(IFileSystem2 fileSystem, CancellationToken cancellationToken = default)
     {
         foreach (var ticketEntry in fileSystem.EnumerateFileInfos("/", "*.tik"))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            
+
             await using var ticketFile = fileSystem.OpenFile(ticketEntry.FullPath);
 
             using var ticketBuffer = new RentedArray2<byte>(0x2C0);
             await ticketFile.ReadExactlyAsync(ticketBuffer.Memory, cancellationToken);
 
             var ticket = Ticket.ReadFrom(ticketBuffer.ToArray());
-            
+
             var titleKey = ticket.GetTitleKey(KeySet);
             if (titleKey != null)
             {

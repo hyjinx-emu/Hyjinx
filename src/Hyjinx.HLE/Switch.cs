@@ -66,7 +66,7 @@ public class Switch : IDisposable
         System.GlobalAccessLogMode              = Configuration.FsGlobalAccessLogMode;
 #pragma warning restore IDE0055
     }
-    
+
     public bool WaitFifo()
     {
         return Gpu.GPFifo.WaitForCommands();

@@ -29,7 +29,7 @@ public class ZipArchiveFirmwareInstaller : IFirmwareInstaller
         try
         {
             tempFolder.Create();
-            
+
             using var archive = ZipFile.OpenRead(source);
             archive.ExtractToDirectory(tempFolder.FullName);
 
@@ -58,7 +58,7 @@ public class ZipArchiveFirmwareInstaller : IFirmwareInstaller
         try
         {
             tempFolder.Create();
-            
+
             using var archive = ZipFile.OpenRead(source);
             archive.ExtractToDirectory(tempFolder.FullName);
 

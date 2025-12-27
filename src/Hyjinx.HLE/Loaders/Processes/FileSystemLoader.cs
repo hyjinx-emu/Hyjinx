@@ -36,7 +36,7 @@ internal class FileSystemLoader(Switch device)
     {
         // PartitionFileSystemExtensions.TryLoad<TMetaData, TFormat, THeader, TEntry>(this PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> partitionFileSystem, Switch device, string path, ulong applicationId, out string errorMessage)
         await device.FileSystem.ImportTicketsAsync(fileSystem, cancellationToken);
-        
+
         var metadata = await FindApplicationMetadataAsync(fileSystem, ContentMetaType.Application, cancellationToken);
         if (metadata == null)
         {
@@ -47,7 +47,7 @@ internal class FileSystemLoader(Switch device)
 
         // TODO: If we want to support multi-processes in future, we shouldn't clear AddOnContent data here.
         device.Configuration.ContentManager.ClearAocData();
-        
+
         // NcaExtensions.Load(this Nca nca, Switch device, Nca patchNca, Nca controlNca)
         // **************************************************************************************************************************************************************
         var romFs = programNca.OpenStorage(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
@@ -55,7 +55,7 @@ internal class FileSystemLoader(Switch device)
 
         var metaLoader = GetMetaLoader(exeFs);
         var nacpData = await controlNca.FindNacpAsync(device.Configuration.FsIntegrityCheckLevel, cancellationToken);
-        
+
         // FileSystemExtensions.Load(this IFileSystem exeFs, Switch device, BlitStruct<ApplicationControlProperty> nacpData, MetaLoader metaLoader, byte programIndex, bool isHomebrew = false)
         // **************************************************************************************************************************************************************
         var programId = metaLoader.GetProgramId();
@@ -95,7 +95,7 @@ internal class FileSystemLoader(Switch device)
         }
 
         var enablePtc = true;
-        
+
         var processResult = ProcessLoaderHelper.LoadNsos(
             device,
             device.System.KernelContext,
@@ -112,10 +112,10 @@ internal class FileSystemLoader(Switch device)
         // TODO: This should be stored using ProcessId instead.
         device.System.LibHacHorizonManager.ArpIReader.ApplicationId = new LibHac.ApplicationId(metaLoader.GetProgramId());
         // **************************************************************************************************************************************************************
-        
+
         // NcaExtensions.Load(this Nca nca, Switch device, Nca patchNca, Nca controlNca)
         device.Configuration.VirtualFileSystem.SetRomFs(processResult.ProcessId, romFs.AsStream());
-        
+
         // Don't create save data for system programs.
         if (processResult.ProgramId != 0 && (processResult.ProgramId < SystemProgramId.Start.Value || processResult.ProgramId > SystemAppletId.End.Value))
         {
@@ -123,7 +123,7 @@ internal class FileSystemLoader(Switch device)
             // We'll know if this changes in the future because applications will get errors when trying to mount the correct save.
             ProcessLoaderHelper.EnsureSaveData(device, new ApplicationId(processResult.ProgramId & ~0xFul), nacpData);
         }
-        
+
         return processResult;
     }
 
@@ -133,10 +133,10 @@ internal class FileSystemLoader(Switch device)
 
         using var buffer = new RentedArray2<byte>((int)fs.Length);
         fs.ReadExactly(buffer.Span);
-        
+
         var result = new MetaLoader();
         result.Load(buffer.Span).ThrowIfFailure();
-        
+
         return result;
     }
 
@@ -145,7 +145,7 @@ internal class FileSystemLoader(Switch device)
         // Find the program file.
         var programEntry = cnmt.ContentEntries.Single(o => o.Type == ContentType.Program);
         var programNca = await FindNcaForContentAsync(fileSystem, programEntry, cancellationToken);
-        
+
         // Find the control file.
         var controlEntry = cnmt.ContentEntries.Single(o => o.Type == ContentType.Control);
         var controlNca = await FindNcaForContentAsync(fileSystem, controlEntry, cancellationToken);
@@ -170,12 +170,12 @@ internal class FileSystemLoader(Switch device)
         foreach (var entry in fileSystem.EnumerateFileInfos("/", "*.cnmt.nca"))
         {
             await using var file = fileSystem.OpenFile(entry.FullPath);
-            
+
             var nca = BasicNca2.Create(file);
-            
+
             // Find the data within the file.
             var cnmtFs = nca.OpenFileSystem(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
-            
+
             var cnmtPath = $"/{contentMetaType}_{nca.Header.TitleId:x16}.cnmt";
             if (cnmtFs.Exists(cnmtPath))
             {
