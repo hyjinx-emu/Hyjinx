@@ -43,6 +43,11 @@ public class SubStorage2 : Storage2
             throw new ArgumentException("The value must be greater than or equal to zero.", nameof(offset));
         }
 
+        if (length < 0)
+        {
+            throw new ArgumentException("The value must be greater than or equal to zero.", nameof(length));
+        }
+
         if (offset + length > baseStorage.Size)
         {
             throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(length));
