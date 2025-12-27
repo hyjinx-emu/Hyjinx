@@ -16,7 +16,7 @@ public class NcaFsHeader
     }
 
     protected ref FsHeaderStruct Header => ref Unsafe.As<byte, FsHeaderStruct>(ref _header.Span[0]);
-    
+
     public short Version
     {
         get => Header.Version;

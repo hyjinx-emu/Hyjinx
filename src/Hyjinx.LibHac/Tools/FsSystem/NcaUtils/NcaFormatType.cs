@@ -9,7 +9,7 @@ public enum NcaFormatType
     /// Read-only file system.
     /// </summary>
     RomFs,
-    
+
     /// <summary>
     /// Partitioned file system (version 0).
     /// </summary>

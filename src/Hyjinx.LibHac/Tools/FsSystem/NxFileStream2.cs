@@ -1,4 +1,4 @@
-﻿using LibHac.Fs;
+using LibHac.Fs;
 using System;
 using System.IO;
 
@@ -26,11 +26,11 @@ public class NxFileStream2 : Stream
             {
                 throw new NotSupportedException("The stream does not support seek.");
             }
-            
+
             _baseStorage.Seek(value, SeekOrigin.Begin);
         }
     }
-    
+
     /// <summary>
     /// Initializes an instance of the class.
     /// </summary>
@@ -41,7 +41,7 @@ public class NxFileStream2 : Stream
         this._baseStorage = baseStorage;
         this._access = access;
     }
-    
+
     public override void Flush()
     {
         // This method intentionally left blank.
@@ -53,7 +53,7 @@ public class NxFileStream2 : Stream
         {
             throw new NotSupportedException("The stream does not support the read operation.");
         }
-        
+
         return _baseStorage.Read(buffer.AsSpan(offset, count));
     }
 
@@ -73,7 +73,7 @@ public class NxFileStream2 : Stream
         {
             throw new NotSupportedException("The stream does not support the write operation.");
         }
-        
+
         throw new NotSupportedException();
     }
 }

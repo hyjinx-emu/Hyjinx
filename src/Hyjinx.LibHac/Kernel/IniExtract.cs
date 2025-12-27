@@ -31,24 +31,24 @@ public static class IniExtract
         // The kernel map in this case will contain offsets relative to itself rather than to the start of the kernel
         int crt0Offset = 0;
         bool isMapAddressRelativeToItself = false;
-        
+
         // Check if the first 4 bytes of the kernel is a branch instruction, and get the target if it is
         ulong inst = 0;
         if (kernelStorage.Read(0, SpanHelpers.AsByteSpan(ref inst)).IsFailure())
             return false;
-        
+
         if ((inst & 0xFFFFFFFFFF000000) == 0x0000000014000000)
         {
             crt0Offset = (int)((inst & 0x00FFFFFF) << 2);
             isMapAddressRelativeToItself = true;
         }
-        
+
         using var array = new RentedArray<byte>(0x1000 + Unsafe.SizeOf<KernelMap>());
         if (kernelStorage.Read(crt0Offset, array.Span).IsFailure())
             return false;
 
         ref byte start = ref MemoryMarshal.GetReference(array.Span);
-        
+
         // Search every 4 bytes for a valid kernel map
         for (int i = 0; i < 0x1000 - Unsafe.SizeOf<KernelMap>(); i += sizeof(int))
         {
@@ -93,20 +93,34 @@ public static class IniExtract
 
         ref KernelMap map = ref adjustedMap;
 
-        if (map.TextStartOffset != 0) return false;
-        if (map.TextStartOffset >= map.TextEndOffset) return false;
-        if ((map.TextEndOffset & 0xFFF) != 0) return false;
-        if (map.TextEndOffset > map.RodataStartOffset) return false;
-        if ((map.RodataStartOffset & 0xFFF) != 0) return false;
-        if (map.RodataStartOffset >= map.RodataEndOffset) return false;
-        if ((map.RodataEndOffset & 0xFFF) != 0) return false;
-        if (map.RodataEndOffset > map.DataStartOffset) return false;
-        if ((map.DataStartOffset & 0xFFF) != 0) return false;
-        if (map.DataStartOffset >= map.DataEndOffset) return false;
-        if (map.DataEndOffset > map.BssStartOffset) return false;
-        if (map.BssStartOffset > map.BssEndOffset) return false;
-        if (map.BssEndOffset > map.Ini1StartOffset) return false;
-        if (map.Ini1StartOffset > maxSize - Unsafe.SizeOf<KernelMap>()) return false;
+        if (map.TextStartOffset != 0)
+            return false;
+        if (map.TextStartOffset >= map.TextEndOffset)
+            return false;
+        if ((map.TextEndOffset & 0xFFF) != 0)
+            return false;
+        if (map.TextEndOffset > map.RodataStartOffset)
+            return false;
+        if ((map.RodataStartOffset & 0xFFF) != 0)
+            return false;
+        if (map.RodataStartOffset >= map.RodataEndOffset)
+            return false;
+        if ((map.RodataEndOffset & 0xFFF) != 0)
+            return false;
+        if (map.RodataEndOffset > map.DataStartOffset)
+            return false;
+        if ((map.DataStartOffset & 0xFFF) != 0)
+            return false;
+        if (map.DataStartOffset >= map.DataEndOffset)
+            return false;
+        if (map.DataEndOffset > map.BssStartOffset)
+            return false;
+        if (map.BssStartOffset > map.BssEndOffset)
+            return false;
+        if (map.BssEndOffset > map.Ini1StartOffset)
+            return false;
+        if (map.Ini1StartOffset > maxSize - Unsafe.SizeOf<KernelMap>())
+            return false;
 
         return true;
     }

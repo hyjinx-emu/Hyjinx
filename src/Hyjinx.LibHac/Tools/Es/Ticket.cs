@@ -62,7 +62,7 @@ public class Ticket
 
         return new Ticket(reader);
     }
-    
+
     public Ticket(BinaryReader reader)
     {
         long fileStart = reader.BaseStream.Position;

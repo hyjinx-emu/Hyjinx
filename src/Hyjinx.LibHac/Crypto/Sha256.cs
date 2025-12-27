@@ -23,7 +23,7 @@ public class Sha256 : IHash
     public static void GenerateSha256Hash(ReadOnlySpan<byte> data, Span<byte> hashBuffer)
     {
         var sha256 = new Sha256();
-        
+
         sha256.Initialize();
         sha256.Update(data);
         sha256.GetHash(hashBuffer);

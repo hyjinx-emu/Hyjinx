@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSystem.Impl;
 using System;
@@ -13,9 +13,9 @@ namespace LibHac.FsSystem;
 /// </summary>
 public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFileSystemFormat.PartitionEntry>
 {
-    private Sha256PartitionFileSystem2(IStorage2 baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header) 
+    private Sha256PartitionFileSystem2(IStorage2 baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
         : base(baseStorage, header) { }
-    
+
     /// <summary>
     /// Creates an <see cref="Sha256PartitionFileSystem2"/> from storage.
     /// </summary>
@@ -35,26 +35,26 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
 
         var header = Unsafe.As<byte, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>(ref headerBuffer.Span[0]);
 
-        var result = new Sha256PartitionFileSystem2(baseStorage, header); 
+        var result = new Sha256PartitionFileSystem2(baseStorage, header);
         result.Initialize();
 
         return result;
     }
-    
+
     protected override LookupEntry Read(int index, PartitionFileSystemLayout layout)
     {
         // Read the entry details.
         using var entryBuffer = new RentedArray2<byte>(layout.EntryHeaderSize * 2);
         BaseStorage.ReadOnce(layout.FsHeaderSize + (index * layout.EntryHeaderSize), entryBuffer.Span);
-        
+
         (Sha256PartitionFileSystemFormat.PartitionEntry entry, int nameLength) = GetEntryDetails(index, layout.EntryHeaderSize, entryBuffer.Span);
-        
+
         // Read the entry name.
         using var nameBuffer = new RentedArray2<byte>(nameLength);
         BaseStorage.ReadOnce(layout.NameTableOffset + entry.NameOffset, nameBuffer.Span);
-        
+
         var fullName = $"/{new U8Span(nameBuffer.Span).ToString()}";
-        
+
         return new LookupEntry
         {
             Name = System.IO.Path.GetFileName(fullName),
@@ -64,7 +64,7 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
             Offset = entry.Offset + layout.MetadataSize
         };
     }
-    
+
     private (Sha256PartitionFileSystemFormat.PartitionEntry, int) GetEntryDetails(int index, int entryHeaderSize, Span<byte> buffer)
     {
         var entry = Unsafe.As<byte, Sha256PartitionFileSystemFormat.PartitionEntry>(ref buffer[0]);

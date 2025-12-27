@@ -1,4 +1,4 @@
-﻿using LibHac.Fs;
+using LibHac.Fs;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -17,7 +17,7 @@ public class SubStorage2 : Storage2
     private long _position;
 
     public override long Size => _length;
-    
+
     public override long Position => _position;
 
     private SubStorage2(IStorage2 baseStorage, long offset, long length)
@@ -55,10 +55,10 @@ public class SubStorage2 : Storage2
 
         var result = new SubStorage2(baseStorage, offset, length);
         result.Seek(0, SeekOrigin.Begin);
-        
+
         return result;
     }
-    
+
     public override int Read(Span<byte> buffer)
     {
         var remaining = CalculateBytesToRead(buffer.Length);
@@ -66,10 +66,10 @@ public class SubStorage2 : Storage2
         {
             return 0;
         }
-        
+
         var bytesRead = _baseStorage.Read(buffer[..remaining]);
         _position += bytesRead;
-        
+
         return bytesRead;
     }
 
@@ -85,11 +85,11 @@ public class SubStorage2 : Storage2
         var newOffset = CalculateOffsetForSeek(originOffset, offset);
 
         _position = newOffset - _offset;
-        
+
         _baseStorage.Seek(newOffset, SeekOrigin.Begin);
         return _position;
     }
-    
+
     private long CalculateOriginOffsetForSeek(SeekOrigin origin)
     {
         return origin switch
@@ -120,7 +120,7 @@ public class SubStorage2 : Storage2
     protected override void Dispose(bool disposing)
     {
         _baseStorage.Dispose();
-        
+
         base.Dispose(disposing);
     }
 }

@@ -1,4 +1,4 @@
-﻿using LibHac.Fs;
+using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.Fs;
 using System;
@@ -15,24 +15,24 @@ namespace LibHac.Tools.FsSystem.RomFs;
 public class RomFsFileSystem2 : FileSystem2
 {
     private readonly IStorage2 _baseStorage;
-    
+
     private readonly RomFsIndex<DirectoryNodeInfo> _directoriesIndex;
     private readonly RomFsIndex<FileNodeInfo> _filesIndex;
     private readonly long _dataOffset;
-    
+
     private readonly Dictionary<string, LookupEntry> _lookupCache;
-    
+
     private readonly record struct LookupEntry
     {
         public static readonly LookupEntry Empty = new();
-        
+
         public long Offset { get; init; }
         public long Length { get; init; }
         public DirectoryEntryType EntryType { get; init; }
         public int FirstFileOffset { get; init; }
         public int FirstSubDirectoryOffset { get; init; }
     }
-    
+
     private RomFsFileSystem2(IStorage2 baseStorage, RomFsIndex<DirectoryNodeInfo> directoriesIndex, RomFsIndex<FileNodeInfo> fileIndex, long dataOffset)
     {
         _baseStorage = baseStorage;
@@ -41,7 +41,7 @@ public class RomFsFileSystem2 : FileSystem2
         _dataOffset = dataOffset;
         _lookupCache = new Dictionary<string, LookupEntry>();
     }
-    
+
     /// <summary>
     /// Creates an <see cref="RomFsFileSystem2"/> from storage.
     /// </summary>
@@ -50,8 +50,8 @@ public class RomFsFileSystem2 : FileSystem2
     public static RomFsFileSystem2 Create(IStorage2 baseStorage)
     {
         var header = RomFsHeader2.Read(baseStorage);
-        
-        var directoriesIndex = RomFsIndex<DirectoryNodeInfo>.Create(baseStorage, 
+
+        var directoriesIndex = RomFsIndex<DirectoryNodeInfo>.Create(baseStorage,
             new RomFsIndexDefinition
             {
                 RootTableOffset = header.DirHashTableOffset,
@@ -59,7 +59,7 @@ public class RomFsFileSystem2 : FileSystem2
                 EntryTableOffset = header.DirEntryTableOffset,
                 EntryTableSize = header.DirEntryTableSize
             });
-        
+
         var fileIndex = RomFsIndex<FileNodeInfo>.Create(baseStorage,
             new RomFsIndexDefinition
             {
@@ -68,10 +68,10 @@ public class RomFsFileSystem2 : FileSystem2
                 EntryTableOffset = header.FileEntryTableOffset,
                 EntryTableSize = header.FileEntryTableSize
             });
-        
+
         var result = new RomFsFileSystem2(baseStorage, directoriesIndex, fileIndex, header.DataOffset);
         result.Initialize();
-        
+
         return result;
     }
 
@@ -114,7 +114,7 @@ public class RomFsFileSystem2 : FileSystem2
     {
         var found = false;
         var entry = LookupEntry.Empty;
-        
+
         var segmentIndex = parts.Length;
         while (segmentIndex > 0)
         {
@@ -147,7 +147,7 @@ public class RomFsFileSystem2 : FileSystem2
 
         return found;
     }
-    
+
     private bool TryFindDirectoryOffset(int segmentIndex, Span<string> parts, RomFsIndex<DirectoryNodeInfo>.RomFsIndexEntry startEntry, out LookupEntry result)
     {
         foreach (var entry in _directoriesIndex.Enumerate(startEntry.Info.FirstSubDirectoryOffset))
@@ -213,7 +213,7 @@ public class RomFsFileSystem2 : FileSystem2
     public override bool Exists(string path)
     {
         var root = _directoriesIndex.Get(0);
-        
+
         return EnumerateFileSystemInfos(
                 root.Info.FirstSubDirectoryOffset, root.Info.FirstFileOffset, "", true)
             .Any(o => o.FullPath == path);
@@ -222,19 +222,19 @@ public class RomFsFileSystem2 : FileSystem2
     public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
     {
         bool found;
-        
+
         if (!(found = _lookupCache.TryGetValue(fileName, out var entry)))
         {
             Span<string> parts = fileName.Split('/');
             var dirParts = parts[1..^1];
-            
+
             // Find the directory at which the scan must begin.
             found = TryFindDirectoryOffset(dirParts, out entry);
             if (found)
             {
                 // Add the item into the cache.
                 _lookupCache[$"/{string.Join('/', dirParts!)}"] = entry;
-                
+
                 // Find the file within the directory.
                 found = TryFindFileInDirectory(parts[^1], entry, out entry);
                 if (found)
@@ -249,18 +249,18 @@ public class RomFsFileSystem2 : FileSystem2
         {
             throw new FileNotFoundException("The file does not exist.", fileName);
         }
-        
+
         return new NxFileStream2(_baseStorage.Slice2(
             _dataOffset + entry.Offset, entry.Length), access);
     }
-    
+
     public override IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
-    { 
+    {
         var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
         var recursive = options.HasFlag(SearchOptions.RecurseSubdirectories);
 
         var root = _directoriesIndex.Get(0);
-        
+
         foreach (var entry in EnumerateFileSystemInfos(root.Info.FirstSubDirectoryOffset, root.Info.FirstFileOffset, "", recursive))
         {
             if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullPath, ignoreCase))
@@ -269,7 +269,7 @@ public class RomFsFileSystem2 : FileSystem2
             }
         }
     }
-    
+
     private IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(int directoryOffset, int filesOffset, string path, bool recursive)
     {
         if (directoryOffset != -1)
@@ -297,7 +297,7 @@ public class RomFsFileSystem2 : FileSystem2
             }
         }
     }
-    
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct DirectoryNodeInfo : IRomFsIndexNode
     {
@@ -306,13 +306,13 @@ public class RomFsFileSystem2 : FileSystem2
         public int FirstFileOffset;
 
         int IRomFsIndexNode.NextSibling => NextSibling;
-        
+
         public override string ToString()
         {
             return $"NextSibling={NextSibling}, FirstSubDirectoryOffset={FirstSubDirectoryOffset}, FirstFileOffset={FirstFileOffset}";
         }
     }
-    
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct FileNodeInfo : IRomFsIndexNode
     {
@@ -321,7 +321,7 @@ public class RomFsFileSystem2 : FileSystem2
         public long Length;
 
         int IRomFsIndexNode.NextSibling => NextSibling;
-        
+
         public override string ToString()
         {
             return $"NextSibling={NextSibling}, Offset={Offset}, Length={Length}";

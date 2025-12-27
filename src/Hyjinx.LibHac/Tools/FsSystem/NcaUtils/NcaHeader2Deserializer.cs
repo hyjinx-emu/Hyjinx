@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
@@ -14,7 +14,7 @@ public class NcaHeader2Deserializer : NcaHeader2Deserializer<NcaHeader2>
         scoped ref var header = ref Unsafe.As<byte, NcaHeaderStruct>(ref bytes[0]);
 
         var version = DetectNcaVersion(bytes);
-        
+
         return new NcaHeader2
         {
             Magic = header.Magic,
@@ -37,7 +37,7 @@ public abstract class NcaHeader2Deserializer<T> : IDeserializer<T>
     where T : NcaHeader2
 {
     public abstract T Deserialize(in Span<byte> bytes);
-    
+
     /// <summary>
     /// Detects the <see cref="NcaVersion"/> from the header.
     /// </summary>
@@ -50,12 +50,12 @@ public abstract class NcaHeader2Deserializer<T> : IDeserializer<T>
         {
             return NcaVersion.Nca3;
         }
-        
+
         if (version == 2)
         {
             return NcaVersion.Nca2;
         }
-        
+
         return NcaVersion.Unknown;
     }
 }

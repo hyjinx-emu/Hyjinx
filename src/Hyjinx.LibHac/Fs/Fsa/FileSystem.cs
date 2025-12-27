@@ -13,7 +13,7 @@ namespace LibHac.Fs.Fsa;
 public abstract class FileSystem : IFileSystem
 {
     public virtual void Dispose() { }
-    
+
     public Result CreateFile(in Path path, long size, CreateFileOptions option)
     {
         if (size < 0)
@@ -21,17 +21,17 @@ public abstract class FileSystem : IFileSystem
 
         return DoCreateFile(in path, size, option);
     }
-    
+
     public Result CreateFile(in Path path, long size)
     {
         return CreateFile(in path, size, CreateFileOptions.None);
     }
-    
+
     public Result DeleteFile(in Path path)
     {
         return DoDeleteFile(in path);
     }
-    
+
     public Result CreateDirectory(in Path path)
     {
         return DoCreateDirectory(in path);

@@ -32,7 +32,7 @@ public static class NativeTypes
     public const int CompressionInfoOffset = 0x178;
     public const int CompressionInfoSize = 0x28;
     public const int SignatureSize = 0x100;
-    
+
     [StructLayout(LayoutKind.Explicit)]
     public struct FsHeaderStruct
     {
@@ -70,7 +70,7 @@ public static class NativeTypes
         public int EndBlock;
         public bool IsEnabled;
     }
-    
+
     /// <summary>
     /// Describes a patch info structure.
     /// </summary>
@@ -82,17 +82,17 @@ public static class NativeTypes
         /// Indirect offset
         /// </summary>
         [FieldOffset(0x00)] public long RelocationTreeOffset;
-        
+
         /// <summary>
         /// Indirect size
         /// </summary>
         [FieldOffset(0x08)] public long RelocationTreeSize;
-        
+
         /// <summary>
         /// AesCtrEx offset
         /// </summary>
         [FieldOffset(0x20)] public long EncryptionTreeOffset;
-        
+
         /// <summary>
         /// AesCtrEx size
         /// </summary>

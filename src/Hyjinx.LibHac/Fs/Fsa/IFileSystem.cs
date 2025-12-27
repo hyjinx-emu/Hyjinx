@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using System;
 
 namespace LibHac.Fs.Fsa;

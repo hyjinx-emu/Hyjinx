@@ -74,19 +74,19 @@ public interface IStorage : IDisposable
 public abstract class Storage : IStorage
 {
     public virtual void Dispose() { }
-    
+
     public abstract Result Read(long offset, Span<byte> destination);
-    
+
     public abstract Result Write(long offset, ReadOnlySpan<byte> source);
-    
+
     public abstract Result Flush();
-    
+
     public abstract Result SetSize(long size);
-    
+
     public abstract Result GetSize(out long size);
-    
+
     public abstract Result OperateRange(Span<byte> outBuffer, OperationId operationId, long offset, long size, ReadOnlySpan<byte> inBuffer);
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Result OperateRange(OperationId operationId, long offset, long size)
     {

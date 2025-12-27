@@ -35,7 +35,8 @@ public class ConcatenationStorageBuilder
         {
             long paddingNeeded = segment.Offset - offset;
 
-            if (paddingNeeded < 0) throw new InvalidDataException("Builder has segments that overlap.");
+            if (paddingNeeded < 0)
+                throw new InvalidDataException("Builder has segments that overlap.");
 
             if (paddingNeeded > 0)
             {

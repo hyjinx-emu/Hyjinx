@@ -32,7 +32,7 @@ public class NxFileStream : Stream
         Position += bytesRead;
         return (int)bytesRead;
     }
-    
+
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
         BaseFile.Read(out var bytesRead, Position, buffer.AsSpan(offset, count));

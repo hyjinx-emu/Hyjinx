@@ -181,10 +181,10 @@ public static partial class FileSystemExtensions
     {
         string name = StringUtils.Utf8ZToString(entry.Name);
         string path = PathTools.Combine(parentPath, name);
-        
+
         var entryEx = new DirectoryEntryEx(name, path, entry.Type, entry.Size)
         {
-            Attributes = entry.Attributes 
+            Attributes = entry.Attributes
         };
 
         return entryEx;

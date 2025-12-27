@@ -1,4 +1,4 @@
-﻿using LibHac.Fs;
+using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
@@ -16,24 +16,24 @@ public class Xci2
     /// The underlying stream for the file.
     /// </summary>
     private Stream UnderlyingStream { get; }
-    
+
     /// <summary>
     /// The root file system.
     /// </summary>
     private IFileSystem2 RootFileSystem { get; }
-    
+
     /// <summary>
     /// Gets the header.
     /// </summary>
     public XciHeader Header { get; }
-    
+
     private Xci2(Stream stream, IFileSystem2 rootFileSystem, XciHeader header)
     {
         UnderlyingStream = stream;
         RootFileSystem = rootFileSystem;
         Header = header;
     }
-    
+
     /// <summary>
     /// Creates an <see cref="Xci2"/>.
     /// </summary>
@@ -46,9 +46,9 @@ public class Xci2
         try
         {
             var header = new XciHeader(stream);
-            
+
             var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storage.Size - header.RootPartitionOffset));
-        
+
             return new Xci2(stream, rootFs, header);
         }
         catch (Exception)
@@ -67,7 +67,7 @@ public class Xci2
     {
         return RootFileSystem.Exists($"/{partition.GetFileName()}");
     }
-    
+
     /// <summary>
     /// Opens the file system.
     /// </summary>

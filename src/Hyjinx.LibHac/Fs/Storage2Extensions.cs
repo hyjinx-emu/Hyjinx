@@ -1,4 +1,4 @@
-﻿using LibHac.Tools.FsSystem;
+using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
 
@@ -18,7 +18,7 @@ public static class Storage2Extensions
     {
         return new NxFileStream2(storage);
     }
-    
+
     /// <summary>
     /// Creates a new slice of storage.
     /// </summary>
@@ -43,7 +43,7 @@ public static class Storage2Extensions
     {
         // Grab the starting position so we can move back there before exiting the method.
         long position = storage.Position;
-        
+
         try
         {
             // Do the seek, but do not check position in case the underlying storage has to be repositioned.

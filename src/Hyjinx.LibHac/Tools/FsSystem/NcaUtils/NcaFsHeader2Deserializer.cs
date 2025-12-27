@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Crypto;
 using System;
 using System.Collections.Generic;
@@ -17,10 +17,10 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
     {
         // Find the file system header entry.
         var fsHeaderBytes = bytes.Slice(FsHeadersOffset + (sectionIndex * FsHeaderSize), FsHeaderSize);
-        
+
         // Find the hash bytes.
         var hashBytes = ExtractHashBytes(bytes, sectionIndex);
-        
+
         scoped ref var fsHeader = ref Unsafe.As<byte, FsHeaderStruct>(ref fsHeaderBytes[0]);
 
         var blockCount = (fsEntry.EndBlock - fsEntry.StartBlock);
@@ -28,7 +28,7 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
         {
             throw new InvalidOperationException("The block count cannot be a negative value.");
         }
-        
+
         return new NcaFsHeader2
         {
             Version = fsHeader.Version,
@@ -67,11 +67,11 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
     {
         Header = header;
     }
-    
+
     public Dictionary<NcaSectionType, T> Deserialize(in Span<byte> bytes)
     {
         var result = new Dictionary<NcaSectionType, T>();
-        
+
         for (var i = 0; i < SectionCount; i++)
         {
             // Find the FsEntry from the raw header for this section
@@ -100,7 +100,7 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
     /// <param name="fsEntry">The section entry.</param>
     /// <returns>The deserialized <typeparamref name="T"/> instance.</returns>
     protected abstract T DeserializeCore(in Span<byte> bytes, int sectionIndex, NcaSectionEntryStruct fsEntry);
-    
+
     private bool TryGetSectionTypeFromIndex(int index, NcaContentType contentType, out NcaSectionType type)
     {
         switch (index)
@@ -147,7 +147,7 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
         // Find the file system header entry.
         return bytes.Slice(FsHeadersOffset + (sectionIndex * FsHeaderSize), FsHeaderSize);
     }
-    
+
     /// <summary>
     /// Deserializes the patch information (if present).
     /// </summary>
@@ -162,7 +162,7 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
             {
                 EncryptionTreeSize = patchStruct.EncryptionTreeSize,
                 EncryptionTreeOffset = patchStruct.EncryptionTreeOffset,
-                EncryptionTreeHeader = bytes.Slice(0x30,0x10).ToArray(),
+                EncryptionTreeHeader = bytes.Slice(0x30, 0x10).ToArray(),
                 RelocationTreeOffset = patchStruct.RelocationTreeOffset,
                 RelocationTreeSize = patchStruct.RelocationTreeSize,
                 RelocationTreeHeader = bytes.Slice(0x10, 0x10).ToArray()
@@ -171,7 +171,7 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
 
         return null;
     }
-    
+
     /// <summary>
     /// Checks whether the header bytes matches the expected hash.
     /// </summary>
@@ -181,7 +181,7 @@ public abstract class NcaFsHeader2Deserializer<THeader, T> : IDeserializer<Dicti
     protected static Validity CheckHeaderHashMatchesAsExpected(in Span<byte> fsHeaderBytes, in Span<byte> expectedHash)
     {
         Span<byte> actualHash = stackalloc byte[Sha256.DigestSize];
-        
+
         // Compare the hash to the raw FsHeader
         Sha256.GenerateSha256Hash(fsHeaderBytes, actualHash);
         if (!Utilities.SpansEqual(expectedHash, actualHash))

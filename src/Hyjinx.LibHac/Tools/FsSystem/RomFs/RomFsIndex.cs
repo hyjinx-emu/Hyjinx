@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using System;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ internal sealed class RomFsIndex<T>
         _entryStorage = entryStorage;
         _entrySize = Unsafe.SizeOf<RomFsEntry>();
     }
-    
+
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     private struct RomFsEntry
     {
@@ -46,7 +46,7 @@ internal sealed class RomFsIndex<T>
         public int Parent { get; init; }
         public int NextOffset { get; init; }
     }
-    
+
     /// <summary>
     /// Creates an index.
     /// </summary>
@@ -57,10 +57,10 @@ internal sealed class RomFsIndex<T>
     {
         using var arr = new RentedArray2<byte>((int)definition.RootTableSize);
         baseStorage.ReadOnce(definition.RootTableOffset, arr.Span);
-        
+
         return new RomFsIndex<T>(baseStorage.Slice2(definition.EntryTableOffset, definition.EntryTableSize));
     }
-    
+
     /// <summary>
     /// Gets the <see cref="RomFsIndexEntry"/> at the offset specified.
     /// </summary>
@@ -84,7 +84,7 @@ internal sealed class RomFsIndex<T>
             NextOffset = entry.NextOffset
         };
     }
-    
+
     /// <summary>
     /// Enumerates the entries at a specific offset within the index.
     /// </summary>
@@ -94,15 +94,15 @@ internal sealed class RomFsIndex<T>
     {
         byte[] entryBytes = new byte[_entrySize];
         var current = offset;
-        
+
         while (current != -1)
         {
             _entryStorage.ReadOnce(current, entryBytes);
             var entry = Unsafe.As<byte, RomFsEntry>(ref entryBytes[0]);
-            
+
             byte[] nameBytes = new byte[entry.NameLength];
             _entryStorage.ReadOnce(current + _entrySize, nameBytes);
-            
+
             yield return new RomFsIndexEntry
             {
                 Offset = current,
@@ -111,7 +111,7 @@ internal sealed class RomFsIndex<T>
                 Name = Encoding.UTF8.GetString(nameBytes),
                 NextOffset = entry.NextOffset
             };
-            
+
             current = entry.Info.NextSibling;
         }
     }

@@ -1,4 +1,4 @@
-﻿using LibHac.Fs;
+using LibHac.Fs;
 using System;
 using System.IO;
 using System.Linq;
@@ -14,7 +14,7 @@ public class IndirectStorage2 : Storage2
 {
     private readonly IStorage2[] _storages;
     private readonly BucketTree2<Entry> _relocationTree;
-    
+
     /// <summary>
     /// The definition for an <see cref="IndirectStorage2"/> bucket tree entry.
     /// </summary>
@@ -26,19 +26,19 @@ public class IndirectStorage2 : Storage2
         /// The virtual offset.
         /// </summary>
         public long VirtualOffset { get; init; }
-        
+
         /// <summary>
         /// The physical offset.
         /// </summary>
         public long PhysicalOffset { get; init; }
-        
+
         /// <summary>
         /// The zero-based storage index to use when combining the data.
         /// </summary>
         public int StorageIndex { get; init; }
 
         long IBucketTreeEntry.Offset => VirtualOffset;
-        
+
         public override string ToString()
         {
             return $"{{ VirtualOffset={VirtualOffset}, PhysicalOffset={PhysicalOffset}, StorageIndex={StorageIndex} }}";
@@ -63,14 +63,14 @@ public class IndirectStorage2 : Storage2
     public static IndirectStorage2 Create(IStorage2[] storages, IStorage2 relocationTreeStorage, BucketTreeHeader header)
     {
         ArgumentNullException.ThrowIfNull(storages);
-        
+
         var relocationTree = BucketTree2<Entry>.Create(relocationTreeStorage,
             new BucketTreeDefinition
             {
                 Header = header,
                 Length = relocationTreeStorage.Size
             });
-        
+
         // We cannot verify the storages are provided correctly, but we can at least verify the number provided matches.
         var storagesRequired = relocationTree.Max(o => o.Value.StorageIndex) + 1; // For zero-based index.
         if (storagesRequired != storages.Length)
@@ -82,11 +82,11 @@ public class IndirectStorage2 : Storage2
 
         return new IndirectStorage2(storages, relocationTree);
     }
-    
+
     public override long Size => throw new NotImplementedException();
-    
+
     public override long Position => throw new NotImplementedException();
-    
+
     public override int Read(Span<byte> buffer)
     {
         throw new NotImplementedException();

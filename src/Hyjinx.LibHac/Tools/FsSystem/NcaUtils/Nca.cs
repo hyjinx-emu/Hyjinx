@@ -35,7 +35,7 @@ public class Nca
 
         return CanOpenSection(index);
     }
-    
+
     public bool CanOpenSection(int index)
     {
         if (!SectionExists(index))
@@ -93,7 +93,7 @@ public class Nca
 
         return BaseStorage.Slice(offset, size);
     }
-    
+
     public IStorage OpenRawStorage(NcaSectionType type)
     {
         return OpenRawStorage(GetSectionIndexFromType(type));
@@ -306,7 +306,7 @@ public class Nca
                 return false;
         }
     }
-    
+
     public static NcaSectionType GetSectionTypeFromIndex(int index, NcaContentType contentType)
     {
         if (!TryGetSectionTypeFromIndex(index, contentType, out NcaSectionType type))

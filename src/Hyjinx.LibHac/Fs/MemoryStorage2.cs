@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,9 +13,9 @@ public class MemoryStorage2 : Storage2
     private readonly MemoryStream _memoryStream;
 
     public override long Size => _memoryStream.Length;
-    
+
     public override long Position => _memoryStream.Position;
-    
+
     private MemoryStorage2(byte[] data)
     {
         _memoryStream = new MemoryStream(data);
@@ -30,7 +30,7 @@ public class MemoryStorage2 : Storage2
     {
         return Create(data.ToArray());
     }
-    
+
     /// <summary>
     /// Creates a new instance.
     /// </summary>
@@ -40,7 +40,7 @@ public class MemoryStorage2 : Storage2
     {
         return Create(data.ToArray());
     }
-    
+
     /// <summary>
     /// Creates a new instance.
     /// </summary>
@@ -49,7 +49,7 @@ public class MemoryStorage2 : Storage2
     public static MemoryStorage2 Create(byte[] data)
     {
         ArgumentNullException.ThrowIfNull(data);
-        
+
         var result = new MemoryStorage2(data);
         result.Seek(0, SeekOrigin.Begin);
 
@@ -69,7 +69,7 @@ public class MemoryStorage2 : Storage2
     protected override void Dispose(bool disposing)
     {
         _memoryStream.Dispose();
-        
+
         base.Dispose(disposing);
     }
 }

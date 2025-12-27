@@ -1,4 +1,4 @@
-﻿using LibHac.Crypto;
+using LibHac.Crypto;
 using Xunit;
 
 namespace LibHac.Tests.Crypto;

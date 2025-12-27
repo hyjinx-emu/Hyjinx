@@ -1,4 +1,4 @@
-﻿using LibHac.Tools.FsSystem;
+using LibHac.Tools.FsSystem;
 
 namespace LibHac.Tools.Fs;
 
@@ -11,17 +11,17 @@ public class FileInfoEx
     /// The name of the file.
     /// </summary>
     public string Name { get; }
-    
+
     /// <summary>
     /// The full path of the file.
     /// </summary>
     public string FullPath { get; }
-    
+
     /// <summary>
     /// The length of the file.
     /// </summary>
     public long Length { get; }
-    
+
     /// <summary>
     /// Initializes a new instance of the class.
     /// </summary>

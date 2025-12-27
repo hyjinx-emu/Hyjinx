@@ -12,22 +12,22 @@ public class DirectoryEntryEx
     /// The name of the file.
     /// </summary>
     public string Name { get; }
-    
+
     /// <summary>
     /// The full path of the file.
     /// </summary>
     public string FullPath { get; }
-    
+
     /// <summary>
     /// The file attributes.
     /// </summary>
     public NxFileAttributes Attributes { get; init; }
-    
+
     /// <summary>
     /// The type of entry.
     /// </summary>
     public DirectoryEntryType Type { get; }
-    
+
     /// <summary>
     /// The size of the file.
     /// </summary>

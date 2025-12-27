@@ -1,4 +1,4 @@
-﻿using LibHac.Tools.Fs;
+using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using System.Collections.Generic;
 using System.IO;
@@ -18,11 +18,12 @@ public abstract partial class FileSystem2 : IFileSystem2
     {
         foreach (var entry in EnumerateFileSystemInfos(path, searchPattern, options))
         {
-            if (entry.Type == DirectoryEntryType.Directory) continue;
+            if (entry.Type == DirectoryEntryType.Directory)
+                continue;
 
             yield return new FileInfoEx(entry.Name, entry.FullPath, entry.Length);
         }
     }
-    
+
     public abstract IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default);
 }

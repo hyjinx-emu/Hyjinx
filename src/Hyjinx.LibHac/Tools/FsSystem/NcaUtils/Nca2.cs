@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
@@ -17,7 +17,7 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// </summary>
 public class BasicNca2 : Nca2<NcaHeader2, NcaFsHeader2>
 {
-    private BasicNca2(Stream stream, NcaHeader2 header, Dictionary<NcaSectionType, NcaFsHeader2> sections) 
+    private BasicNca2(Stream stream, NcaHeader2 header, Dictionary<NcaSectionType, NcaFsHeader2> sections)
         : base(stream, header, sections) { }
 
     /// <summary>
@@ -33,18 +33,18 @@ public class BasicNca2 : Nca2<NcaHeader2, NcaFsHeader2>
         }
 
         using var buffer = new RentedArray2<byte>(HeaderSize);
-        
+
         // Make sure it's the expected size before reading the data.
         stream.ReadExactly(buffer.Span);
-        
+
         // Deserialize the header.
         var deserializer = new NcaHeader2Deserializer();
         var header = deserializer.Deserialize(buffer.Span);
-        
+
         // Deserialize the entries.
         var entriesDeserializer = new NcaFsHeader2Deserializer(header);
         var entries = entriesDeserializer.Deserialize(buffer.Span);
-        
+
         return new BasicNca2(stream, header, entries);
     }
 }
@@ -67,7 +67,7 @@ public abstract class Nca2
     {
         UnderlyingStream = stream;
     }
-    
+
     /// <summary>
     /// Copies the entire archive to a destination.
     /// </summary>
@@ -119,7 +119,7 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
     /// Gets the sections.
     /// </summary>
     public IDictionary<NcaSectionType, TFsHeader> Sections { get; }
-    
+
     /// <summary>
     /// Initializes an instance of the class.
     /// </summary>
@@ -132,7 +132,7 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         Header = header;
         Sections = sections.AsReadOnly();
     }
-    
+
     public override IFileSystem2 OpenFileSystem(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
     {
         if (!Sections.TryGetValue(section, out var fsHeader))
@@ -158,7 +158,7 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
     {
         return RomFsFileSystem2.Create(storage);
     }
-    
+
     public override IStorage2 OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
     {
         if (!Sections.TryGetValue(section, out var fsHeader))
@@ -196,7 +196,7 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         {
             throw new InvalidHashDetectedException("The header hash does not match the expected value.");
         }
-        
+
         var rootStorage = StreamStorage2.Create(UnderlyingStream);
 
         try
@@ -241,7 +241,7 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
                 result = IntegrityVerificationStorage2.Create(level, baseStorage, true, result,
                     integrityCheckLevel, offset, length, sectorSize);
             }
-            
+
             return result;
         }
         catch (Exception)

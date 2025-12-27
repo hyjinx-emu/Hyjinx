@@ -1,4 +1,4 @@
-﻿#if IS_LEGACY_ENABLED
+#if IS_LEGACY_ENABLED
 
 using LibHac.Common;
 using System;

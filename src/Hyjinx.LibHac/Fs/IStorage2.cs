@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 
 namespace LibHac.Fs;
@@ -12,7 +12,7 @@ public interface IStorage2 : IDisposable
     /// Gets the size region.
     /// </summary>
     long Size { get; }
-    
+
     /// <summary>
     /// Gets the current position within the storage region.
     /// </summary>
@@ -24,7 +24,7 @@ public interface IStorage2 : IDisposable
     /// <param name="buffer">The buffer which should receive the data.</param>
     /// <returns>The number of bytes read. This will typically match the buffer size, however it may not as the end of the storage region is being reached. A return value of 0 will always occur when the end of the region has been reached.</returns>
     int Read(Span<byte> buffer);
-        
+
     /// <summary>
     /// Seeks position within the storage.
     /// </summary>

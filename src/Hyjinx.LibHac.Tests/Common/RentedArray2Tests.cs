@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using Xunit;
 
 namespace LibHac.Tests.Common;
@@ -12,7 +12,7 @@ public class RentedArray2Tests
 
         var array = target.ToArray();
         Assert.Equal(6080, array.Length);
-        
+
         Assert.Equal(6080, target.Span.Length);
         Assert.Equal(6080, target.Memory.Length);
     }
@@ -25,11 +25,11 @@ public class RentedArray2Tests
 
         var array = target.ToArray();
         Assert.Equal(expected, array.Length);
-        
+
         Assert.Equal(expected, target.Span.Length);
         Assert.Equal(expected, target.Memory.Length);
     }
-    
+
     [Fact]
     public void HandlesLargeRentals()
     {
@@ -37,11 +37,11 @@ public class RentedArray2Tests
 
         var array = target.ToArray();
         Assert.Equal(8192, array.Length);
-        
+
         Assert.Equal(8192, target.Span.Length);
         Assert.Equal(8192, target.Memory.Length);
     }
-    
+
     [Fact]
     public void HandlesLargeRentalsWithClearEnabled()
     {
@@ -49,11 +49,11 @@ public class RentedArray2Tests
 
         var array = target.ToArray();
         Assert.Equal(8192, array.Length);
-        
+
         Assert.Equal(8192, target.Span.Length);
         Assert.Equal(8192, target.Memory.Length);
     }
-    
+
     [Fact]
     public void HandlesSmallRentals()
     {
@@ -61,11 +61,11 @@ public class RentedArray2Tests
 
         var array = target.ToArray();
         Assert.Equal(16, array.Length);
-        
+
         Assert.Equal(16, target.Span.Length);
         Assert.Equal(16, target.Memory.Length);
     }
-    
+
     [Fact]
     public void HandlesSmallRentalsWithClearEnabled()
     {
@@ -73,7 +73,7 @@ public class RentedArray2Tests
 
         var array = target.ToArray();
         Assert.Equal(16, array.Length);
-        
+
         Assert.Equal(16, target.Span.Length);
         Assert.Equal(16, target.Memory.Length);
     }

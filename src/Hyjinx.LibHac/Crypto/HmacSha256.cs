@@ -28,7 +28,7 @@ internal static class HmacSha256
         var hmac = new HMac(new Sha256Digest());
         hmac.Init(new KeyParameter(key));
         hmac.BlockUpdate(data);
-        
+
         var bytesWritten = hmac.DoFinal(outMac);
         Abort.DoAbortUnless(bytesWritten == HashSize);
     }

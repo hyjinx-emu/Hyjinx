@@ -11,13 +11,13 @@ public interface IHash
     /// Initializes the algorithm.
     /// </summary>
     void Initialize();
-    
+
     /// <summary>
     /// Updates the data for the hash.
     /// </summary>
     /// <param name="data"></param>
     void Update(ReadOnlySpan<byte> data);
-    
+
     /// <summary>
     /// Calculates and retrieves the hash of the data.
     /// </summary>

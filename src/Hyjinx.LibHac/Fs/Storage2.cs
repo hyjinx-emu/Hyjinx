@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,14 +11,14 @@ namespace LibHac.Fs;
 public abstract partial class Storage2 : IStorage2
 {
     public abstract long Size { get; }
-    
+
     public abstract long Position { get; }
-    
+
     ~Storage2()
     {
         Dispose(false);
     }
-    
+
     public void Dispose()
     {
         Dispose(true);
@@ -29,7 +29,7 @@ public abstract partial class Storage2 : IStorage2
     {
         // This method intentionally left blank.
     }
-    
+
     public abstract int Read(Span<byte> buffer);
 
     public abstract long Seek(long offset, SeekOrigin origin);

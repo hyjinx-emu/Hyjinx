@@ -17,7 +17,7 @@ public interface IFileSystem2
     /// <param name="path">The path to check.</param>
     /// <returns><c>true</c> if the path exists, otherwise <c>false</c>.</returns>
     bool Exists(string path);
-    
+
     /// <summary>
     /// Opens a file.
     /// </summary>
@@ -27,7 +27,7 @@ public interface IFileSystem2
     /// <exception cref="FileNotFoundException">The file does not exist.</exception>
     /// <exception cref="UnauthorizedAccessException">The access level requested is not allowed.</exception>
     Stream OpenFile(string fileName, FileAccess access = FileAccess.Read);
-    
+
     /// <summary>
     /// Enumerates the file infos.
     /// </summary>
@@ -36,7 +36,7 @@ public interface IFileSystem2
     /// <param name="options">Optional. The search options to use.</param>
     /// <returns>An enumerable of file infos.</returns>
     IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default);
-    
+
     /// <summary>
     /// Enumerates the file system infos.
     /// </summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 
@@ -13,7 +13,7 @@ public sealed class RentedArray2<T> : IDisposable
     /// The threshold upon which arrays are rented when requested, rather than created directly.
     /// </summary>
     private const int RentalThreshold = 512;
-    
+
     private readonly ArrayPool<T> _pool;
     private readonly T[] _buffer;
     private readonly bool _rented;
@@ -23,7 +23,7 @@ public sealed class RentedArray2<T> : IDisposable
     /// The length of the buffer.
     /// </summary>
     public int Length { get; }
-    
+
     /// <summary>
     /// Initializes a new instance of the class.
     /// </summary>
@@ -32,7 +32,7 @@ public sealed class RentedArray2<T> : IDisposable
     public RentedArray2(int length, bool clearArray = false)
         : this(length, clearArray, ArrayPool<T>.Shared)
     { }
-    
+
     private RentedArray2(int length, bool clearArray, ArrayPool<T> pool)
     {
         Length = length;
@@ -79,7 +79,7 @@ public sealed class RentedArray2<T> : IDisposable
     {
         return _buffer[..Length];
     }
-    
+
     public void Dispose()
     {
         Dispose(true);

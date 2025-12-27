@@ -84,7 +84,7 @@ public class NcaHeader
     {
         return BlockToOffset(GetSectionEntry(index).StartBlock);
     }
-    
+
     public long GetSectionEndOffset(int index)
     {
         return BlockToOffset(GetSectionEntry(index).EndBlock);

@@ -1,4 +1,4 @@
-﻿namespace LibHac.Tools.FsSystem.RomFs;
+namespace LibHac.Tools.FsSystem.RomFs;
 
 /// <summary>
 /// Describes node information within the index.

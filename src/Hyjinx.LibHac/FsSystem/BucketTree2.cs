@@ -1,4 +1,4 @@
-﻿using LibHac.Fs;
+using LibHac.Fs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ public struct BucketTreeDefinition
     /// The length of the tree.
     /// </summary>
     public long Length { get; init; }
-    
+
     /// <summary>
     /// The header of the bucket tree.
     /// </summary>
@@ -34,17 +34,17 @@ public struct BucketTreeHeader
     /// The header signature.
     /// </summary>
     public uint HeaderSignature;
-        
+
     /// <summary>
     /// The header version.
     /// </summary>
     public uint Version;
-        
+
     /// <summary>
     /// The entry count. 
     /// </summary>
     public int EntryCount;
-        
+
     /// <summary>
     /// Unused.
     /// </summary>
@@ -66,21 +66,21 @@ public interface IBucketTreeEntry
 /// A bucket tree.
 /// </summary>
 /// <typeparam name="TEntry">The type of entries contained within the entry storage.</typeparam>
-public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEntry> 
-    where TEntry: struct, IBucketTreeEntry
+public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEntry>
+    where TEntry : struct, IBucketTreeEntry
 {
     /// <summary>
     /// Defines the expected "BKTR" header signature for a bucket tree.
     /// </summary>
     private const uint HeaderSignature = 1381256002;
-    
+
     private readonly List<BucketTreeEntry> _entries;
 
     /// <summary>
     /// Gets the number of entries within the tree.
     /// </summary>
     public int Count => _entries.Count;
-    
+
     private BucketTree2(List<BucketTreeEntry> entries)
     {
         _entries = entries;
@@ -136,7 +136,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
 
         throw new ArgumentOutOfRangeException(nameof(offset), $"The value {offset} does not exist.");
     }
-    
+
     /// <summary>
     /// Writes the entries to the debug output.
     /// </summary>
@@ -148,7 +148,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
             Debug.WriteLine($"[BucketTree2:{typeof(TEntry).Name}] Entry {i}: {_entries[i]}");
         }
     }
-    
+
     /// <summary>
     /// Creates a bucket tree.
     /// </summary>
@@ -163,9 +163,9 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
         {
             throw new ArgumentException("The header signature provided does not match the expected header signature.", nameof(definition));
         }
-        
+
         Span<byte> buffer = new byte[definition.Length];
-        
+
         var bytesRead = baseStorage.Read(buffer);
         if (bytesRead != buffer.Length)
         {
@@ -174,26 +174,26 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
 
         // TODO: Viper - Unsure how this ties into the other data set, removing it.
         // ref var nodeHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer[0x00]);
-        
+
         ref var entryHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer[0x4000]);
         if (definition.Header.EntryCount != entryHeader.EntryCount)
         {
             // The definition should match what's being loaded.
             throw new InvalidOperationException($"The bucket tree failed validation. Expected: (Count={definition.Header.EntryCount}), Actual: (Count={entryHeader.EntryCount})");
         }
-        
+
         // Size the list based on what the header says is available (before filtering occurs).
         List<BucketTreeEntry> entries = new(entryHeader.EntryCount);
-        
+
         var sectionEntries = MemoryMarshal.Cast<byte, TEntry>(
             buffer.Slice(0x4010, Unsafe.SizeOf<TEntry>() * entryHeader.EntryCount));
-        
+
         for (var index = 0; index < sectionEntries.Length; index++)
         {
             ref var entry = ref sectionEntries[index];
 
             long endOffset;
-            
+
             var nextIndex = index + 1;
             if (nextIndex < sectionEntries.Length)
             {
@@ -204,7 +204,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
             {
                 endOffset = -1; // The end offset is not known.
             }
-            
+
             entries.Add(new BucketTreeEntry
             {
                 StartOffset = entry.Offset,
@@ -212,7 +212,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
                 Value = entry
             });
         }
-        
+
         return new BucketTree2<TEntry>(entries);
     }
 
@@ -226,18 +226,18 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
         /// Unused.
         /// </summary>
         public int Reserved;
-        
+
         /// <summary>
         /// The number of entries.
         /// </summary>
         public int EntryCount;
-        
+
         /// <summary>
         /// The end offset for this section.
         /// </summary>
         public long EndOffset;
     }
-    
+
     /// <summary>
     /// Describes a bucket tree entry.
     /// </summary>
@@ -247,12 +247,12 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
         /// The start offset of this section.
         /// </summary>
         public long StartOffset;
-        
+
         /// <summary>
         /// The end offset of this section.
         /// </summary>
         public long EndOffset;
-        
+
         /// <summary>
         /// The value.
         /// </summary>

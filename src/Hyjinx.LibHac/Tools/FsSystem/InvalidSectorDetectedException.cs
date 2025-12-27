@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -11,12 +11,12 @@ public class InvalidSectorDetectedException : Exception
     /// The level which contained the sector.
     /// </summary>
     public int Level { get; }
-    
+
     /// <summary>
     /// The index of the sector which was invalid.
     /// </summary>
     public int SectorIndex { get; }
-    
+
     /// <summary>
     /// Initializes a new instance of the class.
     /// </summary>

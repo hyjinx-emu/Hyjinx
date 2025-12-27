@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem.Impl;
@@ -21,17 +21,17 @@ public readonly struct PartitionFileSystemLayout
     /// The size of the header.
     /// </summary>
     public int FsHeaderSize { get; init; }
-    
+
     /// <summary>
     /// The size of the entry header.
     /// </summary>
     public int EntryHeaderSize { get; init; }
-    
+
     /// <summary>
     /// The offset upon which the name table has been stored.
     /// </summary>
     public int NameTableOffset { get; init; }
-    
+
     /// <summary>
     /// The total size of the metadata.
     /// </summary>
@@ -46,7 +46,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     where TMetadata : unmanaged
 {
     private readonly List<LookupEntry> _lookupTable = new();
-    
+
     /// <summary>
     /// Describes an entry within the lookup table.
     /// </summary>
@@ -56,12 +56,12 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         /// The name of the entry.
         /// </summary>
         public required string Name { get; init; }
-        
+
         /// <summary>
         /// The full name (including path) of the entry.
         /// </summary>
         public required string FullName { get; init; }
-        
+
         /// <summary>
         /// The type of entry.
         /// </summary>
@@ -77,17 +77,17 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         /// </summary>
         public required long Offset { get; init; }
     }
-    
+
     /// <summary>
     /// Gets the base storage.
     /// </summary>
     protected IStorage2 BaseStorage { get; }
-    
+
     /// <summary>
     /// Gets the header.
     /// </summary>
     protected PartitionFileSystemFormat.PartitionFileSystemHeaderImpl Header { get; }
-    
+
     /// <summary>
     /// Initializes an instance of the class.
     /// </summary>
@@ -98,7 +98,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         BaseStorage = baseStorage;
         Header = header;
     }
-    
+
     /// <summary>
     /// Initializes the file system.
     /// </summary>
@@ -107,7 +107,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         var fsHeaderSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
         var entryHeaderSize = Unsafe.SizeOf<TMetadata>();
         var nameTableOffset = fsHeaderSize + (Header.EntryCount * entryHeaderSize);
-        
+
         var definition = new PartitionFileSystemLayout
         {
             FsHeaderSize = fsHeaderSize,
@@ -115,13 +115,13 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
             NameTableOffset = nameTableOffset,
             MetadataSize = nameTableOffset + Header.NameTableSize
         };
-        
+
         var index = 0;
         while (index < Header.EntryCount)
         {
             var entry = Read(index, definition);
             _lookupTable.Add(entry);
-            
+
             index++;
         }
     }
@@ -144,7 +144,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
     {
         ArgumentException.ThrowIfNullOrEmpty(fileName);
-        
+
         var entry = _lookupTable.SingleOrDefault(o => o.FullName == fileName);
         if (entry == null)
         {
@@ -157,7 +157,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         try
         {
             result.Seek(0, SeekOrigin.Begin);
-            
+
             return result;
         }
         catch (Exception)
@@ -170,7 +170,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     public override IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
     {
         var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
-        
+
         foreach (var entry in _lookupTable)
         {
             if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullName, ignoreCase))
@@ -188,7 +188,7 @@ public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemForm
 {
     private PartitionFileSystem2(IStorage2 baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
         : base(baseStorage, header) { }
-    
+
     /// <summary>
     /// Creates a <see cref="PartitionFileSystem"/> from storage.
     /// </summary>
@@ -219,15 +219,15 @@ public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemForm
         // Read the entry details.
         using var entryBuffer = new RentedArray2<byte>(layout.EntryHeaderSize * 2);
         BaseStorage.ReadOnce(layout.FsHeaderSize + (index * layout.EntryHeaderSize), entryBuffer.Span);
-        
+
         (PartitionFileSystemFormat.PartitionEntry entry, int nameLength) = GetEntryDetails(index, layout.EntryHeaderSize, entryBuffer.Span);
-        
+
         // Read the entry name.
         using var nameBuffer = new RentedArray2<byte>(nameLength);
         BaseStorage.ReadOnce(layout.NameTableOffset + entry.NameOffset, nameBuffer.Span);
-        
+
         var fullName = $"/{new U8Span(nameBuffer.Span).ToString()}";
-        
+
         return new LookupEntry
         {
             Name = System.IO.Path.GetFileName(fullName),
@@ -237,7 +237,7 @@ public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemForm
             Offset = entry.Offset + layout.MetadataSize
         };
     }
-    
+
     private (PartitionFileSystemFormat.PartitionEntry, int) GetEntryDetails(int index, int entryHeaderSize, Span<byte> buffer)
     {
         var entry = Unsafe.As<byte, PartitionFileSystemFormat.PartitionEntry>(ref buffer[0]);

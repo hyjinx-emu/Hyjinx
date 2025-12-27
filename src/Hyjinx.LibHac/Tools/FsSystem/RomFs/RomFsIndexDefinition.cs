@@ -1,4 +1,4 @@
-﻿namespace LibHac.Tools.FsSystem.RomFs;
+namespace LibHac.Tools.FsSystem.RomFs;
 
 /// <summary>
 /// Describes the definition of a RomFs index.
@@ -10,17 +10,17 @@ internal readonly struct RomFsIndexDefinition
     /// The offset of the table containing all the root entries.
     /// </summary>
     public long RootTableOffset { get; init; }
-    
+
     /// <summary>
     /// The size of the table containing all the root entries.
     /// </summary>
     public long RootTableSize { get; init; }
-    
+
     /// <summary>
     /// The offset of the table containing all the entries.
     /// </summary>
     public long EntryTableOffset { get; init; }
-    
+
     /// <summary>
     /// The size of the table containing all the entries.
     /// </summary>
