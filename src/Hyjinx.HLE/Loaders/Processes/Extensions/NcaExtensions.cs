@@ -113,7 +113,7 @@ public static partial class NcaExtensions
 
     public static ulong GetProgramIdBase(this Nca2 nca)
     {
-        return nca.Header.TitleId & ~0x1FFFUL;
+        return nca.TitleId & ~0x1FFFUL;
     }
     
     public static ulong GetProgramIdBase(this Nca nca)
@@ -123,7 +123,7 @@ public static partial class NcaExtensions
 
     public static int GetProgramIndex(this Nca2 nca)
     {
-        return (int)(nca.Header.TitleId & 0xF);
+        return (int)(nca.TitleId & 0xF);
     }
 
     public static int GetProgramIndex(this Nca nca)
@@ -133,7 +133,7 @@ public static partial class NcaExtensions
 
     public static bool IsProgram(this Nca2 nca)
     {
-        return nca.Header.ContentType == NcaContentType.Program;
+        return nca.ContentType == NcaContentType.Program;
     }
     
     public static bool IsProgram(this Nca nca)

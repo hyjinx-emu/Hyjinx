@@ -161,8 +161,8 @@ internal class FileSystemLoader(Switch device)
         // TODO: Viper - This may cause a leak.
         var fs = fileSystem.OpenFile(fileName);
 
-        var nca = Nca2.Create(fs);
-        return Task.FromResult(nca);
+        var nca = BasicNca2.Create(fs);
+        return Task.FromResult<Nca2>(nca);
     }
 
     private async Task<Cnmt?> FindApplicationMetadataAsync(IFileSystem2 fileSystem, ContentMetaType contentMetaType, CancellationToken cancellationToken)
@@ -171,12 +171,12 @@ internal class FileSystemLoader(Switch device)
         {
             await using var file = fileSystem.OpenFile(entry.FullPath);
             
-            var nca = Nca2.Create(file);
+            var nca = BasicNca2.Create(file);
             
             // Find the data within the file.
             var cnmtFs = nca.OpenFileSystem(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
             
-            var cnmtPath = $"/{contentMetaType}_{nca.Header.TitleId:x16}.cnmt";
+            var cnmtPath = $"/{contentMetaType}_{nca.TitleId:x16}.cnmt";
             if (cnmtFs.Exists(cnmtPath))
             {
                 await using var cnmtFile = cnmtFs.OpenFile(cnmtPath);

@@ -13,19 +13,19 @@ using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 /// <summary>
-/// Provides a mechanism to interact with content archive (NCA) files.
+/// Provides a mechanism to interact with basic content archive (NCA) files.
 /// </summary>
-public class Nca2 : Nca2<NcaHeader2, NcaFsHeader2>
+public class BasicNca2 : Nca2<NcaHeader2, NcaFsHeader2>
 {
-    private Nca2(Stream stream, NcaHeader2 header, Dictionary<NcaSectionType, NcaFsHeader2> sections) 
+    private BasicNca2(Stream stream, NcaHeader2 header, Dictionary<NcaSectionType, NcaFsHeader2> sections) 
         : base(stream, header, sections) { }
 
     /// <summary>
-    /// Creates an <see cref="Nca2"/>.
+    /// Creates an <see cref="BasicNca2"/>.
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to use.</param>
-    /// <returns>The new <see cref="Nca2"/>.</returns>
-    public static Nca2 Create(Stream stream)
+    /// <returns>The new <see cref="BasicNca2"/>.</returns>
+    public static BasicNca2 Create(Stream stream)
     {
         if (stream.Length < HeaderSize)
         {
@@ -45,47 +45,39 @@ public class Nca2 : Nca2<NcaHeader2, NcaFsHeader2>
         var entriesDeserializer = new NcaFsHeader2Deserializer(header);
         var entries = entriesDeserializer.Deserialize(buffer.Span);
         
-        return new Nca2(stream, header, entries);
+        return new BasicNca2(stream, header, entries);
     }
 }
 
 /// <summary>
 /// Provides a mechanism to interact with content archive (NCA) files.
 /// </summary>
-/// <typeparam name="THeader">The type of archive header.</typeparam>
-/// <typeparam name="TFsHeader">The type of file entry header.</typeparam>
-public class Nca2<THeader, TFsHeader>
-    where THeader : NcaHeader2
-    where TFsHeader : NcaFsHeader2
+public abstract class Nca2
 {
     /// <summary>
     /// Gets the underlying stream for the NCA file.
     /// </summary>
-    private Stream UnderlyingStream { get; }
+    protected Stream UnderlyingStream { get; }
 
     /// <summary>
-    /// Gets the header.
+    /// Gets the content type.
     /// </summary>
-    public THeader Header { get; }
-
+    public abstract NcaContentType ContentType { get; }
+    
     /// <summary>
-    /// Gets the sections.
+    /// Gets the title id.
     /// </summary>
-    public IDictionary<NcaSectionType, TFsHeader> Sections { get; }
+    public abstract ulong TitleId { get; }
 
     /// <summary>
     /// Initializes an instance of the class.
     /// </summary>
     /// <param name="stream">The stream containing the NCA contents.</param>
-    /// <param name="header">The file header of the archive.</param>
-    /// <param name="sections">The sections within the archive.</param>
-    protected Nca2(Stream stream, THeader header, Dictionary<NcaSectionType, TFsHeader> sections)
+    protected Nca2(Stream stream)
     {
         UnderlyingStream = stream;
-        Header = header;
-        Sections = sections.AsReadOnly();
     }
-
+    
     /// <summary>
     /// Copies the entire archive to a destination.
     /// </summary>
@@ -106,7 +98,56 @@ public class Nca2<THeader, TFsHeader>
     /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
-    public IFileSystem2 OpenFileSystem(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
+    public abstract IFileSystem2 OpenFileSystem(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel);
+
+    /// <summary>
+    /// Opens the section storage.
+    /// </summary>
+    /// <param name="section">The section.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to enforce when opening the section. Unused for sections which do not support hash verification.</param>
+    /// <returns>The new <see cref="IStorage2"/> instance.</returns>
+    /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
+    /// <exception cref="NotSupportedException">The encryption format used by <paramref name="section"/> is not supported.</exception>
+    public abstract IStorage2 OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel);
+}
+
+/// <summary>
+/// Provides a mechanism to interact with content archive (NCA) files.
+/// </summary>
+/// <typeparam name="THeader">The type of archive header.</typeparam>
+/// <typeparam name="TFsHeader">The type of file entry header.</typeparam>
+public abstract class Nca2<THeader, TFsHeader> : Nca2
+    where THeader : NcaHeader2
+    where TFsHeader : NcaFsHeader2
+{
+    public override ulong TitleId => Header.TitleId;
+
+    public override NcaContentType ContentType => Header.ContentType;
+
+    /// <summary>
+    /// Gets the header.
+    /// </summary>
+    protected THeader Header { get; }
+
+    /// <summary>
+    /// Gets the sections.
+    /// </summary>
+    protected IDictionary<NcaSectionType, TFsHeader> Sections { get; }
+    
+    /// <summary>
+    /// Initializes an instance of the class.
+    /// </summary>
+    /// <param name="stream">The stream containing the NCA contents.</param>
+    /// <param name="header">The file header of the archive.</param>
+    /// <param name="sections">The sections within the archive.</param>
+    protected Nca2(Stream stream, THeader header, Dictionary<NcaSectionType, TFsHeader> sections)
+        : base(stream)
+    {
+        Header = header;
+        Sections = sections.AsReadOnly();
+    }
+    
+    public override IFileSystem2 OpenFileSystem(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
     {
         if (!Sections.TryGetValue(section, out var fsHeader))
         {
@@ -131,16 +172,8 @@ public class Nca2<THeader, TFsHeader>
     {
         return RomFsFileSystem2.Create(storage);
     }
-
-    /// <summary>
-    /// Opens the section storage.
-    /// </summary>
-    /// <param name="section">The section.</param>
-    /// <param name="integrityCheckLevel">The integrity check level to enforce when opening the section. Unused for sections which do not support hash verification.</param>
-    /// <returns>The new <see cref="IStorage2"/> instance.</returns>
-    /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
-    /// <exception cref="NotSupportedException">The encryption format used by <paramref name="section"/> is not supported.</exception>
-    public IStorage2 OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
+    
+    public override IStorage2 OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
     {
         if (!Sections.TryGetValue(section, out var fsHeader))
         {
