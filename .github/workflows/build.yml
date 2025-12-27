@@ -43,6 +43,8 @@ jobs:
         with:
           global-json-file: global.json
 
+      - run: dotnet --version
+
       - name: Install SonarScanner
         run: |
           mkdir ./.sonar
