@@ -13,32 +13,32 @@ namespace LibHac.Tools.FsSystem;
 public class IntegrityVerificationStorage2 : Storage2
 {
     private readonly Validity[]? _sectors;
-    
+
     /// <summary>
     /// The storage level.
     /// </summary>
     protected int Level { get; }
-    
+
     /// <summary>
     /// The data storage.
     /// </summary>
     protected IStorage2 DataStorage { get; }
-    
+
     /// <summary>
     /// The hash storage.
     /// </summary>
     protected IStorage2 HashStorage { get; }
-    
+
     /// <summary>
     /// The integrity check level.
     /// </summary>
     protected IntegrityCheckLevel IntegrityCheckLevel { get; }
-    
+
     /// <summary>
     /// The sector size.
     /// </summary>
     protected int SectorSize { get; }
-    
+
     /// <summary>
     /// Identifies whether partial block hashes are being used by the storage.
     /// </summary>
@@ -97,7 +97,7 @@ public class IntegrityVerificationStorage2 : Storage2
         if (IntegrityCheckLevel != IntegrityCheckLevel.None)
         {
             var sectorIndex = (int)(offset / SectorSize);
-            
+
             var validity = CheckSectorValidity(sectorIndex);
             if (validity == Validity.Invalid && IntegrityCheckLevel == IntegrityCheckLevel.ErrorOnInvalid)
             {
@@ -120,9 +120,9 @@ public class IntegrityVerificationStorage2 : Storage2
         {
             return _sectors[sectorIndex];
         }
-        
+
         Span<byte> hashBuffer = stackalloc byte[Sha256.DigestSize];
-        
+
         // Read the expected hash from the file.
         var hashOffset = (long)sectorIndex * Sha256.DigestSize;
         HashStorage.Read(hashOffset, hashBuffer);
@@ -179,7 +179,7 @@ public class IntegrityVerificationStorage2 : Storage2
         if (disposing)
         {
             DataStorage.Dispose();
-            HashStorage.Dispose();   
+            HashStorage.Dispose();
         }
 
         base.Dispose(disposing);

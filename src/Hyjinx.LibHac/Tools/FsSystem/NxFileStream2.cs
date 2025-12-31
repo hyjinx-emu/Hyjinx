@@ -49,7 +49,7 @@ public class NxFileStream2 : Stream
         {
             throw new NotSupportedException("This stream does not support write access.");
         }
-        
+
         this._baseStorage = baseStorage;
         this._access = access;
     }
@@ -68,11 +68,11 @@ public class NxFileStream2 : Stream
             // The buffer is larger than the amount of data remaining within the storage.
             count = (int)remaining;
         }
-        
+
         Span<byte> slice = buffer.AsSpan().Slice(offset, count);
         _baseStorage.Read(Position, slice);
         Position += slice.Length;
-        
+
         return slice.Length;
     }
 
@@ -80,10 +80,10 @@ public class NxFileStream2 : Stream
     {
         var originOffset = CalculateOriginOffsetForSeek(origin);
         var newOffset = CalculateOffsetForSeek(originOffset, offset);
-        
+
         return Position = newOffset;
     }
-    
+
     private long CalculateOriginOffsetForSeek(SeekOrigin origin)
     {
         return origin switch
@@ -94,7 +94,7 @@ public class NxFileStream2 : Stream
             _ => throw new NotSupportedException($"The origin {origin} is not supported.")
         };
     }
-    
+
     private long CalculateOffsetForSeek(long originOffset, long offset)
     {
         var newOffset = originOffset + offset;
@@ -102,20 +102,20 @@ public class NxFileStream2 : Stream
         {
             throw new ArgumentException("The offset would be before the beginning of the stream.", nameof(offset));
         }
-    
+
         if (newOffset > Length)
         {
             throw new ArgumentException("The offset would be past the end of the stream.", nameof(offset));
         }
-    
+
         return newOffset;
     }
-    
+
     public override void Flush()
     {
         // This method intentionally left blank.
     }
-    
+
     public override void SetLength(long value)
     {
         throw new NotSupportedException("The stream does not support the write operation.");

@@ -21,7 +21,7 @@ partial class PartitionFileSystem2
         {
             throw new FileNotFoundException("The file does not exist.", fileName);
         }
-        
+
         outFile.Reset(new StreamFile(new NxFileStream2(BaseStorage.Slice2(entry.Offset, entry.Length)), OpenMode.Read));
         return Result.Success;
     }

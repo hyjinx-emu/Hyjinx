@@ -17,7 +17,8 @@ public static class UserFileSystemForDebug
         UnsafeHelpers.SkipParamInit(out timeStamp);
 
         Result res = fs.FindFileSystem(out FileSystemAccessor fileSystem, out U8Span subPath, path);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         return fileSystem.GetFileTimeStampRaw(out timeStamp, subPath);
     }

@@ -201,7 +201,7 @@ public partial class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSy
     public static PartitionFileSystem2 Create(IStorage2 baseStorage)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
-        
+
         using var headerBuffer = new RentedArray2<byte>(headerSize);
         baseStorage.Read(0, headerBuffer.Span);
 

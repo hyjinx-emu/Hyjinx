@@ -45,7 +45,7 @@ public class StreamStorage2Tests
 
         var buffer = new Memory<byte>(new byte[10]);
         storage.Read(0, buffer.Span);
-        
+
         Assert.Equal(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9
@@ -61,7 +61,7 @@ public class StreamStorage2Tests
 
         var buffer = new Memory<byte>(new byte[10]);
         storage.Read(5, buffer.Span[..5]);
-        
+
         Assert.Equal(
         [
             5, 6, 7, 8, 9, 0, 0, 0, 0, 0
@@ -77,7 +77,7 @@ public class StreamStorage2Tests
 
         var buffer = new Memory<byte>(new byte[10]);
         storage.Read(9, buffer.Span[..1]);
-        
+
         Assert.Equal(
         [
             9, 0, 0, 0, 0, 0, 0, 0, 0, 0

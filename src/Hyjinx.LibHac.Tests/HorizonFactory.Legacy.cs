@@ -1,11 +1,11 @@
 #if IS_LEGACY_ENABLED
 
-using System;
 using LibHac.Bcat;
 using LibHac.Common.Keys;
 using LibHac.Fs.Fsa;
 using LibHac.FsSrv;
 using LibHac.FsSystem;
+using System;
 
 namespace LibHac;
 

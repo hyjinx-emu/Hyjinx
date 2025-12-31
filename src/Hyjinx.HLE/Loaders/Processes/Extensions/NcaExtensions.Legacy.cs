@@ -34,12 +34,12 @@ public static partial class NcaExtensions
     {
         return nca.Header.TitleId & ~0x1FFFUL;
     }
-    
+
     public static int GetProgramIndex(this Nca nca)
     {
         return (int)(nca.Header.TitleId & 0xF);
     }
-    
+
     public static bool IsProgram(this Nca nca)
     {
         return nca.Header.ContentType == NcaContentType.Program;
@@ -56,7 +56,7 @@ public static partial class NcaExtensions
 
         return nca.IsProgram() && nca.SectionExists(NcaSectionType.Data) && nca.Header.GetFsHeader(dataIndex).IsPatchSection();
     }
-    
+
     public static (Nca, Nca) GetUpdateData(this Nca mainNca, VirtualFileSystem fileSystem, IntegrityCheckLevel checkLevel, int programIndex, out string updatePath)
     {
         updatePath = null;
@@ -184,7 +184,7 @@ public static partial class NcaExtensions
 
         return processResult;
     }
-    
+
     public static IStorage GetRomFs(this Nca nca, Switch device, Nca patchNca = null)
     {
         IStorage romFs = null;
@@ -206,7 +206,7 @@ public static partial class NcaExtensions
 
         return romFs;
     }
-    
+
     public static BlitStruct<ApplicationControlProperty> GetNacp(this Nca controlNca, Switch device)
     {
         var nacpData = new BlitStruct<ApplicationControlProperty>(1);

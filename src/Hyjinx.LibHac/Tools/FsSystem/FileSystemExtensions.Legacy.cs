@@ -54,7 +54,7 @@ public static partial class FileSystemExtensions
 
         source.CopyDirectory(destFs, "/", "/", logger).ThrowIfFailure();
     }
-    
+
     public static void CopyTo(this IFile file, IFile dest, IProgressReport logger = null)
     {
         const int bufferSize = 0x8000;
@@ -86,7 +86,7 @@ public static partial class FileSystemExtensions
             logger?.SetTotal(0);
         }
     }
-    
+
     public static Stream AsStream(this IFile file, OpenMode mode, bool keepOpen) => new NxFileStream(file, mode, keepOpen);
 
     public static IFile AsIFile(this Stream stream, OpenMode mode) => new StreamFile(stream, mode);
@@ -95,7 +95,7 @@ public static partial class FileSystemExtensions
     {
         return GetEntryCountRecursive(fs, "/", mode);
     }
-    
+
     public static void SetConcatenationFileAttribute(this IFileSystem fs, string path)
     {
         using var pathNormalized = new Path();
@@ -103,19 +103,19 @@ public static partial class FileSystemExtensions
 
         fs.QueryEntry(Span<byte>.Empty, Span<byte>.Empty, QueryId.SetConcatenationFileAttribute, in pathNormalized);
     }
-    
+
     public static Result Read(this IFile file, out long bytesRead, long offset, Span<byte> destination)
     {
         return file.Read(out bytesRead, offset, destination, ReadOption.None);
     }
-    
+
     public static bool DirectoryExists(this IFileSystem fs, string path)
     {
         Result res = fs.GetEntryType(out DirectoryEntryType type, path.ToU8Span());
 
         return (res.IsSuccess() && type == DirectoryEntryType.Directory);
     }
-    
+
     public static Result EnsureDirectoryExists(this IFileSystem fs, string path)
     {
         using var pathNormalized = new Path();

@@ -1,8 +1,8 @@
 #if IS_LEGACY_ENABLED
 
-using System;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
+using System;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -25,7 +25,8 @@ public class NullFile : IFile
         bytesRead = 0;
 
         Result res = DryRead(out long toRead, offset, destination.Length, in option, Mode);
-        if (res.IsFailure()) return res.Miss();
+        if (res.IsFailure())
+            return res.Miss();
 
         destination.Slice(0, (int)toRead).Clear();
 

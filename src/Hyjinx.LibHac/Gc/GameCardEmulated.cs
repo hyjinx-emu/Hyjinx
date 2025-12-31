@@ -1,4 +1,4 @@
-﻿using LibHac.Common;
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Gc.Writer;
 using System;
@@ -8,7 +8,7 @@ namespace LibHac.Gc;
 public class GameCardEmulated : IGcApi
 {
     public IGcWriterApi Writer { get; }
-    
+
     public void InsertGameCard(in SharedRef<IStorage> storage)
     {
         throw new NotImplementedException();

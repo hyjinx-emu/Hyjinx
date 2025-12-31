@@ -23,7 +23,7 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
     public static Sha256PartitionFileSystem2 Create(IStorage2 baseStorage)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
-        
+
         using var headerBuffer = new RentedArray2<byte>(headerSize);
         baseStorage.Read(0, headerBuffer.Span);
 

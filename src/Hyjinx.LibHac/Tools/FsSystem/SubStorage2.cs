@@ -13,7 +13,7 @@ public class SubStorage2 : Storage2
     /// The base storage.
     /// </summary>
     protected IStorage2 BaseStorage { get; }
-    
+
     /// <summary>
     /// The zero-based offset upon which the substorage begins within the base storage.
     /// </summary>

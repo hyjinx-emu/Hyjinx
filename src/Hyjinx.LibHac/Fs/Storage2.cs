@@ -39,7 +39,7 @@ public abstract partial class Storage2 : IStorage2
 
         ReadCore(offset, buffer);
     }
-    
+
     /// <summary>
     /// Reads the data.
     /// </summary>
