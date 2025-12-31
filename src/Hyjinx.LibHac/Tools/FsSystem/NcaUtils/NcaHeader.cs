@@ -10,7 +10,7 @@ using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public class NcaHeader
+public partial class NcaHeader
 {
     protected Memory<byte> _header;
 
@@ -85,10 +85,10 @@ public class NcaHeader
         return BlockToOffset(GetSectionEntry(index).StartBlock);
     }
 
-    public long GetSectionEndOffset(int index)
-    {
-        return BlockToOffset(GetSectionEntry(index).EndBlock);
-    }
+    // public long GetSectionEndOffset(int index)
+    // {
+    //     return BlockToOffset(GetSectionEntry(index).EndBlock);
+    // }
 
     public long GetSectionSize(int index)
     {

@@ -45,7 +45,10 @@ public readonly struct PartitionFileSystemLayout
 public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     where TMetadata : unmanaged
 {
-    private readonly List<LookupEntry> _lookupTable = new();
+    /// <summary>
+    /// Gets the lookup table.
+    /// </summary>
+    protected List<LookupEntry> LookupTable { get; } = new();
 
     /// <summary>
     /// Describes an entry within the lookup table.
@@ -120,7 +123,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         while (index < Header.EntryCount)
         {
             var entry = Read(index, definition);
-            _lookupTable.Add(entry);
+            LookupTable.Add(entry);
 
             index++;
         }
@@ -138,14 +141,14 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     {
         ArgumentException.ThrowIfNullOrEmpty(path);
 
-        return _lookupTable.Any(o => o.FullName == path);
+        return LookupTable.Any(o => o.FullName == path);
     }
 
     public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
     {
         ArgumentException.ThrowIfNullOrEmpty(fileName);
 
-        var entry = _lookupTable.SingleOrDefault(o => o.FullName == fileName);
+        var entry = LookupTable.SingleOrDefault(o => o.FullName == fileName);
         if (entry == null)
         {
             throw new FileNotFoundException("The file does not exist.", fileName);
@@ -171,7 +174,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     {
         var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
 
-        foreach (var entry in _lookupTable)
+        foreach (var entry in LookupTable)
         {
             if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullName, ignoreCase))
             {
@@ -184,7 +187,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
 /// <summary>
 /// A partitioned file system.
 /// </summary>
-public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemFormat.PartitionEntry>
+public partial class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemFormat.PartitionEntry>
 {
     private PartitionFileSystem2(IStorage2 baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
         : base(baseStorage, header) { }

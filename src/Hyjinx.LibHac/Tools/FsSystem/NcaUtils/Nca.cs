@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 [Obsolete($"This class is no longer supported, please use the {nameof(Nca2)} variant instead.")]
-public class Nca
+public partial class Nca
 {
     protected KeySet KeySet { get; }
     public IStorage BaseStorage { get; }
@@ -303,38 +303,6 @@ public class Nca
                 return true;
             default:
                 index = 0;
-                return false;
-        }
-    }
-
-    public static NcaSectionType GetSectionTypeFromIndex(int index, NcaContentType contentType)
-    {
-        if (!TryGetSectionTypeFromIndex(index, contentType, out NcaSectionType type))
-        {
-            throw new ArgumentOutOfRangeException(nameof(type), "NCA type does not contain this index.");
-        }
-
-        return type;
-    }
-
-    public static bool TryGetSectionTypeFromIndex(int index, NcaContentType contentType, out NcaSectionType type)
-    {
-        switch (index)
-        {
-            case 0 when contentType == NcaContentType.Program:
-                type = NcaSectionType.Code;
-                return true;
-            case 1 when contentType == NcaContentType.Program:
-                type = NcaSectionType.Data;
-                return true;
-            case 2 when contentType == NcaContentType.Program:
-                type = NcaSectionType.Logo;
-                return true;
-            case 0:
-                type = NcaSectionType.Data;
-                return true;
-            default:
-                UnsafeHelpers.SkipParamInit(out type);
                 return false;
         }
     }

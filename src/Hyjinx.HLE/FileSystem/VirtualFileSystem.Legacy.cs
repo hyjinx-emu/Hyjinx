@@ -1,6 +1,7 @@
 #if IS_LEGACY_ENABLED
 
 using Hyjinx.Common.Configuration;
+using LibHac.FsSrv;
 using System;
 using System.IO;
 

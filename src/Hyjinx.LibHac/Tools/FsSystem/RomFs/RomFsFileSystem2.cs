@@ -12,7 +12,7 @@ namespace LibHac.Tools.FsSystem.RomFs;
 /// <summary>
 /// A RomFS file system.
 /// </summary>
-public class RomFsFileSystem2 : FileSystem2
+public partial class RomFsFileSystem2 : FileSystem2
 {
     private readonly IStorage2 _baseStorage;
 

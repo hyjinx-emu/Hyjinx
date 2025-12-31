@@ -16,13 +16,13 @@ partial class PartitionFileSystem2
     {
         var fileName = path.ToString();
 
-        var entry = _lookup.SingleOrDefault(o => o.FullName == fileName);
+        var entry = LookupTable.SingleOrDefault(o => o.FullName == fileName);
         if (entry == null)
         {
             throw new FileNotFoundException("The file does not exist.", fileName);
         }
         
-        outFile.Reset(new StreamFile(new NxFileStream2(_baseStorage.Slice2(entry.Offset, entry.Size)), OpenMode.Read));
+        outFile.Reset(new StreamFile(new NxFileStream2(BaseStorage.Slice2(entry.Offset, entry.Length)), OpenMode.Read));
         return Result.Success;
     }
 }

@@ -1,5 +1,6 @@
 #if IS_LEGACY_ENABLED
 
+using LibHac.Common;
 using System;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
@@ -15,7 +16,7 @@ partial class NcaHeader
         set => Header.SdkVersion = value.Version;
     }
 
-    public bool HasRightsId => !Utilities.IsZeros(RightsId);
+    public bool HasRightsId => !RightsId.IsZeros();
 
     public long GetSectionEndOffset(int index)
     {

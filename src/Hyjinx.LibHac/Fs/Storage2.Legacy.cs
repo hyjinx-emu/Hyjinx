@@ -1,17 +1,14 @@
 #if IS_LEGACY_ENABLED
 
 using System;
-using System.IO;
 
 namespace LibHac.Fs;
 
-public abstract partial class Storage2
+public abstract partial class Storage2 : IStorage
 {
     Result IStorage.Read(long offset, Span<byte> destination)
     {
-        Seek(offset, SeekOrigin.Begin);
-        Read(destination);
-        
+        Read(offset, destination);
         return Result.Success;
     }
 
@@ -32,7 +29,7 @@ public abstract partial class Storage2
 
     Result IStorage.GetSize(out long size)
     {
-        size = Length;
+        size = Size;
         return Result.Success;
     }
 

@@ -60,4 +60,9 @@ public record NcaFsHeader2
     /// Indicates the validity of the header.
     /// </summary>
     public Validity HashValidity { get; init; } = Validity.Unchecked;
+    
+    public bool IsPatchSection()
+    {
+        return PatchInfo != null && PatchInfo.RelocationTreeSize != 0;
+    }
 }
