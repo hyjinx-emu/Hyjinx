@@ -2,7 +2,7 @@ name: build
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
   push:
     branches:
       - main
@@ -44,6 +44,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+
+      - run: dotnet --version
 
       - name: Install SonarScanner
         run: |

@@ -11,7 +11,7 @@ using Buffer = LibHac.Mem.Buffer;
 
 namespace LibHac.FsSystem;
 
-public class BlockCacheBufferedStorage : IStorage
+public class BlockCacheBufferedStorage : LibHac.Fs.Storage
 {
     public struct CacheEntry : IBlockCacheManagerEntry<AccessRange>
     {

@@ -1,4 +1,5 @@
 using LibHac.Common;
+using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Tests.Common;
@@ -96,9 +97,9 @@ public class BucketTreeBuilderTests
         byte[] nodeDigest = new byte[0x20];
         byte[] entryDigest = new byte[0x20];
 
-        Crypto.Sha256.GenerateSha256Hash(data.Header, headerDigest);
-        Crypto.Sha256.GenerateSha256Hash(data.Nodes, nodeDigest);
-        Crypto.Sha256.GenerateSha256Hash(data.Entries, entryDigest);
+        Sha256.GenerateSha256Hash(data.Header, headerDigest);
+        Sha256.GenerateSha256Hash(data.Nodes, nodeDigest);
+        Sha256.GenerateSha256Hash(data.Entries, entryDigest);
 
         Assert.Equal(config.ExpectedHeaderDigest, headerDigest.ToHexString());
         Assert.Equal(config.ExpectedNodeDigest, nodeDigest.ToHexString());

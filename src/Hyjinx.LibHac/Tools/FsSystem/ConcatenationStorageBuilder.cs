@@ -1,9 +1,7 @@
-#if IS_LEGACY_ENABLED
-
+using LibHac.Fs;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using LibHac.Fs;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -37,7 +35,8 @@ public class ConcatenationStorageBuilder
         {
             long paddingNeeded = segment.Offset - offset;
 
-            if (paddingNeeded < 0) throw new InvalidDataException("Builder has segments that overlap.");
+            if (paddingNeeded < 0)
+                throw new InvalidDataException("Builder has segments that overlap.");
 
             if (paddingNeeded > 0)
             {
@@ -65,5 +64,3 @@ public class ConcatenationStorageSegment
         Offset = offset;
     }
 }
-
-#endif

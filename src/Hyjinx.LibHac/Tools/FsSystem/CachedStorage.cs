@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LibHac.Tools.FsSystem;
 
-public class CachedStorage : IStorage
+public class CachedStorage : Storage
 {
     private IStorage BaseStorage { get; }
     private int BlockSize { get; }

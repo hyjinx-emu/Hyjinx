@@ -72,7 +72,7 @@ file class ReadOnlyFile : IFile
 /// Wraps an <see cref="IFileSystem"/> and only allows read operations on it.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-public class ReadOnlyFileSystem : IFileSystem
+public class ReadOnlyFileSystem : FileSystem
 {
     private SharedRef<IFileSystem> _baseFileSystem;
 

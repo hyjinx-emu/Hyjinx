@@ -13,7 +13,7 @@ namespace LibHac.Tools.Fs;
 /// <summary>
 /// A filesystem stored in-memory. Mainly used for testing.
 /// </summary>
-public class InMemoryFileSystem : IAttributeFileSystem
+public class InMemoryFileSystem : AttributeFileSystem
 {
     private FileTable FsTable { get; }
 

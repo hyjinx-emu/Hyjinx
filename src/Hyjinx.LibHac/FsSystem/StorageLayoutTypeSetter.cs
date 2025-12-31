@@ -46,7 +46,7 @@ internal struct ScopedStorageLayoutTypeSetter : IDisposable
 /// This is used to determine which storage speed emulation parameters to use for the current thread.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-internal class StorageLayoutTypeSetStorage : IStorage
+internal class StorageLayoutTypeSetStorage : Storage
 {
     private SharedRef<IStorage> _baseStorage;
     private StorageLayoutType _storageFlag;
@@ -230,7 +230,7 @@ internal class StorageLayoutTypeSetDirectory : IDirectory
 /// Wraps an <see cref="IFileSystem"/>, automatically setting the thread's storage type when accessing the file system.
 /// This is used to determine which storage speed emulation parameters to use for the current thread.
 /// </summary>
-internal class StorageLayoutTypeSetFileSystem : IFileSystem
+internal class StorageLayoutTypeSetFileSystem : FileSystem
 {
     private SharedRef<IFileSystem> _baseFileSystem;
     private StorageLayoutType _storageFlag;

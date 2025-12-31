@@ -25,7 +25,7 @@ namespace LibHac.FsSystem;
 /// An optional <see cref="HashSalt"/> may be provided. This salt will be added to the beginning of each block of
 /// data before it is hashed.</para>
 /// <para>Based on nnSdk 14.3.0 (FS 14.1.0)</para></remarks>
-public class IntegrityVerificationStorage : IStorage
+public class IntegrityVerificationStorage : Storage
 {
     public struct BlockHash
     {

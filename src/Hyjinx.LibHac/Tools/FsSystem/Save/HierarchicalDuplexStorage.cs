@@ -3,7 +3,7 @@ using System;
 
 namespace LibHac.Tools.FsSystem.Save;
 
-public class HierarchicalDuplexStorage : IStorage
+public class HierarchicalDuplexStorage : Storage
 {
     private DuplexStorage[] Layers { get; }
     private DuplexStorage DataLayer { get; }

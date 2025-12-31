@@ -54,7 +54,7 @@ public partial class XciHeader
     public byte[] InitialDataAuthNonce { get; set; }
     public byte[] InitialData { get; set; }
 
-    public XciHeader(KeySet keySet, Stream stream)
+    public XciHeader(Stream stream)
     {
         DetermineXciSubStorages(out IStorage keyAreaStorage, out IStorage bodyStorage, stream.AsStorage())
             .ThrowIfFailure();

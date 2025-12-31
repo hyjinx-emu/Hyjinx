@@ -119,7 +119,7 @@ internal class DirectoryServiceObjectAdapter : IDirectory
 /// when receiving a Horizon IPC file system object so it can be used as an <see cref="IFileSystem"/> locally.
 /// </summary>
 /// <remarks>Based on nnSdk 14.3.0</remarks>
-internal class FileSystemServiceObjectAdapter : IFileSystem, IMultiCommitTarget
+internal class FileSystemServiceObjectAdapter : FileSystem, IMultiCommitTarget
 {
     private SharedRef<IFileSystemSf> _baseFs;
 

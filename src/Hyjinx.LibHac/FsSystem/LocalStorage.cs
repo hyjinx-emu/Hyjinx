@@ -5,7 +5,7 @@ using System.IO;
 
 namespace LibHac.FsSystem;
 
-public class LocalStorage : IStorage
+public class LocalStorage : Storage
 {
     private string Path { get; }
     private FileStream Stream { get; }

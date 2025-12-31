@@ -4,7 +4,7 @@ using System;
 
 namespace LibHac.Tools.FsSystem;
 
-public class SectorStorage : IStorage
+public class SectorStorage : Storage
 {
     protected IStorage BaseStorage { get; }
 

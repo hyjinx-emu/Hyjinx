@@ -19,7 +19,7 @@ namespace LibHac.SdmmcSrv;
 /// The offset and size of reads and writes must be aligned to 0x200 bytes (<see cref="SdmmcApi.SectorSize"/>).
 /// </summary>
 /// <remarks>Based on nnSdk 16.2.0 (FS 16.0.0)</remarks>
-internal class SdmmcStorage : IStorage
+internal class SdmmcStorage : Storage
 {
     private Port _port;
 

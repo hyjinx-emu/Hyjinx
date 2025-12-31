@@ -10,7 +10,7 @@ using CacheHandle = System.UInt64;
 
 namespace LibHac.FsSystem;
 
-public class CompressedStorage : IStorage, IAsynchronousAccessSplitter
+public class CompressedStorage : Storage, IAsynchronousAccessSplitter
 {
     public class CompressedStorageCore : IDisposable
     {

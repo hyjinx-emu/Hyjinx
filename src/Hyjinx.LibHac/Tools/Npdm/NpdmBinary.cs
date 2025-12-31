@@ -1,12 +1,10 @@
-#if IS_LEGACY_ENABLED
-
 // ReSharper disable UnusedVariable
 
+using LibHac.Common;
+using LibHac.Common.Keys;
 using System;
 using System.Buffers.Binary;
 using System.IO;
-using LibHac.Common;
-using LibHac.Common.Keys;
 
 namespace LibHac.Tools.Npdm;
 
@@ -82,5 +80,3 @@ public class NpdmBinary
         AciD = new Acid(stream, acidOffset, keySet);
     }
 }
-
-#endif

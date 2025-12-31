@@ -166,13 +166,13 @@ public partial class MainWindow : StyleableWindow
         });
     }
 
-    public void Application_Opened(object sender, ApplicationOpenedEventArgs args)
+    public async void Application_Opened(object sender, ApplicationOpenedEventArgs args)
     {
         if (args.Application != null)
         {
             ViewModel.SelectedIcon = args.Application.Icon;
 
-            ViewModel.LoadApplication(args.Application).Wait();
+            await ViewModel.LoadApplicationAsync(args.Application);
         }
 
         args.Handled = true;
@@ -335,7 +335,7 @@ public partial class MainWindow : StyleableWindow
 
                     if (applicationData != null)
                     {
-                        await ViewModel.LoadApplication(applicationData, _startFullscreen);
+                        await ViewModel.LoadApplicationAsync(applicationData, _startFullscreen);
                     }
                     else
                     {
@@ -348,7 +348,7 @@ public partial class MainWindow : StyleableWindow
                 else
                 {
                     applicationData = applications[0];
-                    await ViewModel.LoadApplication(applicationData, _startFullscreen);
+                    await ViewModel.LoadApplicationAsync(applicationData, _startFullscreen);
                 }
             }
             else

@@ -164,7 +164,7 @@ public class SaveDataOpenTypeSetFileStorage : FileStorageBasedFileSystem
 /// return <see cref="ResultFs.SaveDataPorterInvalidated"/>
 /// <para>Based on nnSdk 13.4.0 (FS 13.1.0)</para>
 /// </remarks>
-public class SaveDataSharedFileStorage : IStorage
+public class SaveDataSharedFileStorage : LibHac.Fs.Storage
 {
     private SharedRef<SaveDataOpenTypeSetFileStorage> _baseStorage;
     private SaveDataOpenTypeSetFileStorage.OpenType _type;

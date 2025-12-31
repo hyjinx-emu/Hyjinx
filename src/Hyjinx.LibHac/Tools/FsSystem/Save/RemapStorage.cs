@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace LibHac.Tools.FsSystem.Save;
 
-public class RemapStorage : IStorage
+public class RemapStorage : Storage
 {
     private const int MapEntryLength = 0x20;
 

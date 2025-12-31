@@ -270,7 +270,7 @@ public class HierarchicalIntegrityVerificationStorageControlArea : IDisposable
     }
 }
 
-public class HierarchicalIntegrityVerificationStorage : IStorage
+public class HierarchicalIntegrityVerificationStorage : Storage
 {
     [NonCopyableDisposable]
     public struct HierarchicalStorageInformation : IDisposable

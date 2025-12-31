@@ -9,7 +9,7 @@ namespace LibHac.FsSystem;
 /// An <see cref="IFileSystem"/> that uses a directory of another <see cref="IFileSystem"/> as its root directory.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-public class SubdirectoryFileSystem : IFileSystem
+public class SubdirectoryFileSystem : FileSystem
 {
     private IFileSystem _baseFileSystem;
     private SharedRef<IFileSystem> _baseFileSystemShared;

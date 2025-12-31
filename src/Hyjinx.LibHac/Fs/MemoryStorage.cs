@@ -9,7 +9,7 @@ namespace LibHac.Fs;
 /// Allows interacting with a <see cref="byte"/> array via the <see cref="IStorage"/> interface.
 /// </summary>
 /// <remarks>Based on nnSdk 16.2.0 (FS 16.0.0)</remarks>
-public class MemoryStorage : IStorage
+public class MemoryStorage : Storage
 {
     private byte[] _buffer;
     private int _size;

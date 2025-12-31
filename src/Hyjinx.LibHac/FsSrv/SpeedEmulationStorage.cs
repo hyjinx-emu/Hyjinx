@@ -5,7 +5,7 @@ using System;
 namespace LibHac.FsSrv;
 
 // Todo: Implement
-public class SpeedEmulationStorage : IStorage
+public class SpeedEmulationStorage : LibHac.Fs.Storage
 {
     private SharedRef<IStorage> _baseStorage;
 

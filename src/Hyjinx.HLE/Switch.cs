@@ -1,6 +1,5 @@
 using Hyjinx.Audio.Backends.CompatLayer;
 using Hyjinx.Audio.Integration;
-using Hyjinx.Common.Configuration;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
@@ -27,7 +26,7 @@ public class Switch : IDisposable
     public TamperMachine TamperMachine { get; }
     public IHostUIHandler UIHandler { get; }
 
-    public bool EnableDeviceVsync { get; set; } = true;
+    public bool EnableDeviceVsync { get; set; }
 
     public bool IsFrameAvailable => Gpu.Window.IsFrameAvailable;
 
@@ -66,31 +65,6 @@ public class Switch : IDisposable
         System.FsIntegrityCheckLevel            = Configuration.FsIntegrityCheckLevel;
         System.GlobalAccessLogMode              = Configuration.FsGlobalAccessLogMode;
 #pragma warning restore IDE0055
-    }
-
-    public bool LoadCart(string exeFsDir, string romFsFile = null)
-    {
-        return Processes.LoadUnpackedNca(exeFsDir, romFsFile);
-    }
-
-    public bool LoadXci(string xciFile, ulong applicationId = 0)
-    {
-        return Processes.LoadXci(xciFile, applicationId);
-    }
-
-    public bool LoadNca(string ncaFile)
-    {
-        return Processes.LoadNca(ncaFile);
-    }
-
-    public bool LoadNsp(string nspFile, ulong applicationId = 0)
-    {
-        return Processes.LoadNsp(nspFile, applicationId);
-    }
-
-    public bool LoadProgram(string fileName)
-    {
-        return Processes.LoadNxo(fileName);
     }
 
     public bool WaitFifo()
@@ -146,7 +120,7 @@ public class Switch : IDisposable
         Dispose(true);
     }
 
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (disposing)
         {

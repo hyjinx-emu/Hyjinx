@@ -1,11 +1,10 @@
 using Hyjinx.HLE.Exceptions;
-using Hyjinx.HLE.FileSystem.Installers;
 using Hyjinx.HLE.HOS.Services.Ssl;
 using Hyjinx.HLE.HOS.Services.Time;
 using Hyjinx.HLE.Utilities;
+using Hyjinx.HLE.Utilities.Installers;
 using Hyjinx.Logging.Abstractions;
 using LibHac.Common;
-using LibHac.Common.Keys;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
@@ -18,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem;
@@ -229,7 +230,7 @@ public partial class ContentManager : IContentManager
             switch (Path.GetExtension(aoc.ContainerPath))
             {
                 case ".xci":
-                    var xci = new Xci(_virtualFileSystem.KeySet, file.AsStorage()).OpenPartition(XciPartitionType.Secure);
+                    var xci = new Xci(file.AsStorage()).OpenPartition(XciPartitionType.Secure);
                     xci.OpenFile(ref ncaFile.Ref, aoc.NcaPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
                     break;
                 case ".nsp":
@@ -402,7 +403,7 @@ public partial class ContentManager : IContentManager
         return locationList.ToList().Find(x => x.TitleId == titleId && x.ContentType == contentType);
     }
 
-    public void InstallFirmware(string firmwareSource)
+    public async ValueTask InstallFirmwareAsync(string source, CancellationToken cancellationToken = default)
     {
         ContentPath.TryGetContentPath(StorageId.BuiltInSystem, out var contentPathString);
         ContentPath.TryGetRealPath(contentPathString, out var contentDirectory);
@@ -415,8 +416,8 @@ public partial class ContentManager : IContentManager
             Directory.Delete(temporaryDirectory, true);
         }
 
-        var installer = GetFirmwareInstaller(firmwareSource);
-        installer.Install(firmwareSource, new DirectoryInfo(temporaryDirectory));
+        var installer = GetFirmwareInstaller(source);
+        await installer.InstallAsync(source, new DirectoryInfo(temporaryDirectory), cancellationToken);
 
         FinishInstallation(temporaryDirectory, registeredDirectory);
     }
@@ -425,7 +426,7 @@ public partial class ContentManager : IContentManager
     {
         if (Directory.Exists(firmwareSource))
         {
-            return new DirectoryFirmwareInstaller(_virtualFileSystem);
+            return new DirectoryFirmwareInstaller();
         }
 
         var file = new FileInfo(firmwareSource);
@@ -436,7 +437,7 @@ public partial class ContentManager : IContentManager
 
         return file.Extension switch
         {
-            ".zip" => new ZipArchiveFirmwareInstaller(_virtualFileSystem),
+            ".zip" => new ZipArchiveFirmwareInstaller(),
             ".xci" => new XciFirmwareInstaller(_virtualFileSystem),
             _ => throw new InvalidFirmwarePackageException("Input file is not a valid firmware package")
         };
@@ -454,10 +455,10 @@ public partial class ContentManager : IContentManager
         LoadEntries();
     }
 
-    public SystemVersion VerifyFirmwarePackage(string firmwarePackage)
+    public async ValueTask<SystemVersion> VerifyFirmwarePackageAsync(string firmwarePackage, CancellationToken cancellationToken = default)
     {
         var installer = GetFirmwareInstaller(firmwarePackage);
-        return installer.Verify(firmwarePackage);
+        return await installer.VerifyAsync(firmwarePackage, cancellationToken);
     }
 
     public SystemVersion GetCurrentFirmwareVersion()

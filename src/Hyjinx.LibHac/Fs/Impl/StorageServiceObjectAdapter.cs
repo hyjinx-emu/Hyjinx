@@ -12,7 +12,7 @@ namespace LibHac.Fs.Impl;
 /// when receiving a Horizon IPC storage object so it can be used as an <see cref="IStorage"/> locally.
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-internal class StorageServiceObjectAdapter : IStorage
+internal class StorageServiceObjectAdapter : Storage
 {
     private SharedRef<IStorageSf> _baseStorage;
 

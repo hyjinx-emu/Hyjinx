@@ -9,7 +9,7 @@ using System.Text;
 
 namespace LibHac.Tools.FsSystem;
 
-public class HierarchicalIntegrityVerificationStorage : IStorage
+public class HierarchicalIntegrityVerificationStorage : Storage
 {
     public IStorage[] Levels { get; }
     public IStorage DataLevel { get; }

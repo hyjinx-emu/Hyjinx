@@ -1024,11 +1024,11 @@ public class MainWindowViewModel : BaseModel
         return false;
     }
 
-    private async Task HandleFirmwareInstallation(string filename)
+    private async ValueTask HandleFirmwareInstallationAsync(string filename, CancellationToken cancellationToken = default)
     {
         try
         {
-            SystemVersion firmwareVersion = ContentManager.VerifyFirmwarePackage(filename);
+            SystemVersion firmwareVersion = await ContentManager.VerifyFirmwarePackageAsync(filename, cancellationToken);
 
             if (firmwareVersion == null)
             {
@@ -1070,7 +1070,7 @@ public class MainWindowViewModel : BaseModel
                     new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                     "Installing firmware {firmwareVersion}", firmwareVersion.VersionString);
 
-                Thread thread = new(() =>
+                await Task.Run(async () =>
                 {
                     Dispatcher.UIThread.InvokeAsync(delegate
                     {
@@ -1079,7 +1079,7 @@ public class MainWindowViewModel : BaseModel
 
                     try
                     {
-                        ContentManager.InstallFirmware(filename);
+                        await ContentManager.InstallFirmwareAsync(filename, cancellationToken);
 
                         Dispatcher.UIThread.InvokeAsync(async delegate
                         {
@@ -1120,10 +1120,7 @@ public class MainWindowViewModel : BaseModel
                     {
                         RefreshFirmwareStatus();
                     }
-                })
-                { Name = "GUI.FirmwareInstallerThread", };
-
-                thread.Start();
+                }, cancellationToken);
             }
         }
         catch (EncryptedFileDetectedException)
@@ -1227,7 +1224,7 @@ public class MainWindowViewModel : BaseModel
         {
             UserChannelPersistence.ShouldRestart = false;
 
-            await LoadApplication(_currentApplicationData);
+            await LoadApplicationAsync(_currentApplicationData);
         }
         else
         {
@@ -1383,7 +1380,7 @@ public class MainWindowViewModel : BaseModel
 
         if (result.Count > 0)
         {
-            await HandleFirmwareInstallation(result[0].Path.LocalPath);
+            await HandleFirmwareInstallationAsync(result[0].Path.LocalPath);
         }
     }
 
@@ -1396,7 +1393,7 @@ public class MainWindowViewModel : BaseModel
 
         if (result.Count > 0)
         {
-            await HandleFirmwareInstallation(result[0].Path.LocalPath);
+            await HandleFirmwareInstallationAsync(result[0].Path.LocalPath);
         }
     }
 
@@ -1457,7 +1454,7 @@ public class MainWindowViewModel : BaseModel
         AppHost.Device.System.SimulateWakeUpMessage();
     }
 
-    public async Task OpenFile()
+    public async Task OpenFileAsync()
     {
         var result = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -1523,7 +1520,7 @@ public class MainWindowViewModel : BaseModel
             if (ApplicationLibrary.TryGetApplicationsFromFile(result[0].Path.LocalPath,
                     out List<ApplicationData> applications))
             {
-                await LoadApplication(applications[0]);
+                await LoadApplicationAsync(applications[0]);
             }
             else
             {
@@ -1548,11 +1545,11 @@ public class MainWindowViewModel : BaseModel
                 Path = result[0].Path.LocalPath,
             };
 
-            await LoadApplication(applicationData);
+            await LoadApplicationAsync(applicationData);
         }
     }
 
-    public async Task LoadApplication(ApplicationData application, bool startFullscreen = false)
+    public async Task LoadApplicationAsync(ApplicationData application, bool startFullscreen = false, CancellationToken cancellationToken = default)
     {
         if (AppHost != null)
         {
@@ -1588,7 +1585,7 @@ public class MainWindowViewModel : BaseModel
             this,
             TopLevel);
 
-        if (!await AppHost.LoadGuestApplication())
+        if (!await AppHost.LoadGuestApplicationAsync(cancellationToken))
         {
             AppHost.DisposeContext();
             AppHost = null;

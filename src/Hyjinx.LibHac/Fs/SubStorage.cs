@@ -20,7 +20,7 @@ namespace LibHac.Fs;
 /// will be resized to the appropriate length.</para>
 /// <para>Based on nnSdk 14.3.0 (FS 14.1.0)</para>
 /// </remarks>
-public class SubStorage : IStorage
+public class SubStorage : Storage
 {
     private SharedRef<IStorage> _sharedBaseStorage;
     protected IStorage BaseStorage;

@@ -1,5 +1,4 @@
 using LibHac.Common;
-using LibHac.Common.Keys;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Tools.FsSystem;
@@ -14,10 +13,10 @@ public class Xci
     private object InitLocker { get; } = new object();
     private XciPartition RootPartition { get; set; }
 
-    public Xci(KeySet keySet, IStorage storage)
+    public Xci(IStorage storage)
     {
         BaseStorage = storage;
-        Header = new XciHeader(keySet, storage.AsStream());
+        Header = new XciHeader(storage.AsStream());
 
         if (Header.HasInitialData)
         {

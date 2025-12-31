@@ -4,15 +4,12 @@ using System.Runtime.CompilerServices;
 
 namespace LibHac.Fs;
 
-// ReSharper disable once InconsistentNaming
 /// <summary>
 /// Provides an interface for reading and writing a sequence of bytes.
 /// </summary>
 /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
-public abstract class IStorage : IDisposable
+public interface IStorage : IDisposable
 {
-    public virtual void Dispose() { }
-
     /// <summary>
     /// Reads a sequence of bytes from the current <see cref="IStorage"/>.
     /// </summary>
@@ -20,7 +17,7 @@ public abstract class IStorage : IDisposable
     /// <param name="destination">The buffer where the read bytes will be stored.
     /// The number of bytes read will be equal to the length of the buffer.</param>
     /// <returns>The <see cref="Result"/> of the operation.</returns>
-    public abstract Result Read(long offset, Span<byte> destination);
+    Result Read(long offset, Span<byte> destination);
 
     /// <summary>
     /// Writes a sequence of bytes to the current <see cref="IStorage"/>.
@@ -28,26 +25,26 @@ public abstract class IStorage : IDisposable
     /// <param name="offset">The offset in the <see cref="IStorage"/> at which to begin writing.</param>
     /// <param name="source">The buffer containing the bytes to be written.</param>
     /// <returns>The <see cref="Result"/> of the operation.</returns>
-    public abstract Result Write(long offset, ReadOnlySpan<byte> source);
+    Result Write(long offset, ReadOnlySpan<byte> source);
 
     /// <summary>
     /// Causes any buffered data to be written to the underlying device.
     /// </summary>
     /// <returns>The <see cref="Result"/> of the operation.</returns>
-    public abstract Result Flush();
+    Result Flush();
 
     /// <summary>
     /// Sets the size of the current <see cref="IStorage"/>.
     /// </summary>
     /// <param name="size">The desired size of the <see cref="IStorage"/> in bytes.</param>
-    public abstract Result SetSize(long size);
+    Result SetSize(long size);
 
     /// <summary>
     /// Gets the number of bytes in the <see cref="IStorage"/>.
     /// </summary>
     /// <param name="size">If the operation returns successfully, the length of the file in bytes.</param>
     /// <returns>The <see cref="Result"/> of the operation.</returns>
-    public abstract Result GetSize(out long size);
+    Result GetSize(out long size);
 
     /// <summary>
     /// Performs various operations on the storage. Used to extend the functionality of the <see cref="IStorage"/> interface.
@@ -58,7 +55,7 @@ public abstract class IStorage : IDisposable
     /// <param name="size">The size of the range to operate on.</param>
     /// <param name="inBuffer">An input buffer. Size may vary depending on the operation performed.</param>
     /// <returns>The <see cref="Result"/> of the operation.</returns>
-    public abstract Result OperateRange(Span<byte> outBuffer, OperationId operationId, long offset, long size,
+    Result OperateRange(Span<byte> outBuffer, OperationId operationId, long offset, long size,
         ReadOnlySpan<byte> inBuffer);
 
     /// <summary>
@@ -68,6 +65,28 @@ public abstract class IStorage : IDisposable
     /// <param name="offset">The offset of the range to operate on.</param>
     /// <param name="size">The size of the range to operate on.</param>
     /// <returns>The <see cref="Result"/> of the operation.</returns>
+    Result OperateRange(OperationId operationId, long offset, long size);
+}
+
+/// <summary>
+/// An <see cref="IStorage"/> which provides a base implementation.
+/// </summary>
+public abstract class Storage : IStorage
+{
+    public virtual void Dispose() { }
+
+    public abstract Result Read(long offset, Span<byte> destination);
+
+    public abstract Result Write(long offset, ReadOnlySpan<byte> source);
+
+    public abstract Result Flush();
+
+    public abstract Result SetSize(long size);
+
+    public abstract Result GetSize(out long size);
+
+    public abstract Result OperateRange(Span<byte> outBuffer, OperationId operationId, long offset, long size, ReadOnlySpan<byte> inBuffer);
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Result OperateRange(OperationId operationId, long offset, long size)
     {

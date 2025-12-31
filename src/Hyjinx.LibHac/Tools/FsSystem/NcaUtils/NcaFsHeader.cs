@@ -6,7 +6,7 @@ using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public struct NcaFsHeader
+public class NcaFsHeader
 {
     private readonly Memory<byte> _header;
 
@@ -15,7 +15,7 @@ public struct NcaFsHeader
         _header = headerData;
     }
 
-    private ref FsHeaderStruct Header => ref Unsafe.As<byte, FsHeaderStruct>(ref _header.Span[0]);
+    protected ref FsHeaderStruct Header => ref Unsafe.As<byte, FsHeaderStruct>(ref _header.Span[0]);
 
     public short Version
     {
@@ -35,10 +35,10 @@ public struct NcaFsHeader
         set => Header.HashType = (byte)value;
     }
 
-    public NcaEncryptionType EncryptionType
+    public byte EncryptionType
     {
-        get => (NcaEncryptionType)Header.EncryptionType;
-        set => Header.EncryptionType = (byte)value;
+        get => Header.EncryptionType;
+        set => Header.EncryptionType = value;
     }
 
     public NcaFsIntegrityInfoIvfc GetIntegrityInfoIvfc()

@@ -77,7 +77,7 @@ public class Sha256PartitionFileSystem : PartitionFileSystemCore<Sha256Partition
 /// <typeparam name="THeader">The type of the header at the beginning of the metadata.</typeparam>
 /// <typeparam name="TEntry">The type of the entries in the file table in the metadata.</typeparam>
 /// <remarks>Based on nnSdk 16.2.0 (FS 16.0.0)</remarks>
-public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> : IFileSystem
+public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> : FileSystem
     where TMetaData : PartitionFileSystemMetaCore<TFormat, THeader, TEntry>, new()
     where TFormat : IPartitionFileSystemFormat
     where THeader : unmanaged, IPartitionFileSystemHeader
@@ -238,8 +238,8 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
                     return ResultFs.OutOfRange.Log();
 
                 // Prepare a buffer for our calculated hash.
-                Span<byte> hash = stackalloc byte[Sha256Generator.HashSize];
-                var sha = new Sha256Generator();
+                Span<byte> hash = stackalloc byte[Sha256.DigestSize];
+                var sha = new Sha256();
 
                 if (offset <= hashTargetStart && hashTargetEnd <= readEnd)
                 {

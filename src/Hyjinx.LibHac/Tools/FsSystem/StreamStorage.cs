@@ -4,7 +4,7 @@ using System.IO;
 
 namespace LibHac.Tools.FsSystem;
 
-public class StreamStorage : IStorage
+public class StreamStorage : Storage
 {
     // todo: handle Stream exceptions
 

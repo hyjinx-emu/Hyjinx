@@ -311,7 +311,7 @@ namespace LibHac.FsSystem
 
         public Result Initialize(IStorage baseStorage, MemoryResource allocator, ReadOnlySpan<byte> hash, Optional<byte> salt)
         {
-            if (hash.Length != Sha256Generator.HashSize)
+            if (hash.Length != Sha256.DigestSize)
                 return ResultFs.PreconditionViolation.Log();
 
             Result res = QueryMetaDataSize(out MetaDataSize, baseStorage);
@@ -330,8 +330,8 @@ namespace LibHac.FsSystem
             if (res.IsFailure())
                 return res.Miss();
 
-            Span<byte> hashBuffer = stackalloc byte[Sha256Generator.HashSize];
-            var generator = new Sha256Generator();
+            Span<byte> hashBuffer = stackalloc byte[Sha256.DigestSize];
+            var generator = new Sha256();
             generator.Initialize();
             generator.Update(metaDataSpan);
             if (salt.HasValue)

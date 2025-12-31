@@ -11,7 +11,7 @@ namespace LibHac.FsSystem;
 /// will be forwarded to the appropriate <see cref="IStorage"/> based on the return value.
 /// </summary>
 /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
-public class SwitchStorage : IStorage
+public class SwitchStorage : Storage
 {
     private SharedRef<IStorage> _trueStorage;
     private SharedRef<IStorage> _falseStorage;
@@ -121,7 +121,7 @@ public class SwitchStorage : IStorage
 /// will be forwarded to the other.
 /// </summary>
 /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
-public class RegionSwitchStorage : IStorage
+public class RegionSwitchStorage : Storage
 {
     public struct Region
     {

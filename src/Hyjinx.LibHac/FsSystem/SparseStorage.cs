@@ -14,7 +14,7 @@ namespace LibHac.FsSystem;
 /// <para>Based on nnSdk 13.4.0 (FS 13.1.0)</para></remarks>
 public class SparseStorage : IndirectStorage
 {
-    private class ZeroStorage : IStorage
+    private class ZeroStorage : Storage
     {
         public override Result Read(long offset, Span<byte> destination)
         {

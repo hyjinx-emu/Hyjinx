@@ -1,7 +1,6 @@
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using LibHac.FsSystem;
 using LibHac.Tools.Fs;
 using LibHac.Util;
 using System;
@@ -14,38 +13,8 @@ using Utility = LibHac.FsSystem.Utility;
 
 namespace LibHac.Tools.FsSystem;
 
-public static class FileSystemExtensions
+public static partial class FileSystemExtensions
 {
-    public static Result CopyDirectory(this IFileSystem sourceFs, IFileSystem destFs, string sourcePath, string destPath,
-        IProgressReport logger = null, CreateFileOptions options = CreateFileOptions.None)
-    {
-        const int bufferSize = 0x100000;
-
-        var directoryEntryBuffer = new DirectoryEntry();
-
-        using var sourcePathNormalized = new Path();
-        Result res = InitializeFromString(ref sourcePathNormalized.Ref(), sourcePath);
-        if (res.IsFailure())
-            return res.Miss();
-
-        using var destPathNormalized = new Path();
-        res = InitializeFromString(ref destPathNormalized.Ref(), destPath);
-        if (res.IsFailure())
-            return res.Miss();
-
-        byte[] workBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
-        try
-        {
-            return CopyDirectoryRecursively(destFs, sourceFs, in destPathNormalized, in sourcePathNormalized,
-                ref directoryEntryBuffer, workBuffer, logger, options);
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(workBuffer);
-            logger?.SetTotal(0);
-        }
-    }
-
     public static Result CopyDirectoryRecursively(IFileSystem destinationFileSystem, IFileSystem sourceFileSystem,
         in Path destinationPath, in Path sourcePath, ref DirectoryEntry dirEntry, Span<byte> workBuffer,
         IProgressReport logger = null, CreateFileOptions option = CreateFileOptions.None)
@@ -149,13 +118,6 @@ public static class FileSystemExtensions
         return Result.Success;
     }
 
-    public static void Extract(this IFileSystem source, string destinationPath, IProgressReport logger = null)
-    {
-        var destFs = new LocalFileSystem(destinationPath);
-
-        source.CopyDirectory(destFs, "/", "/", logger).ThrowIfFailure();
-    }
-
     public static IEnumerable<DirectoryEntryEx> EnumerateEntries(this IFileSystem fileSystem)
     {
         return fileSystem.EnumerateEntries("/", "*");
@@ -168,7 +130,7 @@ public static class FileSystemExtensions
 
     public static IEnumerable<DirectoryEntryEx> EnumerateEntries(this IFileSystem fileSystem, string searchPattern, SearchOptions searchOptions)
     {
-        return EnumerateEntries(fileSystem, "/", searchPattern, searchOptions);
+        return fileSystem.EnumerateEntries("/", searchPattern, searchOptions);
     }
 
     public static IEnumerable<DirectoryEntryEx> EnumerateEntries(this IFileSystem fileSystem, string path, string searchPattern, SearchOptions searchOptions)
@@ -220,54 +182,16 @@ public static class FileSystemExtensions
         string name = StringUtils.Utf8ZToString(entry.Name);
         string path = PathTools.Combine(parentPath, name);
 
-        var entryEx = new DirectoryEntryEx(name, path, entry.Type, entry.Size);
-        entryEx.Attributes = entry.Attributes;
+        var entryEx = new DirectoryEntryEx(name, path, entry.Type, entry.Size)
+        {
+            Attributes = entry.Attributes
+        };
 
         return entryEx;
     }
 
-    public static void CopyTo(this IFile file, IFile dest, IProgressReport logger = null)
-    {
-        const int bufferSize = 0x8000;
-
-        file.GetSize(out long fileSize).ThrowIfFailure();
-
-        logger?.SetTotal(fileSize);
-
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
-        try
-        {
-            long inOffset = 0;
-
-            // todo: use result for loop condition
-            while (true)
-            {
-                file.Read(out long bytesRead, inOffset, buffer).ThrowIfFailure();
-                if (bytesRead == 0)
-                    break;
-
-                dest.Write(inOffset, buffer.AsSpan(0, (int)bytesRead)).ThrowIfFailure();
-                inOffset += bytesRead;
-                logger?.ReportAdd(bytesRead);
-            }
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(buffer);
-            logger?.SetTotal(0);
-        }
-    }
-
     public static IStorage AsStorage(this IFile file) => new FileStorage(file);
     public static Stream AsStream(this IFile file) => new NxFileStream(file, true);
-    public static Stream AsStream(this IFile file, OpenMode mode, bool keepOpen) => new NxFileStream(file, mode, keepOpen);
-
-    public static IFile AsIFile(this Stream stream, OpenMode mode) => new StreamFile(stream, mode);
-
-    public static int GetEntryCount(this IFileSystem fs, OpenDirectoryMode mode)
-    {
-        return GetEntryCountRecursive(fs, "/", mode);
-    }
 
     public static int GetEntryCountRecursive(this IFileSystem fs, string path, OpenDirectoryMode mode)
     {
@@ -304,14 +228,6 @@ public static class FileSystemExtensions
         return oldAttributes | nxAttributes.ToFatAttributes();
     }
 
-    public static void SetConcatenationFileAttribute(this IFileSystem fs, string path)
-    {
-        using var pathNormalized = new Path();
-        InitializeFromString(ref pathNormalized.Ref(), path).ThrowIfFailure();
-
-        fs.QueryEntry(Span<byte>.Empty, Span<byte>.Empty, QueryId.SetConcatenationFileAttribute, in pathNormalized);
-    }
-
     public static void CleanDirectoryRecursivelyGeneric(IFileSystem fileSystem, string path)
     {
         IFileSystem fs = fileSystem;
@@ -335,21 +251,9 @@ public static class FileSystemExtensions
         }
     }
 
-    public static Result Read(this IFile file, out long bytesRead, long offset, Span<byte> destination)
-    {
-        return file.Read(out bytesRead, offset, destination, ReadOption.None);
-    }
-
     public static Result Write(this IFile file, long offset, ReadOnlySpan<byte> source)
     {
         return file.Write(offset, source, WriteOption.None);
-    }
-
-    public static bool DirectoryExists(this IFileSystem fs, string path)
-    {
-        Result res = fs.GetEntryType(out DirectoryEntryType type, path.ToU8Span());
-
-        return (res.IsSuccess() && type == DirectoryEntryType.Directory);
     }
 
     public static bool FileExists(this IFileSystem fs, string path)
@@ -357,16 +261,6 @@ public static class FileSystemExtensions
         Result res = fs.GetEntryType(out DirectoryEntryType type, path.ToU8Span());
 
         return (res.IsSuccess() && type == DirectoryEntryType.File);
-    }
-
-    public static Result EnsureDirectoryExists(this IFileSystem fs, string path)
-    {
-        using var pathNormalized = new Path();
-        Result res = InitializeFromString(ref pathNormalized.Ref(), path);
-        if (res.IsFailure())
-            return res.Miss();
-
-        return Utility.EnsureDirectory(fs, in pathNormalized);
     }
 
     public static Result CreateOrOverwriteFile(IFileSystem fileSystem, in Path path, long size,

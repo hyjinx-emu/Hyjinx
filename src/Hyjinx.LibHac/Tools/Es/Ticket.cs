@@ -37,9 +37,31 @@ public class Ticket
         0x27, 0xAE, 0x41, 0xE4, 0x64, 0x9B, 0x93, 0x4C, 0xA4, 0x95, 0x99, 0x1B, 0x78, 0x52, 0xB8, 0x55
     };
 
-    public Ticket() { }
+    private Ticket(Stream stream) : this(new BinaryReader(stream)) { }
 
-    public Ticket(Stream stream) : this(new BinaryReader(stream)) { }
+    /// <summary>
+    /// Reads the ticket from the binary data.
+    /// </summary>
+    /// <param name="bytes">The binary data containing the ticket.</param>
+    /// <returns>The new <see cref="Ticket"/> instance.</returns>
+    public static Ticket ReadFrom(byte[] bytes)
+    {
+        using var ms = new MemoryStream(bytes);
+
+        return ReadFrom(ms);
+    }
+
+    /// <summary>
+    /// Reads the ticket from the binary data.
+    /// </summary>
+    /// <param name="stream">The stream containing the ticket.</param>
+    /// <returns>The new <see cref="Ticket"/> instance.</returns>
+    public static Ticket ReadFrom(Stream stream)
+    {
+        using var reader = new BinaryReader(stream);
+
+        return new Ticket(reader);
+    }
 
     public Ticket(BinaryReader reader)
     {
@@ -152,7 +174,7 @@ public class Ticket
         return stream.ToArray();
     }
 
-    public byte[] GetTitleKey(KeySet keySet)
+    public byte[]? GetTitleKey(KeySet keySet)
     {
         if (TitleKeyType == TitleKeyType.Common)
         {
@@ -161,7 +183,7 @@ public class Ticket
             return commonKey;
         }
 
-        return null!;
+        return null;
     }
 }
 

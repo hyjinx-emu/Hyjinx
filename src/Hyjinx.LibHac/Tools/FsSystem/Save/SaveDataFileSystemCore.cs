@@ -8,7 +8,7 @@ using Path = LibHac.Fs.Path;
 
 namespace LibHac.Tools.FsSystem.Save;
 
-public class SaveDataFileSystemCore : IFileSystem
+public class SaveDataFileSystemCore : FileSystem
 {
     private IStorage BaseStorage { get; }
     private IStorage HeaderStorage { get; }

@@ -1,0 +1,22 @@
+<Project>
+  <Import Project="./library.props" />
+  
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageLicenseFile Condition=" Exists('LICENSE.txt') ">LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile Condition=" Exists('README.md') ">README.md</PackageReadmeFile>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <!-- CS1591: Public or protected members are missing XML documentation when  -->
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+    <None Condition=" Exists('LICENSE.txt') " Include="README.md" Pack="true" PackagePath="" />
+    <None Condition=" Exists('README.md') "   Include="LICENSE.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+  
+</Project>

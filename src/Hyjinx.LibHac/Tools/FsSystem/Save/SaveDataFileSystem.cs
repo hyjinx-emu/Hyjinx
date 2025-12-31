@@ -9,7 +9,7 @@ using Path = LibHac.Fs.Path;
 
 namespace LibHac.Tools.FsSystem.Save;
 
-public class SaveDataFileSystem : IFileSystem
+public class SaveDataFileSystem : FileSystem
 {
     internal const byte TrimFillValue = 0;
 

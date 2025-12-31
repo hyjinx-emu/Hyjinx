@@ -40,7 +40,7 @@ partial class ContentManager
         }
 
         return new UInt128();
-    }    
+    }
 }
 
 #endif

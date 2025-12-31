@@ -2,6 +2,8 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -29,6 +31,14 @@ public class NxFileStream : Stream
 
         Position += bytesRead;
         return (int)bytesRead;
+    }
+
+    public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+    {
+        BaseFile.Read(out var bytesRead, Position, buffer.AsSpan(offset, count));
+
+        Position += bytesRead;
+        return Task.FromResult((int)bytesRead);
     }
 
     public override void Write(byte[] buffer, int offset, int count)

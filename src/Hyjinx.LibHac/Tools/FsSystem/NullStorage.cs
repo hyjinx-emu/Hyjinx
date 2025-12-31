@@ -6,7 +6,7 @@ namespace LibHac.Tools.FsSystem;
 /// <summary>
 /// An <see cref="IStorage"/> that returns all zeros when read, and does nothing on write.
 /// </summary>
-public class NullStorage : IStorage
+public class NullStorage : Storage
 {
     private long Length { get; }
 

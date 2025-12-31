@@ -10,17 +10,17 @@ namespace LibHac.FsSrv.Impl;
 /// Upon disposal the base file system is returned to the provided <see cref="SaveDataFileSystemCacheManager"/>.
 /// </summary>
 /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
-public class SaveDataFileSystemCacheRegister : IFileSystem
+public class SaveDataFileSystemCacheRegister : FileSystem
 {
-    private SharedRef<ISaveDataFileSystem> _baseFileSystem;
+    private SharedRef<SaveDataFileSystem> _baseFileSystem;
     private SaveDataFileSystemCacheManager _cacheManager;
     private SaveDataSpaceId _spaceId;
     private ulong _saveDataId;
 
-    public SaveDataFileSystemCacheRegister(ref SharedRef<ISaveDataFileSystem> baseFileSystem,
+    public SaveDataFileSystemCacheRegister(ref SharedRef<SaveDataFileSystem> baseFileSystem,
         SaveDataFileSystemCacheManager cacheManager, SaveDataSpaceId spaceId, ulong saveDataId)
     {
-        _baseFileSystem = SharedRef<ISaveDataFileSystem>.CreateMove(ref baseFileSystem);
+        _baseFileSystem = SharedRef<SaveDataFileSystem>.CreateMove(ref baseFileSystem);
         _cacheManager = cacheManager;
         _spaceId = spaceId;
         _saveDataId = saveDataId;

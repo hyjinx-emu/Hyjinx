@@ -38,7 +38,7 @@ public struct AlignmentMatchingStorageSize512 : IAlignmentMatchingStorageSize
 /// should be used for data alignment sizes larger than this.</para>
 /// <para>Based on nnSdk 14.3.0 (FS 14.1.0)</para></remarks>
 [SkipLocalsInit]
-public class AlignmentMatchingStorage<TDataAlignment, TBufferAlignment> : IStorage
+public class AlignmentMatchingStorage<TDataAlignment, TBufferAlignment> : LibHac.Fs.Storage
     where TDataAlignment : struct, IAlignmentMatchingStorageSize
     where TBufferAlignment : struct, IAlignmentMatchingStorageSize
 {
@@ -187,7 +187,7 @@ public class AlignmentMatchingStorage<TDataAlignment, TBufferAlignment> : IStora
 /// <see cref="AlignmentMatchingStorage{TDataAlignment,TBufferAlignment}"/> should be used instead
 /// to avoid these allocations.</para>
 /// <para>Based on nnSdk 14.3.0 (FS 14.1.0)</para></remarks>
-public class AlignmentMatchingStoragePooledBuffer<TBufferAlignment> : IStorage
+public class AlignmentMatchingStoragePooledBuffer<TBufferAlignment> : LibHac.Fs.Storage
     where TBufferAlignment : struct, IAlignmentMatchingStorageSize
 {
     public static uint BufferAlign => TBufferAlignment.Alignment;
@@ -338,7 +338,7 @@ public class AlignmentMatchingStoragePooledBuffer<TBufferAlignment> : IStorage
 /// <remarks><para>This class is basically the same as <see cref="AlignmentMatchingStoragePooledBuffer{TBufferAlignment}"/> except
 /// it doesn't allocate a work buffer for reads that are already aligned, and it ignores the buffer alignment for reads.</para>
 /// <para>Based on nnSdk 13.4.0 (FS 13.1.0)</para></remarks>
-public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : IStorage
+public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : LibHac.Fs.Storage
     where TBufferAlignment : struct, IAlignmentMatchingStorageSize
 {
     public static uint BufferAlign => TBufferAlignment.Alignment;

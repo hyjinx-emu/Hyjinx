@@ -3,7 +3,7 @@ using System;
 
 namespace LibHac.Tools.FsSystem.Save;
 
-public class DuplexStorage : IStorage
+public class DuplexStorage : Storage
 {
     private int BlockSize { get; }
     private IStorage BitmapStorage { get; }

@@ -22,6 +22,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Path = System.IO.Path;
 
 namespace Hyjinx.HLE.FileSystem;
@@ -202,6 +204,27 @@ public partial class VirtualFileSystem : IVirtualFileSystem, IDisposable
         FileSystemServerInitializer.InitializeWithConfig(fsServerClient, fsServer, fsServerConfig);
     }
 
+    public async Task ImportTicketsAsync(IFileSystem2 fileSystem, CancellationToken cancellationToken = default)
+    {
+        foreach (var ticketEntry in fileSystem.EnumerateFileInfos("/", "*.tik"))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await using var ticketFile = fileSystem.OpenFile(ticketEntry.FullPath);
+
+            using var ticketBuffer = new RentedArray2<byte>(0x2C0);
+            await ticketFile.ReadExactlyAsync(ticketBuffer.Memory, cancellationToken);
+
+            var ticket = Ticket.ReadFrom(ticketBuffer.ToArray());
+
+            var titleKey = ticket.GetTitleKey(KeySet);
+            if (titleKey != null)
+            {
+                KeySet.ExternalKeySet.Add(new RightsId(ticket.RightsId), new AccessKey(titleKey));
+            }
+        }
+    }
+
     public void ImportTickets(IFileSystem fs)
     {
         foreach (DirectoryEntryEx ticketEntry in fs.EnumerateEntries("/", "*.tik"))
@@ -221,7 +244,7 @@ public partial class VirtualFileSystem : IVirtualFileSystem, IDisposable
                 if (result.IsFailure() || bytesRead != ticketData.Length)
                     continue;
 
-                Ticket ticket = new(new MemoryStream(ticketData));
+                Ticket ticket = Ticket.ReadFrom(ticketData);
                 var titleKey = ticket.GetTitleKey(KeySet);
 
                 if (titleKey != null)

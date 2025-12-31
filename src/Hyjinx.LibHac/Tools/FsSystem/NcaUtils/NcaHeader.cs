@@ -12,11 +12,11 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 
 public partial class NcaHeader
 {
-    private readonly Memory<byte> _header;
+    protected Memory<byte> _header;
 
-    public NcaVersion FormatVersion { get; }
+    public NcaVersion FormatVersion { get; init; }
 
-    private ref NcaHeaderStruct Header => ref Unsafe.As<byte, NcaHeaderStruct>(ref _header.Span[0]);
+    protected ref NcaHeaderStruct Header => ref Unsafe.As<byte, NcaHeaderStruct>(ref _header.Span[0]);
 
     public NcaHeader(IStorage storage)
     {
@@ -76,7 +76,7 @@ public partial class NcaHeader
     {
         ValidateSectionIndex(index);
 
-        int offset = SectionEntriesOffset + NcaSectionEntryStruct.SectionEntrySize * index;
+        int offset = SectionEntriesOffset + SectionEntrySize * index;
         return ref Unsafe.As<byte, NcaSectionEntryStruct>(ref _header.Span[offset]);
     }
 
@@ -84,6 +84,11 @@ public partial class NcaHeader
     {
         return BlockToOffset(GetSectionEntry(index).StartBlock);
     }
+
+    // public long GetSectionEndOffset(int index)
+    // {
+    //     return BlockToOffset(GetSectionEntry(index).EndBlock);
+    // }
 
     public long GetSectionSize(int index)
     {
@@ -162,7 +167,7 @@ public partial class NcaHeader
         return true;
     }
 
-    private static NcaVersion DetectNcaVersion(ReadOnlySpan<byte> header)
+    protected static NcaVersion DetectNcaVersion(ReadOnlySpan<byte> header)
     {
         int version = header[0x203] - '0';
 
@@ -200,7 +205,7 @@ public partial class NcaHeader
 
     public bool IsNca0() => FormatVersion >= NcaVersion.Nca0;
 
-    private static ReadOnlySpan<byte> Nca0FixedBodyKeySha256Hash =>
+    protected static ReadOnlySpan<byte> Nca0FixedBodyKeySha256Hash =>
     [
         0x9A, 0xBB, 0xD2, 0x11, 0x86, 0x00, 0x21, 0x9D, 0x7A, 0xDC, 0x5B, 0x43, 0x95, 0xF8, 0x4E, 0xFD,
         0xFF, 0x6B, 0x25, 0xEF, 0x9F, 0x96, 0x85, 0x28, 0x18, 0x9E, 0x76, 0xB0, 0x92, 0xF0, 0x6A, 0xCB

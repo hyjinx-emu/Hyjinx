@@ -355,7 +355,7 @@ public class ApplicationContextMenu : MenuFlyout
 
         if (viewModel?.SelectedApplication != null)
         {
-            await viewModel.LoadApplication(viewModel.SelectedApplication);
+            await viewModel.LoadApplicationAsync(viewModel.SelectedApplication);
         }
     }
 
