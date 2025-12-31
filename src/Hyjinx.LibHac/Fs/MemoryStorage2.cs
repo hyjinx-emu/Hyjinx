@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Fs;
 
@@ -13,8 +11,6 @@ public class MemoryStorage2 : Storage2
     private readonly MemoryStream _memoryStream;
 
     public override long Size => _memoryStream.Length;
-
-    public override long Position => _memoryStream.Position;
 
     private MemoryStorage2(byte[] data)
     {
@@ -50,25 +46,21 @@ public class MemoryStorage2 : Storage2
     {
         ArgumentNullException.ThrowIfNull(data);
 
-        var result = new MemoryStorage2(data);
-        result.Seek(0, SeekOrigin.Begin);
-
-        return result;
+        return new MemoryStorage2(data);
     }
 
-    public override int Read(Span<byte> buffer)
+    protected override void ReadCore(long offset, Span<byte> buffer)
     {
-        return _memoryStream.Read(buffer);
-    }
-
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-        return _memoryStream.Seek(offset, origin);
+        _memoryStream.Seek(offset, SeekOrigin.Begin);
+        _memoryStream.ReadExactly(buffer);
     }
 
     protected override void Dispose(bool disposing)
     {
-        _memoryStream.Dispose();
+        if (disposing)
+        {
+            _memoryStream.Dispose();
+        }
 
         base.Dispose(disposing);
     }

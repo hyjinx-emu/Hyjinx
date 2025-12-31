@@ -3,7 +3,6 @@ using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Util;
 using System;
-using System.IO;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -13,26 +12,49 @@ namespace LibHac.Tools.FsSystem;
 /// <remarks>This class uses two independent storages, one containing the verification hashes and another for the actual data to read.</remarks>
 public class IntegrityVerificationStorage2 : Storage2
 {
-    private readonly int _level;
-    private readonly IStorage2 _dataStorage;
-    private readonly IStorage2 _hashStorage;
-    private readonly IntegrityCheckLevel _integrityCheckLevel;
     private readonly Validity[]? _sectors;
-    private readonly int _sectorSize;
-    private readonly bool _usePartialBlockHashes;
+    
+    /// <summary>
+    /// The storage level.
+    /// </summary>
+    protected int Level { get; }
+    
+    /// <summary>
+    /// The data storage.
+    /// </summary>
+    protected IStorage2 DataStorage { get; }
+    
+    /// <summary>
+    /// The hash storage.
+    /// </summary>
+    protected IStorage2 HashStorage { get; }
+    
+    /// <summary>
+    /// The integrity check level.
+    /// </summary>
+    protected IntegrityCheckLevel IntegrityCheckLevel { get; }
+    
+    /// <summary>
+    /// The sector size.
+    /// </summary>
+    protected int SectorSize { get; }
+    
+    /// <summary>
+    /// Identifies whether partial block hashes are being used by the storage.
+    /// </summary>
+    /// <remarks>Some storages hash the full sector (even empty data) and others only hash the part of the sector used.</remarks>
+    protected bool UsePartialBlockHashes { get; }
 
-    public override long Position => _dataStorage.Position;
-
-    public override long Size => _dataStorage.Size;
+    public override long Size => DataStorage.Size;
 
     private IntegrityVerificationStorage2(int level, IStorage2 dataStorage, bool partialBlockHashes, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, int sectorSize, Validity[]? sectors)
     {
-        _level = level;
-        _dataStorage = dataStorage;
-        _usePartialBlockHashes = partialBlockHashes;
-        _hashStorage = hashStorage;
-        _integrityCheckLevel = integrityCheckLevel;
-        _sectorSize = sectorSize;
+        Level = level;
+        DataStorage = dataStorage;
+        UsePartialBlockHashes = partialBlockHashes;
+        HashStorage = hashStorage;
+        IntegrityCheckLevel = integrityCheckLevel;
+        SectorSize = sectorSize;
         _sectors = sectors;
     }
 
@@ -64,67 +86,66 @@ public class IntegrityVerificationStorage2 : Storage2
             sectors = new Validity[sectorCount];
         }
 
-        var result = new IntegrityVerificationStorage2(level,
+        return new IntegrityVerificationStorage2(level,
             dataStorage.Slice2(offset, length), usePartialBlockHashes,
             hashStorage,
             integrityCheckLevel, sectorSize, sectors);
-
-        result.Seek(0, SeekOrigin.Begin);
-        return result;
     }
 
-    public override int Read(Span<byte> buffer)
+    protected override void ReadCore(long offset, Span<byte> buffer)
     {
-        if (_integrityCheckLevel != IntegrityCheckLevel.None)
+        if (IntegrityCheckLevel != IntegrityCheckLevel.None)
         {
-            var sectorIndex = (int)(Position / _sectorSize);
-            if (_sectors![sectorIndex] == Validity.Unchecked)
+            var sectorIndex = (int)(offset / SectorSize);
+            
+            var validity = CheckSectorValidity(sectorIndex);
+            if (validity == Validity.Invalid && IntegrityCheckLevel == IntegrityCheckLevel.ErrorOnInvalid)
             {
-                var validity = CheckSectorValidity(sectorIndex);
-                _sectors[sectorIndex] = validity;
-
-                if (validity == Validity.Invalid && _integrityCheckLevel == IntegrityCheckLevel.ErrorOnInvalid)
-                {
-                    throw new InvalidSectorDetectedException("The sector was invalid.", _level, sectorIndex);
-                }
+                throw new InvalidSectorDetectedException("The sector was invalid.", Level, sectorIndex);
             }
         }
 
-        return _dataStorage.Read(buffer);
+        DataStorage.Read(offset, buffer);
     }
 
-    public override long Seek(long offset, SeekOrigin origin)
+    /// <summary>
+    /// Checks the sector validity for the sector index.
+    /// </summary>
+    /// <remarks>This method uses a read-through caching mechanism to reduce checks whenever possible.</remarks>
+    /// <param name="sectorIndex">The zero-based sector index to check.</param>
+    /// <returns>The validity of the sector.</returns>
+    protected Validity CheckSectorValidity(int sectorIndex)
     {
-        return _dataStorage.Seek(offset, origin);
-    }
-
-    private Validity CheckSectorValidity(int sectorIndex)
-    {
-        Span<byte> hashBuffer = stackalloc byte[Sha256.DigestSize];
-        var hashOffset = (long)sectorIndex * Sha256.DigestSize;
-
-        // Read the expected hash from the file.
-        var bytesRead = _hashStorage.ReadOnce(hashOffset, hashBuffer);
-        if (bytesRead < Sha256.DigestSize)
+        if (_sectors![sectorIndex] != Validity.Unchecked)
         {
-            throw new InvalidSectorDetectedException("The expected hash was not the correct size.", _level, sectorIndex);
+            return _sectors[sectorIndex];
         }
+        
+        Span<byte> hashBuffer = stackalloc byte[Sha256.DigestSize];
+        
+        // Read the expected hash from the file.
+        var hashOffset = (long)sectorIndex * Sha256.DigestSize;
+        HashStorage.Read(hashOffset, hashBuffer);
 
-        using var dataBuffer = new RentedArray2<byte>(_sectorSize);
-        var dataOffset = (long)sectorIndex * _sectorSize;
+        var dataOffset = (long)sectorIndex * SectorSize;
+        var bytesRead = (int)Math.Min(SectorSize, Size - dataOffset);
 
-        // Read the entire sector from the file.
-        bytesRead = _dataStorage.ReadOnce(dataOffset, dataBuffer.Span);
+        // Read the entire sector from the file, or however many bytes are remaining.
+        using var dataBuffer = new RentedArray2<byte>(SectorSize);
+        DataStorage.Read(dataOffset, dataBuffer.Span[..bytesRead]);
 
-        return CheckSectorValidityCore(
+        var result = CheckSectorValidityCore(
             bytesRead,
             dataBuffer.Span,
             hashBuffer);
+
+        _sectors[sectorIndex] = result;
+        return result;
     }
 
     private Validity CheckSectorValidityCore(int dataBytesRead, Span<byte> dataBuffer, Span<byte> hashBuffer)
     {
-        if (_usePartialBlockHashes)
+        if (UsePartialBlockHashes)
         {
             return CompareHashes(dataBuffer[..dataBytesRead], hashBuffer);
         }
@@ -155,8 +176,11 @@ public class IntegrityVerificationStorage2 : Storage2
 
     protected override void Dispose(bool disposing)
     {
-        _dataStorage.Dispose();
-        _hashStorage.Dispose();
+        if (disposing)
+        {
+            DataStorage.Dispose();
+            HashStorage.Dispose();   
+        }
 
         base.Dispose(disposing);
     }

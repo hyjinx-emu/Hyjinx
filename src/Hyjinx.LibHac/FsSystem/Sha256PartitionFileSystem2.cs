@@ -3,8 +3,6 @@ using LibHac.Fs;
 using LibHac.FsSystem.Impl;
 using System;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.FsSystem;
 
@@ -25,13 +23,9 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
     public static Sha256PartitionFileSystem2 Create(IStorage2 baseStorage)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
+        
         using var headerBuffer = new RentedArray2<byte>(headerSize);
-
-        var bytesRead = baseStorage.ReadOnce(0, headerBuffer.Span);
-        if (bytesRead != headerSize)
-        {
-            throw new InvalidOperationException("The header size read did not match the expected size.");
-        }
+        baseStorage.Read(0, headerBuffer.Span);
 
         var header = Unsafe.As<byte, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>(ref headerBuffer.Span[0]);
 
@@ -45,13 +39,13 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
     {
         // Read the entry details.
         using var entryBuffer = new RentedArray2<byte>(layout.EntryHeaderSize * 2);
-        BaseStorage.ReadOnce(layout.FsHeaderSize + (index * layout.EntryHeaderSize), entryBuffer.Span);
+        BaseStorage.Read(layout.FsHeaderSize + (index * layout.EntryHeaderSize), entryBuffer.Span);
 
         (Sha256PartitionFileSystemFormat.PartitionEntry entry, int nameLength) = GetEntryDetails(index, layout.EntryHeaderSize, entryBuffer.Span);
 
         // Read the entry name.
         using var nameBuffer = new RentedArray2<byte>(nameLength);
-        BaseStorage.ReadOnce(layout.NameTableOffset + entry.NameOffset, nameBuffer.Span);
+        BaseStorage.Read(layout.NameTableOffset + entry.NameOffset, nameBuffer.Span);
 
         var fullName = $"/{new U8Span(nameBuffer.Span).ToString()}";
 

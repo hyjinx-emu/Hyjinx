@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Tools.FsSystem.RomFs;
 
@@ -56,7 +54,7 @@ internal sealed class RomFsIndex<T>
     public static RomFsIndex<T> Create(IStorage2 baseStorage, RomFsIndexDefinition definition)
     {
         using var arr = new RentedArray2<byte>((int)definition.RootTableSize);
-        baseStorage.ReadOnce(definition.RootTableOffset, arr.Span);
+        baseStorage.Read(definition.RootTableOffset, arr.Span);
 
         return new RomFsIndex<T>(baseStorage.Slice2(definition.EntryTableOffset, definition.EntryTableSize));
     }
@@ -69,12 +67,12 @@ internal sealed class RomFsIndex<T>
     public RomFsIndexEntry Get(int offset)
     {
         Span<byte> entryBytes = stackalloc byte[_entrySize];
-        _entryStorage.ReadOnce(offset, entryBytes);
+        _entryStorage.Read(offset, entryBytes);
 
         var entry = Unsafe.As<byte, RomFsEntry>(ref entryBytes[0]);
 
         Span<byte> nameBytes = stackalloc byte[entry.NameLength];
-        _entryStorage.ReadOnce(offset + _entrySize, nameBytes);
+        _entryStorage.Read(offset + _entrySize, nameBytes);
 
         return new RomFsIndexEntry
         {
@@ -97,11 +95,11 @@ internal sealed class RomFsIndex<T>
 
         while (current != -1)
         {
-            _entryStorage.ReadOnce(current, entryBytes);
+            _entryStorage.Read(current, entryBytes);
             var entry = Unsafe.As<byte, RomFsEntry>(ref entryBytes[0]);
 
             byte[] nameBytes = new byte[entry.NameLength];
-            _entryStorage.ReadOnce(current + _entrySize, nameBytes);
+            _entryStorage.Read(current + _entrySize, nameBytes);
 
             yield return new RomFsIndexEntry
             {

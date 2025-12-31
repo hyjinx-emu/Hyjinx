@@ -1,7 +1,5 @@
 using LibHac.Fs;
 using System;
-using System.IO;
-using System.Runtime.CompilerServices;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -11,21 +9,23 @@ namespace LibHac.Tools.FsSystem;
 /// <remarks>The use of this class depends on where the relative positioning of any offsets should be applied during calculations. Higher or lower in the call stack will change behavior, use caution when deciding placement if this class is to be used.</remarks>
 public class SubStorage2 : Storage2
 {
-    private readonly IStorage2 _baseStorage;
-    private readonly long _offset;
-    private readonly long _length;
-    private long _position;
+    /// <summary>
+    /// The base storage.
+    /// </summary>
+    protected IStorage2 BaseStorage { get; }
+    
+    /// <summary>
+    /// The zero-based offset upon which the substorage begins within the base storage.
+    /// </summary>
+    protected long Offset { get; }
 
-    public override long Size => _length;
+    public override long Size { get; }
 
-    public override long Position => _position;
-
-    private SubStorage2(IStorage2 baseStorage, long offset, long length)
+    private SubStorage2(IStorage2 baseStorage, long offset, long size)
     {
-        _baseStorage = baseStorage;
-        _offset = offset;
-        _length = length;
-        _position = 0;
+        BaseStorage = baseStorage;
+        Offset = offset;
+        Size = size;
     }
 
     /// <summary>
@@ -33,93 +33,40 @@ public class SubStorage2 : Storage2
     /// </summary>
     /// <param name="baseStorage">The base storage to wrap.</param>
     /// <param name="offset">The offset of the storage within the stream.</param>
-    /// <param name="length">The length of the storage block.</param>
-    /// <exception cref="ArgumentException"><paramref name="offset"/> is less than or equal to zero, <paramref name="length"/> is equal to zero, or the the position and length provided exceeds the length of <paramref name="baseStorage"/> available.</exception>
+    /// <param name="size">The size of the storage block.</param>
+    /// <exception cref="ArgumentException"><paramref name="offset"/> is less than or equal to zero, <paramref name="size"/> is equal to zero, or the the position and length provided exceeds the length of <paramref name="baseStorage"/> available.</exception>
     /// <returns>The new <see cref="SubStorage2"/> instance.</returns>
-    public static SubStorage2 Create(IStorage2 baseStorage, long offset, long length)
+    public static SubStorage2 Create(IStorage2 baseStorage, long offset, long size)
     {
         if (offset < 0)
         {
             throw new ArgumentException("The value must be greater than or equal to zero.", nameof(offset));
         }
 
-        if (length < 0)
+        if (size < 0)
         {
-            throw new ArgumentException("The value must be greater than or equal to zero.", nameof(length));
+            throw new ArgumentException("The value must be greater than or equal to zero.", nameof(size));
         }
 
-        if (offset + length > baseStorage.Size)
+        if (offset + size > baseStorage.Size)
         {
-            throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(length));
+            throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(size));
         }
 
-        var result = new SubStorage2(baseStorage, offset, length);
-        result.Seek(0, SeekOrigin.Begin);
-
-        return result;
+        return new SubStorage2(baseStorage, offset, size);
     }
 
-    public override int Read(Span<byte> buffer)
+    protected override void ReadCore(long offset, Span<byte> buffer)
     {
-        var remaining = CalculateBytesToRead(buffer.Length);
-        if (remaining == 0)
-        {
-            return 0;
-        }
-
-        var bytesRead = _baseStorage.Read(buffer[..remaining]);
-        _position += bytesRead;
-
-        return bytesRead;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private int CalculateBytesToRead(int bufferLength)
-    {
-        return (int)Math.Min(_length - _position, bufferLength);
-    }
-
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-        var originOffset = CalculateOriginOffsetForSeek(origin);
-        var newOffset = CalculateOffsetForSeek(originOffset, offset);
-
-        _position = newOffset - _offset;
-
-        _baseStorage.Seek(newOffset, SeekOrigin.Begin);
-        return _position;
-    }
-
-    private long CalculateOriginOffsetForSeek(SeekOrigin origin)
-    {
-        return origin switch
-        {
-            SeekOrigin.Begin => _offset,
-            SeekOrigin.End => _offset + _length,
-            SeekOrigin.Current => _baseStorage.Position,
-            _ => throw new NotSupportedException($"The origin {origin} is not supported.")
-        };
-    }
-
-    private long CalculateOffsetForSeek(long originOffset, long offset)
-    {
-        var newOffset = originOffset + offset;
-        if (newOffset < _offset)
-        {
-            throw new ArgumentException("The offset would be before the beginning of the stream.", nameof(offset));
-        }
-
-        if (newOffset > _offset + _length)
-        {
-            throw new ArgumentException("The offset would be past the end of the stream.", nameof(offset));
-        }
-
-        return newOffset;
+        BaseStorage.Read(Offset + offset, buffer);
     }
 
     protected override void Dispose(bool disposing)
     {
-        _baseStorage.Dispose();
+        if (disposing)
+        {
+            BaseStorage.Dispose();
+        }
 
         base.Dispose(disposing);
     }

@@ -1,6 +1,5 @@
 using LibHac.Fs;
 using System;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -20,7 +19,7 @@ public class IndirectStorage2 : Storage2
     /// </summary>
     /// <remarks>See: https://switchbrew.org/wiki/NCA#RomFs_Patching for more information.</remarks>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    public struct Entry : IBucketTreeEntry
+    public readonly struct Entry : IBucketTreeEntry
     {
         /// <summary>
         /// The virtual offset.
@@ -85,14 +84,7 @@ public class IndirectStorage2 : Storage2
 
     public override long Size => throw new NotImplementedException();
 
-    public override long Position => throw new NotImplementedException();
-
-    public override int Read(Span<byte> buffer)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override long Seek(long offset, SeekOrigin origin)
+    protected override void ReadCore(long offset, Span<byte> buffer)
     {
         throw new NotImplementedException();
     }

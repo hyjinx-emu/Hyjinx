@@ -1,8 +1,6 @@
 using LibHac.Fs;
 using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Tools.FsSystem;
 
@@ -15,8 +13,6 @@ public class StreamStorage2 : Storage2
     private readonly bool _leaveOpen;
 
     public override long Size => _stream.Length;
-
-    public override long Position => _stream.Position;
 
     private StreamStorage2(Stream stream, bool leaveOpen = true)
     {
@@ -43,26 +39,13 @@ public class StreamStorage2 : Storage2
             throw new ArgumentException("The stream must support seek.", nameof(stream));
         }
 
-        var result = new StreamStorage2(stream, leaveOpen);
-        result.Seek(0, SeekOrigin.Begin);
-
-        return result;
+        return new StreamStorage2(stream, leaveOpen);
     }
 
-    public override int Read(Span<byte> buffer)
+    protected override void ReadCore(long offset, Span<byte> buffer)
     {
-        return _stream.Read(buffer);
-    }
-
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-        // TODO: Viper - Fix this.
-        // if ((origin == SeekOrigin.Begin && offset == Position) || (origin == SeekOrigin.End && Length + offset == Position))
-        // {
-        //     return Position;
-        // }
-
-        return _stream.Seek(offset, origin);
+        _stream.Seek(offset, SeekOrigin.Begin);
+        _stream.ReadExactly(buffer);
     }
 
     protected override void Dispose(bool disposing)

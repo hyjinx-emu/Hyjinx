@@ -165,12 +165,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
         }
 
         Span<byte> buffer = new byte[definition.Length];
-
-        var bytesRead = baseStorage.Read(buffer);
-        if (bytesRead != buffer.Length)
-        {
-            throw new InvalidOperationException("The tree storage failed to read the expected amount of data.");
-        }
+        baseStorage.Read(0, buffer);
 
         // TODO: Viper - Unsure how this ties into the other data set, removing it.
         // ref var nodeHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer[0x00]);

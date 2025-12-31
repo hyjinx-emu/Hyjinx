@@ -1,7 +1,4 @@
 using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LibHac.Fs;
 
@@ -11,8 +8,6 @@ namespace LibHac.Fs;
 public abstract partial class Storage2 : IStorage2
 {
     public abstract long Size { get; }
-
-    public abstract long Position { get; }
 
     ~Storage2()
     {
@@ -30,7 +25,25 @@ public abstract partial class Storage2 : IStorage2
         // This method intentionally left blank.
     }
 
-    public abstract int Read(Span<byte> buffer);
+    public void Read(long offset, Span<byte> buffer)
+    {
+        if (offset < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(offset), "The value cannot be less than zero.");
+        }
 
-    public abstract long Seek(long offset, SeekOrigin origin);
+        if (offset + buffer.Length > Size)
+        {
+            throw new ArgumentOutOfRangeException(nameof(buffer), "The size of the buffer exceeds the remaining storage capacity.");
+        }
+
+        ReadCore(offset, buffer);
+    }
+    
+    /// <summary>
+    /// Reads the data.
+    /// </summary>
+    /// <param name="offset">The zero-based offset which to seek.</param>
+    /// <param name="buffer">The buffer which should receive the data.</param>
+    protected abstract void ReadCore(long offset, Span<byte> buffer);
 }
