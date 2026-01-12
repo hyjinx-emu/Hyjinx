@@ -47,8 +47,8 @@
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="MsgPack.Cli" Version="1.0.1" />
     <PackageVersion Include="NetCoreServer" Version="8.0.7" />
-    <PackageVersion Include="NUnit" Version="4.3.2" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageVersion Include="NUnit" Version="4.4.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.1.0" />
     <PackageVersion Include="OpenTK.Core" Version="4.9.4" />
     <PackageVersion Include="OpenTK.Graphics" Version="4.9.4" />
     <PackageVersion Include="OpenTK.Audio.OpenAL" Version="4.9.4" />
