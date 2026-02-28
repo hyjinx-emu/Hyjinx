@@ -13,6 +13,11 @@ public record NcaFsHeader2
     /// The version.
     /// </summary>
     public short Version { get; init; }
+    
+    /// <summary>
+    /// The section index.
+    /// </summary>
+    public int SectionIndex { get; init; }
 
     /// <summary>
     /// The format type.

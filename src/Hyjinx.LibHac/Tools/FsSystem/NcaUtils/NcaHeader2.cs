@@ -37,9 +37,14 @@ public record NcaHeader2
     public required int ContentIndex { get; init; }
 
     /// <summary>
+    /// The SDK version.
+    /// </summary>
+    public uint SdkVersion { get; set; }
+    
+    /// <summary>
     /// The version of the archive.
     /// </summary>
-    public required int Version { get; init; }
+    public required byte Version { get; init; }
 
     /// <summary>
     /// The format version.

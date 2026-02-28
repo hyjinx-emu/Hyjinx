@@ -29,15 +29,28 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
             throw new InvalidOperationException("The block count cannot be a negative value.");
         }
 
+        var hashType = (NcaHashType)fsHeader.HashType;
+        
+        Validity hashValidity;
+        if (hashType == NcaHashType.None)
+        {
+            hashValidity = Validity.Valid;
+        }
+        else
+        {
+            hashValidity = CheckHeaderHashMatchesAsExpected(fsHeaderBytes, hashBytes);
+        }
+
         return new NcaFsHeader2
         {
             Version = fsHeader.Version,
+            SectionIndex = sectionIndex,
             FormatType = (NcaFormatType)fsHeader.FormatType,
-            HashType = (NcaHashType)fsHeader.HashType,
+            HashType = hashType,
             SectionStartOffset = fsEntry.StartBlock * BlockSize,
             SectionSize = (long)blockCount * BlockSize,
             Checksum = fsHeaderBytes.Slice(IntegrityInfoOffset, IntegrityInfoSize).ToArray(),
-            HashValidity = CheckHeaderHashMatchesAsExpected(fsHeaderBytes, hashBytes),
+            HashValidity = hashValidity,
             PatchInfo = DeserializePatchInfo(fsHeaderBytes.Slice(PatchInfoOffset, PatchInfoSize)),
             SparseInfo = null,
             CompressionInfo = null
