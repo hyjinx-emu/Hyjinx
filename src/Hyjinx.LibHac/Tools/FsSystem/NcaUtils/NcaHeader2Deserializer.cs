@@ -23,7 +23,7 @@ public class NcaHeader2Deserializer : NcaHeader2Deserializer<NcaHeader2>
             Size = header.NcaSize,
             TitleId = header.TitleId,
             ContentIndex = header.ContentIndex,
-            Version = bytes[0x203] - '0',
+            Version = (byte)(bytes[0x203] - '0'),
             FormatVersion = version
         };
     }
