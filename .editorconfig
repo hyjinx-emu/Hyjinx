@@ -74,6 +74,7 @@ dotnet_style_readonly_field = true:suggestion
 dotnet_code_quality_unused_parameters = all:silent
 
 #### C# Coding Conventions ####
+csharp_style_allow_blank_lines_between_consecutive_braces = true
 
 # Namespace preferences
 csharp_style_namespace_declarations = file_scoped:warning
