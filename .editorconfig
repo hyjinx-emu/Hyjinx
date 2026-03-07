@@ -20,10 +20,6 @@ insert_final_newline = false
 # Markdown, JSON, YAML, props and csproj files
 [*.{md,json,yml,props,csproj}]
 
-# Indentation and spacing
-indent_size = 2
-tab_width = 2
-
 # C# files
 [*.cs]
 
