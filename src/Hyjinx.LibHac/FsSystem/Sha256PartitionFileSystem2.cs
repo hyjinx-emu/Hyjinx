@@ -55,7 +55,7 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
             FullName = fullName,
             EntryType = DirectoryEntryType.File,
             Length = entry.Size,
-            Offset = entry.Offset + layout.MetadataSize
+            Offset = entry.Offset + layout.DataOffset
         };
     }
 

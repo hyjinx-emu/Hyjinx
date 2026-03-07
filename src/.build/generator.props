@@ -4,6 +4,8 @@
     <!-- Rider and other IDEs may prefer this to be netstandard2.0 even if targetting .NET 9 projects. -->
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
+    <Nullable>warnings</Nullable>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   
   <PropertyGroup>
