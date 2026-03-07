@@ -40,7 +40,7 @@ public record NcaHeader2
     /// The SDK version.
     /// </summary>
     public uint SdkVersion { get; set; }
-    
+
     /// <summary>
     /// The version of the archive.
     /// </summary>

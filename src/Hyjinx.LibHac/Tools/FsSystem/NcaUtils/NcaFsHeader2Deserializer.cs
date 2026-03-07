@@ -30,7 +30,7 @@ public class NcaFsHeader2Deserializer(NcaHeader2 header) : NcaFsHeader2Deseriali
         }
 
         var hashType = (NcaHashType)fsHeader.HashType;
-        
+
         Validity hashValidity;
         if (hashType == NcaHashType.None)
         {
