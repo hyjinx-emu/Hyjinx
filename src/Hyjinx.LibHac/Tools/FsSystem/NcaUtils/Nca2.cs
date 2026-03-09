@@ -32,18 +32,15 @@ public class BasicNca2 : Nca2<NcaHeader2, NcaFsHeader2>
             throw new NotSupportedException("The stream contains less bytes than expected.");
         }
 
-        using var buffer = new RentedArray2<byte>(HeaderSize);
-
-        // Make sure it's the expected size before reading the data.
-        stream.ReadExactly(buffer.Span);
+        byte[] buffer = new byte[HeaderSize];
+        stream.ReadExactly(buffer);
 
         // Deserialize the header.
-        var deserializer = new NcaHeader2Deserializer();
-        var header = deserializer.Deserialize(buffer.Span);
+        var header = new NcaHeader2(buffer);
 
         // Deserialize the entries.
         var entriesDeserializer = new NcaFsHeader2Deserializer(header);
-        var entries = entriesDeserializer.Deserialize(buffer.Span);
+        var entries = entriesDeserializer.Deserialize(buffer);
 
         return new BasicNca2(stream, header, entries);
     }
