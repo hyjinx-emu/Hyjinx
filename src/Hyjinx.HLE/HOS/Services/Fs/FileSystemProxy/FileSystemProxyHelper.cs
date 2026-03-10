@@ -52,7 +52,7 @@ static class FileSystemProxyHelper
         {
             Nca nca = new Nca1(context.Device.System.KeySet, ncaStorage);
 
-            if (!nca.SectionExists(NcaSectionType.Data))
+            if (!nca.CanOpenSection(NcaSectionType.Data))
             {
                 return ResultCode.PartitionNotFound;
             }

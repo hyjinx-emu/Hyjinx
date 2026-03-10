@@ -15,9 +15,9 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// <summary>
 /// Provides a mechanism to interact with basic content archive (NCA) files.
 /// </summary>
-public class BasicNca2 : Nca2<NcaHeader2, NcaFsHeader2>
+public class BasicNca2 : Nca2<NcaHeader, NcaFsHeader2>
 {
-    private BasicNca2(Stream stream, NcaHeader2 header, Dictionary<NcaSectionType, NcaFsHeader2> sections)
+    private BasicNca2(Stream stream, NcaHeader header, Dictionary<NcaSectionType, NcaFsHeader2> sections)
         : base(stream, header, sections) { }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class BasicNca2 : Nca2<NcaHeader2, NcaFsHeader2>
         stream.ReadExactly(buffer);
 
         // Deserialize the header.
-        var header = new NcaHeader2(buffer);
+        var header = new NcaHeader(buffer);
 
         // Deserialize the entries.
         var entriesDeserializer = new NcaFsHeader2Deserializer(header);
@@ -104,7 +104,7 @@ public abstract class Nca2
 /// <typeparam name="THeader">The type of archive header.</typeparam>
 /// <typeparam name="TFsHeader">The type of file entry header.</typeparam>
 public abstract class Nca2<THeader, TFsHeader> : Nca2
-    where THeader : NcaHeader2
+    where THeader : NcaHeader
     where TFsHeader : NcaFsHeader2
 {
     /// <summary>

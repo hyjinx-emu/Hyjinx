@@ -54,7 +54,7 @@ public static partial class NcaExtensions
     {
         int dataIndex = Nca.GetSectionIndexFromType(NcaSectionType.Data, NcaContentType.Program);
 
-        return nca.IsProgram() && nca.SectionExists(NcaSectionType.Data) && nca.Header.GetFsHeader(dataIndex).IsPatchSection();
+        return nca.IsProgram() && nca.CanOpenSection(NcaSectionType.Data) && nca.Header.GetFsHeader(dataIndex).IsPatchSection();
     }
 
     public static (Nca, Nca) GetUpdateData(this Nca mainNca, VirtualFileSystem fileSystem, IntegrityCheckLevel checkLevel, int programIndex, out string updatePath)

@@ -44,7 +44,7 @@ public class StorageOnNcaCreator : IStorageOnNcaCreator
         }
 
         outStorage.Reset(storageTemp);
-        fsHeader = nca.GetFsHeader(fsIndex);
+        fsHeader = nca.Header.GetFsHeader(fsIndex);
 
         return Result.Success;
     }
@@ -71,7 +71,7 @@ public class StorageOnNcaCreator : IStorageOnNcaCreator
     {
         UnsafeHelpers.SkipParamInit(out storage);
 
-        if (!nca.SectionExists(fsIndex))
+        if (!nca.CanOpenSection(fsIndex))
             return ResultFs.PartitionNotFound.Log();
 
         storage = nca.OpenStorage(fsIndex, IntegrityCheckLevel.ErrorOnInvalid);

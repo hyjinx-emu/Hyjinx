@@ -16,7 +16,7 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 public partial class Nca1 : Nca
 {
     protected KeySet KeySet { get; }
-    public IStorage BaseStorage { get; }
+    protected IStorage BaseStorage { get; }
 
     public Nca1(KeySet keySet, IStorage storage, NcaHeader? header = null)
         : base(header ?? new NcaHeader(storage))
@@ -51,22 +51,12 @@ public partial class Nca1 : Nca
         return false;
     }
 
-    public override bool SectionExists(NcaSectionType type)
-    {
-        if (!TryGetSectionIndexFromType(type, Header.ContentType, out int index))
-        {
-            return false;
-        }
-
-        return SectionExists(index);
-    }
-
-    public override bool SectionExists(int index)
+    private bool SectionExists(int index)
     {
         return Header.IsSectionEnabled(index);
     }
 
-    public override NcaFsHeader GetFsHeader(int index)
+    private NcaFsHeader GetFsHeader(int index)
     {
         if (Header.IsNca0())
             return GetNca0FsHeader(index);
@@ -93,11 +83,6 @@ public partial class Nca1 : Nca
         return BaseStorage.Slice(offset, size);
     }
 
-    public override IStorage OpenRawStorage(NcaSectionType type)
-    {
-        return OpenRawStorage(GetSectionIndexFromType(type));
-    }
-
     public override IStorage OpenRawStorage(int index)
     {
         if (Header.IsNca0())
@@ -106,7 +91,7 @@ public partial class Nca1 : Nca
         return OpenSectionStorage(index);
     }
 
-    public override IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
+    public IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
     {
         IStorage patchStorage = patchNca.OpenRawStorage(index);
         IStorage baseStorage = SectionExists(index) ? OpenRawStorage(index) : new NullStorage();
@@ -114,7 +99,7 @@ public partial class Nca1 : Nca
         patchStorage.GetSize(out long patchSize).ThrowIfFailure();
         baseStorage.GetSize(out long baseSize).ThrowIfFailure();
 
-        NcaFsHeader header = patchNca.GetFsHeader(index);
+        NcaFsHeader header = patchNca.Header.GetFsHeader(index);
         NcaFsPatchInfo patchInfo = header.GetPatchInfo();
 
         if (patchInfo.RelocationTreeSize == 0)
@@ -161,10 +146,10 @@ public partial class Nca1 : Nca
         return returnStorage;
     }
 
-    public override IStorage OpenStorageWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
+    public IStorage OpenStorageWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
     {
         IStorage rawStorage = OpenRawStorageWithPatch(patchNca, index);
-        NcaFsHeader header = patchNca.GetFsHeader(index);
+        NcaFsHeader header = patchNca.Header.GetFsHeader(index);
 
         IStorage returnStorage = rawStorage;
         if (header.HashType != NcaHashType.None)
@@ -234,10 +219,10 @@ public partial class Nca1 : Nca
         return OpenFileSystem(storage, header);
     }
 
-    public override IFileSystem OpenFileSystemWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel)
+    public IFileSystem OpenFileSystemWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel)
     {
         IStorage storage = OpenStorageWithPatch(patchNca, index, integrityCheckLevel);
-        NcaFsHeader header = patchNca.GetFsHeader(index);
+        NcaFsHeader header = patchNca.Header.GetFsHeader(index);
 
         return OpenFileSystem(storage, header);
     }

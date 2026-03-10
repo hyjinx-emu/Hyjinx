@@ -135,8 +135,7 @@ public partial class ApplicationLibrary
 
                     // Some main NCAs don't have a data partition, so check if the partition exists before opening it
                     if (nca.Header.ContentType == NcaContentType.Program &&
-                        !(nca.SectionExists(NcaSectionType.Data) &&
-                          nca.Header.GetFsHeader(dataIndex).IsPatchSection()))
+                        !(nca.CanOpenSection(NcaSectionType.Data) && nca.Header.GetFsHeader(dataIndex).IsPatchSection()))
                     {
                         hasMainNca = true;
 
