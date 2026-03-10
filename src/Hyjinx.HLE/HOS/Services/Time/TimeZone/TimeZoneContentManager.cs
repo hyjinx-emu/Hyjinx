@@ -100,7 +100,7 @@ public partial class TimeZoneContentManager
         {
             using IStorage ncaFileStream = new LocalStorage(VirtualFileSystem.SwitchPathToSystemPath(GetTimeZoneBinaryTitleContentPath()), FileAccess.Read, FileMode.Open);
 
-            Nca nca = new(_virtualFileSystem.KeySet, ncaFileStream);
+            Nca nca = new Nca1(_virtualFileSystem.KeySet, ncaFileStream);
             IFileSystem romfs = nca.OpenFileSystem(NcaSectionType.Data, _fsIntegrityCheckLevel);
 
             using var binaryListFile = new UniqueRef<IFile>();
@@ -144,7 +144,7 @@ public partial class TimeZoneContentManager
         List<(int Offset, string Location, string Abbr)> outList = new();
         var now = DateTimeOffset.Now.ToUnixTimeSeconds();
         using (IStorage ncaStorage = new LocalStorage(VirtualFileSystem.SwitchPathToSystemPath(tzBinaryContentPath), FileAccess.Read, FileMode.Open))
-        using (IFileSystem romfs = new Nca(_virtualFileSystem.KeySet, ncaStorage).OpenFileSystem(NcaSectionType.Data, _fsIntegrityCheckLevel))
+        using (IFileSystem romfs = new Nca1(_virtualFileSystem.KeySet, ncaStorage).OpenFileSystem(NcaSectionType.Data, _fsIntegrityCheckLevel))
         {
             foreach (string locName in LocationNameCache)
             {
@@ -290,7 +290,7 @@ public partial class TimeZoneContentManager
 
         ncaFile = new LocalStorage(VirtualFileSystem.SwitchPathToSystemPath(GetTimeZoneBinaryTitleContentPath()), FileAccess.Read, FileMode.Open);
 
-        Nca nca = new(_virtualFileSystem.KeySet, ncaFile);
+        Nca nca = new Nca1(_virtualFileSystem.KeySet, ncaFile);
         IFileSystem romfs = nca.OpenFileSystem(NcaSectionType.Data, _fsIntegrityCheckLevel);
 
         using var timeZoneBinaryFile = new UniqueRef<IFile>();

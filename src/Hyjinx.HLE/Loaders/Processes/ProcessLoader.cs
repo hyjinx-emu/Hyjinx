@@ -104,7 +104,7 @@ public partial class ProcessLoader(Switch device)
     private bool LoadNca(string path)
     {
         FileStream file = new(path, FileMode.Open, FileAccess.Read);
-        Nca nca = new(device.Configuration.VirtualFileSystem.KeySet, file.AsStorage(false));
+        Nca nca = new Nca1(device.Configuration.VirtualFileSystem.KeySet, file.AsStorage(false));
 
         var processResult = nca.Load(device, null, null);
 

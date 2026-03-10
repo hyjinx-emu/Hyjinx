@@ -203,7 +203,7 @@ internal static partial class ApplicationHelper
 
                     pfs.OpenFile(ref ncaFile.Ref, fileEntry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-                    Nca nca = new(_virtualFileSystem.KeySet, ncaFile.Get.AsStorage());
+                    Nca nca = new Nca1(_virtualFileSystem.KeySet, ncaFile.Get.AsStorage());
                     if (nca.Header.ContentType == NcaContentType.Program)
                     {
                         int dataIndex = Nca.GetSectionIndexFromType(NcaSectionType.Data, NcaContentType.Program);
@@ -220,7 +220,7 @@ internal static partial class ApplicationHelper
             }
             else if (extension == ".nca")
             {
-                mainNca = new Nca(_virtualFileSystem.KeySet, file.AsStorage());
+                mainNca = new Nca1(_virtualFileSystem.KeySet, file.AsStorage());
             }
 
             if (mainNca == null)

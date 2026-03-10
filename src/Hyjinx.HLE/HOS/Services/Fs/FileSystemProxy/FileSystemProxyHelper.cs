@@ -50,7 +50,7 @@ static class FileSystemProxyHelper
 
         try
         {
-            Nca nca = new(context.Device.System.KeySet, ncaStorage);
+            Nca nca = new Nca1(context.Device.System.KeySet, ncaStorage);
 
             if (!nca.SectionExists(NcaSectionType.Data))
             {

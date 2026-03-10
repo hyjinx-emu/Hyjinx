@@ -200,7 +200,7 @@ public class DownloadableContentManagerViewModel : BaseModel
     {
         try
         {
-            return new Nca(_virtualFileSystem.KeySet, ncaStorage);
+            return new Nca1(_virtualFileSystem.KeySet, ncaStorage);
         }
         catch (Exception ex)
         {

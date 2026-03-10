@@ -846,7 +846,7 @@ partial class IFileSystemProxy : DisposableIpcService<IFileSystemProxy>
                     try
                     {
                         LibHac.Fs.IStorage ncaStorage = new LocalStorage(ncaPath, FileAccess.Read, FileMode.Open);
-                        Nca nca = new(context.Device.System.KeySet, ncaStorage);
+                        Nca nca = new Nca1(context.Device.System.KeySet, ncaStorage);
                         LibHac.Fs.IStorage romfsStorage = nca.OpenStorage(NcaSectionType.Data, context.Device.System.FsIntegrityCheckLevel);
                         using var sharedStorage = new SharedRef<LibHac.Fs.IStorage>(romfsStorage);
                         using var sfStorage = new SharedRef<IStorage>(new StorageInterfaceAdapter(ref sharedStorage.Ref));

@@ -111,7 +111,7 @@ internal class UserFirmwareAvatarSelectorViewModel : BaseModel
         {
             using IStorage ncaFileStream = new LocalStorage(avatarPath, FileAccess.Read, FileMode.Open);
 
-            Nca nca = new(virtualFileSystem.KeySet, ncaFileStream);
+            Nca nca = new Nca1(virtualFileSystem.KeySet, ncaFileStream);
             IFileSystem romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
 
             foreach (DirectoryEntryEx item in romfs.EnumerateEntries())
