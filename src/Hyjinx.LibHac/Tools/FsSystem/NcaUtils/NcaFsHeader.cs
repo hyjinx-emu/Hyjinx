@@ -6,54 +6,98 @@ using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
+/// <summary>
+/// Provides a view over a memory block containing an NCA FS header.
+/// </summary>
 public class NcaFsHeader
 {
-    private readonly Memory<byte> _header;
+    /// <summary>
+    /// The parent header.
+    /// </summary>
+    public NcaHeader Parent { get; }
 
-    public NcaFsHeader(Memory<byte> headerData)
+    /// <summary>
+    /// The raw header data.
+    /// </summary>
+    /// <remarks>Use caution if modifying the raw data, as it is very easy to invalidate the header.</remarks>
+    public Memory<byte> Data { get; }
+
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <param name="parent">The parent header.</param>
+    /// <param name="data">The memory block containing the header data.</param>
+    public NcaFsHeader(NcaHeader parent, Memory<byte> data)
     {
-        _header = headerData;
+        Parent = parent;
+        Data = data;
     }
 
-    protected ref FsHeaderStruct Header => ref Unsafe.As<byte, FsHeaderStruct>(ref _header.Span[0]);
+    /// <summary>
+    /// The header structure.
+    /// </summary>
+    protected ref FsHeaderStruct Header => ref Unsafe.As<byte, FsHeaderStruct>(ref Data.Span[0]);
 
+    /// <summary>
+    /// The version.
+    /// </summary>
     public short Version
     {
         get => Header.Version;
         set => Header.Version = value;
     }
 
+    /// <summary>
+    /// The format type.
+    /// </summary>
     public NcaFormatType FormatType
     {
         get => (NcaFormatType)Header.FormatType;
         set => Header.FormatType = (byte)value;
     }
 
+    /// <summary>
+    /// The hash type.
+    /// </summary>
     public NcaHashType HashType
     {
         get => (NcaHashType)Header.HashType;
         set => Header.HashType = (byte)value;
     }
 
+    /// <summary>
+    /// The encryption type.
+    /// </summary>
     public byte EncryptionType
     {
         get => Header.EncryptionType;
         set => Header.EncryptionType = value;
     }
 
-    public NcaFsIntegrityInfoIvfc GetIntegrityInfoIvfc()
+    /// <summary>
+    /// The checksum.
+    /// </summary>
+    public Memory<byte> Checksum
     {
-        return new NcaFsIntegrityInfoIvfc(_header.Slice(IntegrityInfoOffset, IntegrityInfoSize));
+        get => Data.Slice(IntegrityInfoOffset, IntegrityInfoSize);
+        set
+        {
+            if (value.Length != IntegrityInfoSize)
+            {
+                throw new ArgumentException("The value is the wrong size.", nameof(value));
+            }
+
+            value.CopyTo(Data.Slice(IntegrityInfoOffset, IntegrityInfoSize));
+        }
     }
 
-    public NcaFsIntegrityInfoSha256 GetIntegrityInfoSha256()
-    {
-        return new NcaFsIntegrityInfoSha256(_header.Slice(IntegrityInfoOffset, IntegrityInfoSize));
-    }
-
+    /// <summary>
+    /// Gets the patch info.
+    /// </summary>
+    /// <returns>The <see cref="NcaFsPatchInfo"/> describing the patch section.</returns>
     public NcaFsPatchInfo GetPatchInfo()
     {
-        return new NcaFsPatchInfo(_header.Slice(PatchInfoOffset, PatchInfoSize));
+        return new NcaFsPatchInfo(Data.Slice(PatchInfoOffset, PatchInfoSize));
     }
 
     public bool IsPatchSection()
@@ -63,7 +107,7 @@ public class NcaFsHeader
 
     public ref NcaSparseInfo GetSparseInfo()
     {
-        return ref MemoryMarshal.Cast<byte, NcaSparseInfo>(_header.Span.Slice(SparseInfoOffset, SparseInfoSize))[0];
+        return ref MemoryMarshal.Cast<byte, NcaSparseInfo>(Data.Span.Slice(SparseInfoOffset, SparseInfoSize))[0];
     }
 
     public bool ExistsSparseLayer()
@@ -73,29 +117,11 @@ public class NcaFsHeader
 
     public ref NcaCompressionInfo GetCompressionInfo()
     {
-        return ref MemoryMarshal.Cast<byte, NcaCompressionInfo>(_header.Span.Slice(CompressionInfoOffset, CompressionInfoSize))[0];
+        return ref MemoryMarshal.Cast<byte, NcaCompressionInfo>(Data.Span.Slice(CompressionInfoOffset, CompressionInfoSize))[0];
     }
 
     public bool ExistsCompressionLayer()
     {
         return GetCompressionInfo().TableOffset != 0 && GetCompressionInfo().TableSize != 0;
-    }
-
-    public ulong Counter
-    {
-        get => Header.UpperCounter;
-        set => Header.UpperCounter = value;
-    }
-
-    public int CounterType
-    {
-        get => Header.CounterType;
-        set => Header.CounterType = value;
-    }
-
-    public int CounterVersion
-    {
-        get => Header.CounterVersion;
-        set => Header.CounterVersion = value;
     }
 }

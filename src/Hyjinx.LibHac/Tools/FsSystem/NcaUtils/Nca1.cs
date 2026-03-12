@@ -108,7 +108,7 @@ public partial class Nca1 : Nca
         }
 
         var treeHeader = new BucketTree.Header();
-        patchInfo.RelocationTreeHeader.CopyTo(SpanHelpers.AsByteSpan(ref treeHeader));
+        patchInfo.RelocationTreeHeader.Span.CopyTo(SpanHelpers.AsByteSpan(ref treeHeader));
         long nodeStorageSize = IndirectStorage.QueryNodeStorageSize(treeHeader.EntryCount);
         long entryStorageSize = IndirectStorage.QueryEntryStorageSize(treeHeader.EntryCount);
 
@@ -197,7 +197,7 @@ public partial class Nca1 : Nca
         switch (header.HashType)
         {
             case NcaHashType.Sha256:
-                return InitIvfcForPartitionFs(header.GetIntegrityInfoSha256(), rawStorage, integrityCheckLevel, true);
+                return InitIvfcForPartitionFs(new NcaFsIntegrityInfoSha256(header.Checksum), rawStorage, integrityCheckLevel, true);
             case NcaHashType.Ivfc:
                 // The FS header of an NCA0 section with IVFC verification must be manually skipped
                 if (Header.IsNca0())
@@ -205,7 +205,7 @@ public partial class Nca1 : Nca
                     rawStorage = rawStorage.Slice(0x200);
                 }
 
-                return InitIvfcForRomFs(header.GetIntegrityInfoIvfc(), rawStorage, integrityCheckLevel, true);
+                return InitIvfcForRomFs(new NcaFsIntegrityInfoIvfc(header.Checksum), rawStorage, integrityCheckLevel, true);
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -366,7 +366,7 @@ public partial class Nca1 : Nca
         byte[] fsHeaderData = new byte[0x200];
         bodyStorage.Read(offset, fsHeaderData).ThrowIfFailure();
 
-        return new NcaFsHeader(fsHeaderData);
+        return new NcaFsHeader(Header, fsHeaderData);
     }
 
     private static bool IsSubRange(long startIndex, long subLength, long length)

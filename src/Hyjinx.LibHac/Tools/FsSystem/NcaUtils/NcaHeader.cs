@@ -1,10 +1,7 @@
 using LibHac.Common;
-using LibHac.Crypto;
-using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Util;
 using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
@@ -129,13 +126,19 @@ public partial class NcaHeader
         _ => NcaVersion.Unknown
     };
 
+    /// <summary>
+    /// The sdk version.
+    /// </summary>
     public uint SdkVersion
     {
         get => Header.SdkVersion;
         set => Header.SdkVersion = value;
     }
 
-    public TitleVersion SdkTitleVersion => new(SdkVersion);
+    /// <summary>
+    /// Indicates whether a rights id is present.
+    /// </summary>
+    public bool HasRightsId => !RightsId.IsZeros();
 
     /// <summary>
     /// The rights id.
@@ -154,11 +157,16 @@ public partial class NcaHeader
         }
     }
 
-    private ref NcaSectionEntryStruct GetSectionEntry(int index)
+    /// <summary>
+    /// Gets the section entry.
+    /// </summary>
+    /// <param name="index">The zero-based index of the section to retrieve.</param>
+    /// <returns>A reference to the <see cref="NcaSectionEntryStruct"/> describing the section entry.</returns>
+    internal ref NcaSectionEntryStruct GetSectionEntry(int index)
     {
         ValidateSectionIndex(index);
 
-        int offset = SectionEntriesOffset + SectionEntrySize * index;
+        int offset = SectionEntriesOffset + (index * SectionEntrySize);
         return ref Unsafe.As<byte, NcaSectionEntryStruct>(ref Buffer.Span[offset]);
     }
 
@@ -178,46 +186,34 @@ public partial class NcaHeader
         return BlockToOffset(info.EndBlock - info.StartBlock);
     }
 
-    public bool IsSectionEnabled(int index)
-    {
-        ref NcaSectionEntryStruct info = ref GetSectionEntry(index);
-
-        int sectStart = info.StartBlock;
-        int sectSize = info.EndBlock - sectStart;
-        return sectStart != 0 || sectSize != 0;
-    }
-
     public Span<byte> GetFsHeaderHash(int index)
     {
         ValidateSectionIndex(index);
 
-        int offset = FsHeaderHashOffset + FsHeaderHashSize * index;
+        int offset = FsHeaderHashOffset + (index * FsHeaderHashSize);
         return Buffer.Span.Slice(offset, FsHeaderHashSize);
     }
 
+    /// <summary>
+    /// Gets the NCA FS header.
+    /// </summary>
+    /// <param name="index">The zero-based index of the FS header.</param>
+    /// <returns>The header.</returns>
     public NcaFsHeader GetFsHeader(int index)
     {
-        Span<byte> expectedHash = GetFsHeaderHash(index);
+        ValidateSectionIndex(index);
 
-        int offset = FsHeadersOffset + FsHeaderSize * index;
+        int offset = FsHeadersOffset + (index * FsHeaderSize);
         Memory<byte> headerData = Buffer.Slice(offset, FsHeaderSize);
 
-        Span<byte> actualHash = stackalloc byte[Sha256.DigestSize];
-        Sha256.GenerateSha256Hash(headerData.Span, actualHash);
-
-        if (!Utilities.SpansEqual(expectedHash, actualHash))
-        {
-            throw new InvalidDataException("FS header hash is invalid.");
-        }
-
-        return new NcaFsHeader(headerData);
+        return new NcaFsHeader(this, headerData);
     }
 
-    private static void ValidateSectionIndex(int index)
+    protected static void ValidateSectionIndex(int index)
     {
         if (index < 0 || index >= SectionCount)
         {
-            throw new ArgumentOutOfRangeException($"NCA section index must be between 0 and 3. Actual: {index}");
+            throw new ArgumentOutOfRangeException($"The section index is invalid. Actual: {index}");
         }
     }
 
@@ -228,23 +224,17 @@ public partial class NcaHeader
 
     private static bool CheckIsDecrypted(ReadOnlySpan<byte> header)
     {
-        Assert.SdkRequiresGreaterEqual(header.Length, 0x400);
-
         // Check the magic value
         if (header[0x200] != 'N' || header[0x201] != 'C' || header[0x202] != 'A')
+        {
             return false;
+        }
 
         // Check the version in the magic value
         if (!StringUtils.IsDigit(header[0x203]))
+        {
             return false;
-
-        // Is the distribution type valid?
-        if (header[0x204] > (int)DistributionType.GameCard)
-            return false;
-
-        // Is the content type valid?
-        if (header[0x205] > (int)NcaContentType.PublicData)
-            return false;
+        }
 
         return true;
     }

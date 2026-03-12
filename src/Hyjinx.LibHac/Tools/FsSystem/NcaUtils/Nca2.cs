@@ -1,4 +1,5 @@
 using LibHac.Common;
+using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
@@ -15,9 +16,9 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// <summary>
 /// Provides a mechanism to interact with basic content archive (NCA) files.
 /// </summary>
-public class BasicNca2 : Nca2<NcaHeader, NcaFsHeader2>
+public class BasicNca2 : Nca2<NcaHeader, NcaFsHeader>
 {
-    private BasicNca2(Stream stream, NcaHeader header, Dictionary<NcaSectionType, NcaFsHeader2> sections)
+    private BasicNca2(Stream stream, NcaHeader header, Dictionary<NcaSectionType, SectionDescription> sections)
         : base(stream, header, sections) { }
 
     /// <summary>
@@ -35,12 +36,21 @@ public class BasicNca2 : Nca2<NcaHeader, NcaFsHeader2>
         byte[] buffer = new byte[HeaderSize];
         stream.ReadExactly(buffer);
 
-        // Deserialize the header.
         var header = new NcaHeader(buffer);
-
-        // Deserialize the entries.
-        var entriesDeserializer = new NcaFsHeader2Deserializer(header);
-        var entries = entriesDeserializer.Deserialize(buffer);
+        var entries = ReadSections(header, sectionIndex =>
+        {
+            var fsHeader = header.GetFsHeader(sectionIndex);
+            var hash = header.GetFsHeaderHash(sectionIndex);
+            
+            return new SectionDescription
+            {
+                SectionIndex = sectionIndex,
+                FsHeader = fsHeader,
+                SectionStartOffset = header.GetSectionStartOffset(sectionIndex),
+                SectionSize = header.GetSectionSize(sectionIndex),
+                HashValidity = CryptoUtil.CheckSha256Hash(fsHeader.Data.Span, hash)
+            };
+        });
 
         return new BasicNca2(stream, header, entries);
     }
@@ -105,7 +115,7 @@ public abstract class Nca2
 /// <typeparam name="TFsHeader">The type of file entry header.</typeparam>
 public abstract class Nca2<THeader, TFsHeader> : Nca2
     where THeader : NcaHeader
-    where TFsHeader : NcaFsHeader2
+    where TFsHeader : NcaFsHeader
 {
     /// <summary>
     /// Gets the header.
@@ -115,7 +125,38 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
     /// <summary>
     /// Gets the sections.
     /// </summary>
-    public IDictionary<NcaSectionType, TFsHeader> Sections { get; }
+    public IDictionary<NcaSectionType, SectionDescription> Sections { get; }
+
+    /// <summary>
+    /// Describes a section.
+    /// </summary>
+    public class SectionDescription
+    {
+        /// <summary>
+        /// The NCA FS header.
+        /// </summary>
+        public required TFsHeader FsHeader { get; init; }
+
+        /// <summary>
+        /// The zero-based index of the section.
+        /// </summary>
+        public required int SectionIndex { get; init; }
+
+        /// <summary>
+        /// The section start offset.
+        /// </summary>
+        public required long SectionStartOffset { get; init; }
+
+        /// <summary>
+        /// The section size.
+        /// </summary>
+        public required long SectionSize { get; init; }
+
+        /// <summary>
+        /// The validity of the section.
+        /// </summary>
+        public required Validity HashValidity { get; set; }
+    }
 
     /// <summary>
     /// Initializes an instance of the class.
@@ -123,26 +164,57 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
     /// <param name="stream">The stream containing the NCA contents.</param>
     /// <param name="header">The file header of the archive.</param>
     /// <param name="sections">The sections within the archive.</param>
-    protected Nca2(Stream stream, THeader header, Dictionary<NcaSectionType, TFsHeader> sections)
+    protected Nca2(Stream stream, THeader header, Dictionary<NcaSectionType, SectionDescription> sections)
         : base(stream)
     {
         Header = header;
         Sections = sections.AsReadOnly();
     }
 
+    /// <summary>
+    /// Reads the sections from the header.
+    /// </summary>
+    /// <param name="header">The header.</param>
+    /// <param name="factory">The factory used to process and create the section description.</param>
+    /// <returns>The section types present, and their descriptions.</returns>
+    /// <exception cref="NotSupportedException">The section found could not be determined.</exception>
+    protected static Dictionary<NcaSectionType, SectionDescription> ReadSections(THeader header, Func<int, SectionDescription> factory)
+    {
+        var entries = new Dictionary<NcaSectionType, SectionDescription>();
+
+        for (var sectionIndex = 0; sectionIndex < SectionCount; sectionIndex++)
+        {
+            // Find the FsEntry from the raw header for this section
+            scoped ref var fsEntry = ref header.GetSectionEntry(sectionIndex);
+            if (!fsEntry.IsEnabled || fsEntry.StartBlock == 0 || fsEntry.EndBlock - fsEntry.StartBlock <= 0)
+            {
+                continue;
+            }
+
+            if (!Nca.TryGetSectionTypeFromIndex(sectionIndex, header.ContentType, out var sectionType))
+            {
+                throw new NotSupportedException($"The section type could not be determined. (Index: {sectionIndex}, ContentType: {header.ContentType})");
+            }
+
+            entries[sectionType] = factory(sectionIndex);
+        }
+
+        return entries;
+    }
+
     public override IFileSystem2 OpenFileSystem(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
     {
-        if (!Sections.TryGetValue(section, out var fsHeader))
+        if (!Sections.TryGetValue(section, out var description))
         {
             throw new ArgumentException($"The section '{section}' does not exist.", nameof(section));
         }
 
-        var storage = OpenStorageCore(fsHeader, integrityCheckLevel);
-        return fsHeader.FormatType switch
+        var storage = OpenStorageCore(description, integrityCheckLevel);
+        return description.FsHeader.FormatType switch
         {
             NcaFormatType.Pfs0 => CreateFileSystemForPfs0(storage),
             NcaFormatType.RomFs => CreateFileSystemForRomFs(storage),
-            _ => throw new NotSupportedException($"The format {fsHeader.FormatType} is not supported.")
+            _ => throw new NotSupportedException($"The format {description.FsHeader.FormatType} is not supported.")
         };
     }
 
@@ -166,16 +238,20 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         return OpenStorageCore(fsHeader, integrityCheckLevel);
     }
 
-    private IStorage2 OpenStorageCore(TFsHeader fsHeader, IntegrityCheckLevel integrityCheckLevel)
+    private IStorage2 OpenStorageCore(SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
     {
-        var result = OpenRawStorage(fsHeader, integrityCheckLevel);
+        var result = OpenRawStorage(description, integrityCheckLevel);
 
-        if (fsHeader.HashType != NcaHashType.None)
+        if (description.FsHeader.HashType != NcaHashType.None)
         {
-            result = CreateVerificationStorage(result, integrityCheckLevel, fsHeader);
+            result = CreateVerificationStorage(result, integrityCheckLevel, description);
         }
 
-        // TODO: Viper - Add compression support.
+        // TODO: Viper - Add decompression support.
+        if (description.FsHeader.ExistsCompressionLayer())
+        {
+            throw new NotSupportedException("Compressed archives are not currently supported.");
+        }
 
         return result;
     }
@@ -183,13 +259,13 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
     /// <summary>
     /// Opens the raw storage.
     /// </summary>
-    /// <param name="fsHeader">The header of the storage entry.</param>
+    /// <param name="description">The description of the storage entry.</param>
     /// <param name="integrityCheckLevel">The <see cref="IntegrityCheckLevel"/> to enforce.</param>
     /// <returns>The <see cref="IStorage2"/> instance.</returns>
     /// <exception cref="InvalidHashDetectedException">The header hash did not match the expected value.</exception>
-    protected virtual IStorage2 OpenRawStorage(TFsHeader fsHeader, IntegrityCheckLevel integrityCheckLevel)
+    protected virtual IStorage2 OpenRawStorage(SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
     {
-        if (integrityCheckLevel is IntegrityCheckLevel.ErrorOnInvalid && fsHeader.HashValidity is not Validity.Valid)
+        if (integrityCheckLevel is IntegrityCheckLevel.ErrorOnInvalid && description.HashValidity is not Validity.Valid)
         {
             throw new InvalidHashDetectedException("The header hash does not match the expected value.");
         }
@@ -198,7 +274,7 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
 
         try
         {
-            return SubStorage2.Create(rootStorage, fsHeader.SectionStartOffset, fsHeader.SectionSize);
+            return SubStorage2.Create(rootStorage, description.SectionStartOffset, description.SectionSize);
         }
         catch (Exception)
         {
@@ -207,19 +283,19 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         }
     }
 
-    private IStorage2 CreateVerificationStorage(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader)
+    private IStorage2 CreateVerificationStorage(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
     {
-        return fsHeader.HashType switch
+        return description.FsHeader.HashType switch
         {
-            NcaHashType.Sha256 => CreateIvfcForPartitionFs(baseStorage, integrityCheckLevel, fsHeader),
-            NcaHashType.Ivfc => CreateIvfcStorageForRomFs(baseStorage, integrityCheckLevel, fsHeader),
-            _ => throw new NotSupportedException($"The hash type '{fsHeader.HashType}' is not supported.")
+            NcaHashType.Sha256 => CreateIvfcForPartitionFs(baseStorage, integrityCheckLevel, description),
+            NcaHashType.Ivfc => CreateIvfcStorageForRomFs(baseStorage, integrityCheckLevel, description),
+            _ => throw new NotSupportedException($"The hash type '{description.FsHeader.HashType}' is not supported.")
         };
     }
 
-    private IStorage2 CreateIvfcForPartitionFs(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader)
+    private IStorage2 CreateIvfcForPartitionFs(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
     {
-        var ivfc = new NcaFsIntegrityInfoSha256(fsHeader.Checksum);
+        var ivfc = new NcaFsIntegrityInfoSha256(description.FsHeader.Checksum);
 
         IStorage2 result = MemoryStorage2.Create(ivfc.MasterHash);
 
@@ -248,9 +324,9 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         }
     }
 
-    private IStorage2 CreateIvfcStorageForRomFs(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, TFsHeader fsHeader)
+    private IStorage2 CreateIvfcStorageForRomFs(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
     {
-        var ivfc = new NcaFsIntegrityInfoIvfc(fsHeader.Checksum);
+        var ivfc = new NcaFsIntegrityInfoIvfc(description.FsHeader.Checksum);
 
         // Creates a nested set of storages based on the master hash being the root, with the final
         // result being the actual section storing the data to be used.
