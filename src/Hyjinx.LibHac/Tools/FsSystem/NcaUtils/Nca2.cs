@@ -41,7 +41,7 @@ public class BasicNca2 : Nca2<NcaHeader, NcaFsHeader>
         {
             var fsHeader = header.GetFsHeader(sectionIndex);
             var hash = header.GetFsHeaderHash(sectionIndex);
-            
+
             return new SectionDescription
             {
                 SectionIndex = sectionIndex,
