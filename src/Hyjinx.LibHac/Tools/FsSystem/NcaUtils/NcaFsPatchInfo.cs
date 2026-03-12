@@ -10,7 +10,7 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// <remarks>For more information, see: https://switchbrew.org/wiki/NCA#PatchInfo</remarks>
 public class NcaFsPatchInfo
 {
-    private readonly Memory<byte> _data;
+    private readonly Memory<byte> data;
 
     /// <summary>
     /// Creates an instance of the class.
@@ -18,10 +18,10 @@ public class NcaFsPatchInfo
     /// <param name="data">The patch info data.</param>
     public NcaFsPatchInfo(Memory<byte> data)
     {
-        _data = data;
+        this.data = data;
     }
 
-    private ref NcaFsPatchInfoStruct Data => ref Unsafe.As<byte, NcaFsPatchInfoStruct>(ref _data.Span[0]);
+    private ref NcaFsPatchInfoStruct Data => ref Unsafe.As<byte, NcaFsPatchInfoStruct>(ref data.Span[0]);
 
     /// <summary>
     /// The relocation tree offset.
@@ -44,7 +44,19 @@ public class NcaFsPatchInfo
     /// <summary>
     /// The raw relocation tree header.
     /// </summary>
-    public Memory<byte> RelocationTreeHeader => _data.Slice(0x10, 0x10);
+    public Memory<byte> RelocationTreeHeader
+    {
+        get => data.Slice(0x10, 0x10);
+        set
+        {
+            if (value.Length != 0x10)
+            {
+                throw new ArgumentException("The value is the wrong size.", nameof(value));
+            }
+
+            value.CopyTo(data.Slice(0x10, 0x10));
+        }
+    }
 
     /// <summary>
     /// The encryption tree offset.
@@ -67,5 +79,17 @@ public class NcaFsPatchInfo
     /// <summary>
     /// The raw encryption tree header.
     /// </summary>
-    public Memory<byte> EncryptionTreeHeader => _data.Slice(0x30, 0x10);
+    public Memory<byte> EncryptionTreeHeader
+    {
+        get => data.Slice(0x30, 0x10);
+        set
+        {
+            if (value.Length != 0x10)
+            {
+                throw new ArgumentException("The value is the wrong size.", nameof(value));
+            }
+
+            value.CopyTo(data.Slice(0x30, 0x10));
+        }
+    }
 }
