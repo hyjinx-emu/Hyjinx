@@ -102,10 +102,10 @@ public abstract class Nca2
     /// </summary>
     /// <param name="section">The section.</param>
     /// <param name="integrityCheckLevel">The integrity check level to enforce when opening the section. Unused for sections which do not support hash verification.</param>
-    /// <returns>The new <see cref="IStorage2"/> instance.</returns>
+    /// <returns>The new <see cref="IStorage"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
     /// <exception cref="NotSupportedException">The encryption format used by <paramref name="section"/> is not supported.</exception>
-    public abstract IStorage2 OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel);
+    public abstract IStorage OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel);
 }
 
 /// <summary>
@@ -218,17 +218,17 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         };
     }
 
-    private IFileSystem2 CreateFileSystemForPfs0(IStorage2 storage)
+    private IFileSystem2 CreateFileSystemForPfs0(IStorage storage)
     {
         return PartitionFileSystem2.Create(storage);
     }
 
-    private IFileSystem2 CreateFileSystemForRomFs(IStorage2 storage)
+    private IFileSystem2 CreateFileSystemForRomFs(IStorage storage)
     {
         return RomFsFileSystem2.Create(storage);
     }
 
-    public override IStorage2 OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
+    public override IStorage OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
     {
         if (!Sections.TryGetValue(section, out var fsHeader))
         {
@@ -238,7 +238,7 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         return OpenStorageCore(fsHeader, integrityCheckLevel);
     }
 
-    private IStorage2 OpenStorageCore(SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
+    private IStorage OpenStorageCore(SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
     {
         var result = OpenRawStorage(description, integrityCheckLevel);
 
@@ -261,9 +261,9 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
     /// </summary>
     /// <param name="description">The description of the storage entry.</param>
     /// <param name="integrityCheckLevel">The <see cref="IntegrityCheckLevel"/> to enforce.</param>
-    /// <returns>The <see cref="IStorage2"/> instance.</returns>
+    /// <returns>The <see cref="IStorage"/> instance.</returns>
     /// <exception cref="InvalidHashDetectedException">The header hash did not match the expected value.</exception>
-    protected virtual IStorage2 OpenRawStorage(SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
+    protected virtual IStorage OpenRawStorage(SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
     {
         if (integrityCheckLevel is IntegrityCheckLevel.ErrorOnInvalid && description.HashValidity is not Validity.Valid)
         {
@@ -283,7 +283,7 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         }
     }
 
-    private IStorage2 CreateVerificationStorage(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
+    private IStorage CreateVerificationStorage(IStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
     {
         return description.FsHeader.HashType switch
         {
@@ -293,11 +293,11 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         };
     }
 
-    private IStorage2 CreateIvfcForPartitionFs(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
+    private IStorage CreateIvfcForPartitionFs(IStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
     {
         var ivfc = new NcaFsIntegrityInfoSha256(description.FsHeader.Checksum);
 
-        IStorage2 result = MemoryStorage2.Create(ivfc.MasterHash);
+        IStorage result = MemoryStorage2.Create(ivfc.MasterHash);
 
         try
         {
@@ -324,13 +324,13 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
         }
     }
 
-    private IStorage2 CreateIvfcStorageForRomFs(IStorage2 baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
+    private IStorage CreateIvfcStorageForRomFs(IStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
     {
         var ivfc = new NcaFsIntegrityInfoIvfc(description.FsHeader.Checksum);
 
         // Creates a nested set of storages based on the master hash being the root, with the final
         // result being the actual section storing the data to be used.
-        IStorage2 result = MemoryStorage2.Create(ivfc.MasterHash);
+        IStorage result = MemoryStorage2.Create(ivfc.MasterHash);
 
         try
         {

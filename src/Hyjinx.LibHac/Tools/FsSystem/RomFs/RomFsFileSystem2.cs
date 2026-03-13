@@ -14,7 +14,7 @@ namespace LibHac.Tools.FsSystem.RomFs;
 /// </summary>
 public partial class RomFsFileSystem2 : FileSystem2
 {
-    private readonly IStorage2 _baseStorage;
+    private readonly IStorage _baseStorage;
 
     private readonly RomFsIndex<DirectoryNodeInfo> _directoriesIndex;
     private readonly RomFsIndex<FileNodeInfo> _filesIndex;
@@ -33,7 +33,7 @@ public partial class RomFsFileSystem2 : FileSystem2
         public int FirstSubDirectoryOffset { get; init; }
     }
 
-    private RomFsFileSystem2(IStorage2 baseStorage, RomFsIndex<DirectoryNodeInfo> directoriesIndex, RomFsIndex<FileNodeInfo> fileIndex, long dataOffset)
+    private RomFsFileSystem2(IStorage baseStorage, RomFsIndex<DirectoryNodeInfo> directoriesIndex, RomFsIndex<FileNodeInfo> fileIndex, long dataOffset)
     {
         _baseStorage = baseStorage;
         _directoriesIndex = directoriesIndex;
@@ -47,7 +47,7 @@ public partial class RomFsFileSystem2 : FileSystem2
     /// </summary>
     /// <param name="baseStorage">The base storage for the file system.</param>
     /// <returns>The new <see cref="RomFsFileSystem2"/> instance.</returns>
-    public static RomFsFileSystem2 Create(IStorage2 baseStorage)
+    public static RomFsFileSystem2 Create(IStorage baseStorage)
     {
         var header = RomFsHeader2.Read(baseStorage);
 

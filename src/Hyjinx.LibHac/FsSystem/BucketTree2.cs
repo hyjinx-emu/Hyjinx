@@ -2,7 +2,6 @@ using LibHac.Fs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -138,18 +137,6 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
     }
 
     /// <summary>
-    /// Writes the entries to the debug output.
-    /// </summary>
-    [Conditional("DEBUG")]
-    public void WriteToDebug()
-    {
-        for (var i = 0; i < _entries.Count; i++)
-        {
-            Debug.WriteLine($"[BucketTree2:{typeof(TEntry).Name}] Entry {i}: {_entries[i]}");
-        }
-    }
-
-    /// <summary>
     /// Creates a bucket tree.
     /// </summary>
     /// <param name="baseStorage">The base storage with the bucket tree data.</param>
@@ -157,7 +144,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
     /// <returns>The new instance.</returns>
     /// <exception cref="ArgumentException">The definition does not match the expected values.</exception>
     /// <exception cref="InvalidOperationException">The bucket tree validation failed.</exception>
-    public static BucketTree2<TEntry> Create(IStorage2 baseStorage, BucketTreeDefinition definition)
+    public static BucketTree2<TEntry> Create(IStorage baseStorage, BucketTreeDefinition definition)
     {
         if (definition.Header.HeaderSignature != HeaderSignature)
         {

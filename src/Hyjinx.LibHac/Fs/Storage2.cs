@@ -3,12 +3,10 @@ using System;
 namespace LibHac.Fs;
 
 /// <summary>
-/// A base <see cref="IStorage2"/> implementation. This class must be inherited.
+/// A base <see cref="IStorage"/> implementation. This class must be inherited.
 /// </summary>
-public abstract partial class Storage2 : IStorage2
+public abstract class Storage2 : IStorage
 {
-    public abstract long Size { get; }
-
     ~Storage2()
     {
         Dispose(false);
@@ -25,19 +23,21 @@ public abstract partial class Storage2 : IStorage2
         // This method intentionally left blank.
     }
 
-    public void Read(long offset, Span<byte> buffer)
+    public Result Read(long offset, Span<byte> destination)
     {
         if (offset < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(offset), "The value cannot be less than zero.");
         }
 
-        if (offset + buffer.Length > Size)
+        GetSize(out var size).ThrowIfFailure();
+        if (offset + destination.Length > size)
         {
-            throw new ArgumentOutOfRangeException(nameof(buffer), "The size of the buffer exceeds the remaining storage capacity.");
+            throw new ArgumentOutOfRangeException(nameof(destination), "The size of the destination exceeds the remaining storage capacity.");
         }
 
-        ReadCore(offset, buffer);
+        ReadCore(offset, destination);
+        return Result.Success;
     }
 
     /// <summary>
@@ -46,4 +46,31 @@ public abstract partial class Storage2 : IStorage2
     /// <param name="offset">The zero-based offset which to seek.</param>
     /// <param name="buffer">The buffer which should receive the data.</param>
     protected abstract void ReadCore(long offset, Span<byte> buffer);
+
+    public Result Write(long offset, ReadOnlySpan<byte> source)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    public Result Flush()
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    public abstract Result GetSize(out long size);
+
+    public Result SetSize(long size)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    public Result OperateRange(Span<byte> outBuffer, OperationId operationId, long offset, long size, ReadOnlySpan<byte> inBuffer)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    public Result OperateRange(OperationId operationId, long offset, long size)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
 }

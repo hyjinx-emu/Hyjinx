@@ -84,7 +84,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     /// <summary>
     /// Gets the base storage.
     /// </summary>
-    protected IStorage2 BaseStorage { get; }
+    protected IStorage BaseStorage { get; }
 
     /// <summary>
     /// Gets the header.
@@ -96,7 +96,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     /// </summary>
     /// <param name="baseStorage">The base storage of the file system.</param>
     /// <param name="header">The header.</param>
-    protected PartitionFileSystem2(IStorage2 baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
+    protected PartitionFileSystem2(IStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
     {
         BaseStorage = baseStorage;
         Header = header;
@@ -189,7 +189,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
 /// </summary>
 public partial class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemFormat.PartitionEntry>
 {
-    private PartitionFileSystem2(IStorage2 baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
+    private PartitionFileSystem2(IStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
         : base(baseStorage, header) { }
 
     /// <summary>
@@ -198,7 +198,7 @@ public partial class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSy
     /// <param name="baseStorage">The base storage for the file system.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="InvalidOperationException">The header size read was not the expected size.</exception>
-    public static PartitionFileSystem2 Create(IStorage2 baseStorage)
+    public static PartitionFileSystem2 Create(IStorage baseStorage)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
 

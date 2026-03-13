@@ -11,7 +11,7 @@ namespace LibHac.FsSystem;
 /// </summary>
 public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFileSystemFormat.PartitionEntry>
 {
-    private Sha256PartitionFileSystem2(IStorage2 baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
+    private Sha256PartitionFileSystem2(IStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
         : base(baseStorage, header) { }
 
     /// <summary>
@@ -20,7 +20,7 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
     /// <param name="baseStorage">The base storage for the file system.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="InvalidOperationException">The header size read was not the expected size.</exception>
-    public static Sha256PartitionFileSystem2 Create(IStorage2 baseStorage)
+    public static Sha256PartitionFileSystem2 Create(IStorage baseStorage)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
 

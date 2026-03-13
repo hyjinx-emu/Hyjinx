@@ -15,10 +15,10 @@ namespace LibHac.Tools.FsSystem.RomFs;
 internal sealed class RomFsIndex<T>
     where T : unmanaged, IRomFsIndexNode
 {
-    private readonly IStorage2 _entryStorage;
+    private readonly IStorage _entryStorage;
     private readonly int _entrySize;
 
-    private RomFsIndex(IStorage2 entryStorage)
+    private RomFsIndex(IStorage entryStorage)
     {
         _entryStorage = entryStorage;
         _entrySize = Unsafe.SizeOf<RomFsEntry>();
@@ -51,7 +51,7 @@ internal sealed class RomFsIndex<T>
     /// <param name="baseStorage">The base storage with the index data.</param>
     /// <param name="definition">The definition of the index.</param>
     /// <returns>The new instance.</returns>
-    public static RomFsIndex<T> Create(IStorage2 baseStorage, RomFsIndexDefinition definition)
+    public static RomFsIndex<T> Create(IStorage baseStorage, RomFsIndexDefinition definition)
     {
         using var arr = new RentedArray2<byte>((int)definition.RootTableSize);
         baseStorage.Read(definition.RootTableOffset, arr.Span);

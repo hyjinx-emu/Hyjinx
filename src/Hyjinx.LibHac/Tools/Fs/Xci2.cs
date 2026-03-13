@@ -42,12 +42,13 @@ public class Xci2
     public static Xci2 Create(Stream stream)
     {
         var storage = StreamStorage2.Create(stream);
+        storage.GetSize(out var storageSize).ThrowIfFailure();
 
         try
         {
             var header = new XciHeader(stream);
 
-            var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storage.Size - header.RootPartitionOffset));
+            var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
 
             return new Xci2(stream, rootFs, header);
         }

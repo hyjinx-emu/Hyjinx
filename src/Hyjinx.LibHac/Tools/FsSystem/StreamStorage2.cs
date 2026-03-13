@@ -5,14 +5,12 @@ using System.IO;
 namespace LibHac.Tools.FsSystem;
 
 /// <summary>
-/// An <see cref="IStorage2"/> which wraps a <see cref="Stream"/>.
+/// An <see cref="IStorage"/> which wraps a <see cref="Stream"/>.
 /// </summary>
 public class StreamStorage2 : Storage2
 {
     private readonly Stream _stream;
     private readonly bool _leaveOpen;
-
-    public override long Size => _stream.Length;
 
     private StreamStorage2(Stream stream, bool leaveOpen = true)
     {
@@ -40,6 +38,12 @@ public class StreamStorage2 : Storage2
         }
 
         return new StreamStorage2(stream, leaveOpen);
+    }
+
+    public override Result GetSize(out long size)
+    {
+        size = _stream.Length;
+        return Result.Success;
     }
 
     protected override void ReadCore(long offset, Span<byte> buffer)
