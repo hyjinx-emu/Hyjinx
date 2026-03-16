@@ -1,5 +1,4 @@
 using LibHac.Common;
-using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
@@ -14,57 +13,25 @@ using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 /// <summary>
-/// Represents a basic NCA file.
-/// </summary>
-public class BasicNca2 : Nca2<NcaHeader, NcaFsHeader>
-{
-    private BasicNca2(Stream stream, NcaHeader header, Dictionary<NcaSectionType, SectionDescription> sections)
-        : base(stream, header, sections) { }
-
-    /// <summary>
-    /// Creates an <see cref="BasicNca2"/>.
-    /// </summary>
-    /// <param name="stream">The <see cref="Stream"/> to use.</param>
-    /// <returns>The new <see cref="BasicNca2"/>.</returns>
-    public static BasicNca2 Create(Stream stream)
-    {
-        if (stream.Length < HeaderSize)
-        {
-            throw new NotSupportedException("The stream contains less bytes than expected.");
-        }
-
-        byte[] buffer = new byte[HeaderSize];
-        stream.ReadExactly(buffer);
-
-        var header = new NcaHeader(buffer);
-        var entries = ReadSections(header, sectionIndex =>
-        {
-            var fsHeader = header.GetFsHeader(sectionIndex);
-            var hash = header.GetFsHeaderHash(sectionIndex);
-
-            return new SectionDescription
-            {
-                SectionIndex = sectionIndex,
-                FsHeader = fsHeader,
-                SectionStartOffset = header.GetSectionStartOffset(sectionIndex),
-                SectionSize = header.GetSectionSize(sectionIndex),
-                HashValidity = CryptoUtil.CheckSha256Hash(fsHeader.Data.Span, hash)
-            };
-        });
-
-        return new BasicNca2(stream, header, entries);
-    }
-}
-
-/// <summary>
 /// Represents an NCA file.
 /// </summary>
-public abstract partial class Nca2
+public abstract partial class Nca2 : Nca
 {
     /// <summary>
     /// Gets the underlying stream for the NCA file.
     /// </summary>
     protected Stream UnderlyingStream { get; }
+
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <param name="stream">The stream containing the NCA contents.</param>
+    /// <param name="header">The header.</param>
+    protected Nca2(Stream stream, NcaHeader header)
+        : base(header)
+    {
+        UnderlyingStream = stream;
+    }
 
     /// <summary>
     /// Copies the entire archive to a destination.
@@ -140,7 +107,7 @@ public abstract partial class Nca2<THeader, TFsHeader> : Nca2
     }
 
     /// <summary>
-    /// Initializes an instance of the class.
+    /// Creates an instance of the class.
     /// </summary>
     /// <param name="stream">The stream containing the NCA contents.</param>
     /// <param name="header">The file header of the archive.</param>
