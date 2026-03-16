@@ -23,7 +23,7 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v4
@@ -43,7 +43,7 @@ jobs:
           
       - name: Upload report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reports
           path: ./*-report.json
