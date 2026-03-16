@@ -33,9 +33,9 @@ public readonly struct PartitionFileSystemLayout
     public int NameTableOffset { get; init; }
 
     /// <summary>
-    /// The total size of the metadata.
+    /// The offset upon which the data has been stored.
     /// </summary>
-    public int MetadataSize { get; init; }
+    public int DataOffset { get; init; }
 }
 
 /// <summary>
@@ -116,7 +116,7 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
             FsHeaderSize = fsHeaderSize,
             EntryHeaderSize = entryHeaderSize,
             NameTableOffset = nameTableOffset,
-            MetadataSize = nameTableOffset + Header.NameTableSize
+            DataOffset = nameTableOffset + Header.NameTableSize
         };
 
         var index = 0;
@@ -233,7 +233,7 @@ public partial class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSy
             FullName = fullName,
             EntryType = DirectoryEntryType.File,
             Length = entry.Size,
-            Offset = entry.Offset + layout.MetadataSize
+            Offset = entry.Offset + layout.DataOffset
         };
     }
 

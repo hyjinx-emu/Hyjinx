@@ -148,7 +148,11 @@ public partial class Nca
         IStorage rawStorage = OpenRawStorage(index);
         NcaFsHeader header = GetFsHeader(index);
 
-        IStorage returnStorage = CreateVerificationStorage(integrityCheckLevel, header, rawStorage);
+        IStorage returnStorage = rawStorage;
+        if (header.HashType != NcaHashType.None)
+        {
+            returnStorage = CreateVerificationStorage(integrityCheckLevel, header, returnStorage);
+        }
 
         if (!leaveCompressed && header.ExistsCompressionLayer())
         {
@@ -163,7 +167,11 @@ public partial class Nca
         IStorage rawStorage = OpenRawStorageWithPatch(patchNca, index);
         NcaFsHeader header = patchNca.GetFsHeader(index);
 
-        IStorage returnStorage = CreateVerificationStorage(integrityCheckLevel, header, rawStorage);
+        IStorage returnStorage = rawStorage;
+        if (header.HashType != NcaHashType.None)
+        {
+            returnStorage = CreateVerificationStorage(integrityCheckLevel, header, returnStorage);
+        }
 
         if (!leaveCompressed && header.ExistsCompressionLayer())
         {

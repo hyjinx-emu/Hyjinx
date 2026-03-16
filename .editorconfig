@@ -9,9 +9,10 @@ root = true
 charset = utf-8
 
 # Indentation and spacing
-indent_size = 4
+indent_size = 2
 indent_style = space
-tab_width = 4
+tab_width = 2
+trim_trailing_whitespace = true
 
 # New line preferences
 end_of_line = lf
@@ -20,12 +21,11 @@ insert_final_newline = false
 # Markdown, JSON, YAML, props and csproj files
 [*.{md,json,yml,props,csproj}]
 
-# Indentation and spacing
-indent_size = 2
-tab_width = 2
-
 # C# files
 [*.cs]
+indent_size = 4
+indent_style = space
+tab_width = 4
 
 #### .NET Coding Conventions ####
 
@@ -74,6 +74,7 @@ dotnet_style_readonly_field = true:suggestion
 dotnet_code_quality_unused_parameters = all:silent
 
 #### C# Coding Conventions ####
+csharp_style_allow_blank_lines_between_consecutive_braces = true
 
 # Namespace preferences
 csharp_style_namespace_declarations = file_scoped:warning

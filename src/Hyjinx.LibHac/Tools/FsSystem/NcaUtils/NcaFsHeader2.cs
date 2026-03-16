@@ -15,6 +15,11 @@ public record NcaFsHeader2
     public short Version { get; init; }
 
     /// <summary>
+    /// The section index.
+    /// </summary>
+    public int SectionIndex { get; init; }
+
+    /// <summary>
     /// The format type.
     /// </summary>
     /// <remarks>This is typically the type of file system used.</remarks>
