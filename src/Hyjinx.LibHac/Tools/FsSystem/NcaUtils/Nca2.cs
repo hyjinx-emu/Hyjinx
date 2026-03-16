@@ -15,7 +15,7 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// <summary>
 /// Represents an NCA file.
 /// </summary>
-public abstract partial class Nca2 : Nca
+public abstract class Nca2 : Nca
 {
     /// <summary>
     /// Gets the underlying stream for the NCA file.
