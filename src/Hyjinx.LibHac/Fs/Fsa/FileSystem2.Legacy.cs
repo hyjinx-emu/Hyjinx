@@ -1,7 +1,6 @@
 #if IS_LEGACY_ENABLED
 
 using LibHac.Common;
-using System;
 
 namespace LibHac.Fs.Fsa;
 
