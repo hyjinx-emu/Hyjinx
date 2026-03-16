@@ -14,7 +14,7 @@ using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 /// <summary>
-/// Provides a mechanism to interact with basic content archive (NCA) files.
+/// Represents a basic NCA file.
 /// </summary>
 public class BasicNca2 : Nca2<NcaHeader, NcaFsHeader>
 {
@@ -57,23 +57,14 @@ public class BasicNca2 : Nca2<NcaHeader, NcaFsHeader>
 }
 
 /// <summary>
-/// Provides a mechanism to interact with content archive (NCA) files.
+/// Represents an NCA file.
 /// </summary>
-public abstract class Nca2
+public abstract partial class Nca2
 {
     /// <summary>
     /// Gets the underlying stream for the NCA file.
     /// </summary>
     protected Stream UnderlyingStream { get; }
-
-    /// <summary>
-    /// Initializes an instance of the class.
-    /// </summary>
-    /// <param name="stream">The stream containing the NCA contents.</param>
-    protected Nca2(Stream stream)
-    {
-        UnderlyingStream = stream;
-    }
 
     /// <summary>
     /// Copies the entire archive to a destination.
@@ -95,32 +86,22 @@ public abstract class Nca2
     /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
-    public abstract IFileSystem2 OpenFileSystem(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel);
-
-    /// <summary>
-    /// Opens the section storage.
-    /// </summary>
-    /// <param name="section">The section.</param>
-    /// <param name="integrityCheckLevel">The integrity check level to enforce when opening the section. Unused for sections which do not support hash verification.</param>
-    /// <returns>The new <see cref="IStorage"/> instance.</returns>
-    /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
-    /// <exception cref="NotSupportedException">The encryption format used by <paramref name="section"/> is not supported.</exception>
-    public abstract IStorage OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel);
+    public abstract IFileSystem2 OpenFileSystem2(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel);
 }
 
 /// <summary>
-/// Provides a mechanism to interact with content archive (NCA) files.
+/// Represents an NCA file.
 /// </summary>
 /// <typeparam name="THeader">The type of archive header.</typeparam>
 /// <typeparam name="TFsHeader">The type of file entry header.</typeparam>
-public abstract class Nca2<THeader, TFsHeader> : Nca2
+public abstract partial class Nca2<THeader, TFsHeader> : Nca2
     where THeader : NcaHeader
     where TFsHeader : NcaFsHeader
 {
     /// <summary>
     /// Gets the header.
     /// </summary>
-    public THeader Header { get; }
+    public new THeader Header => (THeader)base.Header;
 
     /// <summary>
     /// Gets the sections.
@@ -165,9 +146,8 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
     /// <param name="header">The file header of the archive.</param>
     /// <param name="sections">The sections within the archive.</param>
     protected Nca2(Stream stream, THeader header, Dictionary<NcaSectionType, SectionDescription> sections)
-        : base(stream)
+        : base(stream, header)
     {
-        Header = header;
         Sections = sections.AsReadOnly();
     }
 
@@ -201,38 +181,54 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
 
         return entries;
     }
-
-    public override IFileSystem2 OpenFileSystem(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
+    public override bool CanOpenSection(NcaSectionType type)
     {
-        if (!Sections.TryGetValue(section, out var description))
+        return Sections.ContainsKey(type);
+    }
+
+    public override IFileSystem OpenFileSystem(NcaSectionType type, IntegrityCheckLevel integrityCheckLevel)
+    {
+        if (!Sections.TryGetValue(type, out var sectionDescription))
+        {
+            throw new ArgumentException($"The section '{type}' does not exist.", nameof(type));
+        }
+
+        var storage = OpenStorageCore(sectionDescription, integrityCheckLevel);
+
+        throw new NotImplementedException();
+    }
+
+    public override IFileSystem2 OpenFileSystem2(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
+    {
+        if (!Sections.TryGetValue(section, out var sectionDescription))
         {
             throw new ArgumentException($"The section '{section}' does not exist.", nameof(section));
         }
 
-        var storage = OpenStorageCore(description, integrityCheckLevel);
-        return description.FsHeader.FormatType switch
+        var storage = OpenStorageCore(sectionDescription, integrityCheckLevel);
+        return sectionDescription.FsHeader.FormatType switch
         {
-            NcaFormatType.Pfs0 => CreateFileSystemForPfs0(storage),
-            NcaFormatType.RomFs => CreateFileSystemForRomFs(storage),
-            _ => throw new NotSupportedException($"The format {description.FsHeader.FormatType} is not supported.")
+            NcaFormatType.Pfs0 => CreateFileSystemForPfs02(storage),
+            NcaFormatType.RomFs => CreateFileSystemForRomFs2(storage),
+            _ => throw new NotSupportedException($"The format {sectionDescription.FsHeader.FormatType} is not supported.")
         };
     }
 
-    private IFileSystem2 CreateFileSystemForPfs0(IStorage storage)
+    private IFileSystem2 CreateFileSystemForPfs02(IStorage storage)
     {
         return PartitionFileSystem2.Create(storage);
     }
 
-    private IFileSystem2 CreateFileSystemForRomFs(IStorage storage)
+    private IFileSystem2 CreateFileSystemForRomFs2(IStorage storage)
     {
         return RomFsFileSystem2.Create(storage);
     }
 
-    public override IStorage OpenStorage(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
+    public override IStorage OpenStorage(NcaSectionType type, IntegrityCheckLevel integrityCheckLevel)
     {
-        if (!Sections.TryGetValue(section, out var fsHeader))
+        if (!Sections.TryGetValue(type, out var fsHeader))
         {
-            throw new ArgumentException($"The section '{section}' does not exist.", nameof(section));
+            throw new ArgumentException($"The section '{type}' does not exist.", nameof(type));
         }
 
         return OpenStorageCore(fsHeader, integrityCheckLevel);
@@ -240,7 +236,12 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
 
     private IStorage OpenStorageCore(SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
     {
-        var result = OpenRawStorage(description, integrityCheckLevel);
+        if (integrityCheckLevel is IntegrityCheckLevel.ErrorOnInvalid && description.HashValidity is not Validity.Valid)
+        {
+            throw new InvalidHashDetectedException("The header hash does not match the expected value.");
+        }
+
+        var result = OpenRawStorage(description);
 
         if (description.FsHeader.HashType != NcaHashType.None)
         {
@@ -260,16 +261,10 @@ public abstract class Nca2<THeader, TFsHeader> : Nca2
     /// Opens the raw storage.
     /// </summary>
     /// <param name="description">The description of the storage entry.</param>
-    /// <param name="integrityCheckLevel">The <see cref="IntegrityCheckLevel"/> to enforce.</param>
     /// <returns>The <see cref="IStorage"/> instance.</returns>
     /// <exception cref="InvalidHashDetectedException">The header hash did not match the expected value.</exception>
-    protected virtual IStorage OpenRawStorage(SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
+    protected virtual IStorage OpenRawStorage(SectionDescription description)
     {
-        if (integrityCheckLevel is IntegrityCheckLevel.ErrorOnInvalid && description.HashValidity is not Validity.Valid)
-        {
-            throw new InvalidHashDetectedException("The header hash does not match the expected value.");
-        }
-
         var rootStorage = StreamStorage2.Create(UnderlyingStream);
 
         try

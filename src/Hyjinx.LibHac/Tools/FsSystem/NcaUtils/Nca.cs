@@ -9,6 +9,9 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// </summary>
 public abstract class Nca
 {
+    /// <summary>
+    /// Gets the header.
+    /// </summary>
     public NcaHeader Header { get; }
 
     /// <summary>

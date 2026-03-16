@@ -27,17 +27,17 @@ public static partial class NcaExtensions
         Message = "No RomFS found in NCA")]
     private static partial void LogNoRomFsFoundInNca(ILogger logger);
 
-    public static ulong GetProgramIdBase(this BasicNca2 nca)
+    public static ulong GetProgramIdBase(this Nca2 nca)
     {
         return nca.Header.TitleId & ~0x1FFFUL;
     }
 
-    public static int GetProgramIndex(this BasicNca2 nca)
+    public static int GetProgramIndex(this Nca2 nca)
     {
         return (int)(nca.Header.TitleId & 0xF);
     }
 
-    public static bool IsProgram(this BasicNca2 nca)
+    public static bool IsProgram(this Nca2 nca)
     {
         return nca.Header.ContentType == NcaContentType.Program;
     }
@@ -46,7 +46,7 @@ public static partial class NcaExtensions
     {
         var nacpData = new BlitStruct<ApplicationControlProperty>(1);
 
-        var dataFs = controlNca.OpenFileSystem(NcaSectionType.Data, integrityCheckLevel);
+        var dataFs = controlNca.OpenFileSystem2(NcaSectionType.Data, integrityCheckLevel);
 
         await using var controlFile = dataFs.OpenFile("/control.nacp");
         controlFile.ReadExactly(nacpData.ByteSpan);

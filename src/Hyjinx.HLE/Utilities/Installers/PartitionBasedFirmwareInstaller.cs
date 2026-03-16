@@ -33,7 +33,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
         foreach (var entry in filesystem.EnumerateEntries("/", "*.nca"))
         {
             using var file = OpenPossibleFragmentedFile(filesystem, entry.FullPath, OpenMode.Read);
-            Nca2 nca = BasicNca2.Create(file.AsStream());
+            var nca = BasicNca2.Create(file.AsStream());
 
             await SaveNcaAsync(nca, entry.Name.Remove(entry.Name.IndexOf('.')), temporaryDirectory, cancellationToken);
         }
@@ -80,7 +80,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
             if (nca.Header is { TitleId: ContentManager.SystemUpdateTitleId, ContentType: NcaContentType.Meta })
             {
                 // TODO: Viper - This should be enforcing integrity levels.
-                var fs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
+                var fs = nca.OpenFileSystem2(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
 
                 var cnmtPath = fs.EnumerateFileInfos("/", "*.cnmt").Single().FullPath;
 
@@ -98,7 +98,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
             if (nca.Header is { TitleId: ContentManager.SystemVersionTitleId, ContentType: NcaContentType.Data })
             {
                 // TODO: Viper - This should be enforcing integrity levels.
-                var romfs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
+                var romfs = nca.OpenFileSystem2(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
 
                 await using var systemVersionFile = romfs.OpenFile("/file");
                 systemVersion = new SystemVersion(systemVersionFile);
@@ -141,7 +141,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
                 var metaNca = BasicNca2.Create(metaStorage.AsStream());
 
                 // TODO: Viper - This should be enforcing integrity levels.
-                var fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
+                var fs = metaNca.OpenFileSystem2(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
 
                 string cnmtPath = fs.EnumerateFileInfos("/", "*.cnmt").Single().FullPath;
 
