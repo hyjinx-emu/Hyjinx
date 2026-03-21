@@ -2,10 +2,8 @@ using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
-using LibHac.Tools.Fs;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 using Path = LibHac.Fs.Path;
 
@@ -228,21 +226,6 @@ public sealed partial class RomFsFileSystem2 : FileSystem2
             NextFile = entry.FirstFileOffset
         }, directoriesIndex, filesIndex, mode));
         return Result.Success;
-    }
-
-    public override bool Exists(string path)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
-    {
-        throw new NotImplementedException();
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

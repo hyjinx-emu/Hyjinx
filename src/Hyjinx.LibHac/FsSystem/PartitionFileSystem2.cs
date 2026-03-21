@@ -2,12 +2,7 @@ using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem.Impl;
-using LibHac.Tools.Fs;
-using LibHac.Tools.FsSystem;
-using LibHac.Util;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -45,7 +40,7 @@ public readonly struct PartitionFileSystemLayout
 /// Represents a partition file system.
 /// </summary>
 /// <typeparam name="TMetadata">The type of entry metadata.</typeparam>
-public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
+public abstract partial class PartitionFileSystem2<TMetadata> : FileSystem2
     where TMetadata : unmanaged
 {
     /// <summary>
@@ -62,6 +57,37 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
     /// Gets the file system layout.
     /// </summary>
     protected PartitionFileSystemLayout Layout { get; private set; }
+
+    /// <summary>
+    /// Describes an entry within the lookup table.
+    /// </summary>
+    protected struct LookupEntry
+    {
+        /// <summary>
+        /// The name of the entry.
+        /// </summary>
+        public required string Name { get; init; }
+
+        /// <summary>
+        /// The full name (including path) of the entry.
+        /// </summary>
+        public required string FullName { get; init; }
+
+        /// <summary>
+        /// The type of entry.
+        /// </summary>
+        public required DirectoryEntryType EntryType { get; init; }
+
+        /// <summary>
+        /// The length of the entry.
+        /// </summary>
+        public required long Length { get; init; }
+
+        /// <summary>
+        /// The offset where the item is located in storage.
+        /// </summary>
+        public required long Offset { get; init; }
+    }
 
     /// <summary>
     /// Initializes an instance of the class.
@@ -92,26 +118,48 @@ public abstract class PartitionFileSystem2<TMetadata> : FileSystem2
         };
     }
 
-    public override bool Exists(string path)
+    protected override Result DoOpenDirectory(ref UniqueRef<IDirectory> outDirectory, in Path path, OpenDirectoryMode mode)
     {
-        throw new NotImplementedException();
+        outDirectory.Reset(new PartitionFsDirectory(ReadEntry, Header, mode));
+        return Result.Success;
     }
 
-    public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
+    protected override Result DoOpenFile(ref UniqueRef<IFile> outFile, in Path path, OpenMode mode)
     {
-        throw new NotImplementedException();
+        if (!TryFindDirectoryEntry(path, out var entry))
+        {
+            return ResultFs.FileNotFound.Log();
+        }
+
+        outFile.Reset(new StorageFile(BaseStorage.Slice2(entry.Offset, entry.Length), mode));
+        return Result.Success;
     }
 
-    public override IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
+    private bool TryFindDirectoryEntry(Path path, out LookupEntry result)
     {
-        throw new NotImplementedException();
+        for (var i = 0; i < Header.EntryCount; i++)
+        {
+            var entry = ReadEntry(i);
+            var pathName = path.ToString();
+
+            if (entry.FullName == pathName)
+            {
+                result = entry;
+                return true;
+            }
+        }
+
+        result = default;
+        return false;
     }
+
+    protected abstract LookupEntry ReadEntry(int index);
 }
 
 /// <summary>
 /// A partitioned file system.
 /// </summary>
-public partial class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemFormat.PartitionEntry>
+public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemFormat.PartitionEntry>
 {
     private PartitionFileSystem2(IStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
         : base(baseStorage, header) { }
@@ -137,52 +185,18 @@ public partial class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSy
         return result;
     }
 
-    protected override Result DoOpenDirectory(ref UniqueRef<IDirectory> outDirectory, in Path path, OpenDirectoryMode mode)
-    {
-        outDirectory.Reset(new PartitionFsDirectory(ReadEntry, Header, mode));
-        return Result.Success;
-    }
-
-    protected override Result DoOpenFile(ref UniqueRef<IFile> outFile, in Path path, OpenMode mode)
-    {
-        if (!TryFindDirectoryEntry(path, out var entry))
-        {
-            return ResultFs.FileNotFound.Log();
-        }
-
-        outFile.Reset(new StorageFile(BaseStorage.Slice2(Layout.DataOffset + entry.Offset, entry.Size), mode));
-        return Result.Success;
-    }
-
-    private bool TryFindDirectoryEntry(Path path, out PartitionFileSystemFormat.PartitionEntry result)
-    {
-        var utf8 = Encoding.UTF8;
-        for (var i = 0; i < Header.EntryCount; i++)
-        {
-            var (entry, name) = ReadPartitionEntry(i);
-
-            var entryName = $"/{name}";
-            var pathName = path.ToString();
-
-            if (entryName == pathName)
-            {
-                result = entry;
-                return true;
-            }
-        }
-
-        result = default;
-        return false;
-    }
-
-    private DirectoryEntry ReadEntry(int index)
+    protected override LookupEntry ReadEntry(int index)
     {
         var (entry, name) = ReadPartitionEntry(index);
 
-        var result = new DirectoryEntry { Type = DirectoryEntryType.File, Size = entry.Size };
-        StringUtils.Copy(result.Name.Items, Encoding.UTF8.GetBytes(name));
-
-        return result;
+        return new LookupEntry
+        {
+            EntryType = DirectoryEntryType.File,
+            FullName = $"/{name}",
+            Length = entry.Size,
+            Name = name,
+            Offset = Layout.DataOffset + entry.Offset
+        };
     }
 
     private (PartitionFileSystemFormat.PartitionEntry, string) ReadPartitionEntry(int index)
@@ -216,7 +230,6 @@ public partial class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSy
         }
 
         var name = Encoding.UTF8.GetString(nameBuffer.Span[..nameLength]);
-
         return (entries[0], name);
     }
 }

@@ -1,21 +1,24 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem.Impl;
+using LibHac.Util;
 using System;
+using System.Text;
 
 namespace LibHac.FsSystem;
 
-partial class PartitionFileSystem2
+partial class PartitionFileSystem2<TMetadata>
+    where TMetadata : unmanaged
 {
     private class PartitionFsDirectory : IDirectory
     {
-        private readonly Func<int, DirectoryEntry> readEntryFunc;
+        private readonly Func<int, LookupEntry> readEntryFunc;
         private readonly PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header;
         private readonly OpenDirectoryMode mode;
 
         private int currentPosition;
 
-        public PartitionFsDirectory(Func<int, DirectoryEntry> readEntryFunc, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header, OpenDirectoryMode mode)
+        public PartitionFsDirectory(Func<int, LookupEntry> readEntryFunc, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header, OpenDirectoryMode mode)
         {
             this.readEntryFunc = readEntryFunc;
             this.header = header;
@@ -34,8 +37,11 @@ partial class PartitionFileSystem2
             var count = 0;
             while (count < entryBuffer.Length && currentPosition < header.EntryCount)
             {
-                var dirEntry = readEntryFunc(currentPosition);
-                
+                var entry = readEntryFunc(currentPosition);
+
+                var dirEntry = new DirectoryEntry { Size = entry.Length, Type = entry.EntryType };
+                StringUtils.Copy(dirEntry.Name.Items, Encoding.UTF8.GetBytes(entry.FullName));
+
                 entryBuffer[count] = dirEntry;
                 count++;
 

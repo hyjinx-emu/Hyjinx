@@ -45,15 +45,6 @@ public abstract class Nca2 : Nca
 
         await UnderlyingStream.CopyToAsync(destination, cancellationToken);
     }
-
-    /// <summary>
-    /// Opens the file system.
-    /// </summary>
-    /// <param name="section">The section.</param>
-    /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
-    /// <returns>The <see cref="IFileSystem"/> instance.</returns>
-    /// <exception cref="ArgumentException">The <paramref name="section"/> does not exist.</exception>
-    public abstract IFileSystem2 OpenFileSystem2(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel);
 }
 
 /// <summary>
@@ -175,32 +166,6 @@ public abstract partial class Nca2<THeader, TFsHeader> : Nca2
     }
 
     private IFileSystem CreateFileSystemForRomFs(IStorage storage)
-    {
-        return RomFsFileSystem2.Create(storage);
-    }
-
-    public override IFileSystem2 OpenFileSystem2(NcaSectionType section, IntegrityCheckLevel integrityCheckLevel)
-    {
-        if (!Sections.TryGetValue(section, out var sectionDescription))
-        {
-            throw new ArgumentException($"The section '{section}' does not exist.", nameof(section));
-        }
-
-        var storage = OpenStorageCore(sectionDescription, integrityCheckLevel);
-        return sectionDescription.FsHeader.FormatType switch
-        {
-            NcaFormatType.Pfs0 => CreateFileSystemForPfs02(storage),
-            NcaFormatType.RomFs => CreateFileSystemForRomFs2(storage),
-            _ => throw new NotSupportedException($"The format {sectionDescription.FsHeader.FormatType} is not supported.")
-        };
-    }
-
-    private IFileSystem2 CreateFileSystemForPfs02(IStorage storage)
-    {
-        return PartitionFileSystem2.Create(storage);
-    }
-
-    private IFileSystem2 CreateFileSystemForRomFs2(IStorage storage)
     {
         return RomFsFileSystem2.Create(storage);
     }
