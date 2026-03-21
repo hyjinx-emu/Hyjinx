@@ -2,7 +2,6 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Util;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
