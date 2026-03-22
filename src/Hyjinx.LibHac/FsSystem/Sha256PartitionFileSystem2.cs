@@ -35,17 +35,17 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
         return result;
     }
 
-    protected override LookupEntry Read(int index, PartitionFileSystemLayout layout)
+    protected override LookupEntry ReadEntry(int index)
     {
         // Read the entry details.
-        using var entryBuffer = new RentedArray2<byte>(layout.EntryHeaderSize * 2);
-        BaseStorage.Read(layout.FsHeaderSize + (index * layout.EntryHeaderSize), entryBuffer.Span);
+        using var entryBuffer = new RentedArray2<byte>(Layout.EntryHeaderSize * 2);
+        BaseStorage.Read(Layout.FsHeaderSize + (index * Layout.EntryHeaderSize), entryBuffer.Span);
 
-        (Sha256PartitionFileSystemFormat.PartitionEntry entry, int nameLength) = GetEntryDetails(index, layout.EntryHeaderSize, entryBuffer.Span);
+        (Sha256PartitionFileSystemFormat.PartitionEntry entry, int nameLength) = GetEntryDetails(index, Layout.EntryHeaderSize, entryBuffer.Span);
 
         // Read the entry name.
         using var nameBuffer = new RentedArray2<byte>(nameLength);
-        BaseStorage.Read(layout.NameTableOffset + entry.NameOffset, nameBuffer.Span);
+        BaseStorage.Read(Layout.NameTableOffset + entry.NameOffset, nameBuffer.Span);
 
         var fullName = $"/{new U8Span(nameBuffer.Span).ToString()}";
 
@@ -55,7 +55,7 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
             FullName = fullName,
             EntryType = DirectoryEntryType.File,
             Length = entry.Size,
-            Offset = entry.Offset + layout.DataOffset
+            Offset = entry.Offset + Layout.DataOffset
         };
     }
 

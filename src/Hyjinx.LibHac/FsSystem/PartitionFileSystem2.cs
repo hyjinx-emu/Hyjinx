@@ -4,8 +4,6 @@ using LibHac.Fs.Fsa;
 using LibHac.FsSystem.Impl;
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 using Path = LibHac.Fs.Path;
 
 namespace LibHac.FsSystem;
@@ -118,6 +116,24 @@ public abstract partial class PartitionFileSystem2<TMetadata> : FileSystem2
         };
     }
 
+    protected override Result DoGetEntryType(out DirectoryEntryType entryType, in Path path)
+    {
+        if (string.Equals(path.ToString(), "/"))
+        {
+            entryType = DirectoryEntryType.Directory;
+            return Result.Success;
+        }
+
+        if (TryFindDirectoryEntry(path, out _))
+        {
+            entryType = DirectoryEntryType.File;
+            return Result.Success;
+        }
+
+        entryType = default;
+        return ResultFs.FileNotFound.Log();
+    }
+
     protected override Result DoOpenDirectory(ref UniqueRef<IDirectory> outDirectory, in Path path, OpenDirectoryMode mode)
     {
         outDirectory.Reset(new PartitionFsDirectory(ReadEntry, Header, mode));
@@ -187,49 +203,39 @@ public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemForm
 
     protected override LookupEntry ReadEntry(int index)
     {
-        var (entry, name) = ReadPartitionEntry(index);
-
-        return new LookupEntry
-        {
-            EntryType = DirectoryEntryType.File,
-            FullName = $"/{name}",
-            Length = entry.Size,
-            Name = name,
-            Offset = Layout.DataOffset + entry.Offset
-        };
-    }
-
-    private (PartitionFileSystemFormat.PartitionEntry, string) ReadPartitionEntry(int index)
-    {
+        // Read the entry details.
         using var entryBuffer = new RentedArray2<byte>(Layout.EntryHeaderSize * 2);
         BaseStorage.Read(Layout.FsHeaderSize + (index * Layout.EntryHeaderSize), entryBuffer.Span);
 
-        int nameLength = 0;
+        (PartitionFileSystemFormat.PartitionEntry entry, int nameLength) = GetEntryDetails(index, Layout.EntryHeaderSize, entryBuffer.Span);
 
-        var entries = MemoryMarshal.Cast<byte, PartitionFileSystemFormat.PartitionEntry>(entryBuffer.Span);
+        // Read the entry name.
+        using var nameBuffer = new RentedArray2<byte>(nameLength);
+        BaseStorage.Read(Layout.NameTableOffset + entry.NameOffset, nameBuffer.Span);
+
+        var fullName = $"/{new U8Span(nameBuffer.Span).ToString()}";
+
+        return new LookupEntry
+        {
+            Name = System.IO.Path.GetFileName(fullName),
+            FullName = fullName,
+            EntryType = DirectoryEntryType.File,
+            Length = entry.Size,
+            Offset = entry.Offset + Layout.DataOffset
+        };
+    }
+
+    private (PartitionFileSystemFormat.PartitionEntry, int) GetEntryDetails(int index, int entryHeaderSize, Span<byte> buffer)
+    {
+        var entry = Unsafe.As<byte, PartitionFileSystemFormat.PartitionEntry>(ref buffer[0]);
         if (index < Header.EntryCount - 1)
         {
-            nameLength = entries[1].NameOffset - entries[0].NameOffset;
-        }
-        else
-        {
-            nameLength = Header.NameTableSize - entries[0].NameOffset;
-        }
+            // The name length needs to be based off the offsets between the two entries.
+            var nextEntry = Unsafe.As<byte, PartitionFileSystemFormat.PartitionEntry>(ref buffer[entryHeaderSize]);
 
-        using var nameBuffer = new RentedArray2<byte>(nameLength);
-        BaseStorage.Read(Layout.NameTableOffset + entries[0].NameOffset, nameBuffer.Span);
-
-        // Find the null terminator
-        for (var i = 0; i < nameLength; i++)
-        {
-            if (nameBuffer.Span[i] == '\0')
-            {
-                nameLength = i;
-                break;
-            }
+            return (entry, nextEntry.NameOffset - entry.NameOffset);
         }
 
-        var name = Encoding.UTF8.GetString(nameBuffer.Span[..nameLength]);
-        return (entries[0], name);
+        return (entry, Header.NameTableSize - entry.NameOffset);
     }
 }
