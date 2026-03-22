@@ -4,13 +4,11 @@ using System.IO;
 namespace LibHac.Fs;
 
 /// <summary>
-/// An <see cref="IStorage2"/> which sources data already held in memory.
+/// An <see cref="IStorage"/> which sources data already held in memory.
 /// </summary>
 public class MemoryStorage2 : Storage2
 {
     private readonly MemoryStream _memoryStream;
-
-    public override long Size => _memoryStream.Length;
 
     private MemoryStorage2(byte[] data)
     {
@@ -47,6 +45,12 @@ public class MemoryStorage2 : Storage2
         ArgumentNullException.ThrowIfNull(data);
 
         return new MemoryStorage2(data);
+    }
+
+    public override Result GetSize(out long size)
+    {
+        size = _memoryStream.Length;
+        return Result.Success;
     }
 
     protected override void ReadCore(long offset, Span<byte> buffer)

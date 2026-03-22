@@ -1,288 +1,107 @@
-using LibHac.Common;
-using LibHac.Common.Keys;
-using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using LibHac.FsSystem;
-using LibHac.Tools.FsSystem.RomFs;
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.CompilerServices;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-[Obsolete($"This class is no longer supported, please use the {nameof(Nca2)} variant instead.")]
-public partial class Nca
+/// <summary>
+/// Represents an NCA file.
+/// </summary>
+public abstract class Nca
 {
-    protected KeySet KeySet { get; }
-    public IStorage BaseStorage { get; }
+    /// <summary>
+    /// Gets the header.
+    /// </summary>
     public NcaHeader Header { get; }
 
-    public Nca(KeySet keySet, IStorage storage, NcaHeader? header = null)
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <param name="header">The header.</param>
+    protected Nca(NcaHeader header)
     {
-        KeySet = keySet;
-        BaseStorage = storage;
-        Header = header ?? new NcaHeader(storage);
+        Header = header;
     }
 
-    public bool CanOpenSection(NcaSectionType type)
-    {
-        if (!TryGetSectionIndexFromType(type, Header.ContentType, out int index))
-        {
-            return false;
-        }
+    /// <summary>
+    /// Identifies whether the section exists and can be opened.
+    /// </summary>
+    /// <param name="type">The section to check.</param>
+    /// <returns><c>true</c> if the section exists and can be opened, otherwise <c>false</c>.</returns>
+    public abstract bool CanOpenSection(NcaSectionType type);
 
-        return CanOpenSection(index);
-    }
+    /// <summary>
+    /// Identifies whether the section exists and can be opened.
+    /// </summary>
+    /// <param name="index">The zero-based section index to check.</param>
+    /// <returns><c>true</c> if the section exists and can be opened, otherwise <c>false</c>.</returns>
+    public abstract bool CanOpenSection(int index);
 
-    public bool CanOpenSection(int index)
-    {
-        if (!SectionExists(index))
-            return false;
+    /// <summary>
+    /// Opens the raw storage.
+    /// </summary>
+    /// <param name="index">The zero-based section index to open.</param>
+    /// <returns>The <see cref="IStorage"/> containing the raw section data.</returns>
+    public abstract IStorage OpenRawStorage(int index);
 
-        return CanOpenSectionCore(index);
-    }
+    /// <summary>
+    /// Opens the storage.
+    /// </summary>
+    /// <param name="index">The zero-based section index to open.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
+    /// <param name="leaveCompressed">Optional. <c>true</c> to leave compressed, otherwise <c>false</c>.</param>
+    /// <returns>The <see cref="IStorage"/> containing the section data.</returns>
+    public abstract IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false);
 
-    protected virtual bool CanOpenSectionCore(int index)
-    {
-        if (GetFsHeader(index).EncryptionType == 1) // None
-            return true;
+    /// <summary>
+    /// Opens the storage.
+    /// </summary>
+    /// <param name="type">The section type.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
+    /// <returns>The <see cref="IStorage"/> containing the section data.</returns>
+    public abstract IStorage OpenStorage(NcaSectionType type, IntegrityCheckLevel integrityCheckLevel);
 
-        return false;
-    }
+    /// <summary>
+    /// Opens the storage with the patch applied.
+    /// </summary>
+    /// <param name="patchNca">The patch NCA archive.</param>
+    /// <param name="type">The section type.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
+    /// <returns>The <see cref="IStorage"/> containing the section data.</returns>
+    public abstract IStorage OpenStorageWithPatch(Nca patchNca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel);
 
-    public bool SectionExists(NcaSectionType type)
-    {
-        if (!TryGetSectionIndexFromType(type, Header.ContentType, out int index))
-        {
-            return false;
-        }
+    /// <summary>
+    /// Opens the file system.
+    /// </summary>
+    /// <param name="index">The zero-based section index to open.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
+    /// <returns>The <see cref="IFileSystem"/> instance.</returns>
+    public abstract IFileSystem OpenFileSystem(int index, IntegrityCheckLevel integrityCheckLevel);
 
-        return SectionExists(index);
-    }
+    /// <summary>
+    /// Opens the file system.
+    /// </summary>
+    /// <param name="type">The section type.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
+    /// <returns>The <see cref="IFileSystem"/> instance.</returns>
+    public abstract IFileSystem OpenFileSystem(NcaSectionType type, IntegrityCheckLevel integrityCheckLevel);
 
-    public bool SectionExists(int index)
-    {
-        return Header.IsSectionEnabled(index);
-    }
+    /// <summary>
+    /// Opens the file system with the patch applied.
+    /// </summary>
+    /// <param name="patchNca">The patch NCA archive.</param>
+    /// <param name="type">The section type.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
+    /// <returns>The <see cref="IFileSystem"/> instance.</returns>
+    public abstract IFileSystem OpenFileSystemWithPatch(Nca patchNca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel);
 
-    public NcaFsHeader GetFsHeader(int index)
-    {
-        if (Header.IsNca0())
-            return GetNca0FsHeader(index);
-
-        return Header.GetFsHeader(index);
-    }
-
-    protected virtual IStorage OpenSectionStorage(int index)
-    {
-        if (!SectionExists(index))
-            throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
-
-        long offset = Header.GetSectionStartOffset(index);
-        long size = Header.GetSectionSize(index);
-
-        BaseStorage.GetSize(out long ncaStorageSize).ThrowIfFailure();
-
-        if (!IsSubRange(offset, size, ncaStorageSize))
-        {
-            throw new InvalidDataException(
-                $"Section offset (0x{offset:x}) and length (0x{size:x}) fall outside the total NCA length (0x{ncaStorageSize:x}).");
-        }
-
-        return BaseStorage.Slice(offset, size);
-    }
-
-    public IStorage OpenRawStorage(NcaSectionType type)
-    {
-        return OpenRawStorage(GetSectionIndexFromType(type));
-    }
-
-    public virtual IStorage OpenRawStorage(int index)
-    {
-        if (Header.IsNca0())
-            return OpenNca0RawStorage(index);
-
-        return OpenSectionStorage(index);
-    }
-
-    public IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
-    {
-        IStorage patchStorage = patchNca.OpenRawStorage(index);
-        IStorage baseStorage = SectionExists(index) ? OpenRawStorage(index) : new NullStorage();
-
-        patchStorage.GetSize(out long patchSize).ThrowIfFailure();
-        baseStorage.GetSize(out long baseSize).ThrowIfFailure();
-
-        NcaFsHeader header = patchNca.GetFsHeader(index);
-        NcaFsPatchInfo patchInfo = header.GetPatchInfo();
-
-        if (patchInfo.RelocationTreeSize == 0)
-        {
-            return patchStorage;
-        }
-
-        var treeHeader = new BucketTree.Header();
-        patchInfo.RelocationTreeHeader.CopyTo(SpanHelpers.AsByteSpan(ref treeHeader));
-        long nodeStorageSize = IndirectStorage.QueryNodeStorageSize(treeHeader.EntryCount);
-        long entryStorageSize = IndirectStorage.QueryEntryStorageSize(treeHeader.EntryCount);
-
-        var relocationTableStorage = new SubStorage(patchStorage, patchInfo.RelocationTreeOffset, patchInfo.RelocationTreeSize);
-        var cachedTableStorage = new CachedStorage(relocationTableStorage, IndirectStorage.NodeSize, 4, true);
-
-        using var tableNodeStorage = new ValueSubStorage(cachedTableStorage, 0, nodeStorageSize);
-        using var tableEntryStorage = new ValueSubStorage(cachedTableStorage, nodeStorageSize, entryStorageSize);
-
-        var storage = new IndirectStorage();
-        storage.Initialize(new ArrayPoolMemoryResource(), in tableNodeStorage, in tableEntryStorage, treeHeader.EntryCount).ThrowIfFailure();
-
-        storage.SetStorage(0, baseStorage, 0, baseSize);
-        storage.SetStorage(1, patchStorage, 0, patchSize);
-
-        return storage;
-    }
-
-    public virtual IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
-    {
-        IStorage rawStorage = OpenRawStorage(index);
-        NcaFsHeader header = GetFsHeader(index);
-
-        IStorage returnStorage = rawStorage;
-        if (header.HashType != NcaHashType.None)
-        {
-            returnStorage = CreateVerificationStorage(integrityCheckLevel, header, returnStorage);
-        }
-
-        if (!leaveCompressed && header.ExistsCompressionLayer())
-        {
-            returnStorage = OpenCompressedStorage(header, returnStorage);
-        }
-
-        return returnStorage;
-    }
-
-    public IStorage OpenStorageWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
-    {
-        IStorage rawStorage = OpenRawStorageWithPatch(patchNca, index);
-        NcaFsHeader header = patchNca.GetFsHeader(index);
-
-        IStorage returnStorage = rawStorage;
-        if (header.HashType != NcaHashType.None)
-        {
-            returnStorage = CreateVerificationStorage(integrityCheckLevel, header, returnStorage);
-        }
-
-        if (!leaveCompressed && header.ExistsCompressionLayer())
-        {
-            returnStorage = OpenCompressedStorage(header, returnStorage);
-        }
-
-        return returnStorage;
-    }
-
-    protected static IStorage OpenCompressedStorage(NcaFsHeader header, IStorage baseStorage)
-    {
-        ref NcaCompressionInfo compressionInfo = ref header.GetCompressionInfo();
-
-        Unsafe.SkipInit(out BucketTree.Header bucketTreeHeader);
-        compressionInfo.TableHeader.ItemsRo.CopyTo(SpanHelpers.AsByteSpan(ref bucketTreeHeader));
-        bucketTreeHeader.Verify().ThrowIfFailure();
-
-        long nodeStorageSize = CompressedStorage.QueryNodeStorageSize(bucketTreeHeader.EntryCount);
-        long entryStorageSize = CompressedStorage.QueryEntryStorageSize(bucketTreeHeader.EntryCount);
-        long tableOffset = compressionInfo.TableOffset;
-        long tableSize = compressionInfo.TableSize;
-
-        if (entryStorageSize + nodeStorageSize > tableSize)
-            throw new HorizonResultException(ResultFs.NcaInvalidCompressionInfo.Value);
-
-        using var dataStorage = new ValueSubStorage(baseStorage, 0, tableOffset);
-        using var nodeStorage = new ValueSubStorage(baseStorage, tableOffset, nodeStorageSize);
-        using var entryStorage = new ValueSubStorage(baseStorage, tableOffset + nodeStorageSize, entryStorageSize);
-
-        var compressedStorage = new CompressedStorage();
-        compressedStorage.Initialize(new ArrayPoolMemoryResource(), in dataStorage, in nodeStorage, in entryStorage,
-            bucketTreeHeader.EntryCount).ThrowIfFailure();
-
-        return new CachedStorage(compressedStorage, 0x4000, 32, true);
-    }
-
-    protected IStorage CreateVerificationStorage(IntegrityCheckLevel integrityCheckLevel, NcaFsHeader header, IStorage rawStorage)
-    {
-        switch (header.HashType)
-        {
-            case NcaHashType.Sha256:
-                return InitIvfcForPartitionFs(header.GetIntegrityInfoSha256(), rawStorage, integrityCheckLevel, true);
-            case NcaHashType.Ivfc:
-                // The FS header of an NCA0 section with IVFC verification must be manually skipped
-                if (Header.IsNca0())
-                {
-                    rawStorage = rawStorage.Slice(0x200);
-                }
-
-                return InitIvfcForRomFs(header.GetIntegrityInfoIvfc(), rawStorage, integrityCheckLevel, true);
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
-
-    public IFileSystem OpenFileSystem(int index, IntegrityCheckLevel integrityCheckLevel)
-    {
-        IStorage storage = OpenStorage(index, integrityCheckLevel);
-        NcaFsHeader header = GetFsHeader(index);
-
-        return OpenFileSystem(storage, header);
-    }
-
-    public IFileSystem OpenFileSystemWithPatch(Nca patchNca, int index, IntegrityCheckLevel integrityCheckLevel)
-    {
-        IStorage storage = OpenStorageWithPatch(patchNca, index, integrityCheckLevel);
-        NcaFsHeader header = patchNca.GetFsHeader(index);
-
-        return OpenFileSystem(storage, header);
-    }
-
-    private IFileSystem OpenFileSystem(IStorage storage, NcaFsHeader header)
-    {
-        switch (header.FormatType)
-        {
-            case NcaFormatType.Pfs0:
-                var pfs = new PartitionFileSystem();
-                pfs.Initialize(storage).ThrowIfFailure();
-                return pfs;
-            case NcaFormatType.RomFs:
-                return new RomFsFileSystem(storage);
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
-
-    public IFileSystem OpenFileSystem(NcaSectionType type, IntegrityCheckLevel integrityCheckLevel)
-    {
-        return OpenFileSystem(GetSectionIndexFromType(type), integrityCheckLevel);
-    }
-
-    public IFileSystem OpenFileSystemWithPatch(Nca patchNca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel)
-    {
-        return OpenFileSystemWithPatch(patchNca, GetSectionIndexFromType(type), integrityCheckLevel);
-    }
-
-    public IStorage OpenStorage(NcaSectionType type, IntegrityCheckLevel integrityCheckLevel)
-    {
-        return OpenStorage(GetSectionIndexFromType(type), integrityCheckLevel);
-    }
-
-    public IStorage OpenStorageWithPatch(Nca patchNca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel)
-    {
-        return OpenStorageWithPatch(patchNca, GetSectionIndexFromType(type), integrityCheckLevel);
-    }
-
-    protected int GetSectionIndexFromType(NcaSectionType type)
-    {
-        return GetSectionIndexFromType(type, Header.ContentType);
-    }
-
+    /// <summary>
+    /// Gets the section index from the section type.
+    /// </summary>
+    /// <param name="type">The section type.</param>
+    /// <param name="contentType">The type of content.</param>
+    /// <returns>The zero-based section index.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The archive does not contain the type of section.</exception>
     public static int GetSectionIndexFromType(NcaSectionType type, NcaContentType contentType)
     {
         if (!TryGetSectionIndexFromType(type, contentType, out int index))
@@ -293,6 +112,13 @@ public partial class Nca
         return index;
     }
 
+    /// <summary>
+    /// Tries to convert the section index from the section type.
+    /// </summary>
+    /// <param name="type">The section type.</param>
+    /// <param name="contentType">The type of content.</param>
+    /// <param name="index">Upon return, contains the zero-based section index.</param>
+    /// <returns><c>true</c> if the conversion was successful, otherwise <c>false</c>.</returns>
     public static bool TryGetSectionIndexFromType(NcaSectionType type, NcaContentType contentType, out int index)
     {
         switch (type)
@@ -315,111 +141,50 @@ public partial class Nca
         }
     }
 
-    private static HierarchicalIntegrityVerificationStorage InitIvfcForPartitionFs(NcaFsIntegrityInfoSha256 info,
-        IStorage pfsStorage, IntegrityCheckLevel integrityCheckLevel, bool leaveOpen)
+    /// <summary>
+    /// Gets the section type from the section index.
+    /// </summary>
+    /// <param name="index">The zero-based section index.</param>
+    /// <param name="contentType">The type of content.</param>
+    /// <returns>The <see cref="NcaSectionType"/>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The archive does not contain the index.</exception>
+    public static NcaSectionType GetSectionTypeFromIndex(int index, NcaContentType contentType)
     {
-        Debug.Assert(info.LevelCount == 2);
-
-        IStorage hashStorage = pfsStorage.Slice(info.GetLevelOffset(0), info.GetLevelSize(0), leaveOpen);
-        IStorage dataStorage = pfsStorage.Slice(info.GetLevelOffset(1), info.GetLevelSize(1), leaveOpen);
-
-        var initInfo = new IntegrityVerificationInfo[3];
-
-        // Set the master hash
-        initInfo[0] = new IntegrityVerificationInfo
+        if (!TryGetSectionTypeFromIndex(index, contentType, out NcaSectionType type))
         {
-            // todo Get hash directly from header
-            Data = new MemoryStorage(info.MasterHash.ToArray()),
-
-            BlockSize = 0,
-            Type = IntegrityStorageType.PartitionFs
-        };
-
-        initInfo[1] = new IntegrityVerificationInfo
-        {
-            Data = hashStorage,
-            BlockSize = (int)info.GetLevelSize(0),
-            Type = IntegrityStorageType.PartitionFs
-        };
-
-        initInfo[2] = new IntegrityVerificationInfo
-        {
-            Data = dataStorage,
-            BlockSize = info.BlockSize,
-            Type = IntegrityStorageType.PartitionFs
-        };
-
-        return new HierarchicalIntegrityVerificationStorage(initInfo, integrityCheckLevel, leaveOpen);
-    }
-
-    private static HierarchicalIntegrityVerificationStorage InitIvfcForRomFs(NcaFsIntegrityInfoIvfc ivfc,
-        IStorage dataStorage, IntegrityCheckLevel integrityCheckLevel, bool leaveOpen)
-    {
-        var initInfo = new IntegrityVerificationInfo[ivfc.LevelCount];
-
-        initInfo[0] = new IntegrityVerificationInfo
-        {
-            Data = new MemoryStorage(ivfc.MasterHash.ToArray()),
-            BlockSize = 0
-        };
-
-        for (int i = 1; i < ivfc.LevelCount; i++)
-        {
-            initInfo[i] = new IntegrityVerificationInfo
-            {
-                Data = dataStorage.Slice(ivfc.GetLevelOffset(i - 1), ivfc.GetLevelSize(i - 1)),
-                BlockSize = 1 << ivfc.GetLevelBlockSize(i - 1),
-                Type = IntegrityStorageType.RomFs
-            };
+            throw new ArgumentOutOfRangeException(nameof(type), "NCA type does not contain this index.");
         }
 
-        return new HierarchicalIntegrityVerificationStorage(initInfo, integrityCheckLevel, leaveOpen);
+        return type;
     }
 
-    private IStorage OpenNca0BodyStorage()
+    /// <summary>
+    /// Tries to convert the section type from the section index.
+    /// </summary>
+    /// <param name="index">The zero-based section index.</param>
+    /// <param name="contentType">The type of content.</param>
+    /// <param name="type">Upon returned, the <see cref="NcaSectionType"/>.</param>
+    /// <returns><c>true</c> if the conversion was successful, otherwise <c>false</c>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">The archive does not contain the index.</exception>
+    public static bool TryGetSectionTypeFromIndex(int index, NcaContentType contentType, out NcaSectionType type)
     {
-        Assert.SdkEqual(0, Header.Version);
-
-        BaseStorage.GetSize(out long ncaSize).ThrowIfFailure();
-        return BaseStorage.Slice(0x400, ncaSize - 0x400);
-    }
-
-    private IStorage OpenNca0RawStorage(int index)
-    {
-        if (!SectionExists(index))
-            throw new ArgumentException(string.Format(Messages.NcaSectionMissing, index), nameof(index));
-
-        long offset = Header.GetSectionStartOffset(index) - 0x400;
-        long size = Header.GetSectionSize(index);
-
-        IStorage bodyStorage = OpenNca0BodyStorage();
-
-        bodyStorage.GetSize(out long baseSize).ThrowIfFailure();
-
-        if (!IsSubRange(offset, size, baseSize))
+        switch (index)
         {
-            throw new InvalidDataException(
-                $"Section offset (0x{offset + 0x400:x}) and length (0x{size:x}) fall outside the total NCA length (0x{baseSize + 0x400:x}).");
+            case 0 when contentType == NcaContentType.Program:
+                type = NcaSectionType.Code;
+                return true;
+            case 1 when contentType == NcaContentType.Program:
+                type = NcaSectionType.Data;
+                return true;
+            case 2 when contentType == NcaContentType.Program:
+                type = NcaSectionType.Logo;
+                return true;
+            case 0:
+                type = NcaSectionType.Data;
+                return true;
+            default:
+                type = default;
+                return false;
         }
-
-        return new SubStorage(bodyStorage, offset, size);
-    }
-
-    private NcaFsHeader GetNca0FsHeader(int index)
-    {
-        // NCA0 stores the FS header in the first block of the section instead of the header
-        IStorage bodyStorage = OpenNca0BodyStorage();
-        long offset = Header.GetSectionStartOffset(index) - 0x400;
-
-        byte[] fsHeaderData = new byte[0x200];
-        bodyStorage.Read(offset, fsHeaderData).ThrowIfFailure();
-
-        return new NcaFsHeader(fsHeaderData);
-    }
-
-    private static bool IsSubRange(long startIndex, long subLength, long length)
-    {
-        bool isOutOfRange = startIndex < 0 || startIndex > length || subLength < 0 || startIndex > length - subLength;
-        return !isOutOfRange;
     }
 }

@@ -1,3 +1,4 @@
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
@@ -20,14 +21,14 @@ public class Xci2
     /// <summary>
     /// The root file system.
     /// </summary>
-    private IFileSystem2 RootFileSystem { get; }
+    private IFileSystem RootFileSystem { get; }
 
     /// <summary>
     /// Gets the header.
     /// </summary>
     public XciHeader Header { get; }
 
-    private Xci2(Stream stream, IFileSystem2 rootFileSystem, XciHeader header)
+    private Xci2(Stream stream, IFileSystem rootFileSystem, XciHeader header)
     {
         UnderlyingStream = stream;
         RootFileSystem = rootFileSystem;
@@ -42,12 +43,13 @@ public class Xci2
     public static Xci2 Create(Stream stream)
     {
         var storage = StreamStorage2.Create(stream);
+        storage.GetSize(out var storageSize).ThrowIfFailure();
 
         try
         {
             var header = new XciHeader(stream);
 
-            var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storage.Size - header.RootPartitionOffset));
+            var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
 
             return new Xci2(stream, rootFs, header);
         }
@@ -65,7 +67,7 @@ public class Xci2
     /// <returns><c>true</c> if the partition exists, otherwise <c>false</c>.</returns>
     public bool HasPartition(XciPartitionType partition)
     {
-        return RootFileSystem.Exists($"/{partition.GetFileName()}");
+        return RootFileSystem.FileExists($"/{partition.GetFileName()}");
     }
 
     /// <summary>
@@ -74,9 +76,12 @@ public class Xci2
     /// <param name="partition">The section.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
     /// <exception cref="ArgumentException">The <paramref name="partition"/> does not exist.</exception>
-    public IFileSystem2 OpenPartition(XciPartitionType partition)
+    public IFileSystem OpenPartition(XciPartitionType partition)
     {
-        var stream = RootFileSystem.OpenFile($"/{partition.GetFileName()}");
+        using var fileRef = new UniqueRef<IFile>();
+        RootFileSystem.OpenFile(ref fileRef.Ref, $"/{partition.GetFileName()}".ToU8Span(), OpenMode.Read).ThrowIfFailure();
+
+        var stream = fileRef.Get.AsStream();
 
         try
         {

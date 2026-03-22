@@ -1,53 +1,95 @@
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public struct NcaFsPatchInfo
+/// <summary>
+/// Describes patch section data for an Nca header.
+/// </summary>
+/// <remarks>For more information, see: https://switchbrew.org/wiki/NCA#PatchInfo</remarks>
+public class NcaFsPatchInfo
 {
-    private readonly Memory<byte> _data;
+    private readonly Memory<byte> data;
 
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <param name="data">The patch info data.</param>
     public NcaFsPatchInfo(Memory<byte> data)
     {
-        _data = data;
+        this.data = data;
     }
 
-    private ref PatchInfoStruct Data => ref Unsafe.As<byte, PatchInfoStruct>(ref _data.Span[0]);
+    private ref NcaFsPatchInfoStruct Data => ref Unsafe.As<byte, NcaFsPatchInfoStruct>(ref data.Span[0]);
 
+    /// <summary>
+    /// The relocation tree offset.
+    /// </summary>
     public long RelocationTreeOffset
     {
         get => Data.RelocationTreeOffset;
         set => Data.RelocationTreeOffset = value;
     }
 
+    /// <summary>
+    /// The relocation tree size.
+    /// </summary>
     public long RelocationTreeSize
     {
         get => Data.RelocationTreeSize;
         set => Data.RelocationTreeSize = value;
     }
 
+    /// <summary>
+    /// The raw relocation tree header.
+    /// </summary>
+    public Memory<byte> RelocationTreeHeader
+    {
+        get => data.Slice(0x10, 0x10);
+        set
+        {
+            if (value.Length != 0x10)
+            {
+                throw new ArgumentException("The value is the wrong size.", nameof(value));
+            }
+
+            value.CopyTo(data.Slice(0x10, 0x10));
+        }
+    }
+
+    /// <summary>
+    /// The encryption tree offset.
+    /// </summary>
     public long EncryptionTreeOffset
     {
         get => Data.EncryptionTreeOffset;
         set => Data.EncryptionTreeOffset = value;
     }
 
+    /// <summary>
+    /// The encryption tree size.
+    /// </summary>
     public long EncryptionTreeSize
     {
         get => Data.EncryptionTreeSize;
         set => Data.EncryptionTreeSize = value;
     }
 
-    public Span<byte> RelocationTreeHeader => _data.Span.Slice(0x10, 0x10);
-    public Span<byte> EncryptionTreeHeader => _data.Span.Slice(0x30, 0x10);
-
-    [StructLayout(LayoutKind.Explicit)]
-    private struct PatchInfoStruct
+    /// <summary>
+    /// The raw encryption tree header.
+    /// </summary>
+    public Memory<byte> EncryptionTreeHeader
     {
-        [FieldOffset(0x00)] public long RelocationTreeOffset;
-        [FieldOffset(0x08)] public long RelocationTreeSize;
-        [FieldOffset(0x20)] public long EncryptionTreeOffset;
-        [FieldOffset(0x28)] public long EncryptionTreeSize;
+        get => data.Slice(0x30, 0x10);
+        set
+        {
+            if (value.Length != 0x10)
+            {
+                throw new ArgumentException("The value is the wrong size.", nameof(value));
+            }
+
+            value.CopyTo(data.Slice(0x30, 0x10));
+        }
     }
 }

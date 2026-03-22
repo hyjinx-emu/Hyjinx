@@ -32,7 +32,8 @@ public class SubStorage2Tests
 
         var target = SubStorage2.Create(baseStorage, 0, 0);
 
-        Assert.Equal(0, target.Size);
+        target.GetSize(out var targetSize).ThrowIfFailure();
+        Assert.Equal(0, targetSize);
     }
 
     [Fact]
@@ -44,7 +45,8 @@ public class SubStorage2Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ]), 1, 10);
 
-        Assert.Equal(10, target.Size);
+        target.GetSize(out var targetSize).ThrowIfFailure();
+        Assert.Equal(10, targetSize);
     }
 
     [Fact]
@@ -88,9 +90,12 @@ public class SubStorage2Tests
     [Fact]
     public void DisposesTheBaseStorage()
     {
-        Mock<IStorage2> baseStorage = new();
-
-        baseStorage.Setup(o => o.Size).Returns(1);
+        Mock<IStorage> baseStorage = new();
+        baseStorage.Setup(o => o.GetSize(out It.Ref<long>.IsAny)).Returns((out long size) =>
+        {
+            size = 1;
+            return Result.Success;
+        });
         baseStorage.Setup(o => o.Dispose()).Verifiable();
 
         var target = SubStorage2.Create(baseStorage.Object, 0, 1);

@@ -5,18 +5,25 @@ using System.IO;
 namespace LibHac.Tools.FsSystem;
 
 /// <summary>
-/// A <see cref="Stream"/> which wraps an <see cref="IStorage2"/>.
+/// A <see cref="Stream"/> which wraps an <see cref="IStorage"/>.
 /// </summary>
 public class NxFileStream2 : Stream
 {
-    private readonly IStorage2 _baseStorage;
+    private readonly IStorage _baseStorage;
     private readonly FileAccess _access;
     private long _position;
 
     public override bool CanRead => _access is FileAccess.Read or FileAccess.ReadWrite;
     public override bool CanSeek => true;
     public override bool CanWrite => false;
-    public override long Length => _baseStorage.Size;
+    public override long Length
+    {
+        get
+        {
+            _baseStorage.GetSize(out var baseStorageSize).ThrowIfFailure();
+            return baseStorageSize;
+        }
+    }
 
     public override long Position
     {
@@ -43,15 +50,15 @@ public class NxFileStream2 : Stream
     /// <param name="baseStorage">The storage which will be accessed by the stream.</param>
     /// <param name="access">The access to the storage.</param>
     /// <exception cref="NotSupportedException">The stream does not support write access.</exception>
-    public NxFileStream2(IStorage2 baseStorage, FileAccess access = FileAccess.Read)
+    public NxFileStream2(IStorage baseStorage, FileAccess access = FileAccess.Read)
     {
         if (access is FileAccess.Write or FileAccess.ReadWrite)
         {
             throw new NotSupportedException("This stream does not support write access.");
         }
 
-        this._baseStorage = baseStorage;
-        this._access = access;
+        _baseStorage = baseStorage;
+        _access = access;
     }
 
     public override int Read(byte[] buffer, int offset, int count)
@@ -86,13 +93,21 @@ public class NxFileStream2 : Stream
 
     private long CalculateOriginOffsetForSeek(SeekOrigin origin)
     {
-        return origin switch
+        switch (origin)
         {
-            SeekOrigin.Begin => 0,
-            SeekOrigin.End => _baseStorage.Size,
-            SeekOrigin.Current => Position,
-            _ => throw new NotSupportedException($"The origin {origin} is not supported.")
-        };
+            case SeekOrigin.Begin:
+                return 0;
+
+            case SeekOrigin.End:
+                _baseStorage.GetSize(out var baseStorageSize).ThrowIfFailure();
+                return baseStorageSize;
+
+            case SeekOrigin.Current:
+                return Position;
+
+            default:
+                throw new NotSupportedException($"The origin {origin} is not supported.");
+        }
     }
 
     private long CalculateOffsetForSeek(long originOffset, long offset)

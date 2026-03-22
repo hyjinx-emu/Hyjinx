@@ -22,12 +22,12 @@ public class IntegrityVerificationStorage2 : Storage2
     /// <summary>
     /// The data storage.
     /// </summary>
-    protected IStorage2 DataStorage { get; }
+    protected IStorage DataStorage { get; }
 
     /// <summary>
     /// The hash storage.
     /// </summary>
-    protected IStorage2 HashStorage { get; }
+    protected IStorage HashStorage { get; }
 
     /// <summary>
     /// The integrity check level.
@@ -45,9 +45,7 @@ public class IntegrityVerificationStorage2 : Storage2
     /// <remarks>Some storages hash the full sector (even empty data) and others only hash the part of the sector used.</remarks>
     protected bool UsePartialBlockHashes { get; }
 
-    public override long Size => DataStorage.Size;
-
-    private IntegrityVerificationStorage2(int level, IStorage2 dataStorage, bool partialBlockHashes, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, int sectorSize, Validity[]? sectors)
+    private IntegrityVerificationStorage2(int level, IStorage dataStorage, bool partialBlockHashes, IStorage hashStorage, IntegrityCheckLevel integrityCheckLevel, int sectorSize, Validity[]? sectors)
     {
         Level = level;
         DataStorage = dataStorage;
@@ -70,7 +68,7 @@ public class IntegrityVerificationStorage2 : Storage2
     /// <param name="length">The length of the storage block.</param>
     /// <param name="sectorSize">The size of the sector.</param>
     /// <exception cref="ArgumentException"><paramref name="sectorSize"/> is less than or equal to zero.</exception>
-    public static IntegrityVerificationStorage2 Create(int level, IStorage2 dataStorage, bool usePartialBlockHashes, IStorage2 hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
+    public static IntegrityVerificationStorage2 Create(int level, IStorage dataStorage, bool usePartialBlockHashes, IStorage hashStorage, IntegrityCheckLevel integrityCheckLevel, long offset, long length, int sectorSize)
     {
         if (sectorSize <= 0)
         {
@@ -90,6 +88,12 @@ public class IntegrityVerificationStorage2 : Storage2
             dataStorage.Slice2(offset, length), usePartialBlockHashes,
             hashStorage,
             integrityCheckLevel, sectorSize, sectors);
+    }
+
+    public override Result GetSize(out long size)
+    {
+        DataStorage.GetSize(out size).ThrowIfFailure();
+        return Result.Success;
     }
 
     protected override void ReadCore(long offset, Span<byte> buffer)
@@ -127,8 +131,10 @@ public class IntegrityVerificationStorage2 : Storage2
         var hashOffset = (long)sectorIndex * Sha256.DigestSize;
         HashStorage.Read(hashOffset, hashBuffer);
 
+        GetSize(out var dataStorageSize).ThrowIfFailure();
+
         var dataOffset = (long)sectorIndex * SectorSize;
-        var bytesRead = (int)Math.Min(SectorSize, Size - dataOffset);
+        var bytesRead = (int)Math.Min(SectorSize, dataStorageSize - dataOffset);
 
         // Read the entire sector from the file, or however many bytes are remaining.
         using var dataBuffer = new RentedArray2<byte>(SectorSize);

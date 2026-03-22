@@ -1,29 +1,70 @@
-using LibHac.Tools.Fs;
-using LibHac.Tools.FsSystem;
-using System.Collections.Generic;
-using System.IO;
+using LibHac.Common;
 
 namespace LibHac.Fs.Fsa;
 
 /// <summary>
 /// Represents a file system.
 /// </summary>
-public abstract partial class FileSystem2 : IFileSystem2
+public abstract class FileSystem2 : FileSystem
 {
-    public abstract bool Exists(string path);
-
-    public abstract Stream OpenFile(string fileName, FileAccess access = FileAccess.Read);
-
-    public IEnumerable<FileInfoEx> EnumerateFileInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
+    protected override Result DoCreateFile(in Path path, long size, CreateFileOptions option)
     {
-        foreach (var entry in EnumerateFileSystemInfos(path, searchPattern, options))
-        {
-            if (entry.Type == DirectoryEntryType.Directory)
-                continue;
-
-            yield return new FileInfoEx(entry.Name, entry.FullPath, entry.Length);
-        }
+        return ResultFs.NotImplemented.Log();
     }
 
-    public abstract IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default);
+    protected override Result DoDeleteFile(in Path path)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoCreateDirectory(in Path path)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoDeleteDirectory(in Path path)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoDeleteDirectoryRecursively(in Path path)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoCleanDirectoryRecursively(in Path path)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoRenameFile(in Path currentPath, in Path newPath)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoRenameDirectory(in Path currentPath, in Path newPath)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoGetEntryType(out DirectoryEntryType entryType, in Path path)
+    {
+        entryType = default;
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoOpenFile(ref UniqueRef<IFile> outFile, in Path path, OpenMode mode)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoOpenDirectory(ref UniqueRef<IDirectory> outDirectory, in Path path, OpenDirectoryMode mode)
+    {
+        return ResultFs.NotImplemented.Log();
+    }
+
+    protected override Result DoCommit()
+    {
+        return ResultFs.NotImplemented.Log();
+    }
 }

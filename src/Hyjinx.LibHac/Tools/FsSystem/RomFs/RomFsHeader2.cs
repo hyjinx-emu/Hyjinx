@@ -64,9 +64,9 @@ public class RomFsHeader2
     /// </summary>
     /// <param name="storage">The storage containing the header.</param>
     /// <returns>The new <see cref="RomFsHeader2"/> instance.</returns>
-    public static RomFsHeader2 Read(IStorage2 storage)
+    public static RomFsHeader2 Read(IStorage storage)
     {
-        using var stream = storage.AsStream();
+        using var stream = storage.AsStream2();
 
         var reader = new BinaryReader(stream);
         Func<long> next;

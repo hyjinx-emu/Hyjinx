@@ -53,7 +53,7 @@ class HorizonFsClient : IFsClient
                 {
                     ncaStorage = new LocalStorage(ncaPath, FileAccess.Read, FileMode.Open);
 
-                    Nca nca = new(_system.KeySet, ncaStorage);
+                    Nca nca = new Nca1(_system.KeySet, ncaStorage);
 
                     using var ncaFileSystem = nca.OpenFileSystem(NcaSectionType.Data, _system.FsIntegrityCheckLevel);
                     using var ncaFsRef = new UniqueRef<IFileSystem>(ncaFileSystem);

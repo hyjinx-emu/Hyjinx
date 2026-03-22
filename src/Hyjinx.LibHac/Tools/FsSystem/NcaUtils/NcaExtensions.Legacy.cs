@@ -24,7 +24,7 @@ public static partial class NcaExtensions
 
     private static Validity VerifySection(this Nca nca, int index, IProgressReport? logger = null, bool quiet = false)
     {
-        NcaFsHeader sect = nca.GetFsHeader(index);
+        NcaFsHeader sect = nca.Header.GetFsHeader(index);
         NcaHashType hashType = sect.HashType;
         if (hashType != NcaHashType.Sha256 && hashType != NcaHashType.Ivfc)
             return Validity.Unchecked;
@@ -41,7 +41,7 @@ public static partial class NcaExtensions
         return validity;
     }
 
-    public static Validity VerifyNca(this Nca nca, Nca patchNca, IProgressReport? logger = null, bool quiet = false)
+    public static Validity VerifyNca(this Nca1 nca, Nca patchNca, IProgressReport? logger = null, bool quiet = false)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -57,9 +57,9 @@ public static partial class NcaExtensions
         return Validity.Valid;
     }
 
-    private static Validity VerifySection(this Nca nca, Nca patchNca, int index, IProgressReport? logger = null, bool quiet = false)
+    private static Validity VerifySection(this Nca1 nca, Nca patchNca, int index, IProgressReport? logger = null, bool quiet = false)
     {
-        NcaFsHeader sect = nca.GetFsHeader(index);
+        NcaFsHeader sect = nca.Header.GetFsHeader(index);
         NcaHashType hashType = sect.HashType;
         if (hashType != NcaHashType.Sha256 && hashType != NcaHashType.Ivfc)
             return Validity.Unchecked;

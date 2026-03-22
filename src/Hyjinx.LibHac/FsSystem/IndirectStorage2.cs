@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 namespace LibHac.FsSystem;
 
 /// <summary>
-/// An <see cref="IStorage2"/> which uses a relocation tree for mapping virtualized offsets to their physical offset on disk.
+/// An <see cref="IStorage"/> which uses a relocation tree for mapping virtualized offsets to their physical offset on disk.
 /// </summary>
 /// <remarks>This type of storage is typically used when patching one archive with contents from another archive.</remarks>
 public class IndirectStorage2 : Storage2
 {
-    private readonly IStorage2[] _storages;
+    private readonly IStorage[] _storages;
     private readonly BucketTree2<Entry> _relocationTree;
 
     /// <summary>
@@ -44,7 +44,7 @@ public class IndirectStorage2 : Storage2
         }
     }
 
-    private IndirectStorage2(IStorage2[] storages, BucketTree2<Entry> relocationTree)
+    private IndirectStorage2(IStorage[] storages, BucketTree2<Entry> relocationTree)
     {
         _storages = storages;
         _relocationTree = relocationTree;
@@ -59,15 +59,16 @@ public class IndirectStorage2 : Storage2
     /// <param name="header">The header for the bucket tree.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="ArgumentException">The header contains invalid data.</exception>
-    public static IndirectStorage2 Create(IStorage2[] storages, IStorage2 relocationTreeStorage, BucketTreeHeader header)
+    public static IndirectStorage2 Create(IStorage[] storages, IStorage relocationTreeStorage, BucketTreeHeader header)
     {
         ArgumentNullException.ThrowIfNull(storages);
 
+        relocationTreeStorage.GetSize(out var relocationTreeStorageSize).ThrowIfFailure();
         var relocationTree = BucketTree2<Entry>.Create(relocationTreeStorage,
             new BucketTreeDefinition
             {
                 Header = header,
-                Length = relocationTreeStorage.Size
+                Length = relocationTreeStorageSize
             });
 
         // We cannot verify the storages are provided correctly, but we can at least verify the number provided matches.
@@ -82,7 +83,10 @@ public class IndirectStorage2 : Storage2
         return new IndirectStorage2(storages, relocationTree);
     }
 
-    public override long Size => throw new NotImplementedException();
+    public override Result GetSize(out long size)
+    {
+        throw new NotImplementedException();
+    }
 
     protected override void ReadCore(long offset, Span<byte> buffer)
     {

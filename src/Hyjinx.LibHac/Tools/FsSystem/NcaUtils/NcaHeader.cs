@@ -1,23 +1,34 @@
 using LibHac.Common;
-using LibHac.Crypto;
-using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.Util;
 using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
+/// <summary>
+/// Describes a content archive header.
+/// </summary>
+/// <remarks>This header is for the archive itself, not the entries within the archive.</remarks>
 public partial class NcaHeader
 {
-    protected Memory<byte> _header;
+    /// <summary>
+    /// The buffer.
+    /// </summary>
+    protected Memory<byte> Buffer { get; }
 
-    public NcaVersion FormatVersion { get; init; }
+    /// <summary>
+    /// Gets the header.
+    /// </summary>
+    protected ref NcaHeaderStruct Header =>
+        ref Unsafe.As<byte, NcaHeaderStruct>(ref Buffer.Span[0]);
 
-    protected ref NcaHeaderStruct Header => ref Unsafe.As<byte, NcaHeaderStruct>(ref _header.Span[0]);
-
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <param name="storage">The storage containing the header.</param>
+    [Obsolete("The data should be read outside of a constructor.")]
     public NcaHeader(IStorage storage)
     {
         byte[] buf = new byte[HeaderSize];
@@ -28,56 +39,135 @@ public partial class NcaHeader
             throw new EncryptedFileDetectedException("The file is encrypted.");
         }
 
-        _header = buf;
-        FormatVersion = DetectNcaVersion(_header.Span);
+        Buffer = buf;
     }
 
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <param name="buffer">The raw header data.</param>
+    public NcaHeader(Memory<byte> buffer)
+    {
+        if (!CheckIsDecrypted(buffer.Span))
+        {
+            throw new EncryptedFileDetectedException("The file is encrypted.");
+        }
+
+        Buffer = buffer;
+    }
+
+    /// <summary>
+    /// The magic value.
+    /// </summary>
     public uint Magic
     {
         get => Header.Magic;
         set => Header.Magic = value;
     }
 
-    public int Version => _header.Span[0x203] - '0';
-
+    /// <summary>
+    /// The distribution type.
+    /// </summary>
     public DistributionType DistributionType
     {
         get => (DistributionType)Header.DistributionType;
         set => Header.DistributionType = (byte)value;
     }
 
+    /// <summary>
+    /// The content type.
+    /// </summary>
     public NcaContentType ContentType
     {
         get => (NcaContentType)Header.ContentType;
         set => Header.ContentType = (byte)value;
     }
 
+    /// <summary>
+    /// The size.
+    /// </summary>
+    /// <remarks>This is the size of the entire archive (including the header).</remarks>
     public long NcaSize
     {
         get => Header.NcaSize;
         set => Header.NcaSize = value;
     }
 
+    /// <summary>
+    /// The title identifier.
+    /// </summary>
     public ulong TitleId
     {
         get => Header.TitleId;
         set => Header.TitleId = value;
     }
 
+    /// <summary>
+    /// The content index.
+    /// </summary>
     public int ContentIndex
     {
         get => Header.ContentIndex;
         set => Header.ContentIndex = value;
     }
 
-    public Span<byte> RightsId => _header.Span.Slice(RightsIdOffset, RightsIdSize);
+    /// <summary>
+    /// The archive version.
+    /// </summary>
+    public byte Version => (byte)(Buffer.Span[0x203] - '0');
 
-    private ref NcaSectionEntryStruct GetSectionEntry(int index)
+    /// <summary>
+    /// The format version.
+    /// </summary>
+    public virtual NcaVersion FormatVersion => Version switch
+    {
+        3 => NcaVersion.Nca3,
+        2 => NcaVersion.Nca2,
+        _ => NcaVersion.Unknown
+    };
+
+    /// <summary>
+    /// The sdk version.
+    /// </summary>
+    public uint SdkVersion
+    {
+        get => Header.SdkVersion;
+        set => Header.SdkVersion = value;
+    }
+
+    /// <summary>
+    /// Indicates whether a rights id is present.
+    /// </summary>
+    public bool HasRightsId => !RightsId.IsZeros();
+
+    /// <summary>
+    /// The rights id.
+    /// </summary>
+    public Span<byte> RightsId
+    {
+        get => Buffer.Span.Slice(RightsIdOffset, RightsIdSize);
+        set
+        {
+            if (value.Length != RightsIdSize)
+            {
+                throw new ArgumentException("The value is the wrong size.", nameof(value));
+            }
+
+            value.CopyTo(Buffer.Span.Slice(RightsIdOffset, RightsIdSize));
+        }
+    }
+
+    /// <summary>
+    /// Gets the section entry.
+    /// </summary>
+    /// <param name="index">The zero-based index of the section to retrieve.</param>
+    /// <returns>A reference to the <see cref="NcaSectionEntryStruct"/> describing the section entry.</returns>
+    internal ref NcaSectionEntryStruct GetSectionEntry(int index)
     {
         ValidateSectionIndex(index);
 
-        int offset = SectionEntriesOffset + SectionEntrySize * index;
-        return ref Unsafe.As<byte, NcaSectionEntryStruct>(ref _header.Span[offset]);
+        int offset = SectionEntriesOffset + (index * SectionEntrySize);
+        return ref Unsafe.As<byte, NcaSectionEntryStruct>(ref Buffer.Span[offset]);
     }
 
     public long GetSectionStartOffset(int index)
@@ -85,10 +175,10 @@ public partial class NcaHeader
         return BlockToOffset(GetSectionEntry(index).StartBlock);
     }
 
-    // public long GetSectionEndOffset(int index)
-    // {
-    //     return BlockToOffset(GetSectionEntry(index).EndBlock);
-    // }
+    public long GetSectionEndOffset(int index)
+    {
+        return BlockToOffset(GetSectionEntry(index).EndBlock);
+    }
 
     public long GetSectionSize(int index)
     {
@@ -96,46 +186,34 @@ public partial class NcaHeader
         return BlockToOffset(info.EndBlock - info.StartBlock);
     }
 
-    public bool IsSectionEnabled(int index)
-    {
-        ref NcaSectionEntryStruct info = ref GetSectionEntry(index);
-
-        int sectStart = info.StartBlock;
-        int sectSize = info.EndBlock - sectStart;
-        return sectStart != 0 || sectSize != 0;
-    }
-
     public Span<byte> GetFsHeaderHash(int index)
     {
         ValidateSectionIndex(index);
 
-        int offset = FsHeaderHashOffset + FsHeaderHashSize * index;
-        return _header.Span.Slice(offset, FsHeaderHashSize);
+        int offset = FsHeaderHashOffset + (index * FsHeaderHashSize);
+        return Buffer.Span.Slice(offset, FsHeaderHashSize);
     }
 
+    /// <summary>
+    /// Gets the NCA FS header.
+    /// </summary>
+    /// <param name="index">The zero-based index of the FS header.</param>
+    /// <returns>The header.</returns>
     public NcaFsHeader GetFsHeader(int index)
     {
-        Span<byte> expectedHash = GetFsHeaderHash(index);
+        ValidateSectionIndex(index);
 
-        int offset = FsHeadersOffset + FsHeaderSize * index;
-        Memory<byte> headerData = _header.Slice(offset, FsHeaderSize);
+        int offset = FsHeadersOffset + (index * FsHeaderSize);
+        Memory<byte> headerData = Buffer.Slice(offset, FsHeaderSize);
 
-        Span<byte> actualHash = stackalloc byte[Sha256.DigestSize];
-        Sha256.GenerateSha256Hash(headerData.Span, actualHash);
-
-        if (!Utilities.SpansEqual(expectedHash, actualHash))
-        {
-            throw new InvalidDataException("FS header hash is invalid.");
-        }
-
-        return new NcaFsHeader(headerData);
+        return new NcaFsHeader(this, headerData);
     }
 
-    private static void ValidateSectionIndex(int index)
+    protected static void ValidateSectionIndex(int index)
     {
         if (index < 0 || index >= SectionCount)
         {
-            throw new ArgumentOutOfRangeException($"NCA section index must be between 0 and 3. Actual: {index}");
+            throw new ArgumentOutOfRangeException($"The section index is invalid. Actual: {index}");
         }
     }
 
@@ -146,68 +224,20 @@ public partial class NcaHeader
 
     private static bool CheckIsDecrypted(ReadOnlySpan<byte> header)
     {
-        Assert.SdkRequiresGreaterEqual(header.Length, 0x400);
-
         // Check the magic value
         if (header[0x200] != 'N' || header[0x201] != 'C' || header[0x202] != 'A')
+        {
             return false;
+        }
 
         // Check the version in the magic value
         if (!StringUtils.IsDigit(header[0x203]))
+        {
             return false;
-
-        // Is the distribution type valid?
-        if (header[0x204] > (int)DistributionType.GameCard)
-            return false;
-
-        // Is the content type valid?
-        if (header[0x205] > (int)NcaContentType.PublicData)
-            return false;
+        }
 
         return true;
     }
 
-    protected static NcaVersion DetectNcaVersion(ReadOnlySpan<byte> header)
-    {
-        int version = header[0x203] - '0';
-
-        if (version == 3)
-            return NcaVersion.Nca3;
-        if (version == 2)
-            return NcaVersion.Nca2;
-        if (version != 0)
-            return NcaVersion.Unknown;
-
-        // There are multiple versions of NCA0 that each encrypt the key area differently.
-        // Examine the key area to detect which version this NCA is.
-        ReadOnlySpan<byte> keyArea = header.Slice(KeyAreaOffset, KeyAreaSize);
-
-        // The end of the key area will only be non-zero if it's RSA-OAEP encrypted
-        var zeros = new Buffer16();
-        if (!keyArea.Slice(0x80, 0x10).SequenceEqual(zeros))
-        {
-            return NcaVersion.Nca0RsaOaep;
-        }
-
-        // Key areas using fixed, unencrypted keys always use the same keys.
-        // Check for these keys by comparing the key area with the known hash of the fixed body keys.
-        Unsafe.SkipInit(out Buffer32 hash);
-        Sha256.GenerateSha256Hash(keyArea.Slice(0, 0x20), hash);
-
-        if (Nca0FixedBodyKeySha256Hash.SequenceEqual(hash))
-        {
-            return NcaVersion.Nca0FixedKey;
-        }
-
-        // Otherwise the key area is encrypted the same as modern NCAs.
-        return NcaVersion.Nca0;
-    }
-
     public bool IsNca0() => FormatVersion >= NcaVersion.Nca0;
-
-    protected static ReadOnlySpan<byte> Nca0FixedBodyKeySha256Hash =>
-    [
-        0x9A, 0xBB, 0xD2, 0x11, 0x86, 0x00, 0x21, 0x9D, 0x7A, 0xDC, 0x5B, 0x43, 0x95, 0xF8, 0x4E, 0xFD,
-        0xFF, 0x6B, 0x25, 0xEF, 0x9F, 0x96, 0x85, 0x28, 0x18, 0x9E, 0x76, 0xB0, 0x92, 0xF0, 0x6A, 0xCB
-    ];
 }

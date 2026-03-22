@@ -32,7 +32,7 @@ internal class FileSystemLoader(Switch device)
     /// <param name="fileSystem">The file system containing the data to load.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     /// <returns>The <see cref="ProcessResult"/> instance.</returns>
-    public async Task<ProcessResult> LoadAsync(IFileSystem2 fileSystem, CancellationToken cancellationToken = default)
+    public async Task<ProcessResult> LoadAsync(IFileSystem fileSystem, CancellationToken cancellationToken = default)
     {
         // PartitionFileSystemExtensions.TryLoad<TMetaData, TFormat, THeader, TEntry>(this PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> partitionFileSystem, Switch device, string path, ulong applicationId, out string errorMessage)
         await device.FileSystem.ImportTicketsAsync(fileSystem, cancellationToken);
@@ -64,13 +64,16 @@ internal class FileSystemLoader(Switch device)
         foreach (var prefix in ProcessConst.ExeFsPrefixes)
         {
             var nsoPath = $"/{prefix}";
-            if (!exeFs.Exists(nsoPath))
+            if (!exeFs.FileExists(nsoPath))
             {
                 // The file doesn't exist, skip it.
                 continue;
             }
 
-            var nsoFile = exeFs.OpenFile(nsoPath);
+            using var fileRef = new UniqueRef<IFile>();
+            exeFs.OpenFile(ref fileRef.Ref, nsoPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
+
+            var nsoFile = fileRef.Get.AsStream();
             executables.Add(new NsoExecutable(new StreamFile(nsoFile, OpenMode.Read)));
         }
 
@@ -127,9 +130,12 @@ internal class FileSystemLoader(Switch device)
         return processResult;
     }
 
-    private MetaLoader GetMetaLoader(IFileSystem2 fileSystem)
+    private MetaLoader GetMetaLoader(IFileSystem fileSystem)
     {
-        using var fs = fileSystem.OpenFile("/main.npdm");
+        using var fileRef = new UniqueRef<IFile>();
+        fileSystem.OpenFile(ref fileRef.Ref, "/main.npdm".ToU8Span(), OpenMode.Read).ThrowIfFailure();
+
+        using var fs = fileRef.Get.AsStream();
 
         using var buffer = new RentedArray2<byte>((int)fs.Length);
         fs.ReadExactly(buffer.Span);
@@ -140,7 +146,7 @@ internal class FileSystemLoader(Switch device)
         return result;
     }
 
-    private async Task<(BasicNca2, BasicNca2)> FindContentFilesAsync(IFileSystem2 fileSystem, Cnmt cnmt, CancellationToken cancellationToken)
+    private async Task<(Nca2, Nca2)> FindContentFilesAsync(IFileSystem fileSystem, Cnmt cnmt, CancellationToken cancellationToken)
     {
         // Find the program file.
         var programEntry = cnmt.ContentEntries.Single(o => o.Type == ContentType.Program);
@@ -153,34 +159,40 @@ internal class FileSystemLoader(Switch device)
         return (programNca, controlNca);
     }
 
-    private Task<BasicNca2> FindNcaForContentAsync(IFileSystem2 fileSystem, CnmtContentEntry entry, CancellationToken cancellationToken)
+    private Task<Nca2> FindNcaForContentAsync(IFileSystem fileSystem, CnmtContentEntry entry, CancellationToken cancellationToken)
     {
         var ncaId = BitConverter.ToString(entry.NcaId).Replace("-", null).ToLower();
         var fileName = $"/{ncaId}.nca";
 
-        // TODO: Viper - This may cause a leak.
-        var fs = fileSystem.OpenFile(fileName);
+        using var fileRef = new UniqueRef<IFile>();
+        fileSystem.OpenFile(ref fileRef.Ref, fileName.ToU8Span(), OpenMode.Read).ThrowIfFailure();
+
+        var fs = fileRef.Get.AsStream();
 
         var nca = BasicNca2.Create(fs);
-        return Task.FromResult(nca);
+        return Task.FromResult<Nca2>(nca);
     }
 
-    private async Task<Cnmt?> FindApplicationMetadataAsync(IFileSystem2 fileSystem, ContentMetaType contentMetaType, CancellationToken cancellationToken)
+    private async Task<Cnmt?> FindApplicationMetadataAsync(IFileSystem fileSystem, ContentMetaType contentMetaType, CancellationToken cancellationToken)
     {
-        foreach (var entry in fileSystem.EnumerateFileInfos("/", "*.cnmt.nca"))
+        foreach (var entry in fileSystem.EnumerateEntries("/", "*.cnmt.nca"))
         {
-            await using var file = fileSystem.OpenFile(entry.FullPath);
+            using var fileRef = new UniqueRef<IFile>();
+            fileSystem.OpenFile(ref fileRef.Ref, entry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-            var nca = BasicNca2.Create(file);
+            await using var fs = fileRef.Get.AsStream();
+            var nca = BasicNca2.Create(fs);
 
             // Find the data within the file.
             var cnmtFs = nca.OpenFileSystem(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
 
             var cnmtPath = $"/{contentMetaType}_{nca.Header.TitleId:x16}.cnmt";
-            if (cnmtFs.Exists(cnmtPath))
+            if (cnmtFs.FileExists(cnmtPath))
             {
-                await using var cnmtFile = cnmtFs.OpenFile(cnmtPath);
+                using var cnmtFileRef = new UniqueRef<IFile>();
+                cnmtFs.OpenFile(ref cnmtFileRef.Ref, cnmtPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
+                await using var cnmtFile = cnmtFileRef.Get.AsStream();
                 return new Cnmt(cnmtFile);
             }
         }

@@ -1,11 +1,35 @@
+using LibHac.Common;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace LibHac.Crypto;
 
+/// <summary>
+/// Contains utility methods used for cryptographic functions.
+/// </summary>
 public static class CryptoUtil
 {
+    /// <summary>
+    /// Checks the input hash matches the expected hash.
+    /// </summary>
+    /// <param name="input">The input data to hash.</param>
+    /// <param name="expected">The expected hash.</param>
+    /// <returns>The <see cref="Validity"/> whether the hash matches.</returns>
+    public static Validity CheckSha256Hash(in Span<byte> input, in Span<byte> expected)
+    {
+        Span<byte> actualHash = stackalloc byte[Sha256.DigestSize];
+        Sha256.GenerateSha256Hash(input, actualHash);
+
+        // Compare the hash to the expected value.
+        if (expected.SequenceEqual(actualHash))
+        {
+            return Validity.Valid;
+        }
+
+        return Validity.Invalid;
+    }
+
     public static bool IsSameBytes(ReadOnlySpan<byte> buffer1, ReadOnlySpan<byte> buffer2, int length)
     {
         if (buffer1.Length < (uint)length || buffer2.Length < (uint)length)

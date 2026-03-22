@@ -203,11 +203,11 @@ internal static partial class ApplicationHelper
 
                     pfs.OpenFile(ref ncaFile.Ref, fileEntry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-                    Nca nca = new(_virtualFileSystem.KeySet, ncaFile.Get.AsStorage());
+                    Nca nca = new Nca1(_virtualFileSystem.KeySet, ncaFile.Get.AsStorage());
                     if (nca.Header.ContentType == NcaContentType.Program)
                     {
                         int dataIndex = Nca.GetSectionIndexFromType(NcaSectionType.Data, NcaContentType.Program);
-                        if (nca.SectionExists(NcaSectionType.Data) && nca.Header.GetFsHeader(dataIndex).IsPatchSection())
+                        if (nca.CanOpenSection(NcaSectionType.Data) && nca.Header.GetFsHeader(dataIndex).IsPatchSection())
                         {
                             patchNca = nca;
                         }
@@ -220,7 +220,7 @@ internal static partial class ApplicationHelper
             }
             else if (extension == ".nca")
             {
-                mainNca = new Nca(_virtualFileSystem.KeySet, file.AsStorage());
+                mainNca = new Nca1(_virtualFileSystem.KeySet, file.AsStorage());
             }
 
             if (mainNca == null)
@@ -248,18 +248,16 @@ internal static partial class ApplicationHelper
                 patchNca = updatePatchNca;
             }
 
-            int index = Nca.GetSectionIndexFromType(ncaSectionType, mainNca.Header.ContentType);
-
             try
             {
                 bool sectionExistsInPatch = false;
                 if (patchNca != null)
                 {
-                    sectionExistsInPatch = patchNca.CanOpenSection(index);
+                    sectionExistsInPatch = patchNca.CanOpenSection(ncaSectionType);
                 }
 
-                IFileSystem ncaFileSystem = sectionExistsInPatch ? mainNca.OpenFileSystemWithPatch(patchNca, index, IntegrityCheckLevel.ErrorOnInvalid)
-                                                                 : mainNca.OpenFileSystem(index, IntegrityCheckLevel.ErrorOnInvalid);
+                IFileSystem ncaFileSystem = sectionExistsInPatch ? mainNca.OpenFileSystemWithPatch(patchNca, ncaSectionType, IntegrityCheckLevel.ErrorOnInvalid)
+                                                                 : mainNca.OpenFileSystem(ncaSectionType, IntegrityCheckLevel.ErrorOnInvalid);
 
                 FileSystemClient fsClient = _horizonClient.Fs;
 

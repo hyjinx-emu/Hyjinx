@@ -130,7 +130,7 @@ public partial class ContentManager : IContentManager
                         string ncaName = new DirectoryInfo(directoryPath).Name.Replace(".nca", string.Empty);
 
                         using FileStream ncaFile = File.OpenRead(Directory.GetFiles(directoryPath)[0]);
-                        Nca nca = new(_virtualFileSystem.KeySet, ncaFile.AsStorage());
+                        Nca nca = BasicNca2.Create(ncaFile);
 
                         string switchPath = contentPathString + ":/" + ncaFile.Name.Replace(contentDirectory, string.Empty).TrimStart(Path.DirectorySeparatorChar);
 
@@ -152,7 +152,7 @@ public partial class ContentManager : IContentManager
                         string ncaName = Path.GetFileNameWithoutExtension(filePath);
 
                         using FileStream ncaFile = new(filePath, FileMode.Open, FileAccess.Read);
-                        Nca nca = new(_virtualFileSystem.KeySet, ncaFile.AsStorage());
+                        Nca nca = BasicNca2.Create(ncaFile);
 
                         string switchPath = contentPathString + ":/" + filePath.Replace(contentDirectory, string.Empty).TrimStart(Path.DirectorySeparatorChar);
 
@@ -242,7 +242,7 @@ public partial class ContentManager : IContentManager
                     return false; // Print error?
             }
 
-            aocStorage = new Nca(_virtualFileSystem.KeySet, ncaFile.Get.AsStorage()).OpenStorage(NcaSectionType.Data, integrityCheckLevel);
+            aocStorage = BasicNca2.Create(ncaFile.Get.AsStream()).OpenStorage(NcaSectionType.Data, integrityCheckLevel);
 
             return true;
         }
@@ -333,7 +333,7 @@ public partial class ContentManager : IContentManager
             if (File.Exists(installedPath))
             {
                 using FileStream file = new(installedPath, FileMode.Open, FileAccess.Read);
-                Nca nca = new(_virtualFileSystem.KeySet, file.AsStorage());
+                Nca nca = BasicNca2.Create(file);
                 bool contentCheck = nca.Header.ContentType == contentType;
 
                 return contentCheck;
@@ -476,7 +476,7 @@ public partial class ContentManager : IContentManager
                     var path = VirtualFileSystem.SwitchPathToSystemPath(entry.ContentPath);
 
                     using FileStream fileStream = File.OpenRead(path);
-                    Nca nca = new(_virtualFileSystem.KeySet, fileStream.AsStorage());
+                    Nca nca = BasicNca2.Create(fileStream);
 
                     if (nca.Header.TitleId == SystemVersionTitleId && nca.Header.ContentType == NcaContentType.Data)
                     {

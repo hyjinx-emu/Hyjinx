@@ -1,45 +1,32 @@
+using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using LibHac.Tools.Fs;
+using LibHac.FsSystem;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
+using Path = LibHac.Fs.Path;
 
 namespace LibHac.Tools.FsSystem.RomFs;
 
 /// <summary>
 /// A RomFS file system.
 /// </summary>
-public partial class RomFsFileSystem2 : FileSystem2
+public sealed partial class RomFsFileSystem2 : FileSystem2
 {
-    private readonly IStorage2 _baseStorage;
+    private readonly Dictionary<string, LookupCacheEntry> lookupCache = new();
 
-    private readonly RomFsIndex<DirectoryNodeInfo> _directoriesIndex;
-    private readonly RomFsIndex<FileNodeInfo> _filesIndex;
-    private readonly long _dataOffset;
+    private readonly IStorage baseStorage;
+    private readonly RomFsIndex<DirectoryNodeInfo> directoriesIndex;
+    private readonly RomFsIndex<FileNodeInfo> filesIndex;
+    private readonly long dataOffset;
 
-    private readonly Dictionary<string, LookupEntry> _lookupCache;
-
-    private readonly record struct LookupEntry
+    private RomFsFileSystem2(IStorage baseStorage, RomFsIndex<DirectoryNodeInfo> directoriesIndex, RomFsIndex<FileNodeInfo> filesIndex, long dataOffset)
     {
-        public static readonly LookupEntry Empty = new();
-
-        public long Offset { get; init; }
-        public long Length { get; init; }
-        public DirectoryEntryType EntryType { get; init; }
-        public int FirstFileOffset { get; init; }
-        public int FirstSubDirectoryOffset { get; init; }
-    }
-
-    private RomFsFileSystem2(IStorage2 baseStorage, RomFsIndex<DirectoryNodeInfo> directoriesIndex, RomFsIndex<FileNodeInfo> fileIndex, long dataOffset)
-    {
-        _baseStorage = baseStorage;
-        _directoriesIndex = directoriesIndex;
-        _filesIndex = fileIndex;
-        _dataOffset = dataOffset;
-        _lookupCache = new Dictionary<string, LookupEntry>();
+        this.baseStorage = baseStorage;
+        this.directoriesIndex = directoriesIndex;
+        this.filesIndex = filesIndex;
+        this.dataOffset = dataOffset;
     }
 
     /// <summary>
@@ -47,7 +34,7 @@ public partial class RomFsFileSystem2 : FileSystem2
     /// </summary>
     /// <param name="baseStorage">The base storage for the file system.</param>
     /// <returns>The new <see cref="RomFsFileSystem2"/> instance.</returns>
-    public static RomFsFileSystem2 Create(IStorage2 baseStorage)
+    public static RomFsFileSystem2 Create(IStorage baseStorage)
     {
         var header = RomFsHeader2.Read(baseStorage);
 
@@ -77,80 +64,64 @@ public partial class RomFsFileSystem2 : FileSystem2
 
     private void Initialize()
     {
-        var rootEntry = _directoriesIndex.Get(0);
-
-        if (rootEntry.Info.FirstSubDirectoryOffset != -1)
+        var rootEntry = directoriesIndex.Get(0);
+        lookupCache.Add("/", new LookupCacheEntry
         {
-            foreach (var entry in _directoriesIndex.Enumerate(rootEntry.Info.FirstSubDirectoryOffset))
-            {
-                _lookupCache.Add($"/{entry.Name}", new LookupEntry
-                {
-                    Offset = entry.Offset,
-                    EntryType = DirectoryEntryType.Directory,
-                    FirstSubDirectoryOffset = entry.Info.FirstSubDirectoryOffset,
-                    FirstFileOffset = entry.Info.FirstFileOffset,
-                    Length = -1
-                });
-            }
-        }
-
-        if (rootEntry.Info.FirstFileOffset != -1)
-        {
-            foreach (var entry in _filesIndex.Enumerate(rootEntry.Info.FirstFileOffset))
-            {
-                _lookupCache.Add($"/{entry.Name}", new LookupEntry
-                {
-                    Offset = entry.Info.Offset,
-                    EntryType = DirectoryEntryType.File,
-                    Length = entry.Info.Length,
-                    FirstSubDirectoryOffset = -1,
-                    FirstFileOffset = -1
-                });
-            }
-        }
+            Offset = 0,
+            FirstSubDirectoryOffset = rootEntry.Info.FirstSubDirectoryOffset,
+            FirstFileOffset = rootEntry.Info.FirstFileOffset,
+            Length = -1
+        });
     }
 
-    private bool TryFindDirectoryOffset(Span<string> parts, out LookupEntry result)
+    private bool TryFindDirectoryOffset(Span<string> parts, out LookupCacheEntry result)
     {
-        var found = false;
-        var entry = LookupEntry.Empty;
+        if (parts.IsEmpty)
+        {
+            result = lookupCache["/"];
+            return true;
+        }
+
+        LookupCacheEntry? entry = null;
 
         var segmentIndex = parts.Length;
-        while (segmentIndex > 0)
+        while (segmentIndex >= 0)
         {
-            var current = $"/{string.Join('/', parts.Slice(0, segmentIndex)!)}";
-            if (_lookupCache.TryGetValue(current, out entry))
+            var current = $"/{string.Join('/', parts[..segmentIndex]!)}";
+            if (lookupCache.TryGetValue(current, out entry))
             {
-                found = true;
                 break;
             }
 
             segmentIndex--;
         }
 
-        if (!found)
+        if (entry != null)
         {
-            result = LookupEntry.Empty;
-        }
-        else if (segmentIndex < parts.Length)
-        {
+            if (segmentIndex == parts.Length)
+            {
+                result = entry;
+                return true;
+            }
+
             // We've found a start point.
-            var startEntry = _directoriesIndex.Get((int)entry.Offset);
+            var startEntry = directoriesIndex.Get((int)entry.Offset);
 
             // Now recursively find the directory within the start point.
-            found = TryFindDirectoryOffset(segmentIndex, parts, startEntry, out result);
-        }
-        else
-        {
-            result = entry;
+            if (TryFindDirectoryOffset(segmentIndex, parts, startEntry, out entry))
+            {
+                result = entry;
+                return true;
+            }
         }
 
-        return found;
+        result = null!;
+        return false;
     }
 
-    private bool TryFindDirectoryOffset(int segmentIndex, Span<string> parts, RomFsIndex<DirectoryNodeInfo>.RomFsIndexEntry startEntry, out LookupEntry result)
+    private bool TryFindDirectoryOffset(int segmentIndex, Span<string> parts, RomFsIndex<DirectoryNodeInfo>.RomFsIndexEntry startEntry, out LookupCacheEntry result)
     {
-        foreach (var entry in _directoriesIndex.Enumerate(startEntry.Info.FirstSubDirectoryOffset))
+        foreach (var entry in directoriesIndex.Enumerate(startEntry.Info.FirstSubDirectoryOffset))
         {
             if (parts[segmentIndex] != entry.Name)
             {
@@ -160,14 +131,16 @@ public partial class RomFsFileSystem2 : FileSystem2
             if (segmentIndex == parts.Length - 1)
             {
                 // We're at the end of the directory tree.
-                result = new LookupEntry
+                result = new LookupCacheEntry
                 {
                     FirstSubDirectoryOffset = entry.Info.FirstSubDirectoryOffset,
                     FirstFileOffset = entry.Info.FirstFileOffset,
                     Offset = entry.Offset,
-                    Length = -1,
-                    EntryType = DirectoryEntryType.Directory
+                    Length = -1
                 };
+
+                var key = $"/{string.Join('/', parts[..(segmentIndex + 1)].ToArray())}";
+                lookupCache[key] = result;
 
                 return true;
             }
@@ -181,23 +154,22 @@ public partial class RomFsFileSystem2 : FileSystem2
             break;
         }
 
-        result = LookupEntry.Empty;
+        result = null!;
         return false;
     }
 
-    private bool TryFindFileInDirectory(string fileName, LookupEntry parent, out LookupEntry result)
+    private bool TryFindFileInDirectory(string fileName, LookupCacheEntry parent, out LookupCacheEntry result)
     {
-        foreach (var entry in _filesIndex.Enumerate(parent.FirstFileOffset))
+        foreach (var entry in filesIndex.Enumerate(parent.FirstFileOffset))
         {
             if (entry.Name != fileName)
             {
                 continue;
             }
 
-            result = new LookupEntry
+            result = new LookupCacheEntry
             {
                 Offset = entry.Info.Offset,
-                EntryType = DirectoryEntryType.File,
                 Length = entry.Info.Length,
                 FirstSubDirectoryOffset = -1,
                 FirstFileOffset = -1
@@ -206,24 +178,16 @@ public partial class RomFsFileSystem2 : FileSystem2
             return true;
         }
 
-        result = LookupEntry.Empty;
+        result = null!;
         return false;
     }
 
-    public override bool Exists(string path)
+    protected override Result DoOpenFile(ref UniqueRef<IFile> outFile, in Path path, OpenMode mode)
     {
-        var root = _directoriesIndex.Get(0);
+        bool found = false;
 
-        return EnumerateFileSystemInfos(
-                root.Info.FirstSubDirectoryOffset, root.Info.FirstFileOffset, "", true)
-            .Any(o => o.FullPath == path);
-    }
-
-    public override Stream OpenFile(string fileName, FileAccess access = FileAccess.Read)
-    {
-        bool found;
-
-        if (!(found = _lookupCache.TryGetValue(fileName, out var entry)))
+        string fileName = path.ToString();
+        if (!lookupCache.TryGetValue(fileName, out var entry))
         {
             Span<string> parts = fileName.Split('/');
             var dirParts = parts[1..^1];
@@ -232,70 +196,36 @@ public partial class RomFsFileSystem2 : FileSystem2
             found = TryFindDirectoryOffset(dirParts, out entry);
             if (found)
             {
-                // Add the item into the cache.
-                _lookupCache[$"/{string.Join('/', dirParts!)}"] = entry;
-
                 // Find the file within the directory.
                 found = TryFindFileInDirectory(parts[^1], entry, out entry);
-                if (found)
-                {
-                    // Add the item into the cache.
-                    _lookupCache[fileName] = entry;
-                }
             }
         }
 
         if (!found)
         {
-            throw new FileNotFoundException("The file does not exist.", fileName);
+            return ResultFs.FileNotFound.Log();
         }
 
-        return new NxFileStream2(_baseStorage.Slice2(
-            _dataOffset + entry.Offset, entry.Length), access);
+        outFile.Reset(new StorageFile(baseStorage.Slice2(dataOffset + entry.Offset, entry.Length), mode));
+        return Result.Success;
     }
 
-    public override IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(string? path = null, string? searchPattern = null, SearchOptions options = SearchOptions.Default)
+    protected override Result DoOpenDirectory(ref UniqueRef<IDirectory> outDirectory, in Path path, OpenDirectoryMode mode)
     {
-        var ignoreCase = options.HasFlag(SearchOptions.CaseInsensitive);
-        var recursive = options.HasFlag(SearchOptions.RecurseSubdirectories);
+        var fullPath = path.ToString();
 
-        var root = _directoriesIndex.Get(0);
-
-        foreach (var entry in EnumerateFileSystemInfos(root.Info.FirstSubDirectoryOffset, root.Info.FirstFileOffset, "", recursive))
+        var parts = fullPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (!TryFindDirectoryOffset(parts, out var entry))
         {
-            if (searchPattern == null || PathTools.MatchesPattern(searchPattern, entry.FullPath, ignoreCase))
-            {
-                yield return entry;
-            }
-        }
-    }
-
-    private IEnumerable<FileSystemInfoEx> EnumerateFileSystemInfos(int directoryOffset, int filesOffset, string path, bool recursive)
-    {
-        if (directoryOffset != -1)
-        {
-            foreach (var directory in _directoriesIndex.Enumerate(directoryOffset))
-            {
-                string directoryPath = $"{path}/{directory.Name}";
-                yield return new FileSystemInfoEx(directory.Name, directoryPath, DirectoryEntryType.Directory, 0);
-
-                if (recursive)
-                {
-                    foreach (var child in EnumerateFileSystemInfos(directory.Info.FirstSubDirectoryOffset, directory.Info.FirstFileOffset, directoryPath, recursive))
-                    {
-                        yield return child;
-                    }
-                }
-            }
+            return ResultFs.FileNotFound.Log();
         }
 
-        if (filesOffset != -1)
+        outDirectory.Reset(new RomFsDirectory(new FindPosition
         {
-            foreach (var file in _filesIndex.Enumerate(filesOffset))
-            {
-                yield return new FileSystemInfoEx(file.Name, $"{path}/{file.Name}", DirectoryEntryType.File, file.Info.Length);
-            }
-        }
+            NextDirectory = entry.FirstSubDirectoryOffset,
+            NextFile = entry.FirstFileOffset
+        }, directoriesIndex, filesIndex, mode));
+        return Result.Success;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

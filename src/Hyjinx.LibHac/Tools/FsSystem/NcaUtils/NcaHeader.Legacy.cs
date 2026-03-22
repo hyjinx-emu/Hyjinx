@@ -1,26 +1,18 @@
 #if IS_LEGACY_ENABLED
 
-using LibHac.Common;
-using System;
+using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
 partial class NcaHeader
 {
-    public Span<byte> Signature1 => _header.Span.Slice(0, 0x100);
-    public Span<byte> Signature2 => _header.Span.Slice(0x100, 0x100);
-
-    public TitleVersion SdkVersion
+    public bool IsSectionEnabled(int index)
     {
-        get => new(Header.SdkVersion);
-        set => Header.SdkVersion = value.Version;
-    }
+        ref NcaSectionEntryStruct info = ref GetSectionEntry(index);
 
-    public bool HasRightsId => !RightsId.IsZeros();
-
-    public long GetSectionEndOffset(int index)
-    {
-        return BlockToOffset(GetSectionEntry(index).EndBlock);
+        int sectStart = info.StartBlock;
+        int sectSize = info.EndBlock - sectStart;
+        return sectStart != 0 || sectSize != 0;
     }
 }
 
