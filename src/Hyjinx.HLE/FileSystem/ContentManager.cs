@@ -130,7 +130,7 @@ public partial class ContentManager : IContentManager
                         string ncaName = new DirectoryInfo(directoryPath).Name.Replace(".nca", string.Empty);
 
                         using FileStream ncaFile = File.OpenRead(Directory.GetFiles(directoryPath)[0]);
-                        Nca nca = new Nca1(_virtualFileSystem.KeySet, ncaFile.AsStorage());
+                        Nca nca = BasicNca2.Create(ncaFile);
 
                         string switchPath = contentPathString + ":/" + ncaFile.Name.Replace(contentDirectory, string.Empty).TrimStart(Path.DirectorySeparatorChar);
 
