@@ -1,5 +1,6 @@
 using Hyjinx.HLE.Exceptions;
 using Hyjinx.HLE.FileSystem;
+using LibHac.Fs.Fsa;
 using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
 using System;
@@ -24,7 +25,7 @@ public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : Partiti
 
         await using var file = File.OpenRead(source);
 
-        var xci = new Xci(file.AsStorage());
+        var xci = new Xci1(file.AsStorage());
         await InstallFromCartAsync(xci, destination, cancellationToken);
     }
 
@@ -32,7 +33,7 @@ public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : Partiti
     {
         if (gameCard.HasPartition(XciPartitionType.Update))
         {
-            XciPartition partition = gameCard.OpenPartition(XciPartitionType.Update);
+            IFileSystem partition = gameCard.OpenPartition(XciPartitionType.Update);
 
             await InstallFromPartitionAsync(partition, destination.FullName, cancellationToken);
         }
@@ -50,14 +51,14 @@ public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : Partiti
         }
 
         await using var file = File.OpenRead(source);
-        Xci xci = new(file.AsStorage());
+        Xci xci = new Xci1(file.AsStorage());
 
         if (!xci.HasPartition(XciPartitionType.Update))
         {
             throw new InvalidFirmwarePackageException("Update not found in xci file.");
         }
 
-        XciPartition partition = xci.OpenPartition(XciPartitionType.Update);
+        IFileSystem partition = xci.OpenPartition(XciPartitionType.Update);
 
         var result = await VerifyAndGetVersionAsync(partition, cancellationToken);
         if (result == null)

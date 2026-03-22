@@ -11,7 +11,7 @@ namespace LibHac.Tools.Fs;
 /// <summary>
 /// Provides a mechanism to interact with executable cartridge image (XCI) files.
 /// </summary>
-public class Xci2
+public class Xci2 : Xci
 {
     /// <summary>
     /// The underlying stream for the file.
@@ -23,16 +23,11 @@ public class Xci2
     /// </summary>
     private IFileSystem RootFileSystem { get; }
 
-    /// <summary>
-    /// Gets the header.
-    /// </summary>
-    public XciHeader Header { get; }
-
     private Xci2(Stream stream, IFileSystem rootFileSystem, XciHeader header)
+        : base(header)
     {
         UnderlyingStream = stream;
         RootFileSystem = rootFileSystem;
-        Header = header;
     }
 
     /// <summary>
@@ -60,26 +55,15 @@ public class Xci2
         }
     }
 
-    /// <summary>
-    /// Identifies whether the partition exists.
-    /// </summary>
-    /// <param name="partition">The partition to check.</param>
-    /// <returns><c>true</c> if the partition exists, otherwise <c>false</c>.</returns>
-    public bool HasPartition(XciPartitionType partition)
+    public override bool HasPartition(XciPartitionType type)
     {
-        return RootFileSystem.FileExists($"/{partition.GetFileName()}");
+        return RootFileSystem.FileExists($"/{type.GetFileName()}");
     }
 
-    /// <summary>
-    /// Opens the file system.
-    /// </summary>
-    /// <param name="partition">The section.</param>
-    /// <returns>The <see cref="IFileSystem"/> instance.</returns>
-    /// <exception cref="ArgumentException">The <paramref name="partition"/> does not exist.</exception>
-    public IFileSystem OpenPartition(XciPartitionType partition)
+    public override IFileSystem OpenPartition(XciPartitionType type)
     {
         using var fileRef = new UniqueRef<IFile>();
-        RootFileSystem.OpenFile(ref fileRef.Ref, $"/{partition.GetFileName()}".ToU8Span(), OpenMode.Read).ThrowIfFailure();
+        RootFileSystem.OpenFile(ref fileRef.Ref, $"/{type.GetFileName()}".ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
         var stream = fileRef.Get.AsStream();
 

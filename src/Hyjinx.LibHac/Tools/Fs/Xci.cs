@@ -5,18 +5,50 @@ using LibHac.Tools.FsSystem;
 
 namespace LibHac.Tools.Fs;
 
-public class Xci
+/// <summary>
+/// Represents an XCI archive.
+/// </summary>
+public abstract class Xci
 {
+    /// <summary>
+    /// Gets the header.
+    /// </summary>
     public XciHeader Header { get; }
 
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <param name="header">The header.</param>
+    protected Xci(XciHeader header)
+    {
+        Header = header;
+    }
+
+    /// <summary>
+    /// Identifies whether the partition exists.
+    /// </summary>
+    /// <param name="type">The partition type to check.</param>
+    /// <returns><c>true</c> if the partition exists, otherwise <c>false</c>.</returns>
+    public abstract bool HasPartition(XciPartitionType type);
+
+    /// <summary>
+    /// Opens the partition.
+    /// </summary>
+    /// <param name="type">The partition type.</param>
+    /// <returns>The <see cref="IFileSystem"/> instance.</returns>
+    public abstract IFileSystem OpenPartition(XciPartitionType type);
+}
+
+public class Xci1 : Xci
+{
     internal IStorage BaseStorage { get; }
     private object InitLocker { get; } = new object();
     private XciPartition RootPartition { get; set; }
 
-    public Xci(IStorage storage)
+    public Xci1(IStorage storage)
+        : base(new XciHeader(storage.AsStream()))
     {
         BaseStorage = storage;
-        Header = new XciHeader(storage.AsStream());
 
         if (Header.HasInitialData)
         {
@@ -24,7 +56,7 @@ public class Xci
         }
     }
 
-    public bool HasPartition(XciPartitionType type)
+    public override bool HasPartition(XciPartitionType type)
     {
         if (type == XciPartitionType.Root)
             return true;
@@ -32,7 +64,7 @@ public class Xci
         return GetRootPartition().FileExists("/" + type.GetFileName());
     }
 
-    public XciPartition OpenPartition(XciPartitionType type)
+    public override IFileSystem OpenPartition(XciPartitionType type)
     {
         XciPartition root = GetRootPartition();
         if (type == XciPartitionType.Root)

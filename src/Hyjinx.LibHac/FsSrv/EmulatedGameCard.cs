@@ -11,7 +11,7 @@ public class EmulatedGameCard
     private IStorage CardImageStorage { get; set; }
     private GameCardHandle Handle { get; set; }
     private XciHeader CardHeader { get; set; }
-    private Xci CardImage { get; set; }
+    private Xci1 CardImage { get; set; }
     private KeySet KeySet { get; set; }
 
     public EmulatedGameCard() { }
@@ -40,7 +40,7 @@ public class EmulatedGameCard
     {
         RemoveGameCard();
 
-        CardImage = new Xci(cardImageStorage);
+        CardImage = new Xci1(cardImageStorage);
         CardHeader = CardImage.Header;
         CardImageStorage = CardImage.BaseStorage;
     }
