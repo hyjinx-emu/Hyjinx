@@ -139,7 +139,7 @@ public sealed partial class RomFsFileSystem2 : FileSystem2
                     Length = -1
                 };
 
-                var key = $"/{string.Join('/', parts[..(segmentIndex+1)].ToArray())}";
+                var key = $"/{string.Join('/', parts[..(segmentIndex + 1)].ToArray())}";
                 lookupCache[key] = result;
 
                 return true;
@@ -203,7 +203,7 @@ public sealed partial class RomFsFileSystem2 : FileSystem2
 
         if (!found)
         {
-           return ResultFs.FileNotFound.Log();
+            return ResultFs.FileNotFound.Log();
         }
 
         outFile.Reset(new StorageFile(baseStorage.Slice2(dataOffset + entry.Offset, entry.Length), mode));
