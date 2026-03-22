@@ -29,21 +29,6 @@ public static partial class NcaExtensions
         Message = "No RomFS found in NCA")]
     private static partial void LogNoRomFsFoundInNca(ILogger logger);
 
-    //     public static ulong GetProgramIdBase(this Nca2 nca)
-    //     {
-    //         return nca.Header.TitleId & ~0x1FFFUL;
-    //     }
-    //
-    //     public static int GetProgramIndex(this Nca2 nca)
-    //     {
-    //         return (int)(nca.Header.TitleId & 0xF);
-    //     }
-    //
-    //     public static bool IsProgram(this Nca2 nca)
-    //     {
-    //         return nca.Header.ContentType == NcaContentType.Program;
-    //     }
-    //
     public static async Task<BlitStruct<ApplicationControlProperty>> FindNacpAsync(this Nca controlNca, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
     {
         var nacpData = new BlitStruct<ApplicationControlProperty>(1);
