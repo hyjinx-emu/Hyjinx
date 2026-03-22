@@ -1,6 +1,8 @@
 using Hyjinx.HLE.Utilities;
 using Hyjinx.Logging.Abstractions;
 using LibHac.Common;
+using LibHac.Fs;
+using LibHac.Fs.Fsa;
 using LibHac.Ns;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
@@ -13,49 +15,52 @@ namespace Hyjinx.HLE.Loaders.Processes.Extensions;
 
 public static partial class NcaExtensions
 {
-    private static readonly TitleUpdateMetadataJsonSerializerContext _applicationSerializerContext = new(JsonHelper.GetDefaultSerializerOptions());
+     private static readonly TitleUpdateMetadataJsonSerializerContext _applicationSerializerContext = new(JsonHelper.GetDefaultSerializerOptions());
 
-    private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(NcaExtensions));
+     private static readonly ILogger _logger = Logger.DefaultLoggerFactory.CreateLogger(typeof(NcaExtensions));
 
-    [LoggerMessage(LogLevel.Error,
-        EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
-        Message = "No ExeFS found in NCA")]
-    private static partial void LogExeFsNotFound(ILogger logger);
+     [LoggerMessage(LogLevel.Error,
+         EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+         Message = "No ExeFS found in NCA")]
+     private static partial void LogExeFsNotFound(ILogger logger);
 
-    [LoggerMessage(LogLevel.Warning,
-        EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
-        Message = "No RomFS found in NCA")]
-    private static partial void LogNoRomFsFoundInNca(ILogger logger);
+     [LoggerMessage(LogLevel.Warning,
+         EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+         Message = "No RomFS found in NCA")]
+     private static partial void LogNoRomFsFoundInNca(ILogger logger);
 
-    public static ulong GetProgramIdBase(this Nca2 nca)
-    {
-        return nca.Header.TitleId & ~0x1FFFUL;
-    }
+//     public static ulong GetProgramIdBase(this Nca2 nca)
+//     {
+//         return nca.Header.TitleId & ~0x1FFFUL;
+//     }
+//
+//     public static int GetProgramIndex(this Nca2 nca)
+//     {
+//         return (int)(nca.Header.TitleId & 0xF);
+//     }
+//
+//     public static bool IsProgram(this Nca2 nca)
+//     {
+//         return nca.Header.ContentType == NcaContentType.Program;
+//     }
+//
+     public static async Task<BlitStruct<ApplicationControlProperty>> FindNacpAsync(this Nca controlNca, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
+     {
+         var nacpData = new BlitStruct<ApplicationControlProperty>(1);
 
-    public static int GetProgramIndex(this Nca2 nca)
-    {
-        return (int)(nca.Header.TitleId & 0xF);
-    }
+         var dataFs = controlNca.OpenFileSystem(NcaSectionType.Data, integrityCheckLevel);
 
-    public static bool IsProgram(this Nca2 nca)
-    {
-        return nca.Header.ContentType == NcaContentType.Program;
-    }
+         using var controlFileRef = new UniqueRef<IFile>();
+         dataFs.OpenFile(ref controlFileRef.Ref, "/control.nacp".ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-    public static async Task<BlitStruct<ApplicationControlProperty>> FindNacpAsync(this Nca2 controlNca, IntegrityCheckLevel integrityCheckLevel, CancellationToken cancellationToken = default)
-    {
-        var nacpData = new BlitStruct<ApplicationControlProperty>(1);
+         await using var controlFile = controlFileRef.Get.AsStream();
+         controlFile.ReadExactly(nacpData.ByteSpan);
 
-        var dataFs = controlNca.OpenFileSystem2(NcaSectionType.Data, integrityCheckLevel);
+         return nacpData;
+     }
 
-        await using var controlFile = dataFs.OpenFile("/control.nacp");
-        controlFile.ReadExactly(nacpData.ByteSpan);
-
-        return nacpData;
-    }
-
-    [LoggerMessage(LogLevel.Warning,
-        EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
-        Message = "Failed get CNMT for '{titleId:x16}' from NCA.")]
-    private static partial void LogFailedToGetCnmtInNca(ILogger logger, ulong titleId, Exception exception);
+     [LoggerMessage(LogLevel.Warning,
+         EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
+         Message = "Failed get CNMT for '{titleId:x16}' from NCA.")]
+     private static partial void LogFailedToGetCnmtInNca(ILogger logger, ulong titleId, Exception exception);
 }

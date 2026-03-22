@@ -25,7 +25,7 @@ public interface IVirtualFileSystem
     void SetRomFs(ulong pid, Stream stream);
 
     /// <summary>
-    /// Gets a stream to the ROM file system. 
+    /// Gets a stream to the ROM file system.
     /// </summary>
     /// <param name="pid">The process id.</param>
     /// <returns>The <see cref="Stream"/> to the ROM file system.</returns>
@@ -36,7 +36,7 @@ public interface IVirtualFileSystem
     /// </summary>
     /// <param name="fileSystem">The file system whose tickets to import.</param>
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    Task ImportTicketsAsync(IFileSystem2 fileSystem, CancellationToken cancellationToken = default);
+    Task ImportTicketsAsync(IFileSystem fileSystem, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Imports the tickets.
