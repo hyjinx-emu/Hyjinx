@@ -1,5 +1,4 @@
 using LibHac.Common;
-using LibHac.Common.Keys;
 using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Gc.Impl;
@@ -11,7 +10,7 @@ using System.Text;
 
 namespace LibHac.Tools.Fs;
 
-public partial class XciHeader
+public class XciHeader
 {
     private const int SignatureSize = 0x100;
     private const string HeaderMagic = "HEAD";
@@ -160,36 +159,5 @@ public partial class XciHeader
         keyAreaStorage = null;
         bodyStorage = baseStorage;
         return Result.Success;
-    }
-}
-
-public enum XciPartitionType
-{
-    Update,
-    Normal,
-    Secure,
-    Logo,
-    Root
-}
-
-public static class XciExtensions
-{
-    public static string GetFileName(this XciPartitionType type)
-    {
-        switch (type)
-        {
-            case XciPartitionType.Update:
-                return "update";
-            case XciPartitionType.Normal:
-                return "normal";
-            case XciPartitionType.Secure:
-                return "secure";
-            case XciPartitionType.Logo:
-                return "logo";
-            case XciPartitionType.Root:
-                return "root";
-            default:
-                throw new ArgumentOutOfRangeException(nameof(type), type, null);
-        }
     }
 }
