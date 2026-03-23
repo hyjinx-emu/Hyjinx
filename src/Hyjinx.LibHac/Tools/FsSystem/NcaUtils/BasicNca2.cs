@@ -8,7 +8,7 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// <summary>
 /// Represents a basic NCA file.
 /// </summary>
-public class BasicNca2 : Nca2<NcaHeader, NcaFsHeader>
+public class BasicNca2 : Nca2<NcaFsHeader>
 {
     private BasicNca2(Stream stream, NcaHeader header, Dictionary<NcaSectionType, SectionDescription> sections)
         : base(stream, header, sections) { }

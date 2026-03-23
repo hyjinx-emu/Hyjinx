@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Diag;
@@ -375,3 +377,5 @@ public partial class Nca1 : Nca
         return !isOutOfRange;
     }
 }
+
+#endif

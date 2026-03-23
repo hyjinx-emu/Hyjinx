@@ -50,17 +50,10 @@ public abstract class Nca2 : Nca
 /// <summary>
 /// Represents an NCA file.
 /// </summary>
-/// <typeparam name="THeader">The type of archive header.</typeparam>
 /// <typeparam name="TFsHeader">The type of file entry header.</typeparam>
-public abstract partial class Nca2<THeader, TFsHeader> : Nca2
-    where THeader : NcaHeader
+public abstract partial class Nca2<TFsHeader> : Nca2
     where TFsHeader : NcaFsHeader
 {
-    /// <summary>
-    /// Gets the header.
-    /// </summary>
-    public new THeader Header => (THeader)base.Header;
-
     /// <summary>
     /// Gets the sections.
     /// </summary>
@@ -103,7 +96,7 @@ public abstract partial class Nca2<THeader, TFsHeader> : Nca2
     /// <param name="stream">The stream containing the NCA contents.</param>
     /// <param name="header">The file header of the archive.</param>
     /// <param name="sections">The sections within the archive.</param>
-    protected Nca2(Stream stream, THeader header, Dictionary<NcaSectionType, SectionDescription> sections)
+    protected Nca2(Stream stream, NcaHeader header, Dictionary<NcaSectionType, SectionDescription> sections)
         : base(stream, header)
     {
         Sections = sections.AsReadOnly();
@@ -116,7 +109,7 @@ public abstract partial class Nca2<THeader, TFsHeader> : Nca2
     /// <param name="factory">The factory used to process and create the section description.</param>
     /// <returns>The section types present, and their descriptions.</returns>
     /// <exception cref="NotSupportedException">The section found could not be determined.</exception>
-    protected static Dictionary<NcaSectionType, SectionDescription> ReadSections(THeader header, Func<int, SectionDescription> factory)
+    protected static Dictionary<NcaSectionType, SectionDescription> ReadSections(NcaHeader header, Func<int, SectionDescription> factory)
     {
         var entries = new Dictionary<NcaSectionType, SectionDescription>();
 
