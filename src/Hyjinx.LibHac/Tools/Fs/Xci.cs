@@ -1,7 +1,4 @@
-using LibHac.Common;
-using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using LibHac.Tools.FsSystem;
 
 namespace LibHac.Tools.Fs;
 
@@ -37,69 +34,4 @@ public abstract class Xci
     /// <param name="type">The partition type.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
     public abstract IFileSystem OpenPartition(XciPartitionType type);
-}
-
-public class Xci1 : Xci
-{
-    internal IStorage BaseStorage { get; }
-    private object InitLocker { get; } = new object();
-    private XciPartition RootPartition { get; set; }
-
-    public Xci1(IStorage storage)
-        : base(new XciHeader(storage.AsStream()))
-    {
-        BaseStorage = storage;
-
-        if (Header.HasInitialData)
-        {
-            BaseStorage = storage.Slice(0x1000);
-        }
-    }
-
-    public override bool HasPartition(XciPartitionType type)
-    {
-        if (type == XciPartitionType.Root)
-            return true;
-
-        return GetRootPartition().FileExists("/" + type.GetFileName());
-    }
-
-    public override IFileSystem OpenPartition(XciPartitionType type)
-    {
-        XciPartition root = GetRootPartition();
-        if (type == XciPartitionType.Root)
-            return root;
-        string partitionFileName = $"/{type.GetFileName()}";
-
-        using var partitionFile = new UniqueRef<IFile>();
-        root.OpenFile(ref partitionFile.Ref, partitionFileName.ToU8Span(), OpenMode.Read).ThrowIfFailure();
-        return new XciPartition(partitionFile.Release().AsStorage());
-    }
-
-    private XciPartition GetRootPartition()
-    {
-        if (RootPartition != null)
-            return RootPartition;
-
-        InitializeRootPartition();
-
-        return RootPartition;
-    }
-
-    private void InitializeRootPartition()
-    {
-        lock (InitLocker)
-        {
-            if (RootPartition != null)
-                return;
-
-            IStorage rootStorage = BaseStorage.Slice(Header.RootPartitionOffset);
-
-            RootPartition = new XciPartition(rootStorage)
-            {
-                Offset = Header.RootPartitionOffset,
-                HashValidity = Header.PartitionFsHeaderValidity
-            };
-        }
-    }
 }
