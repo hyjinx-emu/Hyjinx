@@ -10,50 +10,17 @@ using System.Text;
 
 namespace LibHac.Tools.Fs;
 
-public class XciHeader
+public class XciHeader1 : XciHeader
 {
     private const int SignatureSize = 0x100;
     private const string HeaderMagic = "HEAD";
     private const uint HeaderMagicValue = 0x44414548; // HEAD
 
-    public byte[] Signature { get; set; }
-    public string Magic { get; set; }
-    public int RomAreaStartPage { get; set; }
-    public int BackupAreaStartPage { get; set; }
-    public byte KekIndex { get; set; }
-    public byte TitleKeyDecIndex { get; set; }
-    public GameCardSizeInternal GameCardSize { get; set; }
-    public byte CardHeaderVersion { get; set; }
-    public GameCardAttribute Flags { get; set; }
-    public ulong PackageId { get; set; }
-    public long ValidDataEndPage { get; set; }
-    public byte[] AesCbcIv { get; set; }
-    public long RootPartitionOffset { get; set; }
-    public long RootPartitionHeaderSize { get; set; }
-    public byte[] RootPartitionHeaderHash { get; set; }
-    public byte[] InitialDataHash { get; set; }
-    public int SelSec { get; set; }
-    public int SelT1Key { get; set; }
-    public int SelKey { get; set; }
-    public int LimAreaPage { get; set; }
-    public int UppVersion { get; set; }
-    public byte[] UppHash { get; set; }
-    public ulong UppId { get; set; }
-
-    public byte[] ImageHash { get; }
-
     public Validity SignatureValidity { get; set; }
     public Validity PartitionFsHeaderValidity { get; set; }
     public Validity InitialDataValidity { get; set; }
 
-    public bool HasInitialData { get; set; }
-    public byte[] InitialDataPackageId { get; set; }
-    public byte[] InitialDataAuthData { get; set; }
-    public byte[] InitialDataAuthMac { get; set; }
-    public byte[] InitialDataAuthNonce { get; set; }
-    public byte[] InitialData { get; set; }
-
-    public XciHeader(Stream stream)
+    public XciHeader1(Stream stream)
     {
         DetermineXciSubStorages(out IStorage keyAreaStorage, out IStorage bodyStorage, stream.AsStorage())
             .ThrowIfFailure();
@@ -160,4 +127,40 @@ public class XciHeader
         bodyStorage = baseStorage;
         return Result.Success;
     }
+}
+
+public class XciHeader
+{
+    public byte[] Signature { get; set; }
+    public string Magic { get; set; }
+    public int RomAreaStartPage { get; set; }
+    public int BackupAreaStartPage { get; set; }
+    public byte KekIndex { get; set; }
+    public byte TitleKeyDecIndex { get; set; }
+    public GameCardSizeInternal GameCardSize { get; set; }
+    public byte CardHeaderVersion { get; set; }
+    public GameCardAttribute Flags { get; set; }
+    public ulong PackageId { get; set; }
+    public long ValidDataEndPage { get; set; }
+    public byte[] AesCbcIv { get; set; }
+    public long RootPartitionOffset { get; set; }
+    public long RootPartitionHeaderSize { get; set; }
+    public byte[] RootPartitionHeaderHash { get; set; }
+    public byte[] InitialDataHash { get; set; }
+    public int SelSec { get; set; }
+    public int SelT1Key { get; set; }
+    public int SelKey { get; set; }
+    public int LimAreaPage { get; set; }
+    public int UppVersion { get; set; }
+    public byte[] UppHash { get; set; }
+    public ulong UppId { get; set; }
+
+    public byte[] ImageHash { get; internal set; }
+
+    public bool HasInitialData { get; set; }
+    public byte[] InitialDataPackageId { get; set; }
+    public byte[] InitialDataAuthData { get; set; }
+    public byte[] InitialDataAuthMac { get; set; }
+    public byte[] InitialDataAuthNonce { get; set; }
+    public byte[] InitialData { get; set; }
 }

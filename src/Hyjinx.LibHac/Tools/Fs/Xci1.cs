@@ -11,8 +11,10 @@ public class Xci1 : Xci
     private object InitLocker { get; } = new object();
     private XciPartition RootPartition { get; set; }
 
+    public new XciHeader1 Header => (XciHeader1)base.Header;
+
     public Xci1(IStorage storage)
-        : base(new XciHeader(storage.AsStream()))
+        : base(new XciHeader1(storage.AsStream()))
     {
         BaseStorage = storage;
 
