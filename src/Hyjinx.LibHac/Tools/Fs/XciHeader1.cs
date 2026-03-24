@@ -28,7 +28,7 @@ public class XciHeader1 : XciHeader
     public ulong PackageId { get; set; }
     public long ValidDataEndPage { get; set; }
     public byte[] AesCbcIv { get; set; }
-    public override long RootPartitionOffset { get; set; }
+    public long RootPartitionOffset { get; set; }
     public long RootPartitionHeaderSize { get; set; }
     public byte[] RootPartitionHeaderHash { get; set; }
     public byte[] InitialDataHash { get; set; }

@@ -23,6 +23,11 @@ public class Xci2 : Xci
     /// </summary>
     private IFileSystem RootFileSystem { get; }
 
+    /// <summary>
+    /// Gets the header.
+    /// </summary>
+    public new XciHeader2 Header => (XciHeader2)base.Header;
+
     private Xci2(Stream stream, IFileSystem rootFileSystem, XciHeader header)
         : base(header)
     {
@@ -42,8 +47,7 @@ public class Xci2 : Xci
 
         try
         {
-            var header = new XciHeader1(stream);
-
+            var header = XciHeader2.Create(stream);
             var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
 
             return new Xci2(stream, rootFs, header);

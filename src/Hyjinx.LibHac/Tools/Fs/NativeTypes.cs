@@ -7,6 +7,11 @@ namespace LibHac.Tools.Fs;
 /// </summary>
 public static class NativeTypes
 {
+    /// <summary>
+    /// The size of the header.
+    /// </summary>
+    public const int HeaderSize = 0x200;
+
     public const int SignatureOffset = 0x00;
     public const int SignatureSize = 0x100;
 

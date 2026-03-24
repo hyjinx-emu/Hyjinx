@@ -4,6 +4,7 @@
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>LibHac</RootNamespace>
+    <AssemblyName>libhac</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup>
