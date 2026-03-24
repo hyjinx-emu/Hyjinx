@@ -2,6 +2,7 @@ using LibHac.Fs;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 using static LibHac.Tools.Fs.NativeTypes;
 
 namespace LibHac.Tools.Fs;
@@ -82,6 +83,11 @@ public class XciHeader2 : XciHeader
             value.CopyTo(Data.Slice(MagicOffset, MagicSize));
         }
     }
+
+    /// <summary>
+    /// The magic string.
+    /// </summary>
+    public string MagicString => Encoding.UTF8.GetString(Magic.Span);
 
     /// <summary>
     /// The ROM area start page.

@@ -42,12 +42,20 @@ public class Xci2 : Xci
     /// <returns>The new <see cref="Xci2"/> file.</returns>
     public static Xci2 Create(Stream stream)
     {
+        var header = XciHeader2.Create(stream);
+        if (!header.Magic.Span.SequenceEqual(XciHeader2.HeaderMagic))
+        {
+            // Simulate reading the card key area.
+            stream.Seek(0x1000,  SeekOrigin.Begin);
+
+            header = XciHeader2.Create(stream);
+        }
+
         var storage = StreamStorage2.Create(stream);
         storage.GetSize(out var storageSize).ThrowIfFailure();
 
         try
         {
-            var header = XciHeader2.Create(stream);
             var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
 
             return new Xci2(stream, rootFs, header);
