@@ -107,22 +107,6 @@ public class XciHeader2 : XciHeader
         set => Header.BackupAreaStartPageAddress = value;
     }
 
-    //public byte KeyIndex
-    //{
-    //    get => Header.KeyIndex;
-    //    set => Header.KeyIndex = value;
-    //}
-
-    //public byte KekIndex
-    //{
-    //    get => (byte)(KeyIndex >> 4);
-    //}
-
-    //public byte TitleKeyDecIndex
-    //{
-    //    get => (byte)(KeyIndex & 7);
-    //}
-
     public GameCardSizeInternal GameCardSize
     {
         get => (GameCardSizeInternal)Header.RomSize;
@@ -196,32 +180,32 @@ public class XciHeader2 : XciHeader
         }
     }
 
-    ///// <summary>
-    ///// The sel sec value.
-    ///// </summary>
-    //public int SelSec
-    //{
-    //    get => Header.SelSec;
-    //    set => Header.SelSec = value;
-    //}
+    /// <summary>
+    /// The sel sec value.
+    /// </summary>
+    public int SelSec
+    {
+        get => Header.SelSec;
+        set => Header.SelSec = value;
+    }
 
-    ///// <summary>
-    ///// The sel T1 key value.
-    ///// </summary>
-    //public int SelT1Key
-    //{
-    //    get => Header.SelT1Key;
-    //    set => Header.SelT1Key = value;
-    //}
+    /// <summary>
+    /// The sel T1 key value.
+    /// </summary>
+    public int SelT1Key
+    {
+        get => Header.SelT1Key;
+        set => Header.SelT1Key = value;
+    }
 
-    ///// <summary>
-    ///// The sel key value.
-    ///// </summary>
-    //public int SelKey
-    //{
-    //    get => Header.SelKey;
-    //    set => Header.SelKey = value;
-    //}
+    /// <summary>
+    /// The sel key value.
+    /// </summary>
+    public int SelKey
+    {
+        get => Header.SelKey;
+        set => Header.SelKey = value;
+    }
 
     public int LimAreaPage
     {

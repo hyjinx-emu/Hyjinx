@@ -12,19 +12,44 @@ public static class NativeTypes
     /// </summary>
     public const int HeaderSize = 0x200;
 
+    /// <summary>
+    /// The signature offset.
+    /// </summary>
     public const int SignatureOffset = 0x00;
+
+    /// <summary>
+    /// The signature size.
+    /// </summary>
     public const int SignatureSize = 0x100;
 
+    /// <summary>
+    /// The magic offset.
+    /// </summary>
     public const int MagicOffset = 0x100;
+
+    /// <summary>
+    /// The magic size.
+    /// </summary>
     public const int MagicSize = 0x04;
 
-    //public const int AesCbcIvOffset = 0x120;
-    //public const int AesCbcIvSize = 0x10;
-
+    /// <summary>
+    /// The root partition hash offset.
+    /// </summary>
     public const int RootPartitionHashOffset = 0x140;
+
+    /// <summary>
+    /// The root partition hash size.
+    /// </summary>
     public const int RootPartitionHashSize = 0x20;
 
+    /// <summary>
+    /// The initial data hash offset.
+    /// </summary>
     public const int InitialDataHashOffset = 0x160;
+
+    /// <summary>
+    /// The initial data hash size.
+    /// </summary>
     public const int InitialDataHashSize = 0x20;
 
     /// <summary>
@@ -48,24 +73,5 @@ public static class NativeTypes
         [FieldOffset(0x184)] public int SelT1Key;
         [FieldOffset(0x188)] public int SelKey;
         [FieldOffset(0x18C)] public int LimAreaAddress;
-    }
-
-    /// <summary>
-    /// Describes a card header data structure.
-    /// </summary>
-    [StructLayout(LayoutKind.Explicit)]
-    public struct CardHeaderDataStruct
-    {
-        [FieldOffset(0x0)] public long FwVersion;
-        [FieldOffset(0x8)] public int AccCtrl1;
-        [FieldOffset(0xC)] public int Wait1TimeRead;
-        [FieldOffset(0x10)] public int Wait2TimeRead;
-        [FieldOffset(0x14)] public int Wait1TimeWrite;
-        [FieldOffset(0x18)] public int Wait2TimeWrite;
-        [FieldOffset(0x1C)] public int FwMode;
-        [FieldOffset(0x20)] public int UppVersion;
-        [FieldOffset(0x24)] public byte CompatibilityType;
-        [FieldOffset(0x28)] public long UppHash;
-        [FieldOffset(0x30)] public long UppId;
     }
 }
