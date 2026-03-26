@@ -329,7 +329,7 @@ partial class ISystemSettingsServer : IpcService<ISystemSettingsServer>
         string firmwareTitlePath = FileSystem.VirtualFileSystem.SwitchPathToSystemPath(contentPath);
 
         using IStorage firmwareStorage = new LocalStorage(firmwareTitlePath, FileAccess.Read);
-        Nca firmwareContent = new Nca1(device.System.KeySet, firmwareStorage);
+        Nca firmwareContent = BasicNca2.Create(firmwareStorage);
 
         if (!firmwareContent.CanOpenSection(NcaSectionType.Data))
         {

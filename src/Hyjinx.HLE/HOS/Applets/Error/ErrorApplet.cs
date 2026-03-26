@@ -124,7 +124,7 @@ internal partial class ErrorApplet : IApplet
         string binaryTitleContentPath = _horizon.ContentManager.GetInstalledContentPath(ErrorMessageBinaryTitleId, StorageId.BuiltInSystem, NcaContentType.Data);
 
         using LibHac.Fs.IStorage ncaFileStream = new LocalStorage(FileSystem.VirtualFileSystem.SwitchPathToSystemPath(binaryTitleContentPath), FileAccess.Read, FileMode.Open);
-        Nca nca = new Nca1(_horizon.Device.FileSystem.KeySet, ncaFileStream);
+        Nca nca = BasicNca2.Create(ncaFileStream);
         IFileSystem romfs = nca.OpenFileSystem(NcaSectionType.Data, _horizon.FsIntegrityCheckLevel);
         string languageCode = SystemLanguageToLanguageKey(_horizon.State.DesiredSystemLanguage);
         string filePath = $"/{module}/{description:0000}/{languageCode}_{key}";

@@ -130,7 +130,7 @@ public partial class ApplicationLibrary
                 {
                     pfs.OpenFile(ref ncaFile.Ref, fileEntry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-                    Nca nca = new Nca1(_virtualFileSystem.KeySet, ncaFile.Get.AsStorage());
+                    Nca nca = BasicNca2.Create(ncaFile.Get.AsStorage());
                     int dataIndex = Nca.GetSectionIndexFromType(NcaSectionType.Data, NcaContentType.Program);
 
                     // Some main NCAs don't have a data partition, so check if the partition exists before opening it
@@ -307,7 +307,7 @@ public partial class ApplicationLibrary
             {
                 case ".xci":
                     {
-                        Xci xci = new Xci1(file.AsStorage());
+                        Xci xci = Xci2.Create(file.AsStorage());
 
                         applications = GetApplicationsFromPfs(xci.OpenPartition(XciPartitionType.Secure), applicationPath);
 
@@ -391,7 +391,7 @@ public partial class ApplicationLibrary
                     {
                         ApplicationData application = new();
 
-                        Nca nca = new Nca1(_virtualFileSystem.KeySet, new FileStream(applicationPath, FileMode.Open, FileAccess.Read).AsStorage());
+                        Nca nca = BasicNca2.Create(new FileStream(applicationPath, FileMode.Open, FileAccess.Read).AsStorage());
 
                         if (!nca.IsProgram() || nca.IsPatch())
                         {
@@ -745,7 +745,7 @@ public partial class ApplicationLibrary
 
                         if (extension == ".xci")
                         {
-                            Xci xci = new Xci1(file.AsStorage());
+                            Xci xci = Xci2.Create(file.AsStorage());
 
                             pfs = xci.OpenPartition(XciPartitionType.Secure);
                         }

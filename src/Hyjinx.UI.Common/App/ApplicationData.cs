@@ -75,7 +75,7 @@ public partial class ApplicationData
 
             if (extension == ".xci")
             {
-                Xci xci = new Xci1(file.AsStorage());
+                Xci xci = Xci2.Create(file.AsStorage());
 
                 pfs = xci.OpenPartition(XciPartitionType.Secure);
             }
@@ -92,7 +92,7 @@ public partial class ApplicationData
 
                 pfs.OpenFile(ref ncaFile.Ref, fileEntry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-                Nca nca = new Nca1(virtualFileSystem.KeySet, ncaFile.Get.AsStorage());
+                Nca nca = BasicNca2.Create(ncaFile.Get.AsStorage());
 
                 if (nca.Header.ContentType != NcaContentType.Program)
                 {
@@ -113,7 +113,7 @@ public partial class ApplicationData
         }
         else if (extension == ".nca")
         {
-            mainNca = new Nca1(virtualFileSystem.KeySet, file.AsStorage());
+            mainNca = BasicNca2.Create(file.AsStorage());
         }
 
         if (mainNca == null)

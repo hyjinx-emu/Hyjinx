@@ -126,7 +126,7 @@ partial class BuiltInCertificateManager
             {
                 using LocalStorage ncaFile = new(VirtualFileSystem.SwitchPathToSystemPath(GetCertStoreTitleContentPath()), FileAccess.Read, FileMode.Open);
 
-                Nca nca = new Nca1(_virtualFileSystem.KeySet, ncaFile);
+                Nca nca = BasicNca2.Create(ncaFile);
 
                 IFileSystem romfs = nca.OpenFileSystem(NcaSectionType.Data, _fsIntegrityCheckLevel);
 

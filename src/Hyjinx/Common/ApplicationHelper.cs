@@ -188,7 +188,7 @@ internal static partial class ApplicationHelper
 
                 if (extension == ".xci")
                 {
-                    pfs = new Xci1(file.AsStorage()).OpenPartition(XciPartitionType.Secure);
+                    pfs = Xci2.Create(file.AsStorage()).OpenPartition(XciPartitionType.Secure);
                 }
                 else
                 {
@@ -203,7 +203,7 @@ internal static partial class ApplicationHelper
 
                     pfs.OpenFile(ref ncaFile.Ref, fileEntry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-                    Nca nca = new Nca1(_virtualFileSystem.KeySet, ncaFile.Get.AsStorage());
+                    Nca nca = BasicNca2.Create(ncaFile.Get.AsStorage());
                     if (nca.Header.ContentType == NcaContentType.Program)
                     {
                         int dataIndex = Nca.GetSectionIndexFromType(NcaSectionType.Data, NcaContentType.Program);
@@ -220,7 +220,7 @@ internal static partial class ApplicationHelper
             }
             else if (extension == ".nca")
             {
-                mainNca = new Nca1(_virtualFileSystem.KeySet, file.AsStorage());
+                mainNca = BasicNca2.Create(file.AsStorage());
             }
 
             if (mainNca == null)
