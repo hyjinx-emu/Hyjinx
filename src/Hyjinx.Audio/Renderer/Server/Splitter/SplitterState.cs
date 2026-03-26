@@ -1,5 +1,4 @@
 using Hyjinx.Audio.Renderer.Parameter;
-using Hyjinx.Common.Extensions;
 using System;
 using System.Buffers;
 using System.Diagnostics;

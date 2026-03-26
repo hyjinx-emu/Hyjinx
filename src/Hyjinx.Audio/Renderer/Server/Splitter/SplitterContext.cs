@@ -3,7 +3,6 @@ using Hyjinx.Audio.Renderer.Dsp.State;
 using Hyjinx.Audio.Renderer.Parameter;
 using Hyjinx.Audio.Renderer.Utils;
 using Hyjinx.Common;
-using Hyjinx.Common.Extensions;
 using System;
 using System.Buffers;
 using System.Diagnostics;

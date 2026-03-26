@@ -9,7 +9,6 @@ using Hyjinx.Audio.Renderer.Server.Sink;
 using Hyjinx.Audio.Renderer.Server.Splitter;
 using Hyjinx.Audio.Renderer.Server.Voice;
 using Hyjinx.Audio.Renderer.Utils;
-using Hyjinx.Common.Extensions;
 using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
