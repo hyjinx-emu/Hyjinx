@@ -11,13 +11,8 @@ namespace LibHac.Tools.Fs;
 /// <summary>
 /// Provides a mechanism to interact with executable cartridge image (XCI) files.
 /// </summary>
-public class Xci2
+public class Xci2 : Xci
 {
-    /// <summary>
-    /// The underlying stream for the file.
-    /// </summary>
-    private Stream UnderlyingStream { get; }
-
     /// <summary>
     /// The root file system.
     /// </summary>
@@ -26,13 +21,12 @@ public class Xci2
     /// <summary>
     /// Gets the header.
     /// </summary>
-    public XciHeader Header { get; }
+    public new XciHeader2 Header => (XciHeader2)base.Header;
 
-    private Xci2(Stream stream, IFileSystem rootFileSystem, XciHeader header)
+    private Xci2(IStorage baseStorage, IFileSystem rootFileSystem, XciHeader header)
+        : base(baseStorage, header)
     {
-        UnderlyingStream = stream;
         RootFileSystem = rootFileSystem;
-        Header = header;
     }
 
     /// <summary>
@@ -43,15 +37,10 @@ public class Xci2
     public static Xci2 Create(Stream stream)
     {
         var storage = StreamStorage2.Create(stream);
-        storage.GetSize(out var storageSize).ThrowIfFailure();
 
         try
         {
-            var header = new XciHeader(stream);
-
-            var rootFs = Sha256PartitionFileSystem2.Create(storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
-
-            return new Xci2(stream, rootFs, header);
+            return Create(storage);
         }
         catch (Exception)
         {
@@ -61,25 +50,43 @@ public class Xci2
     }
 
     /// <summary>
-    /// Identifies whether the partition exists.
+    /// Creates an <see cref="Xci2"/>.
     /// </summary>
-    /// <param name="partition">The partition to check.</param>
-    /// <returns><c>true</c> if the partition exists, otherwise <c>false</c>.</returns>
-    public bool HasPartition(XciPartitionType partition)
+    /// <param name="storage">The <see cref="IStorage"/> to use.</param>
+    /// <returns>The new <see cref="Xci2"/> file.</returns>
+    public static Xci2 Create(IStorage storage)
     {
-        return RootFileSystem.FileExists($"/{partition.GetFileName()}");
+        var header = XciHeader2.Create(storage);
+        if (!header.Magic.Span.SequenceEqual(XciHeader2.HeaderMagic))
+        {
+            throw new ArgumentException("The storage does not contain the expected header.", nameof(storage));
+        }
+
+        storage.GetSize(out var storageSize).ThrowIfFailure();
+
+        try
+        {
+            var rootFs = Sha256PartitionFileSystem2.Create(
+                storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
+
+            return new Xci2(storage, rootFs, header);
+        }
+        catch (Exception)
+        {
+            storage.Dispose();
+            throw;
+        }
     }
 
-    /// <summary>
-    /// Opens the file system.
-    /// </summary>
-    /// <param name="partition">The section.</param>
-    /// <returns>The <see cref="IFileSystem"/> instance.</returns>
-    /// <exception cref="ArgumentException">The <paramref name="partition"/> does not exist.</exception>
-    public IFileSystem OpenPartition(XciPartitionType partition)
+    public override bool HasPartition(XciPartitionType type)
+    {
+        return RootFileSystem.FileExists($"/{type.GetFileName()}");
+    }
+
+    public override IFileSystem OpenPartition(XciPartitionType type)
     {
         using var fileRef = new UniqueRef<IFile>();
-        RootFileSystem.OpenFile(ref fileRef.Ref, $"/{partition.GetFileName()}".ToU8Span(), OpenMode.Read).ThrowIfFailure();
+        RootFileSystem.OpenFile(ref fileRef.Ref, $"/{type.GetFileName()}".ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
         var stream = fileRef.Get.AsStream();
 

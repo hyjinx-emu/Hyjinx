@@ -1,13 +1,10 @@
-#if IS_LEGACY_ENABLED
-
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using System;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-partial class Nca2<THeader, TFsHeader>
-    where THeader : NcaHeader
+partial class Nca2<TFsHeader>
     where TFsHeader : NcaFsHeader
 {
     public override bool CanOpenSection(int index)
@@ -65,5 +62,3 @@ partial class Nca2<THeader, TFsHeader>
         throw new NotImplementedException();
     }
 }
-
-#endif

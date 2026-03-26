@@ -15,11 +15,18 @@ public abstract class Nca
     public NcaHeader Header { get; }
 
     /// <summary>
+    /// Gets the base storage.
+    /// </summary>
+    protected IStorage BaseStorage { get; }
+
+    /// <summary>
     /// Creates an instance of the class.
     /// </summary>
+    /// <param name="baseStorage">The base storage.</param>
     /// <param name="header">The header.</param>
-    protected Nca(NcaHeader header)
+    protected Nca(IStorage baseStorage, NcaHeader header)
     {
+        BaseStorage = baseStorage;
         Header = header;
     }
 

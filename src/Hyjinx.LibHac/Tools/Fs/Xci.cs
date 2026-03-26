@@ -1,73 +1,45 @@
-using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using LibHac.Tools.FsSystem;
 
 namespace LibHac.Tools.Fs;
 
-public class Xci
+/// <summary>
+/// Represents an XCI archive.
+/// </summary>
+public abstract class Xci
 {
+    /// <summary>
+    /// Gets the header.
+    /// </summary>
     public XciHeader Header { get; }
 
-    internal IStorage BaseStorage { get; }
-    private object InitLocker { get; } = new object();
-    private XciPartition RootPartition { get; set; }
+    /// <summary>
+    /// Gets the base storage.
+    /// </summary>
+    internal protected IStorage BaseStorage { get; protected set; }
 
-    public Xci(IStorage storage)
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <param name="baseStorage">The storage to use.</param>
+    /// <param name="header">The header.</param>
+    protected Xci(IStorage baseStorage, XciHeader header)
     {
-        BaseStorage = storage;
-        Header = new XciHeader(storage.AsStream());
-
-        if (Header.HasInitialData)
-        {
-            BaseStorage = storage.Slice(0x1000);
-        }
+        BaseStorage = baseStorage;
+        Header = header;
     }
 
-    public bool HasPartition(XciPartitionType type)
-    {
-        if (type == XciPartitionType.Root)
-            return true;
+    /// <summary>
+    /// Identifies whether the partition exists.
+    /// </summary>
+    /// <param name="type">The partition type to check.</param>
+    /// <returns><c>true</c> if the partition exists, otherwise <c>false</c>.</returns>
+    public abstract bool HasPartition(XciPartitionType type);
 
-        return GetRootPartition().FileExists("/" + type.GetFileName());
-    }
-
-    public XciPartition OpenPartition(XciPartitionType type)
-    {
-        XciPartition root = GetRootPartition();
-        if (type == XciPartitionType.Root)
-            return root;
-        string partitionFileName = $"/{type.GetFileName()}";
-
-        using var partitionFile = new UniqueRef<IFile>();
-        root.OpenFile(ref partitionFile.Ref, partitionFileName.ToU8Span(), OpenMode.Read).ThrowIfFailure();
-        return new XciPartition(partitionFile.Release().AsStorage());
-    }
-
-    private XciPartition GetRootPartition()
-    {
-        if (RootPartition != null)
-            return RootPartition;
-
-        InitializeRootPartition();
-
-        return RootPartition;
-    }
-
-    private void InitializeRootPartition()
-    {
-        lock (InitLocker)
-        {
-            if (RootPartition != null)
-                return;
-
-            IStorage rootStorage = BaseStorage.Slice(Header.RootPartitionOffset);
-
-            RootPartition = new XciPartition(rootStorage)
-            {
-                Offset = Header.RootPartitionOffset,
-                HashValidity = Header.PartitionFsHeaderValidity
-            };
-        }
-    }
+    /// <summary>
+    /// Opens the partition.
+    /// </summary>
+    /// <param name="type">The partition type.</param>
+    /// <returns>The <see cref="IFileSystem"/> instance.</returns>
+    public abstract IFileSystem OpenPartition(XciPartitionType type);
 }

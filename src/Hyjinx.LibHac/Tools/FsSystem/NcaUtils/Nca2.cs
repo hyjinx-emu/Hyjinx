@@ -18,20 +18,12 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 public abstract class Nca2 : Nca
 {
     /// <summary>
-    /// Gets the underlying stream for the NCA file.
-    /// </summary>
-    protected Stream UnderlyingStream { get; }
-
-    /// <summary>
     /// Creates an instance of the class.
     /// </summary>
-    /// <param name="stream">The stream containing the NCA contents.</param>
+    /// <param name="baseStorage">The base storage.</param>
     /// <param name="header">The header.</param>
-    protected Nca2(Stream stream, NcaHeader header)
-        : base(header)
-    {
-        UnderlyingStream = stream;
-    }
+    protected Nca2(IStorage baseStorage, NcaHeader header)
+        : base(baseStorage, header) { }
 
     /// <summary>
     /// Copies the entire archive to a destination.
@@ -41,26 +33,18 @@ public abstract class Nca2 : Nca
     /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
     public async Task CopyToAsync(Stream destination, CancellationToken cancellationToken = default)
     {
-        UnderlyingStream.Seek(0, SeekOrigin.Begin);
-
-        await UnderlyingStream.CopyToAsync(destination, cancellationToken);
+        await using var stream = BaseStorage.AsStream2();
+        await stream.CopyToAsync(destination, cancellationToken);
     }
 }
 
 /// <summary>
 /// Represents an NCA file.
 /// </summary>
-/// <typeparam name="THeader">The type of archive header.</typeparam>
 /// <typeparam name="TFsHeader">The type of file entry header.</typeparam>
-public abstract partial class Nca2<THeader, TFsHeader> : Nca2
-    where THeader : NcaHeader
+public abstract partial class Nca2<TFsHeader> : Nca2
     where TFsHeader : NcaFsHeader
 {
-    /// <summary>
-    /// Gets the header.
-    /// </summary>
-    public new THeader Header => (THeader)base.Header;
-
     /// <summary>
     /// Gets the sections.
     /// </summary>
@@ -100,11 +84,11 @@ public abstract partial class Nca2<THeader, TFsHeader> : Nca2
     /// <summary>
     /// Creates an instance of the class.
     /// </summary>
-    /// <param name="stream">The stream containing the NCA contents.</param>
+    /// <param name="baseStorage">The base storage.</param>
     /// <param name="header">The file header of the archive.</param>
     /// <param name="sections">The sections within the archive.</param>
-    protected Nca2(Stream stream, THeader header, Dictionary<NcaSectionType, SectionDescription> sections)
-        : base(stream, header)
+    protected Nca2(IStorage baseStorage, NcaHeader header, Dictionary<NcaSectionType, SectionDescription> sections)
+        : base(baseStorage, header)
     {
         Sections = sections.AsReadOnly();
     }
@@ -116,7 +100,7 @@ public abstract partial class Nca2<THeader, TFsHeader> : Nca2
     /// <param name="factory">The factory used to process and create the section description.</param>
     /// <returns>The section types present, and their descriptions.</returns>
     /// <exception cref="NotSupportedException">The section found could not be determined.</exception>
-    protected static Dictionary<NcaSectionType, SectionDescription> ReadSections(THeader header, Func<int, SectionDescription> factory)
+    protected static Dictionary<NcaSectionType, SectionDescription> ReadSections(NcaHeader header, Func<int, SectionDescription> factory)
     {
         var entries = new Dictionary<NcaSectionType, SectionDescription>();
 
@@ -211,17 +195,7 @@ public abstract partial class Nca2<THeader, TFsHeader> : Nca2
     /// <exception cref="InvalidHashDetectedException">The header hash did not match the expected value.</exception>
     protected virtual IStorage OpenRawStorage(SectionDescription description)
     {
-        var rootStorage = StreamStorage2.Create(UnderlyingStream);
-
-        try
-        {
-            return SubStorage2.Create(rootStorage, description.SectionStartOffset, description.SectionSize);
-        }
-        catch (Exception)
-        {
-            rootStorage.Dispose();
-            throw;
-        }
+        return BaseStorage.Slice2(description.SectionStartOffset, description.SectionSize);
     }
 
     private IStorage CreateVerificationStorage(IStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)

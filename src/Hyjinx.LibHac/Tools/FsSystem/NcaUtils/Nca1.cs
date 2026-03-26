@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Diag;
@@ -16,13 +18,11 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 public partial class Nca1 : Nca
 {
     protected KeySet KeySet { get; }
-    protected IStorage BaseStorage { get; }
 
     public Nca1(KeySet keySet, IStorage storage, NcaHeader? header = null)
-        : base(header ?? new NcaHeader(storage))
+        : base(storage, header ?? new NcaHeader(storage))
     {
         KeySet = keySet;
-        BaseStorage = storage;
     }
 
     public override bool CanOpenSection(NcaSectionType type)
@@ -375,3 +375,5 @@ public partial class Nca1 : Nca
         return !isOutOfRange;
     }
 }
+
+#endif

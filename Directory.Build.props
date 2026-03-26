@@ -23,7 +23,7 @@
 
   <PropertyGroup>
     <!-- Identifies whether any code that has been placed in any *.Legacy.cs files are being compiled. -->
-    <IsLegacyEnabled>true</IsLegacyEnabled>
+    <IsLegacyEnabled Condition=" '$(IsLegacyEnabled)' == '' ">true</IsLegacyEnabled>
     <DefineConstants Condition=" '$(IsLegacyEnabled)' == 'true' ">$(DefineConstants);IS_LEGACY_ENABLED</DefineConstants>
   </PropertyGroup>
 

@@ -75,7 +75,7 @@ public partial class ApplicationData
 
             if (extension == ".xci")
             {
-                Xci xci = new(file.AsStorage());
+                Xci xci = new Xci1(file.AsStorage());
 
                 pfs = xci.OpenPartition(XciPartitionType.Secure);
             }
