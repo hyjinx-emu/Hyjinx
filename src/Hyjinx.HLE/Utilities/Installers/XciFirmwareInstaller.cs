@@ -25,7 +25,7 @@ public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : Partiti
 
         await using var file = File.OpenRead(source);
 
-        var xci = new Xci1(file.AsStorage());
+        var xci = Xci2.Create(file.AsStorage());
         await InstallFromCartAsync(xci, destination, cancellationToken);
     }
 
@@ -51,7 +51,7 @@ public class XciFirmwareInstaller(VirtualFileSystem virtualFileSystem) : Partiti
         }
 
         await using var file = File.OpenRead(source);
-        Xci xci = new Xci1(file.AsStorage());
+        Xci xci = Xci2.Create(file.AsStorage());
 
         if (!xci.HasPartition(XciPartitionType.Update))
         {

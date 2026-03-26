@@ -18,7 +18,7 @@ public static class PartitionFileSystemUtils
 
         if (Path.GetExtension(path).ToLower() == ".xci")
         {
-            partitionFileSystem = new Xci1(file.AsStorage()).OpenPartition(XciPartitionType.Secure);
+            partitionFileSystem = Xci2.Create(file.AsStorage()).OpenPartition(XciPartitionType.Secure);
         }
         else
         {

@@ -1,5 +1,3 @@
-#if IS_LEGACY_ENABLED
-
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
@@ -254,5 +252,3 @@ public static partial class NcaExtensions
         return null;
     }
 }
-
-#endif

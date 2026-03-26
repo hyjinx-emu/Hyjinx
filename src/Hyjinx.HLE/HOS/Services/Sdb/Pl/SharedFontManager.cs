@@ -73,7 +73,7 @@ class SharedFontManager
 
                         using (IStorage ncaFileStream = new LocalStorage(fontPath, FileAccess.Read, FileMode.Open))
                         {
-                            Nca nca = new Nca1(_device.System.KeySet, ncaFileStream);
+                            Nca nca = BasicNca2.Create(ncaFileStream);
                             IFileSystem romfs = nca.OpenFileSystem(NcaSectionType.Data, _device.System.FsIntegrityCheckLevel);
 
                             using var fontFile = new UniqueRef<IFile>();

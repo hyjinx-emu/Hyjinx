@@ -165,6 +165,6 @@ public static partial class PartitionFileSystemExtensions
 
         fileSystem.OpenFile(ref ncaFile.Ref, path.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
-        return new Nca1(keySet, ncaFile.Release().AsStorage());
+        return BasicNca2.Create(ncaFile.Release().AsStorage());
     }
 }

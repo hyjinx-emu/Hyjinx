@@ -50,7 +50,7 @@ static class FileSystemProxyHelper
 
         try
         {
-            Nca nca = new Nca1(context.Device.System.KeySet, ncaStorage);
+            Nca nca = BasicNca2.Create(ncaStorage);
 
             if (!nca.CanOpenSection(NcaSectionType.Data))
             {

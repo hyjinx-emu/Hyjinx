@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSystem;
@@ -14,3 +16,5 @@ public class XciPartition : Sha256PartitionFileSystem
         Initialize(storage).ThrowIfFailure();
     }
 }
+
+#endif

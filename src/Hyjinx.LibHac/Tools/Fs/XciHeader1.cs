@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
@@ -161,3 +163,5 @@ public class XciHeader1 : XciHeader
         return Result.Success;
     }
 }
+
+#endif

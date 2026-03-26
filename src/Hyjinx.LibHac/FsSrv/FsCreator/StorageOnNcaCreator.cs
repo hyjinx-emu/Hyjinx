@@ -57,7 +57,7 @@ public class StorageOnNcaCreator : IStorageOnNcaCreator
 
     public Result OpenNca(out Nca nca, IStorage ncaStorage)
     {
-        nca = new Nca1(KeySet, ncaStorage);
+        nca = BasicNca2.Create(ncaStorage);
         return Result.Success;
     }
 
