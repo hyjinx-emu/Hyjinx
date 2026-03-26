@@ -5,7 +5,7 @@ using LibHac.Fs;
 // ReSharper disable once CheckNamespace
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-partial class Nca1 : Nca
+partial class Nca1
 {
     public IStorage OpenRawStorage(NcaSectionType type)
     {
