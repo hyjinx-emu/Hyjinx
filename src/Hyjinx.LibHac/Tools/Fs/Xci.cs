@@ -1,3 +1,4 @@
+using LibHac.Fs;
 using LibHac.Fs.Fsa;
 
 namespace LibHac.Tools.Fs;
@@ -13,11 +14,18 @@ public abstract class Xci
     public XciHeader Header { get; }
 
     /// <summary>
+    /// Gets the base storage.
+    /// </summary>
+    internal protected IStorage BaseStorage { get; protected set; }
+
+    /// <summary>
     /// Creates an instance of the class.
     /// </summary>
+    /// <param name="baseStorage">The storage to use.</param>
     /// <param name="header">The header.</param>
-    protected Xci(XciHeader header)
+    protected Xci(IStorage baseStorage, XciHeader header)
     {
+        BaseStorage = baseStorage;
         Header = header;
     }
 

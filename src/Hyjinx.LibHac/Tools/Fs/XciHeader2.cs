@@ -1,6 +1,5 @@
 using LibHac.Fs;
 using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using static LibHac.Tools.Fs.NativeTypes;
@@ -20,12 +19,12 @@ public class XciHeader2 : XciHeader
     /// <summary>
     /// Creates a new header.
     /// </summary>
-    /// <param name="stream">The stream containing the header.</param>
+    /// <param name="storage">The storage containing the header.</param>
     /// <returns>The header.</returns>
-    public static XciHeader2 Create(Stream stream)
+    public static XciHeader2 Create(IStorage storage)
     {
         var buffer = new byte[HeaderSize];
-        stream.ReadExactly(buffer);
+        storage.Read(0, buffer).ThrowIfFailure();
 
         return new XciHeader2(buffer);
     }

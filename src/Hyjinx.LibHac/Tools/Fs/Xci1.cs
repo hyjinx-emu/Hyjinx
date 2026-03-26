@@ -7,20 +7,17 @@ namespace LibHac.Tools.Fs;
 
 public class Xci1 : Xci
 {
-    internal IStorage BaseStorage { get; }
     private object InitLocker { get; } = new object();
     private XciPartition RootPartition { get; set; }
 
     public new XciHeader1 Header => (XciHeader1)base.Header;
 
     public Xci1(IStorage storage)
-        : base(new XciHeader1(storage.AsStream()))
+        : base(storage, new XciHeader1(storage.AsStream()))
     {
-        BaseStorage = storage;
-
         if (Header.HasInitialData)
         {
-            BaseStorage = storage.Slice(0x1000);
+            BaseStorage = BaseStorage.Slice(0x1000);
         }
     }
 

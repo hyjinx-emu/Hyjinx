@@ -14,11 +14,6 @@ namespace LibHac.Tools.Fs;
 public class Xci2 : Xci
 {
     /// <summary>
-    /// The underlying stream for the file.
-    /// </summary>
-    private Stream UnderlyingStream { get; }
-
-    /// <summary>
     /// The root file system.
     /// </summary>
     private IFileSystem RootFileSystem { get; }
@@ -28,10 +23,9 @@ public class Xci2 : Xci
     /// </summary>
     public new XciHeader2 Header => (XciHeader2)base.Header;
 
-    private Xci2(Stream stream, IFileSystem rootFileSystem, XciHeader header)
-        : base(header)
+    private Xci2(IStorage baseStorage, IFileSystem rootFileSystem, XciHeader header)
+        : base(baseStorage, header)
     {
-        UnderlyingStream = stream;
         RootFileSystem = rootFileSystem;
     }
 
@@ -42,13 +36,32 @@ public class Xci2 : Xci
     /// <returns>The new <see cref="Xci2"/> file.</returns>
     public static Xci2 Create(Stream stream)
     {
-        var header = XciHeader2.Create(stream);
+        var storage = StreamStorage2.Create(stream);
+
+        try
+        {
+            return Create(storage);
+        }
+        catch (Exception)
+        {
+            storage.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Creates an <see cref="Xci2"/>.
+    /// </summary>
+    /// <param name="storage">The <see cref="IStorage"/> to use.</param>
+    /// <returns>The new <see cref="Xci2"/> file.</returns>
+    public static Xci2 Create(IStorage storage)
+    {
+        var header = XciHeader2.Create(storage);
         if (!header.Magic.Span.SequenceEqual(XciHeader2.HeaderMagic))
         {
-            throw new ArgumentException("The stream does not contain the expected header.", nameof(stream));
+            throw new ArgumentException("The storage does not contain the expected header.", nameof(storage));
         }
         
-        var storage = StreamStorage2.Create(stream);
         storage.GetSize(out var storageSize).ThrowIfFailure();
 
         try
@@ -56,7 +69,7 @@ public class Xci2 : Xci
             var rootFs = Sha256PartitionFileSystem2.Create(
                 storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
 
-            return new Xci2(stream, rootFs, header);
+            return new Xci2(storage, rootFs, header);
         }
         catch (Exception)
         {
