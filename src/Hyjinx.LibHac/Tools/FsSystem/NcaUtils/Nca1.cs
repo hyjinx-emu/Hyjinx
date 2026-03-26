@@ -18,7 +18,7 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 public partial class Nca1 : Nca
 {
     protected KeySet KeySet { get; }
-    
+
     public Nca1(KeySet keySet, IStorage storage, NcaHeader? header = null)
         : base(storage, header ?? new NcaHeader(storage))
     {

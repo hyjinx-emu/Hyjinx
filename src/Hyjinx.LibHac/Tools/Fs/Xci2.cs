@@ -61,7 +61,7 @@ public class Xci2 : Xci
         {
             throw new ArgumentException("The storage does not contain the expected header.", nameof(storage));
         }
-        
+
         storage.GetSize(out var storageSize).ThrowIfFailure();
 
         try
