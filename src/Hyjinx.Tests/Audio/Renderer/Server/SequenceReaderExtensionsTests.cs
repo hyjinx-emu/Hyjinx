@@ -1,11 +1,11 @@
-using Hyjinx.Common.Extensions;
+using Hyjinx.Audio.Renderer.Server.Splitter;
 using Hyjinx.Memory;
 using System.Buffers;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Tests.Common.Extensions;
+namespace Hyjinx.Tests.Audio.Renderer.Server;
 
 public class SequenceReaderExtensionsTests
 {

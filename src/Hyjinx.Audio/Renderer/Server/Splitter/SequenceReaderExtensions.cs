@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Common.Extensions;
+namespace Hyjinx.Audio.Renderer.Server.Splitter;
 
 public static class SequenceReaderExtensions
 {
