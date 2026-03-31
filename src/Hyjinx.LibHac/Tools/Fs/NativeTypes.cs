@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 
 namespace LibHac.Tools.Fs;
@@ -7,6 +8,11 @@ namespace LibHac.Tools.Fs;
 /// </summary>
 public static class NativeTypes
 {
+    /// <summary>
+    /// Defines the signature for the header.
+    /// </summary>
+    public static ReadOnlySpan<byte> HeaderSignature => "HEAD"u8;
+
     /// <summary>
     /// The size of the header.
     /// </summary>
