@@ -7,18 +7,17 @@ using System.Text;
 
 namespace LibHac.FsSystem;
 
-partial class PartitionFileSystem2<TMetadata>
-    where TMetadata : unmanaged
+partial class PartitionFileSystem2<TMetadata, TLookup>
 {
     private class PartitionFsDirectory : IDirectory
     {
-        private readonly Func<int, LookupEntry> readEntryFunc;
+        private readonly Func<int, TLookup> readEntryFunc;
         private readonly PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header;
         private readonly OpenDirectoryMode mode;
 
         private int currentPosition;
 
-        public PartitionFsDirectory(Func<int, LookupEntry> readEntryFunc, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header, OpenDirectoryMode mode)
+        public PartitionFsDirectory(Func<int, TLookup> readEntryFunc, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header, OpenDirectoryMode mode)
         {
             this.readEntryFunc = readEntryFunc;
             this.header = header;

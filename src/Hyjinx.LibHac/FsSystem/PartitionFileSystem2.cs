@@ -3,6 +3,7 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem.Impl;
 using System;
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Path = LibHac.Fs.Path;
 
@@ -35,11 +36,44 @@ public readonly struct PartitionFileSystemLayout
 }
 
 /// <summary>
+/// Describes an entry within the lookup table.
+/// </summary>
+public class PartitionFileSystemLookupEntry
+{
+    /// <summary>
+    /// The name of the entry.
+    /// </summary>
+    public required string Name { get; init; }
+
+    /// <summary>
+    /// The full name (including path) of the entry.
+    /// </summary>
+    public required string FullName { get; init; }
+
+    /// <summary>
+    /// The type of entry.
+    /// </summary>
+    public required DirectoryEntryType EntryType { get; init; }
+
+    /// <summary>
+    /// The length of the entry.
+    /// </summary>
+    public required long Length { get; init; }
+
+    /// <summary>
+    /// The offset where the item is located in storage.
+    /// </summary>
+    public required long Offset { get; init; }
+}
+
+/// <summary>
 /// Represents a partition file system.
 /// </summary>
 /// <typeparam name="TMetadata">The type of entry metadata.</typeparam>
-public abstract partial class PartitionFileSystem2<TMetadata> : FileSystem2
+/// <typeparam name="TLookup">The type of lookup entry.</typeparam>
+public abstract partial class PartitionFileSystem2<TMetadata, TLookup> : FileSystem2
     where TMetadata : unmanaged
+    where TLookup : PartitionFileSystemLookupEntry
 {
     /// <summary>
     /// Gets the base storage.
@@ -57,35 +91,9 @@ public abstract partial class PartitionFileSystem2<TMetadata> : FileSystem2
     protected PartitionFileSystemLayout Layout { get; private set; }
 
     /// <summary>
-    /// Describes an entry within the lookup table.
+    /// A table used for lookup of files by their indices.
     /// </summary>
-    protected struct LookupEntry
-    {
-        /// <summary>
-        /// The name of the entry.
-        /// </summary>
-        public required string Name { get; init; }
-
-        /// <summary>
-        /// The full name (including path) of the entry.
-        /// </summary>
-        public required string FullName { get; init; }
-
-        /// <summary>
-        /// The type of entry.
-        /// </summary>
-        public required DirectoryEntryType EntryType { get; init; }
-
-        /// <summary>
-        /// The length of the entry.
-        /// </summary>
-        public required long Length { get; init; }
-
-        /// <summary>
-        /// The offset where the item is located in storage.
-        /// </summary>
-        public required long Offset { get; init; }
-    }
+    protected ConcurrentDictionary<int, Lazy<TLookup>> LookupTable { get; } = new();
 
     /// <summary>
     /// Initializes an instance of the class.
@@ -142,22 +150,37 @@ public abstract partial class PartitionFileSystem2<TMetadata> : FileSystem2
 
     protected override Result DoOpenFile(ref UniqueRef<IFile> outFile, in Path path, OpenMode mode)
     {
-        if (!TryFindDirectoryEntry(path, out var entry))
+        if (!TryFindDirectoryEntry(path, out TLookup entry))
         {
             return ResultFs.FileNotFound.Log();
+        }
+
+        var result = OnBeforeFileOpened(entry);
+        if (result != Result.Success)
+        {
+            return result;
         }
 
         outFile.Reset(new StorageFile(BaseStorage.Slice2(entry.Offset, entry.Length), mode));
         return Result.Success;
     }
 
-    private bool TryFindDirectoryEntry(Path path, out LookupEntry result)
+    /// <summary>
+    /// Occurs before a file is opened.
+    /// </summary>
+    /// <param name="entry">The region identified which contains the file.</param>
+    protected virtual Result OnBeforeFileOpened(TLookup entry)
     {
-        for (var i = 0; i < Header.EntryCount; i++)
-        {
-            var entry = ReadEntry(i);
-            var pathName = path.ToString();
+        return Result.Success;
+    }
 
+    private bool TryFindDirectoryEntry(Path path, out TLookup result)
+    {
+        var pathName = path.ToString();
+
+        for (var index = 0; index < Header.EntryCount; index++)
+        {
+            var entry = FindEntry(index);
             if (entry.FullName == pathName)
             {
                 result = entry;
@@ -165,17 +188,22 @@ public abstract partial class PartitionFileSystem2<TMetadata> : FileSystem2
             }
         }
 
-        result = default;
+        result = null!;
         return false;
     }
 
-    protected abstract LookupEntry ReadEntry(int index);
+    private TLookup FindEntry(int index)
+    {
+        return LookupTable.GetOrAdd(index, i => new Lazy<TLookup>(ReadEntry(i))).Value;
+    }
+
+    protected abstract TLookup ReadEntry(int index);
 }
 
 /// <summary>
 /// A partitioned file system.
 /// </summary>
-public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemFormat.PartitionEntry>
+public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemFormat.PartitionEntry, PartitionFileSystemLookupEntry>
 {
     private PartitionFileSystem2(IStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
         : base(baseStorage, header) { }
@@ -201,7 +229,7 @@ public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemForm
         return result;
     }
 
-    protected override LookupEntry ReadEntry(int index)
+    protected override PartitionFileSystemLookupEntry ReadEntry(int index)
     {
         // Read the entry details.
         using var entryBuffer = new RentedArray2<byte>(Layout.EntryHeaderSize * 2);
@@ -215,7 +243,7 @@ public class PartitionFileSystem2 : PartitionFileSystem2<PartitionFileSystemForm
 
         var fullName = $"/{new U8Span(nameBuffer.Span).ToString()}";
 
-        return new LookupEntry
+        return new PartitionFileSystemLookupEntry
         {
             Name = System.IO.Path.GetFileName(fullName),
             FullName = fullName,
