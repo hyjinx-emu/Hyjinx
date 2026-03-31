@@ -138,7 +138,7 @@ jobs:
           merge-multiple: true
           
       - name: Set up NuGet
-        uses: nuget/setup-nuget@v2
+        uses: nuget/setup-nuget@v3
         with:
           nuget-api-key: ${{ secrets.NUGET_TOKEN }}
           nuget-version: latest
