@@ -12,6 +12,11 @@ namespace LibHac.Tools.Fs;
 public class XciHeader2 : XciHeader
 {
     /// <summary>
+    /// Defines the size of the header.
+    /// </summary>
+    public static int HeaderSize => NativeTypes.HeaderSize;
+
+    /// <summary>
     /// Creates a new header.
     /// </summary>
     /// <remarks>Be advised, this method expects the header to begin at offset 0. Please ensure any required storage slicing occurs before this method is executed.</remarks>
@@ -107,18 +112,36 @@ public class XciHeader2 : XciHeader
         set => Header.BackupAreaStartPageAddress = value;
     }
 
+    /// <summary>
+    /// The game card size.
+    /// </summary>
     public GameCardSizeInternal GameCardSize
     {
         get => (GameCardSizeInternal)Header.RomSize;
         set => Header.RomSize = (byte)value;
     }
 
+    /// <summary>
+    /// The header version.
+    /// </summary>
+    public byte Version
+    {
+        get => Header.Version;
+        set => Header.Version = value;
+    }
+
+    /// <summary>
+    /// The game card flags.
+    /// </summary>
     public GameCardAttribute Flags
     {
         get => (GameCardAttribute)Header.Flags;
         set => Header.Flags = (byte)value;
     }
 
+    /// <summary>
+    /// The package id.
+    /// </summary>
     public ulong PackageId
     {
         get => Header.PackageId;
@@ -134,12 +157,18 @@ public class XciHeader2 : XciHeader
         set => Header.ValidDataEndAddress = value;
     }
 
+    /// <summary>
+    /// The root partition offset.
+    /// </summary>
     public long RootPartitionOffset
     {
         get => Header.RootPartitionHeaderAddress;
         set => Header.RootPartitionHeaderAddress = value;
     }
 
+    /// <summary>
+    /// The root partition header size.
+    /// </summary>
     public long RootPartitionHeaderSize
     {
         get => Header.RootPartitionHeaderSize;
@@ -180,7 +209,10 @@ public class XciHeader2 : XciHeader
         }
     }
 
-    public int LimAreaPage
+    /// <summary>
+    /// The LIM area start page.
+    /// </summary>
+    public int LimAreaStartPage
     {
         get => Header.LimAreaAddress;
         set => Header.LimAreaAddress = value;
