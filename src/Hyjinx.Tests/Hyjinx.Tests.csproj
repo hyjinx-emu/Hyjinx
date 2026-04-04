@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../.build/unittest.props" />
   
   <PropertyGroup>
@@ -16,8 +16,8 @@
     <ProjectReference Include="..\Hyjinx.Audio\Hyjinx.Audio.csproj" />
     <ProjectReference Include="..\Hyjinx.Cpu\Hyjinx.Cpu.csproj" />
     <ProjectReference Include="..\Hyjinx.HLE\Hyjinx.HLE.csproj" />
-    <ProjectReference Include="..\Hyjinx.Tests.Memory\Hyjinx.Tests.Memory.csproj" />
     <ProjectReference Include="..\Hyjinx.Memory.Abstractions\Hyjinx.Memory.Abstractions.csproj" />
+    <ProjectReference Include="..\Hyjinx.Memory.Tests\Hyjinx.Memory.Tests.csproj" />
     <ProjectReference Include="..\Hyjinx.Tests.Unicorn\Hyjinx.Tests.Unicorn.csproj" />
     <ProjectReference Include="..\ARMeilleure\ARMeilleure.csproj" />
   </ItemGroup>
