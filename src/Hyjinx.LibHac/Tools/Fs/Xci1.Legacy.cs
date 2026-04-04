@@ -25,17 +25,12 @@ public class Xci1 : Xci
 
     public override bool HasPartition(XciPartitionType type)
     {
-        if (type == XciPartitionType.Root)
-            return true;
-
         return GetRootPartition().FileExists("/" + type.GetFileName());
     }
 
     public override IFileSystem OpenPartition(XciPartitionType type)
     {
         XciPartition root = GetRootPartition();
-        if (type == XciPartitionType.Root)
-            return root;
         string partitionFileName = $"/{type.GetFileName()}";
 
         using var partitionFile = new UniqueRef<IFile>();

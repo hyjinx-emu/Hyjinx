@@ -92,11 +92,6 @@ public class Xci2 : Xci
 
     public override IFileSystem OpenPartition(XciPartitionType type)
     {
-        if (type == XciPartitionType.Root)
-        {
-            return RootFileSystem;
-        }
-
         using var fileRef = new UniqueRef<IFile>();
         RootFileSystem.OpenFile(ref fileRef.Ref, $"/{type.GetFileName()}".ToU8Span(), OpenMode.Read).ThrowIfFailure();
 

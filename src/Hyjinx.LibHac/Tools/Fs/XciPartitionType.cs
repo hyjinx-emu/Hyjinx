@@ -23,10 +23,5 @@ public enum XciPartitionType
     /// <summary>
     /// The logo partition.
     /// </summary>
-    Logo,
-
-    /// <summary>
-    /// The root partition.
-    /// </summary>
-    Root
+    Logo
 }
