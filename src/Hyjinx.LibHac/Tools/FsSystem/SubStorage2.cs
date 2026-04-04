@@ -52,7 +52,7 @@ public class SubStorage2 : Storage2
         }
 
         baseStorage.GetSize(out var baseStorageSize).ThrowIfFailure();
-        if (offset + size > baseStorageSize)
+        if (baseStorageSize < offset + size)
         {
             throw new ArgumentException("The length must be available within the stream based on the current position.", nameof(size));
         }

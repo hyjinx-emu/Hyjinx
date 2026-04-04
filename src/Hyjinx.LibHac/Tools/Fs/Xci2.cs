@@ -5,6 +5,7 @@ using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
+using static LibHac.Tools.Fs.NativeTypes;
 
 namespace LibHac.Tools.Fs;
 
@@ -23,7 +24,13 @@ public class Xci2 : Xci
     /// </summary>
     public new XciHeader2 Header => (XciHeader2)base.Header;
 
-    private Xci2(IStorage baseStorage, IFileSystem rootFileSystem, XciHeader header)
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+    /// <param name="baseStorage">The storage to use.</param>
+    /// <param name="header">The header.</param>
+    /// <param name="rootFileSystem">The root file system.</param>
+    protected Xci2(IStorage baseStorage, XciHeader header, IFileSystem rootFileSystem)
         : base(baseStorage, header)
     {
         RootFileSystem = rootFileSystem;
@@ -57,7 +64,7 @@ public class Xci2 : Xci
     public static Xci2 Create(IStorage storage)
     {
         var header = XciHeader2.Create(storage);
-        if (!header.Magic.Span.SequenceEqual(XciHeader2.HeaderMagic))
+        if (!header.Magic.Span.SequenceEqual(HeaderSignature))
         {
             throw new ArgumentException("The storage does not contain the expected header.", nameof(storage));
         }
@@ -69,7 +76,7 @@ public class Xci2 : Xci
             var rootFs = Sha256PartitionFileSystem2.Create(
                 storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
 
-            return new Xci2(storage, rootFs, header);
+            return new Xci2(storage, header, rootFs);
         }
         catch (Exception)
         {

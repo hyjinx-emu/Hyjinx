@@ -12,13 +12,14 @@ namespace LibHac.Tools.Fs;
 public class XciHeader2 : XciHeader
 {
     /// <summary>
-    /// Defines the magic value for the header.
+    /// Defines the size of the header.
     /// </summary>
-    public static ReadOnlySpan<byte> HeaderMagic => "HEAD"u8;
+    public static int HeaderSize => NativeTypes.HeaderSize;
 
     /// <summary>
     /// Creates a new header.
     /// </summary>
+    /// <remarks>Be advised, this method expects the header to begin at offset 0. Please ensure any required storage slicing occurs before this method is executed.</remarks>
     /// <param name="storage">The storage containing the header.</param>
     /// <returns>The header.</returns>
     public static XciHeader2 Create(IStorage storage)
@@ -30,23 +31,28 @@ public class XciHeader2 : XciHeader
     }
 
     /// <summary>
-    /// The raw header data.
+    /// The raw buffer.
     /// </summary>
     /// <remarks>Use caution if modifying the raw data, as it is very easy to invalidate the header.</remarks>
-    private Memory<byte> Data { get; }
+    protected Memory<byte> Buffer { get; }
 
     /// <summary>
     /// The header structure.
     /// </summary>
-    protected ref CardHeaderStruct Header => ref Unsafe.As<byte, CardHeaderStruct>(ref Data.Span[0]);
+    protected ref CardHeaderStruct Header => ref Unsafe.As<byte, CardHeaderStruct>(ref Buffer.Span[0]);
 
     /// <summary>
     /// Creates an instance of the class.
     /// </summary>
-    /// <param name="data">The memory block containing the header data.</param>
-    private XciHeader2(Memory<byte> data)
+    /// <param name="buffer">The buffer containing the header data.</param>
+    public XciHeader2(Memory<byte> buffer)
     {
-        Data = data;
+        if (buffer.Length != HeaderSize)
+        {
+            throw new ArgumentException("The buffer is the wrong size.", nameof(buffer));
+        }
+
+        Buffer = buffer;
     }
 
     /// <summary>
@@ -54,7 +60,7 @@ public class XciHeader2 : XciHeader
     /// </summary>
     public Memory<byte> Signature
     {
-        get => Data.Slice(SignatureOffset, SignatureSize);
+        get => Buffer.Slice(SignatureOffset, SignatureSize);
         set
         {
             if (value.Length != SignatureSize)
@@ -62,7 +68,7 @@ public class XciHeader2 : XciHeader
                 throw new ArgumentException("The value is the wrong size.", nameof(value));
             }
 
-            value.CopyTo(Data.Slice(SignatureOffset, SignatureSize));
+            value.CopyTo(Buffer.Slice(SignatureOffset, SignatureSize));
         }
     }
 
@@ -71,7 +77,7 @@ public class XciHeader2 : XciHeader
     /// </summary>
     public Memory<byte> Magic
     {
-        get => Data.Slice(MagicOffset, MagicSize);
+        get => Buffer.Slice(MagicOffset, MagicSize);
         set
         {
             if (value.Length != MagicSize)
@@ -79,7 +85,7 @@ public class XciHeader2 : XciHeader
                 throw new ArgumentException("The value is the wrong size.", nameof(value));
             }
 
-            value.CopyTo(Data.Slice(MagicOffset, MagicSize));
+            value.CopyTo(Buffer.Slice(MagicOffset, MagicSize));
         }
     }
 
@@ -106,18 +112,36 @@ public class XciHeader2 : XciHeader
         set => Header.BackupAreaStartPageAddress = value;
     }
 
+    /// <summary>
+    /// The game card size.
+    /// </summary>
     public GameCardSizeInternal GameCardSize
     {
         get => (GameCardSizeInternal)Header.RomSize;
         set => Header.RomSize = (byte)value;
     }
 
+    /// <summary>
+    /// The header version.
+    /// </summary>
+    public byte Version
+    {
+        get => Header.Version;
+        set => Header.Version = value;
+    }
+
+    /// <summary>
+    /// The game card flags.
+    /// </summary>
     public GameCardAttribute Flags
     {
         get => (GameCardAttribute)Header.Flags;
         set => Header.Flags = (byte)value;
     }
 
+    /// <summary>
+    /// The package id.
+    /// </summary>
     public ulong PackageId
     {
         get => Header.PackageId;
@@ -133,12 +157,18 @@ public class XciHeader2 : XciHeader
         set => Header.ValidDataEndAddress = value;
     }
 
+    /// <summary>
+    /// The root partition offset.
+    /// </summary>
     public long RootPartitionOffset
     {
         get => Header.RootPartitionHeaderAddress;
         set => Header.RootPartitionHeaderAddress = value;
     }
 
+    /// <summary>
+    /// The root partition header size.
+    /// </summary>
     public long RootPartitionHeaderSize
     {
         get => Header.RootPartitionHeaderSize;
@@ -150,7 +180,7 @@ public class XciHeader2 : XciHeader
     /// </summary>
     public Memory<byte> RootPartitionHeaderHash
     {
-        get => Data.Slice(RootPartitionHashOffset, RootPartitionHashSize);
+        get => Buffer.Slice(RootPartitionHashOffset, RootPartitionHashSize);
         set
         {
             if (value.Length != RootPartitionHashSize)
@@ -158,7 +188,7 @@ public class XciHeader2 : XciHeader
                 throw new ArgumentException("The value is the wrong size.", nameof(value));
             }
 
-            value.CopyTo(Data.Slice(RootPartitionHashOffset, RootPartitionHashSize));
+            value.CopyTo(Buffer.Slice(RootPartitionHashOffset, RootPartitionHashSize));
         }
     }
 
@@ -167,7 +197,7 @@ public class XciHeader2 : XciHeader
     /// </summary>
     public Memory<byte> InitialDataHash
     {
-        get => Data.Slice(InitialDataHashOffset, InitialDataHashSize);
+        get => Buffer.Slice(InitialDataHashOffset, InitialDataHashSize);
         set
         {
             if (value.Length != InitialDataHashSize)
@@ -175,38 +205,14 @@ public class XciHeader2 : XciHeader
                 throw new ArgumentException("The value is the wrong size.", nameof(value));
             }
 
-            value.CopyTo(Data.Slice(InitialDataHashOffset, InitialDataHashSize));
+            value.CopyTo(Buffer.Slice(InitialDataHashOffset, InitialDataHashSize));
         }
     }
 
     /// <summary>
-    /// The sel sec value.
+    /// The LIM area start page.
     /// </summary>
-    public int SelSec
-    {
-        get => Header.SelSec;
-        set => Header.SelSec = value;
-    }
-
-    /// <summary>
-    /// The sel T1 key value.
-    /// </summary>
-    public int SelT1Key
-    {
-        get => Header.SelT1Key;
-        set => Header.SelT1Key = value;
-    }
-
-    /// <summary>
-    /// The sel key value.
-    /// </summary>
-    public int SelKey
-    {
-        get => Header.SelKey;
-        set => Header.SelKey = value;
-    }
-
-    public int LimAreaPage
+    public int LimAreaStartPage
     {
         get => Header.LimAreaAddress;
         set => Header.LimAreaAddress = value;

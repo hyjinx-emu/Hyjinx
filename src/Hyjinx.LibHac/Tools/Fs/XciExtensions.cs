@@ -19,8 +19,6 @@ public static class XciExtensions
                 return "secure";
             case XciPartitionType.Logo:
                 return "logo";
-            case XciPartitionType.Root:
-                return "root";
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);
         }
