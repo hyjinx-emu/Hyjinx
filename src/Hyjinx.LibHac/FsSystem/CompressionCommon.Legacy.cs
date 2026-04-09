@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System;
 
 namespace LibHac.FsSystem;
@@ -35,3 +37,5 @@ public static class CompressionTypeUtility
         return type >= CompressionType.Unknown;
     }
 }
+
+#endif

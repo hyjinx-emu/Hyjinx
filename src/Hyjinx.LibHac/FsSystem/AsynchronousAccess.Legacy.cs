@@ -1,3 +1,4 @@
+#if IS
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -11,7 +12,7 @@ namespace LibHac.FsSystem;
 /// <para>Splits read and write requests on an <see cref="IFile"/> or <see cref="IStorage"/> into smaller chunks
 /// so the request can be processed by multiple threads simultaneously.</para>
 /// <para>This interface exists because of <see cref="CompressedStorage"/> where it will split requests into
-/// chunks that start and end on the boundaries of the compressed blocks.</para> 
+/// chunks that start and end on the boundaries of the compressed blocks.</para>
 /// </summary>
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
 public interface IAsynchronousAccessSplitter : IDisposable
@@ -90,3 +91,5 @@ public class DefaultAsynchronousAccessSplitter : IAsynchronousAccessSplitter
         return Result.Success;
     }
 }
+
+#endif

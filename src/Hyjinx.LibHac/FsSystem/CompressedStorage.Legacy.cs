@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 // ReSharper disable UnusedMember.Local NotAccessedField.Local
 using LibHac.Diag;
 using LibHac.Fs;
@@ -399,3 +401,5 @@ public class CompressedStorage : Storage, IAsynchronousAccessSplitter
         return Result.Success;
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -114,7 +116,7 @@ internal class CompressedStorage : Storage
             if (currentOffset >= nextEntryOffset)
                 return ResultFs.UnexpectedInCompressedStorageA.Log();
 
-            // Get the offset of the data we need in the entry 
+            // Get the offset of the data we need in the entry
             long dataOffsetInEntry = currentOffset - currentEntryOffset;
             long currentEntrySize = nextEntryOffset - currentEntryOffset;
 
@@ -212,3 +214,5 @@ internal class CompressedStorage : Storage
         throw new NotImplementedException();
     }
 }
+
+#endif
