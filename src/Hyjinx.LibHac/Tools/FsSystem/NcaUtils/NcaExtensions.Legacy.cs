@@ -6,7 +6,7 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 
 public static partial class NcaExtensions
 {
-    public static Validity VerifyNca(this Nca nca, IProgressReport? logger = null, bool quiet = false)
+    public static Validity VerifyNca(this Nca1 nca, IProgressReport? logger = null, bool quiet = false)
     {
         for (int i = 0; i < 3; i++)
         {
@@ -22,7 +22,7 @@ public static partial class NcaExtensions
         return Validity.Valid;
     }
 
-    private static Validity VerifySection(this Nca nca, int index, IProgressReport? logger = null, bool quiet = false)
+    private static Validity VerifySection(this Nca1 nca, int index, IProgressReport? logger = null, bool quiet = false)
     {
         NcaFsHeader sect = nca.Header.GetFsHeader(index);
         NcaHashType hashType = sect.HashType;
