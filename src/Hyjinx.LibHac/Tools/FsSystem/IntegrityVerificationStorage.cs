@@ -248,10 +248,12 @@ public enum IntegrityCheckLevel
     /// No integrity checks will be performed.
     /// </summary>
     None,
+
     /// <summary>
     /// Invalid blocks will be marked as invalid when read, and will not cause an error.
     /// </summary>
     IgnoreOnInvalid,
+
     /// <summary>
     /// An <see cref="InvalidDataException"/> will be thrown if an integrity check fails.
     /// </summary>

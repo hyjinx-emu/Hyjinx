@@ -79,9 +79,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
             var nca = BasicNca2.Create(ncaStorageFile.AsStream());
             if (nca.Header is { TitleId: ContentManager.SystemUpdateTitleId, ContentType: NcaContentType.Meta })
             {
-                // TODO: Viper - This should be enforcing integrity levels.
-                var fs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
-
+                var fs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
                 var cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
 
                 using var metaFileRef = new UniqueRef<IFile>();
@@ -100,8 +98,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
 
             if (nca.Header is { TitleId: ContentManager.SystemVersionTitleId, ContentType: NcaContentType.Data })
             {
-                // TODO: Viper - This should be enforcing integrity levels.
-                var romFs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
+                var romFs = nca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
 
                 using var fileRef = new UniqueRef<IFile>();
                 romFs.OpenFile(ref fileRef.Ref, $"/file".ToU8Span(), OpenMode.Read).ThrowIfFailure();
@@ -146,9 +143,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
 
                 var metaNca = BasicNca2.Create(metaStorage.AsStream());
 
-                // TODO: Viper - This should be enforcing integrity levels.
-                var fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.IgnoreOnInvalid);
-
+                var fs = metaNca.OpenFileSystem(NcaSectionType.Data, IntegrityCheckLevel.ErrorOnInvalid);
                 string cnmtPath = fs.EnumerateEntries("/", "*.cnmt").Single().FullPath;
 
                 // Reopens the original file again to transfer it into the destination.
