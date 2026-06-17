@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.4.11620.152 stable
+VisualStudioVersion = 18.4.11620.152
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Tests", "src\Hyjinx.Tests\Hyjinx.Tests.csproj", "{EBB55AEA-C7D7-4DEB-BF96-FA1789E225E9}"
 EndProject
@@ -161,6 +161,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget-template", "nuget-tem
 	ProjectSection(SolutionItems) = preProject
 		.github\actions\nuget-template\action.yml = .github\actions\nuget-template\action.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandaloneRTC", "..\RTCV\Source\Frontend\StandaloneRTC\StandaloneRTC.csproj", "{0A2B1951-0EDF-A2E9-59D9-04A10A41B9B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "..\RTCV\Source\Frontend\UI\UI.csproj", "{D68ADA3E-AD57-357D-28F3-9BAD78CF2F8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "..\RTCV\Source\Libraries\Common\Common.csproj", "{F50D768A-11A9-3956-6274-0FA93CE51993}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorruptCore", "..\RTCV\Source\Libraries\CorruptCore\CorruptCore.csproj", "{457EE231-05F7-C302-EF76-29DCA6DF57E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCore", "..\RTCV\Source\Libraries\NetCore\NetCore.csproj", "{A36880D9-C157-21DA-1FC6-7C2E1E412579}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginHost", "..\RTCV\Source\Libraries\PluginHost\PluginHost.csproj", "{EB9147E4-3152-D91F-6528-3C26BB0C5468}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vanguard", "..\RTCV\Source\Libraries\Vanguard\Vanguard.csproj", "{B6C44FF9-B394-4D15-E2D7-97B3257ABB50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ceras", "..\RTCV\Source\Libraries\ZombieCeras\src\Ceras\Ceras.csproj", "{AA9A8941-FDA9-5A0C-BC44-CCA8A82BE3CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexEditor", "..\RTCV\Source\Plugins\HexEditor\HexEditor.csproj", "{A5EE0999-AE16-252B-7BC5-8FD3806EFC12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.Vanguard", "Hyjinx.Vanguard\Hyjinx.Vanguard.csproj", "{812755F8-74A0-4C24-B2F9-E8943239F7C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyjinxVanguard", "HyjinxVanguard\HyjinxVanguard.csproj", "{7BF1D82B-D02D-4E16-8813-037476E2CD44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -352,6 +374,50 @@ Global
 		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A2B1951-0EDF-A2E9-59D9-04A10A41B9B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A2B1951-0EDF-A2E9-59D9-04A10A41B9B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A2B1951-0EDF-A2E9-59D9-04A10A41B9B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A2B1951-0EDF-A2E9-59D9-04A10A41B9B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D68ADA3E-AD57-357D-28F3-9BAD78CF2F8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D68ADA3E-AD57-357D-28F3-9BAD78CF2F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D68ADA3E-AD57-357D-28F3-9BAD78CF2F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D68ADA3E-AD57-357D-28F3-9BAD78CF2F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F50D768A-11A9-3956-6274-0FA93CE51993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F50D768A-11A9-3956-6274-0FA93CE51993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F50D768A-11A9-3956-6274-0FA93CE51993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F50D768A-11A9-3956-6274-0FA93CE51993}.Release|Any CPU.Build.0 = Release|Any CPU
+		{457EE231-05F7-C302-EF76-29DCA6DF57E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{457EE231-05F7-C302-EF76-29DCA6DF57E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{457EE231-05F7-C302-EF76-29DCA6DF57E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{457EE231-05F7-C302-EF76-29DCA6DF57E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A36880D9-C157-21DA-1FC6-7C2E1E412579}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A36880D9-C157-21DA-1FC6-7C2E1E412579}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A36880D9-C157-21DA-1FC6-7C2E1E412579}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A36880D9-C157-21DA-1FC6-7C2E1E412579}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB9147E4-3152-D91F-6528-3C26BB0C5468}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB9147E4-3152-D91F-6528-3C26BB0C5468}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB9147E4-3152-D91F-6528-3C26BB0C5468}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB9147E4-3152-D91F-6528-3C26BB0C5468}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C44FF9-B394-4D15-E2D7-97B3257ABB50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C44FF9-B394-4D15-E2D7-97B3257ABB50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C44FF9-B394-4D15-E2D7-97B3257ABB50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C44FF9-B394-4D15-E2D7-97B3257ABB50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA9A8941-FDA9-5A0C-BC44-CCA8A82BE3CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA9A8941-FDA9-5A0C-BC44-CCA8A82BE3CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA9A8941-FDA9-5A0C-BC44-CCA8A82BE3CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA9A8941-FDA9-5A0C-BC44-CCA8A82BE3CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5EE0999-AE16-252B-7BC5-8FD3806EFC12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5EE0999-AE16-252B-7BC5-8FD3806EFC12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5EE0999-AE16-252B-7BC5-8FD3806EFC12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5EE0999-AE16-252B-7BC5-8FD3806EFC12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{812755F8-74A0-4C24-B2F9-E8943239F7C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{812755F8-74A0-4C24-B2F9-E8943239F7C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{812755F8-74A0-4C24-B2F9-E8943239F7C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{812755F8-74A0-4C24-B2F9-E8943239F7C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BF1D82B-D02D-4E16-8813-037476E2CD44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BF1D82B-D02D-4E16-8813-037476E2CD44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BF1D82B-D02D-4E16-8813-037476E2CD44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BF1D82B-D02D-4E16-8813-037476E2CD44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

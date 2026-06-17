@@ -1,7 +1,9 @@
 using Avalonia;
 using Avalonia.Threading;
 using Hyjinx.Ava.UI.Windows;
+using RTCV.CorruptCore;
 using Hyjinx.Common;
+using RTCV.HyjinxVanguard;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.GraphicsDriver;
 using Hyjinx.Common.SystemInterop;
@@ -19,7 +21,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
+
 using System.Runtime.InteropServices;
+
 
 namespace Hyjinx.Ava;
 
@@ -134,6 +138,25 @@ internal partial class Program : IDisposable
         {
             MVKInitialization.InitializeResolver();
         }
+
+        // ========== ADD RTCV INITIALIZATION HERE ==========
+        bool isAttached = Array.Exists(args, arg => arg == "-ATTACHED");
+        if (isAttached)
+        {
+            try
+            {
+                // Create a placeholder memory manager for attached mode
+                // It will be replaced once the emulator loads a game
+                
+                HyjinxVanguardImplementation.InitializeAttachedMode();
+                _logger.LogInformation("RTCV Vanguard initialized in attached mode");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to initialize RTCV");
+            }
+        }
+        // ===================================================
 
         // Initialize SDL2 driver
         SDL2Driver.MainThreadDispatcher = action => Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Input);
