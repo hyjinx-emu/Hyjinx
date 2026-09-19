@@ -1,5 +1,6 @@
 using LibHac.Ncm;
 using LibHac.Tools.FsSystem.NcaUtils;
+using System;
 using System.IO;
 using System.Linq;
 using ContentType = LibHac.Ncm.ContentType;
@@ -16,14 +17,20 @@ public class Cnmt
     public int ContentEntryCount { get; }
     public int MetaEntryCount { get; }
     public ContentMetaAttribute ContentMetaAttributes { get; }
+    public byte StorageId { get; }
+    public ContentInstallType InstallType { get; }
+    public bool Committed { get; }
 
     public CnmtContentEntry[] ContentEntries { get; }
     public CnmtContentMetaEntry[] MetaEntries { get; }
 
     public ulong ApplicationTitleId { get; }
     public ulong PatchTitleId { get; }
-    public TitleVersion MinimumSystemVersion { get; }
-    public TitleVersion MinimumApplicationVersion { get; }
+    [Obsolete($"This member is no longer supported, please use the {nameof(MinimumRequiredVersion)} property instead.")]
+    public TitleVersion MinimumSystemVersion => MinimumRequiredVersion;
+    [Obsolete($"This member is no longer supported, please use the {nameof(MinimumRequiredVersion)} property instead.")]
+    public TitleVersion MinimumApplicationVersion => MinimumRequiredVersion;
+    public TitleVersion MinimumRequiredVersion { get; }
 
     public CnmtExtended ExtendedData { get; }
 
@@ -44,33 +51,40 @@ public class Cnmt
             ContentEntryCount = reader.ReadUInt16();
             MetaEntryCount = reader.ReadUInt16();
             ContentMetaAttributes = (ContentMetaAttribute)reader.ReadByte();
+            StorageId = reader.ReadByte();
+            InstallType = (ContentInstallType)reader.ReadByte();
+            Committed = reader.ReadByte() != 0;
+            MinimumRequiredVersion = new TitleVersion(reader.ReadUInt32(), Type < ContentMetaType.Application);
 
-            // Old, pre-release cnmt files don't have the "required system version" field.
-            // Try to detect this by reading the padding after that field.
-            // The old format usually contains hashes there.
-            file.Position += 7;
-            int padding = reader.ReadInt32();
-            bool isOldCnmtFormat = padding != 0;
+            // TODO: Viper - Fix this
+            //// Old, pre-release cnmt files don't have the "required system version" field.
+            //// Try to detect this by reading the padding after that field.
+            //// The old format usually contains hashes there.
+            //file.Position += 7;
+            //int padding = reader.ReadInt32();
+            //bool isOldCnmtFormat = padding != 0;
 
-            switch (Type)
-            {
-                case ContentMetaType.Application:
-                    ApplicationTitleId = TitleId;
-                    PatchTitleId = reader.ReadUInt64();
-                    MinimumSystemVersion = new TitleVersion(reader.ReadUInt32(), true);
-                    break;
-                case ContentMetaType.Patch:
-                    ApplicationTitleId = reader.ReadUInt64();
-                    MinimumSystemVersion = new TitleVersion(reader.ReadUInt32(), true);
-                    break;
-                case ContentMetaType.AddOnContent:
-                    ApplicationTitleId = reader.ReadUInt64();
-                    MinimumApplicationVersion = new TitleVersion(reader.ReadUInt32());
-                    break;
-            }
+            //switch (Type)
+            //{
+            //    case ContentMetaType.Application:
+            //        ApplicationTitleId = TitleId;
+            //        PatchTitleId = reader.ReadUInt64();
+            //        MinimumSystemVersion = new TitleVersion(reader.ReadUInt32(), true);
+            //        break;
+            //    case ContentMetaType.Patch:
+            //        ApplicationTitleId = reader.ReadUInt64();
+            //        MinimumSystemVersion = new TitleVersion(reader.ReadUInt32(), true);
+            //        break;
+            //    case ContentMetaType.AddOnContent:
+            //        ApplicationTitleId = reader.ReadUInt64();
+            //        MinimumApplicationVersion = new TitleVersion(reader.ReadUInt32());
+            //        break;
+            //}
 
-            int baseOffset = isOldCnmtFormat ? 0x18 : 0x20;
-            file.Position = baseOffset + TableOffset;
+            //int baseOffset = isOldCnmtFormat ? 0x18 : 0x20;
+            //file.Position = baseOffset + TableOffset;
+
+            file.Position = 0x20 + TableOffset;
 
             ContentEntries = new CnmtContentEntry[ContentEntryCount];
             MetaEntries = new CnmtContentMetaEntry[MetaEntryCount];
@@ -98,19 +112,25 @@ public class Cnmt
 public class CnmtContentEntry
 {
     public byte[] Hash { get; set; }
-    public byte[] NcaId { get; set; }
+    public ContentId NcaId { get; set; }
     public long Size { get; set; }
-    public ContentType Type { get; set; }
+    public ContentType Type
+    {
+        get => (ContentType)RawType;
+        set => RawType = (byte)value;
+    }
+
+    public byte RawType { get; set; }
 
     public CnmtContentEntry() { }
 
     public CnmtContentEntry(BinaryReader reader)
     {
         Hash = reader.ReadBytes(0x20);
-        NcaId = reader.ReadBytes(0x10);
+        NcaId = new ContentId(reader.ReadBytes(0x10));
         Size = reader.ReadUInt32();
         Size |= (long)reader.ReadUInt16() << 32;
-        Type = (ContentType)reader.ReadByte();
+        RawType = reader.ReadByte();
         reader.BaseStream.Position += 1;
     }
 }
@@ -119,7 +139,8 @@ public class CnmtContentMetaEntry
 {
     public ulong TitleId { get; }
     public TitleVersion Version { get; }
-    public ContentType Type { get; }
+    public ContentMetaType Type { get; }
+    public ContentMetaAttribute Attributes { get; }
 
     public CnmtContentMetaEntry() { }
 
@@ -127,8 +148,9 @@ public class CnmtContentMetaEntry
     {
         TitleId = reader.ReadUInt64();
         Version = new TitleVersion(reader.ReadUInt32(), true);
-        Type = (ContentType)reader.ReadByte();
-        reader.BaseStream.Position += 3;
+        Type = (ContentMetaType)reader.ReadByte();
+        Attributes = (ContentMetaAttribute)reader.ReadByte();
+        reader.BaseStream.Position += 2;
     }
 }
 

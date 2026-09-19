@@ -46,7 +46,7 @@ public class ContentMetaData
                 continue;
             }
 
-            string ncaId = BitConverter.ToString(entry.NcaId).Replace("-", null).ToLower();
+            string ncaId = BitConverter.ToString(entry.NcaId.AsBytes().ToArray()).Replace("-", null).ToLower();
             Nca nca = _pfs.GetNca(keySet, $"/{ncaId}.nca");
 
             if (nca.GetProgramIndex() == programIndex)

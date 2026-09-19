@@ -161,7 +161,7 @@ internal class FileSystemLoader(Switch device)
 
     private Task<Nca2> FindNcaForContentAsync(IFileSystem fileSystem, CnmtContentEntry entry, CancellationToken cancellationToken)
     {
-        var ncaId = BitConverter.ToString(entry.NcaId).Replace("-", null).ToLower();
+        var ncaId = BitConverter.ToString(entry.NcaId.AsBytes().ToArray()).Replace("-", null).ToLower();
         var fileName = $"/{ncaId}.nca";
 
         using var fileRef = new UniqueRef<IFile>();
