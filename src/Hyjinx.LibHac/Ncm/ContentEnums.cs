@@ -15,15 +15,29 @@ public enum ContentType : byte
 
 public enum ContentMetaType : byte
 {
-    SystemProgram = 1,
-    SystemData = 2,
-    SystemUpdate = 3,
-    BootImagePackage = 4,
-    BootImagePackageSafe = 5,
+    Unknown = 0x0,
+    SystemProgram = 0x1,
+    SystemData = 0x2,
+    SystemUpdate = 0x3,
+    BootImagePackage = 0x4,
+    BootImagePackageSafe = 0x5,
     Application = 0x80,
     Patch = 0x81,
     AddOnContent = 0x82,
-    Delta = 0x83
+    Delta = 0x83,
+    DeltaPatch = 0x84
+}
+
+public enum ContentMetaPlatform : byte
+{
+    Nx = 0x0
+}
+
+public enum ContentInstallType : byte
+{
+    Full = 0,
+    FragmentOnly = 1,
+    Unknown = 7
 }
 
 [Flags]
