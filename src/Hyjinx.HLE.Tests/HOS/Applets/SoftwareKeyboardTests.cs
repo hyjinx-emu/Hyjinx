@@ -1,7 +1,7 @@
 using Hyjinx.HLE.HOS.Applets;
 using System.Text;
 
-namespace Hyjinx.Tests.HLE;
+namespace Hyjinx.HLE.Tests.HOS.Applets;
 
 public class SoftwareKeyboardTests
 {
