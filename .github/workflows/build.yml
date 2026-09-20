@@ -48,11 +48,28 @@ jobs:
         run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}" -p:DebugType=portable
 
       - name: Run tests
-        run: dotnet test --no-build -c "${{ matrix.configuration }}" --collect:"XPlat Code Coverage" --results-directory src/TestResults
+        run: dotnet test --no-build -c "${{ matrix.configuration }}" --collect:"XPlat Code Coverage" --results-directory TestResults
         timeout-minutes: 30
+
+      - name: Normalize coverage paths
+        shell: pwsh
+        run: |
+          $workspace = $env:GITHUB_WORKSPACE.Replace('\', '/')
+
+          Get-ChildItem TestResults -Filter coverage.cobertura.xml -Recurse | ForEach-Object {
+            [xml] $report = Get-Content $_.FullName
+            $report.coverage.sources.source = $workspace
+
+            foreach ($class in $report.coverage.packages.package.classes.class) {
+              $filename = $class.filename.Replace('\', '/')
+              $class.filename = "src/$filename"
+            }
+
+            $report.Save($_.FullName)
+          }
 
       - name: Publish coverage report
         uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
-          coverage-reports: src/**/coverage.cobertura.xml
+          coverage-reports: TestResults/**/coverage.cobertura.xml
