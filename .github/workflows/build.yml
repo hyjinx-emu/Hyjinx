@@ -55,4 +55,4 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
-          coverage-reports: ./**/coverage.cobertura.xml
+          coverage-reports: src/**/coverage.cobertura.xml
