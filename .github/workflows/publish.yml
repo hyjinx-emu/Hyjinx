@@ -65,8 +65,6 @@ jobs:
 
       - name: Build
         uses: ./.github/actions/build-template
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           version_file: 'Directory.Build.props'
           project: src/Hyjinx/Hyjinx.csproj
@@ -105,8 +103,6 @@ jobs:
 
       - name: Package
         uses: ./.github/actions/nuget-template
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           version_file: 'Directory.Build.props'
           staging_dir: ${{ env.STAGING_DIR }}

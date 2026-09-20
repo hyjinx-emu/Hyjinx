@@ -14,7 +14,7 @@
   It was written from scratch and development on Ryujinx began in September 2017, while Hyjinx development began January 2025 after Ryujinx ceased development.
 </p>
 
-[![build](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml/badge.svg)](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=hyjinx-emu_Hyjinx&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=hyjinx-emu_Hyjinx)
+[![build](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml/badge.svg)](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml)
 
 ## Usage
 
