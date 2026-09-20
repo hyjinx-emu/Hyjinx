@@ -14,7 +14,7 @@
   It was written from scratch and development on Ryujinx began in September 2017, while Hyjinx development began January 2025 after Ryujinx ceased development.
 </p>
 
-[![build](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml/badge.svg)](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml)
+[![build](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml/badge.svg)](https://github.com/hyjinx-emu/Hyjinx/actions/workflows/build.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ef2516182ae34e60bd3222c8bf29cafa)](https://app.codacy.com/gh/hyjinx-emu/Hyjinx/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 ## Usage
 
