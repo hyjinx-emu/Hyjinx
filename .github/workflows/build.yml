@@ -45,7 +45,7 @@ jobs:
         shell: bash
                           
       - name: Build
-        run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}" -p:DebugType=portable
+        run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}"
 
       - name: Run tests
         run: dotnet test --no-build -c "${{ matrix.configuration }}" --collect:"XPlat Code Coverage" --results-directory TestResults
