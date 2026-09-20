@@ -39,16 +39,20 @@ jobs:
         with:
           global-json-file: global.json
 
-      - run: dotnet --version
-          
       - name: Determine git hash
         id: git_short_hash
         run: echo "result=$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
         shell: bash
                           
       - name: Build
-        run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}"
+        run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}" -p:DebugType=portable
 
       - name: Run tests
-        run: dotnet test --no-build -c "${{ matrix.configuration }}"
+        run: dotnet test --no-build -c "${{ matrix.configuration }}" --collect:"XPlat Code Coverage" --results-directory TestResults
         timeout-minutes: 30     
+
+      - name: Publish coverage report
+        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+        with:
+          project-token: ${{ secrets.CODACY_TOKEN }}
+          coverage-reports: TestResults/**/coverage.cobertura.xml
