@@ -39,8 +39,6 @@ runs:
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
-    
-    - run: dotnet --version
 
     - name: Update version
       uses: vers-one/dotnet-project-version-updater@v1.7
