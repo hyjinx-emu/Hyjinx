@@ -162,7 +162,7 @@ public class PartitionFileSystemBuilder
 
     private void CalculateHashes()
     {
-        IHash sha = new Sha256();
+        Sha256 sha = new();
 
         foreach (Entry entry in Entries)
         {

@@ -113,7 +113,7 @@ public abstract partial class Nca2<TFsHeader> : Nca2
                 continue;
             }
 
-            if (!Nca.TryGetSectionTypeFromIndex(sectionIndex, header.ContentType, out var sectionType))
+            if (!TryGetSectionTypeFromIndex(sectionIndex, header.ContentType, out var sectionType))
             {
                 throw new NotSupportedException($"The section type could not be determined. (Index: {sectionIndex}, ContentType: {header.ContentType})");
             }
@@ -123,9 +123,30 @@ public abstract partial class Nca2<TFsHeader> : Nca2
 
         return entries;
     }
+
+    public override bool CanOpenSection(int index)
+    {
+        if (!TryGetSectionTypeFromIndex(index, Header.ContentType, out var type))
+        {
+            throw new ArgumentException("Unable to determine section type.", nameof(index));
+        }
+
+        return CanOpenSection(type);
+    }
+
     public override bool CanOpenSection(NcaSectionType type)
     {
         return Sections.ContainsKey(type);
+    }
+
+    public override IFileSystem OpenFileSystem(int index, IntegrityCheckLevel integrityCheckLevel)
+    {
+        if (!TryGetSectionTypeFromIndex(index, Header.ContentType, out var type))
+        {
+            throw new ArgumentException("Unable to determine section type.", nameof(index));
+        }
+
+        return OpenFileSystem(type, integrityCheckLevel);
     }
 
     public override IFileSystem OpenFileSystem(NcaSectionType type, IntegrityCheckLevel integrityCheckLevel)
@@ -152,6 +173,16 @@ public abstract partial class Nca2<TFsHeader> : Nca2
     private IFileSystem CreateFileSystemForRomFs(IStorage storage)
     {
         return RomFsFileSystem2.Create(storage);
+    }
+
+    public override IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel)
+    {
+        if (!TryGetSectionTypeFromIndex(index, Header.ContentType, out var type))
+        {
+            throw new ArgumentException("Unable to determine section type.", nameof(index));
+        }
+
+        return OpenStorage(type, integrityCheckLevel);
     }
 
     public override IStorage OpenStorage(NcaSectionType type, IntegrityCheckLevel integrityCheckLevel)

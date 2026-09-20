@@ -45,20 +45,12 @@ public abstract class Nca
     public abstract bool CanOpenSection(int index);
 
     /// <summary>
-    /// Opens the raw storage.
-    /// </summary>
-    /// <param name="index">The zero-based section index to open.</param>
-    /// <returns>The <see cref="IStorage"/> containing the raw section data.</returns>
-    public abstract IStorage OpenRawStorage(int index);
-
-    /// <summary>
     /// Opens the storage.
     /// </summary>
     /// <param name="index">The zero-based section index to open.</param>
     /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
-    /// <param name="leaveCompressed">Optional. <c>true</c> to leave compressed, otherwise <c>false</c>.</param>
     /// <returns>The <see cref="IStorage"/> containing the section data.</returns>
-    public abstract IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false);
+    public abstract IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel);
 
     /// <summary>
     /// Opens the storage.

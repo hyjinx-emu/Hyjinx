@@ -15,7 +15,7 @@ using Path = LibHac.Fs.Path;
 
 namespace LibHac.FsSystem;
 
-public class LocalFileSystem : AttributeFileSystem
+public partial class LocalFileSystem : AttributeFileSystem
 {
     /// <summary>
     /// Specifies the case-sensitivity of a <see cref="LocalFileSystem"/>.

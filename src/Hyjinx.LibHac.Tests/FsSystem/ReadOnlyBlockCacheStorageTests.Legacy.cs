@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.FsSystem;
@@ -198,3 +200,5 @@ public class ReadOnlyBlockCacheStorageTests
         Assert.True(context.GetBaseDataBlock(index).SequenceEqual(context.ReadCachedStorage(index)));
     }
 }
+
+#endif

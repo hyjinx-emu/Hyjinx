@@ -19,7 +19,7 @@ public class IntegrityVerificationStorage : SectorStorage
     private byte[] Salt { get; }
     private IntegrityStorageType Type { get; }
 
-    private readonly IHash _hash = new Sha256();
+    private readonly Sha256 _hash = new();
     private readonly object _locker = new object();
 
     public IntegrityVerificationStorage(IntegrityVerificationInfo info, IStorage hashStorage,
@@ -248,10 +248,12 @@ public enum IntegrityCheckLevel
     /// No integrity checks will be performed.
     /// </summary>
     None,
+
     /// <summary>
     /// Invalid blocks will be marked as invalid when read, and will not cause an error.
     /// </summary>
     IgnoreOnInvalid,
+
     /// <summary>
     /// An <see cref="InvalidDataException"/> will be thrown if an integrity check fails.
     /// </summary>

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Diag;
 using System;
 using System.Collections.Generic;
@@ -85,3 +87,5 @@ public class LruListCache<TKey, TValue> where TKey : IEquatable<TKey>
         return _list.Count == 0;
     }
 }
+
+#endif

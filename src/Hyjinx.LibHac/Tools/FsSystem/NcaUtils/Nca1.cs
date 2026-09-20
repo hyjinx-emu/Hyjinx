@@ -83,7 +83,7 @@ public partial class Nca1 : Nca
         return BaseStorage.Slice(offset, size);
     }
 
-    public override IStorage OpenRawStorage(int index)
+    public virtual IStorage OpenRawStorage(int index)
     {
         if (Header.IsNca0())
             return OpenNca0RawStorage(index);
@@ -93,7 +93,7 @@ public partial class Nca1 : Nca
 
     public IStorage OpenRawStorageWithPatch(Nca patchNca, int index)
     {
-        IStorage patchStorage = patchNca.OpenRawStorage(index);
+        IStorage patchStorage = ((Nca1)patchNca).OpenRawStorage(index);
         IStorage baseStorage = SectionExists(index) ? OpenRawStorage(index) : new NullStorage();
 
         patchStorage.GetSize(out long patchSize).ThrowIfFailure();
@@ -127,7 +127,12 @@ public partial class Nca1 : Nca
         return storage;
     }
 
-    public override IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed = false)
+    public override IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel)
+    {
+        return OpenStorage(index, integrityCheckLevel, false);
+    }
+
+    public IStorage OpenStorage(int index, IntegrityCheckLevel integrityCheckLevel, bool leaveCompressed)
     {
         IStorage rawStorage = OpenRawStorage(index);
         NcaFsHeader header = GetFsHeader(index);

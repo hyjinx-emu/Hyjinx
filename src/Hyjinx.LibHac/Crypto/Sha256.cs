@@ -6,7 +6,7 @@ namespace LibHac.Crypto;
 /// <summary>
 /// Represents the SHA-256 hashing algorithm.
 /// </summary>
-public class Sha256 : IHash
+public class Sha256
 {
     /// <summary>
     /// Defines the size of the digest.
