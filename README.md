@@ -3,9 +3,6 @@
   <a href="https://github.com/hyjinx-emu/Hyjinx"><img src="distribution/misc/Logo.svg" alt="Logo" width="150"></a>
   <br>
   <b>Hyjinx</b>
-  <br>
-  <sub><sup><b>(HI-JINGKS)</b></sup></sub>
-  <br>
 </h1>
 
 <p align="center">
