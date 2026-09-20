@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
   </ItemGroup>
   
   <ItemGroup>
+    <Using Include="Moq" />
     <Using Include="NUnit.Framework" />
     <Using Include="NUnit.Framework.Legacy" />
   </ItemGroup>

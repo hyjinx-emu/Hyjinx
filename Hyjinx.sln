@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.4.11620.152 stable
+VisualStudioVersion = 18.4.11620.152
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hyjinx.Tests", "src\Hyjinx.Tests\Hyjinx.Tests.csproj", "{EBB55AEA-C7D7-4DEB-BF96-FA1789E225E9}"
 EndProject
@@ -161,6 +161,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget-template", "nuget-tem
 	ProjectSection(SolutionItems) = preProject
 		.github\actions\nuget-template\action.yml = .github\actions\nuget-template\action.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hyjinx.HLE.Tests", "src\Hyjinx.HLE.Tests\Hyjinx.HLE.Tests.csproj", "{D6B02D88-B20B-483F-9C41-A49EDBEA5D20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -352,6 +354,10 @@ Global
 		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF61DE62-9C02-4224-B7E4-5CDD68032748}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6B02D88-B20B-483F-9C41-A49EDBEA5D20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6B02D88-B20B-483F-9C41-A49EDBEA5D20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6B02D88-B20B-483F-9C41-A49EDBEA5D20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6B02D88-B20B-483F-9C41-A49EDBEA5D20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

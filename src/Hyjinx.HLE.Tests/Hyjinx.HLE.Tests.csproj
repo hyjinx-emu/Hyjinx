@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../.build/unittest.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\Hyjinx.HLE\Hyjinx.HLE.csproj" />
+  </ItemGroup>
+
+</Project>
