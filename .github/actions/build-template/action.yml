@@ -34,7 +34,7 @@ inputs:
     
 runs:
   using: "composite"
-  steps:      
+  steps:
     - name: Set up .NET SDK
       uses: actions/setup-dotnet@v4
       with:
