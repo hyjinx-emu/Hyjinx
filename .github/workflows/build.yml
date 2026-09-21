@@ -51,15 +51,7 @@ jobs:
         run: dotnet test --no-build -c "${{ matrix.configuration }}" --collect:"XPlat Code Coverage" --results-directory TestResults
         timeout-minutes: 30
 
-    
-      - name: Upload test results
-        uses: actions/upload-artifact@v7
-        with:
-          name: coverage-${{ matrix.platform.name }}-${{ matrix.configuration }}
-          path: TestResults/**/*
-          if-no-files-found: error
-
-      - name: Publish coverage report
+      - name: Upload coverage report
         uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
