@@ -1,3 +1,4 @@
+using LibHac.Common;
 using LibHac.FsSystem;
 using System;
 using System.Runtime.CompilerServices;
@@ -92,17 +93,27 @@ public class NcaFsHeader
     }
 
     /// <summary>
-    /// Gets the patch info.
+    /// Gets the patch info, if available.
     /// </summary>
     /// <returns>The <see cref="NcaFsPatchInfo"/> describing the patch section.</returns>
-    public NcaFsPatchInfo GetPatchInfo()
+    public NcaFsPatchInfo? GetPatchInfo()
     {
-        return new NcaFsPatchInfo(Data.Slice(PatchInfoOffset, PatchInfoSize));
+        var slice = Data.Slice(PatchInfoOffset, PatchInfoSize);
+        if (slice.Span.IsZeros())
+        {
+            return null;
+        }
+
+        return new NcaFsPatchInfo(slice);
     }
 
+    /// <summary>
+    /// Identifies whether patch info is available.
+    /// </summary>
+    /// <returns><c>true</c> if patch info is available, otherwise <c>false</c>.</returns>
     public bool IsPatchSection()
     {
-        return GetPatchInfo().RelocationTreeSize != 0;
+        return GetPatchInfo() != null;
     }
 
     public ref NcaSparseInfo GetSparseInfo()
