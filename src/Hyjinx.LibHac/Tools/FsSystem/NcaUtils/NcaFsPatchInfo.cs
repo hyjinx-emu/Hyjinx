@@ -46,7 +46,8 @@ public class NcaFsPatchInfo
     /// <summary>
     /// The raw relocation tree header.
     /// </summary>
-    public Memory<byte> RelocationTreeHeader
+    /// <remarks>Please use the <see cref="GetRelocationTreeHeader"/> method whenever possible rather than interacting with the raw memory bytes.</remarks>
+    Memory<byte> RelocationTreeHeader
     {
         get => data.Slice(0x10, 0x10);
         set
@@ -81,6 +82,7 @@ public class NcaFsPatchInfo
     /// <summary>
     /// The raw encryption tree header.
     /// </summary>
+    /// <remarks>Please use the <see cref="GetEncryptionTreeHeader"/> method whenever possible rather than interacting with the raw memory bytes.</remarks>
     public Memory<byte> EncryptionTreeHeader
     {
         get => data.Slice(0x30, 0x10);
@@ -96,20 +98,20 @@ public class NcaFsPatchInfo
     }
 
     /// <summary>
-    /// Gets the encryption tree header.
+    /// Gets the encryption tree header reference.
     /// </summary>
     /// <returns>The <see cref="BucketTreeHeader"/>.</returns>
-    public BucketTreeHeader GetEncryptionTreeHeader()
+    public ref BucketTreeHeader GetEncryptionTreeHeader()
     {
-        return MemoryMarshal.Cast<byte, BucketTreeHeader>(EncryptionTreeHeader.Span)[0];
+        return ref MemoryMarshal.Cast<byte, BucketTreeHeader>(EncryptionTreeHeader.Span)[0];
     }
 
     /// <summary>
-    /// Gets the relocation tree header.
+    /// Gets the relocation tree header reference.
     /// </summary>
     /// <returns>The <see cref="BucketTreeHeader"/>.</returns>
-    public BucketTreeHeader GetRelocationTreeHeader()
+    public ref BucketTreeHeader GetRelocationTreeHeader()
     {
-        return MemoryMarshal.Cast<byte, BucketTreeHeader>(RelocationTreeHeader.Span)[0];
+        return ref MemoryMarshal.Cast<byte, BucketTreeHeader>(RelocationTreeHeader.Span)[0];
     }
 }
