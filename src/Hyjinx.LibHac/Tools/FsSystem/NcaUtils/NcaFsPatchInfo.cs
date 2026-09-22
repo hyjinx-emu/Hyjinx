@@ -1,5 +1,7 @@
+using LibHac.FsSystem;
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
@@ -91,5 +93,23 @@ public class NcaFsPatchInfo
 
             value.CopyTo(data.Slice(0x30, 0x10));
         }
+    }
+
+    /// <summary>
+    /// Gets the encryption tree header.
+    /// </summary>
+    /// <returns>The <see cref="BucketTreeHeader"/>.</returns>
+    public BucketTreeHeader GetEncryptionTreeHeader()
+    {
+        return MemoryMarshal.Cast<byte, BucketTreeHeader>(EncryptionTreeHeader.Span)[0];
+    }
+
+    /// <summary>
+    /// Gets the relocation tree header.
+    /// </summary>
+    /// <returns>The <see cref="BucketTreeHeader"/>.</returns>
+    public BucketTreeHeader GetRelocationTreeHeader()
+    {
+        return MemoryMarshal.Cast<byte, BucketTreeHeader>(RelocationTreeHeader.Span)[0];
     }
 }
