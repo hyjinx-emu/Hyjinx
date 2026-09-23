@@ -54,5 +54,5 @@ public class NcaFsHeaderTests
         Fill(bytes.Span);
 
         return bytes;
-    }    
+    }
 }
