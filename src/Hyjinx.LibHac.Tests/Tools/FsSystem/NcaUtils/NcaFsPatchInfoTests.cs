@@ -1,4 +1,3 @@
-using LibHac.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using System;
 using Xunit;
