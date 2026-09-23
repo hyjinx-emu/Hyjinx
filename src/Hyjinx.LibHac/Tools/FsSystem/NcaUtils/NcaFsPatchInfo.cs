@@ -103,7 +103,7 @@ public class NcaFsPatchInfo
     /// <returns>The <see cref="BucketTreeHeader"/>.</returns>
     public ref BucketTreeHeader GetEncryptionTreeHeader()
     {
-        return ref MemoryMarshal.Cast<byte, BucketTreeHeader>(EncryptionTreeHeader.Span)[0];
+        return ref Unsafe.As<byte, BucketTreeHeader>(ref EncryptionTreeHeader.Span[0]);
     }
 
     /// <summary>
@@ -112,6 +112,6 @@ public class NcaFsPatchInfo
     /// <returns>The <see cref="BucketTreeHeader"/>.</returns>
     public ref BucketTreeHeader GetRelocationTreeHeader()
     {
-        return ref MemoryMarshal.Cast<byte, BucketTreeHeader>(RelocationTreeHeader.Span)[0];
+        return ref Unsafe.As<byte, BucketTreeHeader>(ref RelocationTreeHeader.Span[0]);
     }
 }
