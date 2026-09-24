@@ -1,7 +1,7 @@
 using LibHac.Tools.FsSystem.NcaUtils;
 using System;
-using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 using Xunit;
+using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tests.Tools.FsSystem.NcaUtils;
 
