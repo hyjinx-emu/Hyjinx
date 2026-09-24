@@ -101,17 +101,17 @@ public class NcaFsPatchInfo
     /// Gets the encryption tree header reference.
     /// </summary>
     /// <returns>The <see cref="BucketTreeHeader"/>.</returns>
-    public ref BucketTreeHeader GetEncryptionTreeHeader()
+    public BucketTreeHeader GetEncryptionTreeHeader()
     {
-        return ref Unsafe.As<byte, BucketTreeHeader>(ref EncryptionTreeHeader.Span[0]);
+        return MemoryMarshal.Cast<byte, BucketTreeHeader>(EncryptionTreeHeader.Span)[0];
     }
 
     /// <summary>
     /// Gets the relocation tree header reference.
     /// </summary>
     /// <returns>The <see cref="BucketTreeHeader"/>.</returns>
-    public ref BucketTreeHeader GetRelocationTreeHeader()
+    public BucketTreeHeader GetRelocationTreeHeader()
     {
-        return ref Unsafe.As<byte, BucketTreeHeader>(ref RelocationTreeHeader.Span[0]);
+        return MemoryMarshal.Cast<byte, BucketTreeHeader>(RelocationTreeHeader.Span)[0];
     }
 }
