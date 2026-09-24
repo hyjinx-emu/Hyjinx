@@ -62,9 +62,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload coverage report
-        uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
-        env:
-          CODACY_REPORTER_OPTIONS: --prefix ${{ github.workspace }}
+        uses: codacy/codacy-coverage-reporter-action@6904bd01e29ada115135b5eca20125758ccae53b # master (2026-03-25)
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
           coverage-reports: TestResults/**/coverage.cobertura.xml
