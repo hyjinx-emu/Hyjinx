@@ -18,13 +18,13 @@ public class NcaFsPatchInfoTests
         Assert.Equal(2693218304, target.EncryptionTreeOffset);
         Assert.Equal(32768, target.EncryptionTreeSize);
 
-        scoped ref var relocationTreeHeader = ref target.GetRelocationTreeHeader();
+        var relocationTreeHeader = target.GetRelocationTreeHeader();
         Assert.Equal(7267, relocationTreeHeader.EntryCount);
         Assert.Equal(1381256002u, relocationTreeHeader.HeaderSignature);
         Assert.Equal(0, relocationTreeHeader.Reserved);
         Assert.Equal(1u, relocationTreeHeader.Version);
 
-        scoped ref var encryptionTreeHeader = ref target.GetEncryptionTreeHeader();
+        var encryptionTreeHeader = target.GetEncryptionTreeHeader();
         Assert.Equal(584, encryptionTreeHeader.EntryCount);
         Assert.Equal(1381256002u, encryptionTreeHeader.HeaderSignature);
         Assert.Equal(0, encryptionTreeHeader.Reserved);
