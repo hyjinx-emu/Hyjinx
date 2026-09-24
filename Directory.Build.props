@@ -27,10 +27,6 @@
     <DefineConstants Condition=" '$(IsLegacyEnabled)' == 'true' ">$(DefineConstants);IS_LEGACY_ENABLED</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-
   <PropertyGroup>
     <NoWarn>SYSLIB1025</NoWarn>
   </PropertyGroup>
