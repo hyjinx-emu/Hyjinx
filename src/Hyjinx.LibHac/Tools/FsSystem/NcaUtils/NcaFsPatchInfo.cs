@@ -47,7 +47,7 @@ public class NcaFsPatchInfo
     /// The raw relocation tree header.
     /// </summary>
     /// <remarks>Please use the <see cref="GetRelocationTreeHeader"/> method whenever possible rather than interacting with the raw memory bytes.</remarks>
-    Memory<byte> RelocationTreeHeader
+    public Memory<byte> RelocationTreeHeader
     {
         get => data.Slice(0x10, 0x10);
         set
