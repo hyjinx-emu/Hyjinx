@@ -48,7 +48,7 @@ jobs:
         run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}" -p:DebugType=portable
 
       - name: Run tests
-        run: dotnet test --no-build -c "${{ matrix.configuration }}" --collect:"XPlat Code Coverage" --results-directory TestResults
+        run: dotnet test --no-build -c "${{ matrix.configuration }}" --collect:"XPlat Code Coverage;Format=opencover" --results-directory TestResults
         timeout-minutes: 30
 
       - name: Upload test results
@@ -62,4 +62,4 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@6904bd01e29ada115135b5eca20125758ccae53b # master (2026-03-25)
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
-          coverage-reports: TestResults/**/coverage.cobertura.xml
+          coverage-reports: TestResults/**/coverage.opencover.xml
