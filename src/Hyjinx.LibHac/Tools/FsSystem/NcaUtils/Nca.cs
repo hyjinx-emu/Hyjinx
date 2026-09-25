@@ -49,7 +49,7 @@ public abstract class Nca
     /// </summary>
     /// <param name="type">The section type.</param>
     /// <returns>The <see cref="IStorage"/> containing the section data.</returns>
-    protected abstract IStorage OpenRawStorage(NcaSectionType type);
+    protected internal abstract IStorage OpenRawStorage(NcaSectionType type);
 
     /// <summary>
     /// Opens the storage.

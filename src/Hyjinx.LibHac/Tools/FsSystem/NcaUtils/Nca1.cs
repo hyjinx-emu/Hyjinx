@@ -83,7 +83,7 @@ public partial class Nca1 : Nca
         return BaseStorage.Slice(offset, size);
     }
 
-    protected override IStorage OpenRawStorage(NcaSectionType type)
+    protected internal sealed override IStorage OpenRawStorage(NcaSectionType type)
     {
         return OpenRawStorage(GetSectionIndexFromType(type));
     }
