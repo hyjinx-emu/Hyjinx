@@ -45,6 +45,13 @@ public abstract class Nca
     public abstract bool CanOpenSection(int index);
 
     /// <summary>
+    /// Opens the raw storage.
+    /// </summary>
+    /// <param name="type">The section type.</param>
+    /// <returns>The <see cref="IStorage"/> containing the section data.</returns>
+    protected abstract IStorage OpenRawStorage(NcaSectionType type);
+
+    /// <summary>
     /// Opens the storage.
     /// </summary>
     /// <param name="index">The zero-based section index to open.</param>

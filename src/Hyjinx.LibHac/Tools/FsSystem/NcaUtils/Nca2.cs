@@ -218,6 +218,16 @@ public abstract partial class Nca2<TFsHeader> : Nca2
         return result;
     }
 
+    protected override IStorage OpenRawStorage(NcaSectionType type)
+    {
+        if (!Sections.TryGetValue(type, out var sectionDescription))
+        {
+            throw new ArgumentException($"The section '{type}' does not exist.", nameof(type));
+        }
+
+        return OpenRawStorage(sectionDescription);
+    }
+
     /// <summary>
     /// Opens the raw storage.
     /// </summary>
