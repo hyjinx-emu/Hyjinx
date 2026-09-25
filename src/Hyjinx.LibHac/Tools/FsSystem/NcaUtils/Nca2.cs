@@ -157,10 +157,17 @@ public abstract partial class Nca2<TFsHeader> : Nca2
         }
 
         var storage = OpenStorageCore(sectionDescription, integrityCheckLevel);
+        return CreateFileSystem(storage, sectionDescription);
+    }
+
+    private IFileSystem CreateFileSystem(IStorage baseStorage, SectionDescription sectionDescription)
+    {
+        ArgumentNullException.ThrowIfNull(sectionDescription);
+
         return sectionDescription.FsHeader.FormatType switch
         {
-            NcaFormatType.Pfs0 => CreateFileSystemForPfs0(storage),
-            NcaFormatType.RomFs => CreateFileSystemForRomFs(storage),
+            NcaFormatType.Pfs0 => CreateFileSystemForPfs0(baseStorage),
+            NcaFormatType.RomFs => CreateFileSystemForRomFs(baseStorage),
             _ => throw new NotSupportedException($"The format {sectionDescription.FsHeader.FormatType} is not supported.")
         };
     }
