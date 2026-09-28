@@ -209,7 +209,13 @@ public abstract partial class Nca2<TFsHeader> : Nca2
             throw new InvalidHashDetectedException("The header hash does not match the expected value.");
         }
 
-        var result = OpenRawStorage(description);
+        var rawStorage = OpenRawStorage(description);
+        return OpenStorageCore(rawStorage, description, integrityCheckLevel);
+    }
+
+    private IStorage OpenStorageCore(IStorage rawStorage, SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
+    {
+        IStorage result = rawStorage;
 
         if (description.FsHeader.HashType != NcaHashType.None)
         {
