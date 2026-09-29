@@ -256,7 +256,7 @@ internal static partial class ApplicationHelper
                     sectionExistsInPatch = patchNca.CanOpenSection(ncaSectionType);
                 }
 
-                IFileSystem ncaFileSystem = sectionExistsInPatch ? mainNca.OpenFileSystemWithPatch(patchNca, ncaSectionType, IntegrityCheckLevel.ErrorOnInvalid)
+                IFileSystem ncaFileSystem = sectionExistsInPatch ? patchNca!.OpenFileSystemWithPatch(mainNca, ncaSectionType, IntegrityCheckLevel.ErrorOnInvalid)
                                                                  : mainNca.OpenFileSystem(ncaSectionType, IntegrityCheckLevel.ErrorOnInvalid);
 
                 FileSystemClient fsClient = _horizonClient.Fs;

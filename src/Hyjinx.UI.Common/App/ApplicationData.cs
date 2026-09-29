@@ -143,7 +143,7 @@ public partial class ApplicationData
         {
             if (patchNca.CanOpenSection(NcaSectionType.Code))
             {
-                codeFs = mainNca.OpenFileSystemWithPatch(patchNca, NcaSectionType.Code, IntegrityCheckLevel.ErrorOnInvalid);
+                codeFs = patchNca.OpenFileSystemWithPatch(mainNca, NcaSectionType.Code, IntegrityCheckLevel.ErrorOnInvalid);
             }
         }
 

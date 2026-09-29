@@ -110,7 +110,7 @@ public static partial class NcaExtensions
         {
             if (patchNca.CanOpenSection(NcaSectionType.Code))
             {
-                exeFs = nca.OpenFileSystemWithPatch(patchNca, NcaSectionType.Code, device.System.FsIntegrityCheckLevel);
+                exeFs = patchNca.OpenFileSystemWithPatch(nca, NcaSectionType.Code, device.System.FsIntegrityCheckLevel);
             }
         }
 
@@ -201,7 +201,7 @@ public static partial class NcaExtensions
         {
             if (patchNca.CanOpenSection(NcaSectionType.Data))
             {
-                romFs = nca.OpenStorageWithPatch(patchNca, NcaSectionType.Data, device.System.FsIntegrityCheckLevel);
+                romFs = patchNca.OpenStorageWithPatch(nca, NcaSectionType.Data, device.System.FsIntegrityCheckLevel);
             }
         }
 
