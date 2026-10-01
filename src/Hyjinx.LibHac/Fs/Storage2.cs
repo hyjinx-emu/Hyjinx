@@ -30,6 +30,11 @@ public abstract class Storage2 : IStorage
             throw new ArgumentOutOfRangeException(nameof(offset), "The value cannot be less than zero.");
         }
 
+        if (destination.Length == 0)
+        {
+            return Result.Success; // Succeed if there's nothing to read.
+        }
+
         GetSize(out var size).ThrowIfFailure();
         if (offset + destination.Length > size)
         {
