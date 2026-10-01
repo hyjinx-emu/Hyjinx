@@ -11,7 +11,7 @@ namespace LibHac.FsSystem;
 /// <remarks>This type of storage is typically used when patching one archive with contents from another archive.</remarks>
 public class IndirectStorage2 : Storage2
 {
-    private readonly IStorage[] _storages;
+    private readonly IStorage[] baseStorages;
     private readonly BucketTree2<Entry> lookupTable;
 
     /// <summary>
@@ -44,9 +44,9 @@ public class IndirectStorage2 : Storage2
         }
     }
 
-    private IndirectStorage2(IStorage[] storages, BucketTree2<Entry> lookupTable)
+    private IndirectStorage2(IStorage[] baseStorages, BucketTree2<Entry> lookupTable)
     {
-        _storages = storages;
+        this.baseStorages = baseStorages;
         this.lookupTable = lookupTable;
     }
 
@@ -91,6 +91,27 @@ public class IndirectStorage2 : Storage2
 
     protected override void ReadCore(long offset, Span<byte> buffer)
     {
-        throw new NotImplementedException();
+        var currentOffset = offset;
+        var remaining = buffer.Length;
+        var pos = 0;
+
+        while (remaining > 0)
+        {
+            var entry = lookupTable.Find(currentOffset);
+
+            var currentEntryOffset = entry.Value.VirtualOffset;
+            var dataOffsetInEntry = currentOffset - currentEntryOffset;
+            var dataSize = entry.EndOffset - currentEntryOffset - dataOffsetInEntry;
+
+            var entryStorageOffset = entry.Value.PhysicalOffset;
+            var bytesToRead = (int)Math.Min(remaining, dataSize);
+
+            var readOffset = entryStorageOffset + dataOffsetInEntry;
+            baseStorages[entry.Value.StorageIndex].Read(readOffset, buffer.Slice(pos, bytesToRead)).ThrowIfFailure();
+
+            remaining -= bytesToRead;
+            pos += bytesToRead;
+            currentOffset += bytesToRead;
+        }
     }
 }
