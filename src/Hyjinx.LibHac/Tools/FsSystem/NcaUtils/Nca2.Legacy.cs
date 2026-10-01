@@ -49,33 +49,14 @@ partial class Nca2<TFsHeader>
         var patchInfo = sectionDescription.FsHeader.GetPatchInfo();
         if (patchInfo is null or { RelocationTreeSize: 0 })
         {
-            // The patch section overrides the entire base section.
-            return patchStorage;
+            throw new NotSupportedException("The section does not contain the required patch data information.");
         }
 
-        // TODO: Viper - Replace this with IndirectStorage2
         var baseStorage = baseNca.OpenRawStorage(type);
 
-        patchStorage.GetSize(out long patchSize).ThrowIfFailure();
-        baseStorage.GetSize(out long baseSize).ThrowIfFailure();
-
-        var treeHeader = new BucketTree.Header();
-        patchInfo.RelocationTreeHeader.Span.CopyTo(SpanHelpers.AsByteSpan(ref treeHeader));
-        long nodeStorageSize = IndirectStorage.QueryNodeStorageSize(treeHeader.EntryCount);
-        long entryStorageSize = IndirectStorage.QueryEntryStorageSize(treeHeader.EntryCount);
-
-        var relocationTableStorage = new SubStorage(patchStorage, patchInfo.RelocationTreeOffset, patchInfo.RelocationTreeSize);
-        var cachedTableStorage = new CachedStorage(relocationTableStorage, IndirectStorage.NodeSize, 4, true);
-
-        using var tableNodeStorage = new ValueSubStorage(cachedTableStorage, 0, nodeStorageSize);
-        using var tableEntryStorage = new ValueSubStorage(cachedTableStorage, nodeStorageSize, entryStorageSize);
-
-        var storage = new IndirectStorage();
-        storage.Initialize(new ArrayPoolMemoryResource(), in tableNodeStorage, in tableEntryStorage, treeHeader.EntryCount).ThrowIfFailure();
-
-        storage.SetStorage(0, baseStorage, 0, baseSize);
-        storage.SetStorage(1, patchStorage, 0, patchSize);
-
-        return storage;
+        return IndirectStorage2.Create(
+            [baseStorage, patchStorage],
+            patchStorage.Slice(patchInfo.RelocationTreeOffset, patchInfo.RelocationTreeSize),
+            patchInfo.GetRelocationTreeHeader());
     }
 }
