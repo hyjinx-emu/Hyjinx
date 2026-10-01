@@ -109,7 +109,7 @@ public class IntegrityVerificationStorage2 : Storage2
             }
         }
 
-        DataStorage.Read(offset, buffer);
+        DataStorage.Read(offset, buffer).ThrowIfFailure();
     }
 
     /// <summary>
@@ -129,7 +129,7 @@ public class IntegrityVerificationStorage2 : Storage2
 
         // Read the expected hash from the file.
         var hashOffset = (long)sectorIndex * Sha256.DigestSize;
-        HashStorage.Read(hashOffset, hashBuffer);
+        HashStorage.Read(hashOffset, hashBuffer).ThrowIfFailure();
 
         GetSize(out var dataStorageSize).ThrowIfFailure();
 
@@ -138,7 +138,7 @@ public class IntegrityVerificationStorage2 : Storage2
 
         // Read the entire sector from the file, or however many bytes are remaining.
         using var dataBuffer = new RentedArray2<byte>(SectorSize);
-        DataStorage.Read(dataOffset, dataBuffer.Span[..bytesRead]);
+        DataStorage.Read(dataOffset, dataBuffer.Span[..bytesRead]).ThrowIfFailure();
 
         var result = CheckSectorValidityCore(
             bytesRead,
