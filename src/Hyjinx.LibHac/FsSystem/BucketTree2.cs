@@ -62,64 +62,6 @@ public interface IBucketTreeEntry
 }
 
 /// <summary>
-/// Describes the offsets within the node header.
-/// </summary>
-[InlineArray(0x7FE)]
-file struct Offsets
-{
-    private long _element;
-}
-
-/// <summary>
-/// Describes the bucket node header layout.
-/// </summary>
-[StructLayout(LayoutKind.Sequential)]
-file struct NodeHeader
-{
-    /// <summary>
-    /// Unused.
-    /// </summary>
-    public int Index;
-
-    /// <summary>
-    /// The number of entries.
-    /// </summary>
-    public int Count;
-
-    /// <summary>
-    /// The end offset for this section.
-    /// </summary>
-    public long EndOffset;
-
-    /// <summary>
-    /// The offsets.
-    /// </summary>
-    public Offsets Offsets;
-}
-
-/// <summary>
-/// Describes the entry header layout.
-/// </summary>
-[StructLayout(LayoutKind.Sequential)]
-file struct EntryHeader
-{
-    /// <summary>
-    /// Unused.
-    /// </summary>
-    public int Index;
-
-    /// <summary>
-    /// The number of entries.
-    /// </summary>
-    public int Count;
-
-    /// <summary>
-    /// The end offset for this section.
-    /// </summary>
-    public long EndOffset;
-}
-
-/// <summary>
 /// A bucket tree.
 /// </summary>
 /// <typeparam name="TEntry">The type of entries contained within the entry storage.</typeparam>
@@ -132,25 +74,31 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
     private const uint HeaderSignature = 1381256002;
 
     /// <summary>
-    /// Defines the size of the bucket sectors used when reading the trees.
+    /// Defines the size of the buckets used when reading the trees.
     /// </summary>
-    private const int BucketSectorSize = 0x4000;
+    private const int BucketSize = 0x4000;
 
-    private readonly List<BucketTreeEntry> tableCache;
+    private readonly List<BucketTreeEntry> cache;
 
     /// <summary>
     /// Gets the number of entries within the tree.
     /// </summary>
-    public int Count => tableCache.Count;
+    public int Count => cache.Count;
 
-    private BucketTree2(List<BucketTreeEntry> storageEntries)
+    /// <summary>
+    /// Gets the end offset.
+    /// </summary>
+    public long EndOffset { get; }
+
+    private BucketTree2(List<BucketTreeEntry> cache, long endOffset)
     {
-        tableCache = storageEntries;
+        this.cache = cache;
+        EndOffset = endOffset;
     }
 
     public IEnumerator<BucketTreeEntry> GetEnumerator()
     {
-        foreach (var entry in tableCache)
+        foreach (var entry in cache)
         {
             yield return entry;
         }
@@ -165,7 +113,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
     /// <exception cref="ArgumentOutOfRangeException">The <paramref name="offset"/> provided does not exist within the bucket tree.</exception>
     public BucketTreeEntry Find(long offset)
     {
-        var span = CollectionsMarshal.AsSpan(tableCache);
+        var span = CollectionsMarshal.AsSpan(cache);
 
         int lo = 0;
         int hi = span.Length - 1;
@@ -226,7 +174,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
 
         for (var index = 0; index < rootHeader.Count; index++)
         {
-            var sectorOffset = headerSize + (index * BucketSectorSize);
+            var sectorOffset = headerSize + (index * BucketSize);
             var offsets = rootHeader.Offsets[index]; // TODO: Viper - This offset is the virtual address that the bucket works with.
 
             var entryHeader = MemoryMarshal.Cast<byte, EntryHeader>(buffer[sectorOffset..])[0];
@@ -256,7 +204,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
             }
         }
 
-        return new BucketTree2<TEntry>(entries);
+        return new BucketTree2<TEntry>(entries, rootHeader.EndOffset);
     }
 
     /// <summary>
@@ -283,5 +231,63 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
         {
             return $"{{ StartOffset={StartOffset}, EndOffset={EndOffset}, Value={Value} }}";
         }
+    }
+
+    /// <summary>
+    /// Describes the bucket node header layout.
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NodeHeader
+    {
+        /// <summary>
+        /// Unused.
+        /// </summary>
+        public int Index;
+
+        /// <summary>
+        /// The number of entries.
+        /// </summary>
+        public int Count;
+
+        /// <summary>
+        /// The end offset for this section.
+        /// </summary>
+        public long EndOffset;
+
+        /// <summary>
+        /// The offsets.
+        /// </summary>
+        public Offsets Offsets;
+    }
+
+    /// <summary>
+    /// Describes the offsets within the node header.
+    /// </summary>
+    [InlineArray(0x7FE)]
+    private struct Offsets
+    {
+        private long _element;
+    }
+
+    /// <summary>
+    /// Describes the entry header layout.
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    private struct EntryHeader
+    {
+        /// <summary>
+        /// Unused.
+        /// </summary>
+        public int Index;
+
+        /// <summary>
+        /// The number of entries.
+        /// </summary>
+        public int Count;
+
+        /// <summary>
+        /// The end offset for this section.
+        /// </summary>
+        public long EndOffset;
     }
 }

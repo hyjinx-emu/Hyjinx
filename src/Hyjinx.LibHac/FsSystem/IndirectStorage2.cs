@@ -12,7 +12,7 @@ namespace LibHac.FsSystem;
 public class IndirectStorage2 : Storage2
 {
     private readonly IStorage[] _storages;
-    private readonly BucketTree2<Entry> _relocationTree;
+    private readonly BucketTree2<Entry> lookupTable;
 
     /// <summary>
     /// The definition for an <see cref="IndirectStorage2"/> bucket tree entry.
@@ -44,10 +44,10 @@ public class IndirectStorage2 : Storage2
         }
     }
 
-    private IndirectStorage2(IStorage[] storages, BucketTree2<Entry> relocationTree)
+    private IndirectStorage2(IStorage[] storages, BucketTree2<Entry> lookupTable)
     {
         _storages = storages;
-        _relocationTree = relocationTree;
+        this.lookupTable = lookupTable;
     }
 
     /// <summary>
@@ -85,7 +85,8 @@ public class IndirectStorage2 : Storage2
 
     public override Result GetSize(out long size)
     {
-        throw new NotImplementedException();
+        size = lookupTable.EndOffset;
+        return Result.Success;
     }
 
     protected override void ReadCore(long offset, Span<byte> buffer)
