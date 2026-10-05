@@ -216,6 +216,8 @@ public partial class Nca1 : Nca
                 }
 
                 return InitIvfcForRomFs(new NcaFsIntegrityInfoIvfc(header.Checksum), rawStorage, integrityCheckLevel, true);
+            case NcaHashType.None:
+                return rawStorage;
             default:
                 throw new ArgumentOutOfRangeException();
         }
