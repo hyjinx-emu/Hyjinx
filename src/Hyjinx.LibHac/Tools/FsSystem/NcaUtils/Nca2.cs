@@ -258,6 +258,7 @@ public abstract partial class Nca2<TFsHeader> : Nca2
         {
             NcaHashType.Sha256 => CreateIvfcForPartitionFs(baseStorage, integrityCheckLevel, description),
             NcaHashType.Ivfc => CreateIvfcStorageForRomFs(baseStorage, integrityCheckLevel, description),
+            NcaHashType.None => baseStorage,
             _ => throw new NotSupportedException($"The hash type '{description.FsHeader.HashType}' is not supported.")
         };
     }
