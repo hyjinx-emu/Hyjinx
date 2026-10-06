@@ -9,7 +9,7 @@ public class Storage2Tests
     [Fact]
     public void ThrowsAnExceptionWhenOffsetIsNegative()
     {
-        var target = new TestStorage2();
+        using var target = new TestStorage2();
 
         var ex = Assert.Throws<ArgumentOutOfRangeException>(() => target.Read(-1, new byte[1]));
         Assert.Equal("offset", ex.ParamName);
@@ -20,7 +20,7 @@ public class Storage2Tests
     {
         Span<byte> bytes = stackalloc byte[0];
 
-        var target = new TestStorage2();
+        using var target = new TestStorage2();
         var result = target.Read(0, bytes);
 
         Assert.Equal(Result.Success, result);
@@ -31,7 +31,7 @@ public class Storage2Tests
     {
         Memory<byte> bytes = new byte[1];
 
-        var target = new TestStorage2
+        using var target = new TestStorage2
         {
             Size = 0
         };
@@ -41,11 +41,25 @@ public class Storage2Tests
     }
 
     [Fact]
+    public void ReturnsSuccessWhenDestinationLengthIsZero()
+    {
+        Memory<byte> bytes = new byte[0];
+
+        using var target = new TestStorage2
+        {
+            Size = 0
+        };
+
+        var result = target.Read(0, bytes.Span);
+        Assert.Equal(Result.Success, result);
+    }
+
+    [Fact]
     public void Works()
     {
         Span<byte> bytes = stackalloc byte[1];
 
-        var target = new TestStorage2
+        using var target = new TestStorage2
         {
             Size = 1
         };
@@ -59,7 +73,7 @@ public class Storage2Tests
     [Fact]
     public void DisposeWorks()
     {
-        var target = new TestStorage2();
+        using var target = new TestStorage2();
         target.Dispose();
 
         Assert.True(target.IsDisposed);
@@ -68,7 +82,7 @@ public class Storage2Tests
     [Fact]
     public void ReturnsNotImplemented()
     {
-        var target = new TestStorage2();
+        using var target = new TestStorage2();
 
         Assert.Equal(ResultFs.NotImplemented.Log(), target.Flush());
         Assert.Equal(ResultFs.NotImplemented.Log(), target.Write(0, new byte[0]));
