@@ -179,7 +179,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
 
             var entryHeader = MemoryMarshal.Cast<byte, EntryHeader>(buffer[sectorOffset..])[0];
             var sectionEntries = MemoryMarshal.Cast<byte, TEntry>(buffer[(sectorOffset + entryHeaderSize)..])[..entryHeader.Count];
-            
+
             for (var sectionIndex = 0; sectionIndex < sectionEntries.Length; sectionIndex++)
             {
                 var entry = sectionEntries[sectionIndex];
