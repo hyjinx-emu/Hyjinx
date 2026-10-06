@@ -255,12 +255,6 @@ public abstract partial class Nca2<TFsHeader> : Nca2
 
     private IStorage CreateVerificationStorage(IStorage baseStorage, IntegrityCheckLevel integrityCheckLevel, SectionDescription description)
     {
-        if (integrityCheckLevel == IntegrityCheckLevel.None)
-        {
-            // Do not wrap it if integrity checks are disabled.
-            return baseStorage;
-        }
-
         return description.FsHeader.HashType switch
         {
             NcaHashType.Sha256 => CreateIvfcForPartitionFs(baseStorage, integrityCheckLevel, description),
