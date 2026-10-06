@@ -3,7 +3,6 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tools.FsSystem.RomFs;
-using Org.BouncyCastle.Asn1;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -232,7 +231,7 @@ public abstract partial class Nca2<TFsHeader> : Nca2
         return result;
     }
 
-    protected internal sealed override IStorage OpenRawStorage(NcaSectionType type)
+    public override IStorage OpenRawStorage(NcaSectionType type)
     {
         if (!Sections.TryGetValue(type, out var sectionDescription))
         {
