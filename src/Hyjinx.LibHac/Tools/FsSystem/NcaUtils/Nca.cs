@@ -45,6 +45,13 @@ public abstract class Nca
     public abstract bool CanOpenSection(int index);
 
     /// <summary>
+    /// Opens the raw storage.
+    /// </summary>
+    /// <param name="type">The section type.</param>
+    /// <returns>The <see cref="IStorage"/> containing the section data.</returns>
+    public abstract IStorage OpenRawStorage(NcaSectionType type);
+
+    /// <summary>
     /// Opens the storage.
     /// </summary>
     /// <param name="index">The zero-based section index to open.</param>
@@ -63,11 +70,11 @@ public abstract class Nca
     /// <summary>
     /// Opens the storage with the patch applied.
     /// </summary>
-    /// <param name="patchNca">The patch NCA archive.</param>
+    /// <param name="baseNca">The base NCA archive.</param>
     /// <param name="type">The section type.</param>
     /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
     /// <returns>The <see cref="IStorage"/> containing the section data.</returns>
-    public abstract IStorage OpenStorageWithPatch(Nca patchNca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel);
+    public abstract IStorage OpenStorageWithPatch(Nca baseNca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel);
 
     /// <summary>
     /// Opens the file system.
@@ -88,11 +95,11 @@ public abstract class Nca
     /// <summary>
     /// Opens the file system with the patch applied.
     /// </summary>
-    /// <param name="patchNca">The patch NCA archive.</param>
+    /// <param name="baseNca">The base NCA archive.</param>
     /// <param name="type">The section type.</param>
     /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
-    public abstract IFileSystem OpenFileSystemWithPatch(Nca patchNca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel);
+    public abstract IFileSystem OpenFileSystemWithPatch(Nca baseNca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel);
 
     /// <summary>
     /// Gets the section index from the section type.

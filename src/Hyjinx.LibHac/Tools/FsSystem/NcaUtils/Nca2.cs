@@ -157,10 +157,17 @@ public abstract partial class Nca2<TFsHeader> : Nca2
         }
 
         var storage = OpenStorageCore(sectionDescription, integrityCheckLevel);
+        return CreateFileSystem(storage, sectionDescription);
+    }
+
+    private IFileSystem CreateFileSystem(IStorage baseStorage, SectionDescription sectionDescription)
+    {
+        ArgumentNullException.ThrowIfNull(sectionDescription);
+
         return sectionDescription.FsHeader.FormatType switch
         {
-            NcaFormatType.Pfs0 => CreateFileSystemForPfs0(storage),
-            NcaFormatType.RomFs => CreateFileSystemForRomFs(storage),
+            NcaFormatType.Pfs0 => CreateFileSystemForPfs0(baseStorage),
+            NcaFormatType.RomFs => CreateFileSystemForRomFs(baseStorage),
             _ => throw new NotSupportedException($"The format {sectionDescription.FsHeader.FormatType} is not supported.")
         };
     }
@@ -202,7 +209,13 @@ public abstract partial class Nca2<TFsHeader> : Nca2
             throw new InvalidHashDetectedException("The header hash does not match the expected value.");
         }
 
-        var result = OpenRawStorage(description);
+        var rawStorage = OpenRawStorage(description);
+        return OpenStorageCore(rawStorage, description, integrityCheckLevel);
+    }
+
+    private IStorage OpenStorageCore(IStorage rawStorage, SectionDescription description, IntegrityCheckLevel integrityCheckLevel)
+    {
+        IStorage result = rawStorage;
 
         if (description.FsHeader.HashType != NcaHashType.None)
         {
@@ -216,6 +229,16 @@ public abstract partial class Nca2<TFsHeader> : Nca2
         }
 
         return result;
+    }
+
+    public override IStorage OpenRawStorage(NcaSectionType type)
+    {
+        if (!Sections.TryGetValue(type, out var sectionDescription))
+        {
+            throw new ArgumentException($"The section '{type}' does not exist.", nameof(type));
+        }
+
+        return OpenRawStorage(sectionDescription);
     }
 
     /// <summary>
@@ -235,6 +258,7 @@ public abstract partial class Nca2<TFsHeader> : Nca2
         {
             NcaHashType.Sha256 => CreateIvfcForPartitionFs(baseStorage, integrityCheckLevel, description),
             NcaHashType.Ivfc => CreateIvfcStorageForRomFs(baseStorage, integrityCheckLevel, description),
+            NcaHashType.None => baseStorage,
             _ => throw new NotSupportedException($"The hash type '{description.FsHeader.HashType}' is not supported.")
         };
     }

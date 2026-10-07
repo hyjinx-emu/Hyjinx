@@ -73,21 +73,32 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
     /// </summary>
     private const uint HeaderSignature = 1381256002;
 
-    private readonly List<BucketTreeEntry> _entries;
+    /// <summary>
+    /// Defines the size of the buckets used when reading the trees.
+    /// </summary>
+    private const int BucketSize = 0x4000;
+
+    private readonly List<BucketTreeEntry> cache;
 
     /// <summary>
     /// Gets the number of entries within the tree.
     /// </summary>
-    public int Count => _entries.Count;
+    public int Count => cache.Count;
 
-    private BucketTree2(List<BucketTreeEntry> entries)
+    /// <summary>
+    /// Gets the end offset.
+    /// </summary>
+    public long EndOffset { get; }
+
+    private BucketTree2(List<BucketTreeEntry> cache, long endOffset)
     {
-        _entries = entries;
+        this.cache = cache;
+        EndOffset = endOffset;
     }
 
     public IEnumerator<BucketTreeEntry> GetEnumerator()
     {
-        foreach (var entry in _entries)
+        foreach (var entry in cache)
         {
             yield return entry;
         }
@@ -102,7 +113,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
     /// <exception cref="ArgumentOutOfRangeException">The <paramref name="offset"/> provided does not exist within the bucket tree.</exception>
     public BucketTreeEntry Find(long offset)
     {
-        var span = CollectionsMarshal.AsSpan(_entries);
+        var span = CollectionsMarshal.AsSpan(cache);
 
         int lo = 0;
         int hi = span.Length - 1;
@@ -151,73 +162,49 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
             throw new ArgumentException("The header signature provided does not match the expected header signature.", nameof(definition));
         }
 
+        var headerSize = Unsafe.SizeOf<NodeHeader>();
+        var entrySize = Unsafe.SizeOf<TEntry>();
+        var entryHeaderSize = Unsafe.SizeOf<EntryHeader>();
+
         Span<byte> buffer = new byte[definition.Length];
-        baseStorage.Read(0, buffer);
+        baseStorage.Read(0, buffer).ThrowIfFailure();
 
-        // TODO: Viper - Unsure how this ties into the other data set, removing it.
-        // ref var nodeHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer[0x00]);
+        var rootHeader = MemoryMarshal.Cast<byte, NodeHeader>(buffer[0..])[0];
+        List<BucketTreeEntry> entries = new(definition.Header.EntryCount);
 
-        ref var entryHeader = ref Unsafe.As<byte, SectionHeader>(ref buffer[0x4000]);
-        if (definition.Header.EntryCount != entryHeader.EntryCount)
+        for (var index = 0; index < rootHeader.Count; index++)
         {
-            // The definition should match what's being loaded.
-            throw new InvalidOperationException($"The bucket tree failed validation. Expected: (Count={definition.Header.EntryCount}), Actual: (Count={entryHeader.EntryCount})");
+            var sectorOffset = headerSize + (index * BucketSize);
+            var offsets = rootHeader.Offsets[index]; // TODO: Viper - This offset is the virtual address that the bucket works with.
+
+            var entryHeader = MemoryMarshal.Cast<byte, EntryHeader>(buffer[sectorOffset..])[0];
+            var sectionEntries = MemoryMarshal.Cast<byte, TEntry>(buffer[(sectorOffset + entryHeaderSize)..])[..entryHeader.Count];
+
+            for (var sectionIndex = 0; sectionIndex < sectionEntries.Length; sectionIndex++)
+            {
+                var entry = sectionEntries[sectionIndex];
+                long lastOffset;
+
+                var nextIndex = sectionIndex + 1;
+                if (nextIndex < sectionEntries.Length)
+                {
+                    lastOffset = sectionEntries[nextIndex].Offset;
+                }
+                else
+                {
+                    lastOffset = entryHeader.EndOffset;
+                }
+
+                entries.Add(new BucketTreeEntry
+                {
+                    StartOffset = entry.Offset,
+                    EndOffset = lastOffset,
+                    Value = entry
+                });
+            }
         }
 
-        // Size the list based on what the header says is available (before filtering occurs).
-        List<BucketTreeEntry> entries = new(entryHeader.EntryCount);
-
-        var sectionEntries = MemoryMarshal.Cast<byte, TEntry>(
-            buffer.Slice(0x4010, Unsafe.SizeOf<TEntry>() * entryHeader.EntryCount));
-
-        for (var index = 0; index < sectionEntries.Length; index++)
-        {
-            ref var entry = ref sectionEntries[index];
-
-            long endOffset;
-
-            var nextIndex = index + 1;
-            if (nextIndex < sectionEntries.Length)
-            {
-                ref var next = ref sectionEntries[nextIndex];
-                endOffset = next.Offset;
-            }
-            else
-            {
-                endOffset = -1; // The end offset is not known.
-            }
-
-            entries.Add(new BucketTreeEntry
-            {
-                StartOffset = entry.Offset,
-                EndOffset = endOffset,
-                Value = entry
-            });
-        }
-
-        return new BucketTree2<TEntry>(entries);
-    }
-
-    /// <summary>
-    /// Describes the bucket section header layout.
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    private struct SectionHeader
-    {
-        /// <summary>
-        /// Unused.
-        /// </summary>
-        public int Reserved;
-
-        /// <summary>
-        /// The number of entries.
-        /// </summary>
-        public int EntryCount;
-
-        /// <summary>
-        /// The end offset for this section.
-        /// </summary>
-        public long EndOffset;
+        return new BucketTree2<TEntry>(entries, rootHeader.EndOffset);
     }
 
     /// <summary>
@@ -244,5 +231,63 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
         {
             return $"{{ StartOffset={StartOffset}, EndOffset={EndOffset}, Value={Value} }}";
         }
+    }
+
+    /// <summary>
+    /// Describes the bucket node header layout.
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NodeHeader
+    {
+        /// <summary>
+        /// Unused.
+        /// </summary>
+        public int Index;
+
+        /// <summary>
+        /// The number of entries.
+        /// </summary>
+        public int Count;
+
+        /// <summary>
+        /// The end offset for this section.
+        /// </summary>
+        public long EndOffset;
+
+        /// <summary>
+        /// The offsets.
+        /// </summary>
+        public Offsets Offsets;
+    }
+
+    /// <summary>
+    /// Describes the offsets within the node header.
+    /// </summary>
+    [InlineArray(0x7FE)]
+    private struct Offsets
+    {
+        private long _element;
+    }
+
+    /// <summary>
+    /// Describes the entry header layout.
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    private struct EntryHeader
+    {
+        /// <summary>
+        /// Unused.
+        /// </summary>
+        public int Index;
+
+        /// <summary>
+        /// The number of entries.
+        /// </summary>
+        public int Count;
+
+        /// <summary>
+        /// The end offset for this section.
+        /// </summary>
+        public long EndOffset;
     }
 }

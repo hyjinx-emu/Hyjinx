@@ -83,6 +83,11 @@ public partial class Nca1 : Nca
         return BaseStorage.Slice(offset, size);
     }
 
+    public override IStorage OpenRawStorage(NcaSectionType type)
+    {
+        return OpenRawStorage(GetSectionIndexFromType(type));
+    }
+
     public virtual IStorage OpenRawStorage(int index)
     {
         if (Header.IsNca0())
@@ -211,6 +216,8 @@ public partial class Nca1 : Nca
                 }
 
                 return InitIvfcForRomFs(new NcaFsIntegrityInfoIvfc(header.Checksum), rawStorage, integrityCheckLevel, true);
+            case NcaHashType.None:
+                return rawStorage;
             default:
                 throw new ArgumentOutOfRangeException();
         }
