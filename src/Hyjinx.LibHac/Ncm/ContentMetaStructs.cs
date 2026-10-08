@@ -31,7 +31,7 @@ public class ApplicationContentMetaKey
 public struct PackagedContentInfoStruct
 {
     public Digest Digest;
-    public ContentInfo ContentInfo;
+    public ContentInfo Info;
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 16)]
