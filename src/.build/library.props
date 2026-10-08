@@ -4,5 +4,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <OutputType>Library</OutputType>
   </PropertyGroup>
+
+  <ItemGroup Condition=" '$(IsLegacyEnabled)' != 'true' ">
+    <Compile Remove="**/*.Legacy.cs" />
+  </ItemGroup>
   
 </Project>
