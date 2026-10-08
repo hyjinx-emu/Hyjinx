@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using System.IO;
 using System.Text;
@@ -274,3 +276,5 @@ public class Calibration
         ConsoleSixAxisSensorMountType = reader.ReadBytes(0x1);
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System;
 using System.Threading;
 
@@ -68,3 +70,5 @@ public struct UniqueLock : IDisposable
         }
     }
 }
+
+#endif
