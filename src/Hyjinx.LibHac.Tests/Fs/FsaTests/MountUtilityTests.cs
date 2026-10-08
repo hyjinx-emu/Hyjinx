@@ -3,7 +3,7 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Shim;
 using LibHac.Tests.Fs.FileSystemClientTests;
-using LibHac.Tools.Fs;
+using LibHac.Tests.Tools.Fs;
 using LibHac.Util;
 using System;
 using Xunit;

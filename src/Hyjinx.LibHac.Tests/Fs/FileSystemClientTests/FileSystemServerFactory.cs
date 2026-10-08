@@ -5,7 +5,7 @@ using LibHac.FsSrv;
 using LibHac.FsSrv.Impl;
 using LibHac.FsSystem;
 using LibHac.Ncm;
-using LibHac.Tools.Fs;
+using LibHac.Tests.Tools.Fs;
 
 namespace LibHac.Tests.Fs.FileSystemClientTests;
 

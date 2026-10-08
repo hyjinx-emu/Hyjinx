@@ -3,7 +3,7 @@ using LibHac.Common.Keys;
 using LibHac.Fs.Fsa;
 using LibHac.FsSrv;
 using LibHac.FsSystem;
-using LibHac.Tools.Fs;
+using LibHac.Tests.Tools.Fs;
 
 namespace LibHac.Tests;
 
