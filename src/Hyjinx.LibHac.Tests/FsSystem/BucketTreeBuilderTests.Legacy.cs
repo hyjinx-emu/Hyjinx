@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
@@ -164,3 +166,5 @@ public class BucketTreeBuilderTests
         Assert.Result(ResultFs.InvalidOffset, builder.Finalize(0x1000));
     }
 }
+
+#endif

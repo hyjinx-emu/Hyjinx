@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.FsSystem;
 using System;
@@ -152,3 +154,5 @@ internal class IndirectStorageCreator
         Assert.Equal(_buffers.PatchedStorageBuffer.Length, patchedStorageOffset);
     }
 }
+
+#endif
