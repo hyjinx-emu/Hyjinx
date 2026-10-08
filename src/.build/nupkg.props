@@ -5,7 +5,7 @@
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageLicenseFile Condition=" Exists('LICENSE.txt') ">LICENSE.txt</PackageLicenseFile>
+    <PackageLicenseFile Condition=" Exists('LICENSE') ">LICENSE</PackageLicenseFile>
     <PackageReadmeFile Condition=" Exists('README.md') ">README.md</PackageReadmeFile>
   </PropertyGroup>
   
@@ -15,8 +15,8 @@
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-    <None Condition=" Exists('LICENSE.txt') " Include="README.md" Pack="true" PackagePath="" />
-    <None Condition=" Exists('README.md') "   Include="LICENSE.txt" Pack="true" PackagePath="" />
+    <None Condition=" Exists('LICENSE') " Include="LICENSE" Pack="true" PackagePath="" />
+    <None Condition=" Exists('README.md') " Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
   
 </Project>
