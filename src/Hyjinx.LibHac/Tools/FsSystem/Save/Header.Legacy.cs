@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Crypto;
@@ -282,3 +284,5 @@ public class ExtraData
         return new Guid(b);
     }
 }
+
+#endif

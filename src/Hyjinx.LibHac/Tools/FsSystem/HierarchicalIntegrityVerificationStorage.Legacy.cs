@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Util;
@@ -285,3 +287,5 @@ public class IvfcLevelHeader
         Reserved = reader.ReadUInt32();
     }
 }
+
+#endif

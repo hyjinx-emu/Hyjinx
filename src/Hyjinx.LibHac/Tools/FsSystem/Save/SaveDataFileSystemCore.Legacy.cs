@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -315,3 +317,5 @@ public class SaveHeader
         BlockSize = reader.ReadInt64();
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.Util;
 using System;
@@ -95,3 +97,5 @@ public class SectorStorage : Storage
             throw new ArgumentException($"Offset must be a multiple of {SectorSize}");
     }
 }
+
+#endif

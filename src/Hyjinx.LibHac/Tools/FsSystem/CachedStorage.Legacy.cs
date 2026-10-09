@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using System;
 using System.Collections.Generic;
@@ -217,3 +219,5 @@ public class CachedStorage : Storage
         public bool Dirty { get; set; }
     }
 }
+
+#endif

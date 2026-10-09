@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Util;
@@ -415,3 +417,5 @@ public class HierarchicalSaveFileTable
         public T Value;
     }
 }
+
+#endif

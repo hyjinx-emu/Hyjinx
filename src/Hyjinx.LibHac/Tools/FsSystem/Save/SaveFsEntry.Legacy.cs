@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System;
 using System.Runtime.InteropServices;
 
@@ -34,3 +36,5 @@ public struct SaveFindPosition
     /// <summary>The ID of the next file to be enumerated.</summary>
     public int NextFile;
 }
+
+#endif

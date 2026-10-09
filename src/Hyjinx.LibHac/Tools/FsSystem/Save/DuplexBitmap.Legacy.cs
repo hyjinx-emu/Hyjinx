@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using System;
 using System.Collections;
@@ -39,3 +41,5 @@ public class DuplexBitmap
         }
     }
 }
+
+#endif

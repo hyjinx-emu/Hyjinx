@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.Util;
 using System;
@@ -159,3 +161,5 @@ public class AllocationTableStorage : Storage
         throw new NotImplementedException();
     }
 }
+
+#endif

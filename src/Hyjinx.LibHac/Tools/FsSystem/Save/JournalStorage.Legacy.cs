@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using System;
@@ -174,3 +176,5 @@ public class JournalMapEntry
     public int PhysicalIndex { get; set; }
     public int VirtualIndex { get; set; }
 }
+
+#endif

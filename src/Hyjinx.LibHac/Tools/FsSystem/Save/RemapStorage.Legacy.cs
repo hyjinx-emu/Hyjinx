@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using System;
@@ -284,3 +286,5 @@ public class RemapSegment
     public long Offset { get; internal set; }
     public long Length { get; internal set; }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using System;
 
@@ -137,3 +139,5 @@ public class DuplexStorage : Storage
         }
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using System;
 
@@ -81,3 +83,5 @@ public class DuplexFsLayerInfo
     public IStorage DataB { get; set; }
     public DuplexInfo Info { get; set; }
 }
+
+#endif

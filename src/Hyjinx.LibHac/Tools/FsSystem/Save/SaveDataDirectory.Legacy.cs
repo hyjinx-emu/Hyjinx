@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Util;
@@ -86,3 +88,5 @@ public class SaveDataDirectory : IDirectory
         return Result.Success;
     }
 }
+
+#endif

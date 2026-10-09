@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Common.Keys;
 using LibHac.Crypto;
@@ -336,3 +338,5 @@ public class SaveDataFileSystem : FileSystem
         base.Dispose();
     }
 }
+
+#endif

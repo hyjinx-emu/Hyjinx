@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
@@ -231,6 +233,8 @@ public class IntegrityVerificationInfo
     public byte[] Salt { get; set; }
     public IntegrityStorageType Type { get; set; }
 }
+
+#endif
 
 public enum IntegrityStorageType
 {

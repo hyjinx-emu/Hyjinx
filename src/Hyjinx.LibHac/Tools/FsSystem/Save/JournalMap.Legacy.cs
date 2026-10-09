@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.Util;
 using System.IO;
@@ -100,3 +102,5 @@ public class JournalMapParams
     public IStorage VirtualBlockBitmap { get; set; }
     public IStorage FreeBlockBitmap { get; set; }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System;
 
 namespace LibHac.Tools.FsSystem.Save;
@@ -80,3 +82,5 @@ public class AllocationTableIterator
         }
     }
 }
+
+#endif

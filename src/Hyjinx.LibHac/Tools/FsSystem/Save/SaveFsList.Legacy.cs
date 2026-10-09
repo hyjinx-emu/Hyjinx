@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Util;
@@ -380,3 +382,5 @@ internal class SaveFsList<T> where T : struct
     [StructLayout(LayoutKind.Sequential, Size = 0x40)]
     private struct NameDummy { }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System.Collections.Generic;
 
 namespace LibHac.Tools.FsSystem.Save;
@@ -14,3 +16,5 @@ public static class SaveExtensions
         } while (iterator.MoveNext());
     }
 }
+
+#endif

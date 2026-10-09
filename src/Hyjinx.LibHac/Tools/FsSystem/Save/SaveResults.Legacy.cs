@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 
 namespace LibHac.Tools.FsSystem.Save;
@@ -126,3 +128,5 @@ internal static class SaveResults
         return result;
     }
 }
+
+#endif
