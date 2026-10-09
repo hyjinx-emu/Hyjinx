@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using System;
@@ -340,3 +342,5 @@ public class RegionSwitchStorage : Storage
         }
     }
 }
+
+#endif

@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using Path = LibHac.Fs.Path;
 
-namespace LibHac.Tools.Fs;
+namespace LibHac.Tests.Tools.Fs;
 
 /// <summary>
 /// A filesystem stored in-memory. Mainly used for testing.

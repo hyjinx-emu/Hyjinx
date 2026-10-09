@@ -4,7 +4,7 @@ using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tests.Fs;
 using LibHac.Tests.Fs.IFileSystemTestBase;
-using LibHac.Tools.Fs;
+using LibHac.Tests.Tools.Fs;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -89,3 +91,5 @@ public class MemoryResourceBufferHoldStorage : Storage
         return _storage.Get.OperateRange(outBuffer, operationId, offset, size, inBuffer);
     }
 }
+
+#endif

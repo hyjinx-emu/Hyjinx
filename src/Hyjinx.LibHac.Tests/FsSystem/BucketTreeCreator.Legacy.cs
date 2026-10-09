@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.FsSystem;
 using System.Runtime.CompilerServices;
@@ -137,3 +139,5 @@ internal static class BucketTreeCreator
         return entries;
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Tests.Common;
@@ -191,3 +193,5 @@ public class BucketTreeTests : IClassFixture<BucketTreeBuffers>
         Assert.Equal(_treeData[treeIndex].EntryCount, tree.GetEntryCount());
     }
 }
+
+#endif

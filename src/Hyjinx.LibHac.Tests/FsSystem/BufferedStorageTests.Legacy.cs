@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Tests.Fs;
@@ -224,3 +226,5 @@ public class BufferedStorageTests
         tester.Run(0x100);
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using System;
 
@@ -46,3 +48,5 @@ public class TruncatedSubStorage : SubStorage
         return base.Write(offset, source.Slice(0, (int)sizeToWrite));
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using System.Collections.Generic;
 using System.IO;
@@ -64,3 +66,5 @@ public class ConcatenationStorageSegment
         Offset = offset;
     }
 }
+
+#endif

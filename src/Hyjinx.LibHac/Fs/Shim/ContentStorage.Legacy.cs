@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs.Fsa;
@@ -155,3 +157,5 @@ public static class ContentStorage
         }
     }
 }
+
+#endif

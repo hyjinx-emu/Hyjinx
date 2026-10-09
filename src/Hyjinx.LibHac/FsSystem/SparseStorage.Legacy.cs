@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Diag;
 using LibHac.Fs;
 using System;
@@ -128,3 +130,5 @@ public class SparseStorage : IndirectStorage
         return Result.Success;
     }
 }
+
+#endif

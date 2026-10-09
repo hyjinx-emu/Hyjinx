@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -108,3 +110,5 @@ public class IntegrityRomFsStorage : Storage
         return _integrityStorage.OperateRange(outBuffer, operationId, offset, size, inBuffer);
     }
 }
+
+#endif

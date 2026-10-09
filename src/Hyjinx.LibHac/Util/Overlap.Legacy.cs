@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 namespace LibHac.Util;
 
 public static class Overlap
@@ -17,3 +19,5 @@ public static class Overlap
         return start <= value && value < start + size;
     }
 }
+
+#endif

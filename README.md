@@ -76,7 +76,7 @@ You may also review our [FAQ](https://github.com/hyjinx-emu/Hyjinx/wiki/Frequent
 
 ## License
 
-This software is licensed under customized terms of the [MIT license](LICENSE.txt).
+This software is licensed under customized terms of the [MIT license](LICENSE).
 This project makes use of code authored by the libvpx project, licensed under BSD and the ffmpeg project, licensed under LGPLv3.
 See [THIRDPARTY.md](distribution/legal/THIRDPARTY.md) for more details.
 

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -371,3 +373,5 @@ public class UnionStorage : Storage
         return Result.Success;
     }
 }
+
+#endif

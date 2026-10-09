@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.FsSystem;
 using LibHac.Tests.Common;
@@ -354,3 +356,5 @@ public class IndirectStorageTests : IClassFixture<IndirectStorageBuffers>
         return new StorageTester(testerConfig);
     }
 }
+
+#endif
