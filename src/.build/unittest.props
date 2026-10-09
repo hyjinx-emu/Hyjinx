@@ -13,6 +13,10 @@
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="**/*.Legacy.cs" Visible="$(IsLegacyEnabled)" />
+  </ItemGroup>
   
   <ItemGroup>
     <Using Include="Moq" />

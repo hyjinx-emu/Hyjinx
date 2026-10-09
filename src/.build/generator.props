@@ -1,5 +1,6 @@
 <Project>
-
+  <Import Project="./shared.props" />
+  
   <PropertyGroup>
     <!-- Rider and other IDEs may prefer this to be netstandard2.0 even if targetting .NET 9 projects. -->
     <TargetFramework>netstandard2.0</TargetFramework>

@@ -14,6 +14,10 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Update="**/*.Legacy.cs" Visible="$(IsLegacyEnabled)" />
+  </ItemGroup>
+
   <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
     <None Condition=" Exists('LICENSE') " Include="LICENSE" Pack="true" PackagePath="" />
     <None Condition=" Exists('README.md') " Include="README.md" Pack="true" PackagePath="" />
