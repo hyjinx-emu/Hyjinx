@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 namespace LibHac.Settings;
 
 public enum Language
@@ -21,3 +23,5 @@ public enum Language
     TraditionalChinese,
     BrazilianPortuguese
 }
+
+#endif
