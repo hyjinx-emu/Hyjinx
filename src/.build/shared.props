@@ -1,10 +1,10 @@
 <Project>
   
+  <!-- Remove all code within legacy folders. -->
   <ItemGroup Condition=" '$(IsLegacyEnabled)' != 'true' ">
-    <!-- Remove all code within legacy folders. -->
-    <Compile Update="**/Legacy/**/*.cs" Visible="false" />
-    <!-- Remove all code denoted as legacy files. -->
-    <Compile Update="**/*.Legacy.cs" Visible="false" />
+    <Compile Remove="Legacy\**" />
+    <EmbeddedResource Remove="Legacy\**" />
+    <None Remove="Legacy\**" />
   </ItemGroup>
   
 </Project>
