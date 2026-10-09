@@ -24,7 +24,7 @@ public class StreamStorage2 : Storage2
     /// <param name="stream">The stream to wrap.</param>
     /// <param name="leaveOpen"><c>true</c> if the stream should be left open upon dispose, otherwise <c>false</c>.</param>
     /// <exception cref="ArgumentException"><paramref name="stream"/> must support read and seek operations.</exception>
-    /// <returns>The new <see cref="SubStorage2"/> instance.</returns>
+    /// <returns>The new <see cref="StreamStorage2"/> instance.</returns>
     public static StreamStorage2 Create(Stream stream, bool leaveOpen = true)
     {
         if (!stream.CanRead)
