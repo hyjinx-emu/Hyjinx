@@ -51,6 +51,16 @@ public partial class Nca1 : Nca
         return false;
     }
 
+    private bool SectionExists(NcaSectionType type)
+    {
+        if (!TryGetSectionIndexFromType(type, Header.ContentType, out int index))
+        {
+            return false;
+        }
+
+        return SectionExists(index);
+    }
+
     private bool SectionExists(int index)
     {
         return Header.IsSectionEnabled(index);
