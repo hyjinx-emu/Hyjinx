@@ -18,6 +18,12 @@ partial class Nca2<TFsHeader>
             return baseNca.OpenFileSystem(type, integrityCheckLevel);
         }
 
+        if (!sectionDescription.FsHeader.IsPatchSection())
+        {
+            // The section is not a patch, it is a full overwrite.
+            return OpenFileSystemCore(sectionDescription, integrityCheckLevel);
+        }
+
         var storage = OpenStorageWithPatchCore(baseNca, type, sectionDescription, integrityCheckLevel);
         return CreateFileSystem(storage, sectionDescription);
     }

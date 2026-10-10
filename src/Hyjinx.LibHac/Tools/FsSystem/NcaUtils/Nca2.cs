@@ -156,6 +156,11 @@ public abstract partial class Nca2<TFsHeader> : Nca2
             throw new ArgumentException($"The section '{type}' does not exist.", nameof(type));
         }
 
+        return OpenFileSystemCore(sectionDescription, integrityCheckLevel);
+    }
+
+    private IFileSystem OpenFileSystemCore(SectionDescription sectionDescription, IntegrityCheckLevel integrityCheckLevel)
+    {
         var storage = OpenStorageCore(sectionDescription, integrityCheckLevel);
         return CreateFileSystem(storage, sectionDescription);
     }

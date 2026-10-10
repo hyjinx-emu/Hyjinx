@@ -1,6 +1,9 @@
+using Hyjinx.Common.Configuration;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
+using Hyjinx.HLE.Utilities;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
 using LibHac.Common;
 using LibHac.Fs;
@@ -10,6 +13,7 @@ using LibHac.Ncm;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Tools.Ncm;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +28,14 @@ namespace Hyjinx.HLE.Loaders.Processes;
 /// A mechanism which is capable of loading content from from the <see cref="IFileSystem2"/> provided to a <see cref="Switch"/> device.
 /// </summary>
 /// <param name="device">The device to which the content will be loaded.</param>
-internal class FileSystemLoader(Switch device)
+internal partial class FileSystemLoader(Switch device)
 {
+    private static readonly ILogger _logger =
+        Logger.DefaultLoggerFactory.CreateLogger(typeof(FileSystemLoader));
+
+    private static readonly DownloadableContentJsonSerializerContext _contentSerializerContext =
+        new(JsonHelper.GetDefaultSerializerOptions());
+
     /// <summary>
     /// Loads the process.
     /// </summary>
@@ -34,6 +44,10 @@ internal class FileSystemLoader(Switch device)
     /// <returns>The <see cref="ProcessResult"/> instance.</returns>
     public async Task<ProcessResult> LoadAsync(IFileSystem fileSystem, CancellationToken cancellationToken = default)
     {
+        Nca mainNca;
+        Nca controlNca;
+        Nca? patchNca = null;
+
         // PartitionFileSystemExtensions.TryLoad<TMetaData, TFormat, THeader, TEntry>(this PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry> partitionFileSystem, Switch device, string path, ulong applicationId, out string errorMessage)
         await device.FileSystem.ImportTicketsAsync(fileSystem, cancellationToken);
 
@@ -43,15 +57,56 @@ internal class FileSystemLoader(Switch device)
             throw new InvalidOperationException("The application could not be found.");
         }
 
-        var (programNca, controlNca) = await FindContentFilesAsync(fileSystem, metadata, cancellationToken);
+        (mainNca, controlNca) = await FindContentFilesAsync(fileSystem, metadata, cancellationToken);
+        if (mainNca == null)
+        {
+            throw new InvalidOperationException("The main NCA could not be located.");
+        }
+        else
+        {
+            (Nca updatePatchNca, Nca updateControlNca) = mainNca.GetUpdateData(device.FileSystem, device.System.FsIntegrityCheckLevel, device.Configuration.UserChannelPersistence.Index, out _);
+            if (updatePatchNca != null)
+            {
+                patchNca = updatePatchNca;
+            }
+
+            if (updateControlNca != null)
+            {
+                controlNca = updateControlNca;
+            }
+        }
 
         // TODO: If we want to support multi-processes in future, we shouldn't clear AddOnContent data here.
         device.Configuration.ContentManager.ClearAocData();
 
+        string addOnContentMetadataPath = System.IO.Path.Combine(AppDataManager.GamesDirPath, mainNca.GetProgramIdBase().ToString("x16"), "dlc.json");
+        if (System.IO.File.Exists(addOnContentMetadataPath))
+        {
+            List<DownloadableContentContainer> dlcContainerList = JsonHelper.DeserializeFromFile(addOnContentMetadataPath, _contentSerializerContext.ListDownloadableContentContainer);
+
+            foreach (DownloadableContentContainer downloadableContentContainer in dlcContainerList)
+            {
+                foreach (DownloadableContentNca downloadableContentNca in downloadableContentContainer.DownloadableContentNcaList)
+                {
+                    if (System.IO.File.Exists(downloadableContentContainer.ContainerPath))
+                    {
+                        if (downloadableContentNca.Enabled)
+                        {
+                            device.Configuration.ContentManager.AddAocItem(downloadableContentNca.TitleId, downloadableContentContainer.ContainerPath, downloadableContentNca.FullPath);
+                        }
+                    }
+                    else
+                    {
+                        LogCannotFindAddOnContentFile(_logger, downloadableContentContainer.ContainerPath);
+                    }
+                }
+            }
+        }
+
         // NcaExtensions.Load(this Nca nca, Switch device, Nca patchNca, Nca controlNca)
         // **************************************************************************************************************************************************************
-        var romFs = programNca.OpenStorage(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
-        var exeFs = programNca.OpenFileSystem(NcaSectionType.Code, device.Configuration.FsIntegrityCheckLevel);
+        var romFs = mainNca.GetRomFs(device, patchNca);
+        var exeFs = mainNca.GetExeFs(device, patchNca);
 
         var metaLoader = GetMetaLoader(exeFs);
         var nacpData = await controlNca.FindNacpAsync(device.Configuration.FsIntegrityCheckLevel, cancellationToken);
@@ -108,7 +163,7 @@ internal class FileSystemLoader(Switch device)
             true,
             programName,
             metaLoader.GetProgramId(),
-            (byte)programNca.GetProgramIndex(),
+            (byte)mainNca.GetProgramIndex(),
             null!,
             executables.ToArray());
 
@@ -146,7 +201,12 @@ internal class FileSystemLoader(Switch device)
         return result;
     }
 
-    private async Task<(Nca2, Nca2)> FindContentFilesAsync(IFileSystem fileSystem, Cnmt cnmt, CancellationToken cancellationToken)
+    [LoggerMessage(LogLevel.Warning,
+    EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
+    Message = "Cannot find AddOnContent file '{file}'. It may have been moved or renamed.")]
+    private static partial void LogCannotFindAddOnContentFile(ILogger logger, string file);
+
+    private async Task<(Nca, Nca)> FindContentFilesAsync(IFileSystem fileSystem, Cnmt cnmt, CancellationToken cancellationToken)
     {
         // Find the program file.
         var programEntry = cnmt.ContentEntries.Single(o => o.Type == ContentType.Program);
@@ -159,7 +219,7 @@ internal class FileSystemLoader(Switch device)
         return (programNca, controlNca);
     }
 
-    private Task<Nca2> FindNcaForContentAsync(IFileSystem fileSystem, CnmtContentEntry entry, CancellationToken cancellationToken)
+    private Task<Nca> FindNcaForContentAsync(IFileSystem fileSystem, CnmtContentEntry entry, CancellationToken cancellationToken)
     {
         var ncaId = BitConverter.ToString(entry.NcaId.AsBytes().ToArray()).Replace("-", null).ToLower();
         var fileName = $"/{ncaId}.nca";
@@ -170,7 +230,7 @@ internal class FileSystemLoader(Switch device)
         var fs = fileRef.Get.AsStream();
 
         var nca = BasicNca2.Create(fs);
-        return Task.FromResult<Nca2>(nca);
+        return Task.FromResult<Nca>(nca);
     }
 
     private async Task<Cnmt?> FindApplicationMetadataAsync(IFileSystem fileSystem, ContentMetaType contentMetaType, CancellationToken cancellationToken)
@@ -181,12 +241,12 @@ internal class FileSystemLoader(Switch device)
             fileSystem.OpenFile(ref fileRef.Ref, entry.FullPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
 
             await using var fs = fileRef.Get.AsStream();
-            var nca = BasicNca2.Create(fs);
+            var cnmtNca = BasicNca2.Create(fs);
 
             // Find the data within the file.
-            var cnmtFs = nca.OpenFileSystem(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
+            var cnmtFs = cnmtNca.OpenFileSystem(NcaSectionType.Data, device.Configuration.FsIntegrityCheckLevel);
 
-            var cnmtPath = $"/{contentMetaType}_{nca.Header.TitleId:x16}.cnmt";
+            var cnmtPath = $"/{contentMetaType}_{cnmtNca.Header.TitleId:x16}.cnmt";
             if (cnmtFs.FileExists(cnmtPath))
             {
                 using var cnmtFileRef = new UniqueRef<IFile>();
