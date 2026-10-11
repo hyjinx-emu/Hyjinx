@@ -1,6 +1,5 @@
 using LibHac.Common;
 using System;
-using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace LibHac.Bcat.Impl.Ipc;
 
@@ -10,5 +9,5 @@ public interface IServiceCreator : IDisposable
         ulong processId);
 
     Result CreateDeliveryCacheStorageServiceWithApplicationId(
-        ref SharedRef<IDeliveryCacheStorageService> outService, ApplicationId applicationId);
+        ref SharedRef<IDeliveryCacheStorageService> outService, Ncm.ApplicationId applicationId);
 }
