@@ -1,7 +1,6 @@
 using LibHac.Arp;
 using LibHac.Bcat.Impl.Ipc;
 using LibHac.Common;
-using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace LibHac.Bcat.Impl.Service;
 
@@ -36,7 +35,7 @@ internal class ServiceCreator : IServiceCreator
     }
 
     public Result CreateDeliveryCacheStorageServiceWithApplicationId(
-        ref SharedRef<IDeliveryCacheStorageService> outService, ApplicationId applicationId)
+        ref SharedRef<IDeliveryCacheStorageService> outService, Ncm.ApplicationId applicationId)
     {
         if (!AccessControl.HasFlag(AccessControl.MountOthersDeliveryCacheStorage))
             return ResultBcat.PermissionDenied.Log();
@@ -45,7 +44,7 @@ internal class ServiceCreator : IServiceCreator
     }
 
     private Result CreateDeliveryCacheStorageServiceImpl(ref SharedRef<IDeliveryCacheStorageService> outService,
-        ApplicationId applicationId)
+        Ncm.ApplicationId applicationId)
     {
         Result res = Server.GetStorageManager().Open(applicationId.Value);
         if (res.IsFailure())

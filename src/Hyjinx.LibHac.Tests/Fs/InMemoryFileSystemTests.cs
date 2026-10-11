@@ -1,6 +1,6 @@
 using LibHac.Fs.Fsa;
 using LibHac.Tests.Fs.IFileSystemTestBase;
-using LibHac.Tests.Tools.Fs;
+using LibHac.Tools.Fs;
 
 namespace LibHac.Tests.Fs;
 
