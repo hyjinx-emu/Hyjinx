@@ -8,6 +8,7 @@ using LibHac.Os;
 using System;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using static LibHac.Fs.SaveData;
+using ApplicationId = LibHac.Ncm.ApplicationId;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;
 using IFileSystemSf = LibHac.FsSrv.Sf.IFileSystem;
 
@@ -147,11 +148,6 @@ public static class DeviceSaveData
             fs.Impl.EnableFileSystemAccessorAccessLog(mountName);
 
         return Result.Success;
-    }
-
-    public static Result MountDeviceSaveData(this FileSystemClient fs, U8Span mountName, ApplicationId applicationId)
-    {
-        return MountDeviceSaveData(fs, mountName, new Ncm.ApplicationId(applicationId.Value));
     }
 
     public static bool IsDeviceSaveDataExisting(this FileSystemClient fs, ApplicationId applicationId)

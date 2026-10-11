@@ -168,7 +168,7 @@ internal partial class FileSystemLoader(Switch device)
             executables.ToArray());
 
         // TODO: This should be stored using ProcessId instead.
-        device.System.LibHacHorizonManager.ArpIReader.ApplicationId = new LibHac.ApplicationId(metaLoader.GetProgramId());
+        device.System.LibHacHorizonManager.ArpIReader.ApplicationId = new ApplicationId(metaLoader.GetProgramId());
         // **************************************************************************************************************************************************************
 
         // NcaExtensions.Load(this Nca nca, Switch device, Nca patchNca, Nca controlNca)

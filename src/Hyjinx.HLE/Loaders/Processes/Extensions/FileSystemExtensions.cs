@@ -144,7 +144,7 @@ static partial class FileSystemExtensions
             nsoExecutables);
 
         // TODO: This should be stored using ProcessId instead.
-        device.System.LibHacHorizonManager.ArpIReader.ApplicationId = new LibHac.ApplicationId(metaLoader.GetProgramId());
+        device.System.LibHacHorizonManager.ArpIReader.ApplicationId = new LibHac.Ncm.ApplicationId(metaLoader.GetProgramId());
 
         return processResult;
     }

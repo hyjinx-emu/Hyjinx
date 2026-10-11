@@ -1,5 +1,6 @@
 using LibHac.Common;
 using System;
+using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace LibHac.Bcat.Impl.Ipc;
 

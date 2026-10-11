@@ -6,7 +6,7 @@ namespace Hyjinx.Graphics.OpenGL.Effects;
 
 internal partial class ShaderHelper
 {
-    private static readonly ILogger<ShaderHelper> _logger = new LoggerFactory().CreateLogger<ShaderHelper>();
+    private static readonly ILogger<ShaderHelper> _logger = Logger.DefaultLoggerFactory.CreateLogger<ShaderHelper>();
 
     public static int CompileProgram(string shaderCode, ShaderType shaderType)
     {

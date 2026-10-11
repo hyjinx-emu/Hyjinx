@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static LibHac.Fs.Impl.AccessLogStrings;
 using static LibHac.Fs.SaveData;
+using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace LibHac.Fs
 {

@@ -4,6 +4,7 @@ using LibHac.Fs.Fsa;
 using LibHac.Os;
 using LibHac.Util;
 using System;
+using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace LibHac.FsSrv.Impl;
 
