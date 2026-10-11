@@ -45,7 +45,7 @@ public class DeviceSaveData
     [Fact]
     public static void IsDeviceSaveDataExisting_ReturnsCorrectState()
     {
-        var applicationId = new ApplicationId(1234);
+        var applicationId = new Ncm.ApplicationId(1234);
         var ncmApplicationId = new Ncm.ApplicationId(applicationId.Value);
         HorizonServerSet hos = FileSystemServerFactory.CreateHorizon(ncmApplicationId);
         FileSystemClient fs = hos.InitialProcessClient.Fs;

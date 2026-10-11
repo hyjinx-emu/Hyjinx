@@ -2,7 +2,7 @@ namespace LibHac.Arp;
 
 public struct ApplicationLaunchProperty
 {
-    public ApplicationId ApplicationId;
+    public Ncm.ApplicationId ApplicationId;
     public uint Version;
     public Ncm.StorageId StorageId;
     public Ncm.StorageId PatchStorageId;

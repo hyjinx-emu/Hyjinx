@@ -16,6 +16,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static LibHac.Fs.SaveData;
 using static LibHac.Fs.StringTraits;
+using ApplicationId = LibHac.Ncm.ApplicationId;
 using IFile = LibHac.Fs.Fsa.IFile;
 using IFileSf = LibHac.FsSrv.Sf.IFile;
 using IFileSystem = LibHac.Fs.Fsa.IFileSystem;

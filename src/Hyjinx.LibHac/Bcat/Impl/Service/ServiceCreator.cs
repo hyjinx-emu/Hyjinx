@@ -1,6 +1,7 @@
 using LibHac.Arp;
 using LibHac.Bcat.Impl.Ipc;
 using LibHac.Common;
+using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace LibHac.Bcat.Impl.Service;
 

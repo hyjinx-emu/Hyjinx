@@ -3,7 +3,7 @@ using LibHac.Common;
 using LibHac.Ncm;
 using LibHac.Ns;
 using System;
-using ApplicationId = LibHac.ApplicationId;
+using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace Hyjinx.HLE.HOS.Services.Arp;
 

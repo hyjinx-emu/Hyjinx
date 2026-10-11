@@ -60,7 +60,7 @@ partial class ServiceCreator : IServiceCreator, IDisposable
     {
         using var libHacService = new SharedRef<LibHac.Bcat.Impl.Ipc.IDeliveryCacheStorageService>();
 
-        var resultCode = _libHacService.Get.CreateDeliveryCacheStorageServiceWithApplicationId(ref libHacService.Ref, new LibHac.ApplicationId(applicationId.Id));
+        var resultCode = _libHacService.Get.CreateDeliveryCacheStorageServiceWithApplicationId(ref libHacService.Ref, new LibHac.Ncm.ApplicationId(applicationId.Id));
 
         if (resultCode.IsSuccess())
         {

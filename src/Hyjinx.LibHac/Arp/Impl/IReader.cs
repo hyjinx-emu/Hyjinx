@@ -1,5 +1,6 @@
 using LibHac.Ns;
 using System;
+using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace LibHac.Arp.Impl;
 

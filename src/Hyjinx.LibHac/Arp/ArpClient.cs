@@ -29,7 +29,7 @@ public class ArpClient : IDisposable
         return _reader.Get.GetApplicationLaunchProperty(out launchProperty, processId);
     }
 
-    public Result GetApplicationLaunchProperty(out ApplicationLaunchProperty launchProperty, ApplicationId applicationId)
+    public Result GetApplicationLaunchProperty(out ApplicationLaunchProperty launchProperty, Ncm.ApplicationId applicationId)
     {
         EnsureReaderInitialized();
 
@@ -43,7 +43,7 @@ public class ArpClient : IDisposable
         return _reader.Get.GetApplicationControlProperty(out controlProperty, processId);
     }
 
-    public Result GetApplicationControlProperty(out ApplicationControlProperty controlProperty, ApplicationId applicationId)
+    public Result GetApplicationControlProperty(out ApplicationControlProperty controlProperty, Ncm.ApplicationId applicationId)
     {
         EnsureReaderInitialized();
 

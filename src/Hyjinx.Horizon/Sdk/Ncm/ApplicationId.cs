@@ -4,13 +4,11 @@ public readonly struct ApplicationId
 {
     public readonly ulong Id;
 
-    public static int Length => sizeof(ulong);
+    public static readonly ApplicationId First = new(LibHac.Ncm.ApplicationId.Start.Value);
 
-    public static ApplicationId First => new(0x0100000000010000);
+    public static readonly ApplicationId Last = new(LibHac.Ncm.ApplicationId.End.Value);
 
-    public static ApplicationId Last => new(0x01FFFFFFFFFFFFFF);
-
-    public static ApplicationId Invalid => new(0);
+    public static readonly ApplicationId Invalid = new(LibHac.Ncm.ApplicationId.InvalidId.Value);
 
     public bool IsValid => Id >= First.Id && Id <= Last.Id;
 
@@ -19,7 +17,7 @@ public readonly struct ApplicationId
         Id = id;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is ApplicationId applicationId && applicationId.Equals(this);
     }
