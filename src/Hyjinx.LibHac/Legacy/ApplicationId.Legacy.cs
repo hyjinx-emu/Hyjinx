@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System;
 
 namespace LibHac;
@@ -20,3 +22,5 @@ public readonly struct ApplicationId : IEquatable<ApplicationId>
     public bool Equals(ApplicationId other) => Value == other.Value;
     public override int GetHashCode() => HashCode.Combine(Value);
 }
+
+#endif
