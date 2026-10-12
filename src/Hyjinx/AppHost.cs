@@ -539,7 +539,7 @@ internal class AppHost
     }
 
     private void Dispose()
-    { 
+    {
         var programId = Device.Processes?.ActiveApplication?.ProgramIdText;
         if (!string.IsNullOrEmpty(programId))
         {
