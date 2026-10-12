@@ -435,7 +435,7 @@ static partial class ProcessLoaderHelper
         Message = "Process initialization failed due to invalid ACID flags.")]
     private static partial void LogInvalidAcidFlags(ILogger logger);
 
-    public static Result LoadIntoMemory(KProcess process, IExecutable image, ulong baseAddress)
+    private static Result LoadIntoMemory(KProcess process, IExecutable image, ulong baseAddress)
     {
         ulong textStart = baseAddress + image.TextOffset;
         ulong roStart = baseAddress + image.RoOffset;
