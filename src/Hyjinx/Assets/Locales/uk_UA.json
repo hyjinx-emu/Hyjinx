@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx не вдалося знайти встановлену прошивку",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx не вдалося проаналізувати прошивку.  Зазвичай це спричинено застарілими ключами.",
   "UserErrorApplicationNotFoundDescription": "Hyjinx не вдалося знайти дійсний додаток за вказаним шляхом",
+  "UserErrorApplicationNotSupported": "Додаток не підтримується",
+  "UserErrorApplicationNotSupportedDescription": "Цей додаток не підтримується. Будь ласка, вкажіть дійсний файл XCI/NCA/NSP/NRO.",
   "UserErrorUnknownDescription": "Сталася невідома помилка!",
   "UserErrorUndefinedDescription": "Сталася невизначена помилка! Цього не повинно статися, зверніться до розробника!",
   "OpenSetupGuideMessage": "Відкрити посібник із налаштування",

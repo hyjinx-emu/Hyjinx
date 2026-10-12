@@ -23,6 +23,7 @@ internal class UserErrorDialog
             UserError.FirmwareParsingFailed => LocaleManager.Instance[LocaleKeys.UserErrorFirmwareParsingFailed],
             UserError.ApplicationNotFound => LocaleManager.Instance[LocaleKeys.UserErrorApplicationNotFound],
             UserError.EncryptedFirmwareDetected => LocaleManager.Instance[LocaleKeys.UserErrorFirmwareParsingFailed],
+            UserError.ApplicationNotSupported => LocaleManager.Instance[LocaleKeys.UserErrorApplicationNotSupported],
             UserError.Unknown => LocaleManager.Instance[LocaleKeys.UserErrorUnknown],
             _ => LocaleManager.Instance[LocaleKeys.UserErrorUndefined],
         };
@@ -35,6 +36,7 @@ internal class UserErrorDialog
             UserError.NoFirmware => LocaleManager.Instance[LocaleKeys.UserErrorNoFirmwareDescription],
             UserError.FirmwareParsingFailed => LocaleManager.Instance[LocaleKeys.UserErrorFirmwareParsingFailedDescription],
             UserError.ApplicationNotFound => LocaleManager.Instance[LocaleKeys.UserErrorApplicationNotFoundDescription],
+            UserError.ApplicationNotSupported => LocaleManager.Instance[LocaleKeys.UserErrorApplicationNotSupportedDescription],
             UserError.EncryptedFirmwareDetected => LocaleManager.Instance[LocaleKeys.UserErrorEncryptedFirmwareDetectedDescription],
             UserError.Unknown => LocaleManager.Instance[LocaleKeys.UserErrorUnknownDescription],
             _ => LocaleManager.Instance[LocaleKeys.UserErrorUndefinedDescription],

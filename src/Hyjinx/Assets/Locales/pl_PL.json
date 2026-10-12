@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx nie mógł znaleźć żadnego zainstalowanego firmware'u",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx nie był w stanie zparsować dostarczonego firmware'u. Jest to zwykle spowodowane nieaktualnymi kluczami.",
   "UserErrorApplicationNotFoundDescription": "Hyjinx nie mógł znaleźć prawidłowej aplikacji na podanej ścieżce.",
+  "UserErrorApplicationNotSupported": "Aplikacja nieobsługiwana",
+  "UserErrorApplicationNotSupportedDescription": "Ta aplikacja nie jest obsługiwana. Podaj poprawny plik XCI/NCA/NSP/NRO.",
   "UserErrorUnknownDescription": "Wystąpił nieznany błąd!",
   "UserErrorUndefinedDescription": "Wystąpił niezdefiniowany błąd! To nie powinno się zdarzyć, skontaktuj się z deweloperem!",
   "OpenSetupGuideMessage": "Otwórz Podręcznik Konfiguracji",

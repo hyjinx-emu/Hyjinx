@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "لم يتمكن ريوجينكس من العثور على أية برامج ثابتة مثبتة",
   "UserErrorFirmwareParsingFailedDescription": "لم يتمكن ريوجينكس من تحليل البرامج الثابتة المتوفرة. يحدث هذا عادة بسبب المفاتيح القديمة.",
   "UserErrorApplicationNotFoundDescription": "تعذر على ريوجينكس العثور على تطبيق صالح في المسار المحدد.",
+  "UserErrorApplicationNotSupported": "التطبيق غير مدعوم",
+  "UserErrorApplicationNotSupportedDescription": "التطبيق غير مدعوم. يرجى تحديد ملف XCI/NCA/NSP/NRO صالح.",
   "UserErrorUnknownDescription": "حدث خطأ غير معروف!",
   "UserErrorUndefinedDescription": "حدث خطأ غير محدد! لا ينبغي أن يحدث هذا، يرجى الاتصال بمطور!",
   "OpenSetupGuideMessage": "فتح دليل الإعداد",

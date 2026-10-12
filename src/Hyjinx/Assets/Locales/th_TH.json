@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "รียูจินซ์ ไม่พบ เฟิร์มแวร์ที่ติดตั้งไว้ในเครื่องของคุณ",
   "UserErrorFirmwareParsingFailedDescription": "รียูจินซ์ ไม่สามารถวิเคราะห์เฟิร์มแวร์ที่ให้มาได้ ซึ่งมักมีสาเหตุมาจากคีย์ที่ล้าสมัย",
   "UserErrorApplicationNotFoundDescription": "รียูจินซ์ ไม่พบแอปพลิเคชันที่ถูกต้องในที่เก็บไฟล์ที่กำหนด",
+  "UserErrorApplicationNotSupported": "แอปพลิเคชันไม่ได้รับการสนับสนุน",
+  "UserErrorApplicationNotSupportedDescription": "แอปพลิเคชันนี้ไม่ได้รับการสนับสนุน กรุณาระบุไฟล์ XCI/NCA/NSP/NRO ที่ถูกต้อง",
   "UserErrorUnknownDescription": "เกิดข้อผิดพลาดที่ไม่รู้จัก!",
   "UserErrorUndefinedDescription": "เกิดข้อผิดพลาดที่ไม่สามารถระบุได้! สิ่งนี้ไม่ควรเกิดขึ้น โปรดติดต่อผู้พัฒนา!",
   "OpenSetupGuideMessage": "เปิดคู่มือการตั้งค่า",

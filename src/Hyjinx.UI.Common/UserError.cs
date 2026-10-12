@@ -32,6 +32,11 @@ public enum UserError
     EncryptedFirmwareDetected = 0x5,
 
     /// <summary>
+    /// The application type is not supported.
+    /// </summary>
+    ApplicationNotSupported = 0x6,
+
+    /// <summary>
     /// An unknown error.
     /// </summary>
     Unknown = 0xDEAD,

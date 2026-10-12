@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx не удалось найти ни одной установленной прошивки",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx не удалось распаковать выбранную прошивку. Обычно это вызвано устаревшими ключами.",
   "UserErrorApplicationNotFoundDescription": "Hyjinx не удалось найти валидное приложение по указанному пути.",
+  "UserErrorApplicationNotSupported": "Приложение не поддерживается",
+  "UserErrorApplicationNotSupportedDescription": "Это приложение не поддерживается. Укажите корректный файл XCI/NCA/NSP/NRO.",
   "UserErrorUnknownDescription": "Произошла неизвестная ошибка",
   "UserErrorUndefinedDescription": "Произошла неизвестная ошибка. Этого не должно происходить, пожалуйста, свяжитесь с разработчиками.",
   "OpenSetupGuideMessage": "Открыть руководство по установке",

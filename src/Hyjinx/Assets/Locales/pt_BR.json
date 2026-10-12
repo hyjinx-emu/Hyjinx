@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx não conseguiu encontrar nenhum Firmware instalado",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx não conseguiu ler o Firmware fornecido. Geralmente isso é causado por chaves desatualizadas.",
   "UserErrorApplicationNotFoundDescription": "Hyjinx não conseguiu encontrar um aplicativo válido no caminho fornecido.",
+  "UserErrorApplicationNotSupported": "Aplicativo não suportado",
+  "UserErrorApplicationNotSupportedDescription": "Este aplicativo não é suportado. Especifique um arquivo XCI/NCA/NSP/NRO válido.",
   "UserErrorUnknownDescription": "Um erro desconhecido foi encontrado!",
   "UserErrorUndefinedDescription": "Um erro indefinido occoreu! Isso não deveria acontecer, por favor contate um desenvolvedor!",
   "OpenSetupGuideMessage": "Abrir o guia de configuração",

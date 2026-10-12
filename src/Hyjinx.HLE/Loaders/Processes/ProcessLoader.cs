@@ -1,3 +1,4 @@
+using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.Logging.Abstractions;
@@ -26,10 +27,63 @@ public partial class ProcessLoader(Switch device)
 
     private ulong _latestPid;
 
-    public ProcessResult ActiveApplication => _processesByPid[_latestPid];
-
-    public async Task<bool> LoadXciAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Gets the active application process, if available.
+    /// </summary>
+    public ProcessResult? ActiveApplication
     {
+        get
+        {
+            if (_processesByPid.TryGetValue(_latestPid, out var result))
+            {
+                return result;
+            }
+
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Loads the process.
+    /// </summary>
+    /// <param name="path">The path whose process to load.</param>
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+    /// <returns>true if loaded successfully, otherwise false.</returns>
+    /// <exception cref="FileNotFoundException">The file was not found.</exception>
+    /// <exception cref="NotSupportedException">The file type is not supported.</exception>
+    public async Task<bool> LoadAsync(string path, CancellationToken cancellationToken = default)
+    {
+        var firmware = false;
+        if (path.StartsWith(ContentPath.SystemContent))
+        {
+            path = VirtualFileSystem.SwitchPathToSystemPath(path);
+            firmware = true;
+        }
+
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException($"The file '{path}' does not exist.", path);
+        }
+
+        if (firmware)
+        {
+            return await LoadNcaAsync(path, cancellationToken);
+        }
+
+        return Path.GetExtension(path).ToLowerInvariant() switch
+        {
+            ".xci" => await LoadXciAsync(path, cancellationToken),
+            ".nca" => await LoadNcaAsync(path, cancellationToken),
+            ".nsp" => await LoadNspAsync(path, cancellationToken),
+            ".nro" => await LoadNxoAsync(path, cancellationToken),
+            _ => throw new NotSupportedException("The file type is not supported.")
+        };
+    }
+
+    private async Task<bool> LoadXciAsync(string path, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as XCI.");
+
         var file = File.OpenRead(path);
         var xci = Xci2.Create(file);
 
@@ -66,8 +120,10 @@ public partial class ProcessLoader(Switch device)
         Message = $"{nameof(ProcessLoader)}: {{message}}")]
     private partial void LogTryLoadFailed(string message);
 
-    public async Task<bool> LoadNspAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
+    public async Task<bool> LoadNspAsync(string path, CancellationToken cancellationToken = default)
     {
+        _logger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NSP.");
+
         var file = File.OpenRead(path);
         var storage = StreamStorage2.Create(file);
 
@@ -98,6 +154,8 @@ public partial class ProcessLoader(Switch device)
 
     public Task<bool> LoadNcaAsync(string path, CancellationToken cancellationToken = default)
     {
+        _logger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NCA.");
+
         return Task.FromResult(LoadNca(path));
     }
 
@@ -127,6 +185,8 @@ public partial class ProcessLoader(Switch device)
 
     public Task<bool> LoadNxoAsync(string path, CancellationToken cancellationToken)
     {
+        _logger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as homebrew.");
+
         return Task.FromResult(LoadNxo(path));
     }
 

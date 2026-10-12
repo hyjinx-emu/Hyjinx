@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx konnte keine installierte Firmware finden!",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx konnte die zu verfügung gestellte Firmware nicht analysieren. Ein möglicher Grund dafür sind veraltete keys.",
   "UserErrorApplicationNotFoundDescription": "Hyjinx konnte keine valide Anwendung an dem gegeben Pfad finden.",
+  "UserErrorApplicationNotSupported": "Anwendung nicht unterstützt",
+  "UserErrorApplicationNotSupportedDescription": "Diese Anwendung wird nicht unterstützt. Bitte gib eine gültige XCI/NCA/NSP/NRO-Datei an.",
   "UserErrorUnknownDescription": "Ein unbekannter Fehler ist aufgetreten!",
   "UserErrorUndefinedDescription": "Ein undefinierter Fehler ist aufgetreten! Dies sollte nicht passieren. Bitte kontaktiere einen Entwickler!",
   "OpenSetupGuideMessage": "Öffne den 'Setup Guide'",

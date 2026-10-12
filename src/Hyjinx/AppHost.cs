@@ -1,6 +1,4 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Threading;
 using Hyjinx.Audio.Backends.Dummy;
@@ -118,7 +116,6 @@ internal class AppHost
     private WindowsMultimediaTimerResolution _windowsMultimediaTimerResolution;
 
     private bool _dialogShown;
-    private readonly bool _isFirmwareTitle;
 
     private readonly object _lockObject = new();
 
@@ -174,13 +171,6 @@ internal class AppHost
 
         _chrono = new Stopwatch();
         _ticksPerFrame = Stopwatch.Frequency / TargetFps;
-
-        if (ApplicationPath.StartsWith("@SystemContent"))
-        {
-            ApplicationPath = VirtualFileSystem.SwitchPathToSystemPath(ApplicationPath);
-
-            _isFirmwareTitle = true;
-        }
 
         ConfigurationState.Instance.HideCursor.Event += HideCursorState_Changed;
 
@@ -549,10 +539,11 @@ internal class AppHost
     }
 
     private void Dispose()
-    {
-        if (Device.Processes != null)
+    { 
+        var programId = Device.Processes?.ActiveApplication?.ProgramIdText;
+        if (!string.IsNullOrEmpty(programId))
         {
-            MainWindowViewModel.UpdateGameMetadata(Device.Processes.ActiveApplication.ProgramIdText);
+            MainWindowViewModel.UpdateGameMetadata(programId);
         }
 
         ConfigurationState.Instance.System.IgnoreMissingServices.Event -= UpdateIgnoreMissingServicesState;
@@ -614,110 +605,25 @@ internal class AppHost
         MainWindow.UpdateGraphicsConfig();
 
         SystemVersion firmwareVersion = ContentManager.GetCurrentFirmwareVersion();
-
-        if (Application.Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
-        {
-            if (!SetupValidator.CanStartApplication(ContentManager, ApplicationPath, out UserError userError))
-            {
-                await UserErrorDialog.ShowUserErrorDialogAsync(userError);
-                Device.Dispose();
-
-                return false;
-            }
-        }
-
         Logger.DefaultLogger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
             "Using Firmware Version: {VersionString}", firmwareVersion?.VersionString);
 
-        if (_isFirmwareTitle)
+        try
         {
-            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as Firmware Title (NCA).");
-
-            if (!await Device.Processes.LoadNcaAsync(ApplicationPath, cancellationToken))
+            if (!await Device.Processes.LoadAsync(ApplicationPath, cancellationToken))
             {
                 Device.Dispose();
-
                 return false;
             }
         }
-        else if (File.Exists(ApplicationPath))
+        catch (FileNotFoundException)
         {
-            switch (Path.GetExtension(ApplicationPath).ToLowerInvariant())
-            {
-                case ".xci":
-                    {
-                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as XCI.");
-
-                        if (!await Device.Processes.LoadXciAsync(ApplicationPath, ApplicationId, cancellationToken))
-                        {
-                            Device.Dispose();
-
-                            return false;
-                        }
-
-                        break;
-                    }
-                case ".nca":
-                    {
-                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NCA.");
-
-                        if (!await Device.Processes.LoadNcaAsync(ApplicationPath, cancellationToken))
-                        {
-                            Device.Dispose();
-
-                            return false;
-                        }
-
-                        break;
-                    }
-                case ".nsp":
-                case ".pfs0":
-                    {
-                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as NSP.");
-
-                        if (!await Device.Processes.LoadNspAsync(ApplicationPath, ApplicationId, cancellationToken))
-                        {
-                            Device.Dispose();
-
-                            return false;
-                        }
-
-                        break;
-                    }
-                default:
-                    {
-                        Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as homebrew.");
-
-                        try
-                        {
-                            if (!await Device.Processes.LoadNxoAsync(ApplicationPath, cancellationToken))
-                            {
-                                Device.Dispose();
-
-                                return false;
-                            }
-                        }
-                        catch (ArgumentOutOfRangeException)
-                        {
-                            _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                                "The specified file is not supported.");
-
-                            Device.Dispose();
-
-                            return false;
-                        }
-
-                        break;
-                    }
-            }
+            await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound);
+            return false;
         }
-        else
+        catch (NotSupportedException)
         {
-            _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                "Please specify a valid XCI/NCA/NSP/PFS0/NRO file.");
-
-            Device.Dispose();
-
+            await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotSupported);
             return false;
         }
 
