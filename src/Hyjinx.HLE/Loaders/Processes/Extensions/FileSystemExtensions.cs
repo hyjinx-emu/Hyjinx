@@ -1,4 +1,3 @@
-using Hyjinx.Common.Configuration;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.Loaders.Executables;
 using Hyjinx.Logging.Abstractions;
