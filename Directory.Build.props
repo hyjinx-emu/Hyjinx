@@ -1,6 +1,7 @@
 <Project>
 
   <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
     <VersionPrefix>0.3.2</VersionPrefix>
     <Nullable Condition=" '$(Nullable)' == '' ">enable</Nullable>
   </PropertyGroup>
