@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "インストールされたファームウェアが見つかりませんでした",
   "UserErrorFirmwareParsingFailedDescription": "ファームウェアをパーズできませんでした.通常,古いキーが原因です.",
   "UserErrorApplicationNotFoundDescription": "指定されたパスに有効なアプリケーションがありませんでした.",
+  "UserErrorApplicationNotSupported": "サポートされていないアプリケーション",
+  "UserErrorApplicationNotSupportedDescription": "このアプリケーションはサポートされていません。有効な XCI/NCA/NSP/NRO ファイルを指定してください。",
   "UserErrorUnknownDescription": "不明なエラーが発生しました!",
   "UserErrorUndefinedDescription": "未定義のエラーが発生しました! 発生すべきものではないので,開発者にご連絡ください!",
   "OpenSetupGuideMessage": "セットアップガイドを開く",

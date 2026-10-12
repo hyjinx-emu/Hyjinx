@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
@@ -51,3 +53,5 @@ public static class SetupValidator
         return false;
     }
 }
+
+#endif

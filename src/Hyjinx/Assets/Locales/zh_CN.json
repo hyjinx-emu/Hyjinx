@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx 模拟器未安装 Switch 系统固件",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx 模拟器无法解密当前固件，一般是由于使用了旧版的密钥导致的。",
   "UserErrorApplicationNotFoundDescription": "Hyjinx 模拟器在所选路径中找不到有效的游戏程序。",
+  "UserErrorApplicationNotSupported": "应用程序不受支持",
+  "UserErrorApplicationNotSupportedDescription": "此应用程序不受支持。请指定有效的 XCI/NCA/NSP/NRO 文件。",
   "UserErrorUnknownDescription": "出现未知错误！",
   "UserErrorUndefinedDescription": "出现未定义错误！此类错误不应出现，请联系开发者！",
   "OpenSetupGuideMessage": "打开安装指南",

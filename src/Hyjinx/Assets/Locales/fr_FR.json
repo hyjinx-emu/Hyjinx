@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx n'a pas trouvé de firmwares installés",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx n'a pas pu analyser le firmware fourni. Cela est généralement dû à des clés obsolètes.",
   "UserErrorApplicationNotFoundDescription": "Hyjinx n'a pas pu trouver une application valide dans le chemin indiqué.",
+  "UserErrorApplicationNotSupported": "Application non prise en charge",
+  "UserErrorApplicationNotSupportedDescription": "L'application n'est pas prise en charge. Veuillez spécifier un fichier XCI/NCA/NSP/NRO valide.",
   "UserErrorUnknownDescription": "Une erreur inconnue est survenue !",
   "UserErrorUndefinedDescription": "Une erreur inconnue est survenue ! Cela ne devrait pas se produire, merci de contacter un développeur !",
   "OpenSetupGuideMessage": "Ouvrir le guide d'installation",

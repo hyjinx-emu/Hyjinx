@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx 無法找到已安裝的任何韌體",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx 無法解析所提供的韌體。這通常是由於金鑰過時造成的。",
   "UserErrorApplicationNotFoundDescription": "Hyjinx 無法在指定路徑下找到有效的應用程式。",
+  "UserErrorApplicationNotSupported": "應用程式不受支援",
+  "UserErrorApplicationNotSupportedDescription": "此應用程式不受支援。請指定有效的 XCI/NCA/NSP/NRO 檔案。",
   "UserErrorUnknownDescription": "發生未知錯誤!",
   "UserErrorUndefinedDescription": "發生未定義錯誤! 這種情況不應該發生，請聯絡開發人員!",
   "OpenSetupGuideMessage": "開啟設定指南",

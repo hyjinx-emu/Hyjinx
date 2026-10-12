@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "ריוג'ינקס לא הצליחה למצוא קושחה מותקנת",
   "UserErrorFirmwareParsingFailedDescription": "ריוג'ינקס לא הצליחה לנתח את הקושחה שסופקה. זה נגרם בדרך כלל על ידי מפתחות לא עדכניים.",
   "UserErrorApplicationNotFoundDescription": "ריוג'ינקס לא מצאה יישום תקין בנתיב הנתון",
+  "UserErrorApplicationNotSupported": "יישום לא נתמך",
+  "UserErrorApplicationNotSupportedDescription": "היישום אינו נתמך. אנא ציין קובץ XCI/NCA/NSP/NRO תקף.",
   "UserErrorUnknownDescription": "קרתה שגיאה לא ידועה!",
   "UserErrorUndefinedDescription": "קרתה שגיאה לא מוגדרת! זה לא אמור לקרות, אנא צרו קשר עם מפתח!",
   "OpenSetupGuideMessage": "פתח מדריך התקנה",

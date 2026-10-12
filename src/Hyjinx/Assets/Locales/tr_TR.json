@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx yüklü herhangi firmware bulamadı",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx temin edilen firmware'i çözümleyemedi. Bu durum genellikle güncel olmayan keys'den kaynaklanır.",
   "UserErrorApplicationNotFoundDescription": "Hyjinx belirtilen yolda geçerli bir uygulama bulamadı.",
+  "UserErrorApplicationNotSupported": "Uygulama desteklenmiyor",
+  "UserErrorApplicationNotSupportedDescription": "Bu uygulama desteklenmiyor. Lütfen geçerli bir XCI/NCA/NSP/NRO dosyası belirtin.",
   "UserErrorUnknownDescription": "Bilinmeyen bir hata oluştu!",
   "UserErrorUndefinedDescription": "Tanımlanmayan bir hata oluştu! Bu durum ile karşılaşılmamalıydı, lütfen bir geliştirici ile iletişime geçin!",
   "OpenSetupGuideMessage": "Kurulum Kılavuzunu Aç",

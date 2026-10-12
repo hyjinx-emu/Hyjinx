@@ -641,6 +641,8 @@
   "UserErrorNoFirmwareDescription": "Hyjinx no pudo encontrar un firmware instalado.",
   "UserErrorFirmwareParsingFailedDescription": "Hyjinx no pudo analizar el firmware. Normalmente esto ocurre debido a keys desfasadas.",
   "UserErrorApplicationNotFoundDescription": "Hyjinx no pudo encontrar una aplicación válida en ese camino.",
+  "UserErrorApplicationNotSupported": "Aplicación no compatible",
+  "UserErrorApplicationNotSupportedDescription": "La aplicación no es compatible. Por favor, especifique un archivo XCI/NCA/NSP/NRO válido.",
   "UserErrorUnknownDescription": "¡Ocurrió un error desconocido!",
   "UserErrorUndefinedDescription": "¡Ocurrió un error indefinido! Esto no debería pasar, por favor, ¡contacta con un desarrollador!",
   "OpenSetupGuideMessage": "Abrir la guía de instalación",
