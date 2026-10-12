@@ -640,38 +640,6 @@ internal class AppHost
                 return false;
             }
         }
-        else if (Directory.Exists(ApplicationPath))
-        {
-            string[] romFsFiles = Directory.GetFiles(ApplicationPath, "*.istorage");
-
-            if (romFsFiles.Length == 0)
-            {
-                romFsFiles = Directory.GetFiles(ApplicationPath, "*.romfs");
-            }
-
-            if (romFsFiles.Length > 0)
-            {
-                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as cart with RomFS.");
-
-                if (!await Device.Processes.LoadUnpackedNcaAsync(ApplicationPath, romFsFiles[0], cancellationToken))
-                {
-                    Device.Dispose();
-
-                    return false;
-                }
-            }
-            else
-            {
-                Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)), "Loading as cart WITHOUT RomFS.");
-
-                if (!await Device.Processes.LoadUnpackedNcaAsync(ApplicationPath, cancellationToken: cancellationToken))
-                {
-                    Device.Dispose();
-
-                    return false;
-                }
-            }
-        }
         else if (File.Exists(ApplicationPath))
         {
             switch (Path.GetExtension(ApplicationPath).ToLowerInvariant())
