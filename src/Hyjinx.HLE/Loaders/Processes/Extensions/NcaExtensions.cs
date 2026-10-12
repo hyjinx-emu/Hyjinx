@@ -46,11 +46,6 @@ public static partial class NcaExtensions
         return nca.Header.ContentType == NcaContentType.Program;
     }
 
-    public static bool IsMain(this Nca nca)
-    {
-        return nca.IsProgram() && !nca.IsPatch();
-    }
-
     public static bool IsPatch(this Nca nca)
     {
         int dataIndex = Nca.GetSectionIndexFromType(NcaSectionType.Data, NcaContentType.Program);

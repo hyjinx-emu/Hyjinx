@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using LibHac.Common;
 using LibHac.FsSystem;
@@ -33,3 +35,5 @@ static class LocalFileSystemExtensions
         return processResult;
     }
 }
+
+#endif
