@@ -1529,26 +1529,6 @@ public class MainWindowViewModel : BaseModel
         }
     }
 
-    public async Task OpenFolder()
-    {
-        var result = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
-        {
-            Title = LocaleManager.Instance[LocaleKeys.OpenFolderDialogTitle],
-            AllowMultiple = false,
-        });
-
-        if (result.Count > 0)
-        {
-            ApplicationData applicationData = new()
-            {
-                Name = Path.GetFileNameWithoutExtension(result[0].Path.LocalPath),
-                Path = result[0].Path.LocalPath,
-            };
-
-            await LoadApplicationAsync(applicationData);
-        }
-    }
-
     public async Task LoadApplicationAsync(ApplicationData application, bool startFullscreen = false, CancellationToken cancellationToken = default)
     {
         if (AppHost != null)

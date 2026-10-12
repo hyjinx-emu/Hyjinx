@@ -14,6 +14,8 @@ partial class NcaHeader
         int sectSize = info.EndBlock - sectStart;
         return sectStart != 0 || sectSize != 0;
     }
+
+    public bool IsNca0() => FormatVersion >= NcaVersion.Nca0;
 }
 
 #endif

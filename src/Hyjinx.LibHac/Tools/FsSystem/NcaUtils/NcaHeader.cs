@@ -238,6 +238,4 @@ public partial class NcaHeader
 
         return true;
     }
-
-    public bool IsNca0() => FormatVersion >= NcaVersion.Nca0;
 }

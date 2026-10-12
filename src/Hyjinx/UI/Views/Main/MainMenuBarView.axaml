@@ -29,11 +29,6 @@
                     Header="{locale:Locale MenuBarFileOpenFromFile}"
                     IsEnabled="{Binding EnableNonGameRunningControls}"
                     ToolTip.Tip="{locale:Locale LoadApplicationFileTooltip}" />
-                <MenuItem
-                    Command="{Binding OpenFolder}"
-                    Header="{locale:Locale MenuBarFileOpenUnpacked}"
-                    IsEnabled="{Binding EnableNonGameRunningControls}"
-                    ToolTip.Tip="{locale:Locale LoadApplicationFolderTooltip}" />
                 <MenuItem Header="{locale:Locale MenuBarFileOpenApplet}" IsEnabled="{Binding IsAppletMenuActive}">
                     <MenuItem
                         Click="OpenMiiApplet"

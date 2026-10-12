@@ -46,11 +46,6 @@ public static partial class NcaExtensions
         return nca.Header.ContentType == NcaContentType.Program;
     }
 
-    public static bool IsMain(this Nca nca)
-    {
-        return nca.IsProgram() && !nca.IsPatch();
-    }
-
     public static bool IsPatch(this Nca nca)
     {
         int dataIndex = Nca.GetSectionIndexFromType(NcaSectionType.Data, NcaContentType.Program);
@@ -95,9 +90,9 @@ public static partial class NcaExtensions
         return (updatePatchNca, updateControlNca);
     }
 
-    public static IFileSystem GetExeFs(this Nca nca, Switch device, Nca patchNca = null)
+    public static IFileSystem? GetExeFs(this Nca nca, Switch device, Nca? patchNca = null)
     {
-        IFileSystem exeFs = null;
+        IFileSystem? exeFs = null;
 
         if (patchNca == null)
         {
@@ -120,8 +115,8 @@ public static partial class NcaExtensions
     public static ProcessResult Load(this Nca nca, Switch device, Nca patchNca, Nca controlNca)
     {
         // Extract RomFs and ExeFs from NCA.
-        IStorage romFs = nca.GetRomFs(device, patchNca);
-        IFileSystem exeFs = nca.GetExeFs(device, patchNca);
+        IStorage? romFs = nca.GetRomFs(device, patchNca);
+        IFileSystem? exeFs = nca.GetExeFs(device, patchNca);
 
         if (exeFs == null)
         {
@@ -186,9 +181,9 @@ public static partial class NcaExtensions
         return processResult;
     }
 
-    public static IStorage GetRomFs(this Nca nca, Switch device, Nca patchNca = null)
+    public static IStorage? GetRomFs(this Nca nca, Switch device, Nca? patchNca = null)
     {
-        IStorage romFs = null;
+        IStorage? romFs = null;
 
         if (patchNca == null)
         {
@@ -208,7 +203,7 @@ public static partial class NcaExtensions
         return romFs;
     }
 
-    public static BlitStruct<ApplicationControlProperty> GetNacp(this Nca controlNca, Switch device)
+    private static BlitStruct<ApplicationControlProperty> GetNacp(this Nca controlNca, Switch device)
     {
         var nacpData = new BlitStruct<ApplicationControlProperty>(1);
 
