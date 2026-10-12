@@ -63,7 +63,7 @@ public partial class ProcessLoader(Switch device)
 
     [LoggerMessage(LogLevel.Error,
         EventId = (int)LogClass.Loader, EventName = nameof(LogClass.Loader),
-        Message = nameof(PartitionFileSystemExtensions.TryLoad) + ": {message}")]
+        Message = $"{nameof(ProcessLoader)}: {{message}}")]
     private partial void LogTryLoadFailed(string message);
 
     public async Task<bool> LoadNspAsync(string path, ulong applicationId, CancellationToken cancellationToken = default)
