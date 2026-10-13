@@ -58,7 +58,7 @@ public static partial class Utf8StringUtil
         }
 
         return codePointCount;
-    }    
+    }
 
     private static int GetCodePointByteLength(byte head)
     {
