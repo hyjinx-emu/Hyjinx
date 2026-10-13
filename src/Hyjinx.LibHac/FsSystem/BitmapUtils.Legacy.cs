@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Diag;
 
 namespace LibHac.FsSystem;
@@ -13,3 +15,5 @@ public static class BitmapUtils
         return intBitCount - 1 - Util.BitUtil.CountLeadingZeros(value);
     }
 }
+
+#endif
