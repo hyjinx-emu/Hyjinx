@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Diag;
@@ -13,7 +15,7 @@ using Buffer = LibHac.Mem.Buffer;
 namespace LibHac.FsSystem
 {
     /// <summary>
-    /// Contains values used by <see cref="PartitionFileSystemMetaCore{TFormat,THeader,TEntry}"/> for reading
+    /// Contains values used by <see cref="PartitionFileSystemMetaCore{TFormat,THeader,TEntry}"/> for reading 
     /// and building the metadata of a partition file system.
     /// </summary>
     public interface IPartitionFileSystemFormat
@@ -375,3 +377,5 @@ namespace LibHac.FsSystem
         PartitionFileSystemFormat.PartitionFileSystemHeaderImpl, PartitionFileSystemFormat.PartitionEntry>
     { }
 }
+
+#endif
