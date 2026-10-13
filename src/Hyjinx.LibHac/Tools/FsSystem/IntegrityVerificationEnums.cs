@@ -1,12 +1,5 @@
 namespace LibHac.Tools.FsSystem;
 
-public enum IntegrityStorageType
-{
-    Save,
-    RomFs,
-    PartitionFs
-}
-
 /// <summary>
 /// Represents the level of integrity checks to be performed.
 /// </summary>

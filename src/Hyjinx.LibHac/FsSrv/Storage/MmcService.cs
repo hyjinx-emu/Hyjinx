@@ -57,11 +57,6 @@ internal static class MmcService
         }
     }
 
-    private static bool IsSpeedEmulationNeeded(MmcPartition partition)
-    {
-        return partition == MmcPartition.UserData;
-    }
-
     private static Result GetMmcOperator(this StorageService service,
         ref SharedRef<IStorageDeviceOperator> outMmcOperator, MmcPartition partition)
     {
@@ -100,15 +95,6 @@ internal static class MmcService
             return res.Miss();
 
         using var storage = new SharedRef<IStorage>(new StorageServiceObjectAdapter(ref mmcStorage.Ref));
-
-        if (IsSpeedEmulationNeeded(partition))
-        {
-            using var emulationStorage =
-                new SharedRef<IStorage>(new SpeedEmulationStorage(ref storage.Ref, service.FsSrv));
-
-            outStorage.SetByMove(ref emulationStorage.Ref);
-            return Result.Success;
-        }
 
         outStorage.SetByMove(ref storage.Ref);
         return Result.Success;

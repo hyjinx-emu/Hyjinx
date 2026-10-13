@@ -483,17 +483,22 @@ public class DeviceOperator : IDeviceOperator
 
     public Result SetSpeedEmulationMode(int mode)
     {
-        if (!_accessControl.CanCall(OperationType.SetSpeedEmulationMode))
-            return ResultFs.PermissionDenied.Log();
+        return ResultFs.NotImplemented.Log();
 
-        _fsServer.SetSpeedEmulationMode((SpeedEmulationMode)mode);
-        return Result.Success;
+        //if (!_accessControl.CanCall(OperationType.SetSpeedEmulationMode))
+        //    return ResultFs.PermissionDenied.Log();
+
+        //_fsServer.SetSpeedEmulationMode((SpeedEmulationMode)mode);
+        //return Result.Success;
     }
 
     public Result GetSpeedEmulationMode(out int outMode)
     {
-        outMode = (int)_fsServer.GetSpeedEmulationMode();
-        return Result.Success;
+        outMode = 0;
+        return ResultFs.NotImplemented.Log();
+
+        //outMode = (int)_fsServer.GetSpeedEmulationMode();
+        //return Result.Success;
     }
 
     public Result SuspendSdmmcControl()

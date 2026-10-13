@@ -333,10 +333,13 @@ public enum OpenDirectoryMode
 public enum CreateFileOptions
 {
     None = 0,
+
+#if IS_LEGACY_ENABLED
     /// <summary>
     /// On a <see cref="ConcatenationFileSystem"/>, creates a concatenation file.
     /// </summary>
     CreateConcatenationFile = 1 << 0
+#endif
 }
 
 public enum QueryId

@@ -17,7 +17,9 @@ static class LocalFileSystemExtensions
         var nacpData = new BlitStruct<ApplicationControlProperty>(1);
         ulong programId = metaLoader.GetProgramId();
 
-        device.Configuration.VirtualFileSystem.ModLoader.CollectMods(new[] { programId });
+        // TODO: Viper - Fix modding support (BEGIN)
+        //device.Configuration.VirtualFileSystem.ModLoader.CollectMods(new[] { programId });
+        // TODO: Viper - Fix modding support (END)
 
         if (programId != 0)
         {
