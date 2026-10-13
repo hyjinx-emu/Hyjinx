@@ -95,7 +95,7 @@ public static class FileSystemServerInitializer
 
         var baseFsServiceConfig = new BaseFileSystemServiceImpl.Configuration();
         baseFsServiceConfig.BisFileSystemCreator = config.FsCreators.BuiltInStorageFileSystemCreator;
-        baseFsServiceConfig.GameCardFileSystemCreator = config.FsCreators.GameCardFileSystemCreator;
+        //baseFsServiceConfig.GameCardFileSystemCreator = config.FsCreators.GameCardFileSystemCreator;
         baseFsServiceConfig.SdCardFileSystemCreator = config.FsCreators.SdCardFileSystemCreator;
         baseFsServiceConfig.BisWiperCreator = BisWiper.CreateWiper;
         baseFsServiceConfig.FsServer = server;

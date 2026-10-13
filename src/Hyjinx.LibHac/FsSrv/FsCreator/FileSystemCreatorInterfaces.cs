@@ -13,7 +13,7 @@ public class FileSystemCreatorInterfaces
     public ISdStorageCreator SdStorageCreator { get; set; }
     public ISaveDataFileSystemCreator SaveDataFileSystemCreator { get; set; }
     public IGameCardStorageCreator GameCardStorageCreator { get; set; }
-    public IGameCardFileSystemCreator GameCardFileSystemCreator { get; set; }
+    //public IGameCardFileSystemCreator GameCardFileSystemCreator { get; set; }
     public IEncryptedFileSystemCreator EncryptedFileSystemCreator { get; set; }
     public IMemoryStorageCreator MemoryStorageCreator { get; set; }
     public IBuiltInStorageFileSystemCreator BuiltInStorageFileSystemCreator { get; set; }

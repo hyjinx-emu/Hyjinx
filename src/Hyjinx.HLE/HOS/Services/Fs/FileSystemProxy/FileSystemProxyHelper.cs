@@ -26,10 +26,9 @@ static class FileSystemProxyHelper
         try
         {
             LocalStorage storage = new(pfsPath, FileAccess.Read, FileMode.Open);
-            var pfs = new PartitionFileSystem();
-            using SharedRef<LibHac.Fs.Fsa.IFileSystem> nsp = new(pfs);
-            pfs.Initialize(storage).ThrowIfFailure();
+            var pfs = PartitionFileSystem2.Create(storage);
 
+            using SharedRef<LibHac.Fs.Fsa.IFileSystem> nsp = new(pfs);
             ImportTitleKeysFromNsp(nsp.Get, context.Device.System.KeySet);
 
             using SharedRef<LibHac.FsSrv.Sf.IFileSystem> adapter = FileSystemInterfaceAdapter.CreateShared(ref nsp.Ref, true);
@@ -92,9 +91,8 @@ static class FileSystemProxyHelper
 
             try
             {
-                PartitionFileSystem nsp = new();
-                nsp.Initialize(pfsFile.AsStorage()).ThrowIfFailure();
-
+                var nsp = PartitionFileSystem2.Create(pfsFile.AsStorage());
+                
                 ImportTitleKeysFromNsp(nsp, context.Device.System.KeySet);
 
                 string filename = fullPath.Replace(archivePath.FullName, string.Empty).TrimStart('\\');

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Diag;
@@ -556,3 +558,5 @@ public partial class PartitionFileSystemCore<TMetaData, TFormat, THeader, TEntry
 
     protected override Result DoCommitProvisionally(long counter) => ResultFs.UnsupportedCommitProvisionallyForPartitionFileSystem.Log();
 }
+
+#endif

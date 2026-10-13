@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -360,3 +362,5 @@ public class GameCardFileSystemCreator : IGameCardFileSystemCreator
         return Result.Success;
     }
 }
+
+#endif

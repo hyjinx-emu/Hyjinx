@@ -1,9 +1,9 @@
 using Hyjinx.HLE.FileSystem;
-using LibHac;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tools.Fs;
 using LibHac.Tools.FsSystem;
+using System;
 using System.IO;
 
 namespace Hyjinx.HLE.Utilities;
@@ -22,19 +22,19 @@ public static class PartitionFileSystemUtils
         }
         else
         {
-            var pfsTemp = new PartitionFileSystem();
-            Result initResult = pfsTemp.Initialize(file.AsStorage());
-
-            if (throwOnFailure)
+            try
             {
-                initResult.ThrowIfFailure();
+                partitionFileSystem = PartitionFileSystem2.Create(file.AsStorage());
             }
-            else if (initResult.IsFailure())
+            catch (Exception)
             {
+                if (throwOnFailure)
+                {
+                    throw;
+                }
+
                 return null;
             }
-
-            partitionFileSystem = pfsTemp;
         }
 
         fileSystem.ImportTickets(partitionFileSystem);

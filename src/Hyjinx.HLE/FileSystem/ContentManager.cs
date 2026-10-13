@@ -234,8 +234,7 @@ public partial class ContentManager : IContentManager
                     xci.OpenFile(ref ncaFile.Ref, aoc.NcaPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
                     break;
                 case ".nsp":
-                    var pfs = new PartitionFileSystem();
-                    pfs.Initialize(file.AsStorage());
+                    var pfs = PartitionFileSystem2.Create(file.AsStorage());
                     pfs.OpenFile(ref ncaFile.Ref, aoc.NcaPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
                     break;
                 default:
