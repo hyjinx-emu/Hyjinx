@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.FsSrv;
 
@@ -24,3 +26,5 @@ internal static class SpeedEmulationConfiguration
         return fsServer.Globals.SpeedEmulationConfiguration.SpeedEmulationMode;
     }
 }
+
+#endif
