@@ -1,7 +1,7 @@
 using LibHac.Common.FixedArrays;
 using System.Runtime.InteropServices;
 
-namespace LibHac.FsSystem.Impl;
+namespace LibHac.FsSystem;
 
 public partial struct PartitionFileSystemFormat
 {

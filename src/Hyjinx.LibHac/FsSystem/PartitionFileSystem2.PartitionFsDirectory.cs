@@ -1,6 +1,5 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using LibHac.FsSystem.Impl;
 using LibHac.Util;
 using System;
 using System.Text;
