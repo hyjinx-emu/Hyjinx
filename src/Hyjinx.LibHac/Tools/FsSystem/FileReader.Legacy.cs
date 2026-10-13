@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs.Fsa;
 using System;
 using System.Diagnostics;
@@ -187,3 +189,5 @@ public class FileReader
         return (value << shift) >> shift;
     }
 }
+
+#endif
