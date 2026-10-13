@@ -45,7 +45,7 @@ internal struct FileSystemServerGlobals : IDisposable
     public LocationResolverSetGlobals LocationResolverSet;
     public PooledBufferGlobals PooledBuffer;
     public GameCardServiceGlobals GameCardService;
-    public HierarchicalIntegrityVerificationStorageGlobals HierarchicalIntegrityVerificationStorage;
+    //public HierarchicalIntegrityVerificationStorageGlobals HierarchicalIntegrityVerificationStorage;
     public SpeedEmulationConfigurationGlobals SpeedEmulationConfiguration;
 
     public void Initialize(HorizonClient horizonClient, FileSystemServer fsServer)
@@ -58,7 +58,7 @@ internal struct FileSystemServerGlobals : IDisposable
         LocationResolverSet.Initialize();
         PooledBuffer.Initialize();
         GameCardService.Initialize();
-        HierarchicalIntegrityVerificationStorage.Initialize(fsServer);
+        //HierarchicalIntegrityVerificationStorage.Initialize(fsServer);
     }
 
     public void Dispose()

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Crypto;
@@ -643,3 +645,5 @@ public class IntegrityVerificationStorage : Storage
         return Result.Success;
     }
 }
+
+#endif

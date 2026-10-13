@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Diag;
 using LibHac.Fs;
 using LibHac.FsSystem.Impl;
@@ -248,3 +250,5 @@ public class BlockCacheBufferedStorage : LibHac.Fs.Storage
         throw new NotImplementedException();
     }
 }
+
+#endif

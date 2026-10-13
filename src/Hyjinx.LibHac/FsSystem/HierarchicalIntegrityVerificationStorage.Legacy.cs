@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Crypto;
@@ -778,3 +780,5 @@ public class HierarchicalIntegrityVerificationStorage : Storage
     /// <summary>"<c>HierarchicalIntegrityVerificationStorage::L5</c>"</summary>
     public static ReadOnlySpan<byte> L5Key => "HierarchicalIntegrityVerificationStorage::L5"u8;
 }
+
+#endif
