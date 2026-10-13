@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Fs;
@@ -299,3 +301,5 @@ public struct NcaFsHeader
         return EncryptionTypeValue is EncryptionType.AesCtrSkipLayerHash or EncryptionType.AesCtrExSkipLayerHash;
     }
 }
+
+#endif

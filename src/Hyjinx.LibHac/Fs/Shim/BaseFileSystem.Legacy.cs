@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Impl;
@@ -71,3 +73,5 @@ public static class BaseFileSystem
         return Result.Success;
     }
 }
+
+#endif

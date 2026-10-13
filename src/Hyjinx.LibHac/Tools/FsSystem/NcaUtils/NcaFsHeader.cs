@@ -1,11 +1,32 @@
 using LibHac.Common;
-using LibHac.FsSystem;
+using LibHac.Common.FixedArrays;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
+
+public struct NcaSparseInfo
+{
+    public long MetaOffset;
+    public long MetaSize;
+    public Array16<byte> MetaHeader;
+    public long PhysicalOffset;
+    public ushort Generation;
+    public Array6<byte> Reserved;
+
+    public readonly uint GetGeneration() => (uint)(Generation << 16);
+    public readonly long GetPhysicalSize() => MetaOffset + MetaSize;
+}
+
+public struct NcaCompressionInfo
+{
+    public long TableOffset;
+    public long TableSize;
+    public Array16<byte> TableHeader;
+    public ulong Reserved;
+}
 
 /// <summary>
 /// Provides a view over a memory block containing an NCA FS header.

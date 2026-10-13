@@ -1,7 +1,7 @@
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public enum DistributionType
+public enum DistributionType : byte
 {
-    Download,
-    GameCard
+    Download = 0,
+    GameCard = 1
 }

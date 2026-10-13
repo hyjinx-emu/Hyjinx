@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.FsSrv.Sf;
 
@@ -57,3 +59,5 @@ namespace LibHac.Fs.Shim
         }
     }
 }
+
+#endif

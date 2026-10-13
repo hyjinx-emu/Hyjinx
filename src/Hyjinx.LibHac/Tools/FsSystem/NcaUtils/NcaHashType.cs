@@ -1,9 +1,9 @@
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
-public enum NcaHashType
+public enum NcaHashType : byte
 {
-    Auto,
-    None,
-    Sha256,
-    Ivfc
+    Auto = 0,
+    None = 1,
+    Sha256 = 2,
+    Ivfc = 3
 }
