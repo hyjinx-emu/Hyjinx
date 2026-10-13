@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using System;
@@ -51,3 +53,5 @@ public class SpeedEmulationStorage : LibHac.Fs.Storage
         return _baseStorage.Get.OperateRange(outBuffer, operationId, offset, size, inBuffer);
     }
 }
+
+#endif

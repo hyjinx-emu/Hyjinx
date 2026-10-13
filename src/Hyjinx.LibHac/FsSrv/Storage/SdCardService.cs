@@ -73,10 +73,7 @@ internal static class SdCardService
         using var deviceEventSimulationStorage =
             new SharedRef<IStorage>(new DeviceEventSimulationStorage(ref storage.Ref, eventSimulator));
 
-        using var emulationStorage = new SharedRef<IStorage>(
-            new SpeedEmulationStorage(ref deviceEventSimulationStorage.Ref, service.FsSrv));
-
-        outStorage.SetByMove(ref emulationStorage.Ref);
+        outStorage.SetByMove(ref deviceEventSimulationStorage.Ref);
         return Result.Success;
     }
 
