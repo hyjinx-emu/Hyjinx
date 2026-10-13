@@ -15,109 +15,6 @@ namespace LibHac.Tools.FsSystem;
 
 public static partial class FileSystemExtensions
 {
-    public static Result CopyDirectoryRecursively(IFileSystem destinationFileSystem, IFileSystem sourceFileSystem,
-        in Path destinationPath, in Path sourcePath, ref DirectoryEntry dirEntry, Span<byte> workBuffer,
-        IProgressReport logger = null, CreateFileOptions option = CreateFileOptions.None)
-    {
-        static Result OnEnterDir(in Path path, in DirectoryEntry entry,
-            ref Utility.FsIterationTaskClosure closure)
-        {
-            Result res = closure.DestinationPathBuffer.AppendChild(entry.Name);
-            if (res.IsFailure())
-                return res.Miss();
-
-            res = closure.DestFileSystem.CreateDirectory(in closure.DestinationPathBuffer);
-            if (res.IsFailure() && !ResultFs.PathAlreadyExists.Includes(res))
-                return res.Miss();
-
-            return Result.Success;
-        }
-
-        static Result OnExitDir(in Path path, in DirectoryEntry entry, ref Utility.FsIterationTaskClosure closure)
-        {
-            return closure.DestinationPathBuffer.RemoveChild();
-        }
-
-        Result OnFile(in Path path, in DirectoryEntry entry, ref Utility.FsIterationTaskClosure closure)
-        {
-            logger?.LogMessage(path.ToString());
-
-            Result result = closure.DestinationPathBuffer.AppendChild(entry.Name);
-            if (result.IsFailure())
-                return result;
-
-            result = CopyFile(closure.DestFileSystem, closure.SourceFileSystem, in closure.DestinationPathBuffer,
-                in path, closure.Buffer, logger, option);
-            if (result.IsFailure())
-                return result;
-
-            return closure.DestinationPathBuffer.RemoveChild();
-        }
-
-        var taskClosure = new Utility.FsIterationTaskClosure();
-        taskClosure.Buffer = workBuffer;
-        taskClosure.SourceFileSystem = sourceFileSystem;
-        taskClosure.DestFileSystem = destinationFileSystem;
-
-        Result res = taskClosure.DestinationPathBuffer.Initialize(destinationPath);
-        if (res.IsFailure())
-            return res.Miss();
-
-        res = Utility.IterateDirectoryRecursively(sourceFileSystem, in sourcePath, ref dirEntry, OnEnterDir,
-            OnExitDir, OnFile, ref taskClosure);
-
-        taskClosure.DestinationPathBuffer.Dispose();
-        return res;
-    }
-
-    public static Result CopyFile(IFileSystem destFileSystem, IFileSystem sourceFileSystem, in Path destPath,
-        in Path sourcePath, Span<byte> workBuffer, IProgressReport logger = null,
-        CreateFileOptions option = CreateFileOptions.None)
-    {
-        // Open source file.
-        using var sourceFile = new UniqueRef<IFile>();
-        Result res = sourceFileSystem.OpenFile(ref sourceFile.Ref, sourcePath, OpenMode.Read);
-        if (res.IsFailure())
-            return res.Miss();
-
-        res = sourceFile.Get.GetSize(out long fileSize);
-        if (res.IsFailure())
-            return res.Miss();
-
-        res = CreateOrOverwriteFile(destFileSystem, in destPath, fileSize, option);
-        if (res.IsFailure())
-            return res.Miss();
-
-        using var destFile = new UniqueRef<IFile>();
-        res = destFileSystem.OpenFile(ref destFile.Ref, in destPath, OpenMode.Write);
-        if (res.IsFailure())
-            return res.Miss();
-
-        // Read/Write file in work buffer sized chunks.
-        long remaining = fileSize;
-        long offset = 0;
-
-        logger?.SetTotal(fileSize);
-
-        while (remaining > 0)
-        {
-            res = sourceFile.Get.Read(out long bytesRead, offset, workBuffer, ReadOption.None);
-            if (res.IsFailure())
-                return res.Miss();
-
-            res = destFile.Get.Write(offset, workBuffer.Slice(0, (int)bytesRead), WriteOption.None);
-            if (res.IsFailure())
-                return res.Miss();
-
-            remaining -= bytesRead;
-            offset += bytesRead;
-
-            logger?.ReportAdd(bytesRead);
-        }
-
-        return Result.Success;
-    }
-
     public static IEnumerable<DirectoryEntryEx> EnumerateEntries(this IFileSystem fileSystem)
     {
         return fileSystem.EnumerateEntries("/", "*");
@@ -193,22 +90,6 @@ public static partial class FileSystemExtensions
     public static IStorage AsStorage(this IFile file) => new FileStorage(file);
     public static Stream AsStream(this IFile file) => new NxFileStream(file, true);
 
-    public static int GetEntryCountRecursive(this IFileSystem fs, string path, OpenDirectoryMode mode)
-    {
-        int count = 0;
-
-        foreach (DirectoryEntryEx entry in fs.EnumerateEntries(path, "*"))
-        {
-            if (entry.Type == DirectoryEntryType.Directory && (mode & OpenDirectoryMode.Directory) != 0 ||
-                entry.Type == DirectoryEntryType.File && (mode & OpenDirectoryMode.File) != 0)
-            {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
     public static NxFileAttributes ToNxAttributes(this FileAttributes attributes)
     {
         return (NxFileAttributes)(((int)attributes >> 4) & 3);
@@ -261,28 +142,6 @@ public static partial class FileSystemExtensions
         Result res = fs.GetEntryType(out DirectoryEntryType type, path.ToU8Span());
 
         return (res.IsSuccess() && type == DirectoryEntryType.File);
-    }
-
-    public static Result CreateOrOverwriteFile(IFileSystem fileSystem, in Path path, long size,
-        CreateFileOptions option = CreateFileOptions.None)
-    {
-        Result res = fileSystem.CreateFile(in path, size, option);
-
-        if (res.IsFailure())
-        {
-            if (!ResultFs.PathAlreadyExists.Includes(res))
-                return res;
-
-            res = fileSystem.DeleteFile(in path);
-            if (res.IsFailure())
-                return res.Miss();
-
-            res = fileSystem.CreateFile(in path, size, option);
-            if (res.IsFailure())
-                return res.Miss();
-        }
-
-        return Result.Success;
     }
 
     private static Result InitializeFromString(ref Path outPath, string path)

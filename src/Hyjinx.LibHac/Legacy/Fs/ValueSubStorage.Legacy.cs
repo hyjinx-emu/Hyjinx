@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Diag;
 using System;
@@ -219,3 +221,5 @@ public struct ValueSubStorage : IDisposable
         return _baseStorage.OperateRange(outBuffer, operationId, _offset + offset, size, inBuffer);
     }
 }
+
+#endif

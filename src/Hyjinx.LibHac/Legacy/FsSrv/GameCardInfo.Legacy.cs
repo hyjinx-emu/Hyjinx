@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 
 namespace LibHac.FsSrv;
@@ -15,3 +17,5 @@ internal class GameCardInfo
     public ulong UpdateTitleId { get; set; }
     public GameCardAttribute Attribute { get; set; }
 }
+
+#endif
