@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -591,3 +593,5 @@ public class ConcatenationFileSystemTests : IFileSystemTests
         Assert.Equal(newData, actualNewData);
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Common.FixedArrays;
 using LibHac.Diag;
@@ -1082,3 +1084,5 @@ public class ConcatenationFileSystem : FileSystem
         return _baseFileSystem.Get.GetFileSystemAttribute(out outAttribute).Ret();
     }
 }
+
+#endif
