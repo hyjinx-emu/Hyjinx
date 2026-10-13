@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Diag;
 using LibHac.Fs;
 using System;
@@ -281,3 +283,5 @@ public class BlockCacheManager<TEntry, TRange> : IDisposable
         _cacheEntries[index].IsWriteBack = isWriteBack;
     }
 }
+
+#endif

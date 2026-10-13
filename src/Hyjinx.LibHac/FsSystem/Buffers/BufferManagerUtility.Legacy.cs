@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Diag;
 using LibHac.Fs;
 using System;
@@ -144,3 +146,5 @@ internal static class BufferManagerUtility
         return Result.Success;
     }
 }
+
+#endif

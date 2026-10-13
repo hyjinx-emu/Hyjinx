@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 // ReSharper disable InconsistentNaming
 using LibHac.Common;
 using LibHac.Diag;
@@ -83,3 +85,5 @@ public abstract class IHash256GeneratorFactorySelector : IDisposable
 
     protected abstract IHash256GeneratorFactory DoGetFactory(HashAlgorithmType type);
 }
+
+#endif
