@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Tools.FsSystem.RomFs;
 using System;
 using Xunit;
@@ -201,3 +203,5 @@ public class RomFsTests
         Assert.Equal(itemC3, actualItemC3);
     }
 }
+
+#endif

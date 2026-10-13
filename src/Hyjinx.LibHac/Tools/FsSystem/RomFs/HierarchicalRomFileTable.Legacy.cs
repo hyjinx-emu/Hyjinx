@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Util;
@@ -387,3 +389,5 @@ public class HierarchicalRomFileTable<T> where T : unmanaged
         public T Info;
     }
 }
+
+#endif

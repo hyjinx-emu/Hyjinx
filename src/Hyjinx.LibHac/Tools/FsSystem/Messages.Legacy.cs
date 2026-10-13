@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 namespace LibHac.Tools.FsSystem;
 
 public static class Messages
@@ -8,3 +10,5 @@ public static class Messages
     public static string DestPathAlreadyExists => "Destination path already exists.";
     public static string PartialPathNotFound => "Could not find a part of the path.";
 }
+
+#endif

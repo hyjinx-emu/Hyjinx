@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
@@ -70,3 +72,5 @@ public class RomFsFile : IFile
         return RomFsFileSystem.ConvertRomFsDriverPrivateResult(result);
     }
 }
+
+#endif

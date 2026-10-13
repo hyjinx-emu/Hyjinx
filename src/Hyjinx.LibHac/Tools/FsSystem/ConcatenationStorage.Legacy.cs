@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using System;
 using System.Collections.Generic;
@@ -181,3 +183,5 @@ public class ConcatenationStorage : Storage
         }
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Fs;
 using LibHac.Util;
 using System;
@@ -299,3 +301,5 @@ internal class RomFsDictionary<T> where T : unmanaged
         public int KeyLength;
     }
 }
+
+#endif
