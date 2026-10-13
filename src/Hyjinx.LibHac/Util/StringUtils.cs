@@ -1,4 +1,3 @@
-using LibHac.Util.Impl;
 using System;
 using System.Text;
 
@@ -214,6 +213,6 @@ public static partial class StringUtils
 
     public static string ToHexString(this ReadOnlySpan<byte> bytes)
     {
-        return HexConverter.ToString(bytes);
+        return Convert.ToHexString(bytes);
     }
 }
