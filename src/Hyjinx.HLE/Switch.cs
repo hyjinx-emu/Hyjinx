@@ -99,10 +99,12 @@ public class Switch : IDisposable
         return AudioDeviceDriver.Volume;
     }
 
-    public void EnableCheats()
-    {
-        ModLoader.EnableCheats(Processes.ActiveApplication.ProgramId, TamperMachine);
-    }
+    // TODO: Viper - Fix modding support (BEGIN)
+    //public void EnableCheats()
+    //{
+    //    ModLoader.EnableCheats(Processes.ActiveApplication.ProgramId, TamperMachine);
+    //}
+    // TODO: Viper - Fix modding support (END)
 
     public bool IsAudioMuted()
     {

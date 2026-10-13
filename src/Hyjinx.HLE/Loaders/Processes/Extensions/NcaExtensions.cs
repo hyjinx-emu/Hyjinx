@@ -128,11 +128,13 @@ public static partial class NcaExtensions
         // Load Npdm file.
         MetaLoader metaLoader = exeFs.GetNpdm();
 
+        // TODO: Viper - Fix modding support (BEGIN)
         // Collecting mods related to AocTitleIds and ProgramId.
-        device.Configuration.VirtualFileSystem.ModLoader.CollectMods(
-            device.Configuration.ContentManager.GetAocTitleIds().Prepend(metaLoader.GetProgramId()),
-            ModLoader.GetModsBasePath(),
-            ModLoader.GetSdModsBasePath());
+        //device.Configuration.VirtualFileSystem.ModLoader.CollectMods(
+        //    device.Configuration.ContentManager.GetAocTitleIds().Prepend(metaLoader.GetProgramId()),
+        //    ModLoader.GetModsBasePath(),
+        //    ModLoader.GetSdModsBasePath());
+        // TODO: Viper - Fix modding support (END)
 
         // Load Nacp file.
         var nacpData = new BlitStruct<ApplicationControlProperty>(1);
@@ -165,9 +167,11 @@ public static partial class NcaExtensions
         }
         else
         {
-            romFs = device.Configuration.VirtualFileSystem.ModLoader.ApplyRomFsMods(processResult.ProgramId, romFs);
+            // TODO: Viper - Fix modding support (BEGIN)
+            //romFs = device.Configuration.VirtualFileSystem.ModLoader.ApplyRomFsMods(processResult.ProgramId, romFs);
 
-            device.Configuration.VirtualFileSystem.SetRomFs(processResult.ProcessId, romFs.AsStream(FileAccess.Read));
+            //device.Configuration.VirtualFileSystem.SetRomFs(processResult.ProcessId, romFs.AsStream(FileAccess.Read));
+            // TODO: Viper - Fix modding support (END)
         }
 
         // Don't create save data for system programs.

@@ -170,23 +170,25 @@ public partial class MainMenuBarView : UserControl
         }
     }
 
-    public async void OpenCheatManagerForCurrentApp(object sender, RoutedEventArgs e)
-    {
-        if (!ViewModel.IsGameRunning)
-        {
-            return;
-        }
+    // TODO: Viper - Fix modding support (BEGIN)
+    //public async void OpenCheatManagerForCurrentApp(object sender, RoutedEventArgs e)
+    //{
+    //    if (!ViewModel.IsGameRunning)
+    //    {
+    //        return;
+    //    }
 
-        string name = ViewModel.AppHost.Device.Processes.ActiveApplication.ApplicationControlProperties.Title[(int)ViewModel.AppHost.Device.System.State.DesiredTitleLanguage].NameString.ToString();
+    //    string name = ViewModel.AppHost.Device.Processes.ActiveApplication.ApplicationControlProperties.Title[(int)ViewModel.AppHost.Device.System.State.DesiredTitleLanguage].NameString.ToString();
 
-        await new CheatWindow(
-            Window.VirtualFileSystem,
-            ViewModel.AppHost.Device.Processes.ActiveApplication.ProgramIdText,
-            name,
-            Window.ViewModel.SelectedApplication.Path).ShowDialog(Window);
+    //    await new CheatWindow(
+    //        Window.VirtualFileSystem,
+    //        ViewModel.AppHost.Device.Processes.ActiveApplication.ProgramIdText,
+    //        name,
+    //        Window.ViewModel.SelectedApplication.Path).ShowDialog(Window);
 
-        ViewModel.AppHost.Device.EnableCheats();
-    }
+    //    ViewModel.AppHost.Device.EnableCheats();
+    //}
+    // TODO: Viper - Fix modding support (END)
 
     private void ScanAmiiboMenuItem_AttachedToVisualTree(object sender, VisualTreeAttachmentEventArgs e)
     {

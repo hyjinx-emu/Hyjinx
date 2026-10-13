@@ -1,14 +1,12 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Avalonia.Threading;
 using Hyjinx.Ava.Common;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Configuration;
-using Hyjinx.HLE.HOS;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Helper;
 using LibHac.Fs;
@@ -16,8 +14,6 @@ using LibHac.Tools.FsSystem.NcaUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using Path = System.IO.Path;
 
 namespace Hyjinx.Ava.UI.Controls;
@@ -103,55 +99,57 @@ public class ApplicationContextMenu : MenuFlyout
         }
     }
 
-    public async void OpenCheatManager_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+    // TODO: Viper - Fix modding support (BEGIN)
+    //public async void OpenCheatManager_Click(object sender, RoutedEventArgs args)
+    //{
+    //    var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
 
-        if (viewModel?.SelectedApplication != null)
-        {
-            await new CheatWindow(
-                viewModel.VirtualFileSystem,
-                viewModel.SelectedApplication.IdString,
-                viewModel.SelectedApplication.Name,
-                viewModel.SelectedApplication.Path).ShowDialog(viewModel.TopLevel as Window);
-        }
-    }
+    //    if (viewModel?.SelectedApplication != null)
+    //    {
+    //        await new CheatWindow(
+    //            viewModel.VirtualFileSystem,
+    //            viewModel.SelectedApplication.IdString,
+    //            viewModel.SelectedApplication.Name,
+    //            viewModel.SelectedApplication.Path).ShowDialog(viewModel.TopLevel as Window);
+    //    }
+    //}
 
-    public void OpenModsDirectory_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+    //public void OpenModsDirectory_Click(object sender, RoutedEventArgs args)
+    //{
+    //    var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
 
-        if (viewModel?.SelectedApplication != null)
-        {
-            string modsBasePath = ModLoader.GetModsBasePath();
-            string titleModsPath = ModLoader.GetApplicationDir(modsBasePath, viewModel.SelectedApplication.IdString);
+    //    if (viewModel?.SelectedApplication != null)
+    //    {
+    //        string modsBasePath = ModLoader.GetModsBasePath();
+    //        string titleModsPath = ModLoader.GetApplicationDir(modsBasePath, viewModel.SelectedApplication.IdString);
 
-            OpenHelper.OpenFolder(titleModsPath);
-        }
-    }
+    //        OpenHelper.OpenFolder(titleModsPath);
+    //    }
+    //}
 
-    public void OpenSdModsDirectory_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+    //public void OpenSdModsDirectory_Click(object sender, RoutedEventArgs args)
+    //{
+    //    var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
 
-        if (viewModel?.SelectedApplication != null)
-        {
-            string sdModsBasePath = ModLoader.GetSdModsBasePath();
-            string titleModsPath = ModLoader.GetApplicationDir(sdModsBasePath, viewModel.SelectedApplication.IdString);
+    //    if (viewModel?.SelectedApplication != null)
+    //    {
+    //        string sdModsBasePath = ModLoader.GetSdModsBasePath();
+    //        string titleModsPath = ModLoader.GetApplicationDir(sdModsBasePath, viewModel.SelectedApplication.IdString);
 
-            OpenHelper.OpenFolder(titleModsPath);
-        }
-    }
+    //        OpenHelper.OpenFolder(titleModsPath);
+    //    }
+    //}
 
-    public async void OpenModManager_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
+    //public async void OpenModManager_Click(object sender, RoutedEventArgs args)
+    //{
+    //    var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
 
-        if (viewModel?.SelectedApplication != null)
-        {
-            await ModManagerWindow.Show(viewModel.SelectedApplication.Id, viewModel.SelectedApplication.Name);
-        }
-    }
+    //    if (viewModel?.SelectedApplication != null)
+    //    {
+    //        await ModManagerWindow.Show(viewModel.SelectedApplication.Id, viewModel.SelectedApplication.Name);
+    //    }
+    //}
+    // TODO: Viper - Fix modding support (END)
 
     public async void PurgePtcCache_Click(object sender, RoutedEventArgs args)
     {

@@ -375,19 +375,21 @@ static partial class ProcessLoaderHelper
 
         context.Processes.TryAdd(process.Pid, process);
 
+        // TODO: Viper - Fix modding support (BEGIN)
         // Keep the build ids because the tamper machine uses them to know which process to associate a
         // tamper to and also keep the starting address of each executable inside a process because some
         // memory modifications are relative to this address.
-        ProcessTamperInfo tamperInfo = new(
-            process,
-            buildIds,
-            nsoBase,
-            process.MemoryManager.HeapRegionStart,
-            process.MemoryManager.AliasRegionStart,
-            process.MemoryManager.CodeRegionStart);
+        //ProcessTamperInfo tamperInfo = new(
+        //    process,
+        //    buildIds,
+        //    nsoBase,
+        //    process.MemoryManager.HeapRegionStart,
+        //    process.MemoryManager.AliasRegionStart,
+        //    process.MemoryManager.CodeRegionStart);
 
         // Once everything is loaded, we can load cheats.
-        device.Configuration.VirtualFileSystem.ModLoader.LoadCheats(programId, tamperInfo, device.TamperMachine);
+        //device.Configuration.VirtualFileSystem.ModLoader.LoadCheats(programId, tamperInfo, device.TamperMachine);
+        // TODO: Viper - Fix modding support (END)
 
         ProcessResult processResult = new(
             metaLoader,
@@ -402,14 +404,14 @@ static partial class ProcessLoaderHelper
 
         // Register everything in arp service.
         device.System.ServiceTable.ArpWriter.AcquireRegistrar(out IRegistrar registrar);
-        registrar.SetApplicationControlProperty(MemoryMarshal.Cast<byte, Hyjinx.Horizon.Sdk.Ns.ApplicationControlProperty>(applicationControlProperties.ByteSpan)[0]);
+        registrar.SetApplicationControlProperty(MemoryMarshal.Cast<byte, Horizon.Sdk.Ns.ApplicationControlProperty>(applicationControlProperties.ByteSpan)[0]);
         // TODO: Handle Version and StorageId when it will be needed.
         registrar.SetApplicationLaunchProperty(new ApplicationLaunchProperty()
         {
-            ApplicationId = new Hyjinx.Horizon.Sdk.Ncm.ApplicationId(programId),
+            ApplicationId = new Horizon.Sdk.Ncm.ApplicationId(programId),
             Version = 0x00,
-            Storage = Hyjinx.Horizon.Sdk.Ncm.StorageId.BuiltInUser,
-            PatchStorage = Hyjinx.Horizon.Sdk.Ncm.StorageId.None,
+            Storage = Horizon.Sdk.Ncm.StorageId.BuiltInUser,
+            PatchStorage = Horizon.Sdk.Ncm.StorageId.None,
             ApplicationKind = ApplicationKind.Application,
         });
 
