@@ -1,13 +1,14 @@
-using System.Collections.Generic;
+// TODO: Viper - Fix modding support
+//using System.Collections.Generic;
 
-namespace Hyjinx.HLE.HOS;
+//namespace Hyjinx.HLE.HOS;
 
-public struct ModMetadata
-{
-    public List<Mod> Mods { get; set; }
+//public struct ModMetadata
+//{
+//    public List<Mod> Mods { get; set; }
 
-    public ModMetadata()
-    {
-        Mods = new List<Mod>();
-    }
-}
+//    public ModMetadata()
+//    {
+//        Mods = new List<Mod>();
+//    }
+//}

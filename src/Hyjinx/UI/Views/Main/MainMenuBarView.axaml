@@ -166,10 +166,12 @@
                     Header="{locale:Locale MenuBarFileToolsHideUi}"
                     InputGesture="{Binding ShowUiKey}"
                     IsEnabled="{Binding IsGameRunning}" />
-                <MenuItem
+                <!-- TODO: Viper - Fix modding support (BEGIN) -->
+                <!--<MenuItem
                     Click="OpenCheatManagerForCurrentApp"
                     Header="{locale:Locale GameListContextMenuManageCheat}"
-                    IsEnabled="{Binding IsGameRunning}" />
+                    IsEnabled="{Binding IsGameRunning}" />-->
+                <!-- TODO: Viper - Fix modding support (END) -->
             </MenuItem>
             <MenuItem VerticalAlignment="Center" Header="{locale:Locale MenuBarTools}">
                 <MenuItem Header="{locale:Locale MenuBarToolsInstallFirmware}" IsEnabled="{Binding EnableNonGameRunningControls}">

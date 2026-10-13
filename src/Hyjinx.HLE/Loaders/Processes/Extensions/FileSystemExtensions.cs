@@ -11,7 +11,6 @@ using LibHac.Tools.FsSystem;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
-using static Hyjinx.HLE.HOS.ModLoader;
 
 namespace Hyjinx.HLE.Loaders.Processes.Extensions;
 
@@ -57,11 +56,13 @@ static partial class FileSystemExtensions
     {
         ulong programId = metaLoader.GetProgramId();
 
-        // Replace the whole ExeFs partition by the modded one.
-        if (device.Configuration.VirtualFileSystem.ModLoader.ReplaceExefsPartition(programId, ref exeFs))
-        {
-            metaLoader = null;
-        }
+        // TODO: Viper - Fix modding support (BEGIN)
+        //// Replace the whole ExeFs partition by the modded one.
+        //if (device.Configuration.VirtualFileSystem.ModLoader.ReplaceExefsPartition(programId, ref exeFs))
+        //{
+        //    metaLoader = null;
+        //}
+        // TODO: Viper - Fix modding support (END)
 
         // Reload the MetaLoader in case of ExeFs partition replacement.
         metaLoader ??= exeFs.GetNpdm();
@@ -86,23 +87,26 @@ static partial class FileSystemExtensions
             nsoExecutables[i] = new NsoExecutable(nsoFile.Release().AsStorage(), name);
         }
 
+        // TODO: Viper - Fix modding support (BEGIN)
         // ExeFs file replacements.
-        ModLoadResult modLoadResult = device.Configuration.VirtualFileSystem.ModLoader.ApplyExefsMods(programId, nsoExecutables);
+        //ModLoadResult modLoadResult = device.Configuration.VirtualFileSystem.ModLoader.ApplyExefsMods(programId, nsoExecutables);
 
         // Take the Npdm from mods if present.
-        if (modLoadResult.Npdm != null)
-        {
-            metaLoader = modLoadResult.Npdm;
-        }
+        //if (modLoadResult.Npdm != null)
+        //{
+        //    metaLoader = modLoadResult.Npdm;
+        //}
+        // TODO: Viper - Fix modding support (END)
 
         // Collect the Nsos, ignoring ones that aren't used.
         nsoExecutables = nsoExecutables.Where(x => x != null).ToArray();
 
+        // TODO: Viper - Fix modding support (BEGIN)
         // Apply Nsos patches.
-        device.Configuration.VirtualFileSystem.ModLoader.ApplyNsoPatches(programId, nsoExecutables);
+        //device.Configuration.VirtualFileSystem.ModLoader.ApplyNsoPatches(programId, nsoExecutables);
 
         // Don't use PTC if ExeFS files have been replaced.
-        bool enablePtc = device.System.EnablePtc && !modLoadResult.Modified;
+        bool enablePtc = device.System.EnablePtc; // && !modLoadResult.Modified; TODO: Viper - Fix modding support (BEGIN)
         if (!enablePtc)
         {
             LogUnsupportedExeFsModificationsDetected(_logger);
@@ -121,7 +125,7 @@ static partial class FileSystemExtensions
         }
 
         // Initialize GPU.
-        Hyjinx.Graphics.Gpu.GraphicsConfig.TitleId = $"{programId:x16}";
+        Graphics.Gpu.GraphicsConfig.TitleId = $"{programId:x16}";
         device.Gpu.HostInitalized.Set();
 
         if (!MemoryBlock.SupportsFlags(MemoryAllocationFlags.ViewCompatible))

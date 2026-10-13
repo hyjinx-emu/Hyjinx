@@ -805,21 +805,23 @@ partial class IFileSystemProxy : DisposableIpcService<IFileSystemProxy>
 #pragma warning restore IDE0059
         ulong titleId = context.RequestData.ReadUInt64();
 
-        // We do a mitm here to find if the request is for an AOC.
-        // This is because AOC can be distributed over multiple containers in the emulator.
-        if (context.Device.System.ContentManager.GetAocDataStorage(titleId, out LibHac.Fs.IStorage aocStorage, context.Device.Configuration.FsIntegrityCheckLevel))
-        {
-            _logger.LogInformation(new EventId((int)LogClass.Loader, nameof(LogClass.Loader)),
-                "Opened AddOnContent Data TitleID={titleId:X16}", titleId);
+        // TODO: Viper - Fix modding support (BEGIN)
+        //// We do a mitm here to find if the request is for an AOC.
+        //// This is because AOC can be distributed over multiple containers in the emulator.
+        //if (context.Device.System.ContentManager.GetAocDataStorage(titleId, out LibHac.Fs.IStorage aocStorage, context.Device.Configuration.FsIntegrityCheckLevel))
+        //{
+        //    _logger.LogInformation(new EventId((int)LogClass.Loader, nameof(LogClass.Loader)),
+        //        "Opened AddOnContent Data TitleID={titleId:X16}", titleId);
 
-            var storage = context.Device.FileSystem.ModLoader.ApplyRomFsMods(titleId, aocStorage);
-            using var sharedStorage = new SharedRef<LibHac.Fs.IStorage>(storage);
-            using var sfStorage = new SharedRef<IStorage>(new StorageInterfaceAdapter(ref sharedStorage.Ref));
+        //    var storage = context.Device.FileSystem.ModLoader.ApplyRomFsMods(titleId, aocStorage);
+        //    using var sharedStorage = new SharedRef<LibHac.Fs.IStorage>(storage);
+        //    using var sfStorage = new SharedRef<IStorage>(new StorageInterfaceAdapter(ref sharedStorage.Ref));
 
-            MakeObject(context, new FileSystemProxy.IStorage(ref sfStorage.Ref));
+        //    MakeObject(context, new FileSystemProxy.IStorage(ref sfStorage.Ref));
 
-            return ResultCode.Success;
-        }
+        //    return ResultCode.Success;
+        //}
+        // TODO: Viper - Fix modding support (END)
 
         NcaContentType contentType = NcaContentType.Data;
 

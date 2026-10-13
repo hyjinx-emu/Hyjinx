@@ -1,5 +1,4 @@
 using Hyjinx.Common.Configuration;
-using Hyjinx.HLE.HOS;
 using Hyjinx.Logging.Abstractions;
 using LibHac;
 using LibHac.Common;
@@ -40,7 +39,10 @@ public partial class VirtualFileSystem : IVirtualFileSystem, IDisposable
 
     public KeySet KeySet { get; private set; }
     public SdmmcApi SdCard { get; private set; }
-    public ModLoader ModLoader { get; } = new();
+
+    // TODO: Viper - Fix modding support (BEGIN)
+    // public ModLoader ModLoader { get; } = new();
+    // TODO: Viper - Fix modding support (END)
 
     private readonly ConcurrentDictionary<ulong, Stream> _romFsByPid = new();
 

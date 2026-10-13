@@ -183,8 +183,10 @@ class IRoInterface : DisposableIpcService<IRoInterface>
 
         uint totalSize = (uint)nro.Text.Length + (uint)nro.Ro.Length + (uint)nro.Data.Length + nro.BssSize;
 
+        // TODO: Viper - Fix modding support (BEGIN)
         // Apply patches
-        context.Device.FileSystem.ModLoader.ApplyNroPatches(nro);
+        //context.Device.FileSystem.ModLoader.ApplyNroPatches(nro);
+        // TODO: Viper - Fix modding support (END)
 
         res = new NroInfo(
             nro,

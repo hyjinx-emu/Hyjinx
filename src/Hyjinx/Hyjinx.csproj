@@ -43,8 +43,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.SPB\Hyjinx.SPB.csproj" />
     <ProjectReference Include="..\Hyjinx.UI.Common\Hyjinx.UI.Common.csproj" />
-    <ProjectReference Include="..\Hyjinx.UI.LocaleGenerator\Hyjinx.UI.LocaleGenerator.csproj" 
-                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Hyjinx.UI.LocaleGenerator\Hyjinx.UI.LocaleGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,6 +60,16 @@
   <ItemGroup>
     <None Remove="Assets\**\*" />
     <EmbeddedResource Include="Assets\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Remove="UI\Windows\CheatWindow.axaml" />
+    <AvaloniaXaml Remove="UI\Windows\ModManagerWindow.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="UI\Windows\CheatWindow.axaml.cs" />
+    <Compile Remove="UI\Windows\ModManagerWindow.axaml.cs" />
   </ItemGroup>
   
   <ItemGroup>
