@@ -33,7 +33,7 @@ public class StorageOnNcaCreator : IStorageOnNcaCreator
         if (isCodeFs)
         {
             using var codeFs = PartitionFileSystem2.Create(storageTemp);
-            
+
             res = VerifyAcidSignature(codeFs, nca);
             if (res.IsFailure())
                 return res.Miss();

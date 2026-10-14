@@ -92,7 +92,7 @@ static class FileSystemProxyHelper
             try
             {
                 var nsp = PartitionFileSystem2.Create(pfsFile.AsStorage());
-                
+
                 ImportTitleKeysFromNsp(nsp, context.Device.System.KeySet);
 
                 string filename = fullPath.Replace(archivePath.FullName, string.Empty).TrimStart('\\');

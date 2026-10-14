@@ -750,7 +750,7 @@ public partial class ApplicationLibrary
                         else
                         {
                             pfs = PartitionFileSystem2.Create(file.AsStorage());
-                            
+
                             foreach (DirectoryEntryEx fileEntry in pfs.EnumerateEntries("/", "*"))
                             {
                                 if (Path.GetFileNameWithoutExtension(fileEntry.FullPath) == "main")
