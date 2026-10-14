@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac;
 using LibHac.Common;
 using LibHac.Fs;
@@ -62,3 +64,5 @@ class LazyFile : LibHac.Fs.Fsa.IFile
         throw new NotSupportedException();
     }
 }
+
+#endif

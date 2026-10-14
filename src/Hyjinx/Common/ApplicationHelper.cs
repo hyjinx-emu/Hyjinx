@@ -192,9 +192,7 @@ internal static partial class ApplicationHelper
                 }
                 else
                 {
-                    var pfsTemp = new PartitionFileSystem();
-                    pfsTemp.Initialize(file.AsStorage()).ThrowIfFailure();
-                    pfs = pfsTemp;
+                    pfs = PartitionFileSystem2.Create(file.AsStorage());
                 }
 
                 foreach (DirectoryEntryEx fileEntry in pfs.EnumerateEntries("/", "*.nca"))

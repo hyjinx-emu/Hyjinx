@@ -81,7 +81,7 @@ public partial class ApplicationLibrary
     /// <exception cref="ArgumentException">An error occured while reading bytes from the stream.</exception>
     /// <exception cref="EndOfStreamException">The end of the stream is reached.</exception>
     /// <exception cref="IOException">An I/O error occurred.</exception>
-    private ApplicationData GetApplicationFromExeFs(PartitionFileSystem pfs, string filePath)
+    private ApplicationData GetApplicationFromExeFs(IFileSystem pfs, string filePath)
     {
         ApplicationData data = new()
         {
@@ -113,7 +113,7 @@ public partial class ApplicationLibrary
     /// <exception cref="ArgumentException">An error occured while reading bytes from the stream.</exception>
     /// <exception cref="EndOfStreamException">The end of the stream is reached.</exception>
     /// <exception cref="IOException">An I/O error occurred.</exception>
-    private ApplicationData GetApplicationFromNsp(PartitionFileSystem pfs, string filePath)
+    private ApplicationData GetApplicationFromNsp(IFileSystem pfs, string filePath)
     {
         bool isExeFs = false;
 
@@ -321,11 +321,9 @@ public partial class ApplicationLibrary
                 case ".nsp":
                 case ".pfs0":
                     {
-                        var pfs = new PartitionFileSystem();
-                        pfs.Initialize(file.AsStorage()).ThrowIfFailure();
+                        var pfs = PartitionFileSystem2.Create(file.AsStorage());
 
                         ApplicationData result = GetApplicationFromNsp(pfs, applicationPath);
-
                         if (result == null)
                         {
                             return false;
@@ -751,9 +749,7 @@ public partial class ApplicationLibrary
                         }
                         else
                         {
-                            var pfsTemp = new PartitionFileSystem();
-                            pfsTemp.Initialize(file.AsStorage()).ThrowIfFailure();
-                            pfs = pfsTemp;
+                            pfs = PartitionFileSystem2.Create(file.AsStorage());
 
                             foreach (DirectoryEntryEx fileEntry in pfs.EnumerateEntries("/", "*"))
                             {

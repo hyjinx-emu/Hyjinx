@@ -1,7 +1,6 @@
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using LibHac.FsSystem.Impl;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;

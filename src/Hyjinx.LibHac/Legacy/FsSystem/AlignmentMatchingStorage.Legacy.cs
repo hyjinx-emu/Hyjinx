@@ -1,3 +1,6 @@
+
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Diag;
 using LibHac.Fs;
@@ -554,3 +557,5 @@ public class AlignmentMatchingStorageInBulkRead<TBufferAlignment> : LibHac.Fs.St
         return _baseStorage.OperateRange(outBuffer, operationId, alignedOffset, alignedSize, inBuffer);
     }
 }
+
+#endif

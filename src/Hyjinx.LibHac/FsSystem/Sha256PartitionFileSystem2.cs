@@ -1,7 +1,6 @@
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
-using LibHac.FsSystem.Impl;
 using System;
 using System.Runtime.CompilerServices;
 

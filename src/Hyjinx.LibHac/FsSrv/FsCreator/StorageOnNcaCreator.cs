@@ -22,8 +22,7 @@ public class StorageOnNcaCreator : IStorageOnNcaCreator
     }
 
     // todo: Implement NcaReader and other Nca classes
-    public Result Create(ref SharedRef<IStorage> outStorage, out NcaFsHeader fsHeader, Nca nca,
-        int fsIndex, bool isCodeFs)
+    public Result Create(ref SharedRef<IStorage> outStorage, out NcaFsHeader fsHeader, Nca nca, int fsIndex, bool isCodeFs)
     {
         UnsafeHelpers.SkipParamInit(out fsHeader);
 
@@ -33,10 +32,7 @@ public class StorageOnNcaCreator : IStorageOnNcaCreator
 
         if (isCodeFs)
         {
-            using var codeFs = new PartitionFileSystem();
-            res = codeFs.Initialize(storageTemp);
-            if (res.IsFailure())
-                return res.Miss();
+            using var codeFs = PartitionFileSystem2.Create(storageTemp);
 
             res = VerifyAcidSignature(codeFs, nca);
             if (res.IsFailure())
