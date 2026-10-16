@@ -37,7 +37,7 @@ runs:
         cp -a distribution/legal/. "${{ inputs.staging_dir }}/"
         
         pushd "${{ inputs.staging_dir }}"
-        7z a "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.package_suffix }}.zip" .
+        7z a "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.package_suffix }}-portable.zip" .
         popd
         
     - name: Package for Linux (Portable)
@@ -49,5 +49,5 @@ runs:
         cp -a distribution/legal/. "${{ inputs.staging_dir }}/"
         
         pushd "${{ inputs.staging_dir }}"
-        tar -czvf "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.package_suffix }}.tar.gz" .
+        tar -czvf "../${{ inputs.package_dir }}/hyjinx-${{ inputs.version }}-${{ inputs.package_suffix }}-portable.tar.gz" .
         popd
