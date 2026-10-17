@@ -74,10 +74,6 @@ Currently contact is being kept intentionally limited.
 You may also review our [FAQ](https://github.com/hyjinx-emu/Hyjinx/wiki/Frequently-Asked-Questions).
 -->
 
-## License
-
-This project uses the [MIT License](LICENSE) as well as code authored by 3rd parties under other licenses. See [THIRDPARTY.md](distribution/legal/THIRDPARTY.md) for more details.
-
 ## Credits
 - Ryujinx was used as the original source code for this emulator. This fork was later renamed to Hyjinx to ensure any issues caused by the project team wouldn't negatively effect the Ryujinx legacy or other forks.
 - LibHac is used for our file-system.
