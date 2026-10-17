@@ -74,7 +74,8 @@ public class Xci2 : Xci
         try
         {
             var rootFs = Sha256PartitionFileSystem2.Create(
-                storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
+                storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset),
+                IntegrityCheckLevel.ErrorOnInvalid);
 
             return new Xci2(storage, header, rootFs);
         }
@@ -101,7 +102,8 @@ public class Xci2 : Xci
         {
             var storage = StreamStorage2.Create(stream);
 
-            return Sha256PartitionFileSystem2.Create(storage);
+            return Sha256PartitionFileSystem2.Create(storage,
+                IntegrityCheckLevel.ErrorOnInvalid);
         }
         catch (Exception)
         {

@@ -1,6 +1,7 @@
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
+using LibHac.Tools.FsSystem;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -37,16 +38,27 @@ public class Sha256PartitionFileSystemLookupEntry : PartitionFileSystemLookupEnt
 /// </summary>
 public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFileSystemFormat.PartitionEntry, Sha256PartitionFileSystemLookupEntry>
 {
-    private Sha256PartitionFileSystem2(IStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header)
-        : base(baseStorage, header) { }
+    /// <summary>
+    /// Gets the configured level of integrity checks to perform.
+    /// </summary>
+    /// <remarks>Higher levels enforce stricter validation and may impact performance; choose the minimal
+    /// level that meets security and correctness requirements.</remarks>
+    protected IntegrityCheckLevel IntegrityCheckLevel { get; }
+
+    private Sha256PartitionFileSystem2(IStorage baseStorage, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl header, IntegrityCheckLevel integrityCheckLevel)
+        : base(baseStorage, header)
+    {
+        IntegrityCheckLevel = integrityCheckLevel;
+    }
 
     /// <summary>
     /// Creates an <see cref="Sha256PartitionFileSystem2"/> from storage.
     /// </summary>
     /// <param name="baseStorage">The base storage for the file system.</param>
+    /// <param name="integrityCheckLevel">The integrity check level to enforce when opening files.</param>
     /// <returns>The new instance.</returns>
     /// <exception cref="InvalidOperationException">The header size read was not the expected size.</exception>
-    public static Sha256PartitionFileSystem2 Create(IStorage baseStorage)
+    public static Sha256PartitionFileSystem2 Create(IStorage baseStorage, IntegrityCheckLevel integrityCheckLevel)
     {
         var headerSize = Unsafe.SizeOf<PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>();
 
@@ -55,7 +67,7 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
 
         var header = Unsafe.As<byte, PartitionFileSystemFormat.PartitionFileSystemHeaderImpl>(ref headerBuffer.Span[0]);
 
-        var result = new Sha256PartitionFileSystem2(baseStorage, header);
+        var result = new Sha256PartitionFileSystem2(baseStorage, header, integrityCheckLevel);
         result.Initialize();
 
         return result;
@@ -90,7 +102,7 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
 
     protected override Result OnBeforeFileOpened(Sha256PartitionFileSystemLookupEntry entry)
     {
-        if (entry.HashValidity == Validity.Unchecked)
+        if (IntegrityCheckLevel > IntegrityCheckLevel.None && entry.HashValidity == Validity.Unchecked)
         {
             if (entry.HashTargetSize == 0)
             {
@@ -109,11 +121,11 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
 
                 entry.HashValidity = CryptoUtil.CheckSha256Hash(buffer.Span, entry.Hash);
             }
-        }
 
-        if (entry.HashValidity == Validity.Invalid)
-        {
-            return ResultFs.Sha256PartitionHashVerificationFailed.Log();
+            if (entry.HashValidity == Validity.Invalid && IntegrityCheckLevel == IntegrityCheckLevel.ErrorOnInvalid)
+            {
+                return ResultFs.Sha256PartitionHashVerificationFailed.Log();
+            }
         }
 
         return Result.Success;
