@@ -92,15 +92,23 @@ public class Sha256PartitionFileSystem2 : PartitionFileSystem2<Sha256PartitionFi
     {
         if (entry.HashValidity == Validity.Unchecked)
         {
-            using var buffer = new RentedArray2<byte>(entry.HashTargetSize);
-
-            var readResult = BaseStorage.Read(entry.Offset + entry.HashTargetOffset, buffer.Span);
-            if (readResult != Result.Success)
+            if (entry.HashTargetSize == 0)
             {
-                return readResult;
+                // The file didn't include a hash target, bypass validation.
+                entry.HashValidity = Validity.Valid;
             }
+            else
+            {
+                using var buffer = new RentedArray2<byte>(entry.HashTargetSize);
 
-            entry.HashValidity = CryptoUtil.CheckSha256Hash(buffer.Span, entry.Hash);
+                var readResult = BaseStorage.Read(entry.Offset + entry.HashTargetOffset, buffer.Span);
+                if (readResult != Result.Success)
+                {
+                    return readResult;
+                }
+
+                entry.HashValidity = CryptoUtil.CheckSha256Hash(buffer.Span, entry.Hash);
+            }
         }
 
         if (entry.HashValidity == Validity.Invalid)

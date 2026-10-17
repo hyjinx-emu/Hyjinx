@@ -61,7 +61,7 @@ public static class NativeTypes
     /// <summary>
     /// Describes a card header structure.
     /// </summary>
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Size = HeaderSize)]
     public struct CardHeaderStruct
     {
         [FieldOffset(0x104)] public int RomAreaStartPageAddress;

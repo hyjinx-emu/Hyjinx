@@ -12,11 +12,6 @@ namespace LibHac.Tools.Fs;
 public class XciHeader2 : XciHeader
 {
     /// <summary>
-    /// Defines the size of the header.
-    /// </summary>
-    public static int HeaderSize => NativeTypes.HeaderSize;
-
-    /// <summary>
     /// Creates a new header.
     /// </summary>
     /// <remarks>Be advised, this method expects the header to begin at offset 0. Please ensure any required storage slicing occurs before this method is executed.</remarks>
