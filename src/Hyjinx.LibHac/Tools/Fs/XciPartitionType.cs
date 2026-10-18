@@ -11,6 +11,11 @@ public enum XciPartitionType
     Update,
 
     /// <summary>
+    /// The logo partition.
+    /// </summary>
+    Logo,
+
+    /// <summary>
     /// The normal partition.
     /// </summary>
     Normal,
@@ -18,10 +23,5 @@ public enum XciPartitionType
     /// <summary>
     /// The secure partition.
     /// </summary>
-    Secure,
-
-    /// <summary>
-    /// The logo partition.
-    /// </summary>
-    Logo
+    Secure
 }
