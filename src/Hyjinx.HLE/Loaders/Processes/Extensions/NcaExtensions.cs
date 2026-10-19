@@ -168,10 +168,10 @@ public static partial class NcaExtensions
         else
         {
             // TODO: Viper - Fix modding support (BEGIN)
-            //romFs = device.Configuration.VirtualFileSystem.ModLoader.ApplyRomFsMods(processResult.ProgramId, romFs);
-
-            //device.Configuration.VirtualFileSystem.SetRomFs(processResult.ProcessId, romFs.AsStream(FileAccess.Read));
+            // romFs = device.Configuration.VirtualFileSystem.ModLoader.ApplyRomFsMods(processResult.ProgramId, romFs);
             // TODO: Viper - Fix modding support (END)
+
+            device.Configuration.VirtualFileSystem.SetRomFs(processResult.ProcessId, romFs.AsStream2());
         }
 
         // Don't create save data for system programs.
