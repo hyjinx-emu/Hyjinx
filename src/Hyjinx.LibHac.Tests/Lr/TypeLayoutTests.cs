@@ -1,19 +1,18 @@
-using LibHac.Lr;
 using System.Runtime.CompilerServices;
-using Xunit;
 using static LibHac.Tests.Common.Layout;
+using Path = LibHac.Lr.Path;
 
 namespace LibHac.Tests.Lr;
 
 public class TypeLayoutTests
 {
-    [Fact]
+    [Test]
     public static void IniHeader_Layout()
     {
         var s = new Path();
 
-        Assert.Equal(0x300, Unsafe.SizeOf<Path>());
+        Assert.That(Unsafe.SizeOf<Path>(), Is.EqualTo(0x300));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x0));
     }
 }

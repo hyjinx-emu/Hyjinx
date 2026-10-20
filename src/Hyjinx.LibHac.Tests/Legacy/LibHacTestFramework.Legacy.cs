@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Diag;
 using LibHac.Tests;
 using System.Diagnostics;
@@ -43,3 +45,5 @@ public class LibHacTestFramework : XunitTestFramework
         Result.SetNameResolver(new ResultNameResolver());
     }
 }
+
+#endif

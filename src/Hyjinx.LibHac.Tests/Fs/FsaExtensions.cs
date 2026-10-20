@@ -2,7 +2,7 @@ using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Util;
-using System;
+using Path = LibHac.Fs.Path;
 
 namespace LibHac.Tests.Fs;
 

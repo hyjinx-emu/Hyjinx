@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using System.Diagnostics;
 
@@ -10,3 +12,5 @@ public class DebugAssertHandler : DefaultTraceListener
         throw new LibHacException(message + detailMessage);
     }
 }
+
+#endif

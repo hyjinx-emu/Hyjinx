@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac;
 using Xunit.Sdk;
 
@@ -22,3 +24,5 @@ public partial class Assert
             throw EqualException.ForMismatchedValues(expected.Value, actual);
     }
 }
+
+#endif

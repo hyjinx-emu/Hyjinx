@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+#if IS_LEGACY_ENABLED
+
 using System.Reflection;
 
 namespace LibHac.Tests;
@@ -37,3 +36,5 @@ internal class ResultNameResolver : Result.IResultNameResolver
         return dict;
     }
 }
+
+#endif

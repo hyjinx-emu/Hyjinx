@@ -1,4 +1,5 @@
-using System;
+#if IS_LEGACY_ENABLED
+
 using System.Numerics;
 using System.Runtime.InteropServices;
 
@@ -68,3 +69,5 @@ public struct Random
         }
     }
 }
+
+#endif

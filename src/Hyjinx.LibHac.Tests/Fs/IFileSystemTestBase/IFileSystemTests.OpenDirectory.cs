@@ -1,13 +1,12 @@
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void OpenDirectory_PathIsFile_ReturnsPathNotFound()
     {
         IFileSystem fs = CreateFileSystem();
@@ -17,10 +16,10 @@ public abstract partial class IFileSystemTests
         using var directory = new UniqueRef<IDirectory>();
         Result res = fs.OpenDirectory(ref directory.Ref, "/file", OpenDirectoryMode.All);
 
-        Assert.Result(ResultFs.PathNotFound, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void OpenDirectory_PathDoesNotExist_ReturnsPathNotFound()
     {
         IFileSystem fs = CreateFileSystem();
@@ -28,6 +27,6 @@ public abstract partial class IFileSystemTests
         using var directory = new UniqueRef<IDirectory>();
         Result res = fs.OpenDirectory(ref directory.Ref, "/dir", OpenDirectoryMode.All);
 
-        Assert.Result(ResultFs.PathNotFound, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 }
