@@ -1,4 +1,5 @@
 using LibHac.Common;
+using LibHac.Crypto;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
@@ -71,18 +72,20 @@ public class Xci2 : Xci
 
         storage.GetSize(out var storageSize).ThrowIfFailure();
 
-        try
-        {
-            var rootFs = Sha256PartitionFileSystem2.Create(
-                storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset));
+        // Check the header validity.
+        using var headerBytes = new RentedArray2<byte>((int)header.RootPartitionHeaderSize);
+        storage.Read(header.RootPartitionOffset, headerBytes.Span).ThrowIfFailure();
 
-            return new Xci2(storage, header, rootFs);
-        }
-        catch (Exception)
+        if (CryptoUtil.CheckSha256Hash(headerBytes.Span, header.RootPartitionHeaderHash.Span) != Validity.Valid)
         {
-            storage.Dispose();
-            throw;
+            throw new LibHacException("The hash did not match.");
         }
+
+        var rootFs = Sha256PartitionFileSystem2.Create(
+                storage.Slice2(header.RootPartitionOffset, storageSize - header.RootPartitionOffset),
+                IntegrityCheckLevel.ErrorOnInvalid);
+
+        return new Xci2(storage, header, rootFs);
     }
 
     public override bool HasPartition(XciPartitionType type)
@@ -101,7 +104,8 @@ public class Xci2 : Xci
         {
             var storage = StreamStorage2.Create(stream);
 
-            return Sha256PartitionFileSystem2.Create(storage);
+            return Sha256PartitionFileSystem2.Create(storage,
+                IntegrityCheckLevel.ErrorOnInvalid);
         }
         catch (Exception)
         {

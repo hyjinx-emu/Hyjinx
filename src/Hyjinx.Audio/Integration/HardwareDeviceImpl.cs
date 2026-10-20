@@ -27,7 +27,7 @@ public class HardwareDeviceImpl : IHardwareDevice
 
     public void AppendBuffer(ReadOnlySpan<short> data, uint channelCount)
     {
-        data.CopyTo(MemoryMarshal.Cast<byte, short>(_buffer));
+        data.CopyTo(MemoryMarshal.Cast<byte, short>(_buffer.AsSpan()));
 
         _session.QueueBuffer(new AudioBuffer
         {

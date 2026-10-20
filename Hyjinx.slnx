@@ -1,0 +1,101 @@
+<Solution>
+  <Folder Name="/Core/">
+    <Project Path="src/Hyjinx.Audio.Abstractions/Hyjinx.Audio.Abstractions.csproj" />
+    <Project Path="src/Hyjinx.Cpu.Abstractions/Hyjinx.Cpu.Abstractions.csproj" />
+    <Project Path="src/Hyjinx.Input.Abstractions/Hyjinx.Input.Abstractions.csproj" />
+    <Project Path="src/Hyjinx.Logging.Abstractions/Hyjinx.Logging.Abstractions.csproj" />
+    <Project Path="src/Hyjinx.Memory.Abstractions/Hyjinx.Memory.Abstractions.csproj" />
+  </Folder>
+  <Folder Name="/Generators/">
+    <Project Path="src/Hyjinx.HLE.Generators/Hyjinx.HLE.Generators.csproj" />
+    <Project Path="src/Hyjinx.HLE.Kernel.Generators/Hyjinx.HLE.Kernel.Generators.csproj" />
+    <Project Path="src/Hyjinx.Horizon.Generators/Hyjinx.Horizon.Generators.csproj" />
+    <Project Path="src/Hyjinx.UI.LocaleGenerator/Hyjinx.UI.LocaleGenerator.csproj" />
+    <Project Path="src/Spv.Generator/Spv.Generator.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/" />
+  <Folder Name="/Plugins/Audio/">
+    <Project Path="src/Hyjinx.Audio.Backends.OpenAL/Hyjinx.Audio.Backends.OpenAL.csproj" />
+    <Project Path="src/Hyjinx.Audio.Backends.SDL2/Hyjinx.Audio.Backends.SDL2.csproj" />
+    <Project Path="src/Hyjinx.Audio.Backends.SoundIo/Hyjinx.Audio.Backends.SoundIo.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/Graphics/">
+    <Project Path="src/Hyjinx.Graphics.Host1x/Hyjinx.Graphics.Host1x.csproj" />
+    <Project Path="src/Hyjinx.Graphics.Nvdec.FFmpeg/Hyjinx.Graphics.Nvdec.FFmpeg.csproj" />
+    <Project Path="src/Hyjinx.Graphics.Nvdec.Vp9/Hyjinx.Graphics.Nvdec.Vp9.csproj" />
+    <Project Path="src/Hyjinx.Graphics.Nvdec/Hyjinx.Graphics.Nvdec.csproj" />
+    <Project Path="src/Hyjinx.Graphics.OpenGL/Hyjinx.Graphics.OpenGL.csproj" />
+    <Project Path="src/Hyjinx.Graphics.Vulkan/Hyjinx.Graphics.Vulkan.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/SDL2/">
+    <Project Path="src/Hyjinx.Input.SDL2/Hyjinx.Input.SDL2.csproj" />
+    <Project Path="src/Hyjinx.SDL2.Common/Hyjinx.SDL2.Common.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/">
+    <File Path=".github/dependabot.yml" />
+    <File Path=".github/labeler.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/actions/" />
+  <Folder Name="/Solution Items/.github/actions/build-template/">
+    <File Path=".github/actions/build-template/action.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/actions/bump-version/">
+    <File Path=".github/actions/bump-version/action.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/actions/nuget-template/">
+    <File Path=".github/actions/nuget-template/action.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/actions/package-template/">
+    <File Path=".github/actions/package-template/action.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/actions/prepare-version/">
+    <File Path=".github/actions/prepare-version/action.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/workflows/">
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/checks.yml" />
+    <File Path=".github/workflows/publish.yml" />
+    <File Path=".github/workflows/triage.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/build/">
+    <File Path="src/.build/exe.props" />
+    <File Path="src/.build/generator.props" />
+    <File Path="src/.build/library.props" />
+    <File Path="src/.build/nupkg.props" />
+    <File Path="src/.build/shared.props" />
+    <File Path="src/.build/unittest.props" />
+  </Folder>
+  <Project Path="src/ARMeilleure/ARMeilleure.csproj" />
+  <Project Path="src/Hyjinx.Audio/Hyjinx.Audio.csproj" />
+  <Project Path="src/Hyjinx.Common/Hyjinx.Common.csproj" />
+  <Project Path="src/Hyjinx.Cpu/Hyjinx.Cpu.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Device/Hyjinx.Graphics.Device.csproj" />
+  <Project Path="src/Hyjinx.Graphics.GAL/Hyjinx.Graphics.GAL.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Gpu/Hyjinx.Graphics.Gpu.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Shader/Hyjinx.Graphics.Shader.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Texture/Hyjinx.Graphics.Texture.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Vic/Hyjinx.Graphics.Vic.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Video/Hyjinx.Graphics.Video.csproj" />
+  <Project Path="src/Hyjinx.HLE.Tests/Hyjinx.HLE.Tests.csproj" />
+  <Project Path="src/Hyjinx.HLE/Hyjinx.HLE.csproj" />
+  <Project Path="src/Hyjinx.Horizon/Hyjinx.Horizon.csproj" />
+  <Project Path="src/Hyjinx.Input/Hyjinx.Input.csproj" />
+  <Project Path="src/Hyjinx.LibHac.Tests/Hyjinx.LibHac.Tests.csproj" />
+  <Project Path="src/Hyjinx.LibHac/Hyjinx.LibHac.csproj" />
+  <Project Path="src/Hyjinx.Memory.Tests/Hyjinx.Memory.Tests.csproj" />
+  <Project Path="src/Hyjinx.Memory/Hyjinx.Memory.csproj" />
+  <Project Path="src/Hyjinx.SPB/Hyjinx.SPB.csproj" />
+  <Project Path="src/Hyjinx.Tests.Unicorn/Hyjinx.Tests.Unicorn.csproj" />
+  <Project Path="src/Hyjinx.Tests/Hyjinx.Tests.csproj" />
+  <Project Path="src/Hyjinx.UI.Common/Hyjinx.UI.Common.csproj" />
+  <Project Path="src/Hyjinx/Hyjinx.csproj" />
+</Solution>

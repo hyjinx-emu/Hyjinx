@@ -293,7 +293,7 @@ public class Translator
 
         if (context.HasPtc && !singleStep)
         {
-            Hash128 hash = Ptc.ComputeHash(Memory, address, funcSize);
+            UInt128 hash = Ptc.ComputeHash(Memory, address, funcSize);
 
             _ptc.WriteCompiledFunction(address, funcSize, hash, highCq, compiledFunc);
         }
