@@ -1,6 +1,7 @@
-using Hyjinx.Common;
 using Hyjinx.Graphics.GAL;
+using System;
 using System.Globalization;
+using System.IO.Hashing;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -223,7 +224,7 @@ static class AdvancedBlendFunctions
 
         foreach (var entry in Table)
         {
-            Hash128 hash = XXHash128.ComputeHash(MemoryMarshal.Cast<uint, byte>(entry.Code));
+            UInt128 hash = XxHash128.HashToUInt128(MemoryMarshal.Cast<uint, byte>(entry.Code));
 
             string[] constants = new string[entry.Constants != null ? entry.Constants.Length : 0];
 
@@ -248,7 +249,7 @@ static class AdvancedBlendFunctions
 
             string alpha = $"new {nameof(FixedFunctionAlpha)}({EnumValue(nameof(BlendUcodeEnable), entry.Alpha.Enable)}, {EnumValue(nameof(BlendOp), entry.Alpha.AlphaOp)}, {EnumValue(nameof(BlendFactor), entry.Alpha.AlphaSrcFactor)}, {EnumValue(nameof(BlendFactor), entry.Alpha.AlphaDstFactor)})";
 
-            sb.AppendLine($"    {{ new Hash128(0x{hash.Low:X16}, 0x{hash.High:X16}), new AdvancedBlendEntry({nameof(AdvancedBlendOp)}.{entry.Op}, {nameof(AdvancedBlendOverlap)}.{entry.Overlap}, {(entry.SrcPreMultiplied ? "true" : "false")}, {constantList}, {alpha}) }},");
+            sb.AppendLine($"    {{ new UInt128(0x{(ulong)hash:X16}, 0x{(ulong)(hash >> 64):X16}), new AdvancedBlendEntry({nameof(AdvancedBlendOp)}.{entry.Op}, {nameof(AdvancedBlendOverlap)}.{entry.Overlap}, {(entry.SrcPreMultiplied ? "true" : "false")}, {constantList}, {alpha}) }},");
         }
 
         sb.AppendLine("};");

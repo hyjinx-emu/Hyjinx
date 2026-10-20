@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.IO.Hashing;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -312,8 +313,7 @@ partial class Ptc : IPtcLoadState
                 ReadOnlySpan<byte> infosBytes = new(stream.PositionPointer, innerHeader.InfosLength);
                 stream.Seek(innerHeader.InfosLength, SeekOrigin.Current);
 
-                Hash128 infosHash = XXHash128.ComputeHash(infosBytes);
-
+                var infosHash = XxHash128.HashToUInt128(infosBytes);
                 if (innerHeader.InfosHash != infosHash)
                 {
                     InvalidateCompressedStream(compressedStream);
@@ -324,8 +324,7 @@ partial class Ptc : IPtcLoadState
                 ReadOnlySpan<byte> codesBytes = (int)innerHeader.CodesLength > 0 ? new(stream.PositionPointer, (int)innerHeader.CodesLength) : ReadOnlySpan<byte>.Empty;
                 stream.Seek(innerHeader.CodesLength, SeekOrigin.Current);
 
-                Hash128 codesHash = XXHash128.ComputeHash(codesBytes);
-
+                var codesHash = XxHash128.HashToUInt128(codesBytes);
                 if (innerHeader.CodesHash != codesHash)
                 {
                     InvalidateCompressedStream(compressedStream);
@@ -336,8 +335,7 @@ partial class Ptc : IPtcLoadState
                 ReadOnlySpan<byte> relocsBytes = new(stream.PositionPointer, innerHeader.RelocsLength);
                 stream.Seek(innerHeader.RelocsLength, SeekOrigin.Current);
 
-                Hash128 relocsHash = XXHash128.ComputeHash(relocsBytes);
-
+                var relocsHash = XxHash128.HashToUInt128(relocsBytes);
                 if (innerHeader.RelocsHash != relocsHash)
                 {
                     InvalidateCompressedStream(compressedStream);
@@ -348,8 +346,7 @@ partial class Ptc : IPtcLoadState
                 ReadOnlySpan<byte> unwindInfosBytes = new(stream.PositionPointer, innerHeader.UnwindInfosLength);
                 stream.Seek(innerHeader.UnwindInfosLength, SeekOrigin.Current);
 
-                Hash128 unwindInfosHash = XXHash128.ComputeHash(unwindInfosBytes);
-
+                var unwindInfosHash = XxHash128.HashToUInt128(unwindInfosBytes);
                 if (innerHeader.UnwindInfosHash != unwindInfosHash)
                 {
                     InvalidateCompressedStream(compressedStream);
@@ -500,10 +497,10 @@ partial class Ptc : IPtcLoadState
 
             Debug.Assert(stream.Position == stream.Length);
 
-            innerHeader.InfosHash = XXHash128.ComputeHash(infosBytes);
-            innerHeader.CodesHash = XXHash128.ComputeHash(codesBytes);
-            innerHeader.RelocsHash = XXHash128.ComputeHash(relocsBytes);
-            innerHeader.UnwindInfosHash = XXHash128.ComputeHash(unwindInfosBytes);
+            innerHeader.InfosHash = XxHash128.HashToUInt128(infosBytes);
+            innerHeader.CodesHash = XxHash128.HashToUInt128(codesBytes);
+            innerHeader.RelocsHash = XxHash128.HashToUInt128(relocsBytes);
+            innerHeader.UnwindInfosHash = XxHash128.HashToUInt128(unwindInfosBytes);
 
             innerHeader.SetHeaderHash();
 
@@ -949,12 +946,12 @@ partial class Ptc : IPtcLoadState
         while (!endEvent.WaitOne(RefreshRate));
     }
 
-    public static Hash128 ComputeHash(IMemoryManager memory, ulong address, ulong guestSize)
+    public static UInt128 ComputeHash(IMemoryManager memory, ulong address, ulong guestSize)
     {
-        return XXHash128.ComputeHash(memory.GetSpan(address, checked((int)(guestSize))));
+        return XxHash128.HashToUInt128(memory.GetSpan(address, checked((int)guestSize)));
     }
 
-    public void WriteCompiledFunction(ulong address, ulong guestSize, Hash128 hash, bool highCq, CompiledFunction compiledFunc)
+    public void WriteCompiledFunction(ulong address, ulong guestSize, UInt128 hash, bool highCq, CompiledFunction compiledFunc)
     {
         lock (_lock)
         {
@@ -1074,20 +1071,20 @@ partial class Ptc : IPtcLoadState
 
         public long UncompressedStreamSize;
 
-        public Hash128 HeaderHash;
+        public UInt128 HeaderHash;
 
         public void SetHeaderHash()
         {
             Span<OuterHeader> spanHeader = MemoryMarshal.CreateSpan(ref this, 1);
 
-            HeaderHash = XXHash128.ComputeHash(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<OuterHeader>() - Unsafe.SizeOf<Hash128>())]);
+            HeaderHash = XxHash128.HashToUInt128(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<OuterHeader>() - Unsafe.SizeOf<UInt128>())]);
         }
 
         public bool IsHeaderValid()
         {
             Span<OuterHeader> spanHeader = MemoryMarshal.CreateSpan(ref this, 1);
 
-            return XXHash128.ComputeHash(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<OuterHeader>() - Unsafe.SizeOf<Hash128>())]) == HeaderHash;
+            return XxHash128.HashToUInt128(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<OuterHeader>() - Unsafe.SizeOf<UInt128>())]) == HeaderHash;
         }
     }
 
@@ -1104,25 +1101,25 @@ partial class Ptc : IPtcLoadState
         public int RelocsLength;
         public int UnwindInfosLength;
 
-        public Hash128 InfosHash;
-        public Hash128 CodesHash;
-        public Hash128 RelocsHash;
-        public Hash128 UnwindInfosHash;
+        public UInt128 InfosHash;
+        public UInt128 CodesHash;
+        public UInt128 RelocsHash;
+        public UInt128 UnwindInfosHash;
 
-        public Hash128 HeaderHash;
+        public UInt128 HeaderHash;
 
         public void SetHeaderHash()
         {
             Span<InnerHeader> spanHeader = MemoryMarshal.CreateSpan(ref this, 1);
 
-            HeaderHash = XXHash128.ComputeHash(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<InnerHeader>() - Unsafe.SizeOf<Hash128>())]);
+            HeaderHash = XxHash128.HashToUInt128(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<InnerHeader>() - Unsafe.SizeOf<UInt128>())]);
         }
 
         public bool IsHeaderValid()
         {
             Span<InnerHeader> spanHeader = MemoryMarshal.CreateSpan(ref this, 1);
 
-            return XXHash128.ComputeHash(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<InnerHeader>() - Unsafe.SizeOf<Hash128>())]) == HeaderHash;
+            return XxHash128.HashToUInt128(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<InnerHeader>() - Unsafe.SizeOf<UInt128>())]) == HeaderHash;
         }
     }
 
@@ -1131,7 +1128,7 @@ partial class Ptc : IPtcLoadState
     {
         public ulong Address;
         public ulong GuestSize;
-        public Hash128 Hash;
+        public UInt128 Hash;
         public bool HighCq;
         public bool Stubbed;
         public int CodeLength;
