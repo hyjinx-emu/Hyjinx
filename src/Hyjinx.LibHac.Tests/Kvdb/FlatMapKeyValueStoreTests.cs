@@ -5,13 +5,23 @@ using LibHac.Kvdb;
 using LibHac.Tests.Fs.FileSystemClientTests;
 using LibHac.Tools.Fs;
 using System;
-using Xunit;
+using NUnit.Framework;
 using TTest = System.Int32;
 
 namespace LibHac.Tests.Kvdb;
 
 public class FlatMapKeyValueStoreTests
 {
+    private static void AssertSuccess(Result result)
+    {
+        Assert.That(result.IsSuccess(), Is.True, result.ToString());
+    }
+
+    private static void AssertResult(Result.Base expected, Result actual)
+    {
+        Assert.That(expected.Includes(actual), Is.True, actual.ToString());
+    }
+
     private static ReadOnlySpan<byte> MountName => "mount"u8;
     private static ReadOnlySpan<byte> RootPath => "mount:/"u8;
     private static ReadOnlySpan<byte> ArchiveFilePath => "mount:/imkvdb.arc"u8;
@@ -86,52 +96,50 @@ public class FlatMapKeyValueStoreTests
         return Result.Success;
     }
 
-    [Fact]
+    [Test]
     public void Count_EmptyStore_ReturnsZero()
     {
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(10);
 
-        Assert.Equal(0, kvStore.Count);
+        Assert.That(kvStore.Count, Is.EqualTo(0));
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(5)]
-    [InlineData(10)]
+    [TestCase(1)]
+    [TestCase(5)]
+    [TestCase(10)]
     public void Count_PopulatedStore_ReturnsCorrectCount(int count)
     {
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(10);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
-        Assert.Equal(count, kvStore.Count);
+        Assert.That(kvStore.Count, Is.EqualTo(count));
     }
 
-    [Fact]
+    [Test]
     public void Load_FileDoesNotExist_ExistingEntriesAreCleared()
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
-        Assert.Success(kvStore.Load());
-        Assert.Equal(0, kvStore.Count);
+        AssertSuccess(kvStore.Load());
+        Assert.That(kvStore.Count, Is.EqualTo(0));
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(10)]
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(10)]
     public void Load_AfterArchiveHasBeenSaved_AllEntriesAreLoaded(int count)
     {
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient fsClient) = Create<TTest>(count + 5);
-        Assert.Success(PopulateKvStore(kvStore, out byte[][] values, count));
+        AssertSuccess(PopulateKvStore(kvStore, out byte[][] values, count));
 
-        Assert.Success(kvStore.Save());
+        AssertSuccess(kvStore.Save());
         kvStore.Dispose();
 
         kvStore = Create<TTest>(fsClient, count + 5);
-        Assert.Success(kvStore.Load());
+        AssertSuccess(kvStore.Load());
 
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetBeginIterator();
 
@@ -143,62 +151,61 @@ public class FlatMapKeyValueStoreTests
 
             ref FlatMapKeyValueStore<TTest>.KeyValue kv = ref iterator.Get();
 
-            Assert.Equal(expectedKey, kv.Key);
-            Assert.Equal(expectedValue, kv.Value.Span.ToArray());
+            Assert.That(kv.Key, Is.EqualTo(expectedKey));
+            Assert.That(kv.Value.Span.ToArray(), Is.EqualTo(expectedValue));
 
             iterator.Next();
         }
 
-        Assert.True(iterator.IsEnd());
+        Assert.That(iterator.IsEnd(), Is.True);
     }
 
-    [Fact]
+    [Test]
     public void Load_CapacityIsTooSmall_ReturnsOutOfKeyResource()
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient fsClient) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
-        Assert.Success(kvStore.Save());
+        AssertSuccess(kvStore.Save());
         kvStore.Dispose();
 
 
         kvStore = Create<TTest>(fsClient, count - 5);
-        Assert.Result(ResultKvdb.OutOfKeyResource, kvStore.Load());
+        AssertResult(ResultKvdb.OutOfKeyResource, kvStore.Load());
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(1)]
-    [InlineData(10)]
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(10)]
     public void Save_ArchiveFileIsWrittenToDisk(int count)
     {
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient fsClient) = Create<TTest>(count + 5);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
-        Assert.Success(kvStore.Save());
+        AssertSuccess(kvStore.Save());
 
-        Assert.Success(fsClient.GetEntryType(out DirectoryEntryType entryType, ArchiveFilePath));
-        Assert.Equal(DirectoryEntryType.File, entryType);
+        AssertSuccess(fsClient.GetEntryType(out DirectoryEntryType entryType, ArchiveFilePath));
+        Assert.That(entryType, Is.EqualTo(DirectoryEntryType.File));
     }
 
-    [Fact]
+    [Test]
     public void Get_PopulatedStoreAndEntryDoesNotExist_ReturnsKeyNotFound()
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
         TTest key = 20;
         byte[] value = new byte[20];
 
         Result res = kvStore.Get(out int _, in key, value);
-        Assert.Result(ResultKvdb.KeyNotFound, res);
+        AssertResult(ResultKvdb.KeyNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void Get_PopulatedStore_GetsCorrectValueSizes()
     {
         const int count = 10;
@@ -206,19 +213,19 @@ public class FlatMapKeyValueStoreTests
         const int rngSeed = 220;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count, startingValueSize, rngSeed));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count, startingValueSize, rngSeed));
 
         // Check the size of each entry
         byte[] value = new byte[100];
 
         for (TTest i = 0; i < count; i++)
         {
-            Assert.Success(kvStore.Get(out int valueSize, in i, value));
-            Assert.Equal(startingValueSize + i, valueSize);
+            AssertSuccess(kvStore.Get(out int valueSize, in i, value));
+            Assert.That(valueSize, Is.EqualTo(startingValueSize + i));
         }
     }
 
-    [Fact]
+    [Test]
     public void Get_PopulatedStoreAndEntryExists_GetsCorrectValue()
     {
         const int count = 10;
@@ -226,7 +233,7 @@ public class FlatMapKeyValueStoreTests
         const int rngSeed = 188;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out byte[][] values, count, startingValueSize, rngSeed));
+        AssertSuccess(PopulateKvStore(kvStore, out byte[][] values, count, startingValueSize, rngSeed));
 
         // Check if each value matches
         byte[] value = new byte[100];
@@ -234,61 +241,58 @@ public class FlatMapKeyValueStoreTests
         for (int i = 0; i < count; i++)
         {
             TTest key = i;
-            Assert.Success(kvStore.Get(out int _, in key, value));
-            Assert.Equal(values[i], value.AsSpan(0, startingValueSize + i).ToArray());
+            AssertSuccess(kvStore.Get(out int _, in key, value));
+            Assert.That(value.AsSpan(0, startingValueSize + i).ToArray(), Is.EqualTo(values[i]));
         }
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(5)]
-    [InlineData(10)]
+    [TestCase(1)]
+    [TestCase(5)]
+    [TestCase(10)]
     public void Set_StoreIsFullAndEntryDoesNotExist_ReturnsOutOfKeyResource(int count)
     {
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out byte[][] values, count));
+        AssertSuccess(PopulateKvStore(kvStore, out byte[][] values, count));
 
         TTest key = count;
         Result res = kvStore.Set(in key, values[0]);
 
-        Assert.Result(ResultKvdb.OutOfKeyResource, res);
+        AssertResult(ResultKvdb.OutOfKeyResource, res);
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(5)]
-    [InlineData(9)]
+    [TestCase(0)]
+    [TestCase(5)]
+    [TestCase(9)]
     public void Set_StoreIsFullAndEntryAlreadyExists_ReplacesOriginalValue(int entryToReplace)
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
         TTest key = entryToReplace;
         byte[] value = new byte[15];
         value.AsSpan().Fill(0xFF);
 
-        Assert.Success(kvStore.Set(in key, value));
+        AssertSuccess(kvStore.Set(in key, value));
 
         // Read back the value
         byte[] readValue = new byte[20];
-        Assert.Success(kvStore.Get(out int valueSize, in key, readValue));
+        AssertSuccess(kvStore.Get(out int valueSize, in key, readValue));
 
         // Check the value contents and size
-        Assert.Equal(value.Length, valueSize);
-        Assert.Equal(value, readValue.AsSpan(0, valueSize).ToArray());
+        Assert.That(valueSize, Is.EqualTo(value.Length));
+        Assert.That(readValue.AsSpan(0, valueSize).ToArray(), Is.EqualTo(value));
     }
 
-    [Theory]
-    [InlineData(10, 89)]
-    [InlineData(10, 50)]
-    [InlineData(1000, 75367)]
-    [InlineData(1000, 117331)]
+    [TestCase(10, 89)]
+    [TestCase(10, 50)]
+    [TestCase(1000, 75367)]
+    [TestCase(1000, 117331)]
     public void Set_StoreIsFilledInRandomOrder_EntriesAreSorted(int entryCount, int rngSeed)
     {
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(entryCount + 10);
-        Assert.Success(PopulateKvStore(kvStore, out byte[][] values, entryCount, 20, rngSeed));
+        AssertSuccess(PopulateKvStore(kvStore, out byte[][] values, entryCount, 20, rngSeed));
 
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetBeginIterator();
 
@@ -300,16 +304,16 @@ public class FlatMapKeyValueStoreTests
 
             ref FlatMapKeyValueStore<TTest>.KeyValue kv = ref iterator.Get();
 
-            Assert.Equal(expectedKey, kv.Key);
-            Assert.Equal(expectedValue, kv.Value.Span.ToArray());
+            Assert.That(kv.Key, Is.EqualTo(expectedKey));
+            Assert.That(kv.Value.Span.ToArray(), Is.EqualTo(expectedValue));
 
             iterator.Next();
         }
 
-        Assert.True(iterator.IsEnd());
+        Assert.That(iterator.IsEnd(), Is.True);
     }
 
-    [Fact]
+    [Test]
     public void Delete_EmptyStore_ReturnsKeyNotFound()
     {
         const int count = 10;
@@ -318,26 +322,25 @@ public class FlatMapKeyValueStoreTests
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
 
         Result res = kvStore.Delete(in keyToDelete);
-        Assert.Result(ResultKvdb.KeyNotFound, res);
+        AssertResult(ResultKvdb.KeyNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void Delete_PopulatedStoreAndEntryDoesNotExist_ReturnsKeyNotFound()
     {
         const int count = 10;
         TTest keyToDelete = 44;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
         Result res = kvStore.Delete(in keyToDelete);
-        Assert.Result(ResultKvdb.KeyNotFound, res);
+        AssertResult(ResultKvdb.KeyNotFound, res);
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(5)]
-    [InlineData(9)]
+    [TestCase(0)]
+    [TestCase(5)]
+    [TestCase(9)]
     public void Delete_PopulatedStoreAndEntryExists_CannotGetAfterDeletion(int entryToDelete)
     {
         const int count = 10;
@@ -345,47 +348,45 @@ public class FlatMapKeyValueStoreTests
         const int rngSeed = 114;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count, startingValueSize, rngSeed));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count, startingValueSize, rngSeed));
 
         TTest keyToDelete = entryToDelete;
-        Assert.Success(kvStore.Delete(in keyToDelete));
+        AssertSuccess(kvStore.Delete(in keyToDelete));
 
         byte[] value = new byte[20];
 
         Result res = kvStore.Get(out int _, in keyToDelete, value);
-        Assert.Result(ResultKvdb.KeyNotFound, res);
+        AssertResult(ResultKvdb.KeyNotFound, res);
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(5)]
-    [InlineData(9)]
+    [TestCase(0)]
+    [TestCase(5)]
+    [TestCase(9)]
     public void Delete_PopulatedStoreAndEntryExists_CountIsDecremented(int entryToDelete)
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
         TTest keyToDelete = entryToDelete;
-        Assert.Success(kvStore.Delete(in keyToDelete));
+        AssertSuccess(kvStore.Delete(in keyToDelete));
 
-        Assert.Equal(count - 1, kvStore.Count);
+        Assert.That(kvStore.Count, Is.EqualTo(count - 1));
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(5)]
-    [InlineData(9)]
+    [TestCase(0)]
+    [TestCase(5)]
+    [TestCase(9)]
     public void Delete_PopulatedStoreAndEntryExists_RemainingEntriesAreSorted(int entryToDelete)
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
         TTest keyToDelete = entryToDelete;
-        Assert.Success(kvStore.Delete(in keyToDelete));
+        AssertSuccess(kvStore.Delete(in keyToDelete));
 
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetBeginIterator();
 
@@ -397,36 +398,34 @@ public class FlatMapKeyValueStoreTests
 
             TTest expectedKey = i;
 
-            Assert.Equal(expectedKey, iterator.Get().Key);
+            Assert.That(iterator.Get().Key, Is.EqualTo(expectedKey));
 
             iterator.Next();
         }
 
-        Assert.True(iterator.IsEnd());
+        Assert.That(iterator.IsEnd(), Is.True);
     }
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(5)]
-    [InlineData(9)]
+    [TestCase(0)]
+    [TestCase(5)]
+    [TestCase(9)]
     public void GetLowerBoundIterator_EntryExists_StartsIterationAtSpecifiedKey(int startEntry)
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
         TTest startingKey = startEntry;
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetLowerBoundIterator(in startingKey);
 
-        Assert.False(iterator.IsEnd());
-        Assert.Equal(startingKey, iterator.Get().Key);
+        Assert.That(iterator.IsEnd(), Is.False);
+        Assert.That(iterator.Get().Key, Is.EqualTo(startingKey));
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(5)]
-    [InlineData(9)]
+    [TestCase(1)]
+    [TestCase(5)]
+    [TestCase(9)]
     public void GetLowerBoundIterator_EntryDoesNotExist_StartsIterationAtNextLargestKey(int startIndex)
     {
         const int count = 10;
@@ -439,42 +438,41 @@ public class FlatMapKeyValueStoreTests
         for (int i = 0; i < count; i++)
         {
             TTest key = i * 2;
-            Assert.Success(kvStore.Set(in key, values[i]));
+            AssertSuccess(kvStore.Set(in key, values[i]));
         }
 
         TTest startingKey = startIndex;
         TTest nextLargestKey = startIndex + 1;
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetLowerBoundIterator(in startingKey);
 
-        Assert.False(iterator.IsEnd());
-        Assert.Equal(nextLargestKey, iterator.Get().Key);
+        Assert.That(iterator.IsEnd(), Is.False);
+        Assert.That(iterator.Get().Key, Is.EqualTo(nextLargestKey));
     }
 
-    [Fact]
+    [Test]
     public void GetLowerBoundIterator_LargerThanAllKeysInStore_IteratorIsAtEnd()
     {
         const int count = 10;
         const int startIndex = 20;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
         TTest key = startIndex;
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetLowerBoundIterator(in key);
 
-        Assert.True(iterator.IsEnd());
+        Assert.That(iterator.IsEnd(), Is.True);
     }
 
-    [Theory]
-    [InlineData(2, 3, 2)]
-    [InlineData(3, 3, 4)]
-    [InlineData(5, 3, 5)]
+    [TestCase(2, 3, 2)]
+    [TestCase(3, 3, 4)]
+    [TestCase(5, 3, 5)]
     public void FixIterator_RemoveEntry_IteratorPointsToSameEntry(int positionWhenRemoving, int entryToRemove, int expectedNewPosition)
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetBeginIterator();
 
@@ -484,17 +482,16 @@ public class FlatMapKeyValueStoreTests
         }
 
         TTest keyToRemove = entryToRemove;
-        Assert.Success(kvStore.Delete(in keyToRemove));
+        AssertSuccess(kvStore.Delete(in keyToRemove));
 
         kvStore.FixIterator(ref iterator, in keyToRemove);
 
         TTest expectedKey = expectedNewPosition;
-        Assert.Equal(expectedKey, iterator.Get().Key);
+        Assert.That(iterator.Get().Key, Is.EqualTo(expectedKey));
     }
 
-    [Theory]
-    [InlineData(6, 7, 6)]
-    [InlineData(8, 7, 8)]
+    [TestCase(6, 7, 6)]
+    [TestCase(8, 7, 8)]
     public void FixIterator_AddEntry_IteratorPointsToSameEntry(int positionWhenAdding, int entryToAdd, int expectedNewPosition)
     {
         const int count = 10;
@@ -507,7 +504,7 @@ public class FlatMapKeyValueStoreTests
         for (int i = 0; i < count; i++)
         {
             TTest key = i * 2;
-            Assert.Success(kvStore.Set(in key, values[i]));
+            AssertSuccess(kvStore.Set(in key, values[i]));
         }
 
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetBeginIterator();
@@ -520,15 +517,15 @@ public class FlatMapKeyValueStoreTests
         TTest keyToAdd = entryToAdd;
         byte[] valueToAdd = new byte[10];
 
-        Assert.Success(kvStore.Set(in keyToAdd, valueToAdd));
+        AssertSuccess(kvStore.Set(in keyToAdd, valueToAdd));
 
         kvStore.FixIterator(ref iterator, in keyToAdd);
 
         TTest expectedKey = expectedNewPosition;
-        Assert.Equal(expectedKey, iterator.Get().Key);
+        Assert.That(iterator.Get().Key, Is.EqualTo(expectedKey));
     }
 
-    [Fact]
+    [Test]
     public void IteratorIsEnd_EmptyStore_ReturnsTrue()
     {
         const int count = 10;
@@ -536,36 +533,36 @@ public class FlatMapKeyValueStoreTests
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
 
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetBeginIterator();
-        Assert.True(iterator.IsEnd());
+        Assert.That(iterator.IsEnd(), Is.True);
     }
 
-    [Fact]
+    [Test]
     public void IteratorIsEnd_PopulatedStore_ReturnsFalseUntilFinishedIterating()
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out _, count));
+        AssertSuccess(PopulateKvStore(kvStore, out _, count));
 
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetBeginIterator();
 
         for (int i = 0; i < count; i++)
         {
-            Assert.False(iterator.IsEnd());
+            Assert.That(iterator.IsEnd(), Is.False);
             iterator.Next();
         }
 
         // Iterated all entries. Should return true now
-        Assert.True(iterator.IsEnd());
+        Assert.That(iterator.IsEnd(), Is.True);
     }
 
-    [Fact]
+    [Test]
     public void IteratorGet_PopulatedStore_ReturnsEntriesInOrder()
     {
         const int count = 10;
 
         (FlatMapKeyValueStore<TTest> kvStore, FileSystemClient _) = Create<TTest>(count);
-        Assert.Success(PopulateKvStore(kvStore, out byte[][] values, count));
+        AssertSuccess(PopulateKvStore(kvStore, out byte[][] values, count));
 
         FlatMapKeyValueStore<TTest>.Iterator iterator = kvStore.GetBeginIterator();
 
@@ -577,8 +574,8 @@ public class FlatMapKeyValueStoreTests
 
             ref FlatMapKeyValueStore<TTest>.KeyValue kv = ref iterator.Get();
 
-            Assert.Equal(expectedKey, kv.Key);
-            Assert.Equal(expectedValue, kv.Value.Span.ToArray());
+            Assert.That(kv.Key, Is.EqualTo(expectedKey));
+            Assert.That(kv.Value.Span.ToArray(), Is.EqualTo(expectedValue));
 
             iterator.Next();
         }
