@@ -5,13 +5,13 @@ using LibHac.FsSrv.Impl;
 using LibHac.Ncm;
 using LibHac.Util;
 using System;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.FsSrv;
 
 public class ProgramIndexMapInfoTests
 {
-    [Fact]
+    [Test]
     public void GetProgramIndexForAccessLog_IsMultiProgram_ReturnsCorrectIndex()
     {
         const int count = 7;
@@ -39,16 +39,18 @@ public class ProgramIndexMapInfoTests
             map[i].ProgramIndex = (byte)i;
         }
 
-        Assert.Success(programs[0].Fs.RegisterProgramIndexMapInfo(map));
+        Result registerResult = programs[0].Fs.RegisterProgramIndexMapInfo(map);
+        Assert.That(registerResult.IsSuccess(), Is.True, registerResult.ToString());
 
         for (int i = 0; i < programs.Length; i++)
         {
             using SharedRef<LibHac.FsSrv.Sf.IFileSystemProxy> fsProxy =
                 programs[i].Fs.Impl.GetFileSystemProxyServiceObject();
-            Assert.Success(fsProxy.Get.GetProgramIndexForAccessLog(out int programIndex, out int programCount));
+            Result result = fsProxy.Get.GetProgramIndexForAccessLog(out int programIndex, out int programCount);
+            Assert.That(result.IsSuccess(), Is.True, result.ToString());
 
-            Assert.Equal(i, programIndex);
-            Assert.Equal(count, programCount);
+            Assert.That(programIndex, Is.EqualTo(i));
+            Assert.That(programCount, Is.EqualTo(count));
         }
     }
 
@@ -65,25 +67,26 @@ public class ProgramIndexMapInfoTests
             map[i].ProgramIndex = (byte)i;
         }
 
-        Assert.Success(manager.Reset(map));
+        Result result = manager.Reset(map);
+        Assert.That(result.IsSuccess(), Is.True, result.ToString());
 
         return manager;
     }
 
-    [Fact]
+    [Test]
     public void Get_IdDoesNotExist_ReturnsNull()
     {
         const int count = 5;
 
         ProgramIndexMapInfoManager manager = CreatePopulatedManager(count, x => x + 3);
 
-        Assert.False(manager.Get(new ProgramId(0)).HasValue);
-        Assert.False(manager.Get(new ProgramId(2)).HasValue);
-        Assert.False(manager.Get(new ProgramId(8)).HasValue);
-        Assert.False(manager.Get(new ProgramId(9001)).HasValue);
+        Assert.That(manager.Get(new ProgramId(0)).HasValue, Is.False);
+        Assert.That(manager.Get(new ProgramId(2)).HasValue, Is.False);
+        Assert.That(manager.Get(new ProgramId(8)).HasValue, Is.False);
+        Assert.That(manager.Get(new ProgramId(9001)).HasValue, Is.False);
     }
 
-    [Fact]
+    [Test]
     public void Get_IdExists_ReturnsCorrectMapInfo()
     {
         const int count = 5;
@@ -92,20 +95,20 @@ public class ProgramIndexMapInfoTests
 
         // ReSharper disable PossibleInvalidOperationException
         Optional<ProgramIndexMapInfo> map = manager.Get(new ProgramId(1));
-        Assert.True(map.HasValue);
-        Assert.Equal(new ProgramId(1), map.Value.MainProgramId);
-        Assert.Equal(new ProgramId(1), map.Value.ProgramId);
-        Assert.Equal(0, map.Value.ProgramIndex);
+        Assert.That(map.HasValue, Is.True);
+        Assert.That(map.Value.MainProgramId, Is.EqualTo(new Ncm.ApplicationId(1)));
+        Assert.That(map.Value.ProgramId, Is.EqualTo(new ProgramId(1)));
+        Assert.That(map.Value.ProgramIndex, Is.EqualTo(0));
 
         map = manager.Get(new ProgramId(4));
-        Assert.True(map.HasValue);
-        Assert.Equal(new ProgramId(1), map.Value.MainProgramId);
-        Assert.Equal(new ProgramId(4), map.Value.ProgramId);
-        Assert.Equal(3, map.Value.ProgramIndex);
+        Assert.That(map.HasValue, Is.True);
+        Assert.That(map.Value.MainProgramId, Is.EqualTo(new Ncm.ApplicationId(1)));
+        Assert.That(map.Value.ProgramId, Is.EqualTo(new ProgramId(4)));
+        Assert.That(map.Value.ProgramIndex, Is.EqualTo(3));
         // ReSharper restore PossibleInvalidOperationException
     }
 
-    [Fact]
+    [Test]
     public void GetProgramId_WithIndex_ReturnsProgramIdOfSpecifiedIndex()
     {
         const int count = 5;
@@ -113,66 +116,66 @@ public class ProgramIndexMapInfoTests
         ProgramIndexMapInfoManager manager = CreatePopulatedManager(count, x => (x + 1) * 5);
 
         // Check that the program ID can be retrieved using any program in the set
-        Assert.Equal(new ProgramId(20), manager.GetProgramId(new ProgramId(5), 3));
-        Assert.Equal(new ProgramId(20), manager.GetProgramId(new ProgramId(10), 3));
-        Assert.Equal(new ProgramId(20), manager.GetProgramId(new ProgramId(15), 3));
-        Assert.Equal(new ProgramId(20), manager.GetProgramId(new ProgramId(20), 3));
-        Assert.Equal(new ProgramId(20), manager.GetProgramId(new ProgramId(25), 3));
+        Assert.That(manager.GetProgramId(new ProgramId(5), 3), Is.EqualTo(new ProgramId(20)));
+        Assert.That(manager.GetProgramId(new ProgramId(10), 3), Is.EqualTo(new ProgramId(20)));
+        Assert.That(manager.GetProgramId(new ProgramId(15), 3), Is.EqualTo(new ProgramId(20)));
+        Assert.That(manager.GetProgramId(new ProgramId(20), 3), Is.EqualTo(new ProgramId(20)));
+        Assert.That(manager.GetProgramId(new ProgramId(25), 3), Is.EqualTo(new ProgramId(20)));
 
         // Check that any index can be used
-        Assert.Equal(new ProgramId(5), manager.GetProgramId(new ProgramId(10), 0));
-        Assert.Equal(new ProgramId(10), manager.GetProgramId(new ProgramId(10), 1));
-        Assert.Equal(new ProgramId(15), manager.GetProgramId(new ProgramId(10), 2));
-        Assert.Equal(new ProgramId(20), manager.GetProgramId(new ProgramId(10), 3));
-        Assert.Equal(new ProgramId(25), manager.GetProgramId(new ProgramId(10), 4));
+        Assert.That(manager.GetProgramId(new ProgramId(10), 0), Is.EqualTo(new ProgramId(5)));
+        Assert.That(manager.GetProgramId(new ProgramId(10), 1), Is.EqualTo(new ProgramId(10)));
+        Assert.That(manager.GetProgramId(new ProgramId(10), 2), Is.EqualTo(new ProgramId(15)));
+        Assert.That(manager.GetProgramId(new ProgramId(10), 3), Is.EqualTo(new ProgramId(20)));
+        Assert.That(manager.GetProgramId(new ProgramId(10), 4), Is.EqualTo(new ProgramId(25)));
     }
 
-    [Fact]
+    [Test]
     public void GetProgramId_InputIdDoesNotExist_ReturnsInvalidId()
     {
         const int count = 5;
 
         ProgramIndexMapInfoManager manager = CreatePopulatedManager(count, x => x + 1);
 
-        Assert.Equal(ProgramId.InvalidId, manager.GetProgramId(new ProgramId(0), 3));
-        Assert.Equal(ProgramId.InvalidId, manager.GetProgramId(new ProgramId(666), 3));
-        Assert.Equal(ProgramId.InvalidId, manager.GetProgramId(new ProgramId(777), 3));
+        Assert.That(manager.GetProgramId(new ProgramId(0), 3), Is.EqualTo(ProgramId.InvalidId));
+        Assert.That(manager.GetProgramId(new ProgramId(666), 3), Is.EqualTo(ProgramId.InvalidId));
+        Assert.That(manager.GetProgramId(new ProgramId(777), 3), Is.EqualTo(ProgramId.InvalidId));
     }
 
-    [Fact]
+    [Test]
     public void GetProgramId_InputIndexDoesNotExist_ReturnsInvalidId()
     {
         const int count = 5;
 
         ProgramIndexMapInfoManager manager = CreatePopulatedManager(count, x => x + 1);
 
-        Assert.Equal(ProgramId.InvalidId, manager.GetProgramId(new ProgramId(2), 5));
-        Assert.Equal(ProgramId.InvalidId, manager.GetProgramId(new ProgramId(2), 12));
-        Assert.Equal(ProgramId.InvalidId, manager.GetProgramId(new ProgramId(2), 255));
+        Assert.That(manager.GetProgramId(new ProgramId(2), 5), Is.EqualTo(ProgramId.InvalidId));
+        Assert.That(manager.GetProgramId(new ProgramId(2), 12), Is.EqualTo(ProgramId.InvalidId));
+        Assert.That(manager.GetProgramId(new ProgramId(2), 255), Is.EqualTo(ProgramId.InvalidId));
     }
 
-    [Fact]
+    [Test]
     public void GetProgramCount_MapIsEmpty_ReturnsZero()
     {
         var manager = new ProgramIndexMapInfoManager();
 
-        Assert.Equal(0, manager.GetProgramCount());
+        Assert.That(manager.GetProgramCount(), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public void GetProgramCount_MapHasEntries_ReturnsCorrectCount()
     {
         ProgramIndexMapInfoManager manager = CreatePopulatedManager(1, x => x + 1);
-        Assert.Equal(1, manager.GetProgramCount());
+        Assert.That(manager.GetProgramCount(), Is.EqualTo(1));
 
         manager = CreatePopulatedManager(10, x => x + 1);
-        Assert.Equal(10, manager.GetProgramCount());
+        Assert.That(manager.GetProgramCount(), Is.EqualTo(10));
 
         manager = CreatePopulatedManager(255, x => x + 1);
-        Assert.Equal(255, manager.GetProgramCount());
+        Assert.That(manager.GetProgramCount(), Is.EqualTo(255));
     }
 
-    [Fact]
+    [Test]
     public void Clear_MapHasEntries_CountIsZero()
     {
         const int count = 5;
@@ -180,10 +183,10 @@ public class ProgramIndexMapInfoTests
 
         manager.Clear();
 
-        Assert.Equal(0, manager.GetProgramCount());
+        Assert.That(manager.GetProgramCount(), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public void Clear_MapHasEntries_CannotGetOldEntry()
     {
         const int count = 5;
@@ -191,6 +194,6 @@ public class ProgramIndexMapInfoTests
 
         manager.Clear();
 
-        Assert.False(manager.Get(new ProgramId(2)).HasValue);
+        Assert.That(manager.Get(new ProgramId(2)).HasValue, Is.False);
     }
 }
