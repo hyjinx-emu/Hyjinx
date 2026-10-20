@@ -1289,8 +1289,8 @@ class IHidServer : IpcService<IHidServer>
 
         context.Memory.Read(context.Request.PtrBuff[1].Position, vibrationValueBuffer);
 
-        Span<VibrationDeviceHandle> deviceHandles = MemoryMarshal.Cast<byte, VibrationDeviceHandle>(vibrationDeviceHandleBuffer);
-        Span<VibrationValue> vibrationValues = MemoryMarshal.Cast<byte, VibrationValue>(vibrationValueBuffer);
+        ReadOnlySpan<VibrationDeviceHandle> deviceHandles = MemoryMarshal.Cast<byte, VibrationDeviceHandle>(vibrationDeviceHandleBuffer);
+        ReadOnlySpan<VibrationValue> vibrationValues = MemoryMarshal.Cast<byte, VibrationValue>(vibrationValueBuffer);
 
         if (!deviceHandles.IsEmpty && vibrationValues.Length == deviceHandles.Length)
         {

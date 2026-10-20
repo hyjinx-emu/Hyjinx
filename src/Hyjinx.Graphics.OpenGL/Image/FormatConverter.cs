@@ -139,7 +139,7 @@ static class FormatConverter
             start = sizeAligned;
         }
 
-        var outSpan = MemoryMarshal.Cast<byte, uint>(output);
+        var outSpan = MemoryMarshal.Cast<byte, uint>(output.AsSpan());
         var dataSpan = MemoryMarshal.Cast<byte, uint>(data);
         for (int i = start / sizeof(uint); i < dataSpan.Length; i++)
         {
