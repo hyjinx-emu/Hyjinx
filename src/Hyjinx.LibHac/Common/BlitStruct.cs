@@ -44,7 +44,7 @@ public readonly struct BlitStruct<T> where T : unmanaged
     /// <summary>
     /// Returns a <see cref="Span"/> view of the elements in the current <see cref="BlitStruct{T}"/> as type <typeparamref name="T"/>.
     /// </summary>
-    public Span<T> Span => MemoryMarshal.Cast<byte, T>(_buffer);
+    public Span<T> Span => MemoryMarshal.Cast<byte, T>(_buffer.AsSpan());
 
     /// <summary>
     /// Returns a <see cref="Span"/> view of the elements in the current <see cref="BlitStruct{T}"/> as <see cref="byte"/>s.

@@ -84,7 +84,7 @@ internal class DeliveryCacheDirectoryMetaAccessor
                     return ResultBcat.InvalidDeliveryCacheStorageFile.Log();
 
                 // Read all the directory entries
-                Span<byte> buffer = MemoryMarshal.Cast<DeliveryCacheDirectoryMetaEntry, byte>(Entries);
+                Span<byte> buffer = MemoryMarshal.Cast<DeliveryCacheDirectoryMetaEntry, byte>(Entries.AsSpan());
                 res = fs.ReadFile(out bytesRead, handle, 4, buffer);
                 if (res.IsFailure())
                     return res.Miss();
