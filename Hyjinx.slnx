@@ -16,25 +16,18 @@
   <Folder Name="/Plugins/" />
   <Folder Name="/Plugins/Audio/">
     <Project Path="src/Hyjinx.Audio.Backends.OpenAL/Hyjinx.Audio.Backends.OpenAL.csproj" />
+    <Project Path="src/Hyjinx.Audio.Backends.SDL2/Hyjinx.Audio.Backends.SDL2.csproj" />
     <Project Path="src/Hyjinx.Audio.Backends.SoundIo/Hyjinx.Audio.Backends.SoundIo.csproj" />
   </Folder>
   <Folder Name="/Plugins/Graphics/">
-    <Project Path="src/Hyjinx.Graphics.Device/Hyjinx.Graphics.Device.csproj" />
-    <Project Path="src/Hyjinx.Graphics.GAL/Hyjinx.Graphics.GAL.csproj" />
-    <Project Path="src/Hyjinx.Graphics.Gpu/Hyjinx.Graphics.Gpu.csproj" />
     <Project Path="src/Hyjinx.Graphics.Host1x/Hyjinx.Graphics.Host1x.csproj" />
     <Project Path="src/Hyjinx.Graphics.Nvdec.FFmpeg/Hyjinx.Graphics.Nvdec.FFmpeg.csproj" />
     <Project Path="src/Hyjinx.Graphics.Nvdec.Vp9/Hyjinx.Graphics.Nvdec.Vp9.csproj" />
     <Project Path="src/Hyjinx.Graphics.Nvdec/Hyjinx.Graphics.Nvdec.csproj" />
     <Project Path="src/Hyjinx.Graphics.OpenGL/Hyjinx.Graphics.OpenGL.csproj" />
-    <Project Path="src/Hyjinx.Graphics.Shader/Hyjinx.Graphics.Shader.csproj" />
-    <Project Path="src/Hyjinx.Graphics.Texture/Hyjinx.Graphics.Texture.csproj" />
-    <Project Path="src/Hyjinx.Graphics.Vic/Hyjinx.Graphics.Vic.csproj" />
-    <Project Path="src/Hyjinx.Graphics.Video/Hyjinx.Graphics.Video.csproj" />
     <Project Path="src/Hyjinx.Graphics.Vulkan/Hyjinx.Graphics.Vulkan.csproj" />
   </Folder>
   <Folder Name="/Plugins/SDL2/">
-    <Project Path="src/Hyjinx.Audio.Backends.SDL2/Hyjinx.Audio.Backends.SDL2.csproj" />
     <Project Path="src/Hyjinx.Input.SDL2/Hyjinx.Input.SDL2.csproj" />
     <Project Path="src/Hyjinx.SDL2.Common/Hyjinx.SDL2.Common.csproj" />
   </Folder>
@@ -85,7 +78,13 @@
   <Project Path="src/Hyjinx.Audio/Hyjinx.Audio.csproj" />
   <Project Path="src/Hyjinx.Common/Hyjinx.Common.csproj" />
   <Project Path="src/Hyjinx.Cpu/Hyjinx.Cpu.csproj" />
-  <Project Path="src/Hyjinx.Hashing/Hyjinx.Hashing.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Device/Hyjinx.Graphics.Device.csproj" />
+  <Project Path="src/Hyjinx.Graphics.GAL/Hyjinx.Graphics.GAL.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Gpu/Hyjinx.Graphics.Gpu.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Shader/Hyjinx.Graphics.Shader.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Texture/Hyjinx.Graphics.Texture.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Vic/Hyjinx.Graphics.Vic.csproj" />
+  <Project Path="src/Hyjinx.Graphics.Video/Hyjinx.Graphics.Video.csproj" />
   <Project Path="src/Hyjinx.HLE.Tests/Hyjinx.HLE.Tests.csproj" />
   <Project Path="src/Hyjinx.HLE/Hyjinx.HLE.csproj" />
   <Project Path="src/Hyjinx.Horizon/Hyjinx.Horizon.csproj" />

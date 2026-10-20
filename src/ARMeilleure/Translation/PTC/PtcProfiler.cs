@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.IO.Hashing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -47,7 +48,7 @@ partial class PtcProfiler
 
     private bool _disposed;
 
-    private Hash128 _lastHash;
+    private UInt128 _lastHash;
 
     public Dictionary<ulong, FuncProfile> ProfiledFuncs { get; private set; }
 
@@ -210,9 +211,9 @@ partial class PtcProfiler
 
             stream.Seek(0L, SeekOrigin.Begin);
 
-            Hash128 expectedHash = DeserializeStructure<Hash128>(stream);
+            UInt128 expectedHash = DeserializeStructure<UInt128>(stream);
 
-            Hash128 actualHash = XXHash128.ComputeHash(GetReadOnlySpan(stream));
+            UInt128 actualHash = XxHash128.HashToUInt128(GetReadOnlySpan(stream));
 
             if (actualHash != expectedHash)
             {
@@ -324,7 +325,7 @@ partial class PtcProfiler
         {
             Debug.Assert(stream.Seek(0L, SeekOrigin.Begin) == 0L && stream.Length == 0L);
 
-            stream.Seek(Unsafe.SizeOf<Hash128>(), SeekOrigin.Begin);
+            stream.Seek(Unsafe.SizeOf<UInt128>(), SeekOrigin.Begin);
 
             lock (_lock)
             {
@@ -335,8 +336,8 @@ partial class PtcProfiler
 
             Debug.Assert(stream.Position == stream.Length);
 
-            stream.Seek(Unsafe.SizeOf<Hash128>(), SeekOrigin.Begin);
-            Hash128 hash = XXHash128.ComputeHash(GetReadOnlySpan(stream));
+            stream.Seek(Unsafe.SizeOf<UInt128>(), SeekOrigin.Begin);
+            var hash = XxHash128.HashToUInt128(GetReadOnlySpan(stream));
 
             stream.Seek(0L, SeekOrigin.Begin);
             SerializeStructure(stream, hash);
@@ -395,20 +396,20 @@ partial class PtcProfiler
 
         public bool Endianness;
 
-        public Hash128 HeaderHash;
+        public UInt128 HeaderHash;
 
         public void SetHeaderHash()
         {
             Span<OuterHeader> spanHeader = MemoryMarshal.CreateSpan(ref this, 1);
 
-            HeaderHash = XXHash128.ComputeHash(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<OuterHeader>() - Unsafe.SizeOf<Hash128>())]);
+            HeaderHash = XxHash128.HashToUInt128(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<OuterHeader>() - Unsafe.SizeOf<UInt128>())]);
         }
 
         public bool IsHeaderValid()
         {
             Span<OuterHeader> spanHeader = MemoryMarshal.CreateSpan(ref this, 1);
 
-            return XXHash128.ComputeHash(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<OuterHeader>() - Unsafe.SizeOf<Hash128>())]) == HeaderHash;
+            return XxHash128.HashToUInt128(MemoryMarshal.AsBytes(spanHeader)[..(Unsafe.SizeOf<OuterHeader>() - Unsafe.SizeOf<UInt128>())]) == HeaderHash;
         }
     }
 

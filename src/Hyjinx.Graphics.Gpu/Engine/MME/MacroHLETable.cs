@@ -1,6 +1,7 @@
 using Hyjinx.Common;
 using Hyjinx.Graphics.GAL;
 using System;
+using System.IO.Hashing;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.Graphics.Gpu.Engine.MME;
@@ -23,7 +24,7 @@ static class MacroHLETable
         /// <summary>
         /// Hash of the original binary Macro function code.
         /// </summary>
-        public Hash128 Hash { get; }
+        public UInt128 Hash { get; }
 
         /// <summary>
         /// Size (in bytes) of the original binary Macro function code.
@@ -36,7 +37,7 @@ static class MacroHLETable
         /// <param name="name">Name of the Macro function</param>
         /// <param name="hash">Hash of the original binary Macro function code</param>
         /// <param name="length">Size (in bytes) of the original binary Macro function code</param>
-        public TableEntry(MacroHLEFunctionName name, Hash128 hash, int length)
+        public TableEntry(MacroHLEFunctionName name, UInt128 hash, int length)
         {
             Name = name;
             Hash = hash;
@@ -46,19 +47,19 @@ static class MacroHLETable
 
     private static readonly TableEntry[] _table = new TableEntry[]
     {
-        new(MacroHLEFunctionName.BindShaderProgram, new Hash128(0x5d5efb912369f60b, 0x69131ed5019f08ef), 0x68),
-        new(MacroHLEFunctionName.ClearColor, new Hash128(0xA9FB28D1DC43645A, 0xB177E5D2EAE67FB0), 0x28),
-        new(MacroHLEFunctionName.ClearDepthStencil, new Hash128(0x1B96CB77D4879F4F, 0x8557032FE0C965FB), 0x24),
-        new(MacroHLEFunctionName.DrawArraysInstanced, new Hash128(0x197FB416269DBC26, 0x34288C01DDA82202), 0x48),
-        new(MacroHLEFunctionName.DrawElements, new Hash128(0x3D7F32AE6C2702A7, 0x9353C9F41C1A244D), 0x20),
-        new(MacroHLEFunctionName.DrawElementsInstanced, new Hash128(0x1A501FD3D54EC8E0, 0x6CF570CF79DA74D6), 0x5c),
-        new(MacroHLEFunctionName.DrawElementsIndirect, new Hash128(0x86A3E8E903AF8F45, 0xD35BBA07C23860A4), 0x7c),
-        new(MacroHLEFunctionName.MultiDrawElementsIndirectCount, new Hash128(0x890AF57ED3FB1C37, 0x35D0C95C61F5386F), 0x19C),
-        new(MacroHLEFunctionName.UpdateBlendState, new Hash128(0x40F6D4E7B08D7640, 0x82167BEEAECB959F), 0x28),
-        new(MacroHLEFunctionName.UpdateColorMasks, new Hash128(0x9EE32420B8441DFD, 0x6E7724759A57333E), 0x24),
-        new(MacroHLEFunctionName.UpdateUniformBufferState, new Hash128(0x8EE66706049CB0B0, 0x51C1CF906EC86F7C), 0x20),
-        new(MacroHLEFunctionName.UpdateUniformBufferStateCbu, new Hash128(0xA4592676A3E581A0, 0xA39E77FE19FE04AC), 0x18),
-        new(MacroHLEFunctionName.UpdateUniformBufferStateCbuV2, new Hash128(0x392FA750489983D4, 0x35BACE455155D2C3), 0x18)
+        new(MacroHLEFunctionName.BindShaderProgram, new UInt128(0x69131ed5019f08ef, 0x5d5efb912369f60b), 0x68),
+        new(MacroHLEFunctionName.ClearColor, new UInt128(0xB177E5D2EAE67FB0, 0xA9FB28D1DC43645A), 0x28),
+        new(MacroHLEFunctionName.ClearDepthStencil, new UInt128(0x8557032FE0C965FB, 0x1B96CB77D4879F4F), 0x24),
+        new(MacroHLEFunctionName.DrawArraysInstanced, new UInt128(0x34288C01DDA82202, 0x197FB416269DBC26), 0x48),
+        new(MacroHLEFunctionName.DrawElements, new UInt128(0x9353C9F41C1A244D, 0x3D7F32AE6C2702A7), 0x20),
+        new(MacroHLEFunctionName.DrawElementsInstanced, new UInt128(0x6CF570CF79DA74D6, 0x1A501FD3D54EC8E0), 0x5c),
+        new(MacroHLEFunctionName.DrawElementsIndirect, new UInt128(0xD35BBA07C23860A4, 0x86A3E8E903AF8F45), 0x7c),
+        new(MacroHLEFunctionName.MultiDrawElementsIndirectCount, new UInt128(0x35D0C95C61F5386F, 0x890AF57ED3FB1C37), 0x19C),
+        new(MacroHLEFunctionName.UpdateBlendState, new UInt128(0x82167BEEAECB959F, 0x40F6D4E7B08D7640), 0x28),
+        new(MacroHLEFunctionName.UpdateColorMasks, new UInt128(0x6E7724759A57333E, 0x9EE32420B8441DFD), 0x24),
+        new(MacroHLEFunctionName.UpdateUniformBufferState, new UInt128(0x51C1CF906EC86F7C, 0x8EE66706049CB0B0), 0x20),
+        new(MacroHLEFunctionName.UpdateUniformBufferStateCbu, new UInt128(0xA39E77FE19FE04AC, 0xA4592676A3E581A0), 0x18),
+        new(MacroHLEFunctionName.UpdateUniformBufferStateCbuV2, new UInt128(0x35BACE455155D2C3, 0x392FA750489983D4), 0x18)
     };
 
     /// <summary>
@@ -96,7 +97,7 @@ static class MacroHLETable
         {
             ref var entry = ref _table[i];
 
-            var hash = XXHash128.ComputeHash(mc[..entry.Length]);
+            UInt128 hash = XxHash128.HashToUInt128(mc[..entry.Length]);
             if (hash == entry.Hash)
             {
                 if (IsMacroHLESupported(caps, entry.Name))

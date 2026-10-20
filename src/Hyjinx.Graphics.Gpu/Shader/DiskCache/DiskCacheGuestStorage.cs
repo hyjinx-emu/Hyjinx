@@ -2,6 +2,7 @@ using Hyjinx.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 
 namespace Hyjinx.Graphics.Gpu.Shader.DiskCache;
@@ -453,6 +454,6 @@ class DiskCacheGuestStorage
     /// <returns>Hash of the data</returns>
     private static uint CalcHash(ReadOnlySpan<byte> data)
     {
-        return (uint)XXHash128.ComputeHash(data).Low;
+        return (uint)XxHash128.HashToUInt128(data);
     }
 }

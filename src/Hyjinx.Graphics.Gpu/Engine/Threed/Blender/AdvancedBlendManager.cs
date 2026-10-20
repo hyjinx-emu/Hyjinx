@@ -1,6 +1,7 @@
 using Hyjinx.Common;
 using Hyjinx.Graphics.GAL;
 using System;
+using System.IO.Hashing;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.Graphics.Gpu.Engine.Threed.Blender;
@@ -62,7 +63,7 @@ class AdvancedBlendManager
             currentCode = currentCode[..codeLength];
         }
 
-        Hash128 hash = XXHash128.ComputeHash(MemoryMarshal.Cast<uint, byte>(currentCode));
+        UInt128 hash = XxHash128.HashToUInt128(MemoryMarshal.Cast<uint, byte>(currentCode));
 
         descriptor = default;
 
