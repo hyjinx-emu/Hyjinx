@@ -1,7 +1,6 @@
-using LibHac.Lr;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
 using static LibHac.Tests.Common.Layout;
+using Path = LibHac.Lr.Path;
 
 namespace LibHac.Tests.Lr;
 

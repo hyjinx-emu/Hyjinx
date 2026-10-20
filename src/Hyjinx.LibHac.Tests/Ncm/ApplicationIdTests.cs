@@ -1,5 +1,5 @@
 using LibHac.Ncm;
-using NUnit.Framework;
+using ApplicationId = LibHac.Ncm.ApplicationId;
 
 namespace LibHac.Tests;
 

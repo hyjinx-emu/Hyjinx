@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using Xunit;
 
 namespace LibHac.Tests.Common;
@@ -16,3 +18,5 @@ public static class TheoryDataCreator
         return data;
     }
 }
+
+#endif

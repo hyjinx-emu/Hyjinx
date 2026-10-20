@@ -3,7 +3,7 @@ using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tests.Fs.IFileSystemTestBase;
 using LibHac.Tools.Fs;
-using NUnit.Framework;
+using Path = LibHac.Fs.Path;
 
 namespace LibHac.Tests.Fs;
 

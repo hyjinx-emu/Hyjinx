@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System;
 using Xunit.Sdk;
 
@@ -19,3 +21,5 @@ public partial class Assert
             throw EqualException.ForMismatchedValues(expected.ToArray(), actual.ToArray());
     }
 }
+
+#endif

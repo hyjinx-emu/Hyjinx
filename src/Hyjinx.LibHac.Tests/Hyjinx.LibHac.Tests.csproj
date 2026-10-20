@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../.build/library.props" />
+  <Import Project="../.build/unittest.props" />
   
   <PropertyGroup>
     <RootNamespace>LibHac.Tests</RootNamespace>
@@ -12,25 +12,10 @@
     <PackageReference Include="Moq" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
-    <PackageReference Include="xunit.core" />
-    <PackageReference Include="xunit.analyzers" />
-    <PackageReference Include="xunit.assert.source" />
-    <PackageReference Include="xunit.runner.visualstudio">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="CryptoTests\TestVectors\*.rsp" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.LibHac\Hyjinx.LibHac.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Using Include="Moq" />
-  </ItemGroup>
-
 </Project>

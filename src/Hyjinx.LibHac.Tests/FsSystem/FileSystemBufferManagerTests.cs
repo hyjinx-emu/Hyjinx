@@ -1,7 +1,6 @@
 using LibHac.Fs;
 using LibHac.FsSystem;
-using LibHac.Mem;
-using NUnit.Framework;
+using Buffer = LibHac.Mem.Buffer;
 using CacheHandle = System.UInt64;
 
 namespace LibHac.Tests.FsSystem;

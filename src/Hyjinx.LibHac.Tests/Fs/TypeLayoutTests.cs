@@ -544,7 +544,7 @@ public class TypeLayoutTests
     [Test]
     public static void Int64_Layout()
     {
-        Assert.That(Unsafe.SizeOf<Int64>(), Is.EqualTo(8));
-        Assert.That(AlignOf<Int64>(), Is.EqualTo(4));
+        Assert.That(Unsafe.SizeOf<LibHac.Fs.Int64>(), Is.EqualTo(8));
+        Assert.That(AlignOf<LibHac.Fs.Int64>(), Is.EqualTo(4));
     }
 }
