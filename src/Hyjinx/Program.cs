@@ -25,11 +25,6 @@ namespace Hyjinx.Ava;
 
 internal partial class Program : IDisposable
 {
-    /// <summary>
-    /// Monitors the duration of time the application has been active.
-    /// </summary>
-    public static readonly Stopwatch UpTime = Stopwatch.StartNew();
-
     public static double WindowScaleFactor { get; set; }
     public static double DesktopScaleFactor { get; set; } = 1.0;
     public static string Version { get; private set; }
@@ -228,11 +223,10 @@ internal partial class Program : IDisposable
 
         // Parse arguments
         CommandLineState.ParseArguments(launchConfig);
-
         Console.Title = $"Hyjinx Console {Version}";
 
         // Initialize the logger system.
-        LoggerModule.Initialize(services, UpTime);
+        LoggerModule.Initialize(services);
 
         // TODO: Viper - Fix this so it's configuration driven (it's too noisy).
         // LoggerAdapter.Register();

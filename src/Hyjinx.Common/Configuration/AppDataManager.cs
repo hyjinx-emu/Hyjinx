@@ -15,7 +15,7 @@ public partial class AppDataManager
     private const string GamesDir = "games";
     private const string ProfilesDir = "profiles";
     private const string KeysDir = "system";
-    private const string LogsDir = "Logs";
+    private const string LogsDir = "logs";
 
     public enum LaunchMode
     {
