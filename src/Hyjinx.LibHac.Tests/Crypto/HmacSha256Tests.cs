@@ -1,11 +1,11 @@
 using LibHac.Crypto;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Crypto;
 
 public class HmacSha256Tests
 {
-    [Fact]
+    [Test]
     public void CalculatesTheHash()
     {
         var hash = new byte[HmacSha256.HashSize];
@@ -15,10 +15,10 @@ public class HmacSha256Tests
             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32
         ]);
 
-        Assert.Equal(
+        Assert.That(hash, Is.EqualTo(
         [
             192, 138, 176, 27, 137, 124, 49, 112, 1, 76, 220, 66, 160, 209, 52, 72, 38, 30, 142, 136, 247, 81, 169,
             253, 143, 199, 72, 25, 155, 223, 205, 65
-        ], hash);
+        ]));
     }
 }
