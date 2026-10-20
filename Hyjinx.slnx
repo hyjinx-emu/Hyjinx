@@ -27,9 +27,8 @@
     <Project Path="src/Hyjinx.Graphics.OpenGL/Hyjinx.Graphics.OpenGL.csproj" />
     <Project Path="src/Hyjinx.Graphics.Vulkan/Hyjinx.Graphics.Vulkan.csproj" />
   </Folder>
-  <Folder Name="/Plugins/SDL2/">
+  <Folder Name="/Plugins/Input/">
     <Project Path="src/Hyjinx.Input.SDL2/Hyjinx.Input.SDL2.csproj" />
-    <Project Path="src/Hyjinx.SDL2.Common/Hyjinx.SDL2.Common.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
@@ -93,6 +92,7 @@
   <Project Path="src/Hyjinx.LibHac/Hyjinx.LibHac.csproj" />
   <Project Path="src/Hyjinx.Memory.Tests/Hyjinx.Memory.Tests.csproj" />
   <Project Path="src/Hyjinx.Memory/Hyjinx.Memory.csproj" />
+  <Project Path="src/Hyjinx.SDL2.Common/Hyjinx.SDL2.Common.csproj" />
   <Project Path="src/Hyjinx.SPB/Hyjinx.SPB.csproj" />
   <Project Path="src/Hyjinx.Tests.Unicorn/Hyjinx.Tests.Unicorn.csproj" />
   <Project Path="src/Hyjinx.Tests/Hyjinx.Tests.csproj" />
