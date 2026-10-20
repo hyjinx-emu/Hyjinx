@@ -12,7 +12,7 @@ using System.IO;
 namespace Hyjinx.UI.Common.AutoConfiguration;
 
 public static class LoggerModule
-{    
+{
     public static void Initialize(IServiceCollection services)
     {
         services.AddLogging(logging =>
