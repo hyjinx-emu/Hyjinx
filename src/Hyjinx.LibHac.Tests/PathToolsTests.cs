@@ -4,7 +4,7 @@ using LibHac.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests;
 
@@ -103,54 +103,48 @@ public class PathToolsTests
 
     public static object[][] IsNotNormalizedTestItems = GetNormalizedPaths(false);
 
-    [Theory]
-    [MemberData(nameof(NormalizedPathTestItems))]
+    [TestCaseSource(nameof(NormalizedPathTestItems))]
     public static void NormalizePath(string path, string expected)
     {
         string actual = PathTools.Normalize(path);
 
-        Assert.Equal(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
-    [Theory]
-    [MemberData(nameof(IsNormalizedTestItems))]
+    [TestCaseSource(nameof(IsNormalizedTestItems))]
     public static void IsNormalized(string path)
     {
-        Assert.True(PathTools.IsNormalized(path.AsSpan()));
+        Assert.That(PathTools.IsNormalized(path.AsSpan()), Is.True);
     }
 
-    [Theory]
-    [MemberData(nameof(IsNotNormalizedTestItems))]
+    [TestCaseSource(nameof(IsNotNormalizedTestItems))]
     public static void IsNotNormalized(string path)
     {
-        Assert.False(PathTools.IsNormalized(path.AsSpan()));
+        Assert.That(PathTools.IsNormalized(path.AsSpan()), Is.False);
     }
 
-    [Theory]
-    [MemberData(nameof(SubPathTestItems))]
+    [TestCaseSource(nameof(SubPathTestItems))]
     public static void TestSubPath(string rootPath, string path, bool expected)
     {
         bool actual = PathTools.IsSubPath(rootPath.AsSpan(), path.AsSpan());
 
-        Assert.Equal(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
-    [Theory]
-    [MemberData(nameof(SubPathTestItems))]
+    [TestCaseSource(nameof(SubPathTestItems))]
     public static void TestSubPathReverse(string rootPath, string path, bool expected)
     {
         bool actual = PathTools.IsSubPath(path.AsSpan(), rootPath.AsSpan());
 
-        Assert.Equal(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
-    [Theory]
-    [MemberData(nameof(ParentDirectoryTestItems))]
+    [TestCaseSource(nameof(ParentDirectoryTestItems))]
     public static void TestParentDirectory(string path, string expected)
     {
         string actual = PathTools.GetParentDirectory(path);
 
-        Assert.Equal(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     private static object[][] GetNormalizedPaths(bool getNormalized)
@@ -184,8 +178,7 @@ public class PathToolsTests
         new object[] { "/", "" },
     };
 
-    [Theory]
-    [MemberData(nameof(GetFileNameTestItems))]
+    [TestCaseSource(nameof(GetFileNameTestItems))]
     public static void GetFileNameTest(string path, string expected)
     {
         var u8Path = path.ToU8Span();
@@ -194,7 +187,7 @@ public class PathToolsTests
 
         string actual = StringUtils.Utf8ZToString(fileName);
 
-        Assert.Equal(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 
     public static object[][] GetLastSegmentTestItems =
@@ -208,8 +201,7 @@ public class PathToolsTests
         new object[] { "/", "" },
     };
 
-    [Theory]
-    [MemberData(nameof(GetLastSegmentTestItems))]
+    [TestCaseSource(nameof(GetLastSegmentTestItems))]
     public static void GetLastSegmentTest(string path, string expected)
     {
         var u8Path = path.ToU8Span();
@@ -218,6 +210,6 @@ public class PathToolsTests
 
         string actual = StringUtils.Utf8ZToString(fileName);
 
-        Assert.Equal(expected, actual);
+        Assert.That(actual, Is.EqualTo(expected));
     }
 }
