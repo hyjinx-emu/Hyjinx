@@ -8,12 +8,22 @@ using LibHac.Tools.Fs;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.FsSystem;
 
 public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 {
+    private static void AssertSuccess(Result result)
+    {
+        Assert.That(result.IsSuccess(), Is.True, result.ToString());
+    }
+
+    private static void AssertResult(Result.Base expected, Result actual)
+    {
+        Assert.That(expected.Includes(actual), Is.True, actual.ToString());
+    }
+
     protected override IFileSystem CreateFileSystem()
     {
         return CreateFileSystemInternal().saveFs;
@@ -78,41 +88,41 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
         return (baseFs, saveFs);
     }
 
-    [Fact]
+    [Test]
     public void CreateFile_CreatedInModifiedDirectory()
     {
         (IFileSystem baseFs, IFileSystem saveFs) = CreateFileSystemInternal();
 
         saveFs.CreateFile("/file", 0, CreateFileOptions.None);
 
-        Assert.Success(baseFs.GetEntryType(out DirectoryEntryType type, "/1/file"));
-        Assert.Equal(DirectoryEntryType.File, type);
+        AssertSuccess(baseFs.GetEntryType(out DirectoryEntryType type, "/1/file"));
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.File));
     }
 
-    [Fact]
+    [Test]
     public void CreateFile_NotCreatedInCommittedDirectory()
     {
         (IFileSystem baseFs, IFileSystem saveFs) = CreateFileSystemInternal();
 
         saveFs.CreateFile("/file", 0, CreateFileOptions.None);
 
-        Assert.Result(ResultFs.PathNotFound, baseFs.GetEntryType(out _, "/0/file"));
+        AssertResult(ResultFs.PathNotFound, baseFs.GetEntryType(out _, "/0/file"));
     }
 
-    [Fact]
+    [Test]
     public void Commit_FileExistsInCommittedDirectory()
     {
         (IFileSystem baseFs, IFileSystem saveFs) = CreateFileSystemInternal();
 
         saveFs.CreateFile("/file", 0, CreateFileOptions.None);
 
-        Assert.Success(saveFs.Commit());
+        AssertSuccess(saveFs.Commit());
 
-        Assert.Success(baseFs.GetEntryType(out DirectoryEntryType type, "/0/file"));
-        Assert.Equal(DirectoryEntryType.File, type);
+        AssertSuccess(baseFs.GetEntryType(out DirectoryEntryType type, "/0/file"));
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.File));
     }
 
-    [Fact]
+    [Test]
     public void Rollback_FileDoesNotExistInBaseAfterRollback()
     {
         (IFileSystem baseFs, IFileSystem saveFs) = CreateFileSystemInternal();
@@ -120,15 +130,15 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
         saveFs.CreateFile("/file", 0, CreateFileOptions.None);
 
         // Rollback should succeed
-        Assert.Success(saveFs.Rollback());
+        AssertSuccess(saveFs.Rollback());
 
         // Make sure all the files are gone
-        Assert.Result(ResultFs.PathNotFound, saveFs.GetEntryType(out _, "/file"));
-        Assert.Result(ResultFs.PathNotFound, baseFs.GetEntryType(out _, "/0/file"));
-        Assert.Result(ResultFs.PathNotFound, baseFs.GetEntryType(out _, "/1/file"));
+        AssertResult(ResultFs.PathNotFound, saveFs.GetEntryType(out _, "/file"));
+        AssertResult(ResultFs.PathNotFound, baseFs.GetEntryType(out _, "/0/file"));
+        AssertResult(ResultFs.PathNotFound, baseFs.GetEntryType(out _, "/1/file"));
     }
 
-    [Fact]
+    [Test]
     public void Rollback_DeletedFileIsRestoredInBaseAfterRollback()
     {
         (IFileSystem baseFs, IFileSystem saveFs) = CreateFileSystemInternal();
@@ -138,15 +148,15 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
         saveFs.DeleteFile("/file");
 
         // Rollback should succeed
-        Assert.Success(saveFs.Rollback());
+        AssertSuccess(saveFs.Rollback());
 
         // Make sure all the files are restored
-        Assert.Success(saveFs.GetEntryType(out _, "/file"));
-        Assert.Success(baseFs.GetEntryType(out _, "/0/file"));
-        Assert.Success(baseFs.GetEntryType(out _, "/1/file"));
+        AssertSuccess(saveFs.GetEntryType(out _, "/file"));
+        AssertSuccess(baseFs.GetEntryType(out _, "/0/file"));
+        AssertSuccess(baseFs.GetEntryType(out _, "/1/file"));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_NormalState_UsesCommittedData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -160,11 +170,11 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         CreateDirSaveFs(out DirectorySaveDataFileSystem saveFs, baseFs, true, true, true).ThrowIfFailure();
 
-        Assert.Success(saveFs.GetEntryType(out _, "/file1"));
-        Assert.Result(ResultFs.PathNotFound, saveFs.GetEntryType(out _, "/file2"));
+        AssertSuccess(saveFs.GetEntryType(out _, "/file1"));
+        AssertResult(ResultFs.PathNotFound, saveFs.GetEntryType(out _, "/file2"));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_InterruptedAfterCommitPart1_UsesModifiedData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -178,11 +188,11 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         CreateDirSaveFs(out DirectorySaveDataFileSystem saveFs, baseFs, true, true, true).ThrowIfFailure();
 
-        Assert.Result(ResultFs.PathNotFound, saveFs.GetEntryType(out _, "/file1"));
-        Assert.Success(saveFs.GetEntryType(out _, "/file2"));
+        AssertResult(ResultFs.PathNotFound, saveFs.GetEntryType(out _, "/file1"));
+        AssertSuccess(saveFs.GetEntryType(out _, "/file2"));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_InterruptedDuringCommitPart2_UsesModifiedData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -194,20 +204,20 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         CreateDirSaveFs(out DirectorySaveDataFileSystem saveFs, baseFs, true, true, true).ThrowIfFailure();
 
-        Assert.Result(ResultFs.PathNotFound, saveFs.GetEntryType(out _, "/file1"));
-        Assert.Success(saveFs.GetEntryType(out _, "/file2"));
+        AssertResult(ResultFs.PathNotFound, saveFs.GetEntryType(out _, "/file1"));
+        AssertSuccess(saveFs.GetEntryType(out _, "/file2"));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_InitialExtraDataIsEmpty()
     {
         (IFileSystem _, DirectorySaveDataFileSystem saveFs) = CreateFileSystemInternal();
 
-        Assert.Success(saveFs.ReadExtraData(out SaveDataExtraData extraData));
-        Assert.True(SpanHelpers.AsByteSpan(ref extraData).IsZeros());
+        AssertSuccess(saveFs.ReadExtraData(out SaveDataExtraData extraData));
+        Assert.That(SpanHelpers.AsByteSpan(ref extraData).IsZeros(), Is.True);
     }
 
-    [Fact]
+    [Test]
     public void WriteExtraData_CanReadBackExtraData()
     {
         (IFileSystem _, DirectorySaveDataFileSystem saveFs) = CreateFileSystemInternal();
@@ -215,12 +225,12 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
         var originalExtraData = new SaveDataExtraData();
         originalExtraData.DataSize = 0x12345;
 
-        Assert.Success(saveFs.WriteExtraData(in originalExtraData));
-        Assert.Success(saveFs.ReadExtraData(out SaveDataExtraData extraData));
-        Assert.Equal(originalExtraData, extraData);
+        AssertSuccess(saveFs.WriteExtraData(in originalExtraData));
+        AssertSuccess(saveFs.ReadExtraData(out SaveDataExtraData extraData));
+        Assert.That(extraData, Is.EqualTo(originalExtraData));
     }
 
-    [Fact]
+    [Test]
     public void Commit_AfterSuccessfulCommit_CanReadCommittedExtraData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -231,16 +241,16 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
         originalExtraData.DataSize = 0x12345;
 
         saveFs.WriteExtraData(in originalExtraData).ThrowIfFailure();
-        Assert.Success(saveFs.CommitExtraData(false));
+        AssertSuccess(saveFs.CommitExtraData(false));
 
         saveFs.Dispose();
         CreateDirSaveFs(out saveFs, baseFs, true, true, true).ThrowIfFailure();
 
-        Assert.Success(saveFs.ReadExtraData(out SaveDataExtraData extraData));
-        Assert.Equal(originalExtraData, extraData);
+        AssertSuccess(saveFs.ReadExtraData(out SaveDataExtraData extraData));
+        Assert.That(extraData, Is.EqualTo(originalExtraData));
     }
 
-    [Fact]
+    [Test]
     public void Rollback_WriteExtraDataThenRollback_ExtraDataIsRolledBack()
     {
         var baseFs = new InMemoryFileSystem();
@@ -261,13 +271,13 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.WriteExtraData(in newExtraData).ThrowIfFailure();
 
-        Assert.Success(saveFs.Rollback());
-        Assert.Success(saveFs.ReadExtraData(out SaveDataExtraData extraData));
+        AssertSuccess(saveFs.Rollback());
+        AssertSuccess(saveFs.ReadExtraData(out SaveDataExtraData extraData));
 
-        Assert.Equal(originalExtraData, extraData);
+        Assert.That(extraData, Is.EqualTo(originalExtraData));
     }
 
-    [Fact]
+    [Test]
     public void Rollback_WriteExtraDataThenCloseFs_ExtraDataIsRolledBack()
     {
         var baseFs = new InMemoryFileSystem();
@@ -293,12 +303,12 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         // Read extra data should match the first one
         CreateDirSaveFs(out saveFs, baseFs, true, true, true).ThrowIfFailure();
-        Assert.Success(saveFs.ReadExtraData(out SaveDataExtraData extraData));
+        AssertSuccess(saveFs.ReadExtraData(out SaveDataExtraData extraData));
 
-        Assert.Equal(originalExtraData, extraData);
+        Assert.That(extraData, Is.EqualTo(originalExtraData));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_InterruptedAfterCommitPart1_UsesModifiedExtraData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -310,10 +320,10 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
 
-        Assert.Equal(0x67890, extraData.DataSize);
+        Assert.That(extraData.DataSize, Is.EqualTo(0x67890));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_OnlySynchronizingExtraDataExists_UsesSynchronizingExtraData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -324,10 +334,10 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
 
-        Assert.Equal(0x67890, extraData.DataSize);
+        Assert.That(extraData.DataSize, Is.EqualTo(0x67890));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_OnlyCommittedExtraDataExists_UsesCommittedExtraData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -338,10 +348,10 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
 
-        Assert.Equal(0x67890, extraData.DataSize);
+        Assert.That(extraData.DataSize, Is.EqualTo(0x67890));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_OnlyModifiedExtraDataExists_UsesModifiedExtraData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -352,10 +362,10 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
 
-        Assert.Equal(0x67890, extraData.DataSize);
+        Assert.That(extraData.DataSize, Is.EqualTo(0x67890));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_SynchronizingAndCommittedExtraDataExist_UsesCommittedExtraData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -367,10 +377,10 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
 
-        Assert.Equal(0x67890, extraData.DataSize);
+        Assert.That(extraData.DataSize, Is.EqualTo(0x67890));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_SynchronizingAndModifiedExtraDataExist_UsesModifiedExtraData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -382,10 +392,10 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
 
-        Assert.Equal(0x67890, extraData.DataSize);
+        Assert.That(extraData.DataSize, Is.EqualTo(0x67890));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_CommittedAndModifiedExtraDataExist_UsesCommittedExtraData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -397,10 +407,10 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
 
-        Assert.Equal(0x12345, extraData.DataSize);
+        Assert.That(extraData.DataSize, Is.EqualTo(0x12345));
     }
 
-    [Fact]
+    [Test]
     public void Initialize_AllThreeExtraDataFilesExist_UsesCommittedExtraData()
     {
         var baseFs = new InMemoryFileSystem();
@@ -413,10 +423,10 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
 
-        Assert.Equal(0x54321, extraData.DataSize);
+        Assert.That(extraData.DataSize, Is.EqualTo(0x54321));
     }
 
-    [Fact]
+    [Test]
     public void CommitSaveData_MultipleCommits_CommitIdIsUpdatedSkippingInvalidIds()
     {
         var random = new RandomGenerator();
@@ -429,22 +439,22 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
-        Assert.Equal(2, extraData.CommitId);
+        Assert.That(extraData.CommitId, Is.EqualTo(2));
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out extraData).ThrowIfFailure();
-        Assert.Equal(3, extraData.CommitId);
+        Assert.That(extraData.CommitId, Is.EqualTo(3));
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out extraData).ThrowIfFailure();
-        Assert.Equal(6, extraData.CommitId);
+        Assert.That(extraData.CommitId, Is.EqualTo(6));
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out extraData).ThrowIfFailure();
-        Assert.Equal(2, extraData.CommitId);
+        Assert.That(extraData.CommitId, Is.EqualTo(2));
     }
 
-    [Fact]
+    [Test]
     public void CommitSaveData_MultipleCommits_TimeStampUpdated()
     {
         var random = new RandomGenerator();
@@ -457,22 +467,22 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
-        Assert.Equal(1u, extraData.TimeStamp);
+        Assert.That(extraData.TimeStamp, Is.EqualTo(1u));
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out extraData).ThrowIfFailure();
-        Assert.Equal(2u, extraData.TimeStamp);
+        Assert.That(extraData.TimeStamp, Is.EqualTo(2u));
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out extraData).ThrowIfFailure();
-        Assert.Equal(3u, extraData.TimeStamp);
+        Assert.That(extraData.TimeStamp, Is.EqualTo(3u));
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out extraData).ThrowIfFailure();
-        Assert.Equal(4u, extraData.TimeStamp);
+        Assert.That(extraData.TimeStamp, Is.EqualTo(4u));
     }
 
-    [Fact]
+    [Test]
     public void CommitSaveData_UpdateTimeStampIsFalse_TimeStampAndCommitIdAreNotUpdated()
     {
         var random = new RandomGenerator();
@@ -485,23 +495,23 @@ public class DirectorySaveDataFileSystemTests : CommittableIFileSystemTests
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out SaveDataExtraData extraData).ThrowIfFailure();
-        Assert.Equal(1u, extraData.TimeStamp);
-        Assert.Equal(2, extraData.CommitId);
+        Assert.That(extraData.TimeStamp, Is.EqualTo(1u));
+        Assert.That(extraData.CommitId, Is.EqualTo(2));
 
         saveFs.CommitExtraData(false).ThrowIfFailure();
         saveFs.ReadExtraData(out extraData).ThrowIfFailure();
-        Assert.Equal(1u, extraData.TimeStamp);
-        Assert.Equal(2, extraData.CommitId);
+        Assert.That(extraData.TimeStamp, Is.EqualTo(1u));
+        Assert.That(extraData.CommitId, Is.EqualTo(2));
 
         saveFs.CommitExtraData(true).ThrowIfFailure();
         saveFs.ReadExtraData(out extraData).ThrowIfFailure();
-        Assert.Equal(2u, extraData.TimeStamp);
-        Assert.Equal(3, extraData.CommitId);
+        Assert.That(extraData.TimeStamp, Is.EqualTo(2u));
+        Assert.That(extraData.CommitId, Is.EqualTo(3));
 
         saveFs.CommitExtraData(false).ThrowIfFailure();
         saveFs.ReadExtraData(out extraData).ThrowIfFailure();
-        Assert.Equal(2u, extraData.TimeStamp);
-        Assert.Equal(3, extraData.CommitId);
+        Assert.That(extraData.TimeStamp, Is.EqualTo(2u));
+        Assert.That(extraData.CommitId, Is.EqualTo(3));
     }
 
     private class TimeStampGetter : ISaveDataCommitTimeStampGetter
