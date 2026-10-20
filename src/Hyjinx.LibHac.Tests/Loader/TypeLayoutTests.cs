@@ -1,130 +1,130 @@
 using LibHac.Loader;
 using System.Runtime.CompilerServices;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Tests.Common.Layout;
 
 namespace LibHac.Tests.Loader;
 
 public class TypeLayoutTests
 {
-    [Fact]
+    [Test]
     public static void NsoHeader_Layout()
     {
         var s = new NsoHeader();
 
-        Assert.Equal(0x100, Unsafe.SizeOf<NsoHeader>());
+        Assert.That(Unsafe.SizeOf<NsoHeader>(), Is.EqualTo(0x100));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Magic));
-        Assert.Equal(0x04, GetOffset(in s, in s.Version));
-        Assert.Equal(0x08, GetOffset(in s, in s.Reserved08));
-        Assert.Equal(0x0C, GetOffset(in s, in s.Flags));
+        Assert.That(GetOffset(in s, in s.Magic), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.Reserved08), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x0C));
 
-        Assert.Equal(0x10, GetOffset(in s, in s.TextFileOffset));
-        Assert.Equal(0x14, GetOffset(in s, in s.TextMemoryOffset));
-        Assert.Equal(0x18, GetOffset(in s, in s.TextSize));
+        Assert.That(GetOffset(in s, in s.TextFileOffset), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.TextMemoryOffset), Is.EqualTo(0x14));
+        Assert.That(GetOffset(in s, in s.TextSize), Is.EqualTo(0x18));
 
-        Assert.Equal(0x1C, GetOffset(in s, in s.ModuleNameOffset));
+        Assert.That(GetOffset(in s, in s.ModuleNameOffset), Is.EqualTo(0x1C));
 
-        Assert.Equal(0x20, GetOffset(in s, in s.RoFileOffset));
-        Assert.Equal(0x24, GetOffset(in s, in s.RoMemoryOffset));
-        Assert.Equal(0x28, GetOffset(in s, in s.RoSize));
+        Assert.That(GetOffset(in s, in s.RoFileOffset), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.RoMemoryOffset), Is.EqualTo(0x24));
+        Assert.That(GetOffset(in s, in s.RoSize), Is.EqualTo(0x28));
 
-        Assert.Equal(0x2C, GetOffset(in s, in s.ModuleNameSize));
+        Assert.That(GetOffset(in s, in s.ModuleNameSize), Is.EqualTo(0x2C));
 
-        Assert.Equal(0x30, GetOffset(in s, in s.DataFileOffset));
-        Assert.Equal(0x34, GetOffset(in s, in s.DataMemoryOffset));
-        Assert.Equal(0x38, GetOffset(in s, in s.DataSize));
+        Assert.That(GetOffset(in s, in s.DataFileOffset), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.DataMemoryOffset), Is.EqualTo(0x34));
+        Assert.That(GetOffset(in s, in s.DataSize), Is.EqualTo(0x38));
 
-        Assert.Equal(0x3C, GetOffset(in s, in s.BssSize));
+        Assert.That(GetOffset(in s, in s.BssSize), Is.EqualTo(0x3C));
 
-        Assert.Equal(0x40, GetOffset(in s, in s.ModuleId));
+        Assert.That(GetOffset(in s, in s.ModuleId), Is.EqualTo(0x40));
 
-        Assert.Equal(0x60, GetOffset(in s, in s.TextFileSize));
-        Assert.Equal(0x64, GetOffset(in s, in s.RoFileSize));
-        Assert.Equal(0x68, GetOffset(in s, in s.DataFileSize));
+        Assert.That(GetOffset(in s, in s.TextFileSize), Is.EqualTo(0x60));
+        Assert.That(GetOffset(in s, in s.RoFileSize), Is.EqualTo(0x64));
+        Assert.That(GetOffset(in s, in s.DataFileSize), Is.EqualTo(0x68));
 
-        Assert.Equal(0x6C, GetOffset(in s, in s.Reserved6C));
+        Assert.That(GetOffset(in s, in s.Reserved6C), Is.EqualTo(0x6C));
 
-        Assert.Equal(0x88, GetOffset(in s, in s.ApiInfoOffset));
-        Assert.Equal(0x8C, GetOffset(in s, in s.ApiInfoSize));
-        Assert.Equal(0x90, GetOffset(in s, in s.DynStrOffset));
-        Assert.Equal(0x94, GetOffset(in s, in s.DynStrSize));
-        Assert.Equal(0x98, GetOffset(in s, in s.DynSymOffset));
-        Assert.Equal(0x9C, GetOffset(in s, in s.DynSymSize));
+        Assert.That(GetOffset(in s, in s.ApiInfoOffset), Is.EqualTo(0x88));
+        Assert.That(GetOffset(in s, in s.ApiInfoSize), Is.EqualTo(0x8C));
+        Assert.That(GetOffset(in s, in s.DynStrOffset), Is.EqualTo(0x90));
+        Assert.That(GetOffset(in s, in s.DynStrSize), Is.EqualTo(0x94));
+        Assert.That(GetOffset(in s, in s.DynSymOffset), Is.EqualTo(0x98));
+        Assert.That(GetOffset(in s, in s.DynSymSize), Is.EqualTo(0x9C));
 
-        Assert.Equal(0xA0, GetOffset(in s, in s.TextHash));
-        Assert.Equal(0xC0, GetOffset(in s, in s.RoHash));
-        Assert.Equal(0xE0, GetOffset(in s, in s.DataHash));
+        Assert.That(GetOffset(in s, in s.TextHash), Is.EqualTo(0xA0));
+        Assert.That(GetOffset(in s, in s.RoHash), Is.EqualTo(0xC0));
+        Assert.That(GetOffset(in s, in s.DataHash), Is.EqualTo(0xE0));
     }
 
-    [Fact]
+    [Test]
     public static void Meta_layout()
     {
         var s = new Meta();
 
-        Assert.Equal(0x80, Unsafe.SizeOf<Meta>());
+        Assert.That(Unsafe.SizeOf<Meta>(), Is.EqualTo(0x80));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Magic));
-        Assert.Equal(0x04, GetOffset(in s, in s.SignatureKeyGeneration));
-        Assert.Equal(0x08, GetOffset(in s, in s.Reserved08));
-        Assert.Equal(0x0C, GetOffset(in s, in s.Flags));
-        Assert.Equal(0x0D, GetOffset(in s, in s.Reserved0D));
-        Assert.Equal(0x0E, GetOffset(in s, in s.MainThreadPriority));
-        Assert.Equal(0x0F, GetOffset(in s, in s.DefaultCpuId));
-        Assert.Equal(0x10, GetOffset(in s, in s.Reserved10));
-        Assert.Equal(0x14, GetOffset(in s, in s.SystemResourceSize));
-        Assert.Equal(0x18, GetOffset(in s, in s.Version));
-        Assert.Equal(0x1C, GetOffset(in s, in s.MainThreadStackSize));
-        Assert.Equal(0x20, GetOffset(in s, in s.ProgramName));
-        Assert.Equal(0x30, GetOffset(in s, in s.ProductCode));
-        Assert.Equal(0x40, GetOffset(in s, in s.Reserved40));
-        Assert.Equal(0x70, GetOffset(in s, in s.AciOffset));
-        Assert.Equal(0x74, GetOffset(in s, in s.AciSize));
-        Assert.Equal(0x78, GetOffset(in s, in s.AcidOffset));
-        Assert.Equal(0x7C, GetOffset(in s, in s.AcidSize));
+        Assert.That(GetOffset(in s, in s.Magic), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.SignatureKeyGeneration), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.Reserved08), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x0C));
+        Assert.That(GetOffset(in s, in s.Reserved0D), Is.EqualTo(0x0D));
+        Assert.That(GetOffset(in s, in s.MainThreadPriority), Is.EqualTo(0x0E));
+        Assert.That(GetOffset(in s, in s.DefaultCpuId), Is.EqualTo(0x0F));
+        Assert.That(GetOffset(in s, in s.Reserved10), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.SystemResourceSize), Is.EqualTo(0x14));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.MainThreadStackSize), Is.EqualTo(0x1C));
+        Assert.That(GetOffset(in s, in s.ProgramName), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.ProductCode), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.Reserved40), Is.EqualTo(0x40));
+        Assert.That(GetOffset(in s, in s.AciOffset), Is.EqualTo(0x70));
+        Assert.That(GetOffset(in s, in s.AciSize), Is.EqualTo(0x74));
+        Assert.That(GetOffset(in s, in s.AcidOffset), Is.EqualTo(0x78));
+        Assert.That(GetOffset(in s, in s.AcidSize), Is.EqualTo(0x7C));
     }
 
-    [Fact]
+    [Test]
     public static void AciHeader_Layout()
     {
         var s = new AciHeader();
 
-        Assert.Equal(0x40, Unsafe.SizeOf<AciHeader>());
+        Assert.That(Unsafe.SizeOf<AciHeader>(), Is.EqualTo(0x40));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Magic));
-        Assert.Equal(0x04, GetOffset(in s, in s.Reserved04));
-        Assert.Equal(0x10, GetOffset(in s, in s.ProgramId));
-        Assert.Equal(0x18, GetOffset(in s, in s.Reserved18));
-        Assert.Equal(0x20, GetOffset(in s, in s.FsAccessControlOffset));
-        Assert.Equal(0x24, GetOffset(in s, in s.FsAccessControlSize));
-        Assert.Equal(0x28, GetOffset(in s, in s.ServiceAccessControlOffset));
-        Assert.Equal(0x2C, GetOffset(in s, in s.ServiceAccessControlSize));
-        Assert.Equal(0x30, GetOffset(in s, in s.KernelCapabilityOffset));
-        Assert.Equal(0x34, GetOffset(in s, in s.KernelCapabilitySize));
-        Assert.Equal(0x38, GetOffset(in s, in s.Reserved38));
+        Assert.That(GetOffset(in s, in s.Magic), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Reserved04), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.ProgramId), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.Reserved18), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.FsAccessControlOffset), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.FsAccessControlSize), Is.EqualTo(0x24));
+        Assert.That(GetOffset(in s, in s.ServiceAccessControlOffset), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.ServiceAccessControlSize), Is.EqualTo(0x2C));
+        Assert.That(GetOffset(in s, in s.KernelCapabilityOffset), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.KernelCapabilitySize), Is.EqualTo(0x34));
+        Assert.That(GetOffset(in s, in s.Reserved38), Is.EqualTo(0x38));
     }
 
-    [Fact]
+    [Test]
     public static void AcidHeaderData_Layout()
     {
         var s = new AcidHeaderData();
 
-        Assert.Equal(0x240, Unsafe.SizeOf<AcidHeaderData>());
+        Assert.That(Unsafe.SizeOf<AcidHeaderData>(), Is.EqualTo(0x240));
 
-        Assert.Equal(0x000, GetOffset(in s, in s.Signature));
-        Assert.Equal(0x100, GetOffset(in s, in s.Modulus));
-        Assert.Equal(0x200, GetOffset(in s, in s.Magic));
-        Assert.Equal(0x204, GetOffset(in s, in s.Size));
-        Assert.Equal(0x208, GetOffset(in s, in s.Version));
-        Assert.Equal(0x20C, GetOffset(in s, in s.Flags));
-        Assert.Equal(0x210, GetOffset(in s, in s.ProgramIdMin));
-        Assert.Equal(0x218, GetOffset(in s, in s.ProgramIdMax));
-        Assert.Equal(0x220, GetOffset(in s, in s.FsAccessControlOffset));
-        Assert.Equal(0x224, GetOffset(in s, in s.FsAccessControlSize));
-        Assert.Equal(0x228, GetOffset(in s, in s.ServiceAccessControlOffset));
-        Assert.Equal(0x22C, GetOffset(in s, in s.ServiceAccessControlSize));
-        Assert.Equal(0x230, GetOffset(in s, in s.KernelCapabilityOffset));
-        Assert.Equal(0x234, GetOffset(in s, in s.KernelCapabilitySize));
-        Assert.Equal(0x238, GetOffset(in s, in s.Reserved238));
+        Assert.That(GetOffset(in s, in s.Signature), Is.EqualTo(0x000));
+        Assert.That(GetOffset(in s, in s.Modulus), Is.EqualTo(0x100));
+        Assert.That(GetOffset(in s, in s.Magic), Is.EqualTo(0x200));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x204));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x208));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x20C));
+        Assert.That(GetOffset(in s, in s.ProgramIdMin), Is.EqualTo(0x210));
+        Assert.That(GetOffset(in s, in s.ProgramIdMax), Is.EqualTo(0x218));
+        Assert.That(GetOffset(in s, in s.FsAccessControlOffset), Is.EqualTo(0x220));
+        Assert.That(GetOffset(in s, in s.FsAccessControlSize), Is.EqualTo(0x224));
+        Assert.That(GetOffset(in s, in s.ServiceAccessControlOffset), Is.EqualTo(0x228));
+        Assert.That(GetOffset(in s, in s.ServiceAccessControlSize), Is.EqualTo(0x22C));
+        Assert.That(GetOffset(in s, in s.KernelCapabilityOffset), Is.EqualTo(0x230));
+        Assert.That(GetOffset(in s, in s.KernelCapabilitySize), Is.EqualTo(0x234));
+        Assert.That(GetOffset(in s, in s.Reserved238), Is.EqualTo(0x238));
     }
 }

@@ -1,6 +1,6 @@
 using LibHac.Kernel;
 using System.Runtime.CompilerServices;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Kernel.InitialProcessBinaryReader;
 using static LibHac.Kernel.KipHeader;
 using static LibHac.Tests.Common.Layout;
@@ -9,61 +9,61 @@ namespace LibHac.Tests.Kernel;
 
 public class TypeLayoutTests
 {
-    [Fact]
+    [Test]
     public static void IniHeader_Layout()
     {
         var s = new IniHeader();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<IniHeader>());
+        Assert.That(Unsafe.SizeOf<IniHeader>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.Magic));
-        Assert.Equal(0x4, GetOffset(in s, in s.Size));
-        Assert.Equal(0x8, GetOffset(in s, in s.ProcessCount));
-        Assert.Equal(0xC, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Magic), Is.EqualTo(0x0));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x4));
+        Assert.That(GetOffset(in s, in s.ProcessCount), Is.EqualTo(0x8));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0xC));
     }
 
-    [Fact]
+    [Test]
     public static void KipHeader_Layout()
     {
         var s = new KipHeader();
 
-        Assert.Equal(0x100, Unsafe.SizeOf<KipHeader>());
+        Assert.That(Unsafe.SizeOf<KipHeader>(), Is.EqualTo(0x100));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Magic));
-        Assert.Equal(0x04, GetOffset(in s, in s.Name));
-        Assert.Equal(0x10, GetOffset(in s, in s.ProgramId));
-        Assert.Equal(0x18, GetOffset(in s, in s.Version));
-        Assert.Equal(0x1C, GetOffset(in s, in s.Priority));
-        Assert.Equal(0x1D, GetOffset(in s, in s.IdealCoreId));
-        Assert.Equal(0x1F, GetOffset(in s, in s.Flags));
-        Assert.Equal(0x20, GetOffset(in s, in s.TextMemoryOffset));
-        Assert.Equal(0x24, GetOffset(in s, in s.TextSize));
-        Assert.Equal(0x28, GetOffset(in s, in s.TextFileSize));
-        Assert.Equal(0x2C, GetOffset(in s, in s.AffinityMask));
-        Assert.Equal(0x30, GetOffset(in s, in s.RoMemoryOffset));
-        Assert.Equal(0x34, GetOffset(in s, in s.RoSize));
-        Assert.Equal(0x38, GetOffset(in s, in s.RoFileSize));
-        Assert.Equal(0x3C, GetOffset(in s, in s.StackSize));
-        Assert.Equal(0x40, GetOffset(in s, in s.DataMemoryOffset));
-        Assert.Equal(0x44, GetOffset(in s, in s.DataSize));
-        Assert.Equal(0x48, GetOffset(in s, in s.DataFileSize));
-        Assert.Equal(0x50, GetOffset(in s, in s.BssMemoryOffset));
-        Assert.Equal(0x54, GetOffset(in s, in s.BssSize));
-        Assert.Equal(0x58, GetOffset(in s, in s.BssFileSize));
-        Assert.Equal(0x80, GetOffset(in s, in s.Capabilities));
+        Assert.That(GetOffset(in s, in s.Magic), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Name), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.ProgramId), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.Priority), Is.EqualTo(0x1C));
+        Assert.That(GetOffset(in s, in s.IdealCoreId), Is.EqualTo(0x1D));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x1F));
+        Assert.That(GetOffset(in s, in s.TextMemoryOffset), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.TextSize), Is.EqualTo(0x24));
+        Assert.That(GetOffset(in s, in s.TextFileSize), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.AffinityMask), Is.EqualTo(0x2C));
+        Assert.That(GetOffset(in s, in s.RoMemoryOffset), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.RoSize), Is.EqualTo(0x34));
+        Assert.That(GetOffset(in s, in s.RoFileSize), Is.EqualTo(0x38));
+        Assert.That(GetOffset(in s, in s.StackSize), Is.EqualTo(0x3C));
+        Assert.That(GetOffset(in s, in s.DataMemoryOffset), Is.EqualTo(0x40));
+        Assert.That(GetOffset(in s, in s.DataSize), Is.EqualTo(0x44));
+        Assert.That(GetOffset(in s, in s.DataFileSize), Is.EqualTo(0x48));
+        Assert.That(GetOffset(in s, in s.BssMemoryOffset), Is.EqualTo(0x50));
+        Assert.That(GetOffset(in s, in s.BssSize), Is.EqualTo(0x54));
+        Assert.That(GetOffset(in s, in s.BssFileSize), Is.EqualTo(0x58));
+        Assert.That(GetOffset(in s, in s.Capabilities), Is.EqualTo(0x80));
 
-        Assert.Equal(0x20, GetOffset(in s, in s.Segments[0]));
+        Assert.That(GetOffset(in s, in s.Segments[0]), Is.EqualTo(0x20));
     }
 
-    [Fact]
+    [Test]
     public static void KipSegmentHeader_Layout()
     {
         var s = new SegmentHeader();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<SegmentHeader>());
+        Assert.That(Unsafe.SizeOf<SegmentHeader>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.MemoryOffset));
-        Assert.Equal(0x4, GetOffset(in s, in s.Size));
-        Assert.Equal(0x8, GetOffset(in s, in s.FileSize));
+        Assert.That(GetOffset(in s, in s.MemoryOffset), Is.EqualTo(0x0));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x4));
+        Assert.That(GetOffset(in s, in s.FileSize), Is.EqualTo(0x8));
     }
 }

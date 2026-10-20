@@ -1,78 +1,78 @@
 using LibHac.Bcat;
 using LibHac.Bcat.Impl.Service.Core;
 using System.Runtime.CompilerServices;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Tests.Common.Layout;
 
 namespace LibHac.Tests.Bcat;
 
 public class TypeLayoutTests
 {
-    [Fact]
+    [Test]
     public static void Digest_Layout()
     {
         var s = new Digest();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<Digest>());
+        Assert.That(Unsafe.SizeOf<Digest>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x0));
     }
 
-    [Fact]
+    [Test]
     public static void DirectoryName_Layout()
     {
         var s = new DirectoryName();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<DirectoryName>());
+        Assert.That(Unsafe.SizeOf<DirectoryName>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x0));
     }
 
-    [Fact]
+    [Test]
     public static void FileName_Layout()
     {
         var s = new FileName();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<FileName>());
+        Assert.That(Unsafe.SizeOf<FileName>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x0));
     }
 
-    [Fact]
+    [Test]
     public static void DeliveryCacheDirectoryEntry_Layout()
     {
         var s = new DeliveryCacheDirectoryEntry();
 
-        Assert.Equal(0x38, Unsafe.SizeOf<DeliveryCacheDirectoryEntry>());
+        Assert.That(Unsafe.SizeOf<DeliveryCacheDirectoryEntry>(), Is.EqualTo(0x38));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Name));
-        Assert.Equal(0x20, GetOffset(in s, in s.Size));
-        Assert.Equal(0x28, GetOffset(in s, in s.Digest));
+        Assert.That(GetOffset(in s, in s.Name), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.Digest), Is.EqualTo(0x28));
     }
 
-    [Fact]
+    [Test]
     public static void DeliveryCacheDirectoryMetaEntry_Layout()
     {
         var s = new DeliveryCacheDirectoryMetaEntry();
 
-        Assert.Equal(0x40, Unsafe.SizeOf<DeliveryCacheDirectoryMetaEntry>());
+        Assert.That(Unsafe.SizeOf<DeliveryCacheDirectoryMetaEntry>(), Is.EqualTo(0x40));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Name));
-        Assert.Equal(0x20, GetOffset(in s, in s.Digest));
-        Assert.Equal(0x30, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Name), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Digest), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x30));
     }
 
-    [Fact]
+    [Test]
     public static void DeliveryCacheFileMetaEntry_Layout()
     {
         var s = new DeliveryCacheFileMetaEntry();
 
-        Assert.Equal(0x80, Unsafe.SizeOf<DeliveryCacheFileMetaEntry>());
+        Assert.That(Unsafe.SizeOf<DeliveryCacheFileMetaEntry>(), Is.EqualTo(0x80));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Name));
-        Assert.Equal(0x20, GetOffset(in s, in s.Id));
-        Assert.Equal(0x28, GetOffset(in s, in s.Size));
-        Assert.Equal(0x30, GetOffset(in s, in s.Digest));
-        Assert.Equal(0x40, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Name), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Id), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.Digest), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x40));
     }
 }

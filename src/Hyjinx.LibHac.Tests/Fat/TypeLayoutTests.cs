@@ -1,23 +1,23 @@
 using LibHac.Fat;
 using System.Runtime.CompilerServices;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Tests.Common.Layout;
 
 namespace LibHac.Tests.Fat;
 
 public class TypeLayoutTests
 {
-    [Fact]
+    [Test]
     public static void FatError_Layout()
     {
         var s = new FatError();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<FatError>());
+        Assert.That(Unsafe.SizeOf<FatError>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Error));
-        Assert.Equal(0x04, GetOffset(in s, in s.ExtraError));
-        Assert.Equal(0x08, GetOffset(in s, in s.DriveId));
-        Assert.Equal(0x0C, GetOffset(in s, in s.ErrorName));
-        Assert.Equal(0x1C, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Error), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.ExtraError), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.DriveId), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.ErrorName), Is.EqualTo(0x0C));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x1C));
     }
 }

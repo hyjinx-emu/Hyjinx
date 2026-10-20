@@ -3,95 +3,95 @@ using LibHac.FsSrv.Impl;
 using LibHac.FsSrv.Sf;
 using LibHac.FsSrv.Storage;
 using System.Runtime.CompilerServices;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Tests.Common.Layout;
 
 namespace LibHac.Tests.FsSrv;
 
 public class TypeLayoutTests
 {
-    [Fact]
+    [Test]
     public static void AccessControlDescriptor_Layout()
     {
         var s = new AccessControlDescriptor();
 
-        Assert.Equal(0x2C, Unsafe.SizeOf<AccessControlDescriptor>());
+        Assert.That(Unsafe.SizeOf<AccessControlDescriptor>(), Is.EqualTo(0x2C));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Version));
-        Assert.Equal(0x01, GetOffset(in s, in s.ContentOwnerIdCount));
-        Assert.Equal(0x02, GetOffset(in s, in s.SaveDataOwnerIdCount));
-        Assert.Equal(0x04, GetOffset(in s, in s.AccessFlags));
-        Assert.Equal(0x0C, GetOffset(in s, in s.ContentOwnerIdMin));
-        Assert.Equal(0x14, GetOffset(in s, in s.ContentOwnerIdMax));
-        Assert.Equal(0x1C, GetOffset(in s, in s.SaveDataOwnerIdMin));
-        Assert.Equal(0x24, GetOffset(in s, in s.SaveDataOwnerIdMax));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.ContentOwnerIdCount), Is.EqualTo(0x01));
+        Assert.That(GetOffset(in s, in s.SaveDataOwnerIdCount), Is.EqualTo(0x02));
+        Assert.That(GetOffset(in s, in s.AccessFlags), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.ContentOwnerIdMin), Is.EqualTo(0x0C));
+        Assert.That(GetOffset(in s, in s.ContentOwnerIdMax), Is.EqualTo(0x14));
+        Assert.That(GetOffset(in s, in s.SaveDataOwnerIdMin), Is.EqualTo(0x1C));
+        Assert.That(GetOffset(in s, in s.SaveDataOwnerIdMax), Is.EqualTo(0x24));
     }
 
-    [Fact]
+    [Test]
     public static void AccessControlDataHeader_Layout()
     {
         var s = new AccessControlDataHeader();
 
-        Assert.Equal(0x1C, Unsafe.SizeOf<AccessControlDataHeader>());
+        Assert.That(Unsafe.SizeOf<AccessControlDataHeader>(), Is.EqualTo(0x1C));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Version));
-        Assert.Equal(0x04, GetOffset(in s, in s.AccessFlags));
-        Assert.Equal(0x0C, GetOffset(in s, in s.ContentOwnerInfoOffset));
-        Assert.Equal(0x10, GetOffset(in s, in s.ContentOwnerInfoSize));
-        Assert.Equal(0x14, GetOffset(in s, in s.SaveDataOwnerInfoOffset));
-        Assert.Equal(0x18, GetOffset(in s, in s.SaveDataOwnerInfoSize));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.AccessFlags), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.ContentOwnerInfoOffset), Is.EqualTo(0x0C));
+        Assert.That(GetOffset(in s, in s.ContentOwnerInfoSize), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.SaveDataOwnerInfoOffset), Is.EqualTo(0x14));
+        Assert.That(GetOffset(in s, in s.SaveDataOwnerInfoSize), Is.EqualTo(0x18));
     }
 
-    [Fact]
+    [Test]
     public static void Accessibility_Layout()
     {
-        Assert.Equal(1, Unsafe.SizeOf<Accessibility>());
+        Assert.That(Unsafe.SizeOf<Accessibility>(), Is.EqualTo(1));
     }
 
-    [Fact]
+    [Test]
     public static void FspPath_Layout()
     {
         var s = new FspPath();
 
-        Assert.Equal(0x301, Unsafe.SizeOf<FspPath>());
+        Assert.That(Unsafe.SizeOf<FspPath>(), Is.EqualTo(0x301));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Str[0]));
+        Assert.That(GetOffset(in s, in s.Str[0]), Is.EqualTo(0x00));
     }
 
-    [Fact]
+    [Test]
     public static void Path_Layout()
     {
         var s = new Path();
 
-        Assert.Equal(0x301, Unsafe.SizeOf<Path>());
+        Assert.That(Unsafe.SizeOf<Path>(), Is.EqualTo(0x301));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Str[0]));
+        Assert.That(GetOffset(in s, in s.Str[0]), Is.EqualTo(0x00));
     }
 
-    [Fact]
+    [Test]
     public static void StorageDeviceHandle_Layout()
     {
         var s = new StorageDeviceHandle();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<StorageDeviceHandle>());
+        Assert.That(Unsafe.SizeOf<StorageDeviceHandle>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.Value));
-        Assert.Equal(0x4, GetOffset(in s, in s.PortId));
-        Assert.Equal(0x5, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x0));
+        Assert.That(GetOffset(in s, in s.PortId), Is.EqualTo(0x4));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x5));
     }
 
-    [Fact]
+    [Test]
     public static void SaveDataIndexerValue_Layout()
     {
         var s = new SaveDataIndexerValue();
 
-        Assert.Equal(0x40, Unsafe.SizeOf<SaveDataIndexerValue>());
+        Assert.That(Unsafe.SizeOf<SaveDataIndexerValue>(), Is.EqualTo(0x40));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.SaveDataId));
-        Assert.Equal(0x08, GetOffset(in s, in s.Size));
-        Assert.Equal(0x10, GetOffset(in s, in s.Field10));
-        Assert.Equal(0x18, GetOffset(in s, in s.SpaceId));
-        Assert.Equal(0x19, GetOffset(in s, in s.State));
-        Assert.Equal(0x1A, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.SaveDataId), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.Field10), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.SpaceId), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.State), Is.EqualTo(0x19));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x1A));
     }
 }

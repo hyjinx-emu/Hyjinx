@@ -2,549 +2,549 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Impl;
 using System.Runtime.CompilerServices;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Tests.Common.Layout;
 
 namespace LibHac.Tests.Fs;
 
 public class TypeLayoutTests
 {
-    [Fact]
+    [Test]
     public static void SaveDataAttribute_Layout()
     {
         var s = new SaveDataAttribute();
 
-        Assert.Equal(0x40, Unsafe.SizeOf<SaveDataAttribute>());
+        Assert.That(Unsafe.SizeOf<SaveDataAttribute>(), Is.EqualTo(0x40));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.ProgramId));
-        Assert.Equal(0x08, GetOffset(in s, in s.UserId));
-        Assert.Equal(0x18, GetOffset(in s, in s.StaticSaveDataId));
-        Assert.Equal(0x20, GetOffset(in s, in s.Type));
-        Assert.Equal(0x21, GetOffset(in s, in s.Rank));
-        Assert.Equal(0x22, GetOffset(in s, in s.Index));
-        Assert.Equal(0x24, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.ProgramId), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.UserId), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.StaticSaveDataId), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.Type), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.Rank), Is.EqualTo(0x21));
+        Assert.That(GetOffset(in s, in s.Index), Is.EqualTo(0x22));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x24));
     }
 
-    [Fact]
+    [Test]
     public static void SaveDataCreationInfo_Layout()
     {
         var s = new SaveDataCreationInfo();
 
-        Assert.Equal(0x40, Unsafe.SizeOf<SaveDataCreationInfo>());
+        Assert.That(Unsafe.SizeOf<SaveDataCreationInfo>(), Is.EqualTo(0x40));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Size));
-        Assert.Equal(0x08, GetOffset(in s, in s.JournalSize));
-        Assert.Equal(0x10, GetOffset(in s, in s.BlockSize));
-        Assert.Equal(0x18, GetOffset(in s, in s.OwnerId));
-        Assert.Equal(0x20, GetOffset(in s, in s.Flags));
-        Assert.Equal(0x24, GetOffset(in s, in s.SpaceId));
-        Assert.Equal(0x25, GetOffset(in s, in s.IsPseudoSaveData));
-        Assert.Equal(0x26, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.JournalSize), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.BlockSize), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.OwnerId), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.SpaceId), Is.EqualTo(0x24));
+        Assert.That(GetOffset(in s, in s.IsPseudoSaveData), Is.EqualTo(0x25));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x26));
     }
 
-    [Fact]
+    [Test]
     public static void SaveDataCreationInfo2_Layout()
     {
         var s = new SaveDataCreationInfo2();
 
-        Assert.Equal(0x200, Unsafe.SizeOf<SaveDataCreationInfo2>());
+        Assert.That(Unsafe.SizeOf<SaveDataCreationInfo2>(), Is.EqualTo(0x200));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Version));
-        Assert.Equal(0x08, GetOffset(in s, in s.Attribute));
-        Assert.Equal(0x48, GetOffset(in s, in s.Size));
-        Assert.Equal(0x50, GetOffset(in s, in s.JournalSize));
-        Assert.Equal(0x58, GetOffset(in s, in s.BlockSize));
-        Assert.Equal(0x60, GetOffset(in s, in s.OwnerId));
-        Assert.Equal(0x68, GetOffset(in s, in s.Flags));
-        Assert.Equal(0x6C, GetOffset(in s, in s.SpaceId));
-        Assert.Equal(0x6D, GetOffset(in s, in s.FormatType));
-        Assert.Equal(0x6E, GetOffset(in s, in s.Reserved1));
-        Assert.Equal(0x70, GetOffset(in s, in s.IsHashSaltEnabled));
-        Assert.Equal(0x71, GetOffset(in s, in s.Reserved2));
-        Assert.Equal(0x74, GetOffset(in s, in s.HashSalt));
-        Assert.Equal(0x94, GetOffset(in s, in s.MetaType));
-        Assert.Equal(0x95, GetOffset(in s, in s.Reserved3));
-        Assert.Equal(0x98, GetOffset(in s, in s.MetaSize));
-        Assert.Equal(0x9C, GetOffset(in s, in s.Reserved4));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Attribute), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x48));
+        Assert.That(GetOffset(in s, in s.JournalSize), Is.EqualTo(0x50));
+        Assert.That(GetOffset(in s, in s.BlockSize), Is.EqualTo(0x58));
+        Assert.That(GetOffset(in s, in s.OwnerId), Is.EqualTo(0x60));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x68));
+        Assert.That(GetOffset(in s, in s.SpaceId), Is.EqualTo(0x6C));
+        Assert.That(GetOffset(in s, in s.FormatType), Is.EqualTo(0x6D));
+        Assert.That(GetOffset(in s, in s.Reserved1), Is.EqualTo(0x6E));
+        Assert.That(GetOffset(in s, in s.IsHashSaltEnabled), Is.EqualTo(0x70));
+        Assert.That(GetOffset(in s, in s.Reserved2), Is.EqualTo(0x71));
+        Assert.That(GetOffset(in s, in s.HashSalt), Is.EqualTo(0x74));
+        Assert.That(GetOffset(in s, in s.MetaType), Is.EqualTo(0x94));
+        Assert.That(GetOffset(in s, in s.Reserved3), Is.EqualTo(0x95));
+        Assert.That(GetOffset(in s, in s.MetaSize), Is.EqualTo(0x98));
+        Assert.That(GetOffset(in s, in s.Reserved4), Is.EqualTo(0x9C));
     }
 
-    [Fact]
+    [Test]
     public static void SaveDataFilter_Layout()
     {
         var s = new SaveDataFilter();
 
-        Assert.Equal(0x48, Unsafe.SizeOf<SaveDataFilter>());
+        Assert.That(Unsafe.SizeOf<SaveDataFilter>(), Is.EqualTo(0x48));
 
-        Assert.Equal(0, GetOffset(in s, in s.FilterByProgramId));
-        Assert.Equal(1, GetOffset(in s, in s.FilterBySaveDataType));
-        Assert.Equal(2, GetOffset(in s, in s.FilterByUserId));
-        Assert.Equal(3, GetOffset(in s, in s.FilterBySaveDataId));
-        Assert.Equal(4, GetOffset(in s, in s.FilterByIndex));
-        Assert.Equal(5, GetOffset(in s, in s.Rank));
-        Assert.Equal(8, GetOffset(in s, in s.Attribute));
+        Assert.That(GetOffset(in s, in s.FilterByProgramId), Is.EqualTo(0));
+        Assert.That(GetOffset(in s, in s.FilterBySaveDataType), Is.EqualTo(1));
+        Assert.That(GetOffset(in s, in s.FilterByUserId), Is.EqualTo(2));
+        Assert.That(GetOffset(in s, in s.FilterBySaveDataId), Is.EqualTo(3));
+        Assert.That(GetOffset(in s, in s.FilterByIndex), Is.EqualTo(4));
+        Assert.That(GetOffset(in s, in s.Rank), Is.EqualTo(5));
+        Assert.That(GetOffset(in s, in s.Attribute), Is.EqualTo(8));
     }
 
-    [Fact]
+    [Test]
     public static void SaveDataMetaInfo_Layout()
     {
         var s = new SaveDataMetaInfo();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<SaveDataMetaInfo>());
+        Assert.That(Unsafe.SizeOf<SaveDataMetaInfo>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0, GetOffset(in s, in s.Size));
-        Assert.Equal(4, GetOffset(in s, in s.Type));
-        Assert.Equal(5, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0));
+        Assert.That(GetOffset(in s, in s.Type), Is.EqualTo(4));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(5));
     }
 
-    [Fact]
+    [Test]
     public static void HashSalt_Layout()
     {
         var s = new HashSalt();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<HashSalt>());
+        Assert.That(Unsafe.SizeOf<HashSalt>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0, GetOffset(in s, in s.Hash[0]));
+        Assert.That(GetOffset(in s, in s.Hash[0]), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public static void SaveDataInfo_Layout()
     {
         var s = new SaveDataInfo();
 
-        Assert.Equal(0x60, Unsafe.SizeOf<SaveDataInfo>());
+        Assert.That(Unsafe.SizeOf<SaveDataInfo>(), Is.EqualTo(0x60));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.SaveDataId));
-        Assert.Equal(0x08, GetOffset(in s, in s.SpaceId));
-        Assert.Equal(0x09, GetOffset(in s, in s.Type));
-        Assert.Equal(0x10, GetOffset(in s, in s.UserId));
-        Assert.Equal(0x20, GetOffset(in s, in s.StaticSaveDataId));
-        Assert.Equal(0x28, GetOffset(in s, in s.ProgramId));
-        Assert.Equal(0x30, GetOffset(in s, in s.Size));
-        Assert.Equal(0x38, GetOffset(in s, in s.Index));
-        Assert.Equal(0x3A, GetOffset(in s, in s.Rank));
-        Assert.Equal(0x3B, GetOffset(in s, in s.State));
-        Assert.Equal(0x3C, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.SaveDataId), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.SpaceId), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.Type), Is.EqualTo(0x09));
+        Assert.That(GetOffset(in s, in s.UserId), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.StaticSaveDataId), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.ProgramId), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.Index), Is.EqualTo(0x38));
+        Assert.That(GetOffset(in s, in s.Rank), Is.EqualTo(0x3A));
+        Assert.That(GetOffset(in s, in s.State), Is.EqualTo(0x3B));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x3C));
     }
 
-    [Fact]
+    [Test]
     public static void SaveDataExtraData_Layout()
     {
         var s = new SaveDataExtraData();
 
-        Assert.Equal(0x200, Unsafe.SizeOf<SaveDataExtraData>());
+        Assert.That(Unsafe.SizeOf<SaveDataExtraData>(), Is.EqualTo(0x200));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Attribute));
-        Assert.Equal(0x40, GetOffset(in s, in s.OwnerId));
-        Assert.Equal(0x48, GetOffset(in s, in s.TimeStamp));
-        Assert.Equal(0x50, GetOffset(in s, in s.Flags));
-        Assert.Equal(0x54, GetOffset(in s, in s.FormatType));
-        Assert.Equal(0x58, GetOffset(in s, in s.DataSize));
-        Assert.Equal(0x60, GetOffset(in s, in s.JournalSize));
-        Assert.Equal(0x68, GetOffset(in s, in s.CommitId));
-        Assert.Equal(0x70, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Attribute), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.OwnerId), Is.EqualTo(0x40));
+        Assert.That(GetOffset(in s, in s.TimeStamp), Is.EqualTo(0x48));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x50));
+        Assert.That(GetOffset(in s, in s.FormatType), Is.EqualTo(0x54));
+        Assert.That(GetOffset(in s, in s.DataSize), Is.EqualTo(0x58));
+        Assert.That(GetOffset(in s, in s.JournalSize), Is.EqualTo(0x60));
+        Assert.That(GetOffset(in s, in s.CommitId), Is.EqualTo(0x68));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x70));
     }
 
-    [Fact]
+    [Test]
     public static void CommitOption_Layout()
     {
         var s = new CommitOption();
 
-        Assert.Equal(4, Unsafe.SizeOf<CommitOption>());
+        Assert.That(Unsafe.SizeOf<CommitOption>(), Is.EqualTo(4));
 
-        Assert.Equal(0, GetOffset(in s, in s.Flags));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public static void MemoryReportInfo_Layout()
     {
         var s = new MemoryReportInfo();
 
-        Assert.Equal(0x80, Unsafe.SizeOf<MemoryReportInfo>());
+        Assert.That(Unsafe.SizeOf<MemoryReportInfo>(), Is.EqualTo(0x80));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.PooledBufferFreeSizePeak));
-        Assert.Equal(0x08, GetOffset(in s, in s.PooledBufferRetriedCount));
-        Assert.Equal(0x10, GetOffset(in s, in s.PooledBufferReduceAllocationCount));
-        Assert.Equal(0x18, GetOffset(in s, in s.BufferManagerFreeSizePeak));
-        Assert.Equal(0x20, GetOffset(in s, in s.BufferManagerRetriedCount));
-        Assert.Equal(0x28, GetOffset(in s, in s.ExpHeapFreeSizePeak));
-        Assert.Equal(0x30, GetOffset(in s, in s.BufferPoolFreeSizePeak));
-        Assert.Equal(0x38, GetOffset(in s, in s.PatrolReadAllocateBufferSuccessCount));
-        Assert.Equal(0x40, GetOffset(in s, in s.PatrolReadAllocateBufferFailureCount));
-        Assert.Equal(0x48, GetOffset(in s, in s.BufferManagerTotalAllocatableSizePeak));
-        Assert.Equal(0x50, GetOffset(in s, in s.BufferPoolAllocateSizeMax));
-        Assert.Equal(0x58, GetOffset(in s, in s.PooledBufferFailedIdealAllocationCountOnAsyncAccess));
-        Assert.Equal(0x60, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.PooledBufferFreeSizePeak), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.PooledBufferRetriedCount), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.PooledBufferReduceAllocationCount), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.BufferManagerFreeSizePeak), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.BufferManagerRetriedCount), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.ExpHeapFreeSizePeak), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.BufferPoolFreeSizePeak), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.PatrolReadAllocateBufferSuccessCount), Is.EqualTo(0x38));
+        Assert.That(GetOffset(in s, in s.PatrolReadAllocateBufferFailureCount), Is.EqualTo(0x40));
+        Assert.That(GetOffset(in s, in s.BufferManagerTotalAllocatableSizePeak), Is.EqualTo(0x48));
+        Assert.That(GetOffset(in s, in s.BufferPoolAllocateSizeMax), Is.EqualTo(0x50));
+        Assert.That(GetOffset(in s, in s.PooledBufferFailedIdealAllocationCountOnAsyncAccess), Is.EqualTo(0x58));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x60));
     }
 
-    [Fact]
+    [Test]
     public static void ApplicationInfo_Layout()
     {
         var s = new ApplicationInfo();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<ApplicationInfo>());
+        Assert.That(Unsafe.SizeOf<ApplicationInfo>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.ApplicationId));
-        Assert.Equal(0x8, GetOffset(in s, in s.Version));
-        Assert.Equal(0xC, GetOffset(in s, in s.LaunchType));
-        Assert.Equal(0xD, GetOffset(in s, in s.IsMultiProgram));
-        Assert.Equal(0xE, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.ApplicationId), Is.EqualTo(0x0));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x8));
+        Assert.That(GetOffset(in s, in s.LaunchType), Is.EqualTo(0xC));
+        Assert.That(GetOffset(in s, in s.IsMultiProgram), Is.EqualTo(0xD));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0xE));
     }
 
-    [Fact]
+    [Test]
     public static void CodeVerificationData_Layout()
     {
         var s = new CodeVerificationData();
 
-        Assert.Equal(0x124, Unsafe.SizeOf<CodeVerificationData>());
+        Assert.That(Unsafe.SizeOf<CodeVerificationData>(), Is.EqualTo(0x124));
 
-        Assert.Equal(0x000, GetOffset(in s, in s.Signature));
-        Assert.Equal(0x100, GetOffset(in s, in s.Hash));
-        Assert.Equal(0x120, GetOffset(in s, in s.HasData));
-        Assert.Equal(0x121, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Signature), Is.EqualTo(0x000));
+        Assert.That(GetOffset(in s, in s.Hash), Is.EqualTo(0x100));
+        Assert.That(GetOffset(in s, in s.HasData), Is.EqualTo(0x120));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x121));
     }
 
-    [Fact]
+    [Test]
     public static void DirectoryEntry_Layout()
     {
         var s = new DirectoryEntry();
 
-        Assert.Equal(0x310, Unsafe.SizeOf<DirectoryEntry>());
+        Assert.That(Unsafe.SizeOf<DirectoryEntry>(), Is.EqualTo(0x310));
 
-        Assert.Equal(0x000, GetOffset(in s, in s.Name));
-        Assert.Equal(0x301, GetOffset(in s, in s.Attributes));
-        Assert.Equal(0x302, GetOffset(in s, in s.Reserved302));
-        Assert.Equal(0x304, GetOffset(in s, in s.Type));
-        Assert.Equal(0x305, GetOffset(in s, in s.Reserved305));
-        Assert.Equal(0x308, GetOffset(in s, in s.Size));
+        Assert.That(GetOffset(in s, in s.Name), Is.EqualTo(0x000));
+        Assert.That(GetOffset(in s, in s.Attributes), Is.EqualTo(0x301));
+        Assert.That(GetOffset(in s, in s.Reserved302), Is.EqualTo(0x302));
+        Assert.That(GetOffset(in s, in s.Type), Is.EqualTo(0x304));
+        Assert.That(GetOffset(in s, in s.Reserved305), Is.EqualTo(0x305));
+        Assert.That(GetOffset(in s, in s.Size), Is.EqualTo(0x308));
     }
 
-    [Fact]
+    [Test]
     public static void EncryptionSeed_Layout()
     {
         var s = new EncryptionSeed();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<EncryptionSeed>());
+        Assert.That(Unsafe.SizeOf<EncryptionSeed>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public static void FileSystemProxyErrorInfo_Layout()
     {
         var s = new FileSystemProxyErrorInfo();
 
-        Assert.Equal(0x80, Unsafe.SizeOf<FileSystemProxyErrorInfo>());
+        Assert.That(Unsafe.SizeOf<FileSystemProxyErrorInfo>(), Is.EqualTo(0x80));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.RemountForDataCorruptionCount));
-        Assert.Equal(0x04, GetOffset(in s, in s.UnrecoverableDataCorruptionByRemountCount));
-        Assert.Equal(0x08, GetOffset(in s, in s.FatFsError));
-        Assert.Equal(0x28, GetOffset(in s, in s.RecoveredByInvalidateCacheCount));
-        Assert.Equal(0x2C, GetOffset(in s, in s.SaveDataIndexCount));
-        Assert.Equal(0x30, GetOffset(in s, in s.BisSystemFatReportInfo));
-        Assert.Equal(0x34, GetOffset(in s, in s.BisUserFatReport));
-        Assert.Equal(0x38, GetOffset(in s, in s.SdCardFatReport));
-        Assert.Equal(0x3C, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.RemountForDataCorruptionCount), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.UnrecoverableDataCorruptionByRemountCount), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.FatFsError), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.RecoveredByInvalidateCacheCount), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.SaveDataIndexCount), Is.EqualTo(0x2C));
+        Assert.That(GetOffset(in s, in s.BisSystemFatReportInfo), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.BisUserFatReport), Is.EqualTo(0x34));
+        Assert.That(GetOffset(in s, in s.SdCardFatReport), Is.EqualTo(0x38));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x3C));
     }
 
-    [Fact]
+    [Test]
     public static void StorageErrorInfo_Layout()
     {
         var s = new StorageErrorInfo();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<StorageErrorInfo>());
+        Assert.That(Unsafe.SizeOf<StorageErrorInfo>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.NumActivationFailures));
-        Assert.Equal(0x4, GetOffset(in s, in s.NumActivationErrorCorrections));
-        Assert.Equal(0x8, GetOffset(in s, in s.NumReadWriteFailures));
-        Assert.Equal(0xC, GetOffset(in s, in s.NumReadWriteErrorCorrections));
+        Assert.That(GetOffset(in s, in s.NumActivationFailures), Is.EqualTo(0x0));
+        Assert.That(GetOffset(in s, in s.NumActivationErrorCorrections), Is.EqualTo(0x4));
+        Assert.That(GetOffset(in s, in s.NumReadWriteFailures), Is.EqualTo(0x8));
+        Assert.That(GetOffset(in s, in s.NumReadWriteErrorCorrections), Is.EqualTo(0xC));
     }
 
-    [Fact]
+    [Test]
     public static void FileSystemAttribute_Layout()
     {
         var s = new FileSystemAttribute();
 
-        Assert.Equal(0xC0, Unsafe.SizeOf<FileSystemAttribute>());
+        Assert.That(Unsafe.SizeOf<FileSystemAttribute>(), Is.EqualTo(0xC0));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.DirectoryNameLengthMaxHasValue));
-        Assert.Equal(0x01, GetOffset(in s, in s.FileNameLengthMaxHasValue));
-        Assert.Equal(0x02, GetOffset(in s, in s.DirectoryPathLengthMaxHasValue));
-        Assert.Equal(0x03, GetOffset(in s, in s.FilePathLengthMaxHasValue));
-        Assert.Equal(0x04, GetOffset(in s, in s.Utf16CreateDirectoryPathLengthMaxHasValue));
-        Assert.Equal(0x05, GetOffset(in s, in s.Utf16DeleteDirectoryPathLengthMaxHasValue));
-        Assert.Equal(0x06, GetOffset(in s, in s.Utf16RenameSourceDirectoryPathLengthMaxHasValue));
-        Assert.Equal(0x07, GetOffset(in s, in s.Utf16RenameDestinationDirectoryPathLengthMaxHasValue));
-        Assert.Equal(0x08, GetOffset(in s, in s.Utf16OpenDirectoryPathLengthMaxHasValue));
-        Assert.Equal(0x09, GetOffset(in s, in s.Utf16DirectoryNameLengthMaxHasValue));
-        Assert.Equal(0x0A, GetOffset(in s, in s.Utf16FileNameLengthMaxHasValue));
-        Assert.Equal(0x0B, GetOffset(in s, in s.Utf16DirectoryPathLengthMaxHasValue));
-        Assert.Equal(0x0C, GetOffset(in s, in s.Utf16FilePathLengthMaxHasValue));
-        Assert.Equal(0x0D, GetOffset(in s, in s.Reserved1));
-        Assert.Equal(0x28, GetOffset(in s, in s.DirectoryNameLengthMax));
-        Assert.Equal(0x2C, GetOffset(in s, in s.FileNameLengthMax));
-        Assert.Equal(0x30, GetOffset(in s, in s.DirectoryPathLengthMax));
-        Assert.Equal(0x34, GetOffset(in s, in s.FilePathLengthMax));
-        Assert.Equal(0x38, GetOffset(in s, in s.Utf16CreateDirectoryPathLengthMax));
-        Assert.Equal(0x3C, GetOffset(in s, in s.Utf16DeleteDirectoryPathLengthMax));
-        Assert.Equal(0x40, GetOffset(in s, in s.Utf16RenameSourceDirectoryPathLengthMax));
-        Assert.Equal(0x44, GetOffset(in s, in s.Utf16RenameDestinationDirectoryPathLengthMax));
-        Assert.Equal(0x48, GetOffset(in s, in s.Utf16OpenDirectoryPathLengthMax));
-        Assert.Equal(0x4C, GetOffset(in s, in s.Utf16DirectoryNameLengthMax));
-        Assert.Equal(0x50, GetOffset(in s, in s.Utf16FileNameLengthMax));
-        Assert.Equal(0x54, GetOffset(in s, in s.Utf16DirectoryPathLengthMax));
-        Assert.Equal(0x58, GetOffset(in s, in s.Utf16FilePathLengthMax));
-        Assert.Equal(0x5C, GetOffset(in s, in s.Reserved2));
+        Assert.That(GetOffset(in s, in s.DirectoryNameLengthMaxHasValue), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.FileNameLengthMaxHasValue), Is.EqualTo(0x01));
+        Assert.That(GetOffset(in s, in s.DirectoryPathLengthMaxHasValue), Is.EqualTo(0x02));
+        Assert.That(GetOffset(in s, in s.FilePathLengthMaxHasValue), Is.EqualTo(0x03));
+        Assert.That(GetOffset(in s, in s.Utf16CreateDirectoryPathLengthMaxHasValue), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.Utf16DeleteDirectoryPathLengthMaxHasValue), Is.EqualTo(0x05));
+        Assert.That(GetOffset(in s, in s.Utf16RenameSourceDirectoryPathLengthMaxHasValue), Is.EqualTo(0x06));
+        Assert.That(GetOffset(in s, in s.Utf16RenameDestinationDirectoryPathLengthMaxHasValue), Is.EqualTo(0x07));
+        Assert.That(GetOffset(in s, in s.Utf16OpenDirectoryPathLengthMaxHasValue), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.Utf16DirectoryNameLengthMaxHasValue), Is.EqualTo(0x09));
+        Assert.That(GetOffset(in s, in s.Utf16FileNameLengthMaxHasValue), Is.EqualTo(0x0A));
+        Assert.That(GetOffset(in s, in s.Utf16DirectoryPathLengthMaxHasValue), Is.EqualTo(0x0B));
+        Assert.That(GetOffset(in s, in s.Utf16FilePathLengthMaxHasValue), Is.EqualTo(0x0C));
+        Assert.That(GetOffset(in s, in s.Reserved1), Is.EqualTo(0x0D));
+        Assert.That(GetOffset(in s, in s.DirectoryNameLengthMax), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.FileNameLengthMax), Is.EqualTo(0x2C));
+        Assert.That(GetOffset(in s, in s.DirectoryPathLengthMax), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.FilePathLengthMax), Is.EqualTo(0x34));
+        Assert.That(GetOffset(in s, in s.Utf16CreateDirectoryPathLengthMax), Is.EqualTo(0x38));
+        Assert.That(GetOffset(in s, in s.Utf16DeleteDirectoryPathLengthMax), Is.EqualTo(0x3C));
+        Assert.That(GetOffset(in s, in s.Utf16RenameSourceDirectoryPathLengthMax), Is.EqualTo(0x40));
+        Assert.That(GetOffset(in s, in s.Utf16RenameDestinationDirectoryPathLengthMax), Is.EqualTo(0x44));
+        Assert.That(GetOffset(in s, in s.Utf16OpenDirectoryPathLengthMax), Is.EqualTo(0x48));
+        Assert.That(GetOffset(in s, in s.Utf16DirectoryNameLengthMax), Is.EqualTo(0x4C));
+        Assert.That(GetOffset(in s, in s.Utf16FileNameLengthMax), Is.EqualTo(0x50));
+        Assert.That(GetOffset(in s, in s.Utf16DirectoryPathLengthMax), Is.EqualTo(0x54));
+        Assert.That(GetOffset(in s, in s.Utf16FilePathLengthMax), Is.EqualTo(0x58));
+        Assert.That(GetOffset(in s, in s.Reserved2), Is.EqualTo(0x5C));
     }
 
-    [Fact]
+    [Test]
     public static void FileTimeStamp_Layout()
     {
         var s = new FileTimeStamp();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<FileTimeStamp>());
+        Assert.That(Unsafe.SizeOf<FileTimeStamp>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Created));
-        Assert.Equal(0x08, GetOffset(in s, in s.Accessed));
-        Assert.Equal(0x10, GetOffset(in s, in s.Modified));
-        Assert.Equal(0x18, GetOffset(in s, in s.IsLocalTime));
-        Assert.Equal(0x19, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Created), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Accessed), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.Modified), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.IsLocalTime), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x19));
     }
 
-    [Fact]
+    [Test]
     public static void FileTimeStampRaw_Layout()
     {
         var s = new FileTimeStampRaw();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<FileTimeStampRaw>());
+        Assert.That(Unsafe.SizeOf<FileTimeStampRaw>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Created));
-        Assert.Equal(0x08, GetOffset(in s, in s.Accessed));
-        Assert.Equal(0x10, GetOffset(in s, in s.Modified));
-        Assert.Equal(0x18, GetOffset(in s, in s.IsLocalTime));
-        Assert.Equal(0x19, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Created), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Accessed), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.Modified), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.IsLocalTime), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x19));
     }
 
-    [Fact]
+    [Test]
     public static void ProgramIndexMapInfo_Layout()
     {
         var s = new ProgramIndexMapInfo();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<ProgramIndexMapInfo>());
+        Assert.That(Unsafe.SizeOf<ProgramIndexMapInfo>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.ProgramId));
-        Assert.Equal(0x08, GetOffset(in s, in s.MainProgramId));
-        Assert.Equal(0x10, GetOffset(in s, in s.ProgramIndex));
-        Assert.Equal(0x11, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.ProgramId), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.MainProgramId), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.ProgramIndex), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x11));
     }
 
-    [Fact]
+    [Test]
     public static void QueryRangeInfo_Layout()
     {
         var s = new QueryRangeInfo();
 
-        Assert.Equal(0x40, Unsafe.SizeOf<QueryRangeInfo>());
+        Assert.That(Unsafe.SizeOf<QueryRangeInfo>(), Is.EqualTo(0x40));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.AesCtrKeyType));
-        Assert.Equal(0x04, GetOffset(in s, in s.SpeedEmulationType));
-        Assert.Equal(0x08, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.AesCtrKeyType), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.SpeedEmulationType), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x08));
     }
 
-    [Fact]
+    [Test]
     public static void RightsId_Layout()
     {
         var s = new RightsId();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<RightsId>());
+        Assert.That(Unsafe.SizeOf<RightsId>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x00));
     }
 
-    [Fact]
+    [Test]
     public static void RsaEncryptedKey_Layout()
     {
         var s = new RsaEncryptedKey();
 
-        Assert.Equal(0x100, Unsafe.SizeOf<RsaEncryptedKey>());
+        Assert.That(Unsafe.SizeOf<RsaEncryptedKey>(), Is.EqualTo(0x100));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x00));
     }
 
-    [Fact]
+    [Test]
     public static void AesKey_Layout()
     {
         var s = new AesKey();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<AesKey>());
+        Assert.That(Unsafe.SizeOf<AesKey>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x00));
     }
 
-    [Fact]
+    [Test]
     public static void InitialDataAad_Layout()
     {
         var s = new InitialDataAad();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<InitialDataAad>());
+        Assert.That(Unsafe.SizeOf<InitialDataAad>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x00));
     }
 
-    [Fact]
+    [Test]
     public static void KeySeed_Layout()
     {
         var s = new KeySeed();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<KeySeed>());
+        Assert.That(Unsafe.SizeOf<KeySeed>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x00));
     }
 
-    [Fact]
+    [Test]
     public static void InitialDataMac_Layout()
     {
         var s = new InitialDataMac();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<InitialDataMac>());
+        Assert.That(Unsafe.SizeOf<InitialDataMac>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0x00));
     }
 
-    [Fact]
+    [Test]
     public static void ExportReportInfo_Layout()
     {
         var s = new ExportReportInfo();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<ExportReportInfo>());
+        Assert.That(Unsafe.SizeOf<ExportReportInfo>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0, GetOffset(in s, in s.DiffChunkCount));
-        Assert.Equal(1, GetOffset(in s, in s.DoubleDivisionDiffChunkCount));
-        Assert.Equal(2, GetOffset(in s, in s.HalfDivisionDiffChunkCount));
-        Assert.Equal(3, GetOffset(in s, in s.CompressionRate));
-        Assert.Equal(4, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.DiffChunkCount), Is.EqualTo(0));
+        Assert.That(GetOffset(in s, in s.DoubleDivisionDiffChunkCount), Is.EqualTo(1));
+        Assert.That(GetOffset(in s, in s.HalfDivisionDiffChunkCount), Is.EqualTo(2));
+        Assert.That(GetOffset(in s, in s.CompressionRate), Is.EqualTo(3));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(4));
     }
 
-    [Fact]
+    [Test]
     public static void ImportReportInfo_Layout()
     {
         var s = new ImportReportInfo();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<ImportReportInfo>());
+        Assert.That(Unsafe.SizeOf<ImportReportInfo>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0, GetOffset(in s, in s.DiffChunkCount));
-        Assert.Equal(1, GetOffset(in s, in s.DoubleDivisionDiffChunkCount));
-        Assert.Equal(2, GetOffset(in s, in s.HalfDivisionDiffChunkCount));
-        Assert.Equal(3, GetOffset(in s, in s.CompressionRate));
-        Assert.Equal(4, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.DiffChunkCount), Is.EqualTo(0));
+        Assert.That(GetOffset(in s, in s.DoubleDivisionDiffChunkCount), Is.EqualTo(1));
+        Assert.That(GetOffset(in s, in s.HalfDivisionDiffChunkCount), Is.EqualTo(2));
+        Assert.That(GetOffset(in s, in s.CompressionRate), Is.EqualTo(3));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(4));
     }
 
-    [Fact]
+    [Test]
     public static void CacheStorageInfo_Layout()
     {
         var s = new CacheStorageInfo();
 
-        Assert.Equal(0x20, Unsafe.SizeOf<CacheStorageInfo>());
+        Assert.That(Unsafe.SizeOf<CacheStorageInfo>(), Is.EqualTo(0x20));
 
-        Assert.Equal(0, GetOffset(in s, in s.Index));
-        Assert.Equal(4, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Index), Is.EqualTo(0));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(4));
     }
 
-    [Fact]
+    [Test]
     public static void Challenge_Layout()
     {
         var s = new SaveDataTransferManagerVersion2.Challenge();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<SaveDataTransferManagerVersion2.Challenge>());
+        Assert.That(Unsafe.SizeOf<SaveDataTransferManagerVersion2.Challenge>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public static void SaveDataTag_Layout()
     {
         var s = new SaveDataTransferManagerVersion2.SaveDataTag();
 
-        Assert.Equal(0x40, Unsafe.SizeOf<SaveDataTransferManagerVersion2.SaveDataTag>());
+        Assert.That(Unsafe.SizeOf<SaveDataTransferManagerVersion2.SaveDataTag>(), Is.EqualTo(0x40));
 
-        Assert.Equal(0, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public static void KeySeedPackage_Layout()
     {
         var s = new SaveDataTransferManagerVersion2.KeySeedPackage();
 
-        Assert.Equal(0x200, Unsafe.SizeOf<SaveDataTransferManagerVersion2.KeySeedPackage>());
+        Assert.That(Unsafe.SizeOf<SaveDataTransferManagerVersion2.KeySeedPackage>(), Is.EqualTo(0x200));
 
-        Assert.Equal(0, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public static void InitialDataVersion2_Layout()
     {
         var s = new InitialDataVersion2();
 
-        Assert.Equal(0x2000, Unsafe.SizeOf<InitialDataVersion2>());
+        Assert.That(Unsafe.SizeOf<InitialDataVersion2>(), Is.EqualTo(0x2000));
 
-        Assert.Equal(0, GetOffset(in s, in s.Value));
+        Assert.That(GetOffset(in s, in s.Value), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public static void GameCardErrorInfo_Layout()
     {
         var s = new GameCardErrorInfo();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<GameCardErrorInfo>());
+        Assert.That(Unsafe.SizeOf<GameCardErrorInfo>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0x0, GetOffset(in s, in s.GameCardCrcErrorCount));
-        Assert.Equal(0x2, GetOffset(in s, in s.Reserved2));
-        Assert.Equal(0x4, GetOffset(in s, in s.AsicCrcErrorCount));
-        Assert.Equal(0x6, GetOffset(in s, in s.Reserved6));
-        Assert.Equal(0x8, GetOffset(in s, in s.RefreshCount));
-        Assert.Equal(0xA, GetOffset(in s, in s.ReservedA));
-        Assert.Equal(0xC, GetOffset(in s, in s.ReadRetryCount));
-        Assert.Equal(0xE, GetOffset(in s, in s.TimeoutRetryErrorCount));
+        Assert.That(GetOffset(in s, in s.GameCardCrcErrorCount), Is.EqualTo(0x0));
+        Assert.That(GetOffset(in s, in s.Reserved2), Is.EqualTo(0x2));
+        Assert.That(GetOffset(in s, in s.AsicCrcErrorCount), Is.EqualTo(0x4));
+        Assert.That(GetOffset(in s, in s.Reserved6), Is.EqualTo(0x6));
+        Assert.That(GetOffset(in s, in s.RefreshCount), Is.EqualTo(0x8));
+        Assert.That(GetOffset(in s, in s.ReservedA), Is.EqualTo(0xA));
+        Assert.That(GetOffset(in s, in s.ReadRetryCount), Is.EqualTo(0xC));
+        Assert.That(GetOffset(in s, in s.TimeoutRetryErrorCount), Is.EqualTo(0xE));
     }
 
-    [Fact]
+    [Test]
     public static void GameCardErrorReportInfo_Layout()
     {
         var s = new GameCardErrorReportInfo();
 
-        Assert.Equal(0x40, Unsafe.SizeOf<GameCardErrorReportInfo>());
+        Assert.That(Unsafe.SizeOf<GameCardErrorReportInfo>(), Is.EqualTo(0x40));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.ErrorInfo));
-        Assert.Equal(0x10, GetOffset(in s, in s.AsicReinitializeFailureDetail));
-        Assert.Equal(0x12, GetOffset(in s, in s.InsertionCount));
-        Assert.Equal(0x14, GetOffset(in s, in s.RemovalCount));
-        Assert.Equal(0x16, GetOffset(in s, in s.AsicReinitializeCount));
-        Assert.Equal(0x18, GetOffset(in s, in s.AsicInitializeCount));
-        Assert.Equal(0x1C, GetOffset(in s, in s.AsicReinitializeFailureCount));
-        Assert.Equal(0x1E, GetOffset(in s, in s.AwakenFailureCount));
-        Assert.Equal(0x20, GetOffset(in s, in s.Reserved20));
-        Assert.Equal(0x22, GetOffset(in s, in s.RefreshCount));
-        Assert.Equal(0x24, GetOffset(in s, in s.LastReadErrorPageAddress));
-        Assert.Equal(0x28, GetOffset(in s, in s.LastReadErrorPageCount));
-        Assert.Equal(0x2C, GetOffset(in s, in s.AwakenCount));
-        Assert.Equal(0x30, GetOffset(in s, in s.ReadCountFromInsert));
-        Assert.Equal(0x34, GetOffset(in s, in s.ReadCountFromAwaken));
-        Assert.Equal(0x38, GetOffset(in s, in s.Reserved38));
+        Assert.That(GetOffset(in s, in s.ErrorInfo), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.AsicReinitializeFailureDetail), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.InsertionCount), Is.EqualTo(0x12));
+        Assert.That(GetOffset(in s, in s.RemovalCount), Is.EqualTo(0x14));
+        Assert.That(GetOffset(in s, in s.AsicReinitializeCount), Is.EqualTo(0x16));
+        Assert.That(GetOffset(in s, in s.AsicInitializeCount), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.AsicReinitializeFailureCount), Is.EqualTo(0x1C));
+        Assert.That(GetOffset(in s, in s.AwakenFailureCount), Is.EqualTo(0x1E));
+        Assert.That(GetOffset(in s, in s.Reserved20), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.RefreshCount), Is.EqualTo(0x22));
+        Assert.That(GetOffset(in s, in s.LastReadErrorPageAddress), Is.EqualTo(0x24));
+        Assert.That(GetOffset(in s, in s.LastReadErrorPageCount), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.AwakenCount), Is.EqualTo(0x2C));
+        Assert.That(GetOffset(in s, in s.ReadCountFromInsert), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.ReadCountFromAwaken), Is.EqualTo(0x34));
+        Assert.That(GetOffset(in s, in s.Reserved38), Is.EqualTo(0x38));
     }
 
-    [Fact]
+    [Test]
     public static void GameCardUpdatePartitionInfo_Layout()
     {
         var s = new GameCardUpdatePartitionInfo();
 
-        Assert.Equal(0x10, Unsafe.SizeOf<GameCardUpdatePartitionInfo>());
+        Assert.That(Unsafe.SizeOf<GameCardUpdatePartitionInfo>(), Is.EqualTo(0x10));
 
-        Assert.Equal(0, GetOffset(in s, in s.CupVersion));
-        Assert.Equal(8, GetOffset(in s, in s.CupId));
+        Assert.That(GetOffset(in s, in s.CupVersion), Is.EqualTo(0));
+        Assert.That(GetOffset(in s, in s.CupId), Is.EqualTo(8));
     }
 
-    [Fact]
+    [Test]
     public static void Int64_Layout()
     {
-        Assert.Equal(8, Unsafe.SizeOf<Int64>());
-        Assert.Equal(4, AlignOf<Int64>());
+        Assert.That(Unsafe.SizeOf<Int64>(), Is.EqualTo(8));
+        Assert.That(AlignOf<Int64>(), Is.EqualTo(4));
     }
 }

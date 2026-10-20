@@ -1,249 +1,249 @@
 using LibHac.Gc;
 using LibHac.Gc.Impl;
 using System.Runtime.CompilerServices;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Tests.Common.Layout;
 
 namespace LibHac.Tests.Gc;
 
 public class TypeLayoutTests
 {
-    [Fact]
+    [Test]
     public static void GameCardStatus_Layout()
     {
         var s = new GameCardStatus();
 
-        Assert.Equal(0x70, Unsafe.SizeOf<GameCardStatus>());
+        Assert.That(Unsafe.SizeOf<GameCardStatus>(), Is.EqualTo(0x70));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.PartitionFsHeaderHash));
-        Assert.Equal(0x20, GetOffset(in s, in s.PackageId));
-        Assert.Equal(0x28, GetOffset(in s, in s.CardSize));
-        Assert.Equal(0x30, GetOffset(in s, in s.PartitionFsHeaderAddress));
-        Assert.Equal(0x38, GetOffset(in s, in s.PartitionFsHeaderSize));
-        Assert.Equal(0x40, GetOffset(in s, in s.NormalAreaSize));
-        Assert.Equal(0x48, GetOffset(in s, in s.SecureAreaSize));
-        Assert.Equal(0x50, GetOffset(in s, in s.CupVersion));
-        Assert.Equal(0x58, GetOffset(in s, in s.CupId));
-        Assert.Equal(0x60, GetOffset(in s, in s.CompatibilityType));
-        Assert.Equal(0x61, GetOffset(in s, in s.Reserved1));
-        Assert.Equal(0x64, GetOffset(in s, in s.Flags));
-        Assert.Equal(0x65, GetOffset(in s, in s.Reserved2));
+        Assert.That(GetOffset(in s, in s.PartitionFsHeaderHash), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.PackageId), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.CardSize), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.PartitionFsHeaderAddress), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.PartitionFsHeaderSize), Is.EqualTo(0x38));
+        Assert.That(GetOffset(in s, in s.NormalAreaSize), Is.EqualTo(0x40));
+        Assert.That(GetOffset(in s, in s.SecureAreaSize), Is.EqualTo(0x48));
+        Assert.That(GetOffset(in s, in s.CupVersion), Is.EqualTo(0x50));
+        Assert.That(GetOffset(in s, in s.CupId), Is.EqualTo(0x58));
+        Assert.That(GetOffset(in s, in s.CompatibilityType), Is.EqualTo(0x60));
+        Assert.That(GetOffset(in s, in s.Reserved1), Is.EqualTo(0x61));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x64));
+        Assert.That(GetOffset(in s, in s.Reserved2), Is.EqualTo(0x65));
     }
 
-    [Fact]
+    [Test]
     public static void RmaInformation_Layout()
     {
         var s = new RmaInformation();
 
-        Assert.Equal(0x200, Unsafe.SizeOf<RmaInformation>());
+        Assert.That(Unsafe.SizeOf<RmaInformation>(), Is.EqualTo(0x200));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Data));
+        Assert.That(GetOffset(in s, in s.Data), Is.EqualTo(0x00));
     }
 
-    [Fact]
+    [Test]
     public static void GameCardIdSet_Layout()
     {
         var s = new GameCardIdSet();
 
-        Assert.Equal(12, Unsafe.SizeOf<GameCardIdSet>());
+        Assert.That(Unsafe.SizeOf<GameCardIdSet>(), Is.EqualTo(12));
 
-        Assert.Equal(0, GetOffset(in s, in s.Id1));
-        Assert.Equal(4, GetOffset(in s, in s.Id2));
-        Assert.Equal(8, GetOffset(in s, in s.Id3));
+        Assert.That(GetOffset(in s, in s.Id1), Is.EqualTo(0));
+        Assert.That(GetOffset(in s, in s.Id2), Is.EqualTo(4));
+        Assert.That(GetOffset(in s, in s.Id3), Is.EqualTo(8));
     }
 
-    [Fact]
+    [Test]
     public static void CardId1_Layout()
     {
         var s = new CardId1();
 
-        Assert.Equal(4, Unsafe.SizeOf<CardId1>());
+        Assert.That(Unsafe.SizeOf<CardId1>(), Is.EqualTo(4));
 
-        Assert.Equal(0, GetOffset(in s, in s.MakerCode));
-        Assert.Equal(1, GetOffset(in s, in s.MemoryCapacity));
-        Assert.Equal(2, GetOffset(in s, in s.Reserved));
-        Assert.Equal(3, GetOffset(in s, in s.MemoryType));
+        Assert.That(GetOffset(in s, in s.MakerCode), Is.EqualTo(0));
+        Assert.That(GetOffset(in s, in s.MemoryCapacity), Is.EqualTo(1));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(2));
+        Assert.That(GetOffset(in s, in s.MemoryType), Is.EqualTo(3));
     }
 
-    [Fact]
+    [Test]
     public static void CardId2_Layout()
     {
         var s = new CardId2();
 
-        Assert.Equal(4, Unsafe.SizeOf<CardId2>());
+        Assert.That(Unsafe.SizeOf<CardId2>(), Is.EqualTo(4));
 
-        Assert.Equal(0, GetOffset(in s, in s.CardSecurityNumber));
-        Assert.Equal(1, GetOffset(in s, in s.CardType));
-        Assert.Equal(2, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.CardSecurityNumber), Is.EqualTo(0));
+        Assert.That(GetOffset(in s, in s.CardType), Is.EqualTo(1));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(2));
     }
 
-    [Fact]
+    [Test]
     public static void CardId3_Layout()
     {
         var s = new CardId3();
 
-        Assert.Equal(4, Unsafe.SizeOf<CardId3>());
+        Assert.That(Unsafe.SizeOf<CardId3>(), Is.EqualTo(4));
 
-        Assert.Equal(0, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public static void CardInitialDataPayload_Layout()
     {
         var s = new CardInitialDataPayload();
 
-        Assert.Equal(0x3C, Unsafe.SizeOf<CardInitialDataPayload>());
+        Assert.That(Unsafe.SizeOf<CardInitialDataPayload>(), Is.EqualTo(0x3C));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.PackageId));
-        Assert.Equal(0x08, GetOffset(in s, in s.Reserved));
-        Assert.Equal(0x10, GetOffset(in s, in s.AuthData));
-        Assert.Equal(0x20, GetOffset(in s, in s.AuthMac));
-        Assert.Equal(0x30, GetOffset(in s, in s.AuthNonce));
+        Assert.That(GetOffset(in s, in s.PackageId), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.AuthData), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.AuthMac), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.AuthNonce), Is.EqualTo(0x30));
     }
 
-    [Fact]
+    [Test]
     public static void DevCardParameter_Layout()
     {
         var s = new DevCardParameter();
 
-        Assert.Equal(0x200, Unsafe.SizeOf<DevCardParameter>());
+        Assert.That(Unsafe.SizeOf<DevCardParameter>(), Is.EqualTo(0x200));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.CardId1));
-        Assert.Equal(0x04, GetOffset(in s, in s.CardId2));
-        Assert.Equal(0x08, GetOffset(in s, in s.CardId3));
-        Assert.Equal(0x0C, GetOffset(in s, in s.RomAreaStartAddr));
-        Assert.Equal(0x10, GetOffset(in s, in s.BackupAreaStartAddr));
-        Assert.Equal(0x14, GetOffset(in s, in s.ReservedAreaStartAddr));
-        Assert.Equal(0x17, GetOffset(in s, in s.RomSize));
-        Assert.Equal(0x18, GetOffset(in s, in s.WaitCycle1ForRead));
-        Assert.Equal(0x1A, GetOffset(in s, in s.WaitCycle2ForRead));
-        Assert.Equal(0x1C, GetOffset(in s, in s.SpeedChangeEmulateWaitCycle1FrequencyForRead));
-        Assert.Equal(0x1D, GetOffset(in s, in s.SpeedChangeEmulateWaitCycle1ForRead));
-        Assert.Equal(0x20, GetOffset(in s, in s.SpeedChangeEmulateWaitCycle2FrequencyForRead));
-        Assert.Equal(0x21, GetOffset(in s, in s.SpeedChangeEmulateWaitCycle2ForRead));
-        Assert.Equal(0x24, GetOffset(in s, in s.FirstReadPageWaitCycleForRead));
-        Assert.Equal(0x27, GetOffset(in s, in s.WaitCycle1ForWrite));
-        Assert.Equal(0x29, GetOffset(in s, in s.WaitCycle2ForWrite));
-        Assert.Equal(0x2C, GetOffset(in s, in s.SpeedChangeEmulateWaitCycle1FrequencyForWrite));
-        Assert.Equal(0x2D, GetOffset(in s, in s.SpeedChangeEmulateWaitCycle1ForWrite));
-        Assert.Equal(0x30, GetOffset(in s, in s.SpeedChangeEmulateWaitCycle2FrequencyForWrite));
-        Assert.Equal(0x31, GetOffset(in s, in s.SpeedChangeEmulateWaitCycle2ForWrite));
-        Assert.Equal(0x34, GetOffset(in s, in s.WaitCycle1ForSetAccessPattern));
-        Assert.Equal(0x36, GetOffset(in s, in s.WaitCycle2ForSetAccessPattern));
-        Assert.Equal(0x39, GetOffset(in s, in s.WaitCycleForRefresh));
-        Assert.Equal(0x3C, GetOffset(in s, in s.WaitCycleForSetKey));
-        Assert.Equal(0x3F, GetOffset(in s, in s.WaitCycleForIRdInit));
-        Assert.Equal(0x42, GetOffset(in s, in s.WaitCycleForISetInit1));
-        Assert.Equal(0x45, GetOffset(in s, in s.WaitCycleForISetGen));
-        Assert.Equal(0x48, GetOffset(in s, in s.WaitCycleForISetInit2));
-        Assert.Equal(0x4B, GetOffset(in s, in s.NandSize));
-        Assert.Equal(0x4C, GetOffset(in s, in s.Reserved));
+        Assert.That(GetOffset(in s, in s.CardId1), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.CardId2), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.CardId3), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.RomAreaStartAddr), Is.EqualTo(0x0C));
+        Assert.That(GetOffset(in s, in s.BackupAreaStartAddr), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.ReservedAreaStartAddr), Is.EqualTo(0x14));
+        Assert.That(GetOffset(in s, in s.RomSize), Is.EqualTo(0x17));
+        Assert.That(GetOffset(in s, in s.WaitCycle1ForRead), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.WaitCycle2ForRead), Is.EqualTo(0x1A));
+        Assert.That(GetOffset(in s, in s.SpeedChangeEmulateWaitCycle1FrequencyForRead), Is.EqualTo(0x1C));
+        Assert.That(GetOffset(in s, in s.SpeedChangeEmulateWaitCycle1ForRead), Is.EqualTo(0x1D));
+        Assert.That(GetOffset(in s, in s.SpeedChangeEmulateWaitCycle2FrequencyForRead), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.SpeedChangeEmulateWaitCycle2ForRead), Is.EqualTo(0x21));
+        Assert.That(GetOffset(in s, in s.FirstReadPageWaitCycleForRead), Is.EqualTo(0x24));
+        Assert.That(GetOffset(in s, in s.WaitCycle1ForWrite), Is.EqualTo(0x27));
+        Assert.That(GetOffset(in s, in s.WaitCycle2ForWrite), Is.EqualTo(0x29));
+        Assert.That(GetOffset(in s, in s.SpeedChangeEmulateWaitCycle1FrequencyForWrite), Is.EqualTo(0x2C));
+        Assert.That(GetOffset(in s, in s.SpeedChangeEmulateWaitCycle1ForWrite), Is.EqualTo(0x2D));
+        Assert.That(GetOffset(in s, in s.SpeedChangeEmulateWaitCycle2FrequencyForWrite), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.SpeedChangeEmulateWaitCycle2ForWrite), Is.EqualTo(0x31));
+        Assert.That(GetOffset(in s, in s.WaitCycle1ForSetAccessPattern), Is.EqualTo(0x34));
+        Assert.That(GetOffset(in s, in s.WaitCycle2ForSetAccessPattern), Is.EqualTo(0x36));
+        Assert.That(GetOffset(in s, in s.WaitCycleForRefresh), Is.EqualTo(0x39));
+        Assert.That(GetOffset(in s, in s.WaitCycleForSetKey), Is.EqualTo(0x3C));
+        Assert.That(GetOffset(in s, in s.WaitCycleForIRdInit), Is.EqualTo(0x3F));
+        Assert.That(GetOffset(in s, in s.WaitCycleForISetInit1), Is.EqualTo(0x42));
+        Assert.That(GetOffset(in s, in s.WaitCycleForISetGen), Is.EqualTo(0x45));
+        Assert.That(GetOffset(in s, in s.WaitCycleForISetInit2), Is.EqualTo(0x48));
+        Assert.That(GetOffset(in s, in s.NandSize), Is.EqualTo(0x4B));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x4C));
     }
 
-    [Fact]
+    [Test]
     public static void CardInitialData_Layout()
     {
         var s = new CardInitialData();
 
-        Assert.Equal(0x200, Unsafe.SizeOf<CardInitialData>());
+        Assert.That(Unsafe.SizeOf<CardInitialData>(), Is.EqualTo(0x200));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Payload));
-        Assert.Equal(0x3C, GetOffset(in s, in s.Padding));
+        Assert.That(GetOffset(in s, in s.Payload), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.Padding), Is.EqualTo(0x3C));
     }
 
-    [Fact]
+    [Test]
     public static void CardHeaderEncryptedData_Layout()
     {
         var s = new CardHeaderEncryptedData();
 
-        Assert.Equal(0x70, Unsafe.SizeOf<CardHeaderEncryptedData>());
+        Assert.That(Unsafe.SizeOf<CardHeaderEncryptedData>(), Is.EqualTo(0x70));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.FwVersion));
-        Assert.Equal(0x08, GetOffset(in s, in s.AccCtrl1));
-        Assert.Equal(0x0C, GetOffset(in s, in s.Wait1TimeRead));
-        Assert.Equal(0x10, GetOffset(in s, in s.Wait2TimeRead));
-        Assert.Equal(0x14, GetOffset(in s, in s.Wait1TimeWrite));
-        Assert.Equal(0x18, GetOffset(in s, in s.Wait2TimeWrite));
-        Assert.Equal(0x1C, GetOffset(in s, in s.FwMode));
-        Assert.Equal(0x20, GetOffset(in s, in s.CupVersion));
-        Assert.Equal(0x24, GetOffset(in s, in s.CompatibilityType));
-        Assert.Equal(0x25, GetOffset(in s, in s.Reserved25));
-        Assert.Equal(0x26, GetOffset(in s, in s.Reserved26));
-        Assert.Equal(0x27, GetOffset(in s, in s.Reserved27));
-        Assert.Equal(0x28, GetOffset(in s, in s.UppHash));
-        Assert.Equal(0x30, GetOffset(in s, in s.CupId));
-        Assert.Equal(0x38, GetOffset(in s, in s.Reserved38));
+        Assert.That(GetOffset(in s, in s.FwVersion), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.AccCtrl1), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.Wait1TimeRead), Is.EqualTo(0x0C));
+        Assert.That(GetOffset(in s, in s.Wait2TimeRead), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.Wait1TimeWrite), Is.EqualTo(0x14));
+        Assert.That(GetOffset(in s, in s.Wait2TimeWrite), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.FwMode), Is.EqualTo(0x1C));
+        Assert.That(GetOffset(in s, in s.CupVersion), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.CompatibilityType), Is.EqualTo(0x24));
+        Assert.That(GetOffset(in s, in s.Reserved25), Is.EqualTo(0x25));
+        Assert.That(GetOffset(in s, in s.Reserved26), Is.EqualTo(0x26));
+        Assert.That(GetOffset(in s, in s.Reserved27), Is.EqualTo(0x27));
+        Assert.That(GetOffset(in s, in s.UppHash), Is.EqualTo(0x28));
+        Assert.That(GetOffset(in s, in s.CupId), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.Reserved38), Is.EqualTo(0x38));
     }
 
-    [Fact]
+    [Test]
     public static void CardHeader_Layout()
     {
         var s = new CardHeader();
 
-        Assert.Equal(0x100, Unsafe.SizeOf<CardHeader>());
+        Assert.That(Unsafe.SizeOf<CardHeader>(), Is.EqualTo(0x100));
 
-        Assert.Equal(0x00, GetOffset(in s, in s.Magic));
-        Assert.Equal(0x04, GetOffset(in s, in s.RomAreaStartPage));
-        Assert.Equal(0x08, GetOffset(in s, in s.BackupAreaStartPage));
-        Assert.Equal(0x0C, GetOffset(in s, in s.KeyIndex));
-        Assert.Equal(0x0D, GetOffset(in s, in s.RomSize));
-        Assert.Equal(0x0E, GetOffset(in s, in s.Version));
-        Assert.Equal(0x0F, GetOffset(in s, in s.Flags));
-        Assert.Equal(0x10, GetOffset(in s, in s.PackageId));
-        Assert.Equal(0x18, GetOffset(in s, in s.ValidDataEndPage));
-        Assert.Equal(0x1C, GetOffset(in s, in s.Reserved11C));
-        Assert.Equal(0x20, GetOffset(in s, in s.Iv));
-        Assert.Equal(0x30, GetOffset(in s, in s.PartitionFsHeaderAddress));
-        Assert.Equal(0x38, GetOffset(in s, in s.PartitionFsHeaderSize));
-        Assert.Equal(0x40, GetOffset(in s, in s.PartitionFsHeaderHash));
-        Assert.Equal(0x60, GetOffset(in s, in s.InitialDataHash));
-        Assert.Equal(0x80, GetOffset(in s, in s.SelSec));
-        Assert.Equal(0x84, GetOffset(in s, in s.SelT1Key));
-        Assert.Equal(0x88, GetOffset(in s, in s.SelKey));
-        Assert.Equal(0x8C, GetOffset(in s, in s.LimAreaPage));
-        Assert.Equal(0x90, GetOffset(in s, in s.EncryptedData));
+        Assert.That(GetOffset(in s, in s.Magic), Is.EqualTo(0x00));
+        Assert.That(GetOffset(in s, in s.RomAreaStartPage), Is.EqualTo(0x04));
+        Assert.That(GetOffset(in s, in s.BackupAreaStartPage), Is.EqualTo(0x08));
+        Assert.That(GetOffset(in s, in s.KeyIndex), Is.EqualTo(0x0C));
+        Assert.That(GetOffset(in s, in s.RomSize), Is.EqualTo(0x0D));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x0E));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x0F));
+        Assert.That(GetOffset(in s, in s.PackageId), Is.EqualTo(0x10));
+        Assert.That(GetOffset(in s, in s.ValidDataEndPage), Is.EqualTo(0x18));
+        Assert.That(GetOffset(in s, in s.Reserved11C), Is.EqualTo(0x1C));
+        Assert.That(GetOffset(in s, in s.Iv), Is.EqualTo(0x20));
+        Assert.That(GetOffset(in s, in s.PartitionFsHeaderAddress), Is.EqualTo(0x30));
+        Assert.That(GetOffset(in s, in s.PartitionFsHeaderSize), Is.EqualTo(0x38));
+        Assert.That(GetOffset(in s, in s.PartitionFsHeaderHash), Is.EqualTo(0x40));
+        Assert.That(GetOffset(in s, in s.InitialDataHash), Is.EqualTo(0x60));
+        Assert.That(GetOffset(in s, in s.SelSec), Is.EqualTo(0x80));
+        Assert.That(GetOffset(in s, in s.SelT1Key), Is.EqualTo(0x84));
+        Assert.That(GetOffset(in s, in s.SelKey), Is.EqualTo(0x88));
+        Assert.That(GetOffset(in s, in s.LimAreaPage), Is.EqualTo(0x8C));
+        Assert.That(GetOffset(in s, in s.EncryptedData), Is.EqualTo(0x90));
     }
 
-    [Fact]
+    [Test]
     public static void CardHeaderWithSignature_Layout()
     {
         var s = new CardHeaderWithSignature();
 
-        Assert.Equal(0x200, Unsafe.SizeOf<CardHeaderWithSignature>());
+        Assert.That(Unsafe.SizeOf<CardHeaderWithSignature>(), Is.EqualTo(0x200));
 
-        Assert.Equal(0x000, GetOffset(in s, in s.Signature));
-        Assert.Equal(0x100, GetOffset(in s, in s.Data));
+        Assert.That(GetOffset(in s, in s.Signature), Is.EqualTo(0x000));
+        Assert.That(GetOffset(in s, in s.Data), Is.EqualTo(0x100));
     }
 
-    [Fact]
+    [Test]
     public static void T1CardCertificate_Layout()
     {
         var s = new T1CardCertificate();
 
-        Assert.Equal(0x400, Unsafe.SizeOf<T1CardCertificate>());
+        Assert.That(Unsafe.SizeOf<T1CardCertificate>(), Is.EqualTo(0x400));
 
-        Assert.Equal(0x000, GetOffset(in s, in s.Signature));
-        Assert.Equal(0x100, GetOffset(in s, in s.Magic));
-        Assert.Equal(0x104, GetOffset(in s, in s.Version));
-        Assert.Equal(0x108, GetOffset(in s, in s.KekIndex));
-        Assert.Equal(0x109, GetOffset(in s, in s.Flags));
-        Assert.Equal(0x110, GetOffset(in s, in s.T1CardDeviceId));
-        Assert.Equal(0x120, GetOffset(in s, in s.Iv));
-        Assert.Equal(0x130, GetOffset(in s, in s.HwKey));
-        Assert.Equal(0x140, GetOffset(in s, in s.Reserved));
-        Assert.Equal(0x200, GetOffset(in s, in s.Padding));
+        Assert.That(GetOffset(in s, in s.Signature), Is.EqualTo(0x000));
+        Assert.That(GetOffset(in s, in s.Magic), Is.EqualTo(0x100));
+        Assert.That(GetOffset(in s, in s.Version), Is.EqualTo(0x104));
+        Assert.That(GetOffset(in s, in s.KekIndex), Is.EqualTo(0x108));
+        Assert.That(GetOffset(in s, in s.Flags), Is.EqualTo(0x109));
+        Assert.That(GetOffset(in s, in s.T1CardDeviceId), Is.EqualTo(0x110));
+        Assert.That(GetOffset(in s, in s.Iv), Is.EqualTo(0x120));
+        Assert.That(GetOffset(in s, in s.HwKey), Is.EqualTo(0x130));
+        Assert.That(GetOffset(in s, in s.Reserved), Is.EqualTo(0x140));
+        Assert.That(GetOffset(in s, in s.Padding), Is.EqualTo(0x200));
     }
 
-    [Fact]
+    [Test]
     public static void Ca10Certificate_Layout()
     {
         var s = new Ca10Certificate();
 
-        Assert.Equal(0x400, Unsafe.SizeOf<Ca10Certificate>());
+        Assert.That(Unsafe.SizeOf<Ca10Certificate>(), Is.EqualTo(0x400));
 
-        Assert.Equal(0x000, GetOffset(in s, in s.Signature));
-        Assert.Equal(0x100, GetOffset(in s, in s.Unk100));
-        Assert.Equal(0x130, GetOffset(in s, in s.Modulus));
-        Assert.Equal(0x230, GetOffset(in s, in s.Unk230));
+        Assert.That(GetOffset(in s, in s.Signature), Is.EqualTo(0x000));
+        Assert.That(GetOffset(in s, in s.Unk100), Is.EqualTo(0x100));
+        Assert.That(GetOffset(in s, in s.Modulus), Is.EqualTo(0x130));
+        Assert.That(GetOffset(in s, in s.Unk230), Is.EqualTo(0x230));
     }
 }
