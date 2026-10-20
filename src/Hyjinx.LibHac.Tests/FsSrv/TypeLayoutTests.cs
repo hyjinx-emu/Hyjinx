@@ -62,7 +62,7 @@ public class TypeLayoutTests
     //public static void Path_Layout()
     //{
     //    var s = new Path();
-        
+
     //    Assert.That(Unsafe.SizeOf<Path>(), Is.EqualTo(0x301));
 
     //    Assert.That(GetOffset(in s, in s.Str[0]), Is.EqualTo(0x00));

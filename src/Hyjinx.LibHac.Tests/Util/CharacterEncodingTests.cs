@@ -265,7 +265,7 @@ public class CharacterEncodingTests
             expectedUtf16Transcoding: expectedUtf16Transcoding);
     }
 
-        /* SMALL VALID BUFFERS - tests drain loop at end of method */
+    /* SMALL VALID BUFFERS - tests drain loop at end of method */
     [TestCase("")]
     [TestCase("X")]
     [TestCase("XY")]
