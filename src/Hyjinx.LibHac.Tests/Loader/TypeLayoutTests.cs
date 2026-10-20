@@ -1,6 +1,5 @@
 using LibHac.Loader;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
 using static LibHac.Tests.Common.Layout;
 
 namespace LibHac.Tests.Loader;

@@ -1,7 +1,6 @@
 using LibHac.Gc;
 using LibHac.Gc.Impl;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
 using static LibHac.Tests.Common.Layout;
 
 namespace LibHac.Tests.Gc;

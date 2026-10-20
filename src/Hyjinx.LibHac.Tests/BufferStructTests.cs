@@ -1,8 +1,6 @@
 using LibHac.Common;
-using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using NUnit.Framework;
 
 namespace LibHac.Tests;
 

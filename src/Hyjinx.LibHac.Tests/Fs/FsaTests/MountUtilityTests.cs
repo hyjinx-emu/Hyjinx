@@ -5,8 +5,6 @@ using LibHac.Fs.Shim;
 using LibHac.Tests.Fs.FileSystemClientTests;
 using LibHac.Tools.Fs;
 using LibHac.Util;
-using System;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.FsaTests;
 

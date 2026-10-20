@@ -1,7 +1,6 @@
 using LibHac.Fs;
 using LibHac.Fs.Shim;
 using LibHac.FsSrv.Impl;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.FileSystemClientTests.ShimTests;
 

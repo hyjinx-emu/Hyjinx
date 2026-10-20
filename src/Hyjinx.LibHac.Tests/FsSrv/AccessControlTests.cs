@@ -3,7 +3,6 @@ using LibHac.Fs;
 using LibHac.Fs.Shim;
 using LibHac.FsSrv.Impl;
 using LibHac.Ncm;
-using NUnit.Framework;
 using ContentType = LibHac.Fs.ContentType;
 
 namespace LibHac.Tests.FsSrv;

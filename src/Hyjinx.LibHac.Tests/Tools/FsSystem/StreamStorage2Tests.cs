@@ -1,8 +1,4 @@
 using LibHac.Tools.FsSystem;
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Tools.FsSystem;
 

@@ -4,7 +4,6 @@ using LibHac.FsSrv.Sf;
 using LibHac.FsSrv.Storage;
 using System.Runtime.CompilerServices;
 using static LibHac.Tests.Common.Layout;
-using Path = LibHac.Fs.Path;
 
 namespace LibHac.Tests.FsSrv;
 

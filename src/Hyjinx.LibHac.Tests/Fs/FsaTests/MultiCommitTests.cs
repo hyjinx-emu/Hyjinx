@@ -3,8 +3,6 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Shim;
 using LibHac.Tests.Fs.FileSystemClientTests;
-using System.Collections.Generic;
-using NUnit.Framework;
 using static LibHac.Fs.SaveData;
 
 namespace LibHac.Tests.Fs.FsaTests;

@@ -1,5 +1,4 @@
 using LibHac.Util;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Util;
 
@@ -11,12 +10,14 @@ public class BitUtilTests
     {
         Assert.That(BitUtil.CountLeadingZeros(value), Is.EqualTo(expectedValue));
     }
+
     [TestCase((short)(0x0080), (int)(8))]
     [TestCase((short)(0x0000), (int)(16))]
     public void CountLeadingZeros_Short(short value, int expectedValue)
     {
         Assert.That(BitUtil.CountLeadingZeros(value), Is.EqualTo(expectedValue));
     }
+
     [TestCase((short)(0b0000_1000_0110_0000), (short)(0b0000_1000_0100_0000))]
     [TestCase((short)(0b0000_1000_0110_1111), (short)(0b0000_1000_0110_1110))]
     [TestCase((short)(unchecked((short)0b1000_0000_0000_0000)), (short)(0b0000_0000_0000_0000))]
@@ -25,6 +26,7 @@ public class BitUtilTests
     {
         Assert.That(BitUtil.ResetLeastSignificantOneBit(value), Is.EqualTo(expectedValue));
     }
+
     [TestCase((uint)(0b0101_0000_0000_0000_0000), (uint)(0b0100_0000_0000_0000_0000))]
     [TestCase((uint)(0b1111_0000_1000_0110_1111), (uint)(0b1111_0000_1000_0110_1110))]
     [TestCase((uint)(0b0100_1000_0000_0000_0000), (uint)(0b0100_0000_0000_0000_0000))]
@@ -33,6 +35,7 @@ public class BitUtilTests
     {
         Assert.That(BitUtil.ResetLeastSignificantOneBit(value), Is.EqualTo(expectedValue));
     }
+
     [TestCase((short)(0x80), true)]
     [TestCase((short)(0x81), false)]
     [TestCase((short)(0), false)]
@@ -41,6 +44,7 @@ public class BitUtilTests
     {
         Assert.That(BitUtil.IsPowerOfTwo(value), Is.EqualTo(expectedValue));
     }
+
     [TestCase((ulong)(0x0000100000000000), true)]
     [TestCase((ulong)(0x0000100000004000), false)]
     [TestCase((ulong)(0), false)]
@@ -48,6 +52,7 @@ public class BitUtilTests
     {
         Assert.That(BitUtil.IsPowerOfTwo(value), Is.EqualTo(expectedValue));
     }
+
     [TestCase((int)(-55), (int)(-2), (int)(29))]
     [TestCase((int)(-55), (int)(2), (int)(-27))]
     [TestCase((int)(0), (int)(26), (int)(0))]
@@ -58,6 +63,7 @@ public class BitUtilTests
     {
         Assert.That(BitUtil.DivideUp(value, divisor), Is.EqualTo(expectedValue));
     }
+
     [TestCase((uint)(55), (uint)(2), (uint)(28))]
     [TestCase((uint)(0), (uint)(26), (uint)(0))]
     [TestCase((uint)(1127), (uint)(24), (uint)(47))]

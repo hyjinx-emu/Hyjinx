@@ -4,8 +4,6 @@ using LibHac.Fs.Shim;
 using LibHac.FsSrv.Impl;
 using LibHac.Ncm;
 using LibHac.Util;
-using System;
-using NUnit.Framework;
 
 namespace LibHac.Tests.FsSrv;
 

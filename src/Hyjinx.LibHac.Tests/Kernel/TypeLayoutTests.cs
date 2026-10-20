@@ -1,6 +1,5 @@
 using LibHac.Kernel;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
 using static LibHac.Kernel.InitialProcessBinaryReader;
 using static LibHac.Kernel.KipHeader;
 using static LibHac.Tests.Common.Layout;

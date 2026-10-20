@@ -1,6 +1,3 @@
-using NUnit.Framework;
-using System.Collections.Generic;
-
 namespace LibHac.Tests.Fs;
 
 public sealed class NUnitTestCaseData<T1, T2, T3> : List<TestCaseData>

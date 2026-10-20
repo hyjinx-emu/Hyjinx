@@ -1,5 +1,4 @@
 using LibHac.Util;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Util;
 
@@ -12,6 +11,7 @@ public class IntUtilTests
         Assert.That(IntUtil.CanAddWithoutOverflow(x, y), Is.EqualTo(expectedResult));
         Assert.That(IntUtil.CanAddWithoutOverflow(y, x), Is.EqualTo(expectedResult));
     }
+
     [TestCase((short)(-0x8000), (short)(-1), false)]
     [TestCase((short)(-0x8000), (short)(0), true)]
     [TestCase((short)(0x4000), (short)(0x3FFF), true)]
@@ -22,12 +22,14 @@ public class IntUtilTests
         Assert.That(IntUtil.CanAddWithoutOverflow(x, y), Is.EqualTo(expectedResult));
         Assert.That(IntUtil.CanAddWithoutOverflow(y, x), Is.EqualTo(expectedResult));
     }
+
     [TestCase((byte)(0x80), (byte)(0x80), true)]
     [TestCase((byte)(0x80), (byte)(0x81), false)]
     public void CanSubtractWithoutOverflow_Byte(byte x, byte y, bool expectedResult)
     {
         Assert.That(IntUtil.CanSubtractWithoutOverflow(x, y), Is.EqualTo(expectedResult));
     }
+
     [TestCase((short)(-0x8000), (short)(1), false)]
     [TestCase((short)(-0x8000), (short)(0), true)]
     [TestCase((short)(-0x4000), (short)(0x4000), true)]
@@ -37,6 +39,7 @@ public class IntUtilTests
     {
         Assert.That(IntUtil.CanSubtractWithoutOverflow(x, y), Is.EqualTo(expectedResult));
     }
+
     [TestCase((byte)(0xFF), (byte)(0), true)]
     [TestCase((byte)(0x55), (byte)(3), true)]
     [TestCase((byte)(0x40), (byte)(4), false)]
@@ -45,6 +48,7 @@ public class IntUtilTests
         Assert.That(IntUtil.CanMultiplyWithoutOverflow(x, y), Is.EqualTo(expectedResult));
         Assert.That(IntUtil.CanMultiplyWithoutOverflow(y, x), Is.EqualTo(expectedResult));
     }
+
     [TestCase((short)(0x7FFF), (short)(0), true)]
     [TestCase((short)(+0x1249), (short)(+7), true)]
     [TestCase((short)(-0x1249), (short)(+7), true)]
@@ -63,6 +67,7 @@ public class IntUtilTests
         Assert.That(IntUtil.CanMultiplyWithoutOverflow(x, y), Is.EqualTo(expectedResult));
         Assert.That(IntUtil.CanMultiplyWithoutOverflow(y, x), Is.EqualTo(expectedResult));
     }
+
     [TestCase((ulong)(0x5555555555555555), (ulong)(3), true)]
     [TestCase((ulong)(0x4000000000000000), (ulong)(4), false)]
     public void CanMultiplyWithoutOverflow_Ulong(ulong x, ulong y, bool expectedResult)
@@ -70,6 +75,7 @@ public class IntUtilTests
         Assert.That(IntUtil.CanMultiplyWithoutOverflow(x, y), Is.EqualTo(expectedResult));
         Assert.That(IntUtil.CanMultiplyWithoutOverflow(y, x), Is.EqualTo(expectedResult));
     }
+
     [TestCase((long)(0), true)]
     [TestCase((long)(-1), false)]
     [TestCase((long)(unchecked((long)0x8111111100000000)), false)]
@@ -80,6 +86,7 @@ public class IntUtilTests
         bool actualResult = IntUtil.IsIntValueRepresentable<ulong, long>(value);
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
+
     [TestCase((ulong)(0), true)]
     [TestCase((ulong)(5), true)]
     [TestCase((ulong)(long.MaxValue), true)]
@@ -90,6 +97,7 @@ public class IntUtilTests
         bool actualResult = IntUtil.IsIntValueRepresentable<long, ulong>(value);
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
+
     [TestCase((long)(0), true)]
     [TestCase((long)(-1), true)]
     [TestCase((long)(int.MinValue), true)]
@@ -101,6 +109,7 @@ public class IntUtilTests
         bool actualResult = IntUtil.IsIntValueRepresentable<int, long>(value);
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
+
     [TestCase((long)(0), true)]
     [TestCase((long)(-1), true)]
     [TestCase((long)(short.MinValue), true)]
@@ -112,6 +121,7 @@ public class IntUtilTests
         bool actualResult = IntUtil.IsIntValueRepresentable<short, long>(value);
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
+
     [TestCase((long)(0), true)]
     [TestCase((long)(-1), false)]
     [TestCase((long)(uint.MaxValue), true)]
@@ -121,6 +131,7 @@ public class IntUtilTests
         bool actualResult = IntUtil.IsIntValueRepresentable<uint, long>(value);
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
+
     [TestCase((long)(0), true)]
     [TestCase((long)(-1), false)]
     [TestCase((long)(ushort.MaxValue), true)]
@@ -130,6 +141,7 @@ public class IntUtilTests
         bool actualResult = IntUtil.IsIntValueRepresentable<ushort, long>(value);
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
+
     [TestCase((short)(0), true)]
     [TestCase((short)(-1), false)]
     [TestCase((short)(short.MinValue), false)]
@@ -139,6 +151,7 @@ public class IntUtilTests
         bool actualResult = IntUtil.IsIntValueRepresentable<ushort, short>(value);
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
+
     [TestCase((uint)(0), true)]
     [TestCase((uint)(0xFFFFF000), false)]
     [TestCase((uint)(0xFFFF7FFF), false)]
@@ -149,6 +162,7 @@ public class IntUtilTests
         bool actualResult = IntUtil.IsIntValueRepresentable<short, uint>(value);
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
+
     [TestCase((ulong)(0), true)]
     [TestCase((ulong)(uint.MaxValue), true)]
     [TestCase((ulong)uint.MaxValue + 1, false)]
@@ -157,6 +171,7 @@ public class IntUtilTests
         bool actualResult = IntUtil.IsIntValueRepresentable<uint, ulong>(value);
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
+
     [TestCase((uint)(0), true)]
     [TestCase((uint)(uint.MaxValue), true)]
     public void IsIntValueRepresentable_UintToUlong(uint value, bool expectedResult)

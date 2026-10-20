@@ -1,5 +1,4 @@
 using LibHac.Util;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Util;
 
@@ -14,6 +13,7 @@ public class AlignmentTests
         var actualValue = Alignment.AlignUp(value, alignment);
         Assert.That(actualValue, Is.EqualTo(expectedValue));
     }
+
     [TestCase((int)(0), (uint)(0x40), (int)(0))]
     [TestCase((int)(-0x3F), (uint)(0x40), (int)(0))]
     [TestCase((int)(-0x40), (uint)(0x40), (int)(-0x40))]
@@ -25,6 +25,7 @@ public class AlignmentTests
         var actualValue = Alignment.AlignUp(value, alignment);
         Assert.That(actualValue, Is.EqualTo(expectedValue));
     }
+
     [TestCase((ulong)(0), (uint)(0x40), (ulong)(0))]
     [TestCase((ulong)(0x3F), (uint)(0x40), (ulong)(0x40))]
     [TestCase((ulong)(0x40), (uint)(0x40), (ulong)(0x40))]
@@ -35,6 +36,7 @@ public class AlignmentTests
         var actualValue = Alignment.AlignUp(value, alignment);
         Assert.That(actualValue, Is.EqualTo(expectedValue));
     }
+
     [TestCase((byte)(0), (uint)(0x40), (byte)(0))]
     [TestCase((byte)(0x3F), (uint)(0x40), (byte)(0))]
     [TestCase((byte)(0x40), (uint)(0x40), (byte)(0x40))]
@@ -44,6 +46,7 @@ public class AlignmentTests
         var actualValue = Alignment.AlignDown(value, alignment);
         Assert.That(actualValue, Is.EqualTo(expectedValue));
     }
+
     [TestCase((long)(0), (uint)(0x40), (long)(0))]
     [TestCase((long)(0x3F), (uint)(0x40), (long)(0))]
     [TestCase((long)(0x40), (uint)(0x40), (long)(0x40))]
@@ -53,6 +56,7 @@ public class AlignmentTests
         var actualValue = Alignment.AlignDown(value, alignment);
         Assert.That(actualValue, Is.EqualTo(expectedValue));
     }
+
     [TestCase((byte)(0), (uint)(0x40), true)]
     [TestCase((byte)(0x3F), (uint)(0x40), false)]
     [TestCase((byte)(0x40), (uint)(0x40), true)]
@@ -62,6 +66,7 @@ public class AlignmentTests
         var actualValue = Alignment.IsAligned(value, alignment);
         Assert.That(actualValue, Is.EqualTo(expectedValue));
     }
+
     [TestCase((long)(0), (uint)(0x40), true)]
     [TestCase((long)(0x3F), (uint)(0x40), false)]
     [TestCase((long)(0x40), (uint)(0x40), true)]
@@ -72,6 +77,7 @@ public class AlignmentTests
         var actualValue = Alignment.IsAligned(value, alignment);
         Assert.That(actualValue, Is.EqualTo(expectedValue));
     }
+
     [TestCase((uint)(0), (long)(0))]
     [TestCase((uint)(0x3F), (long)(1))]
     [TestCase((uint)(0x40), (long)(0x40))]

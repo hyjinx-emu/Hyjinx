@@ -1,6 +1,3 @@
-using LibHac;
-using NUnit.Framework;
-
 namespace LibHac.Tests.Fs;
 
 internal static class FsTestAssert

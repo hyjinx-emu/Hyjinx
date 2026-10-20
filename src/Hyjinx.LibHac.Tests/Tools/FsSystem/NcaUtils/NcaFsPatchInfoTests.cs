@@ -1,6 +1,4 @@
 using LibHac.Tools.FsSystem.NcaUtils;
-using System;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Tools.FsSystem.NcaUtils;
 

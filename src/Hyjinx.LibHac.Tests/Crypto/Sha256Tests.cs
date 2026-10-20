@@ -1,5 +1,4 @@
 using LibHac.Crypto;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Crypto;
 

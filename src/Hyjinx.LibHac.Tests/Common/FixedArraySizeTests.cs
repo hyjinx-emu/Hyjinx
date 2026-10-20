@@ -1,5 +1,4 @@
 using LibHac.Common.FixedArrays;
-using NUnit.Framework;
 using System.Runtime.CompilerServices;
 
 namespace LibHac.Tests.Common;

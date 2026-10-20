@@ -4,9 +4,6 @@ using LibHac.Fs.Shim;
 using LibHac.FsSrv.Impl;
 using LibHac.Ncm;
 using LibHac.Time;
-using System;
-using System.Linq;
-using NUnit.Framework;
 using static LibHac.Fs.SaveData;
 
 namespace LibHac.Tests.Fs.FileSystemClientTests.ShimTests;

@@ -1,6 +1,5 @@
 using LibHac.Ns;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
 using static LibHac.Ns.ApplicationControlProperty;
 using static LibHac.Tests.Common.Layout;
 

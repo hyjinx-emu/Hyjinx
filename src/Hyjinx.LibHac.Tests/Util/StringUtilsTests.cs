@@ -1,5 +1,4 @@
 using LibHac.Util;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Util;
 

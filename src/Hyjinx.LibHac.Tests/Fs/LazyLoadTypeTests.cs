@@ -2,7 +2,6 @@
 
 using LibHac.Fs;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
 
 namespace LibHac.Tests.Fs;
 
