@@ -2,13 +2,13 @@ using LibHac.Tools.FsSystem;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Tools.FsSystem;
 
 public class StreamStorage2Tests
 {
-    [Fact]
+    [Test]
     public void ConstructorGuards()
     {
         Mock<Stream> stream = new();
@@ -22,7 +22,7 @@ public class StreamStorage2Tests
         Assert.Throws<ArgumentException>(() => _ = StreamStorage2.Create(stream.Object));
     }
 
-    [Fact]
+    [Test]
     public void DoesNotDisposeTheStreamByDefault()
     {
         Mock<Stream> stream = new();
@@ -36,7 +36,7 @@ public class StreamStorage2Tests
         stream.Verify();
     }
 
-    [Fact]
+    [Test]
     public void ReadsTheDataFromBeginning()
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -46,13 +46,13 @@ public class StreamStorage2Tests
         var buffer = new Memory<byte>(new byte[10]);
         storage.Read(0, buffer.Span);
 
-        Assert.Equal(
+        Assert.That(buffer.ToArray(), Is.EqualTo(
         [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-        ], buffer.ToArray());
+        ]));
     }
 
-    [Fact]
+    [Test]
     public void ReadsTheDataFromMiddle()
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -62,13 +62,13 @@ public class StreamStorage2Tests
         var buffer = new Memory<byte>(new byte[10]);
         storage.Read(5, buffer.Span[..5]);
 
-        Assert.Equal(
+        Assert.That(buffer.ToArray(), Is.EqualTo(
         [
             5, 6, 7, 8, 9, 0, 0, 0, 0, 0
-        ], buffer.ToArray());
+        ]));
     }
 
-    [Fact]
+    [Test]
     public void ReadsTheDataFromEnd()
     {
         using var ms = new MemoryStream([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -78,9 +78,9 @@ public class StreamStorage2Tests
         var buffer = new Memory<byte>(new byte[10]);
         storage.Read(9, buffer.Span[..1]);
 
-        Assert.Equal(
+        Assert.That(buffer.ToArray(), Is.EqualTo(
         [
             9, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        ], buffer.ToArray());
+        ]));
     }
 }

@@ -1,13 +1,13 @@
 using LibHac.Tools.FsSystem.NcaUtils;
 using System;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tests.Tools.FsSystem.NcaUtils;
 
 public class NcaFsHeaderTests
 {
-    [Fact]
+    [Test]
     public void ReturnsTrueWhenPatchSectionIsNotZeroes()
     {
         Memory<byte> bytes = new byte[HeaderSize];
@@ -17,11 +17,11 @@ public class NcaFsHeaderTests
         var header = new NcaHeader(bytes);
 
         var target = header.GetFsHeader(0);
-        Assert.True(target.IsPatchSection());
-        Assert.NotNull(target.GetPatchInfo());
+        Assert.That(target.IsPatchSection(), Is.True);
+        Assert.That(target.GetPatchInfo(), Is.Not.Null);
     }
 
-    [Fact]
+    [Test]
     public void ReturnsFalseWhenPatchSectionIsZeroes()
     {
         Memory<byte> bytes = new byte[HeaderSize];
@@ -30,8 +30,8 @@ public class NcaFsHeaderTests
         var header = new NcaHeader(bytes);
 
         var target = header.GetFsHeader(0);
-        Assert.False(target.IsPatchSection());
-        Assert.Null(target.GetPatchInfo());
+        Assert.That(target.IsPatchSection(), Is.False);
+        Assert.That(target.GetPatchInfo(), Is.Null);
     }
 
     private static Memory<byte> GenerateSpan(int length)

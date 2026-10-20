@@ -1,11 +1,11 @@
 using LibHac.Tools.FsSystem;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Tools.FsSystem;
 
 public class InvalidSectorDetectedExceptionTests
 {
-    [Fact]
+    [Test]
     public void ConstructorWorks()
     {
         var message = "Hello world";
@@ -14,8 +14,8 @@ public class InvalidSectorDetectedExceptionTests
 
         var target = new InvalidSectorDetectedException(message, level, sectorIndex);
 
-        Assert.Equal(message, target.Message);
-        Assert.Equal(level, target.Level);
-        Assert.Equal(sectorIndex, target.SectorIndex);
+        Assert.That(target.Message, Is.EqualTo(message));
+        Assert.That(target.Level, Is.EqualTo(level));
+        Assert.That(target.SectorIndex, Is.EqualTo(sectorIndex));
     }
 }

@@ -1,13 +1,13 @@
 using LibHac.Fs;
 using LibHac.Tools.FsSystem;
 using System;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Tools.FsSystem;
 
 public class SubStorage2Tests
 {
-    [Fact]
+    [Test]
     public void ConstructorGuards()
     {
         var baseStorage = MemoryStorage2.Create([]);
@@ -25,7 +25,7 @@ public class SubStorage2Tests
     /// <summary>
     /// This is typically used by an empty file being present on a file system.
     /// </summary>
-    [Fact]
+    [Test]
     public void SupportsZeroLengthValues()
     {
         var baseStorage = MemoryStorage2.Create([]);
@@ -33,10 +33,10 @@ public class SubStorage2Tests
         var target = SubStorage2.Create(baseStorage, 0, 0);
 
         target.GetSize(out var targetSize).ThrowIfFailure();
-        Assert.Equal(0, targetSize);
+        Assert.That(targetSize, Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public void InitializesCorrectlyWithOffsets()
     {
         using var target = SubStorage2.Create(MemoryStorage2.Create(
@@ -46,10 +46,10 @@ public class SubStorage2Tests
         ]), 1, 10);
 
         target.GetSize(out var targetSize).ThrowIfFailure();
-        Assert.Equal(10, targetSize);
+        Assert.That(targetSize, Is.EqualTo(10));
     }
 
-    [Fact]
+    [Test]
     public void ReadsTheBytesAsExpected()
     {
         var ms = MemoryStorage2.Create(
@@ -62,13 +62,13 @@ public class SubStorage2Tests
         Memory<byte> buffer = new byte[32];
         target.Read(0, buffer.Span[..10]);
 
-        Assert.Equal([
+        Assert.That(buffer.ToArray(), Is.EqualTo([
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        ], buffer.ToArray());
+        ]));
     }
 
-    [Fact]
+    [Test]
     public void ReadsTheBytesFromOffsetAsExpected()
     {
         var ms = MemoryStorage2.Create(
@@ -81,13 +81,13 @@ public class SubStorage2Tests
         Memory<byte> buffer = new byte[32];
         target.Read(0, buffer.Span[..10]);
 
-        Assert.Equal([
+        Assert.That(buffer.ToArray(), Is.EqualTo([
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        ], buffer.ToArray());
+        ]));
     }
 
-    [Fact]
+    [Test]
     public void DisposesTheBaseStorage()
     {
         Mock<IStorage> baseStorage = new();
@@ -104,7 +104,7 @@ public class SubStorage2Tests
         baseStorage.Verify();
     }
 
-    [Fact]
+    [Test]
     public void ReadsUpToTheEnd()
     {
         using var ms = MemoryStorage2.Create(
@@ -118,13 +118,13 @@ public class SubStorage2Tests
         Memory<byte> buffer = new byte[16];
         target.Read(0, buffer.Span[..2]);
 
-        Assert.Equal(
+        Assert.That(buffer.ToArray(), Is.EqualTo(
         [
             0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        ], buffer.ToArray());
+        ]));
     }
 
-    [Fact]
+    [Test]
     public void ReadAtEndOfStreamReturnsZero()
     {
         using var ms = MemoryStorage2.Create([1]);
@@ -134,9 +134,9 @@ public class SubStorage2Tests
         Memory<byte> buffer = new byte[16];
         target.Read(1, buffer.Span[..0]);
 
-        Assert.Equal(
+        Assert.That(buffer.ToArray(), Is.EqualTo(
         [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        ], buffer.ToArray());
+        ]));
     }
 }
