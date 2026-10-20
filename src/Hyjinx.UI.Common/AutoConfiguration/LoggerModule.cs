@@ -7,6 +7,7 @@ using NLog;
 using NLog.Extensions.Logging;
 using NLog.Targets;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Hyjinx.UI.Common.AutoConfiguration;
@@ -28,61 +29,11 @@ public static class LoggerModule
                 var console = CreateConsoleTarget();
                 var file = CreateFileTarget();
 
-                if (appConfig.Value.LoggingEnableTrace)
+                var levels = GetEnabledLevels(appConfig);
+
+                foreach (var level in levels)
                 {
-                    nlogConfig.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Trace, console);
-
-                    if (appConfig.Value.EnableFileLog)
-                    {
-                        nlogConfig.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Trace, file);
-                    }
-                }
-
-                if (appConfig.Value.LoggingEnableDebug)
-                {
-                    nlogConfig.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Debug, console);
-
-                    if (appConfig.Value.EnableFileLog)
-                    {
-                        nlogConfig.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Debug, file);
-                    }
-                }
-
-                if (appConfig.Value.LoggingEnableInfo)
-                {
-                    nlogConfig.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Info, console);
-
-                    if (appConfig.Value.EnableFileLog)
-                    {
-                        nlogConfig.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Info, file);
-                    }
-                }
-
-                if (appConfig.Value.LoggingEnableWarn)
-                {
-                    nlogConfig.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Warn, console);
-
-                    if (appConfig.Value.EnableFileLog)
-                    {
-                        nlogConfig.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Warn, file);
-                    }
-                }
-
-                if (appConfig.Value.LoggingEnableError)
-                {
-                    nlogConfig.AddRule(NLog.LogLevel.Error, NLog.LogLevel.Error, console);
-
-                    if (appConfig.Value.EnableFileLog)
-                    {
-                        nlogConfig.AddRule(NLog.LogLevel.Error, NLog.LogLevel.Error, file);
-                    }
-                }
-
-                nlogConfig.AddRule(NLog.LogLevel.Fatal, NLog.LogLevel.Fatal, console);
-
-                if (appConfig.Value.EnableFileLog)
-                {
-                    nlogConfig.AddRule(NLog.LogLevel.Fatal, NLog.LogLevel.Fatal, file);
+                    nlogConfig.AddCustomRule(appConfig.Value.EnableFileLog, level, console, file);
                 }
 
                 return new LogFactory
@@ -152,5 +103,48 @@ public static class LoggerModule
         };
 
         return target;
+    }
+
+    private static NLog.LogLevel[] GetEnabledLevels(IOptions<ConfigurationFileFormat> options)
+    {
+        List<NLog.LogLevel> levels = new();
+        levels.Add(NLog.LogLevel.Fatal); // Fatal is always enabled.
+
+        if (options.Value.LoggingEnableTrace)
+        {
+            levels.Add(NLog.LogLevel.Trace);
+        }
+
+        if (options.Value.LoggingEnableDebug)
+        {
+            levels.Add(NLog.LogLevel.Debug);
+        }
+
+        if (options.Value.LoggingEnableInfo)
+        {
+            levels.Add(NLog.LogLevel.Info);
+        }
+
+        if (options.Value.LoggingEnableWarn)
+        {
+            levels.Add(NLog.LogLevel.Warn);
+        }
+
+        if (options.Value.LoggingEnableError)
+        {
+            levels.Add(NLog.LogLevel.Error);
+        }
+
+        return levels.ToArray();
+    }
+
+    private static void AddCustomRule(this NLog.Config.LoggingConfiguration config, bool fileEnabled, NLog.LogLevel level, Target console, Target file)
+    {
+        config.AddRule(level, level, console);
+
+        if (fileEnabled)
+        {
+            config.AddRule(level, level, file);
+        }
     }
 }
