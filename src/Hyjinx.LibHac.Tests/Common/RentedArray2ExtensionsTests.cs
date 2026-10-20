@@ -1,11 +1,11 @@
 using LibHac.Common;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Common;
 
 public class RentedArray2ExtensionsTests
 {
-    [Fact]
+    [Test]
     public void ReturnsTheMemoryStream()
     {
         var expected = 0x10;
@@ -13,6 +13,6 @@ public class RentedArray2ExtensionsTests
         using var buffer = new RentedArray2<byte>(expected);
         using var ms = buffer.AsMemoryStream();
 
-        Assert.Equal(expected, ms.Length);
+        Assert.That(ms.Length, Is.EqualTo(expected));
     }
 }

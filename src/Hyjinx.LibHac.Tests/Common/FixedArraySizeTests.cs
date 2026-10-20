@@ -1,40 +1,40 @@
 using LibHac.Common.FixedArrays;
+using NUnit.Framework;
 using System.Runtime.CompilerServices;
-using Xunit;
 
 namespace LibHac.Tests.Common;
 
 public class FixedArraySizeTests
 {
-    [Fact] public static void Array1SpanSizeIsCorrect() => Assert.Equal(1, new Array1<byte>().Items.Length);
-    [Fact] public static void Array1ByteSizeIsCorrect() => Assert.Equal(sizeof(byte) * 1, Unsafe.SizeOf<Array1<byte>>());
-    [Fact] public static void Array1LongSizeIsCorrect() => Assert.Equal(sizeof(long) * 1, Unsafe.SizeOf<Array1<long>>());
+    [Test] public static void Array1SpanSizeIsCorrect() => Assert.That(new Array1<byte>().Items.Length, Is.EqualTo(1));
+    [Test] public static void Array1ByteSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array1<byte>>(), Is.EqualTo(sizeof(byte) * 1));
+    [Test] public static void Array1LongSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array1<long>>(), Is.EqualTo(sizeof(long) * 1));
 
-    [Fact] public static void Array3SpanSizeIsCorrect() => Assert.Equal(3, new Array3<byte>().Items.Length);
-    [Fact] public static void Array3ByteSizeIsCorrect() => Assert.Equal(sizeof(byte) * 3, Unsafe.SizeOf<Array3<byte>>());
-    [Fact] public static void Array3LongSizeIsCorrect() => Assert.Equal(sizeof(long) * 3, Unsafe.SizeOf<Array3<long>>());
+    [Test] public static void Array3SpanSizeIsCorrect() => Assert.That(new Array3<byte>().Items.Length, Is.EqualTo(3));
+    [Test] public static void Array3ByteSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array3<byte>>(), Is.EqualTo(sizeof(byte) * 3));
+    [Test] public static void Array3LongSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array3<long>>(), Is.EqualTo(sizeof(long) * 3));
 
-    [Fact] public static void Array8SpanSizeIsCorrect() => Assert.Equal(8, new Array8<byte>().Items.Length);
-    [Fact] public static void Array8ByteSizeIsCorrect() => Assert.Equal(sizeof(byte) * 8, Unsafe.SizeOf<Array8<byte>>());
-    [Fact] public static void Array8LongSizeIsCorrect() => Assert.Equal(sizeof(long) * 8, Unsafe.SizeOf<Array8<long>>());
+    [Test] public static void Array8SpanSizeIsCorrect() => Assert.That(new Array8<byte>().Items.Length, Is.EqualTo(8));
+    [Test] public static void Array8ByteSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array8<byte>>(), Is.EqualTo(sizeof(byte) * 8));
+    [Test] public static void Array8LongSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array8<long>>(), Is.EqualTo(sizeof(long) * 8));
 
-    [Fact] public static void Array12SpanSizeIsCorrect() => Assert.Equal(12, new Array12<byte>().Items.Length);
-    [Fact] public static void Array12ByteSizeIsCorrect() => Assert.Equal(sizeof(byte) * 12, Unsafe.SizeOf<Array12<byte>>());
-    [Fact] public static void Array12LongSizeIsCorrect() => Assert.Equal(sizeof(long) * 12, Unsafe.SizeOf<Array12<long>>());
+    [Test] public static void Array12SpanSizeIsCorrect() => Assert.That(new Array12<byte>().Items.Length, Is.EqualTo(12));
+    [Test] public static void Array12ByteSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array12<byte>>(), Is.EqualTo(sizeof(byte) * 12));
+    [Test] public static void Array12LongSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array12<long>>(), Is.EqualTo(sizeof(long) * 12));
 
-    [Fact] public static void Array32SpanSizeIsCorrect() => Assert.Equal(32, new Array32<byte>().Items.Length);
-    [Fact] public static void Array32ByteSizeIsCorrect() => Assert.Equal(sizeof(byte) * 32, Unsafe.SizeOf<Array32<byte>>());
-    [Fact] public static void Array32LongSizeIsCorrect() => Assert.Equal(sizeof(long) * 32, Unsafe.SizeOf<Array32<long>>());
+    [Test] public static void Array32SpanSizeIsCorrect() => Assert.That(new Array32<byte>().Items.Length, Is.EqualTo(32));
+    [Test] public static void Array32ByteSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array32<byte>>(), Is.EqualTo(sizeof(byte) * 32));
+    [Test] public static void Array32LongSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array32<long>>(), Is.EqualTo(sizeof(long) * 32));
 
-    [Fact] public static void Array64SpanSizeIsCorrect() => Assert.Equal(64, new Array64<byte>().Items.Length);
-    [Fact] public static void Array64ByteSizeIsCorrect() => Assert.Equal(sizeof(byte) * 64, Unsafe.SizeOf<Array64<byte>>());
-    [Fact] public static void Array64LongSizeIsCorrect() => Assert.Equal(sizeof(long) * 64, Unsafe.SizeOf<Array64<long>>());
+    [Test] public static void Array64SpanSizeIsCorrect() => Assert.That(new Array64<byte>().Items.Length, Is.EqualTo(64));
+    [Test] public static void Array64ByteSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array64<byte>>(), Is.EqualTo(sizeof(byte) * 64));
+    [Test] public static void Array64LongSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array64<long>>(), Is.EqualTo(sizeof(long) * 64));
 
-    [Fact] public static void Array128SpanSizeIsCorrect() => Assert.Equal(128, new Array128<byte>().Items.Length);
-    [Fact] public static void Array128ByteSizeIsCorrect() => Assert.Equal(sizeof(byte) * 128, Unsafe.SizeOf<Array128<byte>>());
-    [Fact] public static void Array128LongSizeIsCorrect() => Assert.Equal(sizeof(long) * 128, Unsafe.SizeOf<Array128<long>>());
+    [Test] public static void Array128SpanSizeIsCorrect() => Assert.That(new Array128<byte>().Items.Length, Is.EqualTo(128));
+    [Test] public static void Array128ByteSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array128<byte>>(), Is.EqualTo(sizeof(byte) * 128));
+    [Test] public static void Array128LongSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array128<long>>(), Is.EqualTo(sizeof(long) * 128));
 
-    [Fact] public static void Array256SpanSizeIsCorrect() => Assert.Equal(256, new Array256<byte>().Items.Length);
-    [Fact] public static void Array256ByteSizeIsCorrect() => Assert.Equal(sizeof(byte) * 256, Unsafe.SizeOf<Array256<byte>>());
-    [Fact] public static void Array256LongSizeIsCorrect() => Assert.Equal(sizeof(long) * 256, Unsafe.SizeOf<Array256<long>>());
+    [Test] public static void Array256SpanSizeIsCorrect() => Assert.That(new Array256<byte>().Items.Length, Is.EqualTo(256));
+    [Test] public static void Array256ByteSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array256<byte>>(), Is.EqualTo(sizeof(byte) * 256));
+    [Test] public static void Array256LongSizeIsCorrect() => Assert.That(Unsafe.SizeOf<Array256<long>>(), Is.EqualTo(sizeof(long) * 256));
 }
