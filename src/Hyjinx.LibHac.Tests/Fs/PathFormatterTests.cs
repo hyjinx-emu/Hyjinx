@@ -4,26 +4,25 @@ using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Util;
 using System;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs;
 
 public class PathFormatterTests
 {
-    public static TheoryData<string, string, string, Result> TestData_Normalize_EmptyPath => new()
+    public static NUnitTestCaseData<string, string, string, Result> TestData_Normalize_EmptyPath => new()
     {
         { @"", "", @"", ResultFs.InvalidPathFormat.Value },
         { @"", "E", @"", Result.Success },
         { @"/aa/bb/../cc", "E", @"/aa/cc", Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize_EmptyPath))]
+    [TestCaseSource(nameof(TestData_Normalize_EmptyPath))]
     public static void Normalize_EmptyPath(string path, string pathFlags, string expectedNormalized, Result expectedResult)
     {
         NormalizeImpl(path, pathFlags, 0x301, expectedNormalized, expectedResult);
     }
 
-    public static TheoryData<string, string, string, Result> TestData_Normalize_MountName => new()
+    public static NUnitTestCaseData<string, string, string, Result> TestData_Normalize_MountName => new()
     {
         { @"mount:/aa/bb", "", @"", ResultFs.InvalidPathFormat.Value },
         { @"mount:/aa/bb", "W", @"", ResultFs.InvalidPathFormat.Value },
@@ -37,14 +36,13 @@ public class PathFormatterTests
         { @"/aa/./bb", "M", @"/aa/bb", Result.Success },
         { @"mount/aa/./bb", "M", @"", ResultFs.InvalidPathFormat.Value }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize_MountName))]
+    [TestCaseSource(nameof(TestData_Normalize_MountName))]
     public static void Normalize_MountName(string path, string pathFlags, string expectedNormalized, Result expectedResult)
     {
         NormalizeImpl(path, pathFlags, 0x301, expectedNormalized, expectedResult);
     }
 
-    public static TheoryData<string, string, string, Result> TestData_Normalize_WindowsPath => new()
+    public static NUnitTestCaseData<string, string, string, Result> TestData_Normalize_WindowsPath => new()
     {
         { @"c:/aa/bb", "", @"", ResultFs.InvalidPathFormat.Value },
         { @"c:\aa\bb", "", @"", ResultFs.InvalidCharacter.Value },
@@ -83,14 +81,13 @@ public class PathFormatterTests
         { @"\\host\sha:re", "W", @"", ResultFs.InvalidCharacter.Value },
         { @".\\host\share", "RW", @"..\\host\share/", Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize_WindowsPath))]
+    [TestCaseSource(nameof(TestData_Normalize_WindowsPath))]
     public static void Normalize_WindowsPath(string path, string pathFlags, string expectedNormalized, Result expectedResult)
     {
         NormalizeImpl(path, pathFlags, 0x301, expectedNormalized, expectedResult);
     }
 
-    public static TheoryData<string, string, string, Result> TestData_Normalize_RelativePath => new()
+    public static NUnitTestCaseData<string, string, string, Result> TestData_Normalize_RelativePath => new()
     {
         { @"./aa/bb", "", @"", ResultFs.InvalidPathFormat.Value },
         { @"./aa/bb/../cc", "R", @"./aa/cc", Result.Success },
@@ -102,14 +99,13 @@ public class PathFormatterTests
         { @"mount:./aa/./bb", "MR", @"mount:./aa/bb", Result.Success },
         { @"mount:./aa/bb", "M", @"mount:", ResultFs.InvalidPathFormat.Value }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize_RelativePath))]
+    [TestCaseSource(nameof(TestData_Normalize_RelativePath))]
     public static void Normalize_RelativePath(string path, string pathFlags, string expectedNormalized, Result expectedResult)
     {
         NormalizeImpl(path, pathFlags, 0x301, expectedNormalized, expectedResult);
     }
 
-    public static TheoryData<string, string, string, Result> TestData_Normalize_Backslash => new()
+    public static NUnitTestCaseData<string, string, string, Result> TestData_Normalize_Backslash => new()
     {
         { @"\aa\bb\..\cc", "", @"", ResultFs.InvalidPathFormat.Value },
         { @"\aa\bb\..\cc", "B", @"", ResultFs.InvalidPathFormat.Value },
@@ -122,14 +118,13 @@ public class PathFormatterTests
         { @"/aa/bb\../cc/..\dd\..\ee/..", "", @"", ResultFs.InvalidCharacter.Value },
         { @"/aa/bb\../cc/..\dd\..\ee/..", "B", @"/aa", Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize_Backslash))]
+    [TestCaseSource(nameof(TestData_Normalize_Backslash))]
     public static void Normalize_Backslash(string path, string pathFlags, string expectedNormalized, Result expectedResult)
     {
         NormalizeImpl(path, pathFlags, 0x301, expectedNormalized, expectedResult);
     }
 
-    public static TheoryData<string, string, string, Result> TestData_Normalize_AllowAllChars => new()
+    public static NUnitTestCaseData<string, string, string, Result> TestData_Normalize_AllowAllChars => new()
     {
         { @"/aa/b:b/cc", "", @"/aa/", ResultFs.InvalidCharacter.Value },
         { @"/aa/b*b/cc", "", @"/aa/", ResultFs.InvalidCharacter.Value },
@@ -154,14 +149,13 @@ public class PathFormatterTests
         { @"mount:/aa/b<b/cc", "MC", @"mount:/aa/b<b/cc", Result.Success },
         { @"mo>unt:/aa/bb/cc", "MC", @"", ResultFs.InvalidCharacter.Value }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize_AllowAllChars))]
+    [TestCaseSource(nameof(TestData_Normalize_AllowAllChars))]
     public static void Normalize_AllowAllChars(string path, string pathFlags, string expectedNormalized, Result expectedResult)
     {
         NormalizeImpl(path, pathFlags, 0x301, expectedNormalized, expectedResult);
     }
 
-    public static TheoryData<string, string, string, Result> TestData_Normalize_All => new()
+    public static NUnitTestCaseData<string, string, string, Result> TestData_Normalize_All => new()
     {
         { @"mount:./aa/bb", "WRM", @"mount:./aa/bb", Result.Success },
         { @"mount:./aa/bb\cc/dd", "WRM", @"mount:./aa/bb/cc/dd", Result.Success },
@@ -183,14 +177,13 @@ public class PathFormatterTests
         { @"./c:/aa/bb", "RW", @"./", ResultFs.InvalidCharacter.Value },
         { @"mount:./aa/b:b\cc/dd", "WRMBC", @"mount:./aa/b:b/cc/dd", Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize_All))]
+    [TestCaseSource(nameof(TestData_Normalize_All))]
     public static void Normalize_All(string path, string pathFlags, string expectedNormalized, Result expectedResult)
     {
         NormalizeImpl(path, pathFlags, 0x301, expectedNormalized, expectedResult);
     }
 
-    public static TheoryData<string, string, int, string, Result> TestData_Normalize_SmallBuffer => new()
+    public static NUnitTestCaseData<string, string, int, string, Result> TestData_Normalize_SmallBuffer => new()
     {
         { @"/aa/bb", "M", 1, @"", ResultFs.TooLongPath.Value },
         { @"mount:/aa/bb", "MR", 6, @"", ResultFs.TooLongPath.Value },
@@ -198,8 +191,7 @@ public class PathFormatterTests
         { @"aa/bb", "MR", 3, @"./", ResultFs.TooLongPath.Value },
         { @"\\host\share", "W", 13, @"\\host\share", ResultFs.TooLongPath.Value }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize_SmallBuffer))]
+    [TestCaseSource(nameof(TestData_Normalize_SmallBuffer))]
     public static void Normalize_SmallBuffer(string path, string pathFlags, int bufferSize, string expectedNormalized, Result expectedResult)
     {
         NormalizeImpl(path, pathFlags, bufferSize, expectedNormalized, expectedResult);
@@ -211,25 +203,24 @@ public class PathFormatterTests
 
         Result result = PathFormatter.Normalize(buffer, path.ToU8Span(), GetPathFlags(pathFlags));
 
-        Assert.Equal(expectedResult, result);
-        Assert.Equal(expectedNormalized, StringUtils.Utf8ZToString(buffer));
+        Assert.That(result, Is.EqualTo(expectedResult));
+        Assert.That(StringUtils.Utf8ZToString(buffer), Is.EqualTo(expectedNormalized));
     }
 
-    public static TheoryData<string, string, bool, int, Result> TestData_IsNormalized_EmptyPath => new()
+    public static NUnitTestCaseData<string, string, bool, int, Result> TestData_IsNormalized_EmptyPath => new()
     {
         { @"", "", false, 0, ResultFs.InvalidPathFormat.Value },
         { @"", "E", true, 0, Result.Success },
         { @"/aa/bb/../cc", "E", false, 0, Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_IsNormalized_EmptyPath))]
+    [TestCaseSource(nameof(TestData_IsNormalized_EmptyPath))]
     public static void IsNormalized_EmptyPath(string path, string pathFlags, bool expectedIsNormalized, long expectedLength,
         Result expectedResult)
     {
         IsNormalizedImpl(path, pathFlags, expectedIsNormalized, expectedLength, expectedResult);
     }
 
-    public static TheoryData<string, string, bool, int, Result> TestData_IsNormalized_MountName => new()
+    public static NUnitTestCaseData<string, string, bool, int, Result> TestData_IsNormalized_MountName => new()
     {
         { @"mount:/aa/bb", "", false, 0, ResultFs.InvalidPathFormat.Value },
         { @"mount:/aa/bb", "W", false, 0, ResultFs.InvalidPathFormat.Value },
@@ -243,15 +234,14 @@ public class PathFormatterTests
         { @"/aa/./bb", "M", false, 0, Result.Success },
         { @"mount/aa/./bb", "M", false, 0, ResultFs.InvalidPathFormat.Value }
     };
-
-    [Theory, MemberData(nameof(TestData_IsNormalized_MountName))]
+    [TestCaseSource(nameof(TestData_IsNormalized_MountName))]
     public static void IsNormalized_MountName(string path, string pathFlags, bool expectedIsNormalized, long expectedLength,
         Result expectedResult)
     {
         IsNormalizedImpl(path, pathFlags, expectedIsNormalized, expectedLength, expectedResult);
     }
 
-    public static TheoryData<string, string, bool, int, Result> TestData_IsNormalized_WindowsPath => new()
+    public static NUnitTestCaseData<string, string, bool, int, Result> TestData_IsNormalized_WindowsPath => new()
     {
         { @"c:/aa/bb", "", false, 0, ResultFs.InvalidPathFormat.Value },
         { @"c:\aa\bb", "", false, 0, ResultFs.InvalidPathFormat.Value },
@@ -290,15 +280,14 @@ public class PathFormatterTests
         { @"\\host\sha:re", "W", false, 0, ResultFs.InvalidCharacter.Value },
         { @".\\host\share", "RW", false, 0, Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_IsNormalized_WindowsPath))]
+    [TestCaseSource(nameof(TestData_IsNormalized_WindowsPath))]
     public static void IsNormalized_WindowsPath(string path, string pathFlags, bool expectedIsNormalized, long expectedLength,
         Result expectedResult)
     {
         IsNormalizedImpl(path, pathFlags, expectedIsNormalized, expectedLength, expectedResult);
     }
 
-    public static TheoryData<string, string, bool, int, Result> TestData_IsNormalized_RelativePath => new()
+    public static NUnitTestCaseData<string, string, bool, int, Result> TestData_IsNormalized_RelativePath => new()
     {
         { @"./aa/bb", "", false, 0, ResultFs.InvalidPathFormat.Value },
         { @"./aa/bb/../cc", "R", false, 1, Result.Success },
@@ -310,15 +299,14 @@ public class PathFormatterTests
         { @"mount:./aa/./bb", "MR", false, 7, Result.Success },
         { @"mount:./aa/bb", "M", false, 0, ResultFs.InvalidPathFormat.Value }
     };
-
-    [Theory, MemberData(nameof(TestData_IsNormalized_RelativePath))]
+    [TestCaseSource(nameof(TestData_IsNormalized_RelativePath))]
     public static void IsNormalized_RelativePath(string path, string pathFlags, bool expectedIsNormalized, long expectedLength,
         Result expectedResult)
     {
         IsNormalizedImpl(path, pathFlags, expectedIsNormalized, expectedLength, expectedResult);
     }
 
-    public static TheoryData<string, string, bool, int, Result> TestData_IsNormalized_Backslash => new()
+    public static NUnitTestCaseData<string, string, bool, int, Result> TestData_IsNormalized_Backslash => new()
     {
         { @"\aa\bb\..\cc", "", false, 0, ResultFs.InvalidPathFormat.Value },
         { @"\aa\bb\..\cc", "B", false, 0, ResultFs.InvalidPathFormat.Value },
@@ -331,15 +319,14 @@ public class PathFormatterTests
         { @"/aa/bb\../cc/..\dd\..\ee/..", "", false, 0, ResultFs.InvalidCharacter.Value },
         { @"/aa/bb\../cc/..\dd\..\ee/..", "B", false, 0, Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_IsNormalized_Backslash))]
+    [TestCaseSource(nameof(TestData_IsNormalized_Backslash))]
     public static void IsNormalized_Backslash(string path, string pathFlags, bool expectedIsNormalized, long expectedLength,
         Result expectedResult)
     {
         IsNormalizedImpl(path, pathFlags, expectedIsNormalized, expectedLength, expectedResult);
     }
 
-    public static TheoryData<string, string, bool, int, Result> TestData_IsNormalized_AllowAllChars => new()
+    public static NUnitTestCaseData<string, string, bool, int, Result> TestData_IsNormalized_AllowAllChars => new()
     {
         { @"/aa/b:b/cc", "", false, 0, ResultFs.InvalidCharacter.Value },
         { @"/aa/b*b/cc", "", false, 0, ResultFs.InvalidCharacter.Value },
@@ -364,15 +351,14 @@ public class PathFormatterTests
         { @"mount:/aa/b<b/cc", "MC", true, 16, Result.Success },
         { @"mo>unt:/aa/bb/cc", "MC", false, 0, ResultFs.InvalidCharacter.Value }
     };
-
-    [Theory, MemberData(nameof(TestData_IsNormalized_AllowAllChars))]
+    [TestCaseSource(nameof(TestData_IsNormalized_AllowAllChars))]
     public static void IsNormalized_AllowAllChars(string path, string pathFlags, bool expectedIsNormalized, long expectedLength,
         Result expectedResult)
     {
         IsNormalizedImpl(path, pathFlags, expectedIsNormalized, expectedLength, expectedResult);
     }
 
-    public static TheoryData<string, string, bool, int, Result> TestData_IsNormalized_All => new()
+    public static NUnitTestCaseData<string, string, bool, int, Result> TestData_IsNormalized_All => new()
     {
         { @"mount:./aa/bb", "WRM", true, 13, Result.Success },
         { @"mount:./aa/bb\cc/dd", "WRM", false, 0, Result.Success },
@@ -394,8 +380,7 @@ public class PathFormatterTests
         { @"./c:/aa/bb", "RW", false, 0, ResultFs.InvalidCharacter.Value },
         { @"mount:./aa/b:b\cc/dd", "WRMBC", true, 20, Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_IsNormalized_All))]
+    [TestCaseSource(nameof(TestData_IsNormalized_All))]
     public static void IsNormalized_All(string path, string pathFlags, bool expectedIsNormalized, long expectedLength,
         Result expectedResult)
     {
@@ -408,27 +393,27 @@ public class PathFormatterTests
         Result result = PathFormatter.IsNormalized(out bool isNormalized, out int length, path.ToU8Span(),
             GetPathFlags(pathFlags));
 
-        Assert.Equal(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
 
         if (result.IsSuccess())
         {
-            Assert.Equal(expectedIsNormalized, isNormalized);
+            Assert.That(isNormalized, Is.EqualTo(expectedIsNormalized));
 
             if (isNormalized)
             {
-                Assert.Equal(expectedLength, length);
+                Assert.That(length, Is.EqualTo(expectedLength));
             }
         }
     }
 
-    [Fact]
+    [Test]
     public static void IsNormalized_InvalidUtf8()
     {
         ReadOnlySpan<byte> invalidUtf8 = new byte[] { 0x44, 0xE3, 0xAA, 0x55, 0x50 };
 
         Result result = PathFormatter.IsNormalized(out _, out _, invalidUtf8, new PathFlags());
 
-        Assert.Result(ResultFs.InvalidPathFormat, result);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.InvalidPathFormat, result);
     }
 
     private static PathFlags GetPathFlags(string pathFlags)

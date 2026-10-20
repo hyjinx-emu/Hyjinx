@@ -1,6 +1,6 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
@@ -8,69 +8,69 @@ public abstract class IAttributeFileSystemTests : IFileSystemTests
 {
     protected abstract IAttributeFileSystem CreateAttributeFileSystem();
 
-    [Fact]
+    [Test]
     public void CreateDirectory_WithoutArchiveAttribute_ArchiveFlagIsNotSet()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
 
-        Assert.Success(fs.CreateDirectory("/dir", NxFileAttributes.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateDirectory("/dir", NxFileAttributes.None));
 
-        Assert.Success(fs.GetFileAttributes(out NxFileAttributes attributes, "/dir"));
-        Assert.Equal(NxFileAttributes.Directory, attributes);
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetFileAttributes(out NxFileAttributes attributes, "/dir"));
+        Assert.That(attributes, Is.EqualTo(NxFileAttributes.Directory));
     }
 
-    [Fact]
+    [Test]
     public void CreateDirectory_WithArchiveAttribute_ArchiveFlagIsSet()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
 
-        Assert.Success(fs.CreateDirectory("/dir", NxFileAttributes.Archive));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateDirectory("/dir", NxFileAttributes.Archive));
 
-        Assert.Success(fs.GetFileAttributes(out NxFileAttributes attributes, "/dir"));
-        Assert.Equal(NxFileAttributes.Directory | NxFileAttributes.Archive, attributes);
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetFileAttributes(out NxFileAttributes attributes, "/dir"));
+        Assert.That(attributes, Is.EqualTo(NxFileAttributes.Directory | NxFileAttributes.Archive));
     }
 
-    [Fact]
+    [Test]
     public void GetFileAttributes_AttributesOnNewFileAreEmpty()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
         fs.CreateFile("/file", 0, CreateFileOptions.None);
 
-        Assert.Success(fs.GetFileAttributes(out NxFileAttributes attributes, "/file"));
-        Assert.Equal(NxFileAttributes.None, attributes);
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetFileAttributes(out NxFileAttributes attributes, "/file"));
+        Assert.That(attributes, Is.EqualTo(NxFileAttributes.None));
     }
 
-    [Fact]
+    [Test]
     public void GetFileAttributes_AttributesOnNewDirHaveOnlyDirFlagSet()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
         fs.CreateDirectory("/dir");
 
-        Assert.Success(fs.GetFileAttributes(out NxFileAttributes attributes, "/dir"));
-        Assert.Equal(NxFileAttributes.Directory, attributes);
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetFileAttributes(out NxFileAttributes attributes, "/dir"));
+        Assert.That(attributes, Is.EqualTo(NxFileAttributes.Directory));
     }
 
-    [Fact]
+    [Test]
     public void GetFileAttributes_PathDoesNotExist_ReturnsPathNotFound()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
 
         Result res = fs.GetFileAttributes(out _, "/path");
 
-        Assert.Result(ResultFs.PathNotFound, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void SetFileAttributes_PathDoesNotExist_ReturnsPathNotFound()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
 
         Result res = fs.SetFileAttributes("/path", NxFileAttributes.None);
 
-        Assert.Result(ResultFs.PathNotFound, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void SetFileAttributes_SetAttributeOnFile()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
@@ -79,12 +79,12 @@ public abstract class IAttributeFileSystemTests : IFileSystemTests
         Result resultSet = fs.SetFileAttributes("/file", NxFileAttributes.Archive);
         Result resultGet = fs.GetFileAttributes(out NxFileAttributes attributes, "/file");
 
-        Assert.Success(resultSet);
-        Assert.Success(resultGet);
-        Assert.Equal(NxFileAttributes.Archive, attributes);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultSet);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultGet);
+        Assert.That(attributes, Is.EqualTo(NxFileAttributes.Archive));
     }
 
-    [Fact]
+    [Test]
     public void SetFileAttributes_SetAttributeOnDirectory()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
@@ -93,33 +93,33 @@ public abstract class IAttributeFileSystemTests : IFileSystemTests
         Result resultSet = fs.SetFileAttributes("/dir", NxFileAttributes.Archive);
         Result resultGet = fs.GetFileAttributes(out NxFileAttributes attributes, "/dir");
 
-        Assert.Success(resultSet);
-        Assert.Success(resultGet);
-        Assert.Equal(NxFileAttributes.Directory | NxFileAttributes.Archive, attributes);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultSet);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultGet);
+        Assert.That(attributes, Is.EqualTo(NxFileAttributes.Directory | NxFileAttributes.Archive));
     }
 
-    [Fact]
+    [Test]
     public void GetFileSize_ReadNewFileSize()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
 
         fs.CreateFile("/file", 845, CreateFileOptions.None);
 
-        Assert.Success(fs.GetFileSize(out long fileSize, "/file"));
-        Assert.Equal(845, fileSize);
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetFileSize(out long fileSize, "/file"));
+        Assert.That(fileSize, Is.EqualTo(845));
     }
 
-    [Fact]
+    [Test]
     public void GetFileSize_PathDoesNotExist_ReturnsPathNotFound()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
 
         Result res = fs.GetFileSize(out _, "/path");
 
-        Assert.Result(ResultFs.PathNotFound, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void GetFileSize_PathIsDirectory_ReturnsPathNotFound()
     {
         IAttributeFileSystem fs = CreateAttributeFileSystem();
@@ -127,6 +127,6 @@ public abstract class IAttributeFileSystemTests : IFileSystemTests
 
         Result res = fs.GetFileSize(out _, "/dir");
 
-        Assert.Result(ResultFs.PathNotFound, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 }

@@ -1,13 +1,13 @@
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class CommittableIFileSystemTests
 {
-    [Fact]
+    [Test]
     public void Commit_AfterSuccessfulCommit_CanReadCommittedData()
     {
         // "Random" test data
@@ -45,23 +45,23 @@ public abstract partial class CommittableIFileSystemTests
         byte[] readData1 = new byte[data1.Length];
         byte[] readData2 = new byte[data2.Length];
 
-        Assert.Success(fs.OpenFile(ref file1.Ref, "/dir1/file", OpenMode.Read));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenFile(ref file1.Ref, "/dir1/file", OpenMode.Read));
 
-        Assert.Success(file1.Get.Read(out long bytesReadFile1, 0, readData1, ReadOption.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(file1.Get.Read(out long bytesReadFile1, 0, readData1, ReadOption.None));
         file1.Reset();
-        Assert.Equal(data1.Length, bytesReadFile1);
+        Assert.That(bytesReadFile1, Is.EqualTo(data1.Length));
 
-        Assert.Equal(data1, readData1);
+        Assert.That(readData1, Is.EqualTo(data1));
 
-        Assert.Success(fs.OpenFile(ref file2.Ref, "/dir2/file", OpenMode.Read));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenFile(ref file2.Ref, "/dir2/file", OpenMode.Read));
 
-        Assert.Success(file2.Get.Read(out long bytesReadFile2, 0, readData2, ReadOption.None));
-        Assert.Equal(data2.Length, bytesReadFile2);
+        LibHac.Tests.Fs.FsTestAssert.Success(file2.Get.Read(out long bytesReadFile2, 0, readData2, ReadOption.None));
+        Assert.That(bytesReadFile2, Is.EqualTo(data2.Length));
 
-        Assert.Equal(data2, readData2);
+        Assert.That(readData2, Is.EqualTo(data2));
     }
 
-    [Fact]
+    [Test]
     public void Rollback_CreateFileThenRollback_FileDoesNotExist()
     {
         IFileSystem fs = CreateFileSystem();
@@ -70,14 +70,14 @@ public abstract partial class CommittableIFileSystemTests
         fs.CreateFile("/dir/file", 0, CreateFileOptions.None).ThrowIfFailure();
 
         // Rollback should succeed
-        Assert.Success(fs.Rollback());
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.Rollback());
 
         // Make sure the file and directory are gone
-        Assert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/dir"));
-        Assert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/dir/file"));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/dir"));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/dir/file"));
     }
 
-    [Fact]
+    [Test]
     public void Rollback_CreateFileThenCloseFs_FileDoesNotExist()
     {
         IReopenableFileSystemCreator fsCreator = GetFileSystemCreator();
@@ -91,11 +91,11 @@ public abstract partial class CommittableIFileSystemTests
         fs = fsCreator.Create();
 
         // Make sure the file and directory are gone
-        Assert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/dir"));
-        Assert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/dir/file"));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/dir"));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/dir/file"));
     }
 
-    [Fact]
+    [Test]
     public void Rollback_AfterChangingExistingFiles_GoesBackToOriginalData()
     {
         // "Random" test data
@@ -124,16 +124,16 @@ public abstract partial class CommittableIFileSystemTests
         file.Get.Write(0, data2, WriteOption.Flush).ThrowIfFailure();
         file.Reset();
 
-        Assert.Success(fs.Rollback());
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.Rollback());
 
         // The file should contain the original data after the rollback
         byte[] readData = new byte[data1.Length];
 
-        Assert.Success(fs.OpenFile(ref file.Ref, "/dir/file", OpenMode.Read));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenFile(ref file.Ref, "/dir/file", OpenMode.Read));
 
-        Assert.Success(file.Get.Read(out long bytesRead, 0, readData, ReadOption.None));
-        Assert.Equal(data1.Length, bytesRead);
+        LibHac.Tests.Fs.FsTestAssert.Success(file.Get.Read(out long bytesRead, 0, readData, ReadOption.None));
+        Assert.That(bytesRead, Is.EqualTo(data1.Length));
 
-        Assert.Equal(data1, readData);
+        Assert.That(readData, Is.EqualTo(data1));
     }
 }

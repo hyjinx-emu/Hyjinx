@@ -2,27 +2,27 @@
 
 using LibHac.Fs;
 using System.Runtime.CompilerServices;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs;
 
 public class LazyLoadTypeTests
 {
-    [Fact]
+    [Test]
     public static void UnpreparedRangeInfoSizeIs0x40()
     {
-        Assert.Equal(0x40, Unsafe.SizeOf<UnpreparedRangeInfo>());
+        Assert.That(Unsafe.SizeOf<UnpreparedRangeInfo>(), Is.EqualTo(0x40));
     }
 
-    [Fact]
+    [Test]
     public static void UnpreparedFileInformationSizeIs0x301()
     {
-        Assert.Equal(0x301, Unsafe.SizeOf<UnpreparedFileInformation>());
+        Assert.That(Unsafe.SizeOf<UnpreparedFileInformation>(), Is.EqualTo(0x301));
     }
 
-    [Fact]
+    [Test]
     public static void LazyLoadArgumentsSizeIs0x40()
     {
-        Assert.Equal(0x40, Unsafe.SizeOf<LazyLoadArguments>());
+        Assert.That(Unsafe.SizeOf<LazyLoadArguments>(), Is.EqualTo(0x40));
     }
 }

@@ -1,26 +1,26 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void GetEntryType_RootIsDirectory()
     {
         IFileSystem fs = CreateFileSystem();
 
-        Assert.Success(fs.GetEntryType(out DirectoryEntryType type, "/"u8));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetEntryType(out DirectoryEntryType type, "/"u8));
 
-        Assert.Equal(DirectoryEntryType.Directory, type);
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.Directory));
     }
 
-    [Fact]
+    [Test]
     public void GetEntryType_PathDoesNotExist_ReturnsPathNotFound()
     {
         IFileSystem fs = CreateFileSystem();
 
-        Assert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/path"u8));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, fs.GetEntryType(out _, "/path"u8));
     }
 }

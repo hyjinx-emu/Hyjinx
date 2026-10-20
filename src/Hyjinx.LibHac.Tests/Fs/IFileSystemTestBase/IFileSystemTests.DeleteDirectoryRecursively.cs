@@ -1,12 +1,12 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void DeleteDirectoryRecursively_DeletesDirectoryAndChildren()
     {
         IFileSystem fs = CreateFileSystem();
@@ -21,10 +21,10 @@ public abstract partial class IFileSystemTests
         Result resultDir2Type = fs.GetEntryType(out _, "/dir/dir2");
         Result resultFileType = fs.GetEntryType(out _, "/dir/file1");
 
-        Assert.Success(resultDelete);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDelete);
 
-        Assert.Result(ResultFs.PathNotFound, resultDir1Type);
-        Assert.Result(ResultFs.PathNotFound, resultDir2Type);
-        Assert.Result(ResultFs.PathNotFound, resultFileType);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultDir1Type);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultDir2Type);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultFileType);
     }
 }

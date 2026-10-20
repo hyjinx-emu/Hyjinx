@@ -1,29 +1,29 @@
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void RenameFile_SameParentDirectory_EntryIsRenamed()
     {
         IFileSystem fs = CreateFileSystem();
 
         fs.CreateFile("/file1", 0, CreateFileOptions.None);
 
-        Assert.Success(fs.RenameFile("/file1", "/file2"));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.RenameFile("/file1", "/file2"));
 
-        Assert.Success(fs.GetEntryType(out DirectoryEntryType type, "/file2"));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetEntryType(out DirectoryEntryType type, "/file2"));
         Result res = fs.GetEntryType(out _, "/file1");
 
-        Assert.Equal(DirectoryEntryType.File, type);
-        Assert.Result(ResultFs.PathNotFound, res);
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.File));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void RenameFile_DifferentParentDirectory_EntryIsRenamed()
     {
         IFileSystem fs = CreateFileSystem();
@@ -31,16 +31,16 @@ public abstract partial class IFileSystemTests
         fs.CreateFile("/file1", 0, CreateFileOptions.None);
         fs.CreateDirectory("/dir");
 
-        Assert.Success(fs.RenameFile("/file1", "/dir/file2"));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.RenameFile("/file1", "/dir/file2"));
 
-        Assert.Success(fs.GetEntryType(out DirectoryEntryType type, "/dir/file2"));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetEntryType(out DirectoryEntryType type, "/dir/file2"));
         Result res = fs.GetEntryType(out _, "/file1");
 
-        Assert.Equal(DirectoryEntryType.File, type);
-        Assert.Result(ResultFs.PathNotFound, res);
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.File));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void RenameFile_DestExistsAsFile_ReturnsPathAlreadyExists()
     {
         IFileSystem fs = CreateFileSystem();
@@ -50,10 +50,10 @@ public abstract partial class IFileSystemTests
 
         Result res = fs.RenameFile("/file1", "/file2");
 
-        Assert.Result(ResultFs.PathAlreadyExists, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathAlreadyExists, res);
     }
 
-    [Fact]
+    [Test]
     public void RenameFile_DestExistsAsDirectory_ReturnsPathAlreadyExists()
     {
         IFileSystem fs = CreateFileSystem();
@@ -63,10 +63,10 @@ public abstract partial class IFileSystemTests
 
         Result res = fs.RenameFile("/file", "/dir");
 
-        Assert.Result(ResultFs.PathAlreadyExists, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathAlreadyExists, res);
     }
 
-    [Fact]
+    [Test]
     public void RenameFile_DestExistsAsFile_FileSizesDoNotChange()
     {
         IFileSystem fs = CreateFileSystem();
@@ -79,17 +79,17 @@ public abstract partial class IFileSystemTests
         using var file1 = new UniqueRef<IFile>();
         using var file2 = new UniqueRef<IFile>();
 
-        Assert.Success(fs.OpenFile(ref file1.Ref, "/file1", OpenMode.Read));
-        Assert.Success(fs.OpenFile(ref file2.Ref, "/file2", OpenMode.Read));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenFile(ref file1.Ref, "/file1", OpenMode.Read));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenFile(ref file2.Ref, "/file2", OpenMode.Read));
 
-        Assert.Success(file1.Get.GetSize(out long file1Size));
-        Assert.Success(file2.Get.GetSize(out long file2Size));
+        LibHac.Tests.Fs.FsTestAssert.Success(file1.Get.GetSize(out long file1Size));
+        LibHac.Tests.Fs.FsTestAssert.Success(file2.Get.GetSize(out long file2Size));
 
-        Assert.Equal(54321, file1Size);
-        Assert.Equal(12345, file2Size);
+        Assert.That(file1Size, Is.EqualTo(54321));
+        Assert.That(file2Size, Is.EqualTo(12345));
     }
 
-    [Fact]
+    [Test]
     public void RenameFile_DataIsUnmodified()
     {
         byte[] data = { 7, 4, 1, 0, 8, 5, 2, 9, 6, 3 };
@@ -110,8 +110,8 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/renamed", OpenMode.Read);
         Result res = file.Get.Read(out long bytesRead, 0, readData, ReadOption.None);
 
-        Assert.Success(res);
-        Assert.Equal(data.Length, bytesRead);
-        Assert.Equal(data, readData);
+        LibHac.Tests.Fs.FsTestAssert.Success(res);
+        Assert.That(bytesRead, Is.EqualTo(data.Length));
+        Assert.That(readData, Is.EqualTo(data));
     }
 }

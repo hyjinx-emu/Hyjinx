@@ -1,13 +1,13 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.Fs.Shim;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.FileSystemClientTests.ShimTests;
 
 public class SaveData
 {
-    [Fact]
+    [Test]
     public void MountCacheStorage_CanMountCreatedCacheStorage()
     {
         var applicationId = new Ncm.ApplicationId(1);
@@ -15,10 +15,10 @@ public class SaveData
 
         fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, SaveDataFlags.None);
 
-        Assert.Success(fs.MountCacheStorage("cache"u8, applicationId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.MountCacheStorage("cache"u8, applicationId));
     }
 
-    [Fact]
+    [Test]
     public void MountCacheStorage_WrittenDataPersists()
     {
         var applicationId = new Ncm.ApplicationId(1);
@@ -31,19 +31,19 @@ public class SaveData
         fs.Commit("cache"u8);
         fs.Unmount("cache"u8);
 
-        Assert.Success(fs.MountCacheStorage("cache"u8, applicationId));
-        Assert.Success(fs.GetEntryType(out DirectoryEntryType type, "cache:/file"u8));
-        Assert.Equal(DirectoryEntryType.File, type);
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.MountCacheStorage("cache"u8, applicationId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetEntryType(out DirectoryEntryType type, "cache:/file"u8));
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.File));
     }
 
-    [Fact]
+    [Test]
     public void MountCacheStorage_SdCardIsPreferredOverBis()
     {
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.SdUser, applicationId.Value, 0, 0, SaveDataFlags.None));
-        Assert.Success(fs.MountCacheStorage("cache"u8, applicationId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.SdUser, applicationId.Value, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.MountCacheStorage("cache"u8, applicationId));
         fs.CreateFile("cache:/sd"u8, 0);
         fs.Commit("cache"u8);
         fs.Unmount("cache"u8);
@@ -59,8 +59,8 @@ public class SaveData
 
         fs.SetSdCardAccessibility(true);
 
-        Assert.Success(fs.MountCacheStorage("cache"u8, applicationId));
-        Assert.Success(fs.GetEntryType(out _, "cache:/sd"u8));
-        Assert.Failure(fs.GetEntryType(out _, "cache:/bis"u8));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.MountCacheStorage("cache"u8, applicationId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetEntryType(out _, "cache:/sd"u8));
+        LibHac.Tests.Fs.FsTestAssert.Failure(fs.GetEntryType(out _, "cache:/bis"u8));
     }
 }

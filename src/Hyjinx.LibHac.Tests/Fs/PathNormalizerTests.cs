@@ -3,13 +3,13 @@
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Util;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs;
 
 public class PathNormalizerTests
 {
-    public static TheoryData<string, bool, bool, bool, string, long, Result> TestData_Normalize => new()
+    public static NUnitTestCaseData<string, bool, bool, bool, string, long, Result> TestData_Normalize => new()
     {
         { @"/aa/bb/c/", false, true, false, @"/aa/bb/c", 8, Result.Success },
         { @"aa/bb/c/", false, false, false, @"", 0, ResultFs.InvalidPathFormat.Value },
@@ -51,8 +51,7 @@ public class PathNormalizerTests
         { @"/aa/bb\..", false, false, false, @"/aa", 3, Result.Success },
         { @"/aa\bb/../cc", false, false, false, @"/cc", 3, Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize))]
+    [TestCaseSource(nameof(TestData_Normalize))]
     public static void Normalize(string path, bool isWindowsPath, bool isDriveRelativePath, bool allowAllCharacters,
         string expectedNormalized, long expectedLength, Result expectedResult)
     {
@@ -61,12 +60,12 @@ public class PathNormalizerTests
         Result result = PathNormalizer.Normalize(buffer, out int normalizedLength, path.ToU8Span(), isWindowsPath,
             isDriveRelativePath, allowAllCharacters);
 
-        Assert.Equal(expectedResult, result);
-        Assert.Equal(expectedNormalized, StringUtils.Utf8ZToString(buffer));
-        Assert.Equal(expectedLength, normalizedLength);
+        Assert.That(result, Is.EqualTo(expectedResult));
+        Assert.That(StringUtils.Utf8ZToString(buffer), Is.EqualTo(expectedNormalized));
+        Assert.That(normalizedLength, Is.EqualTo(expectedLength));
     }
 
-    public static TheoryData<string, int, string, long, Result> TestData_Normalize_SmallBuffer => new()
+    public static NUnitTestCaseData<string, int, string, long, Result> TestData_Normalize_SmallBuffer => new()
     {
         { @"/aa/bb/cc/", 7, @"/aa/bb", 6, ResultFs.TooLongPath.Value },
         { @"/aa/bb/cc/", 8, @"/aa/bb/", 7, ResultFs.TooLongPath.Value },
@@ -86,20 +85,19 @@ public class PathNormalizerTests
         { @"/aa/bb", 3, @"/a", 2, ResultFs.TooLongPath.Value },
         { @"aa/bb", 1, @"", 0, ResultFs.InvalidPathFormat.Value }
     };
-
-    [Theory, MemberData(nameof(TestData_Normalize_SmallBuffer))]
+    [TestCaseSource(nameof(TestData_Normalize_SmallBuffer))]
     public static void Normalize_SmallBuffer(string path, int bufferLength, string expectedNormalized, long expectedLength, Result expectedResult)
     {
         byte[] buffer = new byte[bufferLength];
 
         Result result = PathNormalizer.Normalize(buffer, out int normalizedLength, path.ToU8Span(), false, false);
 
-        Assert.Equal(expectedResult, result);
-        Assert.Equal(expectedNormalized, StringUtils.Utf8ZToString(buffer));
-        Assert.Equal(expectedLength, normalizedLength);
+        Assert.That(result, Is.EqualTo(expectedResult));
+        Assert.That(StringUtils.Utf8ZToString(buffer), Is.EqualTo(expectedNormalized));
+        Assert.That(normalizedLength, Is.EqualTo(expectedLength));
     }
 
-    public static TheoryData<string, bool, bool, long, Result> TestData_IsNormalized => new()
+    public static NUnitTestCaseData<string, bool, bool, long, Result> TestData_IsNormalized => new()
     {
         { @"/aa/bb/c/", false, false, 9, Result.Success },
         { @"aa/bb/c/", false, false, 0, ResultFs.InvalidPathFormat.Value },
@@ -141,18 +139,17 @@ public class PathNormalizerTests
         { @"/aa/bb\..", false, true, 9, Result.Success },
         { @"/aa\bb/../cc", false, false, 0, Result.Success }
     };
-
-    [Theory, MemberData(nameof(TestData_IsNormalized))]
+    [TestCaseSource(nameof(TestData_IsNormalized))]
     public static void IsNormalized(string path, bool allowAllCharacters, bool expectedIsNormalized, long expectedLength, Result expectedResult)
     {
         Result result = PathNormalizer.IsNormalized(out bool isNormalized, out int length, path.ToU8Span(), allowAllCharacters);
 
-        Assert.Equal(expectedResult, result);
-        Assert.Equal(expectedLength, length);
+        Assert.That(result, Is.EqualTo(expectedResult));
+        Assert.That(length, Is.EqualTo(expectedLength));
 
         if (result.IsSuccess())
         {
-            Assert.Equal(expectedIsNormalized, isNormalized);
+            Assert.That(isNormalized, Is.EqualTo(expectedIsNormalized));
         }
     }
 }

@@ -1,23 +1,23 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void CreateDirectory_EntryIsAdded()
     {
         IFileSystem fs = CreateFileSystem();
 
         fs.CreateDirectory("/dir");
 
-        Assert.Success(fs.GetEntryType(out DirectoryEntryType type, "/dir"));
-        Assert.Equal(DirectoryEntryType.Directory, type);
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetEntryType(out DirectoryEntryType type, "/dir"));
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.Directory));
     }
 
-    [Fact]
+    [Test]
     public void CreateDirectory_DirectoryExists_ReturnsPathAlreadyExists()
     {
         IFileSystem fs = CreateFileSystem();
@@ -26,10 +26,10 @@ public abstract partial class IFileSystemTests
 
         Result res = fs.CreateDirectory("/dir");
 
-        Assert.Result(ResultFs.PathAlreadyExists, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathAlreadyExists, res);
     }
 
-    [Fact]
+    [Test]
     public void CreateDirectory_FileExists_ReturnsPathAlreadyExists()
     {
         IFileSystem fs = CreateFileSystem();
@@ -38,20 +38,20 @@ public abstract partial class IFileSystemTests
 
         Result res = fs.CreateDirectory("/file");
 
-        Assert.Result(ResultFs.PathAlreadyExists, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathAlreadyExists, res);
     }
 
-    [Fact]
+    [Test]
     public void CreateDirectory_ParentDoesNotExist_ReturnsPathNotFound()
     {
         IFileSystem fs = CreateFileSystem();
 
         Result res = fs.CreateFile("/dir1/dir2", 0, CreateFileOptions.None);
 
-        Assert.Result(ResultFs.PathNotFound, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void CreateDirectory_WithTrailingSeparator_EntryIsAdded()
     {
         IFileSystem fs = CreateFileSystem();
@@ -59,11 +59,11 @@ public abstract partial class IFileSystemTests
         fs.CreateDirectory("/dir/");
         Result res = fs.GetEntryType(out DirectoryEntryType type, "/dir/");
 
-        Assert.Success(res);
-        Assert.Equal(DirectoryEntryType.Directory, type);
+        LibHac.Tests.Fs.FsTestAssert.Success(res);
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.Directory));
     }
 
-    [Fact]
+    [Test]
     public void CreateDirectory_MultipleSiblings()
     {
         IFileSystem fs = CreateFileSystem();
@@ -74,13 +74,13 @@ public abstract partial class IFileSystemTests
         Result result1 = fs.GetEntryType(out DirectoryEntryType type1, "/dir1");
         Result result2 = fs.GetEntryType(out DirectoryEntryType type2, "/dir2");
 
-        Assert.Success(result1);
-        Assert.Success(result2);
-        Assert.Equal(DirectoryEntryType.Directory, type1);
-        Assert.Equal(DirectoryEntryType.Directory, type2);
+        LibHac.Tests.Fs.FsTestAssert.Success(result1);
+        LibHac.Tests.Fs.FsTestAssert.Success(result2);
+        Assert.That(type1, Is.EqualTo(DirectoryEntryType.Directory));
+        Assert.That(type2, Is.EqualTo(DirectoryEntryType.Directory));
     }
 
-    [Fact]
+    [Test]
     public void CreateDirectory_InChildDirectory()
     {
         IFileSystem fs = CreateFileSystem();
@@ -94,9 +94,9 @@ public abstract partial class IFileSystemTests
         Result result1 = fs.GetEntryType(out DirectoryEntryType type1, "/dir1/dir1a");
         Result result2 = fs.GetEntryType(out DirectoryEntryType type2, "/dir2/dir2a");
 
-        Assert.Success(result1);
-        Assert.Success(result2);
-        Assert.Equal(DirectoryEntryType.Directory, type1);
-        Assert.Equal(DirectoryEntryType.Directory, type2);
+        LibHac.Tests.Fs.FsTestAssert.Success(result1);
+        LibHac.Tests.Fs.FsTestAssert.Success(result2);
+        Assert.That(type1, Is.EqualTo(DirectoryEntryType.Directory));
+        Assert.That(type2, Is.EqualTo(DirectoryEntryType.Directory));
     }
 }

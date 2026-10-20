@@ -1,12 +1,12 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void RenameDirectory_EntriesAreMoved()
     {
         IFileSystem fs = CreateFileSystem();
@@ -17,15 +17,15 @@ public abstract partial class IFileSystemTests
         Result resultDir2 = fs.GetEntryType(out DirectoryEntryType dir2Type, "/dir2");
         Result resultDir1 = fs.GetEntryType(out _, "/dir1");
 
-        Assert.Success(resultRename);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultRename);
 
-        Assert.Success(resultDir2);
-        Assert.Equal(DirectoryEntryType.Directory, dir2Type);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDir2);
+        Assert.That(dir2Type, Is.EqualTo(DirectoryEntryType.Directory));
 
-        Assert.Result(ResultFs.PathNotFound, resultDir1);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultDir1);
     }
 
-    [Fact]
+    [Test]
     public void RenameDirectory_HasChildren_NewChildPathExists()
     {
         IFileSystem fs = CreateFileSystem();
@@ -46,22 +46,22 @@ public abstract partial class IFileSystemTests
         Result resultDirCOld = fs.GetEntryType(out _, "/dir1/dirC");
         Result resultFile1Old = fs.GetEntryType(out _, "/dir1/file1");
 
-        Assert.Success(resultRename);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultRename);
 
-        Assert.Success(resultDir2);
-        Assert.Success(resultDirC);
-        Assert.Success(resultFile1);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDir2);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDirC);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultFile1);
 
-        Assert.Equal(DirectoryEntryType.Directory, dir2Type);
-        Assert.Equal(DirectoryEntryType.Directory, dir1CType);
-        Assert.Equal(DirectoryEntryType.File, file1Type);
+        Assert.That(dir2Type, Is.EqualTo(DirectoryEntryType.Directory));
+        Assert.That(dir1CType, Is.EqualTo(DirectoryEntryType.Directory));
+        Assert.That(file1Type, Is.EqualTo(DirectoryEntryType.File));
 
-        Assert.Result(ResultFs.PathNotFound, resultDir1);
-        Assert.Result(ResultFs.PathNotFound, resultDirCOld);
-        Assert.Result(ResultFs.PathNotFound, resultFile1Old);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultDir1);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultDirCOld);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultFile1Old);
     }
 
-    [Fact]
+    [Test]
     public void RenameDirectory_DestHasDifferentParentDirectory()
     {
         IFileSystem fs = CreateFileSystem();
@@ -75,16 +75,16 @@ public abstract partial class IFileSystemTests
         Result resultDir2 = fs.GetEntryType(out DirectoryEntryType dir2Type, "/parent2/dir2");
         Result resultDir1 = fs.GetEntryType(out _, "/parent1/dir1");
 
-        Assert.Success(resultRename);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultRename);
 
-        Assert.Equal(Result.Success, resultDir2);
-        Assert.Success(resultDir2);
-        Assert.Equal(DirectoryEntryType.Directory, dir2Type);
+        Assert.That(resultDir2, Is.EqualTo(Result.Success));
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDir2);
+        Assert.That(dir2Type, Is.EqualTo(DirectoryEntryType.Directory));
 
-        Assert.Result(ResultFs.PathNotFound, resultDir1);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultDir1);
     }
 
-    [Fact]
+    [Test]
     public void RenameDirectory_DestExists_ReturnsPathAlreadyExists()
     {
         IFileSystem fs = CreateFileSystem();
@@ -97,11 +97,11 @@ public abstract partial class IFileSystemTests
         Result resultDir1 = fs.GetEntryType(out DirectoryEntryType dir1Type, "/dir1");
         Result resultDir2 = fs.GetEntryType(out DirectoryEntryType dir2Type, "/dir2");
 
-        Assert.Result(ResultFs.PathAlreadyExists, resultRename);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathAlreadyExists, resultRename);
 
-        Assert.Success(resultDir1);
-        Assert.Success(resultDir2);
-        Assert.Equal(DirectoryEntryType.Directory, dir1Type);
-        Assert.Equal(DirectoryEntryType.Directory, dir2Type);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDir1);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDir2);
+        Assert.That(dir1Type, Is.EqualTo(DirectoryEntryType.Directory));
+        Assert.That(dir2Type, Is.EqualTo(DirectoryEntryType.Directory));
     }
 }

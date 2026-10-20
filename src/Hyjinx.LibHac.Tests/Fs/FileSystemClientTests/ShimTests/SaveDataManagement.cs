@@ -6,20 +6,20 @@ using LibHac.Ncm;
 using LibHac.Time;
 using System;
 using System.Linq;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Fs.SaveData;
 
 namespace LibHac.Tests.Fs.FileSystemClientTests.ShimTests;
 
 public class SaveDataManagement
 {
-    [Fact]
+    [Test]
     public void CreateCacheStorage_InUserSaveSpace_StorageIsCreated()
     {
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, SaveDataFlags.None));
 
         using var iterator = new UniqueRef<SaveDataIterator>();
         fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User);
@@ -27,17 +27,17 @@ public class SaveDataManagement
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
-        Assert.Equal(applicationId, info[0].ProgramId);
+        Assert.That(entriesRead, Is.EqualTo(1));
+        Assert.That(info[0].ProgramId, Is.EqualTo((Ncm.ProgramId)applicationId));
     }
 
-    [Fact]
+    [Test]
     public void CreateCacheStorage_InSdCacheSaveSpace_StorageIsCreated()
     {
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.SdUser, applicationId.Value, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.SdUser, applicationId.Value, 0, 0, SaveDataFlags.None));
 
         using var iterator = new UniqueRef<SaveDataIterator>();
         fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.SdUser);
@@ -45,37 +45,37 @@ public class SaveDataManagement
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
-        Assert.Equal(applicationId, info[0].ProgramId);
+        Assert.That(entriesRead, Is.EqualTo(1));
+        Assert.That(info[0].ProgramId, Is.EqualTo((Ncm.ProgramId)applicationId));
     }
 
-    [Fact]
+    [Test]
     public void CreateCacheStorage_InSdCacheSaveSpaceWhenNoSdCard_ReturnsSdCardNotFound()
     {
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(false);
 
-        Assert.Result(ResultFs.PortSdCardNoDevice, fs.CreateCacheStorage(applicationId, SaveDataSpaceId.SdUser, applicationId.Value, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PortSdCardNoDevice, fs.CreateCacheStorage(applicationId, SaveDataSpaceId.SdUser, applicationId.Value, 0, 0, SaveDataFlags.None));
     }
 
-    [Fact]
+    [Test]
     public void CreateCacheStorage_AlreadyExists_ReturnsPathAlreadyExists()
     {
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, SaveDataFlags.None));
-        Assert.Result(ResultFs.PathAlreadyExists, fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathAlreadyExists, fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, SaveDataFlags.None));
     }
 
-    [Fact]
+    [Test]
     public void CreateCacheStorage_WithIndex_CreatesMultiple()
     {
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, 0, SaveDataFlags.None));
-        Assert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 1, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 1, 0, 0, SaveDataFlags.None));
 
         using var iterator = new UniqueRef<SaveDataIterator>();
         fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User);
@@ -83,23 +83,23 @@ public class SaveDataManagement
         var info = new SaveDataInfo[3];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(2, entriesRead);
-        Assert.Equal(applicationId, info[0].ProgramId);
-        Assert.Equal(applicationId, info[1].ProgramId);
+        Assert.That(entriesRead, Is.EqualTo(2));
+        Assert.That(info[0].ProgramId, Is.EqualTo((Ncm.ProgramId)applicationId));
+        Assert.That(info[1].ProgramId, Is.EqualTo((Ncm.ProgramId)applicationId));
 
         ushort[] expectedIndexes = { 0, 1 };
         ushort[] actualIndexes = info.Take(2).Select(x => x.Index).OrderBy(x => x).ToArray();
 
-        Assert.Equal(expectedIndexes, actualIndexes);
+        Assert.That(actualIndexes, Is.EqualTo(expectedIndexes));
     }
 
-    [Fact]
+    [Test]
     public void CreateBcatSaveData_DoesNotExist_SaveIsCreated()
     {
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateBcatSaveData(applicationId, 0x400000));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateBcatSaveData(applicationId, 0x400000));
 
         using var iterator = new UniqueRef<SaveDataIterator>();
         fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User);
@@ -107,22 +107,22 @@ public class SaveDataManagement
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
-        Assert.Equal(applicationId, info[0].ProgramId);
-        Assert.Equal(SaveDataType.Bcat, info[0].Type);
+        Assert.That(entriesRead, Is.EqualTo(1));
+        Assert.That(info[0].ProgramId, Is.EqualTo((Ncm.ProgramId)applicationId));
+        Assert.That(info[0].Type, Is.EqualTo(SaveDataType.Bcat));
     }
 
-    [Fact]
+    [Test]
     public void CreateBcatSaveData_AlreadyExists_ReturnsPathAlreadyExists()
     {
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateBcatSaveData(applicationId, 0x400000));
-        Assert.Result(ResultFs.PathAlreadyExists, fs.CreateBcatSaveData(applicationId, 0x400000));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateBcatSaveData(applicationId, 0x400000));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathAlreadyExists, fs.CreateBcatSaveData(applicationId, 0x400000));
     }
 
-    [Fact]
+    [Test]
     public void CreateSystemSaveData_DoesNotExist_SaveIsCreatedInSystem()
     {
         ulong saveId = 0x8000000001234000;
@@ -130,26 +130,24 @@ public class SaveDataManagement
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
         // Create the save
-        Assert.Success(fs.CreateSystemSaveData(saveId, 0x1000, 0x1000, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSystemSaveData(saveId, 0x1000, 0x1000, SaveDataFlags.None));
 
         // Make sure it was placed in the System save space with the right info.
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.System));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.System));
 
         var info = new SaveDataInfo[2];
-        Assert.Success(iterator.Get.ReadSaveDataInfo(out long entriesRead, info));
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long entriesRead, info));
 
-        Assert.Equal(1, entriesRead);
-        Assert.Equal(SaveDataType.System, info[0].Type);
-        Assert.Equal(SaveDataSpaceId.System, info[0].SpaceId);
-        Assert.Equal(saveId, info[0].StaticSaveDataId);
-        Assert.Equal(saveId, info[0].SaveDataId);
-        Assert.Equal(SaveDataState.Normal, info[0].State);
+        Assert.That(entriesRead, Is.EqualTo(1));
+        Assert.That(info[0].Type, Is.EqualTo(SaveDataType.System));
+        Assert.That(info[0].SpaceId, Is.EqualTo(SaveDataSpaceId.System));
+        Assert.That(info[0].StaticSaveDataId, Is.EqualTo(saveId));
+        Assert.That(info[0].SaveDataId, Is.EqualTo(saveId));
+        Assert.That(info[0].State, Is.EqualTo(SaveDataState.Normal));
     }
-
-    [Theory]
-    [InlineData(AccessControlBits.Bits.SystemSaveData)]
-    [InlineData(AccessControlBits.Bits.None)]
+    [TestCase(AccessControlBits.Bits.SystemSaveData)]
+    [TestCase(AccessControlBits.Bits.None)]
     public void CreateSystemSaveData_HasBuiltInSystemPermission_SaveIsCreatedInSystem(AccessControlBits.Bits permissions)
     {
         ulong saveId = 0x8000000001234000;
@@ -166,31 +164,31 @@ public class SaveDataManagement
         // Create the save
         if (permissions.HasFlag(AccessControlBits.Bits.SystemSaveData))
         {
-            Assert.Success(client.Fs.CreateSystemSaveData(saveId, 0x1000, 0x1000, SaveDataFlags.None));
+            LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.CreateSystemSaveData(saveId, 0x1000, 0x1000, SaveDataFlags.None));
         }
         else
         {
             // Creation should fail if we don't have the right permissions.
-            Assert.Failure(client.Fs.CreateSystemSaveData(saveId, 0x1000, 0x1000, SaveDataFlags.None));
+            LibHac.Tests.Fs.FsTestAssert.Failure(client.Fs.CreateSystemSaveData(saveId, 0x1000, 0x1000, SaveDataFlags.None));
             return;
         }
 
         // Make sure it was placed in the System save space with the right info.
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(privilegedClient.Fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.System));
+        LibHac.Tests.Fs.FsTestAssert.Success(privilegedClient.Fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.System));
 
         var info = new SaveDataInfo[2];
-        Assert.Success(iterator.Get.ReadSaveDataInfo(out long entriesRead, info));
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long entriesRead, info));
 
-        Assert.Equal(1, entriesRead);
-        Assert.Equal(SaveDataType.System, info[0].Type);
-        Assert.Equal(SaveDataSpaceId.System, info[0].SpaceId);
-        Assert.Equal(saveId, info[0].StaticSaveDataId);
-        Assert.Equal(saveId, info[0].SaveDataId);
-        Assert.Equal(SaveDataState.Normal, info[0].State);
+        Assert.That(entriesRead, Is.EqualTo(1));
+        Assert.That(info[0].Type, Is.EqualTo(SaveDataType.System));
+        Assert.That(info[0].SpaceId, Is.EqualTo(SaveDataSpaceId.System));
+        Assert.That(info[0].StaticSaveDataId, Is.EqualTo(saveId));
+        Assert.That(info[0].SaveDataId, Is.EqualTo(saveId));
+        Assert.That(info[0].State, Is.EqualTo(SaveDataState.Normal));
     }
 
-    [Fact]
+    [Test]
     public void CreateSaveData_DoesNotExist_SaveIsCreated()
     {
         var applicationId = new Ncm.ApplicationId(1);
@@ -198,21 +196,21 @@ public class SaveDataManagement
 
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, SaveDataFlags.None));
 
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
-        Assert.Equal(applicationId, info[0].ProgramId);
-        Assert.Equal(SaveDataType.Account, info[0].Type);
-        Assert.Equal(userId, info[0].UserId);
+        Assert.That(entriesRead, Is.EqualTo(1));
+        Assert.That(info[0].ProgramId, Is.EqualTo((Ncm.ProgramId)applicationId));
+        Assert.That(info[0].Type, Is.EqualTo(SaveDataType.Account));
+        Assert.That(info[0].UserId, Is.EqualTo(userId));
     }
 
-    [Fact]
+    [Test]
     public void CreateSaveData_DoesNotExist_HasCorrectOwnerId()
     {
         uint ownerId = 1;
@@ -223,24 +221,24 @@ public class SaveDataManagement
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
         // Create the save
-        Assert.Success(fs.CreateSaveData(applicationId, userId, ownerId, 0x1000, 0x1000, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSaveData(applicationId, userId, ownerId, 0x1000, 0x1000, SaveDataFlags.None));
 
         // Get the created save data's ID
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
+        Assert.That(entriesRead, Is.EqualTo(1));
 
         // Get the created save data's owner ID
-        Assert.Success(fs.GetSaveDataOwnerId(out ulong actualOwnerId, info[0].SaveDataId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetSaveDataOwnerId(out ulong actualOwnerId, info[0].SaveDataId));
 
-        Assert.Equal(ownerId, actualOwnerId);
+        Assert.That(actualOwnerId, Is.EqualTo(ownerId));
     }
 
-    [Fact]
+    [Test]
     public void CreateSaveData_DoesNotExist_HasCorrectFlags()
     {
         SaveDataFlags flags = SaveDataFlags.KeepAfterRefurbishment | SaveDataFlags.NeedsSecureDelete;
@@ -251,24 +249,24 @@ public class SaveDataManagement
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
         // Create the save
-        Assert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, flags));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, flags));
 
         // Get the created save data's ID
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
+        Assert.That(entriesRead, Is.EqualTo(1));
 
         // Get the created save data's flags
-        Assert.Success(fs.GetSaveDataFlags(out SaveDataFlags actualFlags, info[0].SaveDataId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetSaveDataFlags(out SaveDataFlags actualFlags, info[0].SaveDataId));
 
-        Assert.Equal(flags, actualFlags);
+        Assert.That(actualFlags, Is.EqualTo(flags));
     }
 
-    [Fact]
+    [Test]
     public void CreateSaveData_DoesNotExist_HasCorrectSizes()
     {
         long availableSize = 0x220000;
@@ -280,26 +278,26 @@ public class SaveDataManagement
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
         // Create the save
-        Assert.Success(fs.CreateSaveData(applicationId, userId, 0, availableSize, journalSize, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSaveData(applicationId, userId, 0, availableSize, journalSize, SaveDataFlags.None));
 
         // Get the created save data's ID
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
+        Assert.That(entriesRead, Is.EqualTo(1));
 
         // Get the created save data's sizes
-        Assert.Success(fs.GetSaveDataAvailableSize(out long actualAvailableSize, info[0].SaveDataId));
-        Assert.Success(fs.GetSaveDataJournalSize(out long actualJournalSize, info[0].SaveDataId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetSaveDataAvailableSize(out long actualAvailableSize, info[0].SaveDataId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetSaveDataJournalSize(out long actualJournalSize, info[0].SaveDataId));
 
-        Assert.Equal(availableSize, actualAvailableSize);
-        Assert.Equal(journalSize, actualJournalSize);
+        Assert.That(actualAvailableSize, Is.EqualTo(availableSize));
+        Assert.That(actualJournalSize, Is.EqualTo(journalSize));
     }
 
-    [Fact]
+    [Test]
     public void CreateSaveData_FromSubProgram_CreatesSaveDataForMainProgram()
     {
         Horizon hos = FileSystemServerFactory.CreateHorizonServer();
@@ -321,24 +319,24 @@ public class SaveDataManagement
             hos.CreateHorizonClient(new ProgramLocation(programId, StorageId.BuiltInUser),
                 AccessControlBits.Bits.CreateSaveData);
 
-        Assert.Success(client.Fs.RegisterProgramIndexMapInfo(mapInfo));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.RegisterProgramIndexMapInfo(mapInfo));
 
-        Assert.Success(subProgramClient.Fs.CreateSaveData(Ncm.ApplicationId.InvalidId, InvalidUserId, 0, 0x4000,
+        LibHac.Tests.Fs.FsTestAssert.Success(subProgramClient.Fs.CreateSaveData(Ncm.ApplicationId.InvalidId, InvalidUserId, 0, 0x4000,
             0x4000, SaveDataFlags.None));
 
         // Get the created save data's ID
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(client.Fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
+        Assert.That(entriesRead, Is.EqualTo(1));
 
-        Assert.Equal(mainProgramId, info[0].ProgramId);
+        Assert.That(info[0].ProgramId, Is.EqualTo((Ncm.ProgramId)mainProgramId));
     }
 
-    [Fact]
+    [Test]
     public void CreateTemporaryStorage_DoesNotExist_SaveIsCreated()
     {
         long availableSize = 0x220000;
@@ -346,7 +344,7 @@ public class SaveDataManagement
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateTemporaryStorage(applicationId, 0, availableSize, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateTemporaryStorage(applicationId, 0, availableSize, SaveDataFlags.None));
 
         using var iterator = new UniqueRef<SaveDataIterator>();
         fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.Temporary);
@@ -354,30 +352,30 @@ public class SaveDataManagement
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
-        Assert.Equal(applicationId, info[0].ProgramId);
-        Assert.Equal(SaveDataType.Temporary, info[0].Type);
+        Assert.That(entriesRead, Is.EqualTo(1));
+        Assert.That(info[0].ProgramId, Is.EqualTo((Ncm.ProgramId)applicationId));
+        Assert.That(info[0].Type, Is.EqualTo(SaveDataType.Temporary));
     }
 
-    [Fact]
+    [Test]
     public void CreateTemporaryStorage_AlreadyExists_ReturnsPathAlreadyExists()
     {
         var applicationId = new Ncm.ApplicationId(1);
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.CreateTemporaryStorage(applicationId, 0, 0x400000, SaveDataFlags.None));
-        Assert.Result(ResultFs.PathAlreadyExists, fs.CreateTemporaryStorage(applicationId, 0, 0x400000, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateTemporaryStorage(applicationId, 0, 0x400000, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathAlreadyExists, fs.CreateTemporaryStorage(applicationId, 0, 0x400000, SaveDataFlags.None));
     }
 
-    [Fact]
+    [Test]
     public void DeleteSaveData_DoesNotExist_ReturnsTargetNotFound()
     {
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Result(ResultFs.TargetNotFound, fs.DeleteSaveData(1));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.TargetNotFound, fs.DeleteSaveData(1));
     }
 
-    [Fact]
+    [Test]
     public void DeleteSaveData_SaveExistsInUserSaveSpace_SaveIsDeleted()
     {
         var applicationId = new Ncm.ApplicationId(1);
@@ -386,31 +384,29 @@ public class SaveDataManagement
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
         // Create the save
-        Assert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, SaveDataFlags.None));
 
         // Get the ID of the save
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         var info = new SaveDataInfo[1];
-        Assert.Success(iterator.Get.ReadSaveDataInfo(out _, info));
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out _, info));
 
         // Delete the save
-        Assert.Success(fs.DeleteSaveData(info[0].SaveDataId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.DeleteSaveData(info[0].SaveDataId));
 
         // Iterate saves again
         using var iterator2 = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator2.Ref, SaveDataSpaceId.User));
-        Assert.Success(iterator2.Get.ReadSaveDataInfo(out long entriesRead, info));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator2.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator2.Get.ReadSaveDataInfo(out long entriesRead, info));
 
         // Make sure no saves were returned
-        Assert.Equal(0, entriesRead);
+        Assert.That(entriesRead, Is.EqualTo(0));
     }
-
-    [Theory]
-    [InlineData(2, 3, 2)]
-    [InlineData(3, 3, 4)]
-    [InlineData(5, 3, 5)]
+    [TestCase((int)(2), (int)(3), (int)(2))]
+    [TestCase((int)(3), (int)(3), (int)(4))]
+    [TestCase((int)(5), (int)(3), (int)(5))]
     public void DeleteSaveData_SaveDataIteratorsAreOpen_IteratorsPointToSameEntry(int nextEntryWhenRemoving,
         int entryToRemove, int expectedNextEntry)
     {
@@ -419,30 +415,28 @@ public class SaveDataManagement
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
         // Create saves
-        Assert.Success(PopulateSaveData(fs, count));
+        LibHac.Tests.Fs.FsTestAssert.Success(PopulateSaveData(fs, count));
 
         // Open an iterator
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         // Skip ahead a few entries. Entries start counting at 1, so subtract 1
         var infos = new SaveDataInfo[nextEntryWhenRemoving - 1];
-        Assert.Success(iterator.Get.ReadSaveDataInfo(out long readCount, infos));
-        Assert.Equal(infos.Length, readCount);
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long readCount, infos));
+        Assert.That(readCount, Is.EqualTo(infos.Length));
 
         // Delete the save
-        Assert.Success(fs.DeleteSaveData(SaveDataSpaceId.User, (ulong)entryToRemove));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.DeleteSaveData(SaveDataSpaceId.User, (ulong)entryToRemove));
 
         // Check the program ID of the next entry
-        Assert.Success(iterator.Get.ReadSaveDataInfo(out long readCount2, infos.AsSpan(0, 1)));
-        Assert.Equal(1, readCount2);
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long readCount2, infos.AsSpan(0, 1)));
+        Assert.That(readCount2, Is.EqualTo(1));
 
-        Assert.Equal((ulong)expectedNextEntry, infos[0].ProgramId.Value);
+        Assert.That(infos[0].ProgramId.Value, Is.EqualTo((ulong)expectedNextEntry));
     }
-
-    [Theory]
-    [InlineData(6, 7, 6)]
-    [InlineData(8, 7, 8)]
+    [TestCase((int)(6), (int)(7), (int)(6))]
+    [TestCase((int)(8), (int)(7), (int)(8))]
     public void CreateSaveData_SaveDataIteratorsAreOpen_IteratorsPointToSameEntry(int nextEntryWhenAdding,
         int entryToAdd, int expectedNextEntry)
     {
@@ -455,31 +449,31 @@ public class SaveDataManagement
         // Create saves
         for (int i = 0; i < count * 2; i++)
         {
-            Assert.Success(fs.CreateSystemSaveData(SaveDataSpaceId.User, ((ulong)i * 2) | mask, 0, 0x4000,
+            LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSystemSaveData(SaveDataSpaceId.User, ((ulong)i * 2) | mask, 0, 0x4000,
                 0x4000, SaveDataFlags.None));
         }
 
         // Open an iterator
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         // Skip ahead a few entries. We skipped 0 and added every other ID, so divide by 2 and subtract 1
         var infos = new SaveDataInfo[nextEntryWhenAdding / 2 - 1];
-        Assert.Success(iterator.Get.ReadSaveDataInfo(out long readCount, infos));
-        Assert.Equal(infos.Length, readCount);
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long readCount, infos));
+        Assert.That(readCount, Is.EqualTo(infos.Length));
 
         // Create the save
-        Assert.Success(fs.CreateSystemSaveData(SaveDataSpaceId.User, (uint)entryToAdd | mask, (ulong)entryToAdd, 0x4000,
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSystemSaveData(SaveDataSpaceId.User, (uint)entryToAdd | mask, (ulong)entryToAdd, 0x4000,
             0x4000, SaveDataFlags.None));
 
         // Check the save ID of the next entry
-        Assert.Success(iterator.Get.ReadSaveDataInfo(out long readCount2, infos.AsSpan(0, 1)));
-        Assert.Equal(1, readCount2);
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long readCount2, infos.AsSpan(0, 1)));
+        Assert.That(readCount2, Is.EqualTo(1));
 
-        Assert.Equal((uint)expectedNextEntry | mask, infos[0].SaveDataId);
+        Assert.That(infos[0].SaveDataId, Is.EqualTo((uint)expectedNextEntry | mask));
     }
 
-    [Fact]
+    [Test]
     public void OpenSaveDataIterator_MultipleSavesExist_IteratorReturnsSavesInOrder()
     {
         const int count = 20;
@@ -487,26 +481,26 @@ public class SaveDataManagement
 
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(PopulateSaveData(fs, count, rngSeed));
+        LibHac.Tests.Fs.FsTestAssert.Success(PopulateSaveData(fs, count, rngSeed));
 
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         var info = new SaveDataInfo();
         for (int i = 0; i < count; i++)
         {
-            Assert.Success(iterator.Get.ReadSaveDataInfo(out long readCount, SpanHelpers.AsSpan(ref info)));
+            LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long readCount, SpanHelpers.AsSpan(ref info)));
 
-            Assert.Equal(1, readCount);
-            Assert.Equal((ulong)i, info.ProgramId.Value);
+            Assert.That(readCount, Is.EqualTo(1));
+            Assert.That(info.ProgramId.Value, Is.EqualTo((ulong)i));
         }
 
-        Assert.Success(iterator.Get.ReadSaveDataInfo(out long readCountFinal, SpanHelpers.AsSpan(ref info)));
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long readCountFinal, SpanHelpers.AsSpan(ref info)));
 
-        Assert.Equal(0, readCountFinal);
+        Assert.That(readCountFinal, Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public void ReadSaveDataInfo_WhenFilteringSavesByUserId_IteratorReturnsAllMatchingSaves()
     {
         const int count = 10;
@@ -520,37 +514,37 @@ public class SaveDataManagement
         for (int i = 1; i <= countUser1; i++)
         {
             var applicationId = new Ncm.ApplicationId((uint)i);
-            Assert.Success(fs.CreateSaveData(applicationId, user1Id, 0, 0x4000, 0x4000, SaveDataFlags.None));
+            LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSaveData(applicationId, user1Id, 0, 0x4000, 0x4000, SaveDataFlags.None));
         }
 
         for (int i = countUser1 + 1; i <= count; i++)
         {
             var applicationId = new Ncm.ApplicationId((uint)i);
-            Assert.Success(fs.CreateSaveData(applicationId, user2Id, 0, 0x4000, 0x4000, SaveDataFlags.None));
+            LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSaveData(applicationId, user2Id, 0, 0x4000, 0x4000, SaveDataFlags.None));
         }
 
-        Assert.Success(SaveDataFilter.Make(out SaveDataFilter filter, programId: default, saveType: default, user2Id,
+        LibHac.Tests.Fs.FsTestAssert.Success(SaveDataFilter.Make(out SaveDataFilter filter, programId: default, saveType: default, user2Id,
             saveDataId: default, index: default));
 
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User, in filter));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User, in filter));
 
         var info = new SaveDataInfo();
         for (int i = countUser1 + 1; i <= count; i++)
         {
-            Assert.Success(iterator.Get.ReadSaveDataInfo(out long readCount, SpanHelpers.AsSpan(ref info)));
+            LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long readCount, SpanHelpers.AsSpan(ref info)));
 
-            Assert.Equal(1, readCount);
-            Assert.Equal((ulong)i, info.ProgramId.Value);
-            Assert.Equal(user2Id, info.UserId);
+            Assert.That(readCount, Is.EqualTo(1));
+            Assert.That(info.ProgramId.Value, Is.EqualTo((ulong)i));
+            Assert.That(info.UserId, Is.EqualTo(user2Id));
         }
 
-        Assert.Success(iterator.Get.ReadSaveDataInfo(out long readCountFinal, SpanHelpers.AsSpan(ref info)));
+        LibHac.Tests.Fs.FsTestAssert.Success(iterator.Get.ReadSaveDataInfo(out long readCountFinal, SpanHelpers.AsSpan(ref info)));
 
-        Assert.Equal(0, readCountFinal);
+        Assert.That(readCountFinal, Is.EqualTo(0));
     }
 
-    [Fact]
+    [Test]
     public void GetSaveDataCommitId_AfterSetSaveDataCommitIdIsCalled_ReturnsSetCommitId()
     {
         long commitId = 46506854;
@@ -561,26 +555,26 @@ public class SaveDataManagement
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
         // Create the save
-        Assert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, SaveDataFlags.None));
 
         // Get the created save data's ID
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
+        Assert.That(entriesRead, Is.EqualTo(1));
 
         // Set the new commit ID
-        Assert.Success(fs.SetSaveDataCommitId(info[0].SpaceId, info[0].SaveDataId, commitId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetSaveDataCommitId(info[0].SpaceId, info[0].SaveDataId, commitId));
 
-        Assert.Success(fs.GetSaveDataCommitId(out long actualCommitId, info[0].SpaceId, info[0].SaveDataId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetSaveDataCommitId(out long actualCommitId, info[0].SpaceId, info[0].SaveDataId));
 
-        Assert.Equal(commitId, actualCommitId);
+        Assert.That(actualCommitId, Is.EqualTo(commitId));
     }
 
-    [Fact]
+    [Test]
     public void GetSaveDataTimeStamp_AfterSetSaveDataTimeStampIsCalled_ReturnsSetTimeStamp()
     {
         var timeStamp = new PosixTime(12345678);
@@ -591,26 +585,26 @@ public class SaveDataManagement
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
         // Create the save
-        Assert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.CreateSaveData(applicationId, userId, 0, 0x1000, 0x1000, SaveDataFlags.None));
 
         // Get the created save data's ID
         using var iterator = new UniqueRef<SaveDataIterator>();
-        Assert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.OpenSaveDataIterator(ref iterator.Ref, SaveDataSpaceId.User));
 
         var info = new SaveDataInfo[2];
         iterator.Get.ReadSaveDataInfo(out long entriesRead, info);
 
-        Assert.Equal(1, entriesRead);
+        Assert.That(entriesRead, Is.EqualTo(1));
 
         // Set the new timestamp
-        Assert.Success(fs.SetSaveDataTimeStamp(info[0].SpaceId, info[0].SaveDataId, timeStamp));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetSaveDataTimeStamp(info[0].SpaceId, info[0].SaveDataId, timeStamp));
 
-        Assert.Success(fs.GetSaveDataTimeStamp(out PosixTime actualTimeStamp, info[0].SpaceId, info[0].SaveDataId));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.GetSaveDataTimeStamp(out PosixTime actualTimeStamp, info[0].SpaceId, info[0].SaveDataId));
 
-        Assert.Equal(timeStamp, actualTimeStamp);
+        Assert.That(actualTimeStamp, Is.EqualTo(timeStamp));
     }
 
-    [Fact]
+    [Test]
     public void OpenCacheStorageList_ReadIntoLargeBuffer_AllIndexesAreRead()
     {
         var applicationId = new Ncm.ApplicationId(1);
@@ -620,27 +614,27 @@ public class SaveDataManagement
         HorizonClient client = hos.CreateHorizonClient(new ProgramLocation(applicationId, StorageId.BuiltInSystem),
             (AccessControlBits.Bits)ulong.MaxValue);
 
-        Assert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, 0, SaveDataFlags.None));
-        Assert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 6, 0, 0, SaveDataFlags.None));
-        Assert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 2, 0, 0, SaveDataFlags.None));
-        Assert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 3, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 6, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 2, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 3, 0, 0, SaveDataFlags.None));
 
-        Assert.Success(client.Fs.OpenCacheStorageList(out CacheStorageListHandle handle));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.OpenCacheStorageList(out CacheStorageListHandle handle));
         var infoBuffer = new CacheStorageInfo[5];
 
-        Assert.Success(client.Fs.ReadCacheStorageList(out int readCount, infoBuffer, handle));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.ReadCacheStorageList(out int readCount, infoBuffer, handle));
 
-        Assert.Equal(4, readCount);
+        Assert.That(readCount, Is.EqualTo(4));
 
-        Assert.Equal(0, infoBuffer[0].Index);
-        Assert.Equal(2, infoBuffer[1].Index);
-        Assert.Equal(3, infoBuffer[2].Index);
-        Assert.Equal(6, infoBuffer[3].Index);
+        Assert.That(infoBuffer[0].Index, Is.EqualTo(0));
+        Assert.That(infoBuffer[1].Index, Is.EqualTo(2));
+        Assert.That(infoBuffer[2].Index, Is.EqualTo(3));
+        Assert.That(infoBuffer[3].Index, Is.EqualTo(6));
 
         client.Fs.CloseCacheStorageList(handle);
     }
 
-    [Fact]
+    [Test]
     public void OpenCacheStorageList_ReadIntoMultipleBuffers_AllIndexesAreRead()
     {
         var applicationId = new Ncm.ApplicationId(1);
@@ -650,29 +644,29 @@ public class SaveDataManagement
         HorizonClient client = hos.CreateHorizonClient(new ProgramLocation(applicationId, StorageId.BuiltInSystem),
             (AccessControlBits.Bits)ulong.MaxValue);
 
-        Assert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, 0, SaveDataFlags.None));
-        Assert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 6, 0, 0, SaveDataFlags.None));
-        Assert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 2, 0, 0, SaveDataFlags.None));
-        Assert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 3, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 0, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 6, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 2, 0, 0, SaveDataFlags.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.CreateCacheStorage(applicationId, SaveDataSpaceId.User, applicationId.Value, 3, 0, 0, SaveDataFlags.None));
 
-        Assert.Success(client.Fs.OpenCacheStorageList(out CacheStorageListHandle handle));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.OpenCacheStorageList(out CacheStorageListHandle handle));
         var infoBuffer = new CacheStorageInfo[2];
 
-        Assert.Success(client.Fs.ReadCacheStorageList(out int readCount, infoBuffer, handle));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.ReadCacheStorageList(out int readCount, infoBuffer, handle));
 
-        Assert.Equal(2, readCount);
-        Assert.Equal(0, infoBuffer[0].Index);
-        Assert.Equal(2, infoBuffer[1].Index);
+        Assert.That(readCount, Is.EqualTo(2));
+        Assert.That(infoBuffer[0].Index, Is.EqualTo(0));
+        Assert.That(infoBuffer[1].Index, Is.EqualTo(2));
 
-        Assert.Success(client.Fs.ReadCacheStorageList(out readCount, infoBuffer, handle));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.ReadCacheStorageList(out readCount, infoBuffer, handle));
 
-        Assert.Equal(2, readCount);
-        Assert.Equal(3, infoBuffer[0].Index);
-        Assert.Equal(6, infoBuffer[1].Index);
+        Assert.That(readCount, Is.EqualTo(2));
+        Assert.That(infoBuffer[0].Index, Is.EqualTo(3));
+        Assert.That(infoBuffer[1].Index, Is.EqualTo(6));
 
-        Assert.Success(client.Fs.ReadCacheStorageList(out readCount, infoBuffer, handle));
+        LibHac.Tests.Fs.FsTestAssert.Success(client.Fs.ReadCacheStorageList(out readCount, infoBuffer, handle));
 
-        Assert.Equal(0, readCount);
+        Assert.That(readCount, Is.EqualTo(0));
 
         client.Fs.CloseCacheStorageList(handle);
     }

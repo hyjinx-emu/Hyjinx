@@ -1,21 +1,21 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void DeleteFile_DoesNotExist_ReturnsPathNotFound()
     {
         IFileSystem fs = CreateFileSystem();
 
         Result res = fs.DeleteFile("/file");
-        Assert.Result(ResultFs.PathNotFound, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void DeleteFile_FileExists_FileEntryIsRemoved()
     {
         IFileSystem fs = CreateFileSystem();
@@ -25,11 +25,11 @@ public abstract partial class IFileSystemTests
         Result resultDelete = fs.DeleteFile("/file");
         Result resultEntry = fs.GetEntryType(out _, "/file");
 
-        Assert.Success(resultDelete);
-        Assert.Result(ResultFs.PathNotFound, resultEntry);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDelete);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultEntry);
     }
 
-    [Fact]
+    [Test]
     public void DeleteFile_PathIsDirectory_ReturnsPathNotFound()
     {
         IFileSystem fs = CreateFileSystem();
@@ -38,10 +38,10 @@ public abstract partial class IFileSystemTests
 
         Result res = fs.DeleteFile("/dir");
 
-        Assert.Result(ResultFs.PathNotFound, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, res);
     }
 
-    [Fact]
+    [Test]
     public void DeleteFile_HasOlderSibling_SiblingNotDeleted()
     {
         IFileSystem fs = CreateFileSystem();
@@ -53,14 +53,14 @@ public abstract partial class IFileSystemTests
         Result resultEntry1 = fs.GetEntryType(out DirectoryEntryType dir1Type, "/file1");
         Result resultEntry2 = fs.GetEntryType(out _, "/file2");
 
-        Assert.Success(resultDelete);
-        Assert.Success(resultEntry1);
-        Assert.Result(ResultFs.PathNotFound, resultEntry2);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDelete);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultEntry1);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultEntry2);
 
-        Assert.Equal(DirectoryEntryType.File, dir1Type);
+        Assert.That(dir1Type, Is.EqualTo(DirectoryEntryType.File));
     }
 
-    [Fact]
+    [Test]
     public void DeleteFile_HasYoungerSibling_SiblingNotDeleted()
     {
         IFileSystem fs = CreateFileSystem();
@@ -72,10 +72,10 @@ public abstract partial class IFileSystemTests
         Result resultEntry1 = fs.GetEntryType(out DirectoryEntryType dir1Type, "/file1");
         Result resultEntry2 = fs.GetEntryType(out _, "/file2");
 
-        Assert.Success(resultDelete);
-        Assert.Success(resultEntry1);
-        Assert.Result(ResultFs.PathNotFound, resultEntry2);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultDelete);
+        LibHac.Tests.Fs.FsTestAssert.Success(resultEntry1);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PathNotFound, resultEntry2);
 
-        Assert.Equal(DirectoryEntryType.File, dir1Type);
+        Assert.That(dir1Type, Is.EqualTo(DirectoryEntryType.File));
     }
 }

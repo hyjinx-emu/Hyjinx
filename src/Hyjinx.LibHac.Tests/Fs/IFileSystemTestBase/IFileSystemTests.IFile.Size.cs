@@ -1,13 +1,13 @@
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void SetSize_FileSizeModified()
     {
         IFileSystem fs = CreateFileSystem();
@@ -21,7 +21,7 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.All);
         file.Get.GetSize(out long fileSize);
 
-        Assert.Success(res);
-        Assert.Equal(54321, fileSize);
+        LibHac.Tests.Fs.FsTestAssert.Success(res);
+        Assert.That(fileSize, Is.EqualTo(54321));
     }
 }

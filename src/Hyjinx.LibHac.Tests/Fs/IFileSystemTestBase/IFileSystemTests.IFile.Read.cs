@@ -2,13 +2,13 @@ using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using System;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void IFileRead_BytesReadContainsNumberOfBytesRead()
     {
         IFileSystem fs = CreateFileSystem();
@@ -19,11 +19,11 @@ public abstract partial class IFileSystemTests
         using var file = new UniqueRef<IFile>();
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Read);
 
-        Assert.Success(file.Get.Read(out long bytesRead, 50, buffer, ReadOption.None));
-        Assert.Equal(20, bytesRead);
+        LibHac.Tests.Fs.FsTestAssert.Success(file.Get.Read(out long bytesRead, 50, buffer, ReadOption.None));
+        Assert.That(bytesRead, Is.EqualTo(20));
     }
 
-    [Fact]
+    [Test]
     public void IFileRead_OffsetPastEndOfFile_ReturnsOutOfRange()
     {
         IFileSystem fs = CreateFileSystem();
@@ -35,10 +35,10 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Read);
 
         Result res = file.Get.Read(out _, 1, buffer, ReadOption.None);
-        Assert.Result(ResultFs.OutOfRange, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.OutOfRange, res);
     }
 
-    [Fact]
+    [Test]
     public void IFileRead_OpenModeNoRead_ReturnsInvalidOpenModeForRead()
     {
         IFileSystem fs = CreateFileSystem();
@@ -50,10 +50,10 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Write);
 
         Result res = file.Get.Read(out _, 0, buffer, ReadOption.None);
-        Assert.Result(ResultFs.ReadUnpermitted, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.ReadUnpermitted, res);
     }
 
-    [Fact]
+    [Test]
     public void IFileRead_NegativeOffset_ReturnsOutOfRange()
     {
         IFileSystem fs = CreateFileSystem();
@@ -65,10 +65,10 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Write);
 
         Result res = file.Get.Read(out _, -5, buffer, ReadOption.None);
-        Assert.Result(ResultFs.OutOfRange, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.OutOfRange, res);
     }
 
-    [Fact]
+    [Test]
     public void IFileRead_OffsetPlusSizeOverflows_ReturnsOutOfRange()
     {
         IFileSystem fs = CreateFileSystem();
@@ -80,10 +80,10 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Write);
 
         Result res = file.Get.Read(out _, long.MaxValue - 5, buffer, ReadOption.None);
-        Assert.Result(ResultFs.OutOfRange, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.OutOfRange, res);
     }
 
-    [Fact]
+    [Test]
     public void IFileRead_FileTooSmallToFillBuffer_BytesReadContainsAvailableByteCount()
     {
         IFileSystem fs = CreateFileSystem();
@@ -94,11 +94,11 @@ public abstract partial class IFileSystemTests
         using var file = new UniqueRef<IFile>();
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Read);
 
-        Assert.Success(file.Get.Read(out long bytesRead, 90, buffer, ReadOption.None));
-        Assert.Equal(10, bytesRead);
+        LibHac.Tests.Fs.FsTestAssert.Success(file.Get.Read(out long bytesRead, 90, buffer, ReadOption.None));
+        Assert.That(bytesRead, Is.EqualTo(10));
     }
 
-    [Fact]
+    [Test]
     public void IFileRead_FileTooSmallToFillBuffer_DoesPartialRead()
     {
         IFileSystem fs = CreateFileSystem();
@@ -119,7 +119,7 @@ public abstract partial class IFileSystemTests
 
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Read);
 
-        Assert.Success(file.Get.Read(out _, 90, buffer, ReadOption.None));
-        Assert.Equal(bufferExpected, buffer);
+        LibHac.Tests.Fs.FsTestAssert.Success(file.Get.Read(out _, 90, buffer, ReadOption.None));
+        Assert.That(buffer, Is.EqualTo(bufferExpected));
     }
 }

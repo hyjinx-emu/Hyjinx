@@ -3,7 +3,7 @@ using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tests.Fs.IFileSystemTestBase;
 using LibHac.Tools.Fs;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs;
 
@@ -29,26 +29,26 @@ public class SubdirectoryFileSystemTests : IFileSystemTests
         return (baseFs, subFs);
     }
 
-    [Fact]
+    [Test]
     public void CreateFile_CreatedInBaseFileSystem()
     {
         (IFileSystem baseFs, IFileSystem subDirFs) = CreateFileSystemInternal();
 
         subDirFs.CreateFile("/file", 0, CreateFileOptions.None);
 
-        Assert.Success(baseFs.GetEntryType(out DirectoryEntryType type, "/sub/path/file"));
-        Assert.Equal(DirectoryEntryType.File, type);
+        LibHac.Tests.Fs.FsTestAssert.Success(baseFs.GetEntryType(out DirectoryEntryType type, "/sub/path/file"));
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.File));
     }
 
-    [Fact]
+    [Test]
     public void CreateDirectory_CreatedInBaseFileSystem()
     {
         (IFileSystem baseFs, IFileSystem subDirFs) = CreateFileSystemInternal();
 
         subDirFs.CreateDirectory("/dir");
 
-        Assert.Success(baseFs.GetEntryType(out DirectoryEntryType type, "/sub/path/dir"));
-        Assert.Equal(DirectoryEntryType.Directory, type);
+        LibHac.Tests.Fs.FsTestAssert.Success(baseFs.GetEntryType(out DirectoryEntryType type, "/sub/path/dir"));
+        Assert.That(type, Is.EqualTo(DirectoryEntryType.Directory));
     }
 }
 

@@ -2,13 +2,13 @@ using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using System;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.IFileSystemTestBase;
 
 public abstract partial class IFileSystemTests
 {
-    [Fact]
+    [Test]
     public void IFileWrite_CanReadBackWrittenData()
     {
         byte[] data = { 7, 4, 1, 0, 8, 5, 2, 9, 6, 3 };
@@ -25,13 +25,13 @@ public abstract partial class IFileSystemTests
         byte[] readData = new byte[data.Length];
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Read);
 
-        Assert.Success(file.Get.Read(out long bytesRead, 0, readData, ReadOption.None));
-        Assert.Equal(data.Length, bytesRead);
+        LibHac.Tests.Fs.FsTestAssert.Success(file.Get.Read(out long bytesRead, 0, readData, ReadOption.None));
+        Assert.That(bytesRead, Is.EqualTo(data.Length));
 
-        Assert.Equal(data, readData);
+        Assert.That(readData, Is.EqualTo(data));
     }
 
-    [Fact]
+    [Test]
     public void IFileWrite_WritePastEndOfFileWithNoAppend_ReturnsFileExtensionWithoutOpenModeAllowAppend()
     {
         IFileSystem fs = CreateFileSystem();
@@ -43,10 +43,10 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Write);
 
         Result res = file.Get.Write(5, buffer, WriteOption.None);
-        Assert.Result(ResultFs.FileExtensionWithoutOpenModeAllowAppend, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.FileExtensionWithoutOpenModeAllowAppend, res);
     }
 
-    [Fact]
+    [Test]
     public void IFileWrite_OpenModeNoWrite_ReturnsInvalidOpenModeForWrite()
     {
         IFileSystem fs = CreateFileSystem();
@@ -58,10 +58,10 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Read);
 
         Result res = file.Get.Write(5, buffer, WriteOption.None);
-        Assert.Result(ResultFs.WriteUnpermitted, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.WriteUnpermitted, res);
     }
 
-    [Fact]
+    [Test]
     public void IFileWrite_NegativeOffset_ReturnsOutOfRange()
     {
         IFileSystem fs = CreateFileSystem();
@@ -73,10 +73,10 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Read);
 
         Result res = file.Get.Write(-5, buffer, WriteOption.None);
-        Assert.Result(ResultFs.OutOfRange, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.OutOfRange, res);
     }
 
-    [Fact]
+    [Test]
     public void IFileWrite_OffsetPlusSizeOverflows_ReturnsOutOfRange()
     {
         IFileSystem fs = CreateFileSystem();
@@ -88,10 +88,10 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Read);
 
         Result res = file.Get.Write(long.MaxValue - 5, buffer, WriteOption.None);
-        Assert.Result(ResultFs.OutOfRange, res);
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.OutOfRange, res);
     }
 
-    [Fact]
+    [Test]
     public void IFileWrite_WritePartiallyPastEndOfFileAppendAllowed_FileIsExtended()
     {
         IFileSystem fs = CreateFileSystem();
@@ -102,13 +102,13 @@ public abstract partial class IFileSystemTests
         using var file = new UniqueRef<IFile>();
         fs.OpenFile(ref file.Ref, "/file", OpenMode.All);
 
-        Assert.Success(file.Get.Write(5, buffer, WriteOption.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(file.Get.Write(5, buffer, WriteOption.None));
 
         file.Get.GetSize(out long newSize);
-        Assert.Equal(15, newSize);
+        Assert.That(newSize, Is.EqualTo(15));
     }
 
-    [Fact]
+    [Test]
     public void IFileWrite_WritePastEndOfFileAppendAllowed_FileIsExtended()
     {
         IFileSystem fs = CreateFileSystem();
@@ -119,13 +119,13 @@ public abstract partial class IFileSystemTests
         using var file = new UniqueRef<IFile>();
         fs.OpenFile(ref file.Ref, "/file", OpenMode.All);
 
-        Assert.Success(file.Get.Write(15, buffer, WriteOption.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(file.Get.Write(15, buffer, WriteOption.None));
 
         file.Get.GetSize(out long newSize);
-        Assert.Equal(25, newSize);
+        Assert.That(newSize, Is.EqualTo(25));
     }
 
-    [Fact]
+    [Test]
     public void IFileWrite_WritePastEndOfFileAppendAllowed_DataIsWritten()
     {
         IFileSystem fs = CreateFileSystem();
@@ -141,7 +141,7 @@ public abstract partial class IFileSystemTests
         using var file = new UniqueRef<IFile>();
         fs.OpenFile(ref file.Ref, "/file", OpenMode.All);
 
-        Assert.Success(file.Get.Write(15, writeBuffer, WriteOption.None));
+        LibHac.Tests.Fs.FsTestAssert.Success(file.Get.Write(15, writeBuffer, WriteOption.None));
 
         // Unwritten portions of new files are undefined, so write to the other portions
         file.Get.Write(0, new byte[15], WriteOption.None);
@@ -152,6 +152,6 @@ public abstract partial class IFileSystemTests
         fs.OpenFile(ref file.Ref, "/file", OpenMode.Read);
 
         file.Get.Read(out _, 0, readBuffer, ReadOption.None);
-        Assert.Equal(bufferExpected, readBuffer);
+        Assert.That(readBuffer, Is.EqualTo(bufferExpected));
     }
 }

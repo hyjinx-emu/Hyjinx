@@ -2,13 +2,13 @@ using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Shim;
 using LibHac.Ncm;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs.FileSystemClientTests.ShimTests;
 
 public class Debug
 {
-    [Fact]
+    [Test]
     public void SetDebugOption_KeyIsZero_Aborts()
     {
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
@@ -16,7 +16,7 @@ public class Debug
         Assert.Throws<HorizonResultException>(() => fs.SetDebugOption(0, 1));
     }
 
-    [Fact]
+    [Test]
     public void SetDebugOption_NoPermissions_ReturnsPermissionDenied()
     {
         Horizon hos = HorizonFactory.CreateBasicHorizon();
@@ -24,51 +24,51 @@ public class Debug
         HorizonClient client =
             hos.CreateHorizonClient(new ProgramLocation(new ProgramId(1), StorageId.BuiltInSystem), 0);
 
-        Assert.Result(ResultFs.PermissionDenied, client.Fs.SetDebugOption((DebugOptionKey)1, 0));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PermissionDenied, client.Fs.SetDebugOption((DebugOptionKey)1, 0));
     }
 
-    [Fact]
+    [Test]
     public void SetDebugOption_DebugConfigIsFull_Aborts()
     {
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)1, 0));
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)2, 0));
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)3, 0));
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)4, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)1, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)2, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)3, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)4, 0));
 
         Assert.Throws<LibHacException>(() => fs.SetDebugOption((DebugOptionKey)5, 0));
     }
 
-    [Fact]
+    [Test]
     public void SetDebugOption_ReplaceExistingValueWhenFull_ReturnsSuccess()
     {
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)1, 0));
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)2, 0));
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)3, 0));
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)4, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)1, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)2, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)3, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)4, 0));
 
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)1, 10));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)1, 10));
     }
 
-    [Fact]
+    [Test]
     public void SetDebugOption_AfterRemovingKeyWhenFull_ReturnsSuccess()
     {
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)1, 0));
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)2, 0));
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)3, 0));
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)4, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)1, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)2, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)3, 0));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)4, 0));
 
-        Assert.Success(fs.UnsetDebugOption((DebugOptionKey)2));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.UnsetDebugOption((DebugOptionKey)2));
 
-        Assert.Success(fs.SetDebugOption((DebugOptionKey)2, 4));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption((DebugOptionKey)2, 4));
     }
 
-    [Fact]
+    [Test]
     public void UnsetDebugOption_UnsetExistingKey_ReturnsSuccess()
     {
         const DebugOptionKey key = DebugOptionKey.SaveDataEncryption;
@@ -76,11 +76,11 @@ public class Debug
 
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
 
-        Assert.Success(fs.SetDebugOption(key, value));
-        Assert.Success(fs.UnsetDebugOption(key));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.SetDebugOption(key, value));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.UnsetDebugOption(key));
     }
 
-    [Fact]
+    [Test]
     public void UnsetDebugOption_NoPermissions_ReturnsPermissionDenied()
     {
         Horizon hos = HorizonFactory.CreateBasicHorizon();
@@ -88,6 +88,6 @@ public class Debug
         HorizonClient client =
             hos.CreateHorizonClient(new ProgramLocation(new ProgramId(1), StorageId.BuiltInSystem), 0);
 
-        Assert.Result(ResultFs.PermissionDenied, client.Fs.UnsetDebugOption((DebugOptionKey)1));
+        LibHac.Tests.Fs.FsTestAssert.Result(ResultFs.PermissionDenied, client.Fs.UnsetDebugOption((DebugOptionKey)1));
     }
 }

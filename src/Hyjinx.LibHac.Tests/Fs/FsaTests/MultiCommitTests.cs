@@ -4,14 +4,14 @@ using LibHac.Fs.Fsa;
 using LibHac.Fs.Shim;
 using LibHac.Tests.Fs.FileSystemClientTests;
 using System.Collections.Generic;
-using Xunit;
+using NUnit.Framework;
 using static LibHac.Fs.SaveData;
 
 namespace LibHac.Tests.Fs.FsaTests;
 
 public class MultiCommitTests
 {
-    [Fact]
+    [Test]
     public void Commit_MultipleFileSystems_AllFileSystemsAreCommitted()
     {
         FileSystemClient fs = FileSystemServerFactory.CreateClient(true);
@@ -42,7 +42,7 @@ public class MultiCommitTests
             names.Add(info.name.ToU8String());
         }
 
-        Assert.Success(fs.Commit(names.ToArray()));
+        LibHac.Tests.Fs.FsTestAssert.Success(fs.Commit(names.ToArray()));
 
         foreach ((int id, string name) info in saveInfo)
         {
@@ -57,7 +57,7 @@ public class MultiCommitTests
 
         foreach ((int id, string name) info in saveInfo)
         {
-            Assert.Success(fs.GetEntryType(out _, $"{info.name}:/file{info.id}".ToU8Span()));
+            LibHac.Tests.Fs.FsTestAssert.Success(fs.GetEntryType(out _, $"{info.name}:/file{info.id}".ToU8Span()));
         }
     }
 }

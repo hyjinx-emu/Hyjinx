@@ -2,13 +2,13 @@
 
 using LibHac.Common;
 using LibHac.Fs;
-using Xunit;
+using NUnit.Framework;
 
 namespace LibHac.Tests.Fs;
 
 public class PathUtilityTests
 {
-    public static TheoryData<string, string, bool> TestData_IsSubPath => new()
+    public static NUnitTestCaseData<string, string, bool> TestData_IsSubPath => new()
     {
         { @"//a/b", @"/a", false },
         { @"/a", @"//a/b", false },
@@ -28,12 +28,11 @@ public class PathUtilityTests
         { @"/a/b", @"/a/b", false },
         { @"/a/b", @"/a/b\c", false }
     };
-
-    [Theory, MemberData(nameof(TestData_IsSubPath))]
+    [TestCaseSource(nameof(TestData_IsSubPath))]
     public static void IsSubPath(string path1, string path2, bool expectedResult)
     {
         bool result = PathUtility.IsSubPath(path1.ToU8Span(), path2.ToU8Span());
 
-        Assert.Equal(expectedResult, result);
+        Assert.That(result, Is.EqualTo(expectedResult));
     }
 }
