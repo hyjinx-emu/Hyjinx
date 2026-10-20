@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Common;
 using LibHac.Tools.FsSystem;
 using LibHac.Util;
@@ -209,3 +211,5 @@ public class PathToolsTests
         Assert.That(actual, Is.EqualTo(expected));
     }
 }
+
+#endif

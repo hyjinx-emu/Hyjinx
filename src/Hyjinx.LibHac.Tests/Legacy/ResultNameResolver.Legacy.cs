@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System.Reflection;
 
 namespace LibHac.Tests;
@@ -34,3 +36,5 @@ internal class ResultNameResolver : Result.IResultNameResolver
         return dict;
     }
 }
+
+#endif

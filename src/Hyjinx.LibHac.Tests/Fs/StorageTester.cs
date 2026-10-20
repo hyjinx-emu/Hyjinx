@@ -45,7 +45,7 @@ public class StorageTester
         }
 
         _config = config;
-        _random = new Random(config.RngSeed);
+        _random = new Random((int)config.RngSeed);
 
         _backingArrays = entries.Select(x => x.BackingArray).ToArray();
 
