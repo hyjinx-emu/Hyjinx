@@ -48,7 +48,6 @@ public class SaveDataIndexer : ISaveDataIndexer
     /// when the <see cref="ScopedMount"/> is disposed;
     /// </summary>
     /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
-    [NonCopyableDisposable]
     private ref struct ScopedMount
     {
         private Array16<byte> _mountName;

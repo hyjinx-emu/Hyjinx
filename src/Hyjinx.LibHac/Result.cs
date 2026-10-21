@@ -80,7 +80,7 @@ public readonly struct Result : IEquatable<Result>
     {
         if (IsFailure())
         {
-            ThrowHelper.ThrowResult(this);
+            throw new HorizonResultException(this);
         }
     }
 

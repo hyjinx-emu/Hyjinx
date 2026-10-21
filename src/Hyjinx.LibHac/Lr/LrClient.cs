@@ -19,7 +19,6 @@ public class LrClient : IDisposable
     }
 }
 
-[NonCopyable]
 internal struct LrClientGlobals : IDisposable
 {
     public HorizonClient Hos;

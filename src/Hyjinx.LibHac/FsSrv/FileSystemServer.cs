@@ -29,7 +29,6 @@ public class FileSystemServer : IDisposable
     }
 }
 
-[NonCopyableDisposable]
 internal struct FileSystemServerGlobals : IDisposable
 {
     public HorizonClient Hos;

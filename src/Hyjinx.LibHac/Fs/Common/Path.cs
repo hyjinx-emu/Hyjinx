@@ -94,7 +94,6 @@ public static class PathExtensions
 /// is normalized before passing it to <see cref="SetShallowBuffer"/>.</para>
 /// <para>Based on nnSdk 13.4.0 (FS 13.1.0)</para></remarks>
 [DebuggerDisplay("{" + nameof(ToString) + "(),nq}")]
-[NonCopyableDisposable]
 public ref struct Path
 {
     /// <summary>

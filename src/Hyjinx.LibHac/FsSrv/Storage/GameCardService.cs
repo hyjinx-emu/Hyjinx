@@ -16,7 +16,6 @@ using IStorage = LibHac.Fs.IStorage;
 
 namespace LibHac.FsSrv.Storage;
 
-[NonCopyableDisposable]
 internal struct GameCardServiceGlobals : IDisposable
 {
     public SdkMutexType StorageDeviceMutex;

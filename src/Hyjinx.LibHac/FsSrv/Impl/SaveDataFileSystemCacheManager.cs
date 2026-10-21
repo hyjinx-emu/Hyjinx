@@ -14,7 +14,6 @@ namespace LibHac.FsSrv.Impl;
 /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
 public class SaveDataFileSystemCacheManager : IDisposable
 {
-    [NonCopyable]
     private struct Cache
     {
         private SharedRef<SaveDataFileSystem> _fileSystem;

@@ -88,7 +88,6 @@ internal class RefCount
     }
 }
 
-[NonCopyableDisposable]
 public struct SharedRef<T> : IDisposable where T : class, IDisposable
 {
     // SharedRef and WeakRef should share a base type, but struct inheritance doesn't exist in C#.
@@ -287,7 +286,6 @@ public struct SharedRef<T> : IDisposable where T : class, IDisposable
     }
 }
 
-[NonCopyableDisposable]
 public struct WeakRef<T> : IDisposable where T : class, IDisposable
 {
     private T _value;

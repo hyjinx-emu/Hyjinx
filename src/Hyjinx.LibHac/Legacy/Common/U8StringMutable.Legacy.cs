@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using LibHac.Util;
 using System;
 using System.Text;
@@ -66,3 +68,5 @@ public readonly struct U8StringMutable
     /// Otherwise, <see langword="false"/>.</returns>
     public bool IsEmpty() => _buffer == null || _buffer.Length < 1 || _buffer[0] == 0;
 }
+
+#endif

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LibHac.Common;
 
-public readonly ref struct U8SpanMutable
+public readonly ref partial struct U8SpanMutable
 {
     private readonly Span<byte> _buffer;
 
@@ -73,11 +73,6 @@ public readonly ref struct U8SpanMutable
     public override string ToString()
     {
         return StringUtils.Utf8ZToString(_buffer);
-    }
-
-    public U8StringMutable ToU8String()
-    {
-        return new U8StringMutable(_buffer.ToArray());
     }
 
     /// <summary>

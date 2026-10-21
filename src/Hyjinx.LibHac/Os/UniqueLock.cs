@@ -41,7 +41,6 @@ public static class UniqueLock
     }
 }
 
-[NonCopyableDisposable]
 public ref struct UniqueLockRef<TMutex> where TMutex : struct, ILockable
 {
     private Ref<TMutex> _mutex;
@@ -127,7 +126,6 @@ public ref struct UniqueLockRef<TMutex> where TMutex : struct, ILockable
     }
 }
 
-[NonCopyableDisposable]
 public struct UniqueLock<TMutex> : IDisposable where TMutex : class, ILockable
 {
     private TMutex _mutex;

@@ -42,7 +42,6 @@ public static partial class Utility
     /// The struct must also be manually passed through the <see cref="Utility.IterateDirectoryRecursively"/> method.
     /// And because ref fields to ref structs aren't as thing as of C# 11, some ref structs may have to be copied into the closure struct. 
     /// </remarks>
-    [NonCopyable]
     public ref struct FsIterationTaskClosure
     {
         public Span<byte> Buffer;

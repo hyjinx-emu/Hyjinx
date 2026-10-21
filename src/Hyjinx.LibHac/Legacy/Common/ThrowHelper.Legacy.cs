@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System;
 
 namespace LibHac.Common;
@@ -20,3 +22,5 @@ public static class ThrowHelper
         throw new ArgumentOutOfRangeException();
     }
 }
+
+#endif

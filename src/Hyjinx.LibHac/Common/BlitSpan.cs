@@ -44,8 +44,7 @@ public ref struct BlitSpan<T> where T : unmanaged
     /// Must have a length of at least 1.</param>
     public BlitSpan(Span<T> data)
     {
-        if (data.Length == 0)
-            ThrowHelper.ThrowArgumentOutOfRangeException();
+        ArgumentOutOfRangeException.ThrowIfEqual(data.Length, 0);
 
         _buffer = data;
     }
@@ -57,8 +56,7 @@ public ref struct BlitSpan<T> where T : unmanaged
     /// Must be long enough to hold at least one struct of type <typeparamref name="T"/></param>
     public BlitSpan(Span<byte> data)
     {
-        if (data.Length < Unsafe.SizeOf<T>())
-            ThrowHelper.ThrowArgumentOutOfRangeException();
+        ArgumentOutOfRangeException.ThrowIfLessThan(data.Length, Unsafe.SizeOf<T>());
 
         _buffer = MemoryMarshal.Cast<byte, T>(data);
     }
