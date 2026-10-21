@@ -7,7 +7,6 @@ using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Common.Configuration;
-using Hyjinx.Common.Utilities;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.Loaders.Processes;
 using Hyjinx.HLE.Loaders.Processes.Extensions;

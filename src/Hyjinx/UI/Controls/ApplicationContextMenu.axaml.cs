@@ -10,7 +10,6 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Helper;
 using LibHac.Fs;
-using LibHac.Tools.FsSystem.NcaUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -291,48 +290,6 @@ public class ApplicationContextMenu : MenuFlyout
             }
 
             OpenHelper.OpenFolder(shaderCacheDir);
-        }
-    }
-
-    public async void ExtractApplicationExeFs_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-        if (viewModel?.SelectedApplication != null)
-        {
-            await ApplicationHelper.ExtractSection(
-                viewModel.StorageProvider,
-                NcaSectionType.Code,
-                viewModel.SelectedApplication.Path,
-                viewModel.SelectedApplication.Name);
-        }
-    }
-
-    public async void ExtractApplicationRomFs_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-        if (viewModel?.SelectedApplication != null)
-        {
-            await ApplicationHelper.ExtractSection(
-                viewModel.StorageProvider,
-                NcaSectionType.Data,
-                viewModel.SelectedApplication.Path,
-                viewModel.SelectedApplication.Name);
-        }
-    }
-
-    public async void ExtractApplicationLogo_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-        if (viewModel?.SelectedApplication != null)
-        {
-            await ApplicationHelper.ExtractSection(
-                viewModel.StorageProvider,
-                NcaSectionType.Logo,
-                viewModel.SelectedApplication.Path,
-                viewModel.SelectedApplication.Name);
         }
     }
 
