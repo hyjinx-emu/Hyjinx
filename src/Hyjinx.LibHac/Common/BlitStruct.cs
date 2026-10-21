@@ -35,8 +35,7 @@ public readonly struct BlitStruct<T> where T : unmanaged
     /// <param name="elementCount">The number of elements the <see cref="BlitStruct{T}"/> will be able to store.</param>
     public BlitStruct(int elementCount)
     {
-        if (elementCount <= 0)
-            ThrowHelper.ThrowArgumentOutOfRangeException();
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(elementCount, 0);
 
         _buffer = new byte[QueryByteLength(elementCount)];
     }
