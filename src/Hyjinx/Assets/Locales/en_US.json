@@ -82,8 +82,6 @@
   "GameListContextMenuOpenModsDirectoryToolTip": "Opens the directory which contains Application's Mods",
   "GameListContextMenuOpenSdModsDirectory": "Open Atmosphere Mods Directory",
   "GameListContextMenuOpenSdModsDirectoryToolTip": "Opens the alternative SD card Atmosphere directory which contains Application's Mods. Useful for mods that are packaged for real hardware.",
-  "GameListContextMenuTrimXCI": "Check and Trim XCI File",
-  "GameListContextMenuTrimXCIToolTip": "Check and Trim XCI File to Save Disk Space",
   "StatusBarGamesLoaded": "{0}/{1} Games Loaded",
   "StatusBarSystemVersion": "System Version: {0}",
   "StatusBarXCIFileTrimming": "Trimming XCI File '{0}'",

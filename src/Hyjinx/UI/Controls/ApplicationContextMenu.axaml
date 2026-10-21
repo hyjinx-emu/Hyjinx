@@ -57,12 +57,6 @@
         ToolTip.Tip="{locale:Locale GameListContextMenuOpenSdModsDirectoryToolTip}" /> -->
     <!-- TODO: Viper - Fix modding support (END) -->
     <Separator />
-	<MenuItem
-		Click="TrimXCI_Click"
-		Header="{locale:Locale GameListContextMenuTrimXCI}"
-        IsEnabled="{Binding TrimXCIEnabled}"
-		ToolTip.Tip="{locale:Locale GameListContextMenuTrimXCIToolTip}" />
-    <Separator />
     <MenuItem Header="{locale:Locale GameListContextMenuCacheManagement}">
         <MenuItem
             Click="PurgePtcCache_Click"

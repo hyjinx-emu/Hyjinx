@@ -345,14 +345,4 @@ public class ApplicationContextMenu : MenuFlyout
             await viewModel.LoadApplicationAsync(viewModel.SelectedApplication);
         }
     }
-
-    public async void TrimXCI_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-        if (viewModel?.SelectedApplication != null)
-        {
-            await viewModel.TrimXCIFile(viewModel.SelectedApplication.Path);
-        }
-    }
 }
