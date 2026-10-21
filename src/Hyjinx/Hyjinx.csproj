@@ -58,7 +58,6 @@
     <ProjectReference Include="..\Hyjinx.HLE\Hyjinx.HLE.csproj" />
     <ProjectReference Include="..\Hyjinx.Input.SDL2\Hyjinx.Input.SDL2.csproj" />
     <ProjectReference Include="..\Hyjinx.SPB\Hyjinx.SPB.csproj" />
-    <ProjectReference Include="..\Hyjinx.UI.Common\Hyjinx.UI.Common.csproj" />
     <ProjectReference Include="..\Hyjinx.UI.LocaleGenerator\Hyjinx.UI.LocaleGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
   

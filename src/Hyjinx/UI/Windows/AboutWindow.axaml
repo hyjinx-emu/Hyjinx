@@ -51,7 +51,7 @@
                         Spacing="10">
                         <Image
                             Height="80"
-                            Source="resm:Hyjinx.UI.Common.Resources.Logo_Hyjinx.png?assembly=Hyjinx.UI.Common"
+                            Source="resm:Hyjinx.Ava.Assets.Logos.Logo_Hyjinx.png"
                             HorizontalAlignment="Center"
                             IsHitTestVisible="True" />
                         <WrapPanel
