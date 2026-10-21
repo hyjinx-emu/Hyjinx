@@ -79,7 +79,6 @@ You may also review our [FAQ](https://github.com/hyjinx-emu/Hyjinx/wiki/Frequent
 - LibHac is used for our file-system.
 - [AmiiboAPI](https://www.amiiboapi.com) is used in our Amiibo emulation.
 - [ldn_mitm](https://github.com/spacemeowx2/ldn_mitm) is used for one of our available multiplayer modes.
-- [ShellLink](https://github.com/securifybv/ShellLink) is used for Windows shortcut generation.
 
 ## Disclaimer
 This is an independent project and is not affiliated with, endorsed by, or sponsored by Nintendo Co., Ltd. "Nintendo", the "Nintendo Switch", and all related trademarks are property of their respective owners.
