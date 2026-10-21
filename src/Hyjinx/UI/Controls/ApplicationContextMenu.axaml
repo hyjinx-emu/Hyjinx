@@ -75,18 +75,4 @@
             Header="{locale:Locale GameListContextMenuCacheManagementOpenShaderCacheDirectory}"
             ToolTip.Tip="{locale:Locale GameListContextMenuCacheManagementOpenShaderCacheDirectoryToolTip}" />
     </MenuItem>
-    <MenuItem Header="{locale:Locale GameListContextMenuExtractData}">
-        <MenuItem
-            Click="ExtractApplicationExeFs_Click"
-            Header="{locale:Locale GameListContextMenuExtractDataExeFS}"
-            ToolTip.Tip="{locale:Locale GameListContextMenuExtractDataExeFSToolTip}" />
-        <MenuItem
-            Click="ExtractApplicationRomFs_Click"
-            Header="{locale:Locale GameListContextMenuExtractDataRomFS}"
-            ToolTip.Tip="{locale:Locale GameListContextMenuExtractDataRomFSToolTip}" />
-        <MenuItem
-            Click="ExtractApplicationLogo_Click"
-            Header="{locale:Locale GameListContextMenuExtractDataLogo}"
-            ToolTip.Tip="{locale:Locale GameListContextMenuExtractDataLogoToolTip}" />
-    </MenuItem>
 </MenuFlyout>

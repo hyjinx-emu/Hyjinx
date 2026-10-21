@@ -240,7 +240,7 @@ public partial class MainWindow : StyleableWindow
 
         AccountManager = new AccountManager(LibHacHorizonManager.HyjinxClient, CommandLineState.Profile);
 
-        ApplicationHelper.Initialize(VirtualFileSystem, AccountManager, LibHacHorizonManager.HyjinxClient);
+        ApplicationHelper.Initialize(AccountManager, LibHacHorizonManager.HyjinxClient);
     }
 
     [SupportedOSPlatform("linux")]

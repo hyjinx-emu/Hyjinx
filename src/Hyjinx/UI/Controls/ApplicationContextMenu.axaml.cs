@@ -294,48 +294,6 @@ public class ApplicationContextMenu : MenuFlyout
         }
     }
 
-    public async void ExtractApplicationExeFs_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-        if (viewModel?.SelectedApplication != null)
-        {
-            await ApplicationHelper.ExtractSection(
-                viewModel.StorageProvider,
-                NcaSectionType.Code,
-                viewModel.SelectedApplication.Path,
-                viewModel.SelectedApplication.Name);
-        }
-    }
-
-    public async void ExtractApplicationRomFs_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-        if (viewModel?.SelectedApplication != null)
-        {
-            await ApplicationHelper.ExtractSection(
-                viewModel.StorageProvider,
-                NcaSectionType.Data,
-                viewModel.SelectedApplication.Path,
-                viewModel.SelectedApplication.Name);
-        }
-    }
-
-    public async void ExtractApplicationLogo_Click(object sender, RoutedEventArgs args)
-    {
-        var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
-
-        if (viewModel?.SelectedApplication != null)
-        {
-            await ApplicationHelper.ExtractSection(
-                viewModel.StorageProvider,
-                NcaSectionType.Logo,
-                viewModel.SelectedApplication.Path,
-                viewModel.SelectedApplication.Name);
-        }
-    }
-
     public async void RunApplication_Click(object sender, RoutedEventArgs args)
     {
         var viewModel = (sender as MenuItem)?.DataContext as MainWindowViewModel;
