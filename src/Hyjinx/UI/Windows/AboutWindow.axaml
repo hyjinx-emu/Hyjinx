@@ -66,13 +66,6 @@
                                 Width="110"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center" />
-                            <TextBlock
-                                FontSize="11"
-                                Text="(HI-JINGKS)"
-                                TextAlignment="Start"
-                                Width="110"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
                         </WrapPanel>
                     </StackPanel>
                 </Grid>
