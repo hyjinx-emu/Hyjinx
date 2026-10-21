@@ -1,7 +1,7 @@
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using System.Runtime.CompilerServices;
 
-namespace Hyjinx.Tests.Time;
+namespace Hyjinx.HLE.Tests.HOS.Services.Time.TimeZone;
 
 internal class TimeZoneRuleTests
 {

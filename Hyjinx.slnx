@@ -96,6 +96,5 @@
   <Project Path="src/Hyjinx.SPB/Hyjinx.SPB.csproj" />
   <Project Path="src/Hyjinx.Tests.Unicorn/Hyjinx.Tests.Unicorn.csproj" />
   <Project Path="src/Hyjinx.Tests/Hyjinx.Tests.csproj" />
-  <Project Path="src/Hyjinx.UI.Common/Hyjinx.UI.Common.csproj" />
   <Project Path="src/Hyjinx/Hyjinx.csproj" />
 </Solution>

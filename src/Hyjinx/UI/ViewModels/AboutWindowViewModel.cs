@@ -101,20 +101,17 @@ public class AboutWindowViewModel : BaseModel, IDisposable
 
     private void UpdateLogoTheme(string theme)
     {
+        static Bitmap LoadBitmapForLogo(string logo, bool useDarkIcons)
+        {
+            return new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri($"resm:Hyjinx.Ava.Assets.Logos.Logo_{logo}_{(useDarkIcons ? "Dark" : "Light")}.png")));
+        }
+
         bool isDarkTheme = theme == "Dark" || (theme == "Auto" && App.DetectSystemTheme() == ThemeVariant.Dark);
 
-        string basePath = "resm:Hyjinx.UI.Common.Resources.";
-        string themeSuffix = isDarkTheme ? "Dark.png" : "Light.png";
-
-        GithubLogo = LoadBitmap($"{basePath}Logo_GitHub_{themeSuffix}?assembly=Hyjinx.UI.Common");
-        DiscordLogo = LoadBitmap($"{basePath}Logo_Discord_{themeSuffix}?assembly=Hyjinx.UI.Common");
-        PatreonLogo = LoadBitmap($"{basePath}Logo_Patreon_{themeSuffix}?assembly=Hyjinx.UI.Common");
-        TwitterLogo = LoadBitmap($"{basePath}Logo_Twitter_{themeSuffix}?assembly=Hyjinx.UI.Common");
-    }
-
-    private Bitmap LoadBitmap(string uri)
-    {
-        return new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri(uri)));
+        GithubLogo = LoadBitmapForLogo("GitHub", isDarkTheme);
+        DiscordLogo = LoadBitmapForLogo("Discord", isDarkTheme);
+        PatreonLogo = LoadBitmapForLogo("Patreon", isDarkTheme);
+        TwitterLogo = LoadBitmapForLogo("Twitter", isDarkTheme);
     }
 
     public void Dispose()

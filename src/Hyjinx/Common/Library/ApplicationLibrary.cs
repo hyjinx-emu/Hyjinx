@@ -59,11 +59,11 @@ public partial class ApplicationLibrary
         _virtualFileSystem = virtualFileSystem;
         _checkLevel = checkLevel;
 
-        _nspIcon = GetResourceBytes("Hyjinx.UI.Common.Resources.Icon_NSP.png");
-        _xciIcon = GetResourceBytes("Hyjinx.UI.Common.Resources.Icon_XCI.png");
-        _ncaIcon = GetResourceBytes("Hyjinx.UI.Common.Resources.Icon_NCA.png");
-        _nroIcon = GetResourceBytes("Hyjinx.UI.Common.Resources.Icon_NRO.png");
-        _nsoIcon = GetResourceBytes("Hyjinx.UI.Common.Resources.Icon_NSO.png");
+        _nspIcon = GetResourceBytes("Hyjinx.Ava.Assets.Icons.Icon_NSP.png");
+        _xciIcon = GetResourceBytes("Hyjinx.Ava.Assets.Icons.Icon_XCI.png");
+        _ncaIcon = GetResourceBytes("Hyjinx.Ava.Assets.Icons.Icon_NCA.png");
+        _nroIcon = GetResourceBytes("Hyjinx.Ava.Assets.Icons.Icon_NRO.png");
+        _nsoIcon = GetResourceBytes("Hyjinx.Ava.Assets.Icons.Icon_NSO.png");
     }
 
     private static byte[] GetResourceBytes(string resourceName)

@@ -51,7 +51,7 @@
                         Spacing="10">
                         <Image
                             Height="80"
-                            Source="resm:Hyjinx.UI.Common.Resources.Logo_Hyjinx.png?assembly=Hyjinx.UI.Common"
+                            Source="resm:Hyjinx.Ava.Assets.Logos.Logo_Hyjinx.png"
                             HorizontalAlignment="Center"
                             IsHitTestVisible="True" />
                         <WrapPanel
@@ -62,13 +62,6 @@
                                 FontSize="28"
                                 FontWeight="Bold"
                                 Text="Hyjinx"
-                                TextAlignment="Start"
-                                Width="110"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center" />
-                            <TextBlock
-                                FontSize="11"
-                                Text="(HI-JINGKS)"
                                 TextAlignment="Start"
                                 Width="110"
                                 HorizontalAlignment="Center"
@@ -123,21 +116,6 @@
                     HorizontalAlignment="Center"
                     Orientation="Horizontal"
                     Spacing="10">
-                    <!--
-                    <Button
-                        MinWidth="30"
-                        MinHeight="30"
-                        MaxWidth="30"
-                        MaxHeight="30"
-                        Padding="8"
-                        Background="Transparent"
-                        Click="Button_OnClick"
-                        CornerRadius="15"
-                        Tag="https://example.com/"
-                        ToolTip.Tip="{locale:Locale AboutPatreonUrlTooltipMessage}">
-                        <Image Source="{Binding PatreonLogo}" />
-                    </Button>
-                    -->
                     <Button
                         MinWidth="30"
                         MinHeight="30"
@@ -151,34 +129,6 @@
                         ToolTip.Tip="{locale:Locale AboutGithubUrlTooltipMessage}">
                         <Image Source="{Binding GithubLogo}" />
                     </Button>
-                    <Button
-                        MinWidth="30"
-                        MinHeight="30"
-                        MaxWidth="30"
-                        MaxHeight="30"
-                        Padding="8"
-                        Background="Transparent"
-                        Click="Button_OnClick"
-                        CornerRadius="15"
-                        Tag="https://discord.gg/xmHPGDfVCa"
-                        ToolTip.Tip="{locale:Locale AboutDiscordUrlTooltipMessage}">
-                        <Image Source="{Binding DiscordLogo}" />
-                    </Button>
-                    <!--
-                    <Button
-                        MinWidth="30"
-                        MinHeight="30"
-                        MaxWidth="30"
-                        MaxHeight="30"
-                        Padding="8"
-                        Background="Transparent"
-                        Click="Button_OnClick"
-                        CornerRadius="15"
-                        Tag="https://www.hyjinxemulator.org"
-                        ToolTip.Tip="{locale:Locale AboutUrlTooltipMessage}">
-                        <ui:SymbolIcon Foreground="{DynamicResource ThemeForegroundColor}" Symbol="Link" />
-                    </Button>
-                    -->
                 </StackPanel>
             </StackPanel>
         </Grid>
