@@ -37,7 +37,6 @@ public static class SharedLock
     }
 }
 
-[NonCopyableDisposable]
 public ref struct SharedLockRef<TMutex> where TMutex : struct, ISharedMutex
 {
     private Ref<TMutex> _mutex;
@@ -123,7 +122,6 @@ public ref struct SharedLockRef<TMutex> where TMutex : struct, ISharedMutex
     }
 }
 
-[NonCopyableDisposable]
 public struct SharedLock<TMutex> : IDisposable where TMutex : class, ISharedMutex
 {
     private TMutex _mutex;

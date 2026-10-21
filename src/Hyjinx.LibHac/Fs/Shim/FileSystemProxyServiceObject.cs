@@ -4,7 +4,6 @@ using System;
 
 namespace LibHac.Fs.Shim;
 
-[NonCopyable]
 internal struct FileSystemProxyServiceObjectGlobals : IDisposable
 {
     public nint FileSystemProxyServiceObjectInitGuard;

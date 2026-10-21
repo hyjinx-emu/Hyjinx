@@ -156,7 +156,6 @@ public class DirectorySaveDataFileSystem : SaveDataFileSystem
         base.Dispose();
     }
 
-    [NonCopyable]
     private ref struct RetryClosure
     {
         public DirectorySaveDataFileSystem This;

@@ -17,7 +17,6 @@ public class SaveDataExtraDataAccessorCacheManager : ISaveDataExtraDataAccessorO
     /// Holds a single cached extra data accessor identified by its save data ID and save data space ID.
     /// </summary>
     /// <remarks>Based on nnSdk 14.3.0 (FS 14.1.0)</remarks>
-    [NonCopyable]
     private struct Cache : IDisposable
     {
         private WeakRef<ISaveDataExtraDataAccessor> _accessor;

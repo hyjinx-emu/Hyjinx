@@ -278,7 +278,6 @@ public class SaveDataSharedFileStorage : LibHac.Fs.Storage
 /// <remarks>Based on nnSdk 13.4.0 (FS 13.1.0)</remarks>
 public class SaveDataFileStorageHolder
 {
-    [NonCopyable]
     private struct Entry
     {
         private SharedRef<SaveDataOpenTypeSetFileStorage> _storage;
