@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
@@ -31,7 +30,6 @@ using Hyjinx.UI.Common;
 using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
-using Hyjinx.UI.Common.Utilities;
 using LibHac.Common;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Microsoft.Extensions.Logging;

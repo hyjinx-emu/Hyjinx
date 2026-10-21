@@ -10,7 +10,6 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.UI.App.Common;
 using Hyjinx.UI.Common.Helper;
 using LibHac.Fs;
-using LibHac.Tools.FsSystem.NcaUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
