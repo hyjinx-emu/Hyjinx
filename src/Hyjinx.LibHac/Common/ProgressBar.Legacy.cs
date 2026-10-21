@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 // Adapted from https://gist.github.com/0ab6a96899cc5377bf54
 
 using System;
@@ -174,3 +176,5 @@ public class ProgressBar : IDisposable, IProgressReport
         }
     }
 }
+
+#endif
