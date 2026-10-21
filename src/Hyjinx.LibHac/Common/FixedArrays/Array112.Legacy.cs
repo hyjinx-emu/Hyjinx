@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 #pragma warning disable CS0169, CS0649, IDE0051 // Field is never used, Field is never assigned to, Remove unused private members
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -6,12 +8,12 @@ using System.Runtime.InteropServices;
 
 namespace LibHac.Common.FixedArrays;
 
-public struct Array96<T>
+public struct Array112<T>
 {
-    public const int Length = 96;
+    public const int Length = 112;
 
     private Array80<T> _0;
-    private Array16<T> _80;
+    private Array32<T> _80;
 
     [UnscopedRef] public ref T this[int i] => ref Items[i];
 
@@ -30,5 +32,7 @@ public struct Array96<T>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static implicit operator ReadOnlySpan<T>(in Array96<T> value) => value.ItemsRo;
+    public static implicit operator ReadOnlySpan<T>(in Array112<T> value) => value.ItemsRo;
 }
+
+#endif
