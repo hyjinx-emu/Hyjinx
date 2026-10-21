@@ -362,8 +362,6 @@ public class MainWindowViewModel : BaseModel
 
     public bool OpenDeviceSaveDirectoryEnabled => !SelectedApplication.ControlHolder.ByteSpan.IsZeros() && SelectedApplication.ControlHolder.Value.DeviceSaveDataSize > 0;
 
-    public bool TrimXCIEnabled => XCIFileTrimmer.CanTrim(SelectedApplication.Path, new XCIFileTrimmerLog(this));
-
     public bool OpenBcatSaveDirectoryEnabled => !SelectedApplication.ControlHolder.ByteSpan.IsZeros() && SelectedApplication.ControlHolder.Value.BcatDeliveryCacheStorageSize > 0;
 
     public bool CreateShortcutEnabled => !ReleaseInformation.IsFlatHubBuild;
@@ -1738,113 +1736,6 @@ public class MainWindowViewModel : BaseModel
                 ConfigurationState.Instance.Graphics.ShadersDumpPath.Value = "";
 
                 SaveConfig();
-            }
-        }
-    }
-
-    public async void ProcessTrimResult(String filename, XCIFileTrimmer.OperationOutcome operationOutcome)
-    {
-        string notifyUser = null;
-
-        switch (operationOutcome)
-        {
-            case XCIFileTrimmer.OperationOutcome.NoTrimNecessary:
-                notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileNoTrimNecessary];
-                break;
-            case XCIFileTrimmer.OperationOutcome.ReadOnlyFileCannotFix:
-                notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileReadOnlyFileCannotFix];
-                break;
-            case XCIFileTrimmer.OperationOutcome.FreeSpaceCheckFailed:
-                notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileFreeSpaceCheckFailed];
-                break;
-            case XCIFileTrimmer.OperationOutcome.InvalidXCIFile:
-                notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileInvalidXCIFile];
-                break;
-            case XCIFileTrimmer.OperationOutcome.FileIOWriteError:
-                notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileFileIOWriteError];
-                break;
-            case XCIFileTrimmer.OperationOutcome.FileSizeChanged:
-                notifyUser = LocaleManager.Instance[LocaleKeys.TrimXCIFileFileSizeChanged];
-                break;
-            case XCIFileTrimmer.OperationOutcome.Successful:
-                if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    if (desktop.MainWindow is MainWindow mainWindow)
-                        mainWindow.LoadApplications();
-                }
-                break;
-        }
-
-        if (notifyUser != null)
-        {
-            await ContentDialogHelper.CreateWarningDialog(
-                LocaleManager.Instance[LocaleKeys.TrimXCIFileFailedPrimaryText],
-                notifyUser
-            );
-        }
-    }
-
-    public async Task TrimXCIFile(string filename)
-    {
-        if (filename == null)
-        {
-            return;
-        }
-
-        var trimmer = new XCIFileTrimmer(filename, new Common.XCIFileTrimmerLog(this));
-
-        if (trimmer.CanBeTrimmed)
-        {
-            var savings = (double)trimmer.DiskSpaceSavingsB / 1024.0 / 1024.0;
-            var currentFileSize = (double)trimmer.FileSizeB / 1024.0 / 1024.0;
-            var cartDataSize = (double)trimmer.DataSizeB / 1024.0 / 1024.0;
-            string secondaryText = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.TrimXCIFileDialogSecondaryText, currentFileSize, cartDataSize, savings);
-
-            var result = await ContentDialogHelper.CreateConfirmationDialog(
-                LocaleManager.Instance[LocaleKeys.TrimXCIFileDialogPrimaryText],
-                secondaryText,
-                LocaleManager.Instance[LocaleKeys.Continue],
-                LocaleManager.Instance[LocaleKeys.Cancel],
-                LocaleManager.Instance[LocaleKeys.TrimXCIFileDialogTitle]
-            );
-
-            if (result == UserResult.Yes)
-            {
-                Thread XCIFileTrimThread = new(() =>
-                {
-                    Dispatcher.UIThread.Post(() =>
-                    {
-                        StatusBarProgressStatusText = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.StatusBarXCIFileTrimming, Path.GetFileName(filename));
-                        StatusBarProgressStatusVisible = true;
-                        StatusBarProgressMaximum = 1;
-                        StatusBarProgressValue = 0;
-                        StatusBarVisible = true;
-                    });
-
-                    try
-                    {
-                        XCIFileTrimmer.OperationOutcome operationOutcome = trimmer.Trim();
-
-                        Dispatcher.UIThread.Post(() =>
-                        {
-                            ProcessTrimResult(filename, operationOutcome);
-                        });
-                    }
-                    finally
-                    {
-                        Dispatcher.UIThread.Post(() =>
-                        {
-                            StatusBarProgressStatusVisible = false;
-                            StatusBarProgressStatusText = string.Empty;
-                            StatusBarVisible = false;
-                        });
-                    }
-                })
-                {
-                    Name = "GUI.XCFileTrimmerThread",
-                    IsBackground = true,
-                };
-                XCIFileTrimThread.Start();
             }
         }
     }

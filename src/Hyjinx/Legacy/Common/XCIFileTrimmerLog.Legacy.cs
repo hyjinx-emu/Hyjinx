@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Logging.Abstractions;
@@ -46,3 +48,5 @@ internal class XCIFileTrimmerLog : XCIFileTrimmer.ILog
         }
     }
 }
+
+#endif

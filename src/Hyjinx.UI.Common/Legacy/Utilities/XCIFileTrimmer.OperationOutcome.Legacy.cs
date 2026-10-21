@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 namespace Hyjinx.UI.Common.Utilities;
 
 public sealed partial class XCIFileTrimmer
@@ -14,3 +16,5 @@ public sealed partial class XCIFileTrimmer
         Successful
     }
 }
+
+#endif

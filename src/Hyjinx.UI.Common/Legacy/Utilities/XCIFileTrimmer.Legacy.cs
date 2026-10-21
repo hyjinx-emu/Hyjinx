@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -477,3 +479,5 @@ public sealed partial class XCIFileTrimmer
         return true;
     }
 }
+
+#endif
