@@ -1738,7 +1738,7 @@ public class MainWindowViewModel : BaseModel
                 SaveConfig();
             }
         }
-    }      
+    }
 
     #endregion
 }
