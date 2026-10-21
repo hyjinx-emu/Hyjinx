@@ -1,3 +1,5 @@
+#if IS_LEGACY_ENABLED
+
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using ShellLink;
@@ -169,3 +171,5 @@ public static class ShortcutHelper
         fs.WriteByte((byte)(dataLength >> 24));
     }
 }
+
+#endif

@@ -12,15 +12,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\**\*" />
   </ItemGroup>
-
-  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64' OR '$(RuntimeIdentifier)' == 'linux-arm64' OR '$(RuntimeIdentifier)' == ''">
-    <EmbeddedResource Include="..\..\distribution\linux\appimage\shortcut-template.desktop" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'osx-x64' OR '$(RuntimeIdentifier)' == 'osx-arm64' OR '$(RuntimeIdentifier)' == ''">
-    <EmbeddedResource Include="..\..\distribution\macos\shortcut-template.plist" />
-    <EmbeddedResource Include="..\..\distribution\macos\shortcut-launch-script.sh" />
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" />
@@ -31,7 +22,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
     <PackageReference Include="NLog.Extensions.Logging" />
-    <PackageReference Include="securifybv.ShellLink" />
     <PackageReference Include="System.Management" />
   </ItemGroup>
 
