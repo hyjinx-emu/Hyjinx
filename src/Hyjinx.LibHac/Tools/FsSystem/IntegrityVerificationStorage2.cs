@@ -1,6 +1,7 @@
 using LibHac.Common;
 using LibHac.Crypto;
 using LibHac.Fs;
+using LibHac.Tools.FsSystem.NcaUtils;
 using LibHac.Util;
 using System;
 
@@ -105,7 +106,7 @@ public class IntegrityVerificationStorage2 : Storage2
             var validity = CheckSectorValidity(sectorIndex);
             if (validity == Validity.Invalid && IntegrityCheckLevel == IntegrityCheckLevel.ErrorOnInvalid)
             {
-                throw new InvalidSectorDetectedException("The sector was invalid.", Level, sectorIndex);
+                throw new InvalidHashDetectedException($"The sector {sectorIndex}@{Level} was invalid.");
             }
         }
 

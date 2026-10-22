@@ -211,7 +211,7 @@ public abstract partial class Nca2<TFsHeader> : Nca2
     {
         if (integrityCheckLevel is IntegrityCheckLevel.ErrorOnInvalid && description.HashValidity is not Validity.Valid)
         {
-            throw new InvalidHashDetectedException("The header hash does not match the expected value.");
+            throw new InvalidHashDetectedException($"The header hash for section [{description.SectionIndex}] is invalid.");
         }
 
         var rawStorage = OpenRawStorage(description);
