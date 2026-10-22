@@ -4,6 +4,7 @@ using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using LibHac.FsSystem;
 using LibHac.Tools.FsSystem;
+using LibHac.Tools.FsSystem.NcaUtils;
 using System;
 using System.IO;
 using static LibHac.Tools.Fs.NativeTypes;
@@ -78,7 +79,7 @@ public class Xci2 : Xci
 
         if (CryptoUtil.CheckSha256Hash(headerBytes.Span, header.RootPartitionHeaderHash.Span) != Validity.Valid)
         {
-            throw new LibHacException("The hash did not match.");
+            throw new InvalidHashDetectedException("The root partition header was invalid.");
         }
 
         var rootFs = Sha256PartitionFileSystem2.Create(

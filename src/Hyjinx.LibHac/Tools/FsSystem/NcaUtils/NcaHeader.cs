@@ -224,18 +224,12 @@ public partial class NcaHeader
 
     private static bool CheckIsDecrypted(ReadOnlySpan<byte> header)
     {
-        // Check the magic value
-        if (header[0x200] != 'N' || header[0x201] != 'C' || header[0x202] != 'A')
+        // Check the magic value.
+        if (header[0x200] == 'N' && header[0x201] == 'C' && header[0x202] == 'A' && StringUtils.IsDigit(header[0x203]))
         {
-            return false;
+            return true;
         }
 
-        // Check the version in the magic value
-        if (!StringUtils.IsDigit(header[0x203]))
-        {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 }

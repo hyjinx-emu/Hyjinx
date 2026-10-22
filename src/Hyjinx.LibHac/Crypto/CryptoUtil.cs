@@ -18,6 +18,12 @@ public static class CryptoUtil
     /// <returns>The <see cref="Validity"/> whether the hash matches.</returns>
     public static Validity CheckSha256Hash(in Span<byte> input, in Span<byte> expected)
     {
+        if (expected.IsZeros())
+        {
+            // Allow the hash to be considered valid if empty.
+            return Validity.Valid;
+        }
+
         Span<byte> actualHash = stackalloc byte[Sha256.DigestSize];
         Sha256.GenerateSha256Hash(input, actualHash);
 
