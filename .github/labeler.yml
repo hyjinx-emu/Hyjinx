@@ -20,7 +20,7 @@
 
 "gui":
 - changed-files:
-  - any-glob-to-any-file: ['src/Hyjinx/**', 'src/Hyjinx.UI.Common/**', 'src/Hyjinx.UI.LocaleGenerator/**', 'src/Hyjinx.Gtk3/**']
+  - any-glob-to-any-file: ['src/Hyjinx/**', 'src/Hyjinx.UI.LocaleGenerator/**', 'src/Hyjinx.Gtk3/**']
 
 "horizon":
 - changed-files:
