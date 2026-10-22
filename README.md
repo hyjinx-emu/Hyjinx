@@ -16,6 +16,10 @@
 To run this emulator, your PC must be equipped with at least 8GiB of RAM;
 failing to meet this requirement may result in a poor gameplay experience or unexpected crashes.
 
+## Compatibility
+
+For now, firmware compatibility is limited to 19.0.1 as it was when the original project was forked. There are plans to add later firmware support, there are just competing priorities with improving frame rates. If anyone wishes to assist with this, please reach out.
+
 ## Latest Build
 
 These builds are compiled automatically for each commit on the main branch.
