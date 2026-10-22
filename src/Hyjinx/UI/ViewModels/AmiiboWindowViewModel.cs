@@ -69,7 +69,7 @@ public class AmiiboWindowViewModel : BaseModel, IDisposable
         _amiiboSeries = new ObservableCollection<string>();
         _amiibos = new AvaloniaList<AmiiboApi>();
 
-        _amiiboLogoBytes = EmbeddedResources.Read("Hyjinx.UI.Common/Resources/Logo_Amiibo.png");
+        _amiiboLogoBytes = EmbeddedResources.Read("Hyjinx/Ava.Assets.Logos.Logo_Amiibo.png");
 
         _ = LoadContentAsync();
     }

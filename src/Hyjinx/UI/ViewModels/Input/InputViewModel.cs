@@ -40,10 +40,10 @@ public class InputViewModel : BaseModel, IDisposable
         Logger.DefaultLoggerFactory.CreateLogger<InputViewModel>();
 
     private const string Disabled = "disabled";
-    private const string ProControllerResource = "Hyjinx.UI.Common/Resources/Controller_ProCon.svg";
-    private const string JoyConPairResource = "Hyjinx.UI.Common/Resources/Controller_JoyConPair.svg";
-    private const string JoyConLeftResource = "Hyjinx.UI.Common/Resources/Controller_JoyConLeft.svg";
-    private const string JoyConRightResource = "Hyjinx.UI.Common/Resources/Controller_JoyConRight.svg";
+    private const string ProControllerResource = "Hyjinx/Ava.Assets.Icons.Controller_ProCon.svg";
+    private const string JoyConPairResource = "Hyjinx/Ava.Assets.Icons.Controller_JoyConPair.svg";
+    private const string JoyConLeftResource = "Hyjinx/Ava.Assets.Icons.Controller_JoyConLeft.svg";
+    private const string JoyConRightResource = "Hyjinx/Ava.Assets.Icons.Controller_JoyConRight.svg";
     private const string KeyboardString = "keyboard";
     private const string ControllerString = "controller";
     private readonly MainWindow _mainWindow;
