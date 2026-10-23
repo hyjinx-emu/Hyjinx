@@ -2,6 +2,7 @@
   <Folder Name="/Core/">
     <Project Path="src/Hyjinx.Audio.Abstractions/Hyjinx.Audio.Abstractions.csproj" />
     <Project Path="src/Hyjinx.Cpu.Abstractions/Hyjinx.Cpu.Abstractions.csproj" />
+    <Project Path="src/Hyjinx.Extensions.Abstractions/Hyjinx.Extensions.Abstractions.csproj" Id="fddfd181-d180-4a8c-ad82-d7c3f4f5e795" />
     <Project Path="src/Hyjinx.Input.Abstractions/Hyjinx.Input.Abstractions.csproj" />
     <Project Path="src/Hyjinx.Logging.Abstractions/Hyjinx.Logging.Abstractions.csproj" />
     <Project Path="src/Hyjinx.Memory.Abstractions/Hyjinx.Memory.Abstractions.csproj" />

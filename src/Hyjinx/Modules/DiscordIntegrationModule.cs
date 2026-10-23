@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hyjinx.Ava.Modules;
 
-public static class DiscordIntegrationModule
+internal static class DiscordIntegrationModule
 {
     private const string Description = "A simple, experimental Nintendo Switch emulator.";
     private const string ApplicationId = "1216775165866807456";

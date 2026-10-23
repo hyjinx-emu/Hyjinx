@@ -1,7 +1,9 @@
 using Hyjinx.Ava.Startup;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
+using Hyjinx.Extensions.Abstractions;
 using Hyjinx.UI.Common.Configuration;
+using Hyjinx.UI.Common.Helper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -10,12 +12,20 @@ using System.IO;
 
 namespace Hyjinx.Ava.Modules;
 
-public class ConfigurationModule
+internal class ConfigurationModule(IOptions<LaunchOptions> launchOptions) : IModule
 {
-    public static string ConfigurationPath { get; private set; }
+    public static string ConfigurationPath { get; private set; } = null!;
     public static bool UseHardwareAcceleration { get; set; }
 
-    public static void Initialize(IServiceCollection services, LaunchOptions launchOptions)
+    private class ConfigurationStateInitializer(IOptions<ConfigurationFileFormat> opts) : ISupportInitialization
+    {
+        public void Initialize()
+        {
+            ConfigurationState.Instance.Load(opts.Value);
+        }
+    }
+
+    public void RegisterServices(IServiceCollection services)
     {
         string localConfigurationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ReleaseInformation.ConfigName);
         string appDataConfigurationPath = Path.Combine(AppDataManager.BaseDirPath, ReleaseInformation.ConfigName);
@@ -31,9 +41,9 @@ public class ConfigurationModule
             configurationPath = appDataConfigurationPath;
         }
 
-        if (!string.IsNullOrEmpty(launchOptions.OverrideConfigFile) && File.Exists(launchOptions.OverrideConfigFile))
+        if (!string.IsNullOrEmpty(launchOptions.Value.OverrideConfigFile) && File.Exists(launchOptions.Value.OverrideConfigFile))
         {
-            configurationPath = launchOptions.OverrideConfigFile;
+            configurationPath = launchOptions.Value.OverrideConfigFile;
         }
 
         if (configurationPath == null)
@@ -50,8 +60,11 @@ public class ConfigurationModule
             .AddJsonFile(ConfigurationPath, optional: false, reloadOnChange: true)
             .Build();
 
+        services.AddTransient<ISupportInitialization, ConfigurationStateInitializer>();
         services.AddSingleton<IConfiguration>(config);
-        services.AddSingleton<IOptions<LaunchOptions>>(new OptionsWrapper<LaunchOptions>(launchOptions));
+        services.AddSingleton<IOptions<LaunchOptions>>(new OptionsWrapper<LaunchOptions>(launchOptions.Value));
         services.AddOptions<ConfigurationFileFormat>().Bind(config);
+
+        CommandLineState.ParseArguments(launchOptions.Value);
     }
 }

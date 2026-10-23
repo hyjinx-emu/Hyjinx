@@ -7,6 +7,7 @@ using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.GraphicsDriver;
 using Hyjinx.Common.SystemInterop;
+using Hyjinx.Extensions.Abstractions;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.SDL2.Common;
@@ -22,7 +23,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.Ava;
 
-internal partial class Program : IDisposable
+internal partial class Program(ILogger<Program> logger, IServiceProvider applicationServices) : IDisposable
 {
     public static double WindowScaleFactor { get; set; }
     public static double DesktopScaleFactor { get; set; } = 1.0;
@@ -39,28 +40,43 @@ internal partial class Program : IDisposable
     {
         Arguments = args;
         Version = ReleaseInformation.Version;
-        PreviewerDetached = true;
+        PreviewerDetached = true; // Likely used to identify whether the views are in design mode, setting to false will cause the emulator to not run.
 
-        var services = new ServiceCollection();
-        Initialize(services, args);
+        AppDataManager.Initialize();
 
-        using var applicationServices = services.BuildServiceProvider();
-
-        using var program = new Program(
-            applicationServices.GetRequiredService<ILogger<Program>>(),
-            applicationServices);
-
+        using var program = Build(args);
         program.AttachGlobalEventListeners();
         return program.Run(args);
     }
 
-    private readonly ILogger<Program> _logger;
-    private readonly IServiceProvider _applicationServices;
-
-    private Program(ILogger<Program> logger, IServiceProvider applicationServices)
+    private static Program Build(string[] args)
     {
-        _logger = logger;
-        _applicationServices = applicationServices;
+        using var startupServices = new ServiceCollection()
+            .AddSingleton<IOptions<LaunchOptions>>(new OptionsWrapper<LaunchOptions>(
+                new ConfigurationBuilder()
+                    .AddCommandLine(args)
+                    .Build()
+                    .Get<LaunchOptions>() ?? new LaunchOptions()))
+            .RegisterModules()
+            .BuildServiceProvider();
+
+        var services = new ServiceCollection();
+
+        foreach (var module in startupServices.GetServices<IModule>())
+        {
+            module.RegisterServices(services);
+        }
+
+        var applicationServices = services.BuildServiceProvider();
+
+        foreach (var module in applicationServices.GetServices<ISupportInitialization>())
+        {
+            module.Initialize();
+        }
+
+        return new Program(
+            applicationServices.GetRequiredService<ILogger<Program>>(),
+            applicationServices);
     }
 
     ~Program()
@@ -75,6 +91,13 @@ internal partial class Program : IDisposable
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
     }
 
+    private void DetachGlobalEventListeners()
+    {
+        // Hook unhandled exception and process exit events.
+        AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
+        AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
+    }
+
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         ProcessUnhandledException((Exception)e.ExceptionObject, e.IsTerminating);
@@ -83,13 +106,6 @@ internal partial class Program : IDisposable
     private void OnProcessExit(object? sender, EventArgs e)
     {
         Exit();
-    }
-
-    private void DetachGlobalEventListeners()
-    {
-        // Hook unhandled exception and process exit events.
-        AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
-        AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
     }
 
     void IDisposable.Dispose()
@@ -113,13 +129,6 @@ internal partial class Program : IDisposable
             _ = MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nHyjinx supports Windows 10 version 1803 and newer.\n", $"Hyjinx", MbIconwarning);
             return -1;
         }
-
-        Logger.Initialize(
-            _applicationServices.GetRequiredService<ILoggerFactory>(),
-            _logger);
-
-        var opts = _applicationServices.GetRequiredService<IOptions<ConfigurationFileFormat>>();
-        ConfigurationState.Instance.Load(opts.Value);
 
         PrepareForLaunch();
         PrintSystemInfo();
@@ -214,48 +223,27 @@ internal partial class Program : IDisposable
             .UseSkia();
     }
 
-    private static void Initialize(IServiceCollection services, string[] args)
-    {
-        var launchConfig = new ConfigurationBuilder()
-            .AddCommandLine(args)
-            .Build().Get<LaunchOptions>() ?? new LaunchOptions();
-
-        // Parse arguments
-        CommandLineState.ParseArguments(launchConfig);
-        Console.Title = $"Hyjinx Console {Version}";
-
-        // Initialize the logger system.
-        LoggerModule.Initialize(services);
-
-        // TODO: Viper - Fix this so it's configuration driven (it's too noisy).
-        // LoggerAdapter.Register();
-
-        // Initialize the configuration.
-        AppDataManager.Initialize(launchConfig.BaseDirPathArg);
-        ConfigurationModule.Initialize(services, launchConfig);
-    }
-
     private void PrintSystemInfo()
     {
-        _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+        logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
             "Version: {Version}", Version);
         SystemInfo.Gather().Print();
 
         if (AppDataManager.Mode == AppDataManager.LaunchMode.Custom)
         {
-            _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
             "Launch Mode: Custom Path {BaseDirPath}", AppDataManager.BaseDirPath);
         }
         else
         {
-            _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
              "Launch Mode: {Mode}", AppDataManager.Mode);
         }
     }
 
     private void ProcessUnhandledException(Exception ex, bool isTerminating)
     {
-        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An unhandled exception was caught.");
+        logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An unhandled exception was caught.");
 
         if (isTerminating)
         {
