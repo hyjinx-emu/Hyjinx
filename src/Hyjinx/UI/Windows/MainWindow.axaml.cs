@@ -37,9 +37,7 @@ public partial class MainWindow : StyleableWindow
 {
     internal static MainWindowViewModel MainWindowViewModel { get; private set; }
 
-    private static readonly ILogger<MainWindow> _logger =
-        Logger.DefaultLoggerFactory.CreateLogger<MainWindow>();
-
+    private readonly ILogger<MainWindow> logger;
     private bool _isLoading;
     private bool _applicationsLoadedOnce;
 
@@ -66,13 +64,13 @@ public partial class MainWindow : StyleableWindow
     public readonly double StatusBarHeight;
     public readonly double MenuBarHeight;
 
-    public MainWindow()
+    public MainWindow(ILogger<MainWindow> logger, MainWindowViewModel viewModel)
     {
-        ViewModel = new MainWindowViewModel();
+        this.logger = logger;
 
-        MainWindowViewModel = ViewModel;
-
-        DataContext = ViewModel;
+        ViewModel = viewModel;
+        MainWindowViewModel = viewModel;
+        DataContext = viewModel;
 
         InitializeComponent();
         Load();
@@ -256,7 +254,7 @@ public partial class MainWindow : StyleableWindow
     }
 
     [SupportedOSPlatform("linux")]
-    private static async Task ShowVmMaxMapCountDialog()
+    private async Task ShowVmMaxMapCountDialog()
     {
         LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.LinuxVmMaxMapCountDialogTextPrimary,
             LinuxHelper.RecommendedVmMaxMapCount);
@@ -284,7 +282,7 @@ public partial class MainWindow : StyleableWindow
                 }
                 else
                 {
-                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "Unable to change vm.max_map_count. Process exited with code: {rc}", rc);
                 }
                 break;
@@ -297,7 +295,7 @@ public partial class MainWindow : StyleableWindow
                 }
                 else
                 {
-                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "Unable to write new value for vm.max_map_count to config. Process exited with code: {rc}", rc);
                 }
                 break;
@@ -308,7 +306,7 @@ public partial class MainWindow : StyleableWindow
     {
         if (OperatingSystem.IsLinux() && LinuxHelper.VmMaxMapCount < LinuxHelper.RecommendedVmMaxMapCount)
         {
-            _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+            logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
             "The value of vm.max_map_count is lower than {recommended}. ({vmMaxMapCount})", LinuxHelper.RecommendedVmMaxMapCount, LinuxHelper.VmMaxMapCount);
 
             if (LinuxHelper.PkExecPath is not null)
@@ -339,7 +337,7 @@ public partial class MainWindow : StyleableWindow
                     }
                     else
                     {
-                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                             "Couldn't find requested application id '{launchApplicationId}' in '{launchPath}'.", _launchApplicationId, _launchPath);
 
                         await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
@@ -353,7 +351,7 @@ public partial class MainWindow : StyleableWindow
             }
             else
             {
-                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                     "Couldn't find any application in '{launchPath}'.", _launchPath);
 
                 await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
@@ -426,7 +424,7 @@ public partial class MainWindow : StyleableWindow
             }
         }
 
-        _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+        logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
         "Failed to find valid start-up coordinates. Defaulting to primary monitor center.");
 
         return false;

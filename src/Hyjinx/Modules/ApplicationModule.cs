@@ -1,3 +1,5 @@
+using Hyjinx.Ava.UI.ViewModels;
+using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Extensions.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,5 +14,7 @@ internal class ApplicationModule : IModule
     public void RegisterServices(IServiceCollection services)
     {
         services.AddSingleton<App>();
+        services.AddSingleton<MainWindow>();
+        services.AddSingleton<MainWindowViewModel>();
     }
 }

@@ -10,6 +10,7 @@ using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
@@ -34,7 +35,7 @@ public partial class App(ILogger<App> logger, IServiceProvider applicationServic
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow();
+            desktop.MainWindow = applicationServices.GetRequiredService<MainWindow>();
         }
 
         base.OnFrameworkInitializationCompleted();
