@@ -15,7 +15,6 @@ namespace Hyjinx.Ava.Modules;
 internal class ConfigurationModule(IOptions<LaunchOptions> launchOptions) : IModule
 {
     public static string ConfigurationPath { get; private set; } = null!;
-    public static bool UseHardwareAcceleration { get; set; }
 
     private class ConfigurationStateInitializer(IOptions<ConfigurationFileFormat> opts) : ISupportInitialization
     {

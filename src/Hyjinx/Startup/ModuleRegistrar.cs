@@ -13,6 +13,7 @@ internal static partial class ModuleRegistrar
     {
         services.AddSingleton<IModule, ConfigurationModule>();
         services.AddSingleton<IModule, LoggingModule>();
+        services.AddSingleton<IModule, ApplicationModule>();
 
         foreach (var moduleType in KnownModuleTypes)
         {

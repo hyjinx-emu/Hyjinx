@@ -16,14 +16,11 @@ using System.Diagnostics;
 
 namespace Hyjinx.Ava;
 
-public partial class App : Application
+public partial class App(ILogger<App> logger, IServiceProvider applicationServices) : Application
 {
-    private static readonly ILogger<App> _logger =
-        Logger.DefaultLoggerFactory.CreateLogger<App>();
-
     public override void Initialize()
     {
-        Name = $"Hyjinx";
+        Name = "Hyjinx";
 
         AvaloniaXamlLoader.Load(this);
 
@@ -137,7 +134,7 @@ public partial class App : Application
 
     public static ThemeVariant DetectSystemTheme()
     {
-        if (Application.Current is App app)
+        if (Current is App app)
         {
             var colorValues = app.PlatformSettings.GetColorValues();
 

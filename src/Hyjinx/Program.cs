@@ -146,8 +146,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
 
     private void PrepareForLaunch()
     {
-        ConfigurationModule.UseHardwareAcceleration = ConfigurationState.Instance.EnableHardwareAcceleration.Value;
-
         // Check if graphics backend was overridden
         if (CommandLineState.OverrideGraphicsBackend != null)
         {
@@ -178,31 +176,32 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
                 _ => ConfigurationState.Instance.HideCursor.Value,
             };
         }
-
-        // Check if hardware-acceleration was overridden.
-        if (CommandLineState.OverrideHardwareAcceleration != null)
-        {
-            ConfigurationModule.UseHardwareAcceleration = CommandLineState.OverrideHardwareAcceleration.Value;
-        }
     }
 
-    private static AppBuilder BuildAvaloniaApp()
+    private AppBuilder BuildAvaloniaApp()
     {
-        return AppBuilder.Configure<App>()
+        // Check if hardware-acceleration is being overridden.
+        var useHardwareAcceleration = ConfigurationState.Instance.EnableHardwareAcceleration.Value;
+        if (CommandLineState.OverrideHardwareAcceleration != null)
+        {
+            useHardwareAcceleration = CommandLineState.OverrideHardwareAcceleration.Value;
+        }
+
+        return AppBuilder.Configure(applicationServices.GetRequiredService<App>)
             .UsePlatformDetect()
             .With(new X11PlatformOptions
             {
                 EnableMultiTouch = true,
                 EnableIme = true,
                 EnableInputFocusProxy = Environment.GetEnvironmentVariable("XDG_CURRENT_DESKTOP") == "gamescope",
-                RenderingMode = ConfigurationModule.UseHardwareAcceleration ?
+                RenderingMode = useHardwareAcceleration ?
                     new[] { X11RenderingMode.Glx, X11RenderingMode.Software } :
                     new[] { X11RenderingMode.Software },
             })
             .With(new Win32PlatformOptions
             {
                 WinUICompositionBackdropCornerRadius = 8.0f,
-                RenderingMode = ConfigurationModule.UseHardwareAcceleration ?
+                RenderingMode = useHardwareAcceleration ?
                     new[] { Win32RenderingMode.AngleEgl, Win32RenderingMode.Software } :
                     new[] { Win32RenderingMode.Software },
             })
