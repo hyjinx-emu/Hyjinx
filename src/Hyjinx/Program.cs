@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.Ava;
 
-internal partial class Program(ILogger<Program> logger, IServiceProvider applicationServices) : IDisposable
+internal partial class Program(ILogger<Program> logger, IServiceProvider applicationServices)
 {
     public static double WindowScaleFactor { get; set; }
     public static double DesktopScaleFactor { get; set; } = 1.0;
@@ -43,10 +43,17 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
         PreviewerDetached = true; // Likely used to identify whether the views are in design mode, setting to false will cause the emulator to not run.
 
         AppDataManager.Initialize();
+        var program = Build(args);
 
-        using var program = Build(args);
-        program.AttachGlobalEventListeners();
-        return program.Run(args);
+        try
+        {
+            program.AttachGlobalEventListeners();
+            return program.Run(args);
+        }
+        finally
+        {
+            program.DetachGlobalEventListeners();
+        }
     }
 
     private static Program Build(string[] args)
@@ -79,23 +86,16 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
             applicationServices);
     }
 
-    ~Program()
-    {
-        Dispose(false);
-    }
-
     private void AttachGlobalEventListeners()
     {
-        // Hook unhandled exception and process exit events.
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
     }
 
     private void DetachGlobalEventListeners()
     {
-        // Hook unhandled exception and process exit events.
-        AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
         AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
+        AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
     }
 
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -108,21 +108,7 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
         Exit();
     }
 
-    void IDisposable.Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    private void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            DetachGlobalEventListeners();
-        }
-    }
-
-    public int Run(string[] args)
+    private int Run(string[] args)
     {
         if (OperatingSystem.IsWindows() && !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17134))
         {
