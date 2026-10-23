@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Threading;
 using Hyjinx.Ava.Modules;
+using Hyjinx.Ava.Startup;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;

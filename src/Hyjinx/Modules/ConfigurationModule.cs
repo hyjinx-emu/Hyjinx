@@ -1,3 +1,4 @@
+using Hyjinx.Ava.Startup;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.UI.Common.Configuration;
