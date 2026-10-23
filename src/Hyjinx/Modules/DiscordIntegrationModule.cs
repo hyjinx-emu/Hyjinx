@@ -1,9 +1,8 @@
 using DiscordRPC;
-using Hyjinx.Common;
 using Hyjinx.UI.Common.Configuration;
 using System.Text;
 
-namespace Hyjinx.UI.Common;
+namespace Hyjinx.Ava.Modules;
 
 public static class DiscordIntegrationModule
 {

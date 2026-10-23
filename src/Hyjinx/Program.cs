@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Threading;
+using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
@@ -8,8 +9,6 @@ using Hyjinx.Common.SystemInterop;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.SDL2.Common;
-using Hyjinx.UI.Common;
-using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Helper;
 using Hyjinx.UI.Common.SystemInfo;
@@ -18,7 +17,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.Ava;

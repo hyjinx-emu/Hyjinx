@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.IO;
 
-namespace Hyjinx.UI.Common.AutoConfiguration;
+namespace Hyjinx.Ava.Modules;
 
 public class ConfigurationModule
 {

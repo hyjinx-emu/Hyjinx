@@ -1,4 +1,4 @@
-using Hyjinx.UI.Common.AutoConfiguration;
+using Hyjinx.Ava.Modules;
 
 namespace Hyjinx.UI.Common.Helper;
 

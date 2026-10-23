@@ -1,7 +1,7 @@
+using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Common;
 using Hyjinx.HLE.Utilities;
-using Hyjinx.UI.Common.AutoConfiguration;
 using Hyjinx.UI.Common.Configuration;
 using Hyjinx.UI.Common.Utilities;
 using System;

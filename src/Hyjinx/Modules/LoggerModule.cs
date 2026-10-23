@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Hyjinx.UI.Common.AutoConfiguration;
+namespace Hyjinx.Ava.Modules;
 
 public static class LoggerModule
 {
