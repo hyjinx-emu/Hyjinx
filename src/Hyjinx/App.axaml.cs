@@ -55,31 +55,6 @@ public partial class App(ILogger<App> logger, IServiceProvider applicationServic
         ApplyConfiguredTheme();
     }
 
-    private void ShowRestartDialog()
-    {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                var result = await ContentDialogHelper.CreateConfirmationDialog(
-                    LocaleManager.Instance[LocaleKeys.DialogThemeRestartMessage],
-                    LocaleManager.Instance[LocaleKeys.DialogThemeRestartSubMessage],
-                    LocaleManager.Instance[LocaleKeys.InputDialogYes],
-                    LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.DialogRestartRequiredMessage]);
-
-                if (result == UserResult.Yes)
-                {
-                    Process.Start(Environment.ProcessPath!, Program.Arguments);
-                    desktop.Shutdown();
-                    Environment.Exit(0);
-                }
-            }
-        });
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-    }
-
     private void ThemeChanged_Event(object sender, ReactiveEventArgs<string> e)
     {
         ApplyConfiguredTheme();
@@ -110,17 +85,16 @@ public partial class App(ILogger<App> logger, IServiceProvider applicationServic
                 _ => ThemeVariant.Default,
             };
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            LogFailedToApplyTheme();
-            ShowRestartDialog();
+            LogFailedToApplyTheme(ex);
         }
     }
 
     [LoggerMessage(LogLevel.Warning,
         EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-        Message = "Failed to Apply Theme. A restart is needed to apply the selected theme.")]
-    private partial void LogFailedToApplyTheme();
+        Message = "Failed to apply theme, a restart is needed to apply the selected theme. Reason: {exception}")]
+    private partial void LogFailedToApplyTheme(Exception exception);
 
     /// <summary>
     /// Converts a PlatformThemeVariant value to the corresponding ThemeVariant value.

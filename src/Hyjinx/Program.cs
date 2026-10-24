@@ -29,7 +29,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
     public static double DesktopScaleFactor { get; set; } = 1.0;
     public static string Version { get; private set; }
     public static bool PreviewerDetached { get; private set; }
-    public static string[] Arguments { get; private set; }
 
     [LibraryImport("user32.dll", SetLastError = true)]
     public static partial int MessageBoxA(IntPtr hWnd, [MarshalAs(UnmanagedType.LPStr)] string text, [MarshalAs(UnmanagedType.LPStr)] string caption, uint type);
@@ -38,7 +37,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
 
     public static int Main(string[] args)
     {
-        Arguments = args;
         Version = ReleaseInformation.Version;
         PreviewerDetached = true; // Likely used to identify whether the views are in design mode, setting to false will cause the emulator to not run.
 

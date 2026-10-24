@@ -7,7 +7,7 @@ namespace Hyjinx.Ava.Modules;
 internal static class DiscordIntegrationModule
 {
     private const string Description = "A simple, experimental Nintendo Switch emulator.";
-    private const string ApplicationId = "1216775165866807456";
+    private const string ApplicationId = "1563339670648004688";
 
     private const int ApplicationByteLimit = 128;
     private const string Ellipsis = "…";
@@ -21,7 +21,7 @@ internal static class DiscordIntegrationModule
         {
             Assets = new Assets
             {
-                LargeImageKey = "ryujinx",
+                LargeImageKey = "logo",
                 LargeImageText = Description,
             },
             Details = "Main Menu",
@@ -32,7 +32,7 @@ internal static class DiscordIntegrationModule
                 new Button
                 {
                     Label = "Website",
-                    Url = "https://ryujinx.org/",
+                    Url = "https://github.org/hyjinx-emu/Hyjinx",
                 },
             ],
         };
