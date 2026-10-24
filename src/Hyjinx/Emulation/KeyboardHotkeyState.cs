@@ -1,6 +1,6 @@
-namespace Hyjinx.Ava.Common;
+namespace Hyjinx.Ava.Emulation;
 
-public enum KeyboardHotkeyState
+internal enum KeyboardHotkeyState
 {
     None,
     ToggleVSync,

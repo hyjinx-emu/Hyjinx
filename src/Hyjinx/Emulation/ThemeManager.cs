@@ -1,8 +1,8 @@
 using System;
 
-namespace Hyjinx.Ava.Common;
+namespace Hyjinx.Ava.Emulation;
 
-public static class ThemeManager
+internal static class ThemeManager
 {
     public static event EventHandler ThemeChanged;
 

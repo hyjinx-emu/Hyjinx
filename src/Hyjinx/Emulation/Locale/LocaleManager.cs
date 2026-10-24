@@ -1,9 +1,9 @@
+using Hyjinx.Ava.Emulation;
+using Hyjinx.Ava.Emulation.Configuration;
 using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Common;
 using Hyjinx.HLE.Utilities;
-using Hyjinx.Ava.Emulation.Configuration;
-using Hyjinx.Ava.Emulation.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
