@@ -5,7 +5,7 @@ You can contribute to Hyjinx with PRs, testing of PRs and issues. Contributing c
 Please read the entire document before continuing as it can potentially save everyone involved a significant amount of time.
 
 ## Core Principles
-The following are the core principles of the emulator, and any proposals or changes you may be considering should be looked through their lens to ensure.
+The following are the core principles of the emulator, and any proposals or changes you may be considering should be looked through their lens to ensure:
 
 - **Emulation comes first** - First and foremost this is an emulator, while other functionality can be useful to some individuals, we are at the core an emulator. If it isn't to futher the experience of emulation, it shouldn't be included out-of-the-box.
 - **Accuracy** - As an emulator, we want to ensure accuracy with the emulation experience, even at the cost of performance. Hardware can often overcome the minor reduction of performance to have higher accuracy.
