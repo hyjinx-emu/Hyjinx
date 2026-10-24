@@ -242,7 +242,7 @@ internal partial class MainWindow : StyleableWindow
         // Consider removing this at some point in the future when we don't need to worry about old saves.
         VirtualFileSystem.FixExtraData(LibHacHorizonManager.HyjinxClient);
 
-        AccountManager = new AccountManager(LibHacHorizonManager.HyjinxClient, CommandLineState.Profile);
+        AccountManager = new AccountManager(LibHacHorizonManager.HyjinxClient);
 
         ApplicationHelper.Initialize(AccountManager, LibHacHorizonManager.HyjinxClient);
     }

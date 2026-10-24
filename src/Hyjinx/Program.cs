@@ -1,9 +1,7 @@
 using Avalonia;
 using Avalonia.Threading;
-using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.Startup;
 using Hyjinx.Ava.UI.Messaging;
-using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.GraphicsDriver;
@@ -14,12 +12,9 @@ using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.SDL2.Common;
 using Hyjinx.UI.Common.Configuration;
-using Hyjinx.UI.Common.Helper;
 using Hyjinx.UI.Common.SystemInfo;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Runtime.InteropServices;
 
@@ -43,7 +38,7 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
         PreviewerDetached = true; // Likely used to identify whether the views are in design mode, setting to false will cause the emulator to not run.
 
         AppDataManager.Initialize();
-        var program = Build(args);
+        var program = Build();
 
         try
         {
@@ -56,14 +51,9 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
         }
     }
 
-    private static Program Build(string[] args)
+    private static Program Build()
     {
         using var startupServices = new ServiceCollection()
-            .AddSingleton<IOptions<LaunchOptions>>(new OptionsWrapper<LaunchOptions>(
-                new ConfigurationBuilder()
-                    .AddCommandLine(args)
-                    .Build()
-                    .Get<LaunchOptions>() ?? new LaunchOptions()))
             .RegisterModules()
             .BuildServiceProvider();
 
@@ -117,7 +107,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
             return -1;
         }
 
-        PrepareForLaunch();
         PrintSystemInfo();
 
         if (OperatingSystem.IsMacOS())
@@ -133,58 +122,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
         // Enable OGL multithreading on the driver, and some other flags.
         DriverUtilities.InitDriverConfig(ConfigurationState.Instance.Graphics.BackendThreading == BackendThreading.Off);
 
-        if (CommandLineState.LaunchPathArg != null)
-        {
-            MainWindow.DeferLoadApplication(CommandLineState.LaunchPathArg, CommandLineState.LaunchApplicationId, CommandLineState.StartFullscreenArg);
-        }
-
-        var app = BuildAvaloniaApp();
-        return app.StartWithClassicDesktopLifetime(args);
-    }
-
-    private void PrepareForLaunch()
-    {
-        // Check if graphics backend was overridden
-        if (CommandLineState.OverrideGraphicsBackend != null)
-        {
-            if (CommandLineState.OverrideGraphicsBackend.ToLower() == "opengl")
-            {
-                ConfigurationState.Instance.Graphics.GraphicsBackend.Value = GraphicsBackend.OpenGl;
-            }
-            else if (CommandLineState.OverrideGraphicsBackend.ToLower() == "vulkan")
-            {
-                ConfigurationState.Instance.Graphics.GraphicsBackend.Value = GraphicsBackend.Vulkan;
-            }
-        }
-
-        // Check if docked mode was overriden.
-        if (CommandLineState.OverrideDockedMode.HasValue)
-        {
-            ConfigurationState.Instance.System.EnableDockedMode.Value = CommandLineState.OverrideDockedMode.Value;
-        }
-
-        // Check if HideCursor was overridden.
-        if (CommandLineState.OverrideHideCursor is not null)
-        {
-            ConfigurationState.Instance.HideCursor.Value = CommandLineState.OverrideHideCursor!.ToLower() switch
-            {
-                "never" => HideCursorMode.Never,
-                "onidle" => HideCursorMode.OnIdle,
-                "always" => HideCursorMode.Always,
-                _ => ConfigurationState.Instance.HideCursor.Value,
-            };
-        }
-    }
-
-    private AppBuilder BuildAvaloniaApp()
-    {
-        // Check if hardware-acceleration is being overridden.
-        var useHardwareAcceleration = ConfigurationState.Instance.EnableHardwareAcceleration.Value;
-        if (CommandLineState.OverrideHardwareAcceleration != null)
-        {
-            useHardwareAcceleration = CommandLineState.OverrideHardwareAcceleration.Value;
-        }
-
         return AppBuilder.Configure(applicationServices.GetRequiredService<App>)
             .UsePlatformDetect()
             .With(new X11PlatformOptions
@@ -192,18 +129,19 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
                 EnableMultiTouch = true,
                 EnableIme = true,
                 EnableInputFocusProxy = Environment.GetEnvironmentVariable("XDG_CURRENT_DESKTOP") == "gamescope",
-                RenderingMode = useHardwareAcceleration ?
+                RenderingMode = ConfigurationState.Instance.EnableHardwareAcceleration.Value ?
                     new[] { X11RenderingMode.Glx, X11RenderingMode.Software } :
                     new[] { X11RenderingMode.Software },
             })
             .With(new Win32PlatformOptions
             {
                 WinUICompositionBackdropCornerRadius = 8.0f,
-                RenderingMode = useHardwareAcceleration ?
+                RenderingMode = ConfigurationState.Instance.EnableHardwareAcceleration.Value ?
                     new[] { Win32RenderingMode.AngleEgl, Win32RenderingMode.Software } :
                     new[] { Win32RenderingMode.Software },
             })
-            .UseSkia();
+            .UseSkia()
+            .StartWithClassicDesktopLifetime(args);
     }
 
     private void PrintSystemInfo()
