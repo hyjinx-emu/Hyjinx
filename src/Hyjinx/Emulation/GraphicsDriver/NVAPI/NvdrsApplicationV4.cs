@@ -1,9 +1,9 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Common.GraphicsDriver.NVAPI;
+namespace Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
 
 [StructLayout(LayoutKind.Sequential, Pack = 4)]
-struct NvdrsApplicationV4
+internal struct NvdrsApplicationV4
 {
     public uint Version;
     public uint IsPredefined;

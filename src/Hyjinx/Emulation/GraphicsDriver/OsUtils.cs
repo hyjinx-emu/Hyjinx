@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Common.Utilities;
+namespace Hyjinx.Ava.Emulation.Utilities;
 
 internal partial class OsUtils
 {

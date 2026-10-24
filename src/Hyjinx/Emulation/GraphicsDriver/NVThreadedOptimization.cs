@@ -1,11 +1,11 @@
-using Hyjinx.Common.GraphicsDriver.NVAPI;
+using Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Common.GraphicsDriver;
+namespace Hyjinx.Ava.Emulation.GraphicsDriver;
 
-static partial class NVThreadedOptimization
+internal static partial class NVThreadedOptimization
 {
     private const string ProfileName = "Hyjinx Nvidia Profile";
 

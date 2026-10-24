@@ -1,8 +1,8 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Common.GraphicsDriver.NVAPI;
+namespace Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
 
-enum NvdrsSettingType : uint
+internal enum NvdrsSettingType : uint
 {
     NvdrsDwordType,
     NvdrsBinaryType,
@@ -10,7 +10,7 @@ enum NvdrsSettingType : uint
     NvdrsWstringType,
 }
 
-enum NvdrsSettingLocation : uint
+internal enum NvdrsSettingLocation : uint
 {
     NvdrsCurrentProfileLocation,
     NvdrsGlobalProfileLocation,
@@ -19,7 +19,7 @@ enum NvdrsSettingLocation : uint
 }
 
 [StructLayout(LayoutKind.Explicit, Size = 0x3020)]
-struct NvdrsSetting
+internal struct NvdrsSetting
 {
     [FieldOffset(0x0)]
     public uint Version;

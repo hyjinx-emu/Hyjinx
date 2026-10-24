@@ -1,6 +1,6 @@
-namespace Hyjinx.Common.GraphicsDriver.NVAPI;
+namespace Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
 
-enum Nvapi : uint
+internal enum Nvapi : uint
 {
     OglThreadControlId = 0x20C1221E,
 

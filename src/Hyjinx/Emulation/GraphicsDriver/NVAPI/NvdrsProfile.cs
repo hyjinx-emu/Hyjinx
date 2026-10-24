@@ -1,9 +1,9 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Common.GraphicsDriver.NVAPI;
+namespace Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-struct NvdrsProfile
+internal struct NvdrsProfile
 {
     public uint Version;
     public NvapiUnicodeString ProfileName;

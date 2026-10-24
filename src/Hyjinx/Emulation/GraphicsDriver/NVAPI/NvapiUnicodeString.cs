@@ -1,10 +1,10 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Hyjinx.Common.GraphicsDriver.NVAPI;
+namespace Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
 
 [StructLayout(LayoutKind.Sequential, Pack = 4)]
-public unsafe struct NvapiUnicodeString
+internal unsafe struct NvapiUnicodeString
 {
     private fixed byte _data[4096];
 
