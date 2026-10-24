@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Hyjinx.Ava.UI.Windows;
-using Hyjinx.Common.Configuration;
 using Hyjinx.HLE.HOS;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Configuration;
@@ -12,7 +11,7 @@ using System;
 
 namespace Hyjinx.Ava.UI.Views.Main;
 
-public partial class MainStatusBarView : UserControl
+internal partial class MainStatusBarView : UserControl
 {
     public MainWindow Window;
 

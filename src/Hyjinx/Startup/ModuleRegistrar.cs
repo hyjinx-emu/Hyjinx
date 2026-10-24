@@ -14,6 +14,7 @@ internal static partial class ModuleRegistrar
         services.AddSingleton<IModule, ConfigurationModule>();
         services.AddSingleton<IModule, LoggingModule>();
         services.AddSingleton<IModule, ApplicationModule>();
+        services.AddSingleton<IModule, DiscordIntegrationModule>();
 
         foreach (var moduleType in KnownModuleTypes)
         {

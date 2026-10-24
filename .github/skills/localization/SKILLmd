@@ -1,0 +1,130 @@
+---
+name: localization
+description: Synchronize all UI localization JSON files with en_US.json. Use when translating new strings, updating existing translations, auditing locale consistency, or keeping supported languages aligned with the English source.
+---
+
+# Synchronize UI Localization
+
+## Purpose
+
+Maintain every supported language's localization JSON file in sync with `en_US.json`.
+
+`en_US.json` is the authoritative source. The user maintains it manually. Never modify it as part of a localization synchronization task.
+
+The goal is to produce complete, accurate, natural translations while minimizing unrelated changes.
+
+## Workflow
+
+### 1. Discover localization files
+
+The localization directory is:
+
+`src/Hyjinx/Assets/Locales/`
+
+Resolve this path relative to the repository root.
+
+- Treat `src/Hyjinx/Assets/Locales/en_US.json` as the authoritative source.
+- Discover every other locale JSON file in this directory and synchronize it against `en_US.json`.
+- Treat all other locale JSON files in this directory as translation targets.
+- Do not assume a fixed list of supported languages.
+- Do not search outside this directory for additional localization targets.
+- Do not modify files outside this directory.
+- If the source file is missing, stop and report the problem rather than guessing which file is authoritative.
+- Read the complete English source and inspect existing target files before making changes.
+
+### 2. Inspect the source and targets
+
+For each target locale:
+
+- Compare its keys and structure with `en_US.json`.
+- Identify missing keys, extra keys, untranslated English strings, suspicious translations, and structural differences.
+- Inspect the Git diff and available history for changes to `en_US.json` when useful.
+- Use existing translations as context for terminology, tone, and established wording.
+- Determine whether existing translations remain appropriate for the current English source.
+
+Do not assume that an existing translation is correct merely because it is present.
+
+### 3. Synchronize translations
+
+For every target locale:
+
+- Add keys present in `en_US.json` but missing from the target.
+- Translate missing or outdated values into the target language.
+- Preserve correct existing translations when their meaning still matches the English source.
+- Review existing translations for obvious errors, incorrect meaning, inconsistent terminology, and unnatural phrasing.
+- Remove obsolete keys that no longer exist in `en_US.json`.
+- Preserve the source's intended meaning, including distinctions specific to emulator functionality and game-facing UI.
+- Use idiomatic language appropriate for the target locale rather than translating word for word.
+- Preserve the existing JSON organization and key ordering where practical.
+
+If the English source changed and the previous translation is available, use both the old translation and the new English value to understand what needs to change. Do not blindly replace a translation just because the English wording changed.
+
+If there is insufficient information to determine whether a translation is correct, use the best context available and report material uncertainty.
+
+### 4. Preserve technical content
+
+Treat localization keys and non-translatable syntax as immutable.
+
+Never alter or translate:
+
+- JSON property names and keys.
+- Interpolation placeholders, format specifiers, and named arguments.
+- Application-specific tokens, identifiers, or commands embedded in strings.
+- Markup, tags, and formatting directives.
+- Escape sequences and intentional newline characters.
+- URLs, file paths, and other technical values that must remain literal.
+
+Preserve the exact spelling, capitalization, and occurrence count of placeholders and other protected tokens. Natural-language word order may change around them when required by the target language.
+
+Do not assume every string is plain prose. Inspect the context of strings containing markup, embedded syntax, or technical terminology before translating them.
+
+### 5. Maintain localization quality
+
+- Translate for the intended player-facing context.
+- Distinguish menu labels, buttons, settings, status messages, warnings, and error messages.
+- Maintain consistent terminology across a locale and reuse established translations when appropriate.
+- Preserve capitalization conventions and punctuation appropriate to the target language.
+- Avoid adding meaning, explanations, or information absent from the source.
+- Do not translate product names, proper names, or technical terms that should remain unchanged.
+- Do not invent language-specific conventions or terminology when repository context can establish the intended usage.
+
+When the intended meaning is ambiguous, examine related strings and surrounding code or documentation if necessary. Prefer a contextually supported translation over an unsupported guess.
+
+### 6. Validate every locale
+
+After editing, validate each target file against `en_US.json`.
+
+Verify that:
+
+- The file parses as valid JSON.
+- The key set matches the English source.
+- The nesting and JSON value types match the source.
+- All intended human-readable strings have been translated.
+- Protected placeholders and formatting tokens are preserved.
+- No unrelated source values or files were changed.
+- Existing correct translations remain intact wherever possible.
+
+Use available repository tools or scripts to validate JSON and compare keys when practical. Do not claim validation succeeded unless it was actually performed.
+
+If structural inconsistencies are found in the English source, report them rather than silently changing the authoritative file.
+
+## Scope and change discipline
+
+- Modify target locale files only.
+- Never edit `en_US.json`.
+- Never change application code, localization infrastructure, or unrelated assets as part of this task.
+- Do not reformat entire files unnecessarily.
+- Do not replace correct translations simply to make the files appear uniformly updated.
+- Do not stop after translating one locale when the request is to synchronize all locales.
+- Complete the synchronization across all discovered target locales unless a concrete blocker prevents it.
+
+## Completion report
+
+After synchronization, summarize:
+
+- The locale files inspected and updated.
+- The missing, changed, and obsolete entries handled.
+- The validation performed and its results.
+- Any unresolved ambiguities, structural problems, or entries requiring human review.
+
+Keep the report concise. Distinguish verified results from work that could not be completed or validated.

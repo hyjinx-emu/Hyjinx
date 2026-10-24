@@ -11,6 +11,7 @@ using Hyjinx.Ava.Input;
 using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Helpers;
+using Hyjinx.Ava.UI.Messaging;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Models.Generic;
 using Hyjinx.Ava.UI.Renderer;
@@ -45,12 +46,12 @@ using ShaderCacheLoadingState = Hyjinx.Graphics.Gpu.Shader.ShaderCacheState;
 
 namespace Hyjinx.Ava.UI.ViewModels;
 
-public class MainWindowViewModel : BaseModel
+internal class MainWindowViewModel : BaseModel
 {
     private const int HotKeyPressDelayMs = 500;
 
-    private readonly ILogger<MainWindowViewModel> _logger =
-        Logger.DefaultLoggerFactory.CreateLogger<MainWindowViewModel>();
+    private readonly ILogger<MainWindowViewModel> logger;
+    private readonly Messenger messenger;
 
     private ObservableCollection<ApplicationData> _applications;
     private string _aspectStatusText;
@@ -113,8 +114,11 @@ public class MainWindowViewModel : BaseModel
 
     internal AppHost AppHost { get; set; }
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(ILogger<MainWindowViewModel> logger, Messenger messenger)
     {
+        this.logger = logger;
+        this.messenger = messenger;
+
         Applications = new ObservableCollection<ApplicationData>();
 
         Applications.ToObservableChangeSet()
@@ -1553,7 +1557,8 @@ public class MainWindowViewModel : BaseModel
             AccountManager,
             UserChannelPersistence,
             this,
-            TopLevel);
+            TopLevel,
+            messenger);
 
         if (!await AppHost.LoadGuestApplicationAsync(cancellationToken))
         {
