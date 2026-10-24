@@ -11,7 +11,9 @@ using Hyjinx.Ava.Input;
 using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Applet;
 using Hyjinx.Ava.UI.Helpers;
+using Hyjinx.Ava.UI.Messaging;
 using Hyjinx.Ava.UI.ViewModels;
+using Hyjinx.Extensions.Abstractions.Events;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
@@ -33,11 +35,13 @@ using System.Threading.Tasks;
 
 namespace Hyjinx.Ava.UI.Windows;
 
-public partial class MainWindow : StyleableWindow
+internal partial class MainWindow : StyleableWindow
 {
     internal static MainWindowViewModel MainWindowViewModel { get; private set; }
 
     private readonly ILogger<MainWindow> logger;
+    private Messenger Messenger { get; }
+
     private bool _isLoading;
     private bool _applicationsLoadedOnce;
 
@@ -56,7 +60,8 @@ public partial class MainWindow : StyleableWindow
 
     public InputManager InputManager { get; private set; }
 
-    internal MainWindowViewModel ViewModel { get; private set; }
+    public MainWindowViewModel ViewModel { get; private set; }
+
     public SettingsWindow SettingsWindow { get; set; }
 
     public ApplicationLibrary ApplicationLibrary { get; set; }
@@ -64,10 +69,11 @@ public partial class MainWindow : StyleableWindow
     public readonly double StatusBarHeight;
     public readonly double MenuBarHeight;
 
-    public MainWindow(ILogger<MainWindow> logger, MainWindowViewModel viewModel)
+    public MainWindow(ILogger<MainWindow> logger, MainWindowViewModel viewModel, Messenger messenger)
     {
         this.logger = logger;
 
+        Messenger = messenger;
         ViewModel = viewModel;
         MainWindowViewModel = viewModel;
         DataContext = viewModel;
@@ -577,7 +583,11 @@ public partial class MainWindow : StyleableWindow
 
         ApplicationLibrary.CancelLoading();
         InputManager.Dispose();
-        Program.Exit();
+
+        Messenger.Send(new ApplicationClosingEvent
+        {
+            Terminating = false
+        });
 
         base.OnClosing(e);
     }

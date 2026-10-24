@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace Hyjinx.Ava.UI.Views.Main;
 
-public partial class MainMenuBarView : UserControl
+internal partial class MainMenuBarView : UserControl
 {
     public MainWindow Window { get; private set; }
     public MainWindowViewModel ViewModel { get; private set; }

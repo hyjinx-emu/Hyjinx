@@ -9,7 +9,7 @@ using System;
 
 namespace Hyjinx.Ava.UI.Views.Main;
 
-public partial class MainViewControls : UserControl
+internal partial class MainViewControls : UserControl
 {
     public MainWindowViewModel ViewModel;
 

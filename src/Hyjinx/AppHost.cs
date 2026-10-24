@@ -9,14 +9,15 @@ using Hyjinx.Audio.Integration;
 using Hyjinx.Ava.Common;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.Input;
-using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Helpers;
+using Hyjinx.Ava.UI.Messaging;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Renderer;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.SystemInterop;
+using Hyjinx.Extensions.Abstractions.Events;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.GAL.Multithreading;
 using Hyjinx.Graphics.Gpu;
@@ -83,6 +84,7 @@ internal class AppHost
     private readonly InputManager _inputManager;
 
     private readonly MainWindowViewModel _viewModel;
+    private readonly Messenger _messenger;
     private readonly IKeyboard _keyboardInterface;
     private readonly TopLevel _topLevel;
     public RendererHost RendererHost;
@@ -146,7 +148,8 @@ internal class AppHost
         AccountManager accountManager,
         UserChannelPersistence userChannelPersistence,
         MainWindowViewModel viewmodel,
-        TopLevel topLevel)
+        TopLevel topLevel,
+        Messenger mesenger)
     {
         _viewModel = viewmodel;
         _inputManager = inputManager;
@@ -156,6 +159,7 @@ internal class AppHost
         _lastCursorMoveTime = Stopwatch.GetTimestamp();
         _glLogLevel = ConfigurationState.Instance.Logger.GraphicsDebugLevel;
         _topLevel = topLevel;
+        _messenger = mesenger;
 
         _inputManager.SetMouseDriver(new AvaloniaMouseDriver(_topLevel, renderer));
 
@@ -515,6 +519,8 @@ internal class AppHost
 
         _isStopped = true;
         _isActive = false;
+
+        _messenger.Send(new GameStoppedEvent());
     }
 
     public void DisposeContext()
@@ -628,7 +634,11 @@ internal class AppHost
             return false;
         }
 
-        DiscordIntegrationModule.SwitchToPlayingState(Device.Processes.ActiveApplication.ProgramIdText, Device.Processes.ActiveApplication.Name);
+        _messenger.Send(new GameStartedEvent
+        {
+            ApplicationName = Device.Processes.ActiveApplication!.Name,
+            TitleId = Device.Processes.ActiveApplication.ProgramIdText
+        });
 
         ApplicationLibrary.LoadAndSaveMetaData(Device.Processes.ActiveApplication.ProgramIdText, appMetadata =>
         {

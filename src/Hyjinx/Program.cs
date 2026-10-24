@@ -2,12 +2,14 @@ using Avalonia;
 using Avalonia.Threading;
 using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.Startup;
+using Hyjinx.Ava.UI.Messaging;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Common.GraphicsDriver;
 using Hyjinx.Common.SystemInterop;
 using Hyjinx.Extensions.Abstractions;
+using Hyjinx.Extensions.Abstractions.Events;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.SDL2.Common;
@@ -87,23 +89,24 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
     private void AttachGlobalEventListeners()
     {
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-        AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
     }
 
     private void DetachGlobalEventListeners()
     {
-        AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
         AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
     }
 
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
-        ProcessUnhandledException((Exception)e.ExceptionObject, e.IsTerminating);
-    }
+        logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), (Exception)e.ExceptionObject, "An unhandled exception was caught.");
 
-    private void OnProcessExit(object? sender, EventArgs e)
-    {
-        Exit();
+        if (e.IsTerminating)
+        {
+            applicationServices.GetRequiredService<Messenger>().Send(new ApplicationClosingEvent
+            {
+                Terminating = e.IsTerminating
+            });
+        }
     }
 
     private int Run(string[] args)
@@ -134,9 +137,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
         {
             MainWindow.DeferLoadApplication(CommandLineState.LaunchPathArg, CommandLineState.LaunchApplicationId, CommandLineState.StartFullscreenArg);
         }
-
-        // Initialize Discord integration.
-        DiscordIntegrationModule.Initialize();
 
         var app = BuildAvaloniaApp();
         return app.StartWithClassicDesktopLifetime(args);
@@ -222,20 +222,5 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
             logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
              "Launch Mode: {Mode}", AppDataManager.Mode);
         }
-    }
-
-    private void ProcessUnhandledException(Exception ex, bool isTerminating)
-    {
-        logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), ex, "An unhandled exception was caught.");
-
-        if (isTerminating)
-        {
-            Exit();
-        }
-    }
-
-    public static void Exit()
-    {
-        DiscordIntegrationModule.Exit();
     }
 }
