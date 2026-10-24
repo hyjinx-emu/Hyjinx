@@ -1,9 +1,7 @@
-using Hyjinx.Ava.Startup;
 using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Extensions.Abstractions;
 using Hyjinx.UI.Common.Configuration;
-using Hyjinx.UI.Common.Helper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -12,7 +10,7 @@ using System.IO;
 
 namespace Hyjinx.Ava.Modules;
 
-internal class ConfigurationModule(IOptions<LaunchOptions> launchOptions) : IModule
+internal class ConfigurationModule : IModule
 {
     public static string ConfigurationPath { get; private set; } = null!;
 
@@ -40,11 +38,6 @@ internal class ConfigurationModule(IOptions<LaunchOptions> launchOptions) : IMod
             configurationPath = appDataConfigurationPath;
         }
 
-        if (!string.IsNullOrEmpty(launchOptions.Value.OverrideConfigFile) && File.Exists(launchOptions.Value.OverrideConfigFile))
-        {
-            configurationPath = launchOptions.Value.OverrideConfigFile;
-        }
-
         if (configurationPath == null)
         {
             ConfigurationPath = appDataConfigurationPath;
@@ -61,9 +54,6 @@ internal class ConfigurationModule(IOptions<LaunchOptions> launchOptions) : IMod
 
         services.AddTransient<ISupportInitialization, ConfigurationStateInitializer>();
         services.AddSingleton<IConfiguration>(config);
-        services.AddSingleton<IOptions<LaunchOptions>>(new OptionsWrapper<LaunchOptions>(launchOptions.Value));
         services.AddOptions<ConfigurationFileFormat>().Bind(config);
-
-        CommandLineState.ParseArguments(launchOptions.Value);
     }
 }
