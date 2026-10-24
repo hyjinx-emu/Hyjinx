@@ -6,7 +6,6 @@ using Hyjinx.Audio.Backends.OpenAL;
 using Hyjinx.Audio.Backends.SDL2;
 using Hyjinx.Audio.Backends.SoundIo;
 using Hyjinx.Audio.Integration;
-using Hyjinx.Ava.Common;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.Emulation.Configuration;
 using Hyjinx.Ava.Emulation.Helper;
