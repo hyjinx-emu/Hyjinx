@@ -59,7 +59,7 @@ using ScalingFilter = Hyjinx.UI.Common.Configuration.ScalingFilter;
 using Size = Avalonia.Size;
 using Switch = Hyjinx.HLE.Switch;
 
-namespace Hyjinx.Ava;
+namespace Hyjinx.Ava.Emulation;
 
 internal class AppHost
 {
@@ -273,13 +273,13 @@ internal class AppHost
 
     private void UpdateScalingFilterLevel(object sender, ReactiveEventArgs<int> e)
     {
-        _renderer.Window?.SetScalingFilter((Hyjinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
+        _renderer.Window?.SetScalingFilter((Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
         _renderer.Window?.SetScalingFilterLevel(ConfigurationState.Instance.Graphics.ScalingFilterLevel.Value);
     }
 
     private void UpdateScalingFilter(object sender, ReactiveEventArgs<ScalingFilter> e)
     {
-        _renderer.Window?.SetScalingFilter((Hyjinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
+        _renderer.Window?.SetScalingFilter((Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
         _renderer.Window?.SetScalingFilterLevel(ConfigurationState.Instance.Graphics.ScalingFilterLevel.Value);
     }
 
@@ -464,7 +464,7 @@ internal class AppHost
 
     private void UpdateAntiAliasing(object sender, ReactiveEventArgs<AntiAliasing> e)
     {
-        _renderer?.Window?.SetAntiAliasing((Hyjinx.Graphics.GAL.AntiAliasing)e.NewValue);
+        _renderer?.Window?.SetAntiAliasing((Graphics.GAL.AntiAliasing)e.NewValue);
     }
 
     private void UpdateDockedModeState(object sender, ReactiveEventArgs<bool> e)
@@ -834,8 +834,8 @@ internal class AppHost
 
         Device.Gpu.Renderer.Initialize(_glLogLevel);
 
-        _renderer?.Window?.SetAntiAliasing((Hyjinx.Graphics.GAL.AntiAliasing)ConfigurationState.Instance.Graphics.AntiAliasing.Value);
-        _renderer?.Window?.SetScalingFilter((Hyjinx.Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
+        _renderer?.Window?.SetAntiAliasing((Graphics.GAL.AntiAliasing)ConfigurationState.Instance.Graphics.AntiAliasing.Value);
+        _renderer?.Window?.SetScalingFilter((Graphics.GAL.ScalingFilter)ConfigurationState.Instance.Graphics.ScalingFilter.Value);
         _renderer?.Window?.SetScalingFilterLevel(ConfigurationState.Instance.Graphics.ScalingFilterLevel.Value);
         _renderer?.Window?.SetColorSpacePassthrough(ConfigurationState.Instance.Graphics.EnableColorSpacePassthrough.Value);
 
