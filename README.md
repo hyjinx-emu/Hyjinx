@@ -64,13 +64,13 @@ See the [Releases](https://github.com/hyjinx-emu/Hyjinx/releases) page for autom
 - **DLC & Modifications**
 
   Hyjinx is able to manage add-on content/downloadable content through the GUI.
-  Mods (romfs, exefs, and runtime mods such as cheats) are also supported;
-  the GUI contains a shortcut to open the respective mods folder for a particular game.
+  Mods (romfs, exefs, and runtime mods such as cheats) are currently  unsupported;
+  there are plans to reintroduce support once the emulator has been stabilized.
 
 - **Configuration**
 
   The emulator has settings for enabling or disabling some logging, remapping controllers, and more.
-  You can configure all of them through the graphical interface or manually through the config file, `Config.json`, found in the user folder which can be accessed by clicking `Open Hyjinx Folder` under the File menu in the GUI.
+  You can configure all of them through the graphical interface or manually through the config file, `config.json`, found in the user folder which can be accessed by clicking `Open Hyjinx Folder` under the File menu in the GUI.
 
 <!--
 ## Contact
