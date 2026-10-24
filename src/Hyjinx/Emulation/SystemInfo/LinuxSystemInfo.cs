@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.UI.Common.SystemInfo;
+namespace Hyjinx.Ava.Emulation.SystemInfo;
 
 [SupportedOSPlatform("linux")]
 partial class LinuxSystemInfo : SystemInfo

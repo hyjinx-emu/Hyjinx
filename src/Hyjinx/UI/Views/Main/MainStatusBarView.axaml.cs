@@ -5,7 +5,7 @@ using Avalonia.Interactivity;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.HLE.HOS;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Configuration;
+using Hyjinx.Ava.Emulation.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 

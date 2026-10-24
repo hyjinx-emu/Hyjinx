@@ -2,7 +2,7 @@ using Hyjinx.Common.Configuration;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Configuration;
+using Hyjinx.Ava.Emulation.Configuration;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
 using SPB.Graphics;

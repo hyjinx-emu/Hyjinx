@@ -4,14 +4,14 @@ using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.Utilities;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Configuration.System;
-using Hyjinx.UI.Common.Configuration.UI;
+using Hyjinx.Ava.Emulation.Configuration.System;
+using Hyjinx.Ava.Emulation.Configuration.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Nodes;
 
-namespace Hyjinx.UI.Common.Configuration;
+namespace Hyjinx.Ava.Emulation.Configuration;
 
 /// <summary>
 /// Describes the configuration options.

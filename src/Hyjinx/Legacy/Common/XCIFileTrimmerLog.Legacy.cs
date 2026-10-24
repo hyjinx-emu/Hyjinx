@@ -3,7 +3,7 @@
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Common.Utilities;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Utilities;
+using Hyjinx.Ava.Emulation.Utilities;
 using Microsoft.Extensions.Logging;
 
 namespace Hyjinx.Ava.Common;

@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.UI.Common.Helper;
+namespace Hyjinx.Ava.Emulation.Helper;
 
 public static partial class OpenHelper
 {

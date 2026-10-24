@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.UI.Common.Helper;
+namespace Hyjinx.Ava.Emulation.Helper;
 
 public static class ShortcutHelper
 {
@@ -33,7 +33,7 @@ public static class ShortcutHelper
     private static void CreateShortcutLinux(string applicationFilePath, string applicationId, byte[] iconData, string iconPath, string desktopPath, string cleanedAppName)
     {
         string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Hyjinx.sh");
-        var desktopFile = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-template.desktop");
+        var desktopFile = EmbeddedResources.ReadAllText("Hyjinx.Ava.Emulation/shortcut-template.desktop");
         iconPath += ".png";
 
         var image = SKBitmap.Decode(iconData);
@@ -49,8 +49,8 @@ public static class ShortcutHelper
     private static void CreateShortcutMacos(string appFilePath, string applicationId, byte[] iconData, string desktopPath, string cleanedAppName)
     {
         string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Hyjinx");
-        var plistFile = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-template.plist");
-        var shortcutScript = EmbeddedResources.ReadAllText("Hyjinx.UI.Common/shortcut-launch-script.sh");
+        var plistFile = EmbeddedResources.ReadAllText("Hyjinx.Ava.Emulation/shortcut-template.plist");
+        var shortcutScript = EmbeddedResources.ReadAllText("Hyjinx.Ava.Emulation/shortcut-launch-script.sh");
         // Macos .App folder
         string contentFolderPath = Path.Combine("/Applications", cleanedAppName + ".app", "Contents");
         string scriptFolderPath = Path.Combine(contentFolderPath, "MacOS");

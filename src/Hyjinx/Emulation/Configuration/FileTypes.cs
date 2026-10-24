@@ -1,4 +1,4 @@
-namespace Hyjinx.UI.Common;
+namespace Hyjinx.Ava.Emulation;
 
 public enum FileTypes
 {

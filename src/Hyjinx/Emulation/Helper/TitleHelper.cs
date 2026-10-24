@@ -1,7 +1,7 @@
 using Hyjinx.HLE.Loaders.Processes;
 using System;
 
-namespace Hyjinx.UI.Common.Helper;
+namespace Hyjinx.Ava.Emulation.Helper;
 
 public static class TitleHelper
 {

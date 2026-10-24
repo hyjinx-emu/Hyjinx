@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.UI.Common.Configuration;
+namespace Hyjinx.Ava.Emulation.Configuration;
 
 [JsonSourceGenerationOptions(WriteIndented = true, UseStringEnumConverter = true)]
 [JsonSerializable(typeof(ConfigurationFileFormat))]

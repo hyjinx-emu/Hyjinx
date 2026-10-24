@@ -5,7 +5,7 @@
 //using Hyjinx.HLE.FileSystem;
 //using Hyjinx.HLE.HOS;
 //using Hyjinx.UI.App.Common;
-//using Hyjinx.UI.Common.Configuration;
+//using Hyjinx.Ava.Emulation.Configuration;
 //using LibHac.Tools.FsSystem;
 //using System;
 //using System.Collections.Generic;

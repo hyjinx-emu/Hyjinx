@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
 
-namespace Hyjinx.UI.Common.SystemInfo;
+namespace Hyjinx.Ava.Emulation.SystemInfo;
 
 [SupportedOSPlatform("macos")]
 partial class MacOSSystemInfo : SystemInfo

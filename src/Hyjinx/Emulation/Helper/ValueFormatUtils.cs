@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 
-namespace Hyjinx.UI.Common.Helper;
+namespace Hyjinx.Ava.Emulation.Helper;
 
 public static class ValueFormatUtils
 {

@@ -1,6 +1,6 @@
 using Hyjinx.Ava.Common.Locale;
-using Hyjinx.UI.Common;
-using Hyjinx.UI.Common.Helper;
+using Hyjinx.Ava.Emulation;
+using Hyjinx.Ava.Emulation.Helper;
 using System.Threading.Tasks;
 
 namespace Hyjinx.Ava.UI.Helpers;

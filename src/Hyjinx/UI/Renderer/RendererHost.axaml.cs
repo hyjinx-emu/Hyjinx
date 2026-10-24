@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Hyjinx.Common.Configuration;
-using Hyjinx.UI.Common.Configuration;
+using Hyjinx.Ava.Emulation.Configuration;
 using System;
 
 namespace Hyjinx.Ava.UI.Renderer;

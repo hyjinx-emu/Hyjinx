@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace Hyjinx.UI.Common.Utilities;
+namespace Hyjinx.Ava.Emulation.Utilities;
 
 internal static class Performance
 {

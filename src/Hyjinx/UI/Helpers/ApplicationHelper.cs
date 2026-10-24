@@ -4,7 +4,7 @@ using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Helper;
+using Hyjinx.Ava.Emulation.Helper;
 using LibHac;
 using LibHac.Account;
 using LibHac.Common;

@@ -19,7 +19,7 @@ using Hyjinx.Common.Configuration.Hid.Controller.Motion;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Input;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Configuration;
+using Hyjinx.Ava.Emulation.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

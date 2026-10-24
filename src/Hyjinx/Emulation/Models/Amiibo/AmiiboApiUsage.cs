@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.UI.Common.Models.Amiibo;
+namespace Hyjinx.Ava.Emulation.Models.Amiibo;
 
 public class AmiiboApiUsage
 {

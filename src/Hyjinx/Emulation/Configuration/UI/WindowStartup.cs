@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace Hyjinx.UI.Common.Configuration.UI;
+namespace Hyjinx.Ava.Emulation.Configuration.UI;
 
 public record WindowStartup
 {

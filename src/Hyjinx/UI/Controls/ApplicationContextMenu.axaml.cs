@@ -8,7 +8,7 @@ using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Configuration;
 using Hyjinx.UI.App.Common;
-using Hyjinx.UI.Common.Helper;
+using Hyjinx.Ava.Emulation.Helper;
 using LibHac.Fs;
 using System;
 using System.Collections.Generic;

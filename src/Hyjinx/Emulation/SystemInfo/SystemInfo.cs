@@ -1,12 +1,12 @@
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Helper;
+using Hyjinx.Ava.Emulation.Helper;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 
-namespace Hyjinx.UI.Common.SystemInfo;
+namespace Hyjinx.Ava.Emulation.SystemInfo;
 
 public partial class SystemInfo
 {

@@ -5,7 +5,7 @@ using System.Management;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.UI.Common.SystemInfo;
+namespace Hyjinx.Ava.Emulation.SystemInfo;
 
 [SupportedOSPlatform("windows")]
 partial class WindowsSystemInfo : SystemInfo

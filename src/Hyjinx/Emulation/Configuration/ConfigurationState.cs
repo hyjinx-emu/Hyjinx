@@ -6,15 +6,15 @@ using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Configuration.System;
-using Hyjinx.UI.Common.Configuration.UI;
-using Hyjinx.UI.Common.Helper;
+using Hyjinx.Ava.Emulation.Configuration.System;
+using Hyjinx.Ava.Emulation.Configuration.UI;
+using Hyjinx.Ava.Emulation.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
 
-namespace Hyjinx.UI.Common.Configuration;
+namespace Hyjinx.Ava.Emulation.Configuration;
 
 public class ConfigurationState
 {

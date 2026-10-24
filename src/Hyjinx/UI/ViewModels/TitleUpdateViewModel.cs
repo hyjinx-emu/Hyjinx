@@ -12,7 +12,7 @@ using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.HLE.Utilities;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.App.Common;
-using Hyjinx.UI.Common.Configuration;
+using Hyjinx.Ava.Emulation.Configuration;
 using LibHac.Common;
 using LibHac.Fs;
 using LibHac.Fs.Fsa;

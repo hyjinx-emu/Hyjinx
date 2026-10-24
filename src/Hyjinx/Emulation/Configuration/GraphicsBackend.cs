@@ -1,4 +1,4 @@
-namespace Hyjinx.UI.Common.Configuration;
+namespace Hyjinx.Ava.Emulation.Configuration;
 
 public enum GraphicsBackend
 {

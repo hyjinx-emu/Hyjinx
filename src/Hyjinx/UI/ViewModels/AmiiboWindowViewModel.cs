@@ -9,7 +9,7 @@ using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.HLE.Utilities;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Models.Amiibo;
+using Hyjinx.Ava.Emulation.Models.Amiibo;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

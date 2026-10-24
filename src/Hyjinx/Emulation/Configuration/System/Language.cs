@@ -1,4 +1,4 @@
-namespace Hyjinx.UI.Common.Configuration.System;
+namespace Hyjinx.Ava.Emulation.Configuration.System;
 
 public enum Language
 {

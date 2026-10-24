@@ -1,4 +1,4 @@
-using Hyjinx.UI.Common.Helper;
+using Hyjinx.Ava.Emulation.Helper;
 using LibHac.Common;
 using LibHac.Ns;
 using System;

@@ -1,4 +1,4 @@
-namespace Hyjinx.UI.Common.Models.Github;
+namespace Hyjinx.Ava.Emulation.Models.Github;
 
 public class GithubReleaseAssetJsonResponse
 {

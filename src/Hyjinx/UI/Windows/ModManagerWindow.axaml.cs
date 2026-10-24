@@ -7,7 +7,7 @@
 //using Hyjinx.Ava.UI.Helpers;
 //using Hyjinx.Ava.UI.Models;
 //using Hyjinx.Ava.UI.ViewModels;
-//using Hyjinx.UI.Common.Helper;
+//using Hyjinx.Ava.Emulation.Helper;
 //using System.Threading.Tasks;
 //using Button = Avalonia.Controls.Button;
 

@@ -1,7 +1,7 @@
 using System;
-using static Hyjinx.UI.Common.Configuration.ConfigurationState.UISection;
+using static Hyjinx.Ava.Emulation.Configuration.ConfigurationState.UISection;
 
-namespace Hyjinx.UI.Common;
+namespace Hyjinx.Ava.Emulation;
 
 public static class FileTypesExtensions
 {

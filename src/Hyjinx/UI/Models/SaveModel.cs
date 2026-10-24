@@ -2,7 +2,7 @@ using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.UI.App.Common;
-using Hyjinx.UI.Common.Helper;
+using Hyjinx.Ava.Emulation.Helper;
 using LibHac.Fs;
 using LibHac.Ncm;
 using System.IO;
