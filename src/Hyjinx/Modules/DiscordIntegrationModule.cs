@@ -1,14 +1,13 @@
 using DiscordRPC;
-using Hyjinx.Common;
 using Hyjinx.UI.Common.Configuration;
 using System.Text;
 
-namespace Hyjinx.UI.Common;
+namespace Hyjinx.Ava.Modules;
 
-public static class DiscordIntegrationModule
+internal static class DiscordIntegrationModule
 {
     private const string Description = "A simple, experimental Nintendo Switch emulator.";
-    private const string ApplicationId = "1216775165866807456";
+    private const string ApplicationId = "1563339670648004688";
 
     private const int ApplicationByteLimit = 128;
     private const string Ellipsis = "…";
@@ -22,7 +21,7 @@ public static class DiscordIntegrationModule
         {
             Assets = new Assets
             {
-                LargeImageKey = "ryujinx",
+                LargeImageKey = "logo",
                 LargeImageText = Description,
             },
             Details = "Main Menu",
@@ -33,7 +32,7 @@ public static class DiscordIntegrationModule
                 new Button
                 {
                     Label = "Website",
-                    Url = "https://ryujinx.org/",
+                    Url = "https://github.org/hyjinx-emu/Hyjinx",
                 },
             ],
         };

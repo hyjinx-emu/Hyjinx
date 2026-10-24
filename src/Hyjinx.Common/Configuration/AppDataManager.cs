@@ -51,7 +51,7 @@ public partial class AppDataManager
         KeysDirPathUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".switch");
     }
 
-    public static void Initialize(string? baseDirPath)
+    public static void Initialize(string? baseDirPath = null)
     {
         string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 

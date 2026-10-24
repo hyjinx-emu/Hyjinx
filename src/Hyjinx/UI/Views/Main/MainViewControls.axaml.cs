@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Hyjinx.Ava.Common;
+using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using System;

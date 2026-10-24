@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace Hyjinx.UI.Common.AutoConfiguration;
+namespace Hyjinx.Ava.Startup;
 
 public record LaunchOptions
 {

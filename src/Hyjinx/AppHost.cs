@@ -9,6 +9,7 @@ using Hyjinx.Audio.Integration;
 using Hyjinx.Ava.Common;
 using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.Input;
+using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Renderer;

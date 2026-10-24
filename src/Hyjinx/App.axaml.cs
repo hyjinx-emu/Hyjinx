@@ -10,20 +10,18 @@ using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.UI.Common.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 
 namespace Hyjinx.Ava;
 
-public partial class App : Application
+public partial class App(ILogger<App> logger, IServiceProvider applicationServices) : Application
 {
-    private static readonly ILogger<App> _logger =
-        Logger.DefaultLoggerFactory.CreateLogger<App>();
-
     public override void Initialize()
     {
-        Name = $"Hyjinx";
+        Name = "Hyjinx";
 
         AvaloniaXamlLoader.Load(this);
 
@@ -37,7 +35,7 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow();
+            desktop.MainWindow = applicationServices.GetRequiredService<MainWindow>();
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -55,31 +53,6 @@ public partial class App : Application
     private void CustomThemeChanged_Event(object sender, ReactiveEventArgs<bool> e)
     {
         ApplyConfiguredTheme();
-    }
-
-    private void ShowRestartDialog()
-    {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                var result = await ContentDialogHelper.CreateConfirmationDialog(
-                    LocaleManager.Instance[LocaleKeys.DialogThemeRestartMessage],
-                    LocaleManager.Instance[LocaleKeys.DialogThemeRestartSubMessage],
-                    LocaleManager.Instance[LocaleKeys.InputDialogYes],
-                    LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                    LocaleManager.Instance[LocaleKeys.DialogRestartRequiredMessage]);
-
-                if (result == UserResult.Yes)
-                {
-                    Process.Start(Environment.ProcessPath!, Program.Arguments);
-                    desktop.Shutdown();
-                    Environment.Exit(0);
-                }
-            }
-        });
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
     }
 
     private void ThemeChanged_Event(object sender, ReactiveEventArgs<string> e)
@@ -112,17 +85,16 @@ public partial class App : Application
                 _ => ThemeVariant.Default,
             };
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            LogFailedToApplyTheme();
-            ShowRestartDialog();
+            LogFailedToApplyTheme(ex);
         }
     }
 
     [LoggerMessage(LogLevel.Warning,
         EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-        Message = "Failed to Apply Theme. A restart is needed to apply the selected theme.")]
-    private partial void LogFailedToApplyTheme();
+        Message = "Failed to apply theme, a restart is needed to apply the selected theme. Reason: {exception}")]
+    private partial void LogFailedToApplyTheme(Exception exception);
 
     /// <summary>
     /// Converts a PlatformThemeVariant value to the corresponding ThemeVariant value.
@@ -137,7 +109,7 @@ public partial class App : Application
 
     public static ThemeVariant DetectSystemTheme()
     {
-        if (Application.Current is App app)
+        if (Current is App app)
         {
             var colorValues = app.PlatformSettings.GetColorValues();
 

@@ -1,4 +1,5 @@
 using Hyjinx.Common.Configuration;
+using Hyjinx.Extensions.Abstractions;
 using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -10,12 +11,40 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Hyjinx.UI.Common.AutoConfiguration;
+namespace Hyjinx.Ava.Modules;
 
-public static class LoggerModule
+file static class LoggingConfigurationExtensions
 {
-    public static void Initialize(IServiceCollection services)
+    public static void AddCustomRule(this NLog.Config.LoggingConfiguration config, bool fileEnabled, NLog.LogLevel level, Target console, Target file)
     {
+        config.AddRule(level, level, console);
+
+        if (fileEnabled)
+        {
+            config.AddRule(level, level, file);
+        }
+    }
+}
+
+internal class LoggingModule : IModule
+{
+    private class Initializer(IServiceProvider applicationServices) : ISupportInitialization
+    {
+        public void Initialize()
+        {
+            // Initialize the logger system.
+            Logging.Abstractions.Logger.Initialize(
+                applicationServices.GetRequiredService<ILoggerFactory>(),
+                applicationServices.GetRequiredService<ILogger<Program>>());
+
+            // TODO: Viper - Fix this so it's configuration driven (it's too noisy).
+            // LoggerAdapter.Register();
+        }
+    }
+
+    public void RegisterServices(IServiceCollection services)
+    {
+        services.AddTransient<ISupportInitialization, Initializer>();
         services.AddLogging(logging =>
         {
             logging.ClearProviders();
@@ -136,15 +165,5 @@ public static class LoggerModule
         }
 
         return levels.ToArray();
-    }
-
-    private static void AddCustomRule(this NLog.Config.LoggingConfiguration config, bool fileEnabled, NLog.LogLevel level, Target console, Target file)
-    {
-        config.AddRule(level, level, console);
-
-        if (fileEnabled)
-        {
-            config.AddRule(level, level, file);
-        }
     }
 }

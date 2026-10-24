@@ -1,4 +1,4 @@
-namespace Hyjinx.Ava.Common;
+namespace Hyjinx.Ava.UI.Helpers;
 
 internal enum ApplicationSort
 {
