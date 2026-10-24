@@ -4,9 +4,9 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Common.SystemInterop;
+namespace Hyjinx.Ava.Emulation.Interop;
 
-public static partial class ForceDpiAware
+internal static partial class ForceDpiAware
 {
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]

@@ -2,10 +2,10 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.Common.SystemInterop;
+namespace Hyjinx.Ava.Emulation.Interop;
 
 [SupportedOSPlatform("windows")]
-public static partial class GdiPlusHelper
+internal static partial class GdiPlusHelper
 {
     private const string LibraryName = "gdiplus.dll";
 

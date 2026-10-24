@@ -1,9 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Common.SystemInterop;
+namespace Hyjinx.Ava.Emulation.Interop;
 
-public partial class DisplaySleep
+internal partial class DisplaySleep
 {
     [Flags]
     enum EXECUTION_STATE : uint

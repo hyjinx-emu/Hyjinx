@@ -5,13 +5,13 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace Hyjinx.Common.SystemInterop;
+namespace Hyjinx.Ava.Emulation.Interop;
 
 /// <summary>
 /// Handle Windows Multimedia timer resolution.
 /// </summary>
 [SupportedOSPlatform("windows")]
-public partial class WindowsMultimediaTimerResolution : IDisposable
+internal partial class WindowsMultimediaTimerResolution : IDisposable
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct TimeCaps
