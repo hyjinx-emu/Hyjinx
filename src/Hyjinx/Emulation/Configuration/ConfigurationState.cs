@@ -1,3 +1,6 @@
+using Hyjinx.Ava.Emulation.Configuration.System;
+using Hyjinx.Ava.Emulation.Configuration.UI;
+using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
@@ -6,9 +9,6 @@ using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.Ava.Emulation.Configuration.System;
-using Hyjinx.Ava.Emulation.Configuration.UI;
-using Hyjinx.Ava.Emulation.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;

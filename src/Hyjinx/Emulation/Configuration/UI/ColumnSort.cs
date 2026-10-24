@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-
 namespace Hyjinx.Ava.Emulation.Configuration.UI;
 
 public record ColumnSort

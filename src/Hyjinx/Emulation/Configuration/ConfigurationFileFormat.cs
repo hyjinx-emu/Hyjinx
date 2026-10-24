@@ -1,11 +1,11 @@
+using Hyjinx.Ava.Emulation.Configuration.System;
+using Hyjinx.Ava.Emulation.Configuration.UI;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.Utilities;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.Ava.Emulation.Configuration.System;
-using Hyjinx.Ava.Emulation.Configuration.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
