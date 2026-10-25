@@ -4,7 +4,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Svg.Skia;
 using Avalonia.Threading;
-using Hyjinx.Ava.Input;
 using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models;
@@ -30,6 +29,7 @@ using ConfigGamepadInputId = Hyjinx.Common.Configuration.Hid.Controller.GamepadI
 using ConfigStickInputId = Hyjinx.Common.Configuration.Hid.Controller.StickInputId;
 using Key = Hyjinx.Common.Configuration.Hid.Key;
 using Hyjinx.Ava.Localization;
+using Hyjinx.Ava.Emulation.Input;
 
 namespace Hyjinx.Ava.UI.ViewModels.Input;
 

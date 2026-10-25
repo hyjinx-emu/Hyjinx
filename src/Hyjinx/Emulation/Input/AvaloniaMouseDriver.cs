@@ -7,7 +7,7 @@ using System.Numerics;
 using MouseButton = Hyjinx.Input.MouseButton;
 using Size = System.Drawing.Size;
 
-namespace Hyjinx.Ava.Input;
+namespace Hyjinx.Ava.Emulation.Input;
 
 internal class AvaloniaMouseDriver : IGamepadDriver
 {

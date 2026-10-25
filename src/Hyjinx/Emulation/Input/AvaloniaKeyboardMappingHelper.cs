@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using AvaKey = Avalonia.Input.Key;
 
-namespace Hyjinx.Ava.Input;
+namespace Hyjinx.Ava.Emulation.Input;
 
 internal static class AvaloniaKeyboardMappingHelper
 {

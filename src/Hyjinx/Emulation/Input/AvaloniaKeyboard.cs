@@ -7,7 +7,7 @@ using System.Numerics;
 using ConfigKey = Hyjinx.Common.Configuration.Hid.Key;
 using Key = Hyjinx.Input.Key;
 
-namespace Hyjinx.Ava.Input;
+namespace Hyjinx.Ava.Emulation.Input;
 
 internal class AvaloniaKeyboard : IKeyboard
 {

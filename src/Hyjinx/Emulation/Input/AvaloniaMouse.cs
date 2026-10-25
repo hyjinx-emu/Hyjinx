@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 
-namespace Hyjinx.Ava.Input;
+namespace Hyjinx.Ava.Emulation.Input;
 
 internal class AvaloniaMouse : IMouse
 {
