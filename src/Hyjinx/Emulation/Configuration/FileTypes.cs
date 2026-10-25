@@ -1,7 +1,7 @@
 using System;
 using static Hyjinx.Ava.Emulation.Configuration.ConfigurationState.UISection;
 
-namespace Hyjinx.Ava.Emulation;
+namespace Hyjinx.Ava.Emulation.Configuration;
 
 /// <summary>
 /// Defines the supported file types.
@@ -36,6 +36,6 @@ public static class FileTypesExtensions
         FileTypes.NCA => config.NCA.Value,
         FileTypes.NRO => config.NRO.Value,
         FileTypes.NSO => config.NSO.Value,
-        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+        _ => throw new NotSupportedException($"The value '{type}' is not supported.")
     };
 }
