@@ -1,5 +1,4 @@
 using Hyjinx.Ava.Configuration;
-using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Extensions.Abstractions;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +13,11 @@ internal class ConfigurationModule : IModule
 {
     public static string ConfigurationPath { get; private set; } = null!;
 
+    /// <summary>
+    /// Defines the name of the configuration file.
+    /// </summary>
+    private const string ConfigFileName = "config.json";
+
     private class ConfigurationStateInitializer(IOptions<ConfigurationFileFormat> opts) : ISupportInitialization
     {
         public void Initialize()
@@ -24,8 +28,8 @@ internal class ConfigurationModule : IModule
 
     public void RegisterServices(IServiceCollection services)
     {
-        string localConfigurationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ReleaseInformation.ConfigName);
-        string appDataConfigurationPath = Path.Combine(AppDataManager.BaseDirPath, ReleaseInformation.ConfigName);
+        string localConfigurationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigFileName);
+        string appDataConfigurationPath = Path.Combine(AppDataManager.BaseDirPath, ConfigFileName);
 
         string? configurationPath = null;
         // Now load the configuration as the other subsystems are now registered
