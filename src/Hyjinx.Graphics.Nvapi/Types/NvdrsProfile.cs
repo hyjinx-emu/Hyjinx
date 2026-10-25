@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
+namespace Hyjinx.Graphics.Nvapi;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 internal struct NvdrsProfile

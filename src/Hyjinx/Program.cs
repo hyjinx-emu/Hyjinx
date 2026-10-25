@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Threading;
 using Hyjinx.Ava.Emulation.Configuration;
-using Hyjinx.Ava.Emulation.GraphicsDriver;
 using Hyjinx.Ava.Emulation.Interop;
 using Hyjinx.Ava.Emulation.SystemInfo;
 using Hyjinx.Ava.Startup;
@@ -10,6 +9,7 @@ using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Extensions.Abstractions;
 using Hyjinx.Extensions.Abstractions.Events;
+using Hyjinx.Graphics.Nvapi;
 using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Logging.Abstractions;
 using Hyjinx.SDL2.Common;

@@ -1,9 +1,8 @@
-using Hyjinx.Ava.Emulation.Utilities;
 using System;
 
-namespace Hyjinx.Ava.Emulation.GraphicsDriver;
+namespace Hyjinx.Graphics.Nvapi;
 
-internal static class DriverUtilities
+public static class DriverUtilities
 {
     private static void AddMesaFlags(string envVar, string newFlags)
     {

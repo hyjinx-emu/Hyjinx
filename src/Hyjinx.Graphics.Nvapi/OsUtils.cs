@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Ava.Emulation.Utilities;
+namespace Hyjinx.Graphics.Nvapi;
 
 internal partial class OsUtils
 {

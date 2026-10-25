@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
+namespace Hyjinx.Graphics.Nvapi;
 
 [StructLayout(LayoutKind.Sequential, Pack = 4)]
 internal unsafe struct NvapiUnicodeString

@@ -1,9 +1,8 @@
-using Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Ava.Emulation.GraphicsDriver;
+namespace Hyjinx.Graphics.Nvapi;
 
 internal static partial class NVThreadedOptimization
 {
@@ -89,7 +88,7 @@ internal static partial class NVThreadedOptimization
     {
         Initialize();
 
-        uint targetValue = (uint)(enabled ? Nvapi.OglThreadControlEnable : Nvapi.OglThreadControlDisable);
+        uint targetValue = (uint)(enabled ? OglThreadControl.Enable : OglThreadControl.Disable);
 
         Check(NvAPI_Initialize());
 
@@ -129,7 +128,7 @@ internal static partial class NVThreadedOptimization
         NvdrsSetting setting = new()
         {
             Version = MakeVersion<NvdrsSetting>(1),
-            SettingId = Nvapi.OglThreadControlId,
+            SettingId = OglThreadControl.Id,
             SettingType = NvdrsSettingType.NvdrsDwordType,
             SettingLocation = NvdrsSettingLocation.NvdrsCurrentProfileLocation,
             IsCurrentPredefined = 0,

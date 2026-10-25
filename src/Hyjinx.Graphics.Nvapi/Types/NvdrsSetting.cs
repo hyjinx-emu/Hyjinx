@@ -1,22 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Hyjinx.Ava.Emulation.GraphicsDriver.NVAPI;
-
-internal enum NvdrsSettingType : uint
-{
-    NvdrsDwordType,
-    NvdrsBinaryType,
-    NvdrsStringType,
-    NvdrsWstringType,
-}
-
-internal enum NvdrsSettingLocation : uint
-{
-    NvdrsCurrentProfileLocation,
-    NvdrsGlobalProfileLocation,
-    NvdrsBaseProfileLocation,
-    NvdrsDefaultProfileLocation,
-}
+namespace Hyjinx.Graphics.Nvapi;
 
 [StructLayout(LayoutKind.Explicit, Size = 0x3020)]
 internal struct NvdrsSetting
@@ -26,7 +10,7 @@ internal struct NvdrsSetting
     [FieldOffset(0x4)]
     public NvapiUnicodeString SettingName;
     [FieldOffset(0x1004)]
-    public Nvapi SettingId;
+    public OglThreadControl SettingId;
     [FieldOffset(0x1008)]
     public NvdrsSettingType SettingType;
     [FieldOffset(0x100C)]
