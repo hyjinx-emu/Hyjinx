@@ -3,7 +3,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using FluentAvalonia.UI.Controls;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.HLE.HOS.Applets;
 using Hyjinx.HLE.HOS.Applets.SoftwareKeyboard;

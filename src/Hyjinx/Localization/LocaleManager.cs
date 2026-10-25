@@ -9,7 +9,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Hyjinx.Ava.Common.Locale;
+namespace Hyjinx.Ava.Localization;
 
 class LocaleManager : BaseModel
 {

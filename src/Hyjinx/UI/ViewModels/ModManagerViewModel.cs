@@ -5,7 +5,7 @@
 //using Avalonia.Platform.Storage;
 //using Avalonia.Threading;
 //using DynamicData;
-//using Hyjinx.Ava.Common.Locale;
+//using Hyjinx.Ava.Localization;
 //using Hyjinx.Ava.UI.Helpers;
 //using Hyjinx.Ava.UI.Models;
 //using Hyjinx.Common.Configuration;

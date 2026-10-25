@@ -1,7 +1,7 @@
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
-using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.Emulation.Helper;
+using Hyjinx.Ava.Localization;
 using System;
 using System.Globalization;
 

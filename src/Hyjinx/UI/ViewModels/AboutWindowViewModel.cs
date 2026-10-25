@@ -1,9 +1,9 @@
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using Hyjinx.Ava.Common.Locale;
 using Hyjinx.Ava.Emulation;
 using Hyjinx.Ava.Emulation.Configuration;
+using Hyjinx.Ava.Localization;
 using Hyjinx.HLE.Utilities;
 using System;
 using System.Net.Http;

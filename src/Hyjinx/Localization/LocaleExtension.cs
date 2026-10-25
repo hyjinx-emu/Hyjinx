@@ -4,7 +4,7 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.MarkupExtensions.CompiledBindings;
 using System;
 
-namespace Hyjinx.Ava.Common.Locale;
+namespace Hyjinx.Ava.Localization;
 
 internal class LocaleExtension : MarkupExtension
 {

@@ -3,7 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:locale="clr-namespace:Hyjinx.Ava.Common.Locale"
+    xmlns:locale="clr-namespace:Hyjinx.Ava.Localization"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:Hyjinx.Ava.UI.Models"
     xmlns:window="clr-namespace:Hyjinx.Ava.UI.Windows"

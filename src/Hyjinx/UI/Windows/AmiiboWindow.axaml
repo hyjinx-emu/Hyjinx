@@ -5,7 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:window="clr-namespace:Hyjinx.Ava.UI.Windows"
     xmlns:viewModels="clr-namespace:Hyjinx.Ava.UI.ViewModels"
-    xmlns:locale="clr-namespace:Hyjinx.Ava.Common.Locale"
+    xmlns:locale="clr-namespace:Hyjinx.Ava.Localization"
     mc:Ignorable="d"
     d:DesignWidth="400"
     d:DesignHeight="350"

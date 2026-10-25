@@ -1,6 +1,6 @@
 // TODO: Viper - Fix modding support
 //using Avalonia.Collections;
-//using Hyjinx.Ava.Common.Locale;
+//using Hyjinx.Ava.Localization;
 //using Hyjinx.Ava.UI.Models;
 //using Hyjinx.HLE.FileSystem;
 //using Hyjinx.HLE.HOS;

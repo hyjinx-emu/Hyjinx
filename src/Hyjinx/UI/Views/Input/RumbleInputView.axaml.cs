@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using FluentAvalonia.UI.Controls;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.ViewModels.Input;
 using System.Threading.Tasks;
 

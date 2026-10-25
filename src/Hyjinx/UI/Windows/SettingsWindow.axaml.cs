@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.HLE.FileSystem;
 using System;
