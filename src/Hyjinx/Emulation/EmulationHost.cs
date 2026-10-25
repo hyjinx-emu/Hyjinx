@@ -59,7 +59,7 @@ using Switch = Hyjinx.HLE.Switch;
 
 namespace Hyjinx.Ava.Emulation;
 
-internal class AppHost
+internal class EmulationHost
 {
     private const int CursorHideIdleTime = 5; // Hide Cursor seconds.
     private const float MaxResolutionScale = 4.0f; // Max resolution hotkeys can scale to before wrapping.
@@ -74,8 +74,8 @@ internal class AppHost
     private readonly Stopwatch _chrono;
     private long _ticks;
 
-    private static readonly ILogger<AppHost> _logger =
-        Logger.DefaultLoggerFactory.CreateLogger<AppHost>();
+    private static readonly ILogger<EmulationHost> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<EmulationHost>();
 
     private readonly AccountManager _accountManager;
     private readonly UserChannelPersistence _userChannelPersistence;
@@ -136,7 +136,7 @@ internal class AppHost
     public ulong ApplicationId { get; private set; }
     public bool ScreenshotRequested { get; set; }
 
-    public AppHost(
+    public EmulationHost(
         RendererHost renderer,
         InputManager inputManager,
         string applicationPath,

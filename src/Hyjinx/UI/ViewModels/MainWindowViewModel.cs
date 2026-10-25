@@ -112,7 +112,7 @@ internal class MainWindowViewModel : BaseModel
     public ApplicationData ListSelectedApplication;
     public ApplicationData GridSelectedApplication;
 
-    internal AppHost AppHost { get; set; }
+    internal EmulationHost AppHost { get; set; }
 
     public MainWindowViewModel(ILogger<MainWindowViewModel> logger, Messenger messenger)
     {
@@ -1547,7 +1547,7 @@ internal class MainWindowViewModel : BaseModel
 
         RendererHostControl = new RendererHost();
 
-        AppHost = new AppHost(
+        AppHost = new EmulationHost(
             RendererHostControl,
             InputManager,
             application.Path,
