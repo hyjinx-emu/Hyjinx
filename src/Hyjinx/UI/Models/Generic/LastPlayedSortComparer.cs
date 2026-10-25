@@ -1,4 +1,4 @@
-using Hyjinx.UI.App.Common;
+using Hyjinx.Ava.Emulation.Library;
 using System;
 using System.Collections.Generic;
 

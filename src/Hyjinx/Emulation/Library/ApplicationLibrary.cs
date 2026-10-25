@@ -31,7 +31,7 @@ using ContentType = LibHac.Ncm.ContentType;
 using Path = System.IO.Path;
 using TimeSpan = System.TimeSpan;
 
-namespace Hyjinx.UI.App.Common;
+namespace Hyjinx.Ava.Emulation.Library;
 
 public partial class ApplicationLibrary
 {

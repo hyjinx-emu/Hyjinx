@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.UI.App.Common;
+namespace Hyjinx.Ava.Emulation.Library;
 
 [JsonSourceGenerationOptions(WriteIndented = true)]
 [JsonSerializable(typeof(ApplicationMetadata))]

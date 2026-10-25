@@ -5,11 +5,11 @@ using Avalonia.Interactivity;
 using Avalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Emulation.Helper;
+using Hyjinx.Ava.Emulation.Library;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.HLE.FileSystem;
-using Hyjinx.UI.App.Common;
-using Hyjinx.Ava.Emulation.Helper;
 using System.Threading.Tasks;
 
 namespace Hyjinx.Ava.UI.Windows;

@@ -4,7 +4,7 @@ using LibHac.Ns;
 using System;
 using System.Text.Json.Serialization;
 
-namespace Hyjinx.UI.App.Common;
+namespace Hyjinx.Ava.Emulation.Library;
 
 public partial class ApplicationData
 {
