@@ -1,10 +1,10 @@
 <UserControl
-    x:Class="Hyjinx.Ava.UI.Controls.SwkbdAppletDialog"
+    x:Class="Hyjinx.Ava.UI.Applet.SwkbdAppletDialog"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:views="using:Hyjinx.Ava.UI.Controls"
+    xmlns:views="using:Hyjinx.Ava.UI.Applet"
     Width="400"
     x:DataType="views:SwkbdAppletDialog"
     mc:Ignorable="d"

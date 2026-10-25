@@ -11,7 +11,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Hyjinx.Ava.UI.Controls;
+namespace Hyjinx.Ava.UI.Applet;
 
 internal partial class SwkbdAppletDialog : UserControl
 {

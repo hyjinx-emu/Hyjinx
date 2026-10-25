@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Hyjinx.Ava.Common;
 using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Ava.Emulation.Library;
 using Hyjinx.Ava.Localization;

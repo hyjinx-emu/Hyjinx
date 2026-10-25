@@ -1,9 +1,9 @@
 using Avalonia.Threading;
-using Hyjinx.Ava.UI.Helpers;
+using Hyjinx.Ava.Emulation.Helper;
+using Hyjinx.Ava.Localization;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.Ava.Emulation.Helper;
 using LibHac;
 using LibHac.Account;
 using LibHac.Common;
@@ -14,9 +14,8 @@ using Microsoft.Extensions.Logging;
 using System.IO;
 using ApplicationId = LibHac.Ncm.ApplicationId;
 using Path = System.IO.Path;
-using Hyjinx.Ava.Localization;
 
-namespace Hyjinx.Ava.Common;
+namespace Hyjinx.Ava.UI.Helpers;
 
 internal static partial class ApplicationHelper
 {
