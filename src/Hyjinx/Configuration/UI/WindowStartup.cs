@@ -1,4 +1,4 @@
-namespace Hyjinx.Ava.Emulation.Configuration.UI;
+namespace Hyjinx.Ava.Configuration.UI;
 
 public record WindowStartup
 {

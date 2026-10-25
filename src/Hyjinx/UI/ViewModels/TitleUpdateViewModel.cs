@@ -2,7 +2,7 @@ using Avalonia.Collections;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using Hyjinx.Ava.Emulation.Configuration;
+using Hyjinx.Ava.Configuration;
 using Hyjinx.Ava.Emulation.Library;
 using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Helpers;

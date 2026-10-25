@@ -1,6 +1,6 @@
 using Avalonia;
 using Avalonia.Threading;
-using Hyjinx.Ava.Emulation.Configuration;
+using Hyjinx.Ava.Configuration;
 using Hyjinx.Ava.Emulation.Interop;
 using Hyjinx.Ava.Emulation.SystemInfo;
 using Hyjinx.Ava.Startup;

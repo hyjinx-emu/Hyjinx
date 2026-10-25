@@ -1,5 +1,5 @@
-using Hyjinx.Logging.Abstractions;
 using Hyjinx.Ava.Emulation.Helper;
+using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;

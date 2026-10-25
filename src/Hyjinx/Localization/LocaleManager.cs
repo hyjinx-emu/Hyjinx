@@ -1,5 +1,5 @@
+using Hyjinx.Ava.Configuration;
 using Hyjinx.Ava.Emulation;
-using Hyjinx.Ava.Emulation.Configuration;
 using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Common;
@@ -11,7 +11,7 @@ using System.Globalization;
 
 namespace Hyjinx.Ava.Localization;
 
-class LocaleManager : BaseModel
+internal class LocaleManager : BaseModel
 {
     private const string DefaultLanguageCode = "en_US";
 

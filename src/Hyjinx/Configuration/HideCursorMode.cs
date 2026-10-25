@@ -1,4 +1,4 @@
-namespace Hyjinx.Ava.Emulation.Configuration;
+namespace Hyjinx.Ava.Configuration;
 
 public enum HideCursorMode
 {

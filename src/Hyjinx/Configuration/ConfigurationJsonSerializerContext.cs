@@ -1,3 +1,4 @@
+using Hyjinx.Ava.Configuration;
 using System.Text.Json.Serialization;
 
 namespace Hyjinx.Ava.Emulation.Configuration;

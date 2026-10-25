@@ -4,12 +4,12 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Styling;
 using FluentAvalonia.UI.Controls;
+using Hyjinx.Ava.Emulation.Helper;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
-using Hyjinx.Ava.Emulation.Helper;
 using System.Threading.Tasks;
 using Button = Avalonia.Controls.Button;
-using Hyjinx.Ava.Localization;
 
 namespace Hyjinx.Ava.UI.Windows;
 

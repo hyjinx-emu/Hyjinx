@@ -1,4 +1,4 @@
-namespace Hyjinx.Ava.Emulation.Configuration.System;
+namespace Hyjinx.Ava.Configuration.System;
 
 public enum Region
 {

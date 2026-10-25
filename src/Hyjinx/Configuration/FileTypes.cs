@@ -1,7 +1,7 @@
 using System;
-using static Hyjinx.Ava.Emulation.Configuration.ConfigurationState.UISection;
+using static Hyjinx.Ava.Configuration.ConfigurationState.UISection;
 
-namespace Hyjinx.Ava.Emulation.Configuration;
+namespace Hyjinx.Ava.Configuration;
 
 /// <summary>
 /// Defines the supported file types.

@@ -88,8 +88,9 @@
     <Compile Remove="UI\Windows\CheatWindow.axaml.cs" />
     <Compile Remove="UI\Windows\ModManagerWindow.axaml.cs" />
   </ItemGroup>
-  
+
   <ItemGroup>
+    <!-- Required for the localization generator, do not remove. -->
     <AdditionalFiles Include="Assets\Locales\en_US.json" />
   </ItemGroup>
 </Project>

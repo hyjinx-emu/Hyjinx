@@ -2,7 +2,7 @@ using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
 using System.Collections.Generic;
 
-namespace Hyjinx.Ava.Emulation.Configuration;
+namespace Hyjinx.Ava.Configuration;
 
 /// <summary>
 /// Describes the input configuration options.

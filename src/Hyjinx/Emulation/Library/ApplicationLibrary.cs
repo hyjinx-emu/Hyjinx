@@ -1,3 +1,5 @@
+using Hyjinx.Ava.Configuration;
+using Hyjinx.Ava.Configuration.System;
 using Hyjinx.Common.Configuration;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS.SystemState;
@@ -5,8 +7,6 @@ using Hyjinx.HLE.Loaders.Npdm;
 using Hyjinx.HLE.Loaders.Processes.Extensions;
 using Hyjinx.HLE.Utilities;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.Ava.Emulation.Configuration;
-using Hyjinx.Ava.Emulation.Configuration.System;
 using LibHac;
 using LibHac.Common;
 using LibHac.Common.Keys;

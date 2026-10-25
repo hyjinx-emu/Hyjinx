@@ -1,6 +1,7 @@
+using Hyjinx.Ava.Emulation.Configuration;
 using Hyjinx.HLE.Utilities;
 
-namespace Hyjinx.Ava.Emulation.Configuration;
+namespace Hyjinx.Ava.Configuration;
 
 internal static class ConfigurationFileFormatSettings
 {

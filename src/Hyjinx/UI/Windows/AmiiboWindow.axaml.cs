@@ -1,7 +1,7 @@
 using Avalonia.Interactivity;
-using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.Emulation.Models.Amiibo;
 using Hyjinx.Ava.Localization;
+using Hyjinx.Ava.UI.ViewModels;
 
 namespace Hyjinx.Ava.UI.Windows;
 

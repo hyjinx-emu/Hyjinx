@@ -1,5 +1,5 @@
-using Hyjinx.Ava.Emulation.Configuration.System;
-using Hyjinx.Ava.Emulation.Configuration.UI;
+using Hyjinx.Ava.Configuration.System;
+using Hyjinx.Ava.Configuration.UI;
 using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
 
-namespace Hyjinx.Ava.Emulation.Configuration;
+namespace Hyjinx.Ava.Configuration;
 
 public class ConfigurationState
 {

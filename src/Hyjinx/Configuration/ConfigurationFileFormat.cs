@@ -1,5 +1,5 @@
-using Hyjinx.Ava.Emulation.Configuration.System;
-using Hyjinx.Ava.Emulation.Configuration.UI;
+using Hyjinx.Ava.Configuration.System;
+using Hyjinx.Ava.Configuration.UI;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.HLE.HOS;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Nodes;
 
-namespace Hyjinx.Ava.Emulation.Configuration;
+namespace Hyjinx.Ava.Configuration;
 
 /// <summary>
 /// Describes the configuration options.
