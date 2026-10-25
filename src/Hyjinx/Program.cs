@@ -16,15 +16,20 @@ using Hyjinx.SDL2.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.Ava;
 
 internal partial class Program(ILogger<Program> logger, IServiceProvider applicationServices)
 {
+    /// <summary>
+    /// Identifies the version of the application.
+    /// </summary>
+    public static string Version { get; }
+
     public static double WindowScaleFactor { get; set; }
     public static double DesktopScaleFactor { get; set; } = 1.0;
-    public static string Version { get; private set; }
     public static bool PreviewerDetached { get; private set; }
 
     [LibraryImport("user32.dll", SetLastError = true)]
@@ -32,9 +37,13 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
 
     private const uint MbIconwarning = 0x30;
 
+    static Program()
+    {
+        Version = Assembly.GetExecutingAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion!;
+    }
+
     public static int Main(string[] args)
     {
-        Version = ReleaseInformation.Version;
         PreviewerDetached = true; // Likely used to identify whether the views are in design mode, setting to false will cause the emulator to not run.
 
         AppDataManager.Initialize();
