@@ -1,6 +1,6 @@
 using DynamicData;
 using DynamicData.Binding;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.HLE.HOS.Services.Account.Acc;
 using System.Collections.Generic;

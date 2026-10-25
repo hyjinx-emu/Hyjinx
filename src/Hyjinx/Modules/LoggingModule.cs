@@ -1,6 +1,6 @@
+using Hyjinx.Ava.Configuration;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Extensions.Abstractions;
-using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

@@ -1,8 +1,8 @@
 using DiscordRPC;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Configuration;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Extensions.Abstractions;
 using Hyjinx.Extensions.Abstractions.Events;
-using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 

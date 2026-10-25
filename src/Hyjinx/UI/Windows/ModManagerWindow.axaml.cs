@@ -3,11 +3,11 @@
 //using Avalonia.Interactivity;
 //using Avalonia.Styling;
 //using FluentAvalonia.UI.Controls;
-//using Hyjinx.Ava.Common.Locale;
+//using Hyjinx.Ava.Localization;
 //using Hyjinx.Ava.UI.Helpers;
 //using Hyjinx.Ava.UI.Models;
 //using Hyjinx.Ava.UI.ViewModels;
-//using Hyjinx.UI.Common.Helper;
+//using Hyjinx.Ava.Emulation.Helper;
 //using System.Threading.Tasks;
 //using Button = Avalonia.Controls.Button;
 

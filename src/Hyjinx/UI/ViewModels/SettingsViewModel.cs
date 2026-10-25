@@ -4,21 +4,21 @@ using Avalonia.Threading;
 using Hyjinx.Audio.Backends.OpenAL;
 using Hyjinx.Audio.Backends.SDL2;
 using Hyjinx.Audio.Backends.SoundIo;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Configuration;
+using Hyjinx.Ava.Configuration.System;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models.Input;
 using Hyjinx.Ava.UI.Windows;
-using Hyjinx.Common.GraphicsDriver;
 using Hyjinx.Graphics.GAL;
+using Hyjinx.Graphics.Nvapi;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.FileSystem;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.HOS.Services.Time.TimeZone;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Configuration;
-using Hyjinx.UI.Common.Configuration.System;
 using LibHac.Tools.FsSystem;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,8 +28,8 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using AntiAliasing = Hyjinx.UI.Common.Configuration.AntiAliasing;
-using ScalingFilter = Hyjinx.UI.Common.Configuration.ScalingFilter;
+using AntiAliasing = Hyjinx.Ava.Configuration.AntiAliasing;
+using ScalingFilter = Hyjinx.Ava.Configuration.ScalingFilter;
 using TimeZone = Hyjinx.Ava.UI.Models.TimeZone;
 
 namespace Hyjinx.Ava.UI.ViewModels;
@@ -165,7 +165,7 @@ public class SettingsViewModel : BaseModel
     public bool IsSoundIoEnabled { get; set; }
     public bool IsSDL2Enabled { get; set; }
     public bool IsCustomResolutionScaleActive => _resolutionScale == 4;
-    public bool IsScalingFilterActive => _scalingFilter == (int)Hyjinx.UI.Common.Configuration.ScalingFilter.Fsr;
+    public bool IsScalingFilterActive => _scalingFilter == (int)Configuration.ScalingFilter.Fsr;
 
     public bool IsVulkanSelected => GraphicsBackendIndex == 0;
     public bool UseHypervisor { get; set; }

@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Windows;
 using System.Threading.Tasks;
 

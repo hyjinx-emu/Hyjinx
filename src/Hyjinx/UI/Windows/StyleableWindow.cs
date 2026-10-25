@@ -3,7 +3,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 
 namespace Hyjinx.Ava.UI.Windows;
 

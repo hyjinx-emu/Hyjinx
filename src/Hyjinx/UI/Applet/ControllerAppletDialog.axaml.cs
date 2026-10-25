@@ -3,7 +3,7 @@ using Avalonia.Styling;
 using Avalonia.Svg.Skia;
 using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common;

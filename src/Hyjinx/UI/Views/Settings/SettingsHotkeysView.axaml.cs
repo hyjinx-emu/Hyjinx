@@ -3,7 +3,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Hyjinx.Ava.Input;
+using Hyjinx.Ava.Emulation.Input;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Input;

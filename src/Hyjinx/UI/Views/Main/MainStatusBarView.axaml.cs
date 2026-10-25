@@ -2,10 +2,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Hyjinx.Ava.Configuration;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.HLE.HOS;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 

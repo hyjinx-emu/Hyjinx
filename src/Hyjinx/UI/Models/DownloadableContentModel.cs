@@ -1,4 +1,4 @@
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.ViewModels;
 using System.IO;
 

@@ -3,13 +3,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using Avalonia.Styling;
-using Avalonia.Threading;
-using Hyjinx.Ava.Common;
-using Hyjinx.Ava.Common.Locale;
-using Hyjinx.Ava.UI.Helpers;
+using Hyjinx.Ava.Configuration;
+using Hyjinx.Ava.Emulation;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.Common.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,7 +14,7 @@ using System.Diagnostics;
 
 namespace Hyjinx.Ava;
 
-public partial class App(ILogger<App> logger, IServiceProvider applicationServices) : Application
+internal partial class App(ILogger<App> logger, IServiceProvider applicationServices) : Application
 {
     public override void Initialize()
     {

@@ -1,0 +1,8 @@
+namespace Hyjinx.Ava.Configuration.UI;
+
+public record ColumnSort
+{
+    public int SortColumnId { get; set; }
+
+    public bool SortAscending { get; set; }
+}

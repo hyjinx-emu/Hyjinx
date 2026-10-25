@@ -4,7 +4,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
 using FluentAvalonia.UI.Controls;
 using FluentAvalonia.UI.Navigation;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.ViewModels;

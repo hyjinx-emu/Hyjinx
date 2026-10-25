@@ -1,0 +1,41 @@
+using System;
+using static Hyjinx.Ava.Configuration.ConfigurationState.UISection;
+
+namespace Hyjinx.Ava.Configuration;
+
+/// <summary>
+/// Defines the supported file types.
+/// </summary>
+public enum FileTypes
+{
+    NSP,
+    PFS0,
+    XCI,
+    NCA,
+    NRO,
+    NSO
+}
+
+
+/// <summary>
+/// Provides extension methods for working with FileTypes and related configuration settings.
+/// </summary>
+public static class FileTypesExtensions
+{
+    /// <summary>
+    /// Gets the current <see cref="ShownFileTypeSettings"/> value for the correlating FileType name.
+    /// </summary>
+    /// <param name="type">The name of the <see cref="ShownFileTypeSettings"/> parameter to get the value of.</param>
+    /// <param name="config">The config instance to get the value from.</param>
+    /// <returns>The current value of the setting. Value is <see langword="true"/> if the file type is the be shown on the games list, <see langword="false"/> otherwise.</returns>
+    public static bool GetConfigValue(this FileTypes type, ShownFileTypeSettings config) => type switch
+    {
+        FileTypes.NSP => config.NSP.Value,
+        FileTypes.PFS0 => config.PFS0.Value,
+        FileTypes.XCI => config.XCI.Value,
+        FileTypes.NCA => config.NCA.Value,
+        FileTypes.NRO => config.NRO.Value,
+        FileTypes.NSO => config.NSO.Value,
+        _ => throw new NotSupportedException($"The value '{type}' is not supported.")
+    };
+}

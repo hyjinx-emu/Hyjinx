@@ -1,14 +1,13 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Hyjinx.Ava.Common;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Emulation.Helper;
+using Hyjinx.Ava.Emulation.Library;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Common.Configuration;
-using Hyjinx.UI.App.Common;
-using Hyjinx.UI.Common.Helper;
 using LibHac.Fs;
 using System;
 using System.Collections.Generic;

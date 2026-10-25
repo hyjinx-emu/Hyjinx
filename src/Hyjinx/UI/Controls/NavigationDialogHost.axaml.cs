@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Views.User;

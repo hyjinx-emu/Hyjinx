@@ -1,6 +1,6 @@
 #if IS_LEGACY_ENABLED
 
-namespace Hyjinx.UI.Common.Utilities;
+namespace Hyjinx.Ava.Emulation.Utilities;
 
 public sealed partial class XCIFileTrimmer
 {

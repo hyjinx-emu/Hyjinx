@@ -6,7 +6,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;

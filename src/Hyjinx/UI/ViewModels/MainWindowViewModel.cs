@@ -6,8 +6,12 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using DynamicData;
 using DynamicData.Binding;
-using Hyjinx.Ava.Common.Locale;
-using Hyjinx.Ava.Input;
+using Hyjinx.Ava.Configuration;
+using Hyjinx.Ava.Emulation;
+using Hyjinx.Ava.Emulation.Helper;
+using Hyjinx.Ava.Emulation.Input;
+using Hyjinx.Ava.Emulation.Library;
+using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Helpers;
@@ -26,10 +30,6 @@ using Hyjinx.HLE.HOS.Services.Account.Acc;
 using Hyjinx.HLE.UI;
 using Hyjinx.Input.HLE;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.UI.App.Common;
-using Hyjinx.UI.Common;
-using Hyjinx.UI.Common.Configuration;
-using Hyjinx.UI.Common.Helper;
 using LibHac.Common;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Microsoft.Extensions.Logging;
@@ -112,7 +112,7 @@ internal class MainWindowViewModel : BaseModel
     public ApplicationData ListSelectedApplication;
     public ApplicationData GridSelectedApplication;
 
-    internal AppHost AppHost { get; set; }
+    internal EmulationHost AppHost { get; set; }
 
     public MainWindowViewModel(ILogger<MainWindowViewModel> logger, Messenger messenger)
     {
@@ -1547,7 +1547,7 @@ internal class MainWindowViewModel : BaseModel
 
         RendererHostControl = new RendererHost();
 
-        AppHost = new AppHost(
+        AppHost = new EmulationHost(
             RendererHostControl,
             InputManager,
             application.Path,

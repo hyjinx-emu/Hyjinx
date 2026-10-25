@@ -1,4 +1,4 @@
-using Hyjinx.Ava.Common.Locale;
+using Hyjinx.Ava.Localization;
 
 namespace Hyjinx.Ava.UI.Models;
 

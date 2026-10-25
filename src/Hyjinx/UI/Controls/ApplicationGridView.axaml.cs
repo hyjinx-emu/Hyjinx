@@ -1,9 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Hyjinx.Ava.Emulation.Library;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.ViewModels;
-using Hyjinx.UI.App.Common;
 using System;
 
 namespace Hyjinx.Ava.UI.Controls;

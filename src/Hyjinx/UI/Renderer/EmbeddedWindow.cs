@@ -1,10 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Platform;
-using Hyjinx.Common.Configuration;
-using Hyjinx.UI.Common.Configuration;
-using Hyjinx.UI.Common.Helper;
+using Hyjinx.Ava.Configuration;
+using Hyjinx.Ava.Emulation.Helper;
 using SPB.Graphics;
 using SPB.Platform;
 using SPB.Platform.GLX;

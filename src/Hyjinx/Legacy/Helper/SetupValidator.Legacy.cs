@@ -5,7 +5,7 @@ using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
 using System.IO;
 
-namespace Hyjinx.UI.Common.Helper;
+namespace Hyjinx.Ava.Emulation.Helper;
 
 /// <summary>
 /// Ensure installation validity

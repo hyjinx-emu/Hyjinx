@@ -1,5 +1,5 @@
 using Avalonia.Interactivity;
-using Hyjinx.UI.App.Common;
+using Hyjinx.Ava.Emulation.Library;
 
 namespace Hyjinx.Ava.UI.Helpers;
 
