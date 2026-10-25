@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace Hyjinx.Ava;
 
-public partial class App(ILogger<App> logger, IServiceProvider applicationServices) : Application
+internal partial class App(ILogger<App> logger, IServiceProvider applicationServices) : Application
 {
     public override void Initialize()
     {
