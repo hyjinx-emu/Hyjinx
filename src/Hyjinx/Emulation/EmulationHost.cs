@@ -89,6 +89,21 @@ internal class EmulationHost
 
     private readonly GraphicsDebugLevel _glLogLevel;
     private float _newVolume;
+
+    private enum KeyboardHotkeyState
+    {
+        None,
+        ToggleVSync,
+        Screenshot,
+        ShowUI,
+        Pause,
+        ToggleMute,
+        ResScaleUp,
+        ResScaleDown,
+        VolumeUp,
+        VolumeDown,
+    }
+
     private KeyboardHotkeyState _prevHotkeyState;
 
     private long _lastCursorMoveTime;
