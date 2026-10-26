@@ -5,7 +5,8 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PublishSingleFile>true</PublishSingleFile>
     <TrimmerSingleWarn>false</TrimmerSingleWarn>
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
