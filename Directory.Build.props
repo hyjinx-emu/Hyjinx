@@ -29,6 +29,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <DebugType Condition=" '$(Configuration)' == 'Debug' ">full</DebugType>
+    <!-- Release builds should not contain debug symbols, but preview builds can for easier debugging if required. -->
+    <DebugType Condition=" '$(Configuration)' == 'Release' OR '$(VersionSuffix)' != '' ">embedded</DebugType>
+    <DebugType Condition=" '$(Configuration)' == 'Release' AND '$(VersionSuffix)' == '' ">none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <NoWarn>SYSLIB1025</NoWarn>
   </PropertyGroup>
 
