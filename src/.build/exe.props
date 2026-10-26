@@ -2,7 +2,6 @@
   <Import Project="./shared.props" />
   
   <PropertyGroup>
-    <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
