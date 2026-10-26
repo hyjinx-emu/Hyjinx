@@ -12,7 +12,6 @@
     <Project Path="src/Hyjinx.HLE.Kernel.Generators/Hyjinx.HLE.Kernel.Generators.csproj" />
     <Project Path="src/Hyjinx.Horizon.Generators/Hyjinx.Horizon.Generators.csproj" />
     <Project Path="src/Hyjinx.UI.LocaleGenerator/Hyjinx.UI.LocaleGenerator.csproj" />
-    <Project Path="src/Spv.Generator/Spv.Generator.csproj" />
   </Folder>
   <Folder Name="/Plugins/" />
   <Folder Name="/Plugins/Audio/">
@@ -99,4 +98,5 @@
   <Project Path="src/Hyjinx.Tests.Unicorn/Hyjinx.Tests.Unicorn.csproj" />
   <Project Path="src/Hyjinx.Tests/Hyjinx.Tests.csproj" />
   <Project Path="src/Hyjinx/Hyjinx.csproj" />
+  <Project Path="src/Spv.Generator/Spv.Generator.csproj" />
 </Solution>
