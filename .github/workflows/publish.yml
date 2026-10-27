@@ -55,8 +55,8 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: win-x64,    runner: windows,  zip_os_name: win_x64     }
-          - { name: linux-x64,  runner: ubuntu,   zip_os_name: linux_x64   }
+          - { name: win-x64,    runner: windows }
+          - { name: linux-x64,  runner: ubuntu  }
       fail-fast: false
 
     steps:
@@ -78,7 +78,6 @@ jobs:
         uses: ./.github/actions/package-template
         with:
           runtime_identifier: ${{ matrix.platform.name }}
-          package_suffix: ${{ matrix.platform.zip_os_name }}
           packager: ${{ matrix.platform.runner }}
           version: ${{ needs.prepare.outputs.full_version }}
           staging_dir: ${{ env.STAGING_DIR }}
