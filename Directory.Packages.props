@@ -57,7 +57,7 @@
     <PackageVersion Include="SkiaSharp" Version="3.119.4" />
     <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="3.119.4" />
     <PackageVersion Include="System.IO.Hashing" Version="10.0.13" />
-    <PackageVersion Include="System.Management" Version="10.0.13" />
+    <PackageVersion Include="System.Management" Version="10.0.14" />
     <PackageVersion Include="System.Text.Json" Version="10.0.13" />
     <PackageVersion Include="UnicornEngine.Unicorn" Version="2.1.0" />
   </ItemGroup>
