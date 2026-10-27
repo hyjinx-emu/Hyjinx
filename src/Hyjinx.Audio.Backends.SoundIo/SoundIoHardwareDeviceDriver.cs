@@ -1,17 +1,22 @@
 using Hyjinx.Audio.Backends.SoundIo.Native;
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;
+using Logger = Hyjinx.Logging.Abstractions.Logger;
 
 namespace Hyjinx.Audio.Backends.SoundIo;
 
-public class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
+public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
 {
+    private readonly ILogger<SoundIoHardwareDeviceDriver> _logger = Logger.DefaultLoggerFactory.CreateLogger<SoundIoHardwareDeviceDriver>();
+
     private readonly SoundIoContext _audioContext;
     private readonly SoundIoDeviceContext _audioDevice;
     private readonly ManualResetEvent _updateRequiredEvent;
@@ -202,6 +207,8 @@ public class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
             throw new ArgumentException($"This sound device does not support channel count {requestedChannelCount}");
         }
 
+        LogSampleFormat(requestedSampleFormat, driverSampleFormat, requestedChannelCount, requestedSampleRate);
+
         SoundIoOutStreamContext result = _audioDevice.CreateOutStream();
 
         result.Name = "Hyjinx";
@@ -211,6 +218,10 @@ public class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
 
         return result;
     }
+
+    [LoggerMessage(Level = LogLevel.Debug, EventId = (int)LogClass.Audio,  EventName = nameof(LogClass.Audio),
+        Message = "Sample format {sampleFormat} to {driverSampleFormat} selected. (Channels={requestedChannelCount}, SampleRate={requestedSampleRate}")]
+    private partial void LogSampleFormat(SampleFormat sampleFormat, SoundIoFormat driverSampleFormat, uint requestedChannelCount, uint requestedSampleRate);
 
     internal void FlushContextEvents()
     {
