@@ -15,7 +15,8 @@ namespace Hyjinx.Audio.Backends.SoundIo;
 
 public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
 {
-    private readonly ILogger<SoundIoHardwareDeviceDriver> _logger = Logger.DefaultLoggerFactory.CreateLogger<SoundIoHardwareDeviceDriver>();
+    private readonly ILogger<SoundIoHardwareDeviceDriver> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<SoundIoHardwareDeviceDriver>();
 
     private readonly SoundIoContext _audioContext;
     private readonly SoundIoDeviceContext _audioDevice;
@@ -207,7 +208,7 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
             throw new ArgumentException($"This sound device does not support channel count {requestedChannelCount}");
         }
 
-        LogSampleFormat(requestedSampleFormat, driverSampleFormat, requestedChannelCount, requestedSampleRate);
+        LogSampleFormat(requestedSampleFormat, driverSampleFormat, _audioContext.CurrentBackend, requestedChannelCount, requestedSampleRate);
 
         SoundIoOutStreamContext result = _audioDevice.CreateOutStream();
 
@@ -219,9 +220,9 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         return result;
     }
 
-    [LoggerMessage(Level = LogLevel.Debug, EventId = (int)LogClass.Audio,  EventName = nameof(LogClass.Audio),
-        Message = "Sample format {sampleFormat} to {driverSampleFormat} selected. (Channels={requestedChannelCount}, SampleRate={requestedSampleRate}")]
-    private partial void LogSampleFormat(SampleFormat sampleFormat, SoundIoFormat driverSampleFormat, uint requestedChannelCount, uint requestedSampleRate);
+    [LoggerMessage(Level = LogLevel.Information, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Sample format {sampleFormat} ({driverSampleFormat}) on backend '{backend}' selected. (Channels={requestedChannelCount}, SampleRate={requestedSampleRate})")]
+    private partial void LogSampleFormat(SampleFormat sampleFormat, SoundIoFormat driverSampleFormat, SoundIoBackend backend, uint requestedChannelCount, uint requestedSampleRate);
 
     internal void FlushContextEvents()
     {
