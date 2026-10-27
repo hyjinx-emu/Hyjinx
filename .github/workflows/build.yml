@@ -70,6 +70,7 @@ jobs:
           version_suffix: ${{ needs.prepare.outputs.version_suffix }}
           short_hash: ${{ needs.prepare.outputs.short_hash }}
           build_opts: --version-suffix "${{ steps.git_short_hash.outputs.result }}" -p:DebugType=portable
+          run_tests: true
           test_opts: --collect:"XPlat Code Coverage" --results-directory TestResults
 
       - name: Package
