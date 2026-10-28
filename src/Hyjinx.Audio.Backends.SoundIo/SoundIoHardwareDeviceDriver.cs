@@ -51,7 +51,12 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         _pauseEvent = new ManualResetEvent(true);
         _sessions = new ConcurrentDictionary<SoundIoHardwareDeviceSession, byte>();
 
-        _audioContext.Connect(SoundIoBackend.PulseAudio);
+        var err = _audioContext.Connect(SoundIoBackend.PulseAudio);
+        if (err != SoundIoError.None)
+        {
+            throw new SoundIoException(err);
+        }
+
         _audioContext.FlushEvents();
 
         _audioDevice = FindValidAudioDevice(_audioContext, true);
