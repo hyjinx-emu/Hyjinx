@@ -51,7 +51,7 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         _pauseEvent = new ManualResetEvent(true);
         _sessions = new ConcurrentDictionary<SoundIoHardwareDeviceSession, byte>();
 
-        var err = _audioContext.Connect(SoundIoBackend.PulseAudio);
+        var err = _audioContext.Connect(SoundIoBackend.Alsa);
         if (err != SoundIoError.None)
         {
             throw new SoundIoException(err);
@@ -216,6 +216,11 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         LogSampleFormat(requestedSampleFormat, driverSampleFormat, _audioContext.CurrentBackend, requestedChannelCount, requestedSampleRate);
 
         SoundIoOutStreamContext result = _audioDevice.CreateOutStream();
+        if (result == null)
+        {
+            _logger.LogDebug("Create out stream returned null.");
+            return result;
+        }
 
         result.Name = "Hyjinx";
         result.Layout = SoundIoChannelLayout.GetDefaultValue((int)requestedChannelCount);
