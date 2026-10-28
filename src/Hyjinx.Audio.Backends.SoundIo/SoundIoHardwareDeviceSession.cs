@@ -70,12 +70,13 @@ internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutpu
 
     public override void SetVolume(float volume)
     {
-        LogSettingVolume(volume);
+        // TODO: Viper - Is this part of the problem?
+        //LogSettingVolume(volume);
 
-        _volume = volume;
-        _outputStream.SetVolume(_driver.Volume * volume);
+        //_volume = volume;
+        //_outputStream.SetVolume(_driver.Volume * volume);
 
-        LogSetVolume(volume);
+        //LogSetVolume(volume);
     }
 
     [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
@@ -97,9 +98,9 @@ internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutpu
         _outputStream.Start();
         LogStartedOutputStream();
 
-        LogResumingOutputStream();
+        //LogResumingOutputStream();
         //_outputStream.Pause(false); // TODO: Viper - Is this the issue?
-        LogResumedOutputStream();
+        //LogResumedOutputStream();
 
         LogFlushingContextEvents();
         _driver.FlushContextEvents();
