@@ -22,6 +22,9 @@ public class SoundIoContext : IDisposable
     }
 
     public SoundIoError Connect() => soundio_connect(_context);
+
+    public SoundIoError Connect(SoundIoBackend backend) => soundio_connect_backend(_context, backend);
+
     public void Disconnect() => soundio_disconnect(_context);
 
     public void FlushEvents() => soundio_flush_events(_context);

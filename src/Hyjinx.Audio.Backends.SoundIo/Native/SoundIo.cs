@@ -116,6 +116,9 @@ public static partial class SoundIo
     internal static partial SoundIoError soundio_connect(IntPtr ctx);
 
     [LibraryImport(LibraryName)]
+    internal static partial SoundIoError soundio_connect_backend(IntPtr ctx, SoundIoBackend backend);
+
+    [LibraryImport(LibraryName)]
     internal static partial void soundio_disconnect(IntPtr ctx);
 
     [LibraryImport(LibraryName)]
