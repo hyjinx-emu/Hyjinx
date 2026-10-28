@@ -140,8 +140,18 @@ internal partial class CompatLayerHardwareDeviceSession : HardwareDeviceSessionO
 
     public override void SetVolume(float volume)
     {
+        LogSettingVolume(volume);
         _realSession.SetVolume(volume);
+        LogSetVolume(volume);
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Setting real session volume to {volume}...")]
+    private partial void LogSettingVolume(float volume);
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Set real session volume to: {volume}")]
+    private partial void LogSetVolume(float volume);
 
     public override void Start()
     {

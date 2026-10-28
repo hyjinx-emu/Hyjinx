@@ -1,15 +1,21 @@
 using Hyjinx.Audio.Integration;
 using Hyjinx.Common;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
+using Logger = Hyjinx.Logging.Abstractions.Logger;
 
 namespace Hyjinx.Audio.Common;
 
 /// <summary>
 /// An audio device session.
 /// </summary>
-class AudioDeviceSession : IDisposable
+internal partial class AudioDeviceSession : IDisposable
 {
+    private readonly ILogger<AudioDeviceSession> _logger =
+        Logger.DefaultLoggerFactory.CreateLogger<AudioDeviceSession>();
+
     /// <summary>
     /// The volume of the <see cref="AudioDeviceSession"/>.
     /// </summary>
@@ -334,12 +340,32 @@ class AudioDeviceSession : IDisposable
 
         _state = AudioDeviceState.Started;
 
+        LogFlushingToHardware();
         FlushToHardware();
+        LogFlushedToHardware();
 
+        LogSettingVolume(_volume);
         _hardwareDeviceSession.SetVolume(_volume);
+        LogSetVolume(_volume);
 
         return ResultCode.Success;
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Flushing to hardware...")]
+    private partial void LogFlushingToHardware();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Flushed to hardware.")]
+    private partial void LogFlushedToHardware();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Setting volume to {volume}...")]
+    private partial void LogSettingVolume(float volume);
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Volume set to: {volume}")]
+    private partial void LogSetVolume(float volume);
 
     /// <summary>
     /// Stop the audio session.
