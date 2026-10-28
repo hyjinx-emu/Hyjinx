@@ -152,6 +152,8 @@ public partial class AudioOutputSystem : IDisposable
     {
         _sessionId = sessionId;
 
+        LogOutputSystemInitializing(inputDeviceName, sampleFormat, sessionId);
+
         var result = IsConfigurationValid(ref parameter, inputDeviceName);
         if (result == ResultCode.Success)
         {
@@ -181,6 +183,10 @@ public partial class AudioOutputSystem : IDisposable
 
         return result;
     }
+
+    [LoggerMessage(Level = LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Initializing output audio system... (InputDeviceName={inputDeviceName}, SampleFormat={sampleFormat}, SessionId={sessionId})")]
+    private partial void LogOutputSystemInitializing(string inputDeviceName, SampleFormat sampleFormat, int sessionId);
 
     [LoggerMessage(Level = LogLevel.Information, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
         Message = "Initialized output audio system. (DeviceName={deviceName}, ChannelCount={channelCount}, SampleFormat={sampleFormat}, SampleRate={sampleRate}, SessionId={sessionId})")]
