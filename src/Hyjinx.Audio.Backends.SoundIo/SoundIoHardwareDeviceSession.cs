@@ -87,7 +87,7 @@ internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutpu
         LogStartedOutputStream();
 
         LogResumingOutputStream();
-        _outputStream.Pause(false);
+        //_outputStream.Pause(false);
         LogResumedOutputStream();
 
         LogFlushingContextEvents();
