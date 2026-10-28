@@ -765,25 +765,24 @@ internal class EmulationHost
             }
         }
 
-        static IHardwareDeviceDriver InitializeAudioBackend<T>(AudioBackend backend, AudioBackend nextBackend) where T : IHardwareDeviceDriver, new()
+        static IHardwareDeviceDriver? InitializeAudioBackend<T>(AudioBackend backend, AudioBackend nextBackend) where T : IHardwareDeviceDriver, new()
         {
             if (T.IsSupported)
             {
                 return new T();
             }
 
-            _logger.LogWarning(new EventId((int)LogClass.Audio, nameof(LogClass.Audio)),
-                "{backend} is not supported, falling back to {nextBackend}.", backend, nextBackend);
-
             return null;
         }
 
-        IHardwareDeviceDriver deviceDriver = null;
+        IHardwareDeviceDriver? deviceDriver = null;
 
         for (int i = 0; i < availableBackends.Count; i++)
         {
             AudioBackend currentBackend = availableBackends[i];
             AudioBackend nextBackend = i + 1 < availableBackends.Count ? availableBackends[i + 1] : AudioBackend.Dummy;
+
+            _logger.LogDebug("Initializing audio '{backend}' backend...", currentBackend);
 
             deviceDriver = currentBackend switch
             {
@@ -795,8 +794,15 @@ internal class EmulationHost
 
             if (deviceDriver != null)
             {
+                _logger.LogInformation("Initialized audio '{backend}' backend.", currentBackend);
+
                 ConfigurationState.Instance.System.AudioBackend.Value = currentBackend;
                 break;
+            }
+            else
+            {
+                _logger.Log(LogLevel.Warning, new EventId((int)LogClass.Audio, nameof(LogClass.Audio)),
+                    "{backend} is not supported, falling back to {nextBackend}.", currentBackend, nextBackend);
             }
         }
 

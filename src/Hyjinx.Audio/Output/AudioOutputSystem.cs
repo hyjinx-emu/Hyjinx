@@ -1,5 +1,7 @@
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 
@@ -8,8 +10,10 @@ namespace Hyjinx.Audio.Output;
 /// <summary>
 /// Audio output system.
 /// </summary>
-public class AudioOutputSystem : IDisposable
+public partial class AudioOutputSystem : IDisposable
 {
+    private readonly ILogger<AudioOutputSystem> _logger = Logger.DefaultLoggerFactory.CreateLogger<AudioOutputSystem>();
+
     /// <summary>
     /// The session id associated to the <see cref="AudioOutputSystem"/>.
     /// </summary>
@@ -148,8 +152,7 @@ public class AudioOutputSystem : IDisposable
     {
         _sessionId = sessionId;
 
-        ResultCode result = IsConfigurationValid(ref parameter, inputDeviceName);
-
+        var result = IsConfigurationValid(ref parameter, inputDeviceName);
         if (result == ResultCode.Success)
         {
             if (inputDeviceName.Length == 0)
@@ -174,8 +177,14 @@ public class AudioOutputSystem : IDisposable
             SampleRate = Constants.TargetSampleRate;
         }
 
+        LogOutputSystemInitialized(DeviceName, ChannelCount, SampleFormat, SampleRate, _sessionId);
+
         return result;
     }
+
+    [LoggerMessage(Level = LogLevel.Information, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Initialized output audio system. (DeviceName={deviceName}, ChannelCount={channelCount}, SampleFormat={sampleFormat}, SampleRate={sampleRate}, SessionId={sessionId})")]
+    private partial void LogOutputSystemInitialized(string deviceName, uint channelCount, SampleFormat sampleFormat, uint sampleRate, int sessionId);
 
     /// <summary>
     /// Append a new audio buffer to the audio output.
@@ -254,12 +263,24 @@ public class AudioOutputSystem : IDisposable
     /// </summary>
     /// <returns>A <see cref="ResultCode"/> reporting an error or a success</returns>
     public ResultCode Start()
-    {
+    {        
         lock (_parentLock)
         {
-            return _session.Start();
+            LogStartingOutputAudioSystem();
+            var result = _session.Start();
+            LogStartedOutputAudioSystem(result);
+
+            return result;
         }
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Starting output audio system...")]
+    private partial void LogStartingOutputAudioSystem();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Started output audio system. Result={result}")]
+    private partial void LogStartedOutputAudioSystem(ResultCode result);
 
     /// <summary>
     /// Stop the audio session.
@@ -269,9 +290,21 @@ public class AudioOutputSystem : IDisposable
     {
         lock (_parentLock)
         {
-            return _session.Stop();
+            LogStoppingOutputAudioSystem();
+            var result = _session.Stop();
+            LogStoppedOutputAudioSystem(result);
+
+            return result;
         }
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+    Message = "Stopping output audio system...")]
+    private partial void LogStoppingOutputAudioSystem();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Stopped output audio system. Result={result}")]
+    private partial void LogStoppedOutputAudioSystem(ResultCode result);
 
     /// <summary>
     /// Get the volume of the session.

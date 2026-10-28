@@ -51,7 +51,7 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         _pauseEvent = new ManualResetEvent(true);
         _sessions = new ConcurrentDictionary<SoundIoHardwareDeviceSession, byte>();
 
-        var err = _audioContext.Connect(SoundIoBackend.Alsa);
+        var err = _audioContext.Connect();
         if (err != SoundIoError.None)
         {
             throw new SoundIoException(err);
@@ -218,9 +218,11 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         SoundIoOutStreamContext result = _audioDevice.CreateOutStream();
         if (result == null)
         {
-            _logger.LogDebug("Create out stream returned null.");
+            LogFailedToCreateOutputStream();
             return result;
         }
+
+        LogOutputStreamCreated();
 
         result.Name = "Hyjinx";
         result.Layout = SoundIoChannelLayout.GetDefaultValue((int)requestedChannelCount);
@@ -230,9 +232,17 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         return result;
     }
 
-    [LoggerMessage(Level = LogLevel.Information, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+    [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
         Message = "Sample format {sampleFormat} ({driverSampleFormat}) on backend '{backend}' selected. (Channels={requestedChannelCount}, SampleRate={requestedSampleRate})")]
     private partial void LogSampleFormat(SampleFormat sampleFormat, SoundIoFormat driverSampleFormat, SoundIoBackend backend, uint requestedChannelCount, uint requestedSampleRate);
+
+    [LoggerMessage(LogLevel.Warning, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Failed to create output stream.")]
+    private partial void LogFailedToCreateOutputStream();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Output stream created successfully.")]
+    private partial void LogOutputStreamCreated();
 
     internal void FlushContextEvents()
     {
