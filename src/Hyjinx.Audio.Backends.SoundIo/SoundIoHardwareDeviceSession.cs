@@ -2,7 +2,9 @@ using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Backends.SoundIo.Native;
 using Hyjinx.Audio.Common;
 using Hyjinx.Common.Memory;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -11,8 +13,10 @@ using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
 namespace Hyjinx.Audio.Backends.SoundIo;
 
-class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
+internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
 {
+    private readonly ILogger<SoundIoHardwareDeviceSession> _logger = Logger.DefaultLoggerFactory.CreateLogger<SoundIoHardwareDeviceSession>();
+
     private readonly SoundIoHardwareDeviceDriver _driver;
     private readonly ConcurrentQueue<SoundIoAudioBuffer> _queuedBuffers;
     private SoundIoOutStreamContext _outputStream;
@@ -78,11 +82,42 @@ class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
 
     public override void Start()
     {
+        LogStartingOutputStream();
         _outputStream.Start();
-        _outputStream.Pause(false);
+        LogStartedOutputStream();
 
+        LogResumingOutputStream();
+        _outputStream.Pause(false);
+        LogResumedOutputStream();
+
+        LogFlushingContextEvents();
         _driver.FlushContextEvents();
+        LogFlushedContextEvents();
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Starting output stream...")]
+    private partial void LogStartingOutputStream();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Output stream started.")]
+    private partial void LogStartedOutputStream();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Resuming output stream...")]
+    private partial void LogResumingOutputStream();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Resumed output stream.")]
+    private partial void LogResumedOutputStream();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Flushing context events...")]
+    private partial void LogFlushingContextEvents();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Flushed context events.")]
+    private partial void LogFlushedContextEvents();
 
     public override void Stop()
     {

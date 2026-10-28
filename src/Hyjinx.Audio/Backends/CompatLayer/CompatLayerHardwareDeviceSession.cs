@@ -1,13 +1,17 @@
 using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Renderer.Dsp;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Runtime.InteropServices;
 
 namespace Hyjinx.Audio.Backends.CompatLayer;
 
-class CompatLayerHardwareDeviceSession : HardwareDeviceSessionOutputBase
+internal partial class CompatLayerHardwareDeviceSession : HardwareDeviceSessionOutputBase
 {
+    private readonly ILogger<CompatLayerHardwareDeviceSession> _logger = Logger.DefaultLoggerFactory.CreateLogger<CompatLayerHardwareDeviceSession>();
+
     private readonly HardwareDeviceSessionOutputBase _realSession;
     private readonly SampleFormat _userSampleFormat;
     private readonly uint _userChannelCount;
@@ -141,8 +145,18 @@ class CompatLayerHardwareDeviceSession : HardwareDeviceSessionOutputBase
 
     public override void Start()
     {
+        LogStartingRealSession();
         _realSession.Start();
+        LogStartedRealSession();
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Starting real audio session...")]
+    private partial void LogStartingRealSession();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Started real audio session.")]
+    private partial void LogStartedRealSession();
 
     public override void Stop()
     {
