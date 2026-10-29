@@ -31,12 +31,18 @@ inputs:
     description: "Enables or disables the execution of the unit tests."
     required: false
     default: "false"
+  test_opts:
+    description: "Additional options to pass to the test runner."
+    required: false
+  build_opts:
+    description: "Additional options to pass to the build command."
+    required: false
     
 runs:
   using: "composite"
   steps:
     - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         global-json-file: global.json
 
@@ -51,13 +57,13 @@ runs:
       if: inputs.run_tests == 'true'
       shell: bash
       run: |
-        dotnet build -c "${{ inputs.configuration }}"
+        dotnet build -c "${{ inputs.configuration }}" ${{ inputs.build_opts }}
 
     - name: Run tests
       if: inputs.run_tests == 'true'
       shell: bash
       run: |
-        dotnet test --no-build -c "${{ inputs.configuration }}"
+        dotnet test --no-build -c "${{ inputs.configuration }}" ${{ inputs.test_opts }}
 
     - name: Publish for Preview
       if: inputs.version_suffix != ''

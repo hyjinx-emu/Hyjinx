@@ -4,8 +4,6 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
   push:
-    branches:
-      - main
 
 permissions:
   contents: read
@@ -17,17 +15,41 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    
+    outputs:
+      version_number: ${{ steps.prepared.outputs.version_number }}
+      version_suffix: ${{ steps.prepared.outputs.version_suffix }}
+      full_version: ${{ steps.prepared.outputs.full_version }}
+      short_hash: ${{ steps.prepared.outputs.short_hash }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        
+      - name: Prepare version
+        id: prepared
+        uses: ./.github/actions/prepare-version
+        with:
+          target_file: "Directory.Build.props"
+
   build:
-    name: ${{ matrix.platform.name }} (${{ matrix.configuration }})
+    name: ${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.runner }}-latest
     timeout-minutes: 60
+    needs: prepare
     
+    env:
+      STAGING_DIR: dist
+      PACKAGE_DIR: out
+
     strategy:
       matrix:
         configuration: [ Release ]
         platform:
-          - { name: win-x64,    runner: windows,  zip_os_name: win_x64    }
-          - { name: linux-x64,  runner: ubuntu,   zip_os_name: linux_x64  }
+          - { name: win-x64,    runner: windows }
+          - { name: linux-x64,  runner: ubuntu  }
       fail-fast: false
       
     steps:
@@ -37,22 +59,34 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
 
-      - name: Set up .NET SDK
-        uses: actions/setup-dotnet@v6
-        with:
-          global-json-file: global.json
-
-      - name: Determine git hash
-        id: git_short_hash
-        run: echo "result=$(git rev-parse --short "${{ github.sha }}")" >> $GITHUB_OUTPUT
-        shell: bash
-                          
       - name: Build
-        run: dotnet build -c "${{ matrix.configuration }}" --version-suffix "${{ steps.git_short_hash.outputs.result }}" -p:DebugType=portable
+        uses: ./.github/actions/build-template
+        with:
+          version_file: 'Directory.Build.props'
+          project: src/Hyjinx/Hyjinx.csproj
+          runtime_identifier: ${{ matrix.platform.name }}
+          staging_dir: ${{ env.STAGING_DIR }}
+          version: ${{ needs.prepare.outputs.version_number }}
+          version_suffix: ${{ needs.prepare.outputs.version_suffix }}
+          short_hash: ${{ needs.prepare.outputs.short_hash }}
+          build_opts: --version-suffix "${{ steps.git_short_hash.outputs.result }}" -p:DebugType=portable
+          run_tests: true
+          test_opts: --collect:"XPlat Code Coverage" --results-directory TestResults
 
-      - name: Run tests
-        run: dotnet test --no-build -c "${{ matrix.configuration }}" --collect:"XPlat Code Coverage" --results-directory TestResults
-        timeout-minutes: 30
+      - name: Package
+        uses: ./.github/actions/package-template
+        with:
+          runtime_identifier: ${{ matrix.platform.name }}
+          packager: ${{ matrix.platform.runner }}
+          version: ${{ needs.prepare.outputs.full_version }}
+          staging_dir: ${{ env.STAGING_DIR }}
+          package_dir: ${{ env.PACKAGE_DIR }}
+          
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.platform.name }}
+          path: "${{ env.PACKAGE_DIR }}/"
 
       - name: Upload test results
         uses: actions/upload-artifact@v7
