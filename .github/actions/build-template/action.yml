@@ -2,8 +2,8 @@ name: Build
 description: Builds the application
 
 inputs:
-  project:
-    description: "The path to the project file."
+  publish_project:
+    description: "The path to the project file which will be published."
     required: true
   runtime_identifier:
     description: "The target runtime identifier."
@@ -54,7 +54,6 @@ runs:
         version-property: VersionPrefix
             
     - name: Build
-      if: inputs.run_tests == 'true'
       shell: bash
       run: |
         dotnet build -c "${{ inputs.configuration }}" ${{ inputs.build_opts }}
@@ -69,10 +68,10 @@ runs:
       if: inputs.version_suffix != ''
       shell: bash
       run: |
-        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}+${{ inputs.short_hash }}"
+        dotnet publish ${{ inputs.publish_project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}+${{ inputs.short_hash }}"
       
     - name: Publish for Release
       if: inputs.version_suffix == ''
       shell: bash
       run: |
-        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained
+        dotnet publish ${{ inputs.publish_project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained

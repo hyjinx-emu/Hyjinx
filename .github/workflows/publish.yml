@@ -67,7 +67,7 @@ jobs:
         uses: ./.github/actions/build-template
         with:
           version_file: 'Directory.Build.props'
-          project: src/Hyjinx/Hyjinx.csproj
+          publish_project: src/Hyjinx/Hyjinx.csproj
           runtime_identifier: ${{ matrix.platform.name }}
           staging_dir: ${{ env.STAGING_DIR }}
           version: ${{ needs.prepare.outputs.version_number }}
