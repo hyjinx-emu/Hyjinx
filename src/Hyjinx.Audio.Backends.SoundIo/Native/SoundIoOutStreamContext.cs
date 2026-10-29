@@ -106,19 +106,21 @@ internal class SoundIoOutStreamContext : IDisposable
         }
     }
 
-    private static void CheckError(SoundIoError error)
+    private static void CheckError(SoundIoError error, bool allowIncompatibleBackend = false)
     {
-        if (error != SoundIoError.None)
+        if ((error == SoundIoError.None) || (error == SoundIoError.IncompatibleBackend && allowIncompatibleBackend))
         {
-            throw new SoundIoException(error);
+            return;
         }
+
+        throw new SoundIoException(error);
     }
 
     public void Open() => CheckError(soundio_outstream_open(_context));
 
     public void Start() => CheckError(soundio_outstream_start(_context));
 
-    public void Pause(bool pause) => CheckError(soundio_outstream_pause(_context, pause));
+    public void Pause(bool pause) => CheckError(soundio_outstream_pause(_context, pause), true);
 
     public void SetVolume(double volume) => CheckError(soundio_outstream_set_volume(_context, volume));
 
