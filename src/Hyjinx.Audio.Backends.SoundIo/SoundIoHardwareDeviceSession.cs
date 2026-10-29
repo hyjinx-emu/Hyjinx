@@ -2,7 +2,9 @@ using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Backends.SoundIo.Native;
 using Hyjinx.Audio.Common;
 using Hyjinx.Common.Memory;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -11,8 +13,10 @@ using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
 namespace Hyjinx.Audio.Backends.SoundIo;
 
-internal class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
+internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
 {
+    private readonly ILogger<SoundIoHardwareDeviceSession> _logger = Logger.DefaultLoggerFactory.CreateLogger<SoundIoHardwareDeviceSession>();
+
     private readonly SoundIoHardwareDeviceDriver _driver;
     private readonly ConcurrentQueue<SoundIoAudioBuffer> _queuedBuffers;
     private SoundIoOutStreamContext _outputStream;
@@ -85,18 +89,35 @@ internal class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
 
     public override void Start()
     {
+        LogStartingOutputStream();
+
         _outputStream.Start();
+
+        LogResumingOutputStream();
         _outputStream.Pause(false);
 
         _driver.FlushContextEvents();
     }
 
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Starting output stream...")]
+    private partial void LogStartingOutputStream();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Resuming output stream...")]
+    private partial void LogResumingOutputStream();
+
     public override void Stop()
     {
+        LogPausingOutputStream();
         _outputStream.Pause(true);
 
         _driver.FlushContextEvents();
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Pausing output stream...")]
+    private partial void LogPausingOutputStream();
 
     public override void UnregisterBuffer(AudioBuffer buffer) { }
 

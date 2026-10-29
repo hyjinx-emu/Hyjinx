@@ -231,7 +231,7 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
     private partial void LogSampleFormat(SampleFormat sampleFormat, SoundIoFormat driverSampleFormat, SoundIoBackend backend, uint requestedChannelCount, uint requestedSampleRate);
 
     [LoggerMessage(LogLevel.Warning, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
-    Message = "Failed to create output stream.")]
+        Message = "Failed to create output stream.")]
     private partial void LogFailedToCreateOutputStream();
 
     [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
@@ -240,8 +240,20 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
 
     internal void FlushContextEvents()
     {
+        LogFlushingContextEvents();
+
         _audioContext.FlushEvents();
+
+        LogFlushedContextEvents();
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Flushing context events...")]
+    private partial void LogFlushingContextEvents();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Flushed context events.")]
+    private partial void LogFlushedContextEvents();
 
     public void Dispose()
     {
