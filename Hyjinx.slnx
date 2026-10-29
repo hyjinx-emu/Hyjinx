@@ -40,32 +40,6 @@
     <File Path="nuget.config" />
     <File Path="README.md" />
   </Folder>
-  <Folder Name="/Solution Items/.github/">
-    <File Path=".github/dependabot.yml" />
-    <File Path=".github/labeler.yml" />
-  </Folder>
-  <Folder Name="/Solution Items/.github/actions/" />
-  <Folder Name="/Solution Items/.github/actions/build-template/">
-    <File Path=".github/actions/build-template/action.yml" />
-  </Folder>
-  <Folder Name="/Solution Items/.github/actions/bump-version/">
-    <File Path=".github/actions/bump-version/action.yml" />
-  </Folder>
-  <Folder Name="/Solution Items/.github/actions/nuget-template/">
-    <File Path=".github/actions/nuget-template/action.yml" />
-  </Folder>
-  <Folder Name="/Solution Items/.github/actions/package-template/">
-    <File Path=".github/actions/package-template/action.yml" />
-  </Folder>
-  <Folder Name="/Solution Items/.github/actions/prepare-version/">
-    <File Path=".github/actions/prepare-version/action.yml" />
-  </Folder>
-  <Folder Name="/Solution Items/.github/workflows/">
-    <File Path=".github/workflows/build.yml" />
-    <File Path=".github/workflows/checks.yml" />
-    <File Path=".github/workflows/publish.yml" />
-    <File Path=".github/workflows/triage.yml" />
-  </Folder>
   <Folder Name="/Solution Items/build/">
     <File Path="src/.build/exe.props" />
     <File Path="src/.build/generator.props" />
