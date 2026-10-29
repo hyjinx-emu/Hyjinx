@@ -5,7 +5,7 @@ using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
 namespace Hyjinx.Audio.Backends.SoundIo.Native;
 
-public class SoundIoDeviceContext
+internal class SoundIoDeviceContext
 {
     private readonly IntPtr _context;
 

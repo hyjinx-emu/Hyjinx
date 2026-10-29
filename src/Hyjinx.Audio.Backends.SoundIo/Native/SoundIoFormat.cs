@@ -1,6 +1,6 @@
 namespace Hyjinx.Audio.Backends.SoundIo.Native;
 
-public enum SoundIoFormat
+internal enum SoundIoFormat
 {
     Invalid = 0,
     S8 = 1,

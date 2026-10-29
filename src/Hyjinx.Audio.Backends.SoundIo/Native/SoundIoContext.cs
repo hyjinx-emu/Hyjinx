@@ -6,7 +6,7 @@ using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
 namespace Hyjinx.Audio.Backends.SoundIo.Native;
 
-public class SoundIoContext : IDisposable
+internal class SoundIoContext : IDisposable
 {
     private IntPtr _context;
     private Action<SoundIoError> _onBackendDisconnect;

@@ -170,7 +170,7 @@ public class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         return _sessions.TryRemove(session, out _);
     }
 
-    public static SoundIoFormat GetSoundIoFormat(SampleFormat format)
+    private static SoundIoFormat GetSoundIoFormat(SampleFormat format)
     {
         return format switch
         {

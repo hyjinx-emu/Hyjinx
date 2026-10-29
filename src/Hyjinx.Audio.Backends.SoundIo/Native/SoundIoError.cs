@@ -1,6 +1,6 @@
 namespace Hyjinx.Audio.Backends.SoundIo.Native;
 
-public enum SoundIoError
+internal enum SoundIoError
 {
     None = 0,
     NoMem = 1,

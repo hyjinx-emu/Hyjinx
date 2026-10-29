@@ -5,7 +5,7 @@ using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
 namespace Hyjinx.Audio.Backends.SoundIo.Native;
 
-public class SoundIoOutStreamContext : IDisposable
+internal class SoundIoOutStreamContext : IDisposable
 {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     private unsafe delegate void WriteCallbackDelegate(IntPtr ctx, int frameCountMin, int frameCountMax);

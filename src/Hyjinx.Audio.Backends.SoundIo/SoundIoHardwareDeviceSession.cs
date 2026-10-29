@@ -11,7 +11,7 @@ using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
 namespace Hyjinx.Audio.Backends.SoundIo;
 
-class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
+internal class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
 {
     private readonly SoundIoHardwareDeviceDriver _driver;
     private readonly ConcurrentQueue<SoundIoAudioBuffer> _queuedBuffers;

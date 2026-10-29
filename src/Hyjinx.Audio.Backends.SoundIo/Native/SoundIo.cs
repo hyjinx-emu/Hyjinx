@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Hyjinx.Audio.Backends.SoundIo.Native;
 
-public static partial class SoundIo
+internal static partial class SoundIo
 {
     private const string LibraryName = "libsoundio";
 
