@@ -1,6 +1,6 @@
 namespace Hyjinx.Audio.Backends.SoundIo.Native;
 
-public enum SoundIoBackend
+internal enum SoundIoBackend
 {
     None = 0,
     Jack = 1,

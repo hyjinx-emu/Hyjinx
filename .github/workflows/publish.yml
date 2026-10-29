@@ -42,8 +42,8 @@ jobs:
           target_file: "Directory.Build.props"
           explicit_version: ${{ github.event.release.tag_name }}
           
-  build-native:
-    name: build (${{ matrix.platform.name }})
+  build:
+    name: ${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.runner }}-latest
     timeout-minutes: 60
     needs: prepare
@@ -55,8 +55,8 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { name: win-x64,    runner: windows,  zip_os_name: win_x64     }
-          - { name: linux-x64,  runner: ubuntu,   zip_os_name: linux_x64   }
+          - { name: win-x64,    runner: windows }
+          - { name: linux-x64,  runner: ubuntu  }
       fail-fast: false
 
     steps:
@@ -67,7 +67,7 @@ jobs:
         uses: ./.github/actions/build-template
         with:
           version_file: 'Directory.Build.props'
-          project: src/Hyjinx/Hyjinx.csproj
+          publish_project: src/Hyjinx/Hyjinx.csproj
           runtime_identifier: ${{ matrix.platform.name }}
           staging_dir: ${{ env.STAGING_DIR }}
           version: ${{ needs.prepare.outputs.version_number }}
@@ -78,13 +78,12 @@ jobs:
         uses: ./.github/actions/package-template
         with:
           runtime_identifier: ${{ matrix.platform.name }}
-          package_suffix: ${{ matrix.platform.zip_os_name }}
           packager: ${{ matrix.platform.runner }}
           version: ${{ needs.prepare.outputs.full_version }}
           staging_dir: ${{ env.STAGING_DIR }}
           package_dir: ${{ env.PACKAGE_DIR }}
           
-      - name: Upload artifacts
+      - name: Upload package
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.platform.name }}
@@ -92,7 +91,7 @@ jobs:
 
   build-nuget:
     runs-on: ubuntu-latest
-    needs: [ prepare ]
+    needs: prepare
     
     env:
       STAGING_DIR: dist
@@ -118,7 +117,7 @@ jobs:
           
   publish:
     runs-on: windows-latest
-    needs: [ prepare, build-native, build-nuget ]
+    needs: [ prepare, build, build-nuget ]
 
     env:
       STAGING_DIR: dist

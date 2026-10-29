@@ -1,6 +1,6 @@
 namespace Hyjinx.Audio.Backends.SoundIo;
 
-class SoundIoAudioBuffer
+internal class SoundIoAudioBuffer
 {
     public readonly ulong DriverIdentifier;
     public readonly ulong SampleCount;

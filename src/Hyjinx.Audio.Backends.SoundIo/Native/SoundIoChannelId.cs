@@ -1,6 +1,6 @@
 namespace Hyjinx.Audio.Backends.SoundIo.Native;
 
-public enum SoundIoChannelId
+internal enum SoundIoChannelId
 {
     Invalid = 0,
     FrontLeft = 1,

@@ -1,5 +1,7 @@
 using Hyjinx.Audio.Integration;
 using Hyjinx.Common;
+using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 
@@ -8,8 +10,10 @@ namespace Hyjinx.Audio.Common;
 /// <summary>
 /// An audio device session.
 /// </summary>
-class AudioDeviceSession : IDisposable
+internal partial class AudioDeviceSession : IDisposable
 {
+    private readonly ILogger<AudioDeviceSession> _logger = Logger.DefaultLoggerFactory.CreateLogger<AudioDeviceSession>();
+
     /// <summary>
     /// The volume of the <see cref="AudioDeviceSession"/>.
     /// </summary>
@@ -330,6 +334,7 @@ class AudioDeviceSession : IDisposable
             return ResultCode.OperationFailed;
         }
 
+        LogStartingAudioDeviceSession();
         _hardwareDeviceSession.Start();
 
         _state = AudioDeviceState.Started;
@@ -338,8 +343,17 @@ class AudioDeviceSession : IDisposable
 
         _hardwareDeviceSession.SetVolume(_volume);
 
+        LogStartedAudioDeviceSession();
         return ResultCode.Success;
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Starting output device session...")]
+    private partial void LogStartingAudioDeviceSession();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Started output audio system.")]
+    private partial void LogStartedAudioDeviceSession();
 
     /// <summary>
     /// Stop the audio session.

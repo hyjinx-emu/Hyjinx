@@ -5,7 +5,7 @@ using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
 namespace Hyjinx.Audio.Backends.SoundIo.Native;
 
-public class SoundIoDeviceContext
+internal class SoundIoDeviceContext
 {
     private readonly IntPtr _context;
 
@@ -34,7 +34,7 @@ public class SoundIoDeviceContext
 
     public bool SupportsChannelCount(int channelCount) => soundio_device_supports_layout(_context, SoundIoChannelLayout.GetDefault(channelCount));
 
-    public SoundIoOutStreamContext CreateOutStream()
+    public SoundIoOutStreamContext? CreateOutStream()
     {
         IntPtr context = soundio_outstream_create(_context);
 

@@ -2,9 +2,10 @@ using Hyjinx.Audio.Backends.Common;
 using Hyjinx.Audio.Backends.SoundIo.Native;
 using Hyjinx.Audio.Common;
 using Hyjinx.Common.Memory;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Buffers;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -12,8 +13,10 @@ using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 
 namespace Hyjinx.Audio.Backends.SoundIo;
 
-class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
+internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
 {
+    private readonly ILogger<SoundIoHardwareDeviceSession> _logger = Logger.DefaultLoggerFactory.CreateLogger<SoundIoHardwareDeviceSession>();
+
     private readonly SoundIoHardwareDeviceDriver _driver;
     private readonly ConcurrentQueue<SoundIoAudioBuffer> _queuedBuffers;
     private SoundIoOutStreamContext _outputStream;
@@ -23,7 +26,8 @@ class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
     private float _volume;
     private int _disposeState;
 
-    public SoundIoHardwareDeviceSession(SoundIoHardwareDeviceDriver driver, IVirtualMemoryManager memoryManager, SampleFormat requestedSampleFormat, uint requestedSampleRate, uint requestedChannelCount) : base(memoryManager, requestedSampleFormat, requestedSampleRate, requestedChannelCount)
+    public SoundIoHardwareDeviceSession(SoundIoHardwareDeviceDriver driver, IVirtualMemoryManager memoryManager, SampleFormat requestedSampleFormat, uint requestedSampleRate, uint requestedChannelCount)
+        : base(memoryManager, requestedSampleFormat, requestedSampleRate, requestedChannelCount)
     {
         _driver = driver;
         _updateRequiredEvent = _driver.GetUpdateRequiredEvent();
@@ -36,7 +40,13 @@ class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
 
     private void SetupOutputStream(float requestedVolume)
     {
-        _outputStream = _driver.OpenStream(RequestedSampleFormat, RequestedSampleRate, RequestedChannelCount);
+        var newStream = _driver.OpenStream(RequestedSampleFormat, RequestedSampleRate, RequestedChannelCount);
+        if (newStream == null)
+        {
+            return;
+        }
+
+        _outputStream = newStream;
         _outputStream.WriteCallback += Update;
         _outputStream.Volume = requestedVolume;
         // TODO: Setup other callbacks (errors, etc.)
@@ -69,8 +79,20 @@ class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
     {
         _volume = volume;
 
-        _outputStream.SetVolume(_driver.Volume * volume);
+        var actualVolume = _driver.Volume * volume;
+
+        LogChangingSessionVolume(actualVolume);
+        _outputStream.SetVolume(actualVolume);
+        LogChangedSessionVolume();
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Changing session volume to '{volume}'...")]
+    private partial void LogChangingSessionVolume(float volume);
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Changed session volume.")]
+    private partial void LogChangedSessionVolume();
 
     public void UpdateMasterVolume(float newVolume)
     {
@@ -79,18 +101,35 @@ class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
 
     public override void Start()
     {
+        LogStartingOutputStream();
+
         _outputStream.Start();
+
+        LogResumingOutputStream();
         _outputStream.Pause(false);
 
         _driver.FlushContextEvents();
     }
 
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Starting output stream...")]
+    private partial void LogStartingOutputStream();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Resuming output stream...")]
+    private partial void LogResumingOutputStream();
+
     public override void Stop()
     {
+        LogPausingOutputStream();
         _outputStream.Pause(true);
 
         _driver.FlushContextEvents();
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Pausing output stream...")]
+    private partial void LogPausingOutputStream();
 
     public override void UnregisterBuffer(AudioBuffer buffer) { }
 

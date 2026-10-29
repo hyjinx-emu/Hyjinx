@@ -2,8 +2,8 @@ name: Build
 description: Builds the application
 
 inputs:
-  project:
-    description: "The path to the project file."
+  publish_project:
+    description: "The path to the project file which will be published."
     required: true
   runtime_identifier:
     description: "The target runtime identifier."
@@ -31,12 +31,18 @@ inputs:
     description: "Enables or disables the execution of the unit tests."
     required: false
     default: "false"
+  test_opts:
+    description: "Additional options to pass to the test runner."
+    required: false
+  build_opts:
+    description: "Additional options to pass to the build command."
+    required: false
     
 runs:
   using: "composite"
   steps:
     - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v6
       with:
         global-json-file: global.json
 
@@ -48,25 +54,24 @@ runs:
         version-property: VersionPrefix
             
     - name: Build
-      if: inputs.run_tests == 'true'
       shell: bash
       run: |
-        dotnet build -c "${{ inputs.configuration }}"
+        dotnet build -c "${{ inputs.configuration }}" ${{ inputs.build_opts }}
 
     - name: Run tests
       if: inputs.run_tests == 'true'
       shell: bash
       run: |
-        dotnet test --no-build -c "${{ inputs.configuration }}"
+        dotnet test --no-build -c "${{ inputs.configuration }}" ${{ inputs.test_opts }}
 
     - name: Publish for Preview
       if: inputs.version_suffix != ''
       shell: bash
       run: |
-        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}+${{ inputs.short_hash }}"
+        dotnet publish ${{ inputs.publish_project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained --version-suffix "${{ inputs.version_suffix }}+${{ inputs.short_hash }}"
       
     - name: Publish for Release
       if: inputs.version_suffix == ''
       shell: bash
       run: |
-        dotnet publish ${{ inputs.project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained
+        dotnet publish ${{ inputs.publish_project }} -c "${{ inputs.configuration }}" -r "${{ inputs.runtime_identifier }}" -p:PublishReadyToRun=true -o ${{ inputs.staging_dir }} --self-contained
