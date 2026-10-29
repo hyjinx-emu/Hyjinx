@@ -50,6 +50,8 @@ internal class SoundIoContext : IDisposable
         }
     }
 
+    public SoundIoBackend CurrentBackend => GetContext().CurrentBackend;
+
     private ref SoundIoStruct GetContext()
     {
         unsafe

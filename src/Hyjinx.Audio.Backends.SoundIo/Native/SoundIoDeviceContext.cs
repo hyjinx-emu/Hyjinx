@@ -34,7 +34,7 @@ internal class SoundIoDeviceContext
 
     public bool SupportsChannelCount(int channelCount) => soundio_device_supports_layout(_context, SoundIoChannelLayout.GetDefault(channelCount));
 
-    public SoundIoOutStreamContext CreateOutStream()
+    public SoundIoOutStreamContext? CreateOutStream()
     {
         IntPtr context = soundio_outstream_create(_context);
 

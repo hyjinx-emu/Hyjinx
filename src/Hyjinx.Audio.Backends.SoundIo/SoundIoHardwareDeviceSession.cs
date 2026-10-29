@@ -22,7 +22,8 @@ internal class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
     private float _volume;
     private int _disposeState;
 
-    public SoundIoHardwareDeviceSession(SoundIoHardwareDeviceDriver driver, IVirtualMemoryManager memoryManager, SampleFormat requestedSampleFormat, uint requestedSampleRate, uint requestedChannelCount) : base(memoryManager, requestedSampleFormat, requestedSampleRate, requestedChannelCount)
+    public SoundIoHardwareDeviceSession(SoundIoHardwareDeviceDriver driver, IVirtualMemoryManager memoryManager, SampleFormat requestedSampleFormat, uint requestedSampleRate, uint requestedChannelCount)
+        : base(memoryManager, requestedSampleFormat, requestedSampleRate, requestedChannelCount)
     {
         _driver = driver;
         _updateRequiredEvent = _driver.GetUpdateRequiredEvent();
@@ -35,7 +36,13 @@ internal class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutputBase
 
     private void SetupOutputStream(float requestedVolume)
     {
-        _outputStream = _driver.OpenStream(RequestedSampleFormat, RequestedSampleRate, RequestedChannelCount);
+        var newStream = _driver.OpenStream(RequestedSampleFormat, RequestedSampleRate, RequestedChannelCount);
+        if (newStream == null)
+        {
+            return;
+        }
+
+        _outputStream = newStream;
         _outputStream.WriteCallback += Update;
         _outputStream.Volume = requestedVolume;
         // TODO: Setup other callbacks (errors, etc.)

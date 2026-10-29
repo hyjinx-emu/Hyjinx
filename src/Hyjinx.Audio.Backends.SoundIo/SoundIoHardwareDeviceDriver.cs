@@ -1,17 +1,22 @@
 using Hyjinx.Audio.Backends.SoundIo.Native;
 using Hyjinx.Audio.Common;
 using Hyjinx.Audio.Integration;
+using Hyjinx.Logging.Abstractions;
 using Hyjinx.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using static Hyjinx.Audio.Backends.SoundIo.Native.SoundIo;
 using static Hyjinx.Audio.Integration.IHardwareDeviceDriver;
+using Logger = Hyjinx.Logging.Abstractions.Logger;
 
 namespace Hyjinx.Audio.Backends.SoundIo;
 
-public class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
+public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
 {
+    private readonly ILogger<SoundIoHardwareDeviceDriver> _logger = Logger.DefaultLoggerFactory.CreateLogger<SoundIoHardwareDeviceDriver>();
+
     private readonly SoundIoContext _audioContext;
     private readonly SoundIoDeviceContext _audioDevice;
     private readonly ManualResetEvent _updateRequiredEvent;
@@ -183,7 +188,7 @@ public class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         };
     }
 
-    internal SoundIoOutStreamContext OpenStream(SampleFormat requestedSampleFormat, uint requestedSampleRate, uint requestedChannelCount)
+    internal SoundIoOutStreamContext? OpenStream(SampleFormat requestedSampleFormat, uint requestedSampleRate, uint requestedChannelCount)
     {
         SoundIoFormat driverSampleFormat = GetSoundIoFormat(requestedSampleFormat);
 
@@ -202,7 +207,16 @@ public class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
             throw new ArgumentException($"This sound device does not support channel count {requestedChannelCount}");
         }
 
-        SoundIoOutStreamContext result = _audioDevice.CreateOutStream();
+        LogSampleFormat(requestedSampleFormat, driverSampleFormat, _audioContext.CurrentBackend, requestedChannelCount, requestedSampleRate);
+
+        var result = _audioDevice.CreateOutStream();
+        if (result == null)
+        {
+            LogFailedToCreateOutputStream();
+            return null;
+        }
+
+        LogOutputStreamCreated();
 
         result.Name = "Hyjinx";
         result.Layout = SoundIoChannelLayout.GetDefaultValue((int)requestedChannelCount);
@@ -211,6 +225,18 @@ public class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
 
         return result;
     }
+
+    [LoggerMessage(LogLevel.Information, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Sample format {sampleFormat} ({driverSampleFormat}) on backend '{backend}' selected. (Channels={requestedChannelCount}, SampleRate={requestedSampleRate})")]
+    private partial void LogSampleFormat(SampleFormat sampleFormat, SoundIoFormat driverSampleFormat, SoundIoBackend backend, uint requestedChannelCount, uint requestedSampleRate);
+
+    [LoggerMessage(LogLevel.Warning, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+    Message = "Failed to create output stream.")]
+    private partial void LogFailedToCreateOutputStream();
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Output stream created successfully.")]
+    private partial void LogOutputStreamCreated();
 
     internal void FlushContextEvents()
     {
