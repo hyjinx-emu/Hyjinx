@@ -79,8 +79,20 @@ internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutpu
     {
         _volume = volume;
 
-        _outputStream.SetVolume(_driver.Volume * volume);
+        var actualVolume = _driver.Volume * volume;
+
+        LogChangingSessionVolume(actualVolume);
+        _outputStream.SetVolume(actualVolume);
+        LogChangedSessionVolume();
     }
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Changing session volume to '{volume}'...")]
+    private partial void LogChangingSessionVolume(float volume);
+
+    [LoggerMessage(LogLevel.Debug, EventId = (int)LogClass.Audio, EventName = nameof(LogClass.Audio),
+        Message = "Changed session volume.")]
+    private partial void LogChangedSessionVolume();
 
     public void UpdateMasterVolume(float newVolume)
     {
