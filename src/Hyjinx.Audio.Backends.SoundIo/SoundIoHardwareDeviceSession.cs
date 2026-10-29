@@ -4,7 +4,6 @@ using Hyjinx.Audio.Common;
 using Hyjinx.Common.Memory;
 using Hyjinx.Memory;
 using System;
-using System.Buffers;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
