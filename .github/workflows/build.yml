@@ -73,21 +73,6 @@ jobs:
           run_tests: true
           test_opts: --collect:"XPlat Code Coverage" --results-directory TestResults
 
-      - name: Package
-        uses: ./.github/actions/package-template
-        with:
-          runtime_identifier: ${{ matrix.platform.name }}
-          packager: ${{ matrix.platform.runner }}
-          version: ${{ needs.prepare.outputs.full_version }}
-          staging_dir: ${{ env.STAGING_DIR }}
-          package_dir: ${{ env.PACKAGE_DIR }}
-          
-      - name: Upload package
-        uses: actions/upload-artifact@v7
-        with:
-          name: ${{ matrix.platform.name }}
-          path: "${{ env.PACKAGE_DIR }}/"
-
       - name: Upload test results
         uses: actions/upload-artifact@v7
         with:
