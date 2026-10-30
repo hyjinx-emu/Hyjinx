@@ -76,7 +76,7 @@ internal class LoggingModule : IModule
             innerLayout.Render(evnt)
                 .Replace(Environment.UserName, RedactedString, StringComparison.OrdinalIgnoreCase));
     }
-    
+
     private static Target CreateConsoleTarget()
     {
         var console = new ColoredConsoleTarget("console")
