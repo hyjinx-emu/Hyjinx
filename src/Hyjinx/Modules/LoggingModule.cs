@@ -14,19 +14,6 @@ using System.IO;
 
 namespace Hyjinx.Ava.Modules;
 
-file static class LoggingConfigurationExtensions
-{
-    public static void AddCustomRule(this NLog.Config.LoggingConfiguration config, bool fileEnabled, NLog.LogLevel level, Target console, Target file)
-    {
-        config.AddRule(level, level, console);
-
-        if (fileEnabled)
-        {
-            config.AddRule(level, level, file);
-        }
-    }
-}
-
 internal class LoggingModule : IModule
 {
     private const string RedactedString = "[REDACTED]";
@@ -65,7 +52,12 @@ internal class LoggingModule : IModule
 
                 foreach (var level in levels)
                 {
-                    nlogConfig.AddCustomRule(appConfig.Value.EnableFileLog, level, console, file);
+                    nlogConfig.AddRule(level, level, console);
+
+                    if (appConfig.Value.EnableFileLog)
+                    {
+                        nlogConfig.AddRule(level, level, file);
+                    }
                 }
 
                 return new LogFactory
