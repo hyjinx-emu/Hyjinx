@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Extensions.Logging;
+using NLog.Layouts;
 using NLog.Targets;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,8 @@ file static class LoggingConfigurationExtensions
 
 internal class LoggingModule : IModule
 {
+    private const string RedactedString = "[REDACTED]";
+
     private class Initializer(IServiceProvider applicationServices) : ISupportInitialization
     {
         public void Initialize()
@@ -73,11 +76,20 @@ internal class LoggingModule : IModule
         });
     }
 
+    private static Layout CreateLayout(string text)
+    {
+        var innerLayout = Layout.FromString(text);
+
+        return Layout.FromMethod(evnt =>
+            innerLayout.Render(evnt)
+                .Replace(Environment.UserName, RedactedString, StringComparison.OrdinalIgnoreCase));
+    }
+    
     private static Target CreateConsoleTarget()
     {
         var console = new ColoredConsoleTarget("console")
         {
-            Layout = "${processtime} |${replace:searchFor=F:replaceWith=N:inner=${level:format=FirstCharacter}}| ${logger:shortName=true}: ${message} ${exception:format=tostring}",
+            Layout = CreateLayout("${processtime} |${replace:searchFor=F:replaceWith=N:inner=${level:format=FirstCharacter}}| ${logger:shortName=true}: ${message} ${exception:format=tostring}"),
             UseDefaultRowHighlightingRules = false
         };
 
@@ -127,7 +139,7 @@ internal class LoggingModule : IModule
         var target = new FileTarget
         {
             FileName = Path.Combine(logsDir, $"app-{DateTime.Now:yyyyMMdd_HHmmss}.log"),
-            Layout = "${processtime} |${level:format=FirstCharacter}| ${logger}: ${message} ${exception:format=tostring}",
+            Layout = CreateLayout("${processtime} |${level:format=FirstCharacter}| ${logger}: ${message} ${exception:format=tostring}"),
             KeepFileOpen = true
         };
 
