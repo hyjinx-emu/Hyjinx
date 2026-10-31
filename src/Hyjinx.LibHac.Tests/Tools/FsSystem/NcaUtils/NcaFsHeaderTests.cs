@@ -42,7 +42,15 @@ public class NcaFsHeaderTests
             while (index < span.Length)
             {
                 span[index] = b;
-                b++;
+
+                if (b == byte.MaxValue)
+                {
+                    b = 0;
+                }
+                else
+                {
+                    b++;
+                }
 
                 index++;
             }
