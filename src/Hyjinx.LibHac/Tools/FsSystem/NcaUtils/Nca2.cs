@@ -227,7 +227,7 @@ public abstract partial class Nca2<TFsHeader> : Nca2
             result = CreateVerificationStorage(result, integrityCheckLevel, description);
         }
 
-        // TODO: Viper - Add decompression support.
+        // TODO: Add decompression support.
         if (description.FsHeader.ExistsCompressionLayer())
         {
             throw new NotSupportedException("Compressed archives are not currently supported.");
