@@ -175,7 +175,7 @@ public class BucketTree2<TEntry> : IEnumerable<BucketTree2<TEntry>.BucketTreeEnt
         for (var index = 0; index < rootHeader.Count; index++)
         {
             var sectorOffset = headerSize + (index * BucketSize);
-            var offsets = rootHeader.Offsets[index]; // TODO: Viper - This offset is the virtual address that the bucket works with.
+            var offsets = rootHeader.Offsets[index]; // TODO: This offset is the virtual address that the bucket works with.
 
             var entryHeader = MemoryMarshal.Cast<byte, EntryHeader>(buffer[sectorOffset..])[0];
             var sectionEntries = MemoryMarshal.Cast<byte, TEntry>(buffer[(sectorOffset + entryHeaderSize)..])[..entryHeader.Count];
