@@ -300,4 +300,19 @@ public partial class SoundIoHardwareDeviceDriver : IHardwareDeviceDriver
         // TODO: add direction input when supported.
         return direction == Direction.Output;
     }
+
+    /// <summary>
+    /// Identifies whether the backend in use supports volume control.
+    /// </summary>
+    /// <remarks>NOTE: Some backends implemented by libsoundio internally do not support volume control and will throw NULL pointer exceptions in native code leading to application crashes.</remarks>
+    /// <returns>true if volume control is supported, otherwise false.</returns>
+    public bool SupportsVolumeControl()
+    {
+        return _audioContext.CurrentBackend switch
+        {
+            SoundIoBackend.Wasapi => true,
+            SoundIoBackend.CoreAudio => true,
+            _ => false,
+        };
+    }
 }
