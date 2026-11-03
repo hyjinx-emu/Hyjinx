@@ -134,7 +134,7 @@ jobs:
           merge-multiple: true
           
       - name: NuGet login
-        uses: NuGet/login@v1
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         id: nuget-login
         with:
           user: ${{ secrets.NUGET_USER }}
@@ -146,7 +146,7 @@ jobs:
             --source https://api.nuget.org/v3/index.json
 
       - name: Publish
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
         with:
           tag: ${{ needs.prepare.outputs.full_version }}
           artifacts: "${{ env.STAGING_DIR }}/*.*"
