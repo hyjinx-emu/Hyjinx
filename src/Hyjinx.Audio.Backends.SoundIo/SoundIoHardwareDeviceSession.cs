@@ -77,7 +77,7 @@ internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutpu
 
     public override void SetVolume(float volume)
     {
-        if (_driver.SupportsVolumeControl())
+        if (!_driver.SupportsVolumeControl())
         {
             return;
         }
