@@ -16,6 +16,7 @@ on:
 permissions: 
   contents: write
   pull-requests: write
+  id-token: write
   
 env:
   POWERSHELL_TELEMETRY_OPTOUT: 1
@@ -132,22 +133,20 @@ jobs:
           path: ${{ env.STAGING_DIR }}/
           merge-multiple: true
           
-      - name: Set up NuGet
-        uses: nuget/setup-nuget@v4
+      - name: NuGet login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        id: nuget-login
         with:
-          nuget-api-key: ${{ secrets.NUGET_TOKEN }}
-          nuget-version: latest
-          
-      - name: Push package(s)
-        shell: powershell
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Publish NuGet package
         run: |
-          Get-ChildItem -Path "${{ env.STAGING_DIR }}" -Filter *.nupkg | ForEach-Object {
-            Write-Host "Pushing $($_.FullName)"
-            nuget push $_.FullName -Source https://api.nuget.org/v3/index.json
-          }
+          dotnet nuget push ${{ env.STAGING_DIR }}/*.nupkg \
+            --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json
 
       - name: Publish
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1.21.0
         with:
           tag: ${{ needs.prepare.outputs.full_version }}
           artifacts: "${{ env.STAGING_DIR }}/*.*"
