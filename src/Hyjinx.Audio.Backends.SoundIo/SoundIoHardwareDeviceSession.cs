@@ -77,8 +77,12 @@ internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutpu
 
     public override void SetVolume(float volume)
     {
-        _volume = volume;
+        if (!_driver.SupportsVolumeControl())
+        {
+            return;
+        }
 
+        _volume = volume;
         var actualVolume = _driver.Volume * volume;
 
         LogChangingSessionVolume(actualVolume);
@@ -96,6 +100,11 @@ internal partial class SoundIoHardwareDeviceSession : HardwareDeviceSessionOutpu
 
     public void UpdateMasterVolume(float newVolume)
     {
+        if (!_driver.SupportsVolumeControl())
+        {
+            return;
+        }
+
         _outputStream.SetVolume(newVolume * _volume);
     }
 
