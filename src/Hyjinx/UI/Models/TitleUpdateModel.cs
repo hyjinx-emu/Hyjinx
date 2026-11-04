@@ -12,7 +12,7 @@ public class TitleUpdateModel
     {
         Version = version;
         Label = LocaleManager.Instance.UpdateAndGetDynamicValue(
-            System.IO.Path.GetExtension(path)?.ToLower() == ".xci" ? LocaleKeys.TitleBundledUpdateVersionLabel : LocaleKeys.TitleUpdateVersionLabel,
+            System.IO.Path.GetExtension(path)?.ToLower() is ".xci" or ".dxci" ? LocaleKeys.TitleBundledUpdateVersionLabel : LocaleKeys.TitleUpdateVersionLabel,
             displayVersion
         );
         Path = path;

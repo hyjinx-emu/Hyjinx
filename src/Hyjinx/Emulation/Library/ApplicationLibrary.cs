@@ -318,8 +318,7 @@ public partial class ApplicationLibrary
 
                         break;
                     }
-                case ".nsp" or ".dnsp":
-                case ".pfs0":
+                case ".nsp" or ".dnsp" or ".pfs0":
                     {
                         var pfs = PartitionFileSystem2.Create(file.AsStorage());
 

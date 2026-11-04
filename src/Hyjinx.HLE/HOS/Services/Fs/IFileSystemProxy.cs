@@ -87,7 +87,7 @@ partial class IFileSystemProxy : DisposableIpcService<IFileSystemProxy>
 
             return result;
         }
-        else if (extension == ".nsp")
+        else if (extension is ".nsp" or ".dnsp")
         {
             ResultCode result = FileSystemProxyHelper.OpenNsp(context, fullPath, out FileSystemProxy.IFileSystem fileSystem);
 

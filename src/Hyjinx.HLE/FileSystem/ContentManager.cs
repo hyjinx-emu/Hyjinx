@@ -229,11 +229,11 @@ public partial class ContentManager : IContentManager
 
             switch (Path.GetExtension(aoc.ContainerPath))
             {
-                case ".xci":
+                case ".xci" or ".dxci":
                     var xci = Xci2.Create(file.AsStorage()).OpenPartition(XciPartitionType.Secure);
                     xci.OpenFile(ref ncaFile.Ref, aoc.NcaPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
                     break;
-                case ".nsp":
+                case ".nsp" or ".dnsp":
                     var pfs = PartitionFileSystem2.Create(file.AsStorage());
                     pfs.OpenFile(ref ncaFile.Ref, aoc.NcaPath.ToU8Span(), OpenMode.Read).ThrowIfFailure();
                     break;
@@ -437,7 +437,7 @@ public partial class ContentManager : IContentManager
         return file.Extension switch
         {
             ".zip" => new ZipArchiveFirmwareInstaller(),
-            ".xci" => new XciFirmwareInstaller(_virtualFileSystem),
+            ".xci" or ".dxci" => new XciFirmwareInstaller(_virtualFileSystem),
             _ => throw new InvalidFirmwarePackageException("Input file is not a valid firmware package")
         };
     }
