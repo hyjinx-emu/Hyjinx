@@ -651,7 +651,7 @@
   "UserErrorUnknownDescription": "An unknown error occured!",
   "UserErrorUndefinedDescription": "An undefined error occured! This shouldn't happen, please contact a dev!",
   "UserErrorApplicationNotSupported": "Application not supported",
-  "UserErrorApplicationNotSupportedDescription": "Application is not supported. Please specify a valid XCI/NCA/NSP/NRO file.",
+  "UserErrorApplicationNotSupportedDescription": "The application is not supported, please provide a valid XCI/DXCI/NCA/DNCA/NSP/DNSP/NRO file.",
   "UserErrorEncryptedFirmwareDetectedDescription": "Hyjinx was unable to use the firmware provided as the firmware appears to be encrypted.",
   "OpenSetupGuideMessage": "Open the Setup Guide",
   "NoUpdate": "No Update",
