@@ -39,7 +39,7 @@ public abstract class PartitionBasedFirmwareInstaller : IFirmwareInstaller
         }
     }
 
-    private static async ValueTask SaveNcaAsync(Nca2 nca, string ncaId, string temporaryDirectory, CancellationToken cancellationToken)
+    private static async ValueTask SaveNcaAsync(Nca nca, string ncaId, string temporaryDirectory, CancellationToken cancellationToken)
     {
         string newPath = Path.Combine(temporaryDirectory, ncaId + ".nca");
 
