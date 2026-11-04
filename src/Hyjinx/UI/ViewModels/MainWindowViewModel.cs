@@ -1456,7 +1456,7 @@ internal class MainWindowViewModel : BaseModel
             {
                 new(LocaleManager.Instance[LocaleKeys.AllSupportedFormats])
                 {
-                    Patterns = new[] { "*.nsp", "*.xci", "*.nca", "*.nro", "*.nso" },
+                    Patterns = new[] { "*.nsp", "*.dnsp", "*.xci", "*.dxci", "*.nca", "*.dnca", "*.nro", "*.nso" },
                     AppleUniformTypeIdentifiers = new[]
                     {
                         "com.ryujinx.nsp",
@@ -1476,19 +1476,19 @@ internal class MainWindowViewModel : BaseModel
                 },
                 new("NSP")
                 {
-                    Patterns = new[] { "*.nsp" },
+                    Patterns = new[] { "*.nsp", "*.dnsp" },
                     AppleUniformTypeIdentifiers = new[] { "com.ryujinx.nsp" },
                     MimeTypes = new[] { "application/x-nx-nsp" },
                 },
                 new("XCI")
                 {
-                    Patterns = new[] { "*.xci" },
+                    Patterns = new[] { "*.xci", "*.dxci" },
                     AppleUniformTypeIdentifiers = new[] { "com.ryujinx.xci" },
                     MimeTypes = new[] { "application/x-nx-xci" },
                 },
                 new("NCA")
                 {
-                    Patterns = new[] { "*.nca" },
+                    Patterns = new[] { "*.nca", "*.dnca" },
                     AppleUniformTypeIdentifiers = new[] { "com.ryujinx.nca" },
                     MimeTypes = new[] { "application/x-nx-nca" },
                 },

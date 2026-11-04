@@ -1,6 +1,5 @@
 using LibHac.Common;
 using LibHac.Fs;
-using LibHac.Util;
 using System;
 using System.Runtime.CompilerServices;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
@@ -18,6 +17,8 @@ public partial class NcaHeader
     /// </summary>
     protected Memory<byte> Buffer { get; }
 
+    private bool IsAlternateFormat { get; }
+
     /// <summary>
     /// Gets the header.
     /// </summary>
@@ -34,11 +35,12 @@ public partial class NcaHeader
         byte[] buf = new byte[HeaderSize];
         storage.Read(0, buf).ThrowIfFailure();
 
-        if (!CheckIsDecrypted(buf))
+        if (!CheckIsDecrypted(buf, out var isAlternateFormat))
         {
             throw new EncryptedFileDetectedException("The file is encrypted.");
         }
 
+        IsAlternateFormat = isAlternateFormat;
         Buffer = buf;
     }
 
@@ -48,11 +50,12 @@ public partial class NcaHeader
     /// <param name="buffer">The raw header data.</param>
     public NcaHeader(Memory<byte> buffer)
     {
-        if (!CheckIsDecrypted(buffer.Span))
+        if (!CheckIsDecrypted(buffer.Span, out var isAlternateFormat))
         {
             throw new EncryptedFileDetectedException("The file is encrypted.");
         }
 
+        IsAlternateFormat = isAlternateFormat;
         Buffer = buffer;
     }
 
@@ -114,15 +117,16 @@ public partial class NcaHeader
     /// <summary>
     /// The archive version.
     /// </summary>
-    public byte Version => (byte)(Buffer.Span[0x203] - '0');
+    public byte Version => IsAlternateFormat ? Buffer.Span[0x206] : (byte)(Buffer.Span[0x203] - '0');
 
     /// <summary>
     /// The format version.
     /// </summary>
-    public virtual NcaVersion FormatVersion => Version switch
+    public virtual NcaVersion FormatVersion => (Version, IsAlternateFormat) switch
     {
-        3 => NcaVersion.Nca3,
-        2 => NcaVersion.Nca2,
+        (3, false) => NcaVersion.Nca3,
+        (2, false) => NcaVersion.Nca2,
+        (1, true) => NcaVersion.Nca3,
         _ => NcaVersion.Unknown
     };
 
@@ -222,14 +226,23 @@ public partial class NcaHeader
         return (long)blockIndex * BlockSize;
     }
 
-    private static bool CheckIsDecrypted(ReadOnlySpan<byte> header)
+    private static bool CheckIsDecrypted(ReadOnlySpan<byte> header, out bool isAlternateFormat)
     {
-        // Check the magic value.
-        if (header[0x200] == 'N' && header[0x201] == 'C' && header[0x202] == 'A' && StringUtils.IsDigit(header[0x203]))
+        if (header[0x200..].StartsWith("NCA"u8))
         {
+            // Check the magic value.
+            isAlternateFormat = false;
             return true;
         }
 
+        if (header[0x200..].StartsWith("DNCA"u8))
+        {
+            // Check for the alternate magic value.
+            isAlternateFormat = true;
+            return true;
+        }
+
+        isAlternateFormat = false;
         return false;
     }
 }

@@ -522,11 +522,9 @@ public class NcaFileSystemServiceImpl
 
         ReadOnlySpan<byte> fileExtension = path.Value.Slice(pathLen - 4);
 
-        ReadOnlySpan<byte> ncaExtension = ".nca"u8;
-        ReadOnlySpan<byte> nspExtension = ".nsp"u8;
-
-        if (StringUtils.CompareCaseInsensitive(fileExtension, ncaExtension) == 0 ||
-            StringUtils.CompareCaseInsensitive(fileExtension, nspExtension) == 0)
+        if (StringUtils.CompareCaseInsensitive(fileExtension, ".nca"u8) == 0 ||
+            StringUtils.CompareCaseInsensitive(fileExtension, ".nsp"u8) == 0 ||
+            StringUtils.CompareCaseInsensitive(fileExtension, ".dnsp"u8) == 0)
         {
             isDirectory = false;
             return Result.Success;
@@ -576,6 +574,7 @@ public class NcaFileSystemServiceImpl
         ref SharedRef<IFileSystem> baseFileSystem)
     {
         ReadOnlySpan<byte> nspExtension = ".nsp"u8;
+        ReadOnlySpan<byte> dnspExtension = ".dnsp"u8;
 
         // Search for the end of the nsp part of the path
         int nspPathLen = 0;
@@ -587,7 +586,7 @@ public class NcaFileSystemServiceImpl
             while (true)
             {
                 currentSpan = path.Slice(nspPathLen);
-                if (StringUtils.CompareCaseInsensitive(nspExtension, currentSpan, 4) == 0)
+                if (StringUtils.CompareCaseInsensitive(nspExtension, currentSpan, 4) == 0 || StringUtils.CompareCaseInsensitive(dnspExtension, currentSpan, 4) == 0)
                     break;
 
                 if (currentSpan.Length == 0 || currentSpan[0] == 0)

@@ -66,7 +66,7 @@ public class Xci2 : Xci
     public static Xci2 Create(IStorage storage)
     {
         var header = XciHeader2.Create(storage);
-        if (!header.Magic.Span.SequenceEqual(HeaderSignature))
+        if (!header.Magic.Span.SequenceEqual(HeaderSignature) && !header.Magic.Span.SequenceEqual("DXCI"u8))
         {
             throw new ArgumentException("The storage does not contain the expected header.", nameof(storage));
         }

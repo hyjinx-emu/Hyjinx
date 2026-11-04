@@ -122,7 +122,7 @@ public partial class ApplicationLibrary
 
         foreach (DirectoryEntryEx fileEntry in pfs.EnumerateEntries("/", "*"))
         {
-            if (Path.GetExtension(fileEntry.FullPath)?.ToLower() == ".nca")
+            if (Path.GetExtension(fileEntry.FullPath)?.ToLower() is ".nca" or ".dnca")
             {
                 using UniqueRef<IFile> ncaFile = new();
 
@@ -264,7 +264,7 @@ public partial class ApplicationLibrary
                     }
                 }
 
-                applicationData.Icon ??= extension == ".xci" ? _xciIcon : _nspIcon;
+                applicationData.Icon ??= extension is ".xci" or ".dxci" ? _xciIcon : _nspIcon;
             }
 
             applicationData.ControlHolder = controlHolder;
@@ -305,7 +305,7 @@ public partial class ApplicationLibrary
 
             switch (extension)
             {
-                case ".xci":
+                case ".xci" or ".dxci":
                     {
                         Xci xci = Xci2.Create(file.AsStorage());
 
@@ -318,8 +318,7 @@ public partial class ApplicationLibrary
 
                         break;
                     }
-                case ".nsp":
-                case ".pfs0":
+                case ".nsp" or ".dnsp" or ".pfs0":
                     {
                         var pfs = PartitionFileSystem2.Create(file.AsStorage());
 
@@ -385,7 +384,7 @@ public partial class ApplicationLibrary
                             return reader.ReadBytes(size);
                         }
                     }
-                case ".nca":
+                case ".nca" or ".dnca":
                     {
                         ApplicationData application = new();
 
@@ -481,11 +480,6 @@ public partial class ApplicationLibrary
 
     [LoggerMessage(LogLevel.Warning,
         EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-        Message = "Your key set is missing a key with the name: {name}")]
-    private partial void LogKeySetMissingKeyName(string name);
-
-    [LoggerMessage(LogLevel.Warning,
-        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
         Message = "The file '{filePath}' was not of a valid type.")]
     private partial void LogFileNotValid(string filePath, Exception exception);
 
@@ -568,10 +562,10 @@ public partial class ApplicationLibrary
                     IEnumerable<string> files = Directory.EnumerateFiles(appDir, "*", options).Where(file =>
                     {
                         return
-                        (Path.GetExtension(file).ToLower() is ".nsp" && ConfigurationState.Instance.UI.ShownFileTypes.NSP.Value) ||
+                        (Path.GetExtension(file).ToLower() is ".nsp" or ".dnsp" && ConfigurationState.Instance.UI.ShownFileTypes.NSP.Value) ||
                         (Path.GetExtension(file).ToLower() is ".pfs0" && ConfigurationState.Instance.UI.ShownFileTypes.PFS0.Value) ||
-                        (Path.GetExtension(file).ToLower() is ".xci" && ConfigurationState.Instance.UI.ShownFileTypes.XCI.Value) ||
-                        (Path.GetExtension(file).ToLower() is ".nca" && ConfigurationState.Instance.UI.ShownFileTypes.NCA.Value) ||
+                        (Path.GetExtension(file).ToLower() is ".xci" or ".dxci" && ConfigurationState.Instance.UI.ShownFileTypes.XCI.Value) ||
+                        (Path.GetExtension(file).ToLower() is ".nca" or ".dnca" && ConfigurationState.Instance.UI.ShownFileTypes.NCA.Value) ||
                         (Path.GetExtension(file).ToLower() is ".nro" && ConfigurationState.Instance.UI.ShownFileTypes.NRO.Value) ||
                         (Path.GetExtension(file).ToLower() is ".nso" && ConfigurationState.Instance.UI.ShownFileTypes.NSO.Value);
                     });
@@ -714,12 +708,12 @@ public partial class ApplicationLibrary
 
             return Path.GetExtension(applicationPath).ToLower() switch
             {
-                ".nsp" => _nspIcon,
+                ".nsp" or ".dnsp" => _nspIcon,
                 ".pfs0" => _nspIcon,
-                ".xci" => _xciIcon,
+                ".xci" or ".dxci" => _xciIcon,
                 ".nso" => _nsoIcon,
                 ".nro" => _nroIcon,
-                ".nca" => _ncaIcon,
+                ".nca" or ".dnca" => _ncaIcon,
                 _ => _ncaIcon,
             };
         }
@@ -733,7 +727,7 @@ public partial class ApplicationLibrary
 
                 using FileStream file = new(applicationPath, FileMode.Open, FileAccess.Read);
 
-                if (extension == ".nsp" || extension == ".pfs0" || extension == ".xci")
+                if (extension is ".nsp" or ".dnsp" or ".pfs0" or ".xci" or ".dxci")
                 {
                     try
                     {
@@ -741,7 +735,7 @@ public partial class ApplicationLibrary
 
                         bool isExeFs = false;
 
-                        if (extension == ".xci")
+                        if (extension is ".xci" or ".dxci")
                         {
                             Xci xci = Xci2.Create(file.AsStorage());
 
@@ -810,20 +804,20 @@ public partial class ApplicationLibrary
                                     break;
                                 }
 
-                                applicationIcon ??= extension == ".xci" ? _xciIcon : _nspIcon;
+                                applicationIcon ??= extension is ".xci" or ".dxci" ? _xciIcon : _nspIcon;
                             }
                         }
                     }
                     catch (InvalidDataException)
                     {
-                        applicationIcon = extension == ".xci" ? _xciIcon : _nspIcon;
+                        applicationIcon = extension is ".xci" or ".dxci" ? _xciIcon : _nspIcon;
                     }
                     catch (Exception exception)
                     {
                         LogFileNotValid(applicationPath, exception);
                     }
                 }
-                else if (extension == ".nro")
+                else if (extension is ".nro")
                 {
                     BinaryReader reader = new(file);
 
@@ -867,12 +861,12 @@ public partial class ApplicationLibrary
                         LogFileNotValid(applicationPath, exception);
                     }
                 }
-                else if (extension == ".nca")
+                else if (extension is ".nca")
                 {
                     applicationIcon = _ncaIcon;
                 }
                 // If its an NSO we just set defaults
-                else if (extension == ".nso")
+                else if (extension is ".nso")
                 {
                     applicationIcon = _nsoIcon;
                 }

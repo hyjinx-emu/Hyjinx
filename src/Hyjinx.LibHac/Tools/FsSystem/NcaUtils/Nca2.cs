@@ -5,9 +5,6 @@ using LibHac.FsSystem;
 using LibHac.Tools.FsSystem.RomFs;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using static LibHac.Tools.FsSystem.NcaUtils.NativeTypes;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
@@ -15,34 +12,8 @@ namespace LibHac.Tools.FsSystem.NcaUtils;
 /// <summary>
 /// Represents an NCA file.
 /// </summary>
-public abstract class Nca2 : Nca
-{
-    /// <summary>
-    /// Creates an instance of the class.
-    /// </summary>
-    /// <param name="baseStorage">The base storage.</param>
-    /// <param name="header">The header.</param>
-    protected Nca2(IStorage baseStorage, NcaHeader header)
-        : base(baseStorage, header) { }
-
-    /// <summary>
-    /// Copies the entire archive to a destination.
-    /// </summary>
-    /// <remarks>This method includes both the header along with all associated data blocks preserving their original format.</remarks>
-    /// <param name="destination">The destination stream.</param>
-    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
-    public async Task CopyToAsync(Stream destination, CancellationToken cancellationToken = default)
-    {
-        await using var stream = BaseStorage.AsStream2();
-        await stream.CopyToAsync(destination, cancellationToken);
-    }
-}
-
-/// <summary>
-/// Represents an NCA file.
-/// </summary>
 /// <typeparam name="TFsHeader">The type of file entry header.</typeparam>
-public abstract partial class Nca2<TFsHeader> : Nca2
+public abstract partial class Nca2<TFsHeader> : Nca
     where TFsHeader : NcaFsHeader
 {
     /// <summary>

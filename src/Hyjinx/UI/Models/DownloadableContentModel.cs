@@ -26,7 +26,7 @@ public class DownloadableContentModel : BaseModel
     public string FileName => Path.GetFileName(ContainerPath);
 
     public string Label =>
-        Path.GetExtension(FileName)?.ToLower() == ".xci" ? $"{LocaleManager.Instance[LocaleKeys.TitleBundledDlcLabel]} {FileName}" : FileName;
+        Path.GetExtension(FileName)?.ToLower() is ".xci" or ".dxci" ? $"{LocaleManager.Instance[LocaleKeys.TitleBundledDlcLabel]} {FileName}" : FileName;
 
     public DownloadableContentModel(string titleId, string containerPath, string fullPath, bool enabled)
     {

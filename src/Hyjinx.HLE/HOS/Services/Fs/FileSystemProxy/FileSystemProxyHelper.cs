@@ -82,7 +82,7 @@ static class FileSystemProxyHelper
             archivePath = archivePath.Parent;
         }
 
-        if (archivePath.Extension == ".nsp" && File.Exists(archivePath.FullName))
+        if (archivePath.Extension is ".nsp" or ".dnsp" && File.Exists(archivePath.FullName))
         {
             FileStream pfsFile = new(
                 archivePath.FullName.TrimEnd(Path.DirectorySeparatorChar),

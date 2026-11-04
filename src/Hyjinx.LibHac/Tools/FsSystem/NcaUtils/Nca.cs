@@ -1,6 +1,9 @@
 using LibHac.Fs;
 using LibHac.Fs.Fsa;
 using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LibHac.Tools.FsSystem.NcaUtils;
 
@@ -100,6 +103,18 @@ public abstract class Nca
     /// <param name="integrityCheckLevel">The integrity check level to perform while opening the file.</param>
     /// <returns>The <see cref="IFileSystem"/> instance.</returns>
     public abstract IFileSystem OpenFileSystemWithPatch(Nca baseNca, NcaSectionType type, IntegrityCheckLevel integrityCheckLevel);
+
+    /// <summary>
+    /// Copies the entire archive to a destination.
+    /// </summary>
+    /// <remarks>This method includes both the header along with all associated data blocks preserving their original format.</remarks>
+    /// <param name="destination">The destination stream.</param>
+    /// <param name="cancellationToken">The cancellation token to monitor for cancellation requests.</param>
+    public async Task CopyToAsync(Stream destination, CancellationToken cancellationToken = default)
+    {
+        await using var stream = BaseStorage.AsStream2();
+        await stream.CopyToAsync(destination, cancellationToken);
+    }
 
     /// <summary>
     /// Gets the section index from the section type.
