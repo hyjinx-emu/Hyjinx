@@ -72,9 +72,9 @@ public partial class ProcessLoader(Switch device)
 
         return Path.GetExtension(path).ToLowerInvariant() switch
         {
-            ".xci" => await LoadXciAsync(path, cancellationToken),
-            ".nca" => await LoadNcaAsync(path, cancellationToken),
-            ".nsp" => await LoadNspAsync(path, cancellationToken),
+            ".xci" or ".dxci" => await LoadXciAsync(path, cancellationToken),
+            ".nca" or ".dnca" => await LoadNcaAsync(path, cancellationToken),
+            ".nsp" or ".dnsp" => await LoadNspAsync(path, cancellationToken),
             ".nro" => await LoadNxoAsync(path, cancellationToken),
             _ => throw new NotSupportedException("The file type is not supported.")
         };
