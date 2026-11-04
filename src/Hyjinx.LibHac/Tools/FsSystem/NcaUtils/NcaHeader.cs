@@ -225,7 +225,7 @@ public partial class NcaHeader
     private static bool CheckIsDecrypted(ReadOnlySpan<byte> header)
     {
         // Check the magic value.
-        if (header[0x200..] == "NCA"u8 && StringUtils.IsDigit(header[0x203]))
+        if (header[0x200..].StartsWith("NCA"u8) && StringUtils.IsDigit(header[0x203]))
         {
             return true;
         }
