@@ -13,6 +13,7 @@ permissions:
 env:
   POWERSHELL_TELEMETRY_OPTOUT: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  UPLOAD_ARTIFACTS: 1
   
 jobs:
   prepare:
@@ -85,3 +86,10 @@ jobs:
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
           coverage-reports: TestResults/**/coverage.cobertura.xml
+
+      - name: Upload artifacts
+        if: env.UPLOAD_ARTIFACTS == '1'
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.platform.name }}
+          path: "${{ env.STAGING_DIR }}/"
