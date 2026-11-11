@@ -191,16 +191,6 @@ public class ConfigurationState
         public ReactiveObject<bool> EnableDockedMode { get; private set; }
 
         /// <summary>
-        /// Enables or disables profiled translation cache persistency
-        /// </summary>
-        public ReactiveObject<bool> EnablePtc { get; private set; }
-
-        /// <summary>
-        /// Enables or disables guest Internet access
-        /// </summary>
-        public ReactiveObject<bool> EnableInternetAccess { get; private set; }
-
-        /// <summary>
         /// Enables integrity checks on Game content files
         /// </summary>
         public ReactiveObject<bool> EnableFsIntegrityChecks { get; private set; }
@@ -223,8 +213,6 @@ public class ConfigurationState
         public SystemSection()
         {
             EnableDockedMode = new ReactiveObject<bool>();
-            EnablePtc = new ReactiveObject<bool>();
-            EnableInternetAccess = new ReactiveObject<bool>();
             EnableFsIntegrityChecks = new ReactiveObject<bool>();
             MemoryManagerMode = new ReactiveObject<MemoryManagerMode>();
             ExpandRam = new ReactiveObject<bool>();
@@ -496,8 +484,6 @@ public class ConfigurationState
             EnableTextureRecompression = Graphics.EnableTextureRecompression,
             EnableMacroHLE = Graphics.EnableMacroHLE,
             EnableColorSpacePassthrough = Graphics.EnableColorSpacePassthrough,
-            EnablePtc = System.EnablePtc,
-            EnableInternetAccess = System.EnableInternetAccess,
             EnableFsIntegrityChecks = System.EnableFsIntegrityChecks,
             MemoryManagerMode = System.MemoryManagerMode,
             ExpandRam = System.ExpandRam,
@@ -585,8 +571,6 @@ public class ConfigurationState
         Graphics.EnableTextureRecompression.Value = configurationFileFormat.EnableTextureRecompression;
         Graphics.EnableMacroHLE.Value = configurationFileFormat.EnableMacroHLE;
         Graphics.EnableColorSpacePassthrough.Value = configurationFileFormat.EnableColorSpacePassthrough;
-        System.EnablePtc.Value = configurationFileFormat.EnablePtc;
-        System.EnableInternetAccess.Value = configurationFileFormat.EnableInternetAccess;
         System.EnableFsIntegrityChecks.Value = configurationFileFormat.EnableFsIntegrityChecks;
         System.MemoryManagerMode.Value = configurationFileFormat.MemoryManagerMode;
         System.ExpandRam.Value = configurationFileFormat.ExpandRam;

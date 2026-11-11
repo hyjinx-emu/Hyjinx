@@ -35,4 +35,14 @@ internal class SystemOptions
     /// Uses Hypervisor over JIT if available
     /// </summary>
     public bool UseHypervisor { get; set; } = true;
+
+    /// <summary>
+    /// Enables or disables profiled translation cache persistency.
+    /// </summary>
+    public bool EnablePtc { get; set; } = true;
+
+    /// <summary>
+    /// Enables or disables guest Internet access
+    /// </summary>
+    public bool EnableInternetAccess { get; set; } = false;
 }

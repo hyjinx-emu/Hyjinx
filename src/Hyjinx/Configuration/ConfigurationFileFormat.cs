@@ -122,16 +122,6 @@ public record ConfigurationFileFormat
     public bool EnableColorSpacePassthrough { get; set; } = false;
 
     /// <summary>
-    /// Enables or disables profiled translation cache persistency
-    /// </summary>
-    public bool EnablePtc { get; set; } = true;
-
-    /// <summary>
-    /// Enables or disables guest Internet access
-    /// </summary>
-    public bool EnableInternetAccess { get; set; } = false;
-
-    /// <summary>
     /// Enables integrity checks on Game content files
     /// </summary>
     public bool EnableFsIntegrityChecks { get; set; } = true;

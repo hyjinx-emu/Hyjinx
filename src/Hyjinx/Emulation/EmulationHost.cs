@@ -217,8 +217,6 @@ internal class EmulationHost
         ConfigurationState.Instance.Graphics.ScalingFilter.Event += UpdateScalingFilter;
         ConfigurationState.Instance.Graphics.ScalingFilterLevel.Event += UpdateScalingFilterLevel;
         ConfigurationState.Instance.Graphics.EnableColorSpacePassthrough.Event += UpdateColorSpacePassthrough;
-
-        ConfigurationState.Instance.System.EnableInternetAccess.Event += UpdateEnableInternetAccessState;
         ConfigurationState.Instance.Multiplayer.LanInterfaceId.Event += UpdateLanInterfaceIdState;
         ConfigurationState.Instance.Multiplayer.Mode.Event += UpdateMultiplayerModeState;
 
@@ -229,6 +227,7 @@ internal class EmulationHost
     private void OnConfigurationChanged()
     {
         UpdateAudioVolumeState();
+        UpdateEnableInternetAccessState();
     }
 
     private void TopLevel_PointerEnteredOrMoved(object sender, PointerEventArgs e)
@@ -505,9 +504,9 @@ internal class EmulationHost
         });
     }
 
-    private void UpdateEnableInternetAccessState(object sender, ReactiveEventArgs<bool> e)
+    private void UpdateEnableInternetAccessState()
     {
-        Device.Configuration.EnableInternetAccess = e.NewValue;
+        Device.Configuration.EnableInternetAccess = _options.CurrentValue.System.EnableInternetAccess;
     }
 
     private void UpdateLanInterfaceIdState(object sender, ReactiveEventArgs<string> e)
@@ -736,8 +735,8 @@ internal class EmulationHost
                                              (RegionCode)_options.CurrentValue.System.Region,
                                              ConfigurationState.Instance.Graphics.EnableVsync,
                                              ConfigurationState.Instance.System.EnableDockedMode,
-                                             ConfigurationState.Instance.System.EnablePtc,
-                                             ConfigurationState.Instance.System.EnableInternetAccess,
+                                             _options.CurrentValue.System.EnablePtc,
+                                             _options.CurrentValue.System.EnableInternetAccess,
                                              ConfigurationState.Instance.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None,
                                              _options.CurrentValue.Logging.FsGlobalAccessLogMode,
                                              _options.CurrentValue.System.TimeOffset,
