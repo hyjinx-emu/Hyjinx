@@ -1540,7 +1540,7 @@ internal class MainWindowViewModel : BaseModel
             return;
         }
 
-        SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, ConfigurationState.Instance.System.Language, application.Id);
+        SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, options.CurrentValue.System.Language, application.Id);
 
         PrepareLoadScreen();
 

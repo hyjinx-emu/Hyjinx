@@ -39,7 +39,7 @@ internal partial class MainWindow : StyleableWindow
 {
     internal static MainWindowViewModel MainWindowViewModel { get; private set; }
 
-    private readonly IOptionsMonitor<UIOptions> _options;
+    private readonly IOptionsMonitor<ApplicationOptions> _options;
     private readonly ILogger<MainWindow> _logger;
     private Messenger Messenger { get; }
 
@@ -70,7 +70,7 @@ internal partial class MainWindow : StyleableWindow
     public readonly double StatusBarHeight;
     public readonly double MenuBarHeight;
 
-    public MainWindow(IOptionsMonitor<UIOptions> options, ILogger<MainWindow> logger, MainWindowViewModel viewModel, Messenger messenger)
+    public MainWindow(IOptionsMonitor<ApplicationOptions> options, ILogger<MainWindow> logger, MainWindowViewModel viewModel, Messenger messenger)
     {
         _options = options;
         _logger = logger;
@@ -234,7 +234,7 @@ internal partial class MainWindow : StyleableWindow
 
         ApplicationLibrary = new ApplicationLibrary(VirtualFileSystem, checkLevel)
         {
-            DesiredLanguage = ConfigurationState.Instance.System.Language,
+            DesiredLanguage = _options.CurrentValue.System.Language
         };
 
         // Save data created before we supported extra data in directory save data will not work properly if
@@ -404,13 +404,13 @@ internal partial class MainWindow : StyleableWindow
             return;
         }
 
-        PixelPoint savedPoint = new(_options.CurrentValue.WindowStartup.WindowPositionX,
-                                    _options.CurrentValue.WindowStartup.WindowPositionY);
+        PixelPoint savedPoint = new(_options.CurrentValue.UI.WindowStartup.WindowPositionX,
+                                    _options.CurrentValue.UI.WindowStartup.WindowPositionY);
 
-        ViewModel.WindowHeight = _options.CurrentValue.WindowStartup.WindowSizeHeight * Program.WindowScaleFactor;
-        ViewModel.WindowWidth = _options.CurrentValue.WindowStartup.WindowSizeWidth * Program.WindowScaleFactor;
+        ViewModel.WindowHeight = _options.CurrentValue.UI.WindowStartup.WindowSizeHeight * Program.WindowScaleFactor;
+        ViewModel.WindowWidth = _options.CurrentValue.UI.WindowStartup.WindowSizeWidth * Program.WindowScaleFactor;
 
-        ViewModel.WindowState = _options.CurrentValue.WindowStartup.WindowMaximized ? WindowState.Maximized : WindowState.Normal;
+        ViewModel.WindowState = _options.CurrentValue.UI.WindowStartup.WindowMaximized ? WindowState.Maximized : WindowState.Normal;
 
         if (CheckScreenBounds(savedPoint))
         {
@@ -440,15 +440,15 @@ internal partial class MainWindow : StyleableWindow
 
     private void SaveWindowSizePosition()
     {
-        _options.CurrentValue.WindowStartup.WindowMaximized = WindowState == WindowState.Maximized;
+        _options.CurrentValue.UI.WindowStartup.WindowMaximized = WindowState == WindowState.Maximized;
 
         // Only save rectangle properties if the window is not in a maximized state.
         if (WindowState != WindowState.Maximized)
         {
-            _options.CurrentValue.WindowStartup.WindowSizeHeight = (int)Height;
-            _options.CurrentValue.WindowStartup.WindowSizeWidth = (int)Width;
-            _options.CurrentValue.WindowStartup.WindowPositionX = Position.X;
-            _options.CurrentValue.WindowStartup.WindowPositionY = Position.Y;
+            _options.CurrentValue.UI.WindowStartup.WindowSizeHeight = (int)Height;
+            _options.CurrentValue.UI.WindowStartup.WindowSizeWidth = (int)Width;
+            _options.CurrentValue.UI.WindowStartup.WindowPositionX = Position.X;
+            _options.CurrentValue.UI.WindowStartup.WindowPositionY = Position.Y;
         }
 
         // TODO: Viper - Fix this.
@@ -651,7 +651,7 @@ internal partial class MainWindow : StyleableWindow
 
         Thread applicationLibraryThread = new(() =>
         {
-            ApplicationLibrary.DesiredLanguage = ConfigurationState.Instance.System.Language;
+            ApplicationLibrary.DesiredLanguage = _options.CurrentValue.System.Language;
             ApplicationLibrary.LoadApplications(ConfigurationState.Instance.UI.GameDirs);
 
             _isLoading = false;

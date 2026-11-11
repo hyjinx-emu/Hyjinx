@@ -9,8 +9,5 @@ public enum RegionCode
     Australia,
     China,
     Korea,
-    Taiwan,
-
-    Min = Japan,
-    Max = Taiwan,
+    Taiwan
 }

@@ -64,7 +64,7 @@ partial class ISettingsServer : IpcService<ISettingsServer>
 
         RegionCode regionCode = (RegionCode)context.Device.System.State.DesiredRegionCode;
 
-        if (regionCode < RegionCode.Min || regionCode > RegionCode.Max)
+        if (regionCode < RegionCode.Japan || regionCode > RegionCode.Taiwan)
         {
             regionCode = RegionCode.USA;
         }

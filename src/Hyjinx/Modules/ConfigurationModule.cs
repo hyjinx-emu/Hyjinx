@@ -77,6 +77,9 @@ internal class ConfigurationModule : IModule
 
         // Register the default options.
         services.AddConfigurationSection<ApplicationOptions>(config);
+        services.AddConfigurationSection<AudioOptions>(config);
         services.AddConfigurationSection<LoggingOptions>(config);
+        services.AddConfigurationSection<SystemOptions>(config);
+        services.AddConfigurationSection<UIOptions>(config);
     }
 }

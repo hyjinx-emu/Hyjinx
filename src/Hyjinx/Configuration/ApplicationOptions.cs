@@ -24,6 +24,11 @@ internal class ApplicationOptions
     public LoggingOptions Logging { get; init; } = new();
 
     /// <summary>
+    /// The system options.
+    /// </summary>
+    public SystemOptions System { get; init; } = new();
+
+    /// <summary>
     /// The user interface options.
     /// </summary>
     public UIOptions UI { get; init; } = new();
