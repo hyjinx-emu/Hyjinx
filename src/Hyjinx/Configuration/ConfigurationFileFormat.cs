@@ -127,21 +127,6 @@ public record ConfigurationFileFormat
     public bool EnableFsIntegrityChecks { get; set; } = true;
 
     /// <summary>
-    /// The selected memory manager mode
-    /// </summary>
-    public MemoryManagerMode MemoryManagerMode { get; set; } = MemoryManagerMode.HostMappedUnsafe;
-
-    /// <summary>
-    /// Expands the RAM amount on the emulated system from 4GiB to 8GiB
-    /// </summary>
-    public bool ExpandRam { get; set; } = false;
-
-    /// <summary>
-    /// Enable or disable ignoring missing services
-    /// </summary>
-    public bool IgnoreMissingServices { get; set; } = false;
-
-    /// <summary>
     /// Used to toggle columns in the GUI
     /// </summary>
     public GuiColumns GuiColumns { get; set; } = new()

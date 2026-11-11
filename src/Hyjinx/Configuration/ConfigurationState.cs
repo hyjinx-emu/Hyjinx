@@ -195,28 +195,10 @@ public class ConfigurationState
         /// </summary>
         public ReactiveObject<bool> EnableFsIntegrityChecks { get; private set; }
 
-        /// <summary>
-        /// The selected memory manager mode
-        /// </summary>
-        public ReactiveObject<MemoryManagerMode> MemoryManagerMode { get; private set; }
-
-        /// <summary>
-        /// Defines the amount of RAM available on the emulated system, and how it is distributed
-        /// </summary>
-        public ReactiveObject<bool> ExpandRam { get; private set; }
-
-        /// <summary>
-        /// Enable or disable ignoring missing services
-        /// </summary>
-        public ReactiveObject<bool> IgnoreMissingServices { get; private set; }
-
         public SystemSection()
         {
             EnableDockedMode = new ReactiveObject<bool>();
             EnableFsIntegrityChecks = new ReactiveObject<bool>();
-            MemoryManagerMode = new ReactiveObject<MemoryManagerMode>();
-            ExpandRam = new ReactiveObject<bool>();
-            IgnoreMissingServices = new ReactiveObject<bool>();
         }
     }
 
@@ -485,9 +467,6 @@ public class ConfigurationState
             EnableMacroHLE = Graphics.EnableMacroHLE,
             EnableColorSpacePassthrough = Graphics.EnableColorSpacePassthrough,
             EnableFsIntegrityChecks = System.EnableFsIntegrityChecks,
-            MemoryManagerMode = System.MemoryManagerMode,
-            ExpandRam = System.ExpandRam,
-            IgnoreMissingServices = System.IgnoreMissingServices,
             GuiColumns = new GuiColumns
             {
                 FavColumn = UI.GuiColumns.FavColumn,
@@ -572,9 +551,6 @@ public class ConfigurationState
         Graphics.EnableMacroHLE.Value = configurationFileFormat.EnableMacroHLE;
         Graphics.EnableColorSpacePassthrough.Value = configurationFileFormat.EnableColorSpacePassthrough;
         System.EnableFsIntegrityChecks.Value = configurationFileFormat.EnableFsIntegrityChecks;
-        System.MemoryManagerMode.Value = configurationFileFormat.MemoryManagerMode;
-        System.ExpandRam.Value = configurationFileFormat.ExpandRam;
-        System.IgnoreMissingServices.Value = configurationFileFormat.IgnoreMissingServices;
         UI.GuiColumns.FavColumn.Value = configurationFileFormat.GuiColumns.FavColumn;
         UI.GuiColumns.IconColumn.Value = configurationFileFormat.GuiColumns.IconColumn;
         UI.GuiColumns.AppColumn.Value = configurationFileFormat.GuiColumns.AppColumn;

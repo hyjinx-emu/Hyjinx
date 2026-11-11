@@ -209,7 +209,6 @@ internal class EmulationHost
             _defaultCursorWin = CreateArrowCursor();
         }
 
-        ConfigurationState.Instance.System.IgnoreMissingServices.Event += UpdateIgnoreMissingServicesState;
         ConfigurationState.Instance.Graphics.AspectRatio.Event += UpdateAspectRatioState;
         ConfigurationState.Instance.System.EnableDockedMode.Event += UpdateDockedModeState;
         ConfigurationState.Instance.System.EnableDockedMode.Event += UpdateDockedModeState;
@@ -228,6 +227,7 @@ internal class EmulationHost
     {
         UpdateAudioVolumeState();
         UpdateEnableInternetAccessState();
+        UpdateIgnoreMissingServicesState();
     }
 
     private void TopLevel_PointerEnteredOrMoved(object sender, PointerEventArgs e)
@@ -468,11 +468,11 @@ internal class EmulationHost
         Exit();
     }
 
-    private void UpdateIgnoreMissingServicesState(object sender, ReactiveEventArgs<bool> args)
+    private void UpdateIgnoreMissingServicesState()
     {
         if (Device != null)
         {
-            Device.Configuration.IgnoreMissingServices = args.NewValue;
+            Device.Configuration.IgnoreMissingServices = _options.CurrentValue.System.IgnoreMissingServices;
         }
     }
 
@@ -575,7 +575,6 @@ internal class EmulationHost
             MainWindowViewModel.UpdateGameMetadata(programId);
         }
 
-        ConfigurationState.Instance.System.IgnoreMissingServices.Event -= UpdateIgnoreMissingServicesState;
         ConfigurationState.Instance.Graphics.AspectRatio.Event -= UpdateAspectRatioState;
         ConfigurationState.Instance.System.EnableDockedMode.Event -= UpdateDockedModeState;
         ConfigurationState.Instance.Graphics.ScalingFilter.Event -= UpdateScalingFilter;
@@ -720,7 +719,7 @@ internal class EmulationHost
         "Backend Threading ({threadingMode}): {isGALThreaded}", threadingMode, isGALThreaded);
 
         // Initialize Configuration.
-        var memoryConfiguration = ConfigurationState.Instance.System.ExpandRam.Value ? MemoryConfiguration.MemoryConfiguration8GiB : MemoryConfiguration.MemoryConfiguration4GiB;
+        var memoryConfiguration = _options.CurrentValue.System.ExpandRam ? MemoryConfiguration.MemoryConfiguration8GiB : MemoryConfiguration.MemoryConfiguration4GiB;
 
         HLEConfiguration configuration = new(VirtualFileSystem,
                                              _viewModel.LibHacHorizonManager,
@@ -741,8 +740,8 @@ internal class EmulationHost
                                              _options.CurrentValue.Logging.FsGlobalAccessLogMode,
                                              _options.CurrentValue.System.TimeOffset,
                                              _options.CurrentValue.System.TimeZone,
-                                             ConfigurationState.Instance.System.MemoryManagerMode,
-                                             ConfigurationState.Instance.System.IgnoreMissingServices,
+                                             _options.CurrentValue.System.MemoryManagerMode,
+                                             _options.CurrentValue.System.IgnoreMissingServices,
                                              ConfigurationState.Instance.Graphics.AspectRatio,
                                              _options.CurrentValue.Audio.Volume,
                                              _options.CurrentValue.System.UseHypervisor,
