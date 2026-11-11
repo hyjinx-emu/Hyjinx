@@ -316,11 +316,6 @@ public record ConfigurationFileFormat
     public string MultiplayerLanInterfaceId { get; set; } = "0";
 
     /// <summary>
-    /// Uses Hypervisor over JIT if available
-    /// </summary>
-    public bool UseHypervisor { get; set; } = true;
-
-    /// <summary>
     /// Loads the configuration file from disk.
     /// </summary>
     /// <param name="fileName">The name of the file.</param>

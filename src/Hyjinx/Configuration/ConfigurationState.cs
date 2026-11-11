@@ -220,11 +220,6 @@ public class ConfigurationState
         /// </summary>
         public ReactiveObject<bool> IgnoreMissingServices { get; private set; }
 
-        /// <summary>
-        /// Uses Hypervisor over JIT if available
-        /// </summary>
-        public ReactiveObject<bool> UseHypervisor { get; private set; }
-
         public SystemSection()
         {
             EnableDockedMode = new ReactiveObject<bool>();
@@ -234,7 +229,6 @@ public class ConfigurationState
             MemoryManagerMode = new ReactiveObject<MemoryManagerMode>();
             ExpandRam = new ReactiveObject<bool>();
             IgnoreMissingServices = new ReactiveObject<bool>();
-            UseHypervisor = new ReactiveObject<bool>();
         }
     }
 
@@ -508,7 +502,6 @@ public class ConfigurationState
             MemoryManagerMode = System.MemoryManagerMode,
             ExpandRam = System.ExpandRam,
             IgnoreMissingServices = System.IgnoreMissingServices,
-            UseHypervisor = System.UseHypervisor,
             GuiColumns = new GuiColumns
             {
                 FavColumn = UI.GuiColumns.FavColumn,
@@ -598,7 +591,6 @@ public class ConfigurationState
         System.MemoryManagerMode.Value = configurationFileFormat.MemoryManagerMode;
         System.ExpandRam.Value = configurationFileFormat.ExpandRam;
         System.IgnoreMissingServices.Value = configurationFileFormat.IgnoreMissingServices;
-        System.UseHypervisor.Value = configurationFileFormat.UseHypervisor;
         UI.GuiColumns.FavColumn.Value = configurationFileFormat.GuiColumns.FavColumn;
         UI.GuiColumns.IconColumn.Value = configurationFileFormat.GuiColumns.IconColumn;
         UI.GuiColumns.AppColumn.Value = configurationFileFormat.GuiColumns.AppColumn;

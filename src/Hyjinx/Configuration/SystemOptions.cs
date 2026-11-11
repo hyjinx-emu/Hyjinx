@@ -30,4 +30,9 @@ internal class SystemOptions
     /// Change System Time Offset in seconds
     /// </summary>
     public long TimeOffset { get; set; } = 0;
+
+    /// <summary>
+    /// Uses Hypervisor over JIT if available
+    /// </summary>
+    public bool UseHypervisor { get; set; } = true;
 }

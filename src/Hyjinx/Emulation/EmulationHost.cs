@@ -746,7 +746,7 @@ internal class EmulationHost
                                              ConfigurationState.Instance.System.IgnoreMissingServices,
                                              ConfigurationState.Instance.Graphics.AspectRatio,
                                              _options.CurrentValue.Audio.Volume,
-                                             ConfigurationState.Instance.System.UseHypervisor,
+                                             _options.CurrentValue.System.UseHypervisor,
                                              ConfigurationState.Instance.Multiplayer.LanInterfaceId.Value,
                                              ConfigurationState.Instance.Multiplayer.Mode);
 
