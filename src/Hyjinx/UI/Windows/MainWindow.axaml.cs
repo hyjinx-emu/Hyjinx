@@ -26,6 +26,7 @@ using Hyjinx.Input.SDL2;
 using Hyjinx.Logging.Abstractions;
 using LibHac.Tools.FsSystem;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Versioning;
@@ -38,7 +39,8 @@ internal partial class MainWindow : StyleableWindow
 {
     internal static MainWindowViewModel MainWindowViewModel { get; private set; }
 
-    private readonly ILogger<MainWindow> logger;
+    private readonly IOptionsMonitor<UIOptions> _options;
+    private readonly ILogger<MainWindow> _logger;
     private Messenger Messenger { get; }
 
     private bool _isLoading;
@@ -68,9 +70,10 @@ internal partial class MainWindow : StyleableWindow
     public readonly double StatusBarHeight;
     public readonly double MenuBarHeight;
 
-    public MainWindow(ILogger<MainWindow> logger, MainWindowViewModel viewModel, Messenger messenger)
+    public MainWindow(IOptionsMonitor<UIOptions> options, ILogger<MainWindow> logger, MainWindowViewModel viewModel, Messenger messenger)
     {
-        this.logger = logger;
+        _options = options;
+        _logger = logger;
 
         Messenger = messenger;
         ViewModel = viewModel;
@@ -287,7 +290,7 @@ internal partial class MainWindow : StyleableWindow
                 }
                 else
                 {
-                    logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "Unable to change vm.max_map_count. Process exited with code: {rc}", rc);
                 }
                 break;
@@ -300,7 +303,7 @@ internal partial class MainWindow : StyleableWindow
                 }
                 else
                 {
-                    logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                    _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                         "Unable to write new value for vm.max_map_count to config. Process exited with code: {rc}", rc);
                 }
                 break;
@@ -311,7 +314,7 @@ internal partial class MainWindow : StyleableWindow
     {
         if (OperatingSystem.IsLinux() && LinuxHelper.VmMaxMapCount < LinuxHelper.RecommendedVmMaxMapCount)
         {
-            logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+            _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
             "The value of vm.max_map_count is lower than {recommended}. ({vmMaxMapCount})", LinuxHelper.RecommendedVmMaxMapCount, LinuxHelper.VmMaxMapCount);
 
             if (LinuxHelper.PkExecPath is not null)
@@ -342,7 +345,7 @@ internal partial class MainWindow : StyleableWindow
                     }
                     else
                     {
-                        logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                             "Couldn't find requested application id '{launchApplicationId}' in '{launchPath}'.", _launchApplicationId, _launchPath);
 
                         await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
@@ -356,7 +359,7 @@ internal partial class MainWindow : StyleableWindow
             }
             else
             {
-                logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+                _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
                     "Couldn't find any application in '{launchPath}'.", _launchPath);
 
                 await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
@@ -401,13 +404,13 @@ internal partial class MainWindow : StyleableWindow
             return;
         }
 
-        PixelPoint savedPoint = new(ConfigurationState.Instance.UI.WindowStartup.WindowPositionX,
-                                    ConfigurationState.Instance.UI.WindowStartup.WindowPositionY);
+        PixelPoint savedPoint = new(_options.CurrentValue.WindowStartup.WindowPositionX,
+                                    _options.CurrentValue.WindowStartup.WindowPositionY);
 
-        ViewModel.WindowHeight = ConfigurationState.Instance.UI.WindowStartup.WindowSizeHeight * Program.WindowScaleFactor;
-        ViewModel.WindowWidth = ConfigurationState.Instance.UI.WindowStartup.WindowSizeWidth * Program.WindowScaleFactor;
+        ViewModel.WindowHeight = _options.CurrentValue.WindowStartup.WindowSizeHeight * Program.WindowScaleFactor;
+        ViewModel.WindowWidth = _options.CurrentValue.WindowStartup.WindowSizeWidth * Program.WindowScaleFactor;
 
-        ViewModel.WindowState = ConfigurationState.Instance.UI.WindowStartup.WindowMaximized.Value ? WindowState.Maximized : WindowState.Normal;
+        ViewModel.WindowState = _options.CurrentValue.WindowStartup.WindowMaximized ? WindowState.Maximized : WindowState.Normal;
 
         if (CheckScreenBounds(savedPoint))
         {
@@ -429,7 +432,7 @@ internal partial class MainWindow : StyleableWindow
             }
         }
 
-        logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+        _logger.LogWarning(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
         "Failed to find valid start-up coordinates. Defaulting to primary monitor center.");
 
         return false;
@@ -437,16 +440,15 @@ internal partial class MainWindow : StyleableWindow
 
     private void SaveWindowSizePosition()
     {
-        ConfigurationState.Instance.UI.WindowStartup.WindowMaximized.Value = WindowState == WindowState.Maximized;
+        _options.CurrentValue.WindowStartup.WindowMaximized = WindowState == WindowState.Maximized;
 
         // Only save rectangle properties if the window is not in a maximized state.
         if (WindowState != WindowState.Maximized)
         {
-            ConfigurationState.Instance.UI.WindowStartup.WindowSizeHeight.Value = (int)Height;
-            ConfigurationState.Instance.UI.WindowStartup.WindowSizeWidth.Value = (int)Width;
-
-            ConfigurationState.Instance.UI.WindowStartup.WindowPositionX.Value = Position.X;
-            ConfigurationState.Instance.UI.WindowStartup.WindowPositionY.Value = Position.Y;
+            _options.CurrentValue.WindowStartup.WindowSizeHeight = (int)Height;
+            _options.CurrentValue.WindowStartup.WindowSizeWidth = (int)Width;
+            _options.CurrentValue.WindowStartup.WindowPositionX = Position.X;
+            _options.CurrentValue.WindowStartup.WindowPositionY = Position.Y;
         }
 
         // TODO: Viper - Fix this.

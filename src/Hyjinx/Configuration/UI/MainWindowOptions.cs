@@ -1,6 +1,6 @@
 namespace Hyjinx.Ava.Configuration.UI;
 
-public record WindowStartup
+public class MainWindowOptions
 {
     public int WindowSizeWidth { get; set; }
 

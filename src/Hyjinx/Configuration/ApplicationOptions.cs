@@ -16,10 +16,15 @@ internal class ApplicationOptions
     /// <summary>
     /// The audio options.
     /// </summary>
-    public AudioOptions Audio { get; init; } = new AudioOptions();
+    public AudioOptions Audio { get; init; } = new();
 
     /// <summary>
     /// The logging options.
     /// </summary>
-    public LoggingOptions Logging { get; init; } = new LoggingOptions();
+    public LoggingOptions Logging { get; init; } = new();
+
+    /// <summary>
+    /// The user interface options.
+    /// </summary>
+    public UIOptions UI { get; init; } = new();
 }

@@ -82,28 +82,7 @@ public class ConfigurationState
                 NRO = new ReactiveObject<bool>();
                 NSO = new ReactiveObject<bool>();
             }
-        }
-
-        // <summary>
-        /// Determines main window start-up position, size and state
-        ///<summary>
-        public class WindowStartupSettings
-        {
-            public ReactiveObject<int> WindowSizeWidth { get; private set; }
-            public ReactiveObject<int> WindowSizeHeight { get; private set; }
-            public ReactiveObject<int> WindowPositionX { get; private set; }
-            public ReactiveObject<int> WindowPositionY { get; private set; }
-            public ReactiveObject<bool> WindowMaximized { get; private set; }
-
-            public WindowStartupSettings()
-            {
-                WindowSizeWidth = new ReactiveObject<int>();
-                WindowSizeHeight = new ReactiveObject<int>();
-                WindowPositionX = new ReactiveObject<int>();
-                WindowPositionY = new ReactiveObject<int>();
-                WindowMaximized = new ReactiveObject<bool>();
-            }
-        }
+        }        
 
         /// <summary>
         /// Used to toggle columns in the GUI
@@ -124,11 +103,6 @@ public class ConfigurationState
         /// A list of file types to be hidden in the games List
         /// </summary>
         public ShownFileTypeSettings ShownFileTypes { get; private set; }
-
-        /// <summary>
-        /// Determines main window start-up position, size and state
-        /// </summary>
-        public WindowStartupSettings WindowStartup { get; private set; }
 
         /// <summary>
         /// Language Code for the UI
@@ -191,7 +165,6 @@ public class ConfigurationState
             ColumnSort = new ColumnSortSettings();
             GameDirs = new ReactiveObject<List<string>>();
             ShownFileTypes = new ShownFileTypeSettings();
-            WindowStartup = new WindowStartupSettings();
             EnableCustomTheme = new ReactiveObject<bool>();
             CustomThemePath = new ReactiveObject<string>();
             BaseStyle = new ReactiveObject<string>();
@@ -592,14 +565,6 @@ public class ConfigurationState
                 NRO = UI.ShownFileTypes.NRO,
                 NSO = UI.ShownFileTypes.NSO,
             },
-            WindowStartup = new WindowStartup
-            {
-                WindowSizeWidth = UI.WindowStartup.WindowSizeWidth,
-                WindowSizeHeight = UI.WindowStartup.WindowSizeHeight,
-                WindowPositionX = UI.WindowStartup.WindowPositionX,
-                WindowPositionY = UI.WindowStartup.WindowPositionY,
-                WindowMaximized = UI.WindowStartup.WindowMaximized,
-            },
             LanguageCode = UI.LanguageCode,
             EnableCustomTheme = UI.EnableCustomTheme,
             CustomThemePath = UI.CustomThemePath,
@@ -696,11 +661,6 @@ public class ConfigurationState
         UI.ApplicationSort.Value = configurationFileFormat.ApplicationSort;
         UI.StartFullscreen.Value = configurationFileFormat.StartFullscreen;
         UI.ShowConsole.Value = configurationFileFormat.ShowConsole;
-        UI.WindowStartup.WindowSizeWidth.Value = configurationFileFormat.WindowStartup.WindowSizeWidth;
-        UI.WindowStartup.WindowSizeHeight.Value = configurationFileFormat.WindowStartup.WindowSizeHeight;
-        UI.WindowStartup.WindowPositionX.Value = configurationFileFormat.WindowStartup.WindowPositionX;
-        UI.WindowStartup.WindowPositionY.Value = configurationFileFormat.WindowStartup.WindowPositionY;
-        UI.WindowStartup.WindowMaximized.Value = configurationFileFormat.WindowStartup.WindowMaximized;
         Hid.EnableKeyboard.Value = configurationFileFormat.EnableKeyboard;
         Hid.EnableMouse.Value = configurationFileFormat.EnableMouse;
         Hid.Hotkeys.Value = configurationFileFormat.Hotkeys;
