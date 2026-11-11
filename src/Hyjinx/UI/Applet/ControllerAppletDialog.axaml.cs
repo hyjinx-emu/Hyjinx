@@ -16,10 +16,10 @@ namespace Hyjinx.Ava.UI.Applet;
 
 internal partial class ControllerAppletDialog : UserControl
 {
-    private const string ProControllerResource = "Hyjinx/Assets/Icons/Controller_ProCon.svg";
-    private const string JoyConPairResource = "Hyjinx/Assets/Icons/Controller_JoyConPair.svg";
-    private const string JoyConLeftResource = "Hyjinx/Assets/Icons/Controller_JoyConLeft.svg";
-    private const string JoyConRightResource = "Hyjinx/Assets/Icons/Controller_JoyConRight.svg";
+    private const string ProControllerResource = "Hyjinx/Ava.Assets.Icons.Controller_ProCon.svg";
+    private const string JoyConPairResource = "Hyjinx/Ava.Assets.Icons.Controller_JoyConPair.svg";
+    private const string JoyConLeftResource = "Hyjinx/Ava.Assets.Icons.Controller_JoyConLeft.svg";
+    private const string JoyConRightResource = "Hyjinx/Ava.Assets.Icons.Controller_JoyConRight.svg";
 
     public static SvgImage ProControllerImage => GetResource(ProControllerResource);
     public static SvgImage JoyconPairImage => GetResource(JoyConPairResource);
