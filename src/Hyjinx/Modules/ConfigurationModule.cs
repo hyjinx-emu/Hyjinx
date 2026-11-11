@@ -6,8 +6,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace Hyjinx.Ava.Modules;
+
+file static class ServiceCollectionConfigurationExtensions
+{
+    public static IServiceCollection AddConfigurationSection<T>(this IServiceCollection services, IConfiguration configuration) where T : class
+    {
+        var attribute = typeof(T).GetCustomAttribute<ConfigurationSectionAttribute>();
+        if (attribute == null)
+        {
+            throw new NotSupportedException($"The type '{nameof(T)}' must have the '{nameof(ConfigurationSectionAttribute)}' applied.");
+        }
+
+        services.AddOptions<T>().Bind(configuration.GetSection(attribute.SectionName));
+        return services;
+    }
+}
 
 internal class ConfigurationModule : IModule
 {
@@ -57,7 +73,10 @@ internal class ConfigurationModule : IModule
             .Build();
 
         services.AddTransient<ISupportInitialization, ConfigurationStateInitializer>();
-        services.AddSingleton<IConfiguration>(config);
         services.AddOptions<ConfigurationFileFormat>().Bind(config);
+
+        // Register the default options.
+        services.AddConfigurationSection<ApplicationOptions>(config);
+        services.AddConfigurationSection<LoggingOptions>(config);
     }
 }
