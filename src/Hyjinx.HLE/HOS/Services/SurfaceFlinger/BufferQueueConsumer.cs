@@ -178,7 +178,7 @@ partial class BufferQueueConsumer
         return Status.Success;
     }
 
-    [LoggerMessage(LogLevel.Error,
+    [LoggerMessage(LogLevel.Warning,
         EventId = (int)LogClass.ServiceSsl, EventName = nameof(LogClass.ServiceSsl),
         Message = "Max acquired buffer count reached: {numAcquiredBuffers} (max: {maxAcquiredBufferCount})")]
     private partial void LogMaxBufferCountReached(int numAcquiredBuffers, int maxAcquiredBufferCount);
