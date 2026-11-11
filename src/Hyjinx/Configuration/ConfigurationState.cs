@@ -4,11 +4,9 @@ using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
-using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
-using Hyjinx.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -206,82 +204,6 @@ public class ConfigurationState
             LanguageCode = new ReactiveObject<string>();
             ShowConsole = new ReactiveObject<bool>();
             ShowConsole.Event += static (s, e) => { ConsoleHelper.SetConsoleWindowState(e.NewValue); };
-        }
-    }
-
-    /// <summary>
-    /// Logger configuration section
-    /// </summary>
-    public class LoggerSection
-    {
-        /// <summary>
-        /// Enables printing debug log messages
-        /// </summary>
-        public ReactiveObject<bool> EnableDebug { get; private set; }
-
-        /// <summary>
-        /// Enables printing stub log messages
-        /// </summary>
-        public ReactiveObject<bool> EnableStub { get; private set; }
-
-        /// <summary>
-        /// Enables printing info log messages
-        /// </summary>
-        public ReactiveObject<bool> EnableInfo { get; private set; }
-
-        /// <summary>
-        /// Enables printing warning log messages
-        /// </summary>
-        public ReactiveObject<bool> EnableWarn { get; private set; }
-
-        /// <summary>
-        /// Enables printing error log messages
-        /// </summary>
-        public ReactiveObject<bool> EnableError { get; private set; }
-
-        /// <summary>
-        /// Enables printing trace log messages
-        /// </summary>
-        public ReactiveObject<bool> EnableTrace { get; private set; }
-
-        /// <summary>
-        /// Enables printing guest log messages
-        /// </summary>
-        public ReactiveObject<bool> EnableGuest { get; private set; }
-
-        /// <summary>
-        /// Enables printing FS access log messages
-        /// </summary>
-        public ReactiveObject<bool> EnableFsAccessLog { get; private set; }
-
-        /// <summary>
-        /// Controls which log messages are written to the log targets
-        /// </summary>
-        public ReactiveObject<LogClass[]> FilteredClasses { get; private set; }
-
-        /// <summary>
-        /// Enables or disables logging to a file on disk
-        /// </summary>
-        public ReactiveObject<bool> EnableFileLog { get; private set; }
-
-        /// <summary>
-        /// Controls which OpenGL log messages are recorded in the log
-        /// </summary>
-        public ReactiveObject<GraphicsDebugLevel> GraphicsDebugLevel { get; private set; }
-
-        public LoggerSection()
-        {
-            EnableDebug = new ReactiveObject<bool>();
-            EnableStub = new ReactiveObject<bool>();
-            EnableInfo = new ReactiveObject<bool>();
-            EnableWarn = new ReactiveObject<bool>();
-            EnableError = new ReactiveObject<bool>();
-            EnableTrace = new ReactiveObject<bool>();
-            EnableGuest = new ReactiveObject<bool>();
-            EnableFsAccessLog = new ReactiveObject<bool>();
-            FilteredClasses = new ReactiveObject<LogClass[]>();
-            EnableFileLog = new ReactiveObject<bool>();
-            GraphicsDebugLevel = new ReactiveObject<GraphicsDebugLevel>();
         }
     }
 
@@ -560,11 +482,6 @@ public class ConfigurationState
     public UISection UI { get; private set; }
 
     /// <summary>
-    /// The Logger section
-    /// </summary>
-    public LoggerSection Logger { get; private set; }
-
-    /// <summary>
     /// The System section
     /// </summary>
     public SystemSection System { get; private set; }
@@ -617,7 +534,6 @@ public class ConfigurationState
     private ConfigurationState()
     {
         UI = new UISection();
-        Logger = new LoggerSection();
         System = new SystemSection();
         Graphics = new GraphicsSection();
         Hid = new HidSection();
@@ -635,7 +551,6 @@ public class ConfigurationState
         ConfigurationFileFormat configurationFile = new()
         {
             BackendThreading = Graphics.BackendThreading,
-            EnableFileLog = Logger.EnableFileLog,
             ResScale = Graphics.ResScale,
             ResScaleCustom = Graphics.ResScaleCustom,
             MaxAnisotropy = Graphics.MaxAnisotropy,
@@ -644,16 +559,6 @@ public class ConfigurationState
             ScalingFilter = Graphics.ScalingFilter,
             ScalingFilterLevel = Graphics.ScalingFilterLevel,
             GraphicsShadersDumpPath = Graphics.ShadersDumpPath,
-            LoggingEnableDebug = Logger.EnableDebug,
-            LoggingEnableStub = Logger.EnableStub,
-            LoggingEnableInfo = Logger.EnableInfo,
-            LoggingEnableWarn = Logger.EnableWarn,
-            LoggingEnableError = Logger.EnableError,
-            LoggingEnableTrace = Logger.EnableTrace,
-            LoggingEnableGuest = Logger.EnableGuest,
-            LoggingEnableFsAccessLog = Logger.EnableFsAccessLog,
-            LoggingFilteredClasses = Logger.FilteredClasses,
-            LoggingGraphicsDebugLevel = Logger.GraphicsDebugLevel,
             SystemLanguage = System.Language,
             SystemRegion = System.Region,
             SystemTimeZone = System.TimeZone,
@@ -748,7 +653,6 @@ public class ConfigurationState
 
     public void Load(ConfigurationFileFormat configurationFileFormat)
     {
-        Logger.EnableFileLog.Value = configurationFileFormat.EnableFileLog;
         Graphics.ResScale.Value = configurationFileFormat.ResScale;
         Graphics.ResScaleCustom.Value = configurationFileFormat.ResScaleCustom;
         Graphics.MaxAnisotropy.Value = configurationFileFormat.MaxAnisotropy;
@@ -760,16 +664,6 @@ public class ConfigurationState
         Graphics.AntiAliasing.Value = configurationFileFormat.AntiAliasing;
         Graphics.ScalingFilter.Value = configurationFileFormat.ScalingFilter;
         Graphics.ScalingFilterLevel.Value = configurationFileFormat.ScalingFilterLevel;
-        Logger.EnableDebug.Value = configurationFileFormat.LoggingEnableDebug;
-        Logger.EnableStub.Value = configurationFileFormat.LoggingEnableStub;
-        Logger.EnableInfo.Value = configurationFileFormat.LoggingEnableInfo;
-        Logger.EnableWarn.Value = configurationFileFormat.LoggingEnableWarn;
-        Logger.EnableError.Value = configurationFileFormat.LoggingEnableError;
-        Logger.EnableTrace.Value = configurationFileFormat.LoggingEnableTrace;
-        Logger.EnableGuest.Value = configurationFileFormat.LoggingEnableGuest;
-        Logger.EnableFsAccessLog.Value = configurationFileFormat.LoggingEnableFsAccessLog;
-        Logger.FilteredClasses.Value = configurationFileFormat.LoggingFilteredClasses;
-        Logger.GraphicsDebugLevel.Value = configurationFileFormat.LoggingGraphicsDebugLevel;
         System.Language.Value = configurationFileFormat.SystemLanguage;
         System.Region.Value = configurationFileFormat.SystemRegion;
         System.TimeZone.Value = configurationFileFormat.SystemTimeZone;

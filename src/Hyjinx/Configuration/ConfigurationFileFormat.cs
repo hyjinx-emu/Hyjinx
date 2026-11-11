@@ -1,11 +1,9 @@
 using Hyjinx.Ava.Configuration.System;
 using Hyjinx.Ava.Configuration.UI;
 using Hyjinx.Common.Configuration.Hid;
-using Hyjinx.Graphics.GAL;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.Utilities;
-using Hyjinx.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,11 +16,6 @@ namespace Hyjinx.Ava.Configuration;
 /// </summary>
 public record ConfigurationFileFormat
 {
-    /// <summary>
-    /// Enables or disables logging to a file on disk
-    /// </summary>
-    public bool EnableFileLog { get; set; } = true;
-
     /// <summary>
     /// Whether or not backend threading is enabled. The "Auto" setting will determine whether threading should be enabled at runtime.
     /// </summary>
@@ -67,56 +60,6 @@ public record ConfigurationFileFormat
     /// Dumps shaders in this local directory
     /// </summary>
     public string GraphicsShadersDumpPath { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Enables printing debug log messages
-    /// </summary>
-    public bool LoggingEnableDebug { get; set; } = false;
-
-    /// <summary>
-    /// Enables printing stub log messages
-    /// </summary>
-    public bool LoggingEnableStub { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing info log messages
-    /// </summary>
-    public bool LoggingEnableInfo { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing warning log messages
-    /// </summary>
-    public bool LoggingEnableWarn { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing error log messages
-    /// </summary>
-    public bool LoggingEnableError { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing trace log messages
-    /// </summary>
-    public bool LoggingEnableTrace { get; set; } = false;
-
-    /// <summary>
-    /// Enables printing guest log messages
-    /// </summary>
-    public bool LoggingEnableGuest { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing FS access log messages
-    /// </summary>
-    public bool LoggingEnableFsAccessLog { get; set; } = false;
-
-    /// <summary>
-    /// Controls which log messages are written to the log targets
-    /// </summary>
-    public LogClass[] LoggingFilteredClasses { get; set; } = [];
-
-    /// <summary>
-    /// Change Graphics API debug log level
-    /// </summary>
-    public GraphicsDebugLevel LoggingGraphicsDebugLevel { get; set; } = GraphicsDebugLevel.None;
 
     /// <summary>
     /// Change System Language
@@ -447,11 +390,11 @@ public record ConfigurationFileFormat
     /// <param name="path">The path to the JSON configuration file</param>
     public void SaveConfig(string path)
     {
-        if (File.Exists(path))
-        {
-            File.Delete(path);
-        }
+        //if (File.Exists(path))
+        //{
+        //    File.Delete(path);
+        //}
 
-        JsonHelper.SerializeToFile(path, this, ConfigurationFileFormatSettings.SerializerContext.ConfigurationFileFormat);
+        //JsonHelper.SerializeToFile(path, this, ConfigurationFileFormatSettings.SerializerContext.ConfigurationFileFormat);
     }
 }

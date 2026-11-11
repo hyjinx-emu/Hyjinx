@@ -40,7 +40,7 @@ internal class LoggingModule : IModule
         services.AddLogging(logging =>
         {
             logging.ClearProviders();
-            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace); // Make sure everything goes to NLog.
 
             logging.AddNLog(sp => sp.GetRequiredService<ApplicationLogFactoryManager>().Get());
         });

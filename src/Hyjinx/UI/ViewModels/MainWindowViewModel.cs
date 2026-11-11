@@ -20,7 +20,6 @@ using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Models.Generic;
 using Hyjinx.Ava.UI.Renderer;
 using Hyjinx.Ava.UI.Windows;
-using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Cpu;
 using Hyjinx.HLE;
@@ -32,7 +31,9 @@ using Hyjinx.Input.HLE;
 using Hyjinx.Logging.Abstractions;
 using LibHac.Common;
 using LibHac.Tools.FsSystem.NcaUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -50,6 +51,8 @@ internal class MainWindowViewModel : BaseModel
 {
     private const int HotKeyPressDelayMs = 500;
 
+    private readonly IServiceProvider applicationServices;
+    private readonly IOptionsMonitor<ApplicationOptions> options;
     private readonly ILogger<MainWindowViewModel> logger;
     private readonly Messenger messenger;
 
@@ -114,8 +117,10 @@ internal class MainWindowViewModel : BaseModel
 
     internal EmulationHost AppHost { get; set; }
 
-    public MainWindowViewModel(ILogger<MainWindowViewModel> logger, Messenger messenger)
+    public MainWindowViewModel(IServiceProvider applicationServices, IOptionsMonitor<ApplicationOptions> options, ILogger<MainWindowViewModel> logger, Messenger messenger)
     {
+        this.applicationServices = applicationServices;
+        this.options = options;
         this.logger = logger;
         this.messenger = messenger;
 
@@ -1535,15 +1540,11 @@ internal class MainWindowViewModel : BaseModel
             return;
         }
 
-#if RELEASE
-        await PerformanceCheck();
-#endif
-
         SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, ConfigurationState.Instance.System.Language, application.Id);
 
         PrepareLoadScreen();
 
-        RendererHostControl = new RendererHost();
+        RendererHostControl = applicationServices.GetRequiredService<RendererHost>();
 
         AppHost = new EmulationHost(
             RendererHostControl,
@@ -1556,6 +1557,7 @@ internal class MainWindowViewModel : BaseModel
             UserChannelPersistence,
             this,
             TopLevel,
+            new OptionsWrapper<ApplicationOptions>(options.CurrentValue),
             messenger);
 
         if (!await AppHost.LoadGuestApplicationAsync(cancellationToken))
@@ -1690,49 +1692,6 @@ internal class MainWindowViewModel : BaseModel
     public static void SaveConfig()
     {
         ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
-    }
-
-    public static async Task PerformanceCheck()
-    {
-        if (ConfigurationState.Instance.Logger.EnableTrace.Value)
-        {
-            string mainMessage = LocaleManager.Instance[LocaleKeys.DialogPerformanceCheckLoggingEnabledMessage];
-            string secondaryMessage = LocaleManager.Instance[LocaleKeys.DialogPerformanceCheckLoggingEnabledConfirmMessage];
-
-            UserResult result = await ContentDialogHelper.CreateConfirmationDialog(
-                mainMessage,
-                secondaryMessage,
-                LocaleManager.Instance[LocaleKeys.InputDialogYes],
-                LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
-
-            if (result == UserResult.Yes)
-            {
-                ConfigurationState.Instance.Logger.EnableTrace.Value = false;
-
-                SaveConfig();
-            }
-        }
-
-        if (!string.IsNullOrWhiteSpace(ConfigurationState.Instance.Graphics.ShadersDumpPath.Value))
-        {
-            string mainMessage = LocaleManager.Instance[LocaleKeys.DialogPerformanceCheckShaderDumpEnabledMessage];
-            string secondaryMessage = LocaleManager.Instance[LocaleKeys.DialogPerformanceCheckShaderDumpEnabledConfirmMessage];
-
-            UserResult result = await ContentDialogHelper.CreateConfirmationDialog(
-                mainMessage,
-                secondaryMessage,
-                LocaleManager.Instance[LocaleKeys.InputDialogYes],
-                LocaleManager.Instance[LocaleKeys.InputDialogNo],
-                LocaleManager.Instance[LocaleKeys.HyjinxConfirm]);
-
-            if (result == UserResult.Yes)
-            {
-                ConfigurationState.Instance.Graphics.ShadersDumpPath.Value = "";
-
-                SaveConfig();
-            }
-        }
     }
 
     #endregion

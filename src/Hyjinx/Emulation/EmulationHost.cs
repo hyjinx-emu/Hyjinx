@@ -36,6 +36,7 @@ using Hyjinx.Input.HLE;
 using Hyjinx.Logging.Abstractions;
 using LibHac.Tools.FsSystem;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Silk.NET.Vulkan;
 using SkiaSharp;
 using SPB.Graphics.Vulkan;
@@ -162,7 +163,8 @@ internal class EmulationHost
         UserChannelPersistence userChannelPersistence,
         MainWindowViewModel viewmodel,
         TopLevel topLevel,
-        Messenger mesenger)
+        IOptions<ApplicationOptions> options,
+        Messenger messenger)
     {
         _viewModel = viewmodel;
         _inputManager = inputManager;
@@ -170,9 +172,9 @@ internal class EmulationHost
         _userChannelPersistence = userChannelPersistence;
         _renderingThread = new Thread(RenderLoop) { Name = "GUI.RenderThread" };
         _lastCursorMoveTime = Stopwatch.GetTimestamp();
-        _glLogLevel = ConfigurationState.Instance.Logger.GraphicsDebugLevel;
+        _glLogLevel = options.Value.Logging.GraphicsDebugLevel;
         _topLevel = topLevel;
-        _messenger = mesenger;
+        _messenger = messenger;
 
         _inputManager.SetMouseDriver(new AvaloniaMouseDriver(_topLevel, renderer));
 
