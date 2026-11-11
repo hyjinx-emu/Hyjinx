@@ -157,11 +157,6 @@ public record ConfigurationFileFormat
     public bool EnableFsIntegrityChecks { get; set; } = true;
 
     /// <summary>
-    /// Enables FS access log output to the console. Possible modes are 0-3
-    /// </summary>
-    public int FsGlobalAccessLogMode { get; set; } = 0;
-
-    /// <summary>
     /// The selected audio backend
     /// </summary>
     public AudioBackend AudioBackend { get; set; } = AudioBackend.SDL2;

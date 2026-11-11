@@ -75,8 +75,8 @@ internal class EmulationHost
     private readonly Stopwatch _chrono;
     private long _ticks;
 
-    private static readonly ILogger<EmulationHost> _logger =
-        Logger.DefaultLoggerFactory.CreateLogger<EmulationHost>();
+    private readonly ILogger<EmulationHost> _logger;
+    private readonly IOptions<ApplicationOptions> _options;
 
     private readonly AccountManager _accountManager;
     private readonly UserChannelPersistence _userChannelPersistence;
@@ -163,6 +163,7 @@ internal class EmulationHost
         UserChannelPersistence userChannelPersistence,
         MainWindowViewModel viewmodel,
         TopLevel topLevel,
+        ILogger<EmulationHost> logger,
         IOptions<ApplicationOptions> options,
         Messenger messenger)
     {
@@ -174,6 +175,8 @@ internal class EmulationHost
         _lastCursorMoveTime = Stopwatch.GetTimestamp();
         _glLogLevel = options.Value.Logging.GraphicsDebugLevel;
         _topLevel = topLevel;
+        _logger = logger;
+        _options = options;
         _messenger = messenger;
 
         _inputManager.SetMouseDriver(new AvaloniaMouseDriver(_topLevel, renderer));
@@ -731,7 +734,7 @@ internal class EmulationHost
                                              ConfigurationState.Instance.System.EnablePtc,
                                              ConfigurationState.Instance.System.EnableInternetAccess,
                                              ConfigurationState.Instance.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None,
-                                             ConfigurationState.Instance.System.FsGlobalAccessLogMode,
+                                             _options.Value.Logging.FsGlobalAccessLogMode,
                                              ConfigurationState.Instance.System.SystemTimeOffset,
                                              ConfigurationState.Instance.System.TimeZone,
                                              ConfigurationState.Instance.System.MemoryManagerMode,
@@ -745,7 +748,7 @@ internal class EmulationHost
         Device = new Switch(configuration);
     }
 
-    private static IHardwareDeviceDriver InitializeAudio()
+    private IHardwareDeviceDriver InitializeAudio()
     {
         var availableBackends = new List<AudioBackend>
         {
@@ -767,7 +770,7 @@ internal class EmulationHost
             }
         }
 
-        static IHardwareDeviceDriver InitializeAudioBackend<T>(AudioBackend backend, AudioBackend nextBackend) where T : IHardwareDeviceDriver, new()
+        IHardwareDeviceDriver InitializeAudioBackend<T>(AudioBackend backend, AudioBackend nextBackend) where T : IHardwareDeviceDriver, new()
         {
             if (T.IsSupported)
             {

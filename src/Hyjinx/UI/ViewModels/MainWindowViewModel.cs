@@ -1557,6 +1557,7 @@ internal class MainWindowViewModel : BaseModel
             UserChannelPersistence,
             this,
             TopLevel,
+            applicationServices.GetRequiredService<ILogger<EmulationHost>>(),
             new OptionsWrapper<ApplicationOptions>(options.CurrentValue),
             messenger);
 

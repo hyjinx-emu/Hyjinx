@@ -253,11 +253,6 @@ public class ConfigurationState
         public ReactiveObject<bool> EnableFsIntegrityChecks { get; private set; }
 
         /// <summary>
-        /// Enables FS access log output to the console. Possible modes are 0-3
-        /// </summary>
-        public ReactiveObject<int> FsGlobalAccessLogMode { get; private set; }
-
-        /// <summary>
         /// The selected audio backend
         /// </summary>
         public ReactiveObject<AudioBackend> AudioBackend { get; private set; }
@@ -297,7 +292,6 @@ public class ConfigurationState
             EnablePtc = new ReactiveObject<bool>();
             EnableInternetAccess = new ReactiveObject<bool>();
             EnableFsIntegrityChecks = new ReactiveObject<bool>();
-            FsGlobalAccessLogMode = new ReactiveObject<int>();
             AudioBackend = new ReactiveObject<AudioBackend>();
             MemoryManagerMode = new ReactiveObject<MemoryManagerMode>();
             ExpandRam = new ReactiveObject<bool>();
@@ -578,7 +572,6 @@ public class ConfigurationState
             EnablePtc = System.EnablePtc,
             EnableInternetAccess = System.EnableInternetAccess,
             EnableFsIntegrityChecks = System.EnableFsIntegrityChecks,
-            FsGlobalAccessLogMode = System.FsGlobalAccessLogMode,
             AudioBackend = System.AudioBackend,
             AudioVolume = System.AudioVolume,
             MemoryManagerMode = System.MemoryManagerMode,
@@ -683,7 +676,6 @@ public class ConfigurationState
         System.EnablePtc.Value = configurationFileFormat.EnablePtc;
         System.EnableInternetAccess.Value = configurationFileFormat.EnableInternetAccess;
         System.EnableFsIntegrityChecks.Value = configurationFileFormat.EnableFsIntegrityChecks;
-        System.FsGlobalAccessLogMode.Value = configurationFileFormat.FsGlobalAccessLogMode;
         System.AudioBackend.Value = configurationFileFormat.AudioBackend;
         System.AudioVolume.Value = configurationFileFormat.AudioVolume;
         System.MemoryManagerMode.Value = configurationFileFormat.MemoryManagerMode;

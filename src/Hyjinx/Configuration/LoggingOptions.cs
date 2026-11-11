@@ -69,4 +69,9 @@ internal class LoggingOptions
     /// Change Graphics API debug log level
     /// </summary>
     public GraphicsDebugLevel GraphicsDebugLevel { get; set; } = GraphicsDebugLevel.None;
+
+    /// <summary>
+    /// Enables FS access log output to the console. Possible modes are 0-3
+    /// </summary>
+    public int FsGlobalAccessLogMode { get; set; } = 0;
 }
