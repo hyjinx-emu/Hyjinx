@@ -137,7 +137,7 @@ internal class MainWindowViewModel : BaseModel
         {
             LoadConfigurableHotKeys();
 
-            Volume = ConfigurationState.Instance.System.AudioVolume;
+            Volume = options.CurrentValue.Audio.Volume;
         }
     }
 
@@ -1558,7 +1558,7 @@ internal class MainWindowViewModel : BaseModel
             this,
             TopLevel,
             applicationServices.GetRequiredService<ILogger<EmulationHost>>(),
-            new OptionsWrapper<ApplicationOptions>(options.CurrentValue),
+            options,
             messenger);
 
         if (!await AppHost.LoadGuestApplicationAsync(cancellationToken))
@@ -1688,11 +1688,6 @@ internal class MainWindowViewModel : BaseModel
         }
 
         IsFullScreen = WindowState == WindowState.FullScreen;
-    }
-
-    public static void SaveConfig()
-    {
-        ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
     }
 
     #endregion

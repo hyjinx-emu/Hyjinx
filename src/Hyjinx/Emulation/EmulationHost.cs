@@ -76,7 +76,8 @@ internal class EmulationHost
     private long _ticks;
 
     private readonly ILogger<EmulationHost> _logger;
-    private readonly IOptions<ApplicationOptions> _options;
+    private readonly IOptionsMonitor<ApplicationOptions> _options;
+    private readonly IDisposable? _subscription;
 
     private readonly AccountManager _accountManager;
     private readonly UserChannelPersistence _userChannelPersistence;
@@ -164,7 +165,7 @@ internal class EmulationHost
         MainWindowViewModel viewmodel,
         TopLevel topLevel,
         ILogger<EmulationHost> logger,
-        IOptions<ApplicationOptions> options,
+        IOptionsMonitor<ApplicationOptions> options,
         Messenger messenger)
     {
         _viewModel = viewmodel;
@@ -173,10 +174,11 @@ internal class EmulationHost
         _userChannelPersistence = userChannelPersistence;
         _renderingThread = new Thread(RenderLoop) { Name = "GUI.RenderThread" };
         _lastCursorMoveTime = Stopwatch.GetTimestamp();
-        _glLogLevel = options.Value.Logging.GraphicsDebugLevel;
+        _glLogLevel = options.CurrentValue.Logging.GraphicsDebugLevel;
         _topLevel = topLevel;
         _logger = logger;
         _options = options;
+        _subscription = _options.OnChange(_ => OnConfigurationChanged());
         _messenger = messenger;
 
         _inputManager.SetMouseDriver(new AvaloniaMouseDriver(_topLevel, renderer));
@@ -210,9 +212,7 @@ internal class EmulationHost
         ConfigurationState.Instance.System.IgnoreMissingServices.Event += UpdateIgnoreMissingServicesState;
         ConfigurationState.Instance.Graphics.AspectRatio.Event += UpdateAspectRatioState;
         ConfigurationState.Instance.System.EnableDockedMode.Event += UpdateDockedModeState;
-        ConfigurationState.Instance.System.AudioVolume.Event += UpdateAudioVolumeState;
         ConfigurationState.Instance.System.EnableDockedMode.Event += UpdateDockedModeState;
-        ConfigurationState.Instance.System.AudioVolume.Event += UpdateAudioVolumeState;
         ConfigurationState.Instance.Graphics.AntiAliasing.Event += UpdateAntiAliasing;
         ConfigurationState.Instance.Graphics.ScalingFilter.Event += UpdateScalingFilter;
         ConfigurationState.Instance.Graphics.ScalingFilterLevel.Event += UpdateScalingFilterLevel;
@@ -224,6 +224,11 @@ internal class EmulationHost
 
         _gpuCancellationTokenSource = new CancellationTokenSource();
         _gpuDoneEvent = new ManualResetEvent(false);
+    }
+
+    private void OnConfigurationChanged()
+    {
+        UpdateAudioVolumeState();
     }
 
     private void TopLevel_PointerEnteredOrMoved(object sender, PointerEventArgs e)
@@ -457,7 +462,7 @@ internal class EmulationHost
 
         _renderingThread.Start();
 
-        _viewModel.Volume = ConfigurationState.Instance.System.AudioVolume.Value;
+        _viewModel.Volume = _options.CurrentValue.Audio.Volume;
 
         MainLoop();
 
@@ -490,13 +495,13 @@ internal class EmulationHost
         Device?.System.ChangeDockedModeState(e.NewValue);
     }
 
-    private void UpdateAudioVolumeState(object sender, ReactiveEventArgs<float> e)
+    private void UpdateAudioVolumeState()
     {
-        Device?.SetVolume(e.NewValue);
+        Device?.SetVolume(_options.CurrentValue.Audio.Volume);
 
         Dispatcher.UIThread.Post(() =>
         {
-            _viewModel.Volume = e.NewValue;
+            _viewModel.Volume = _options.CurrentValue.Audio.Volume;
         });
     }
 
@@ -574,7 +579,6 @@ internal class EmulationHost
         ConfigurationState.Instance.System.IgnoreMissingServices.Event -= UpdateIgnoreMissingServicesState;
         ConfigurationState.Instance.Graphics.AspectRatio.Event -= UpdateAspectRatioState;
         ConfigurationState.Instance.System.EnableDockedMode.Event -= UpdateDockedModeState;
-        ConfigurationState.Instance.System.AudioVolume.Event -= UpdateAudioVolumeState;
         ConfigurationState.Instance.Graphics.ScalingFilter.Event -= UpdateScalingFilter;
         ConfigurationState.Instance.Graphics.ScalingFilterLevel.Event -= UpdateScalingFilterLevel;
         ConfigurationState.Instance.Graphics.AntiAliasing.Event -= UpdateAntiAliasing;
@@ -588,6 +592,7 @@ internal class EmulationHost
         _gpuCancellationTokenSource.Dispose();
 
         _chrono.Stop();
+        _subscription?.Dispose();
     }
 
     public void DisposeGpu()
@@ -734,13 +739,13 @@ internal class EmulationHost
                                              ConfigurationState.Instance.System.EnablePtc,
                                              ConfigurationState.Instance.System.EnableInternetAccess,
                                              ConfigurationState.Instance.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None,
-                                             _options.Value.Logging.FsGlobalAccessLogMode,
+                                             _options.CurrentValue.Logging.FsGlobalAccessLogMode,
                                              ConfigurationState.Instance.System.SystemTimeOffset,
                                              ConfigurationState.Instance.System.TimeZone,
                                              ConfigurationState.Instance.System.MemoryManagerMode,
                                              ConfigurationState.Instance.System.IgnoreMissingServices,
                                              ConfigurationState.Instance.Graphics.AspectRatio,
-                                             ConfigurationState.Instance.System.AudioVolume,
+                                             _options.CurrentValue.Audio.Volume,
                                              ConfigurationState.Instance.System.UseHypervisor,
                                              ConfigurationState.Instance.Multiplayer.LanInterfaceId.Value,
                                              ConfigurationState.Instance.Multiplayer.Mode);
@@ -750,27 +755,7 @@ internal class EmulationHost
 
     private IHardwareDeviceDriver InitializeAudio()
     {
-        var availableBackends = new List<AudioBackend>
-        {
-            AudioBackend.SDL2,
-            AudioBackend.SoundIo,
-            AudioBackend.OpenAl,
-            AudioBackend.Dummy,
-        };
-
-        AudioBackend preferredBackend = ConfigurationState.Instance.System.AudioBackend.Value;
-
-        for (int i = 0; i < availableBackends.Count; i++)
-        {
-            if (availableBackends[i] == preferredBackend)
-            {
-                availableBackends.RemoveAt(i);
-                availableBackends.Insert(0, preferredBackend);
-                break;
-            }
-        }
-
-        IHardwareDeviceDriver InitializeAudioBackend<T>(AudioBackend backend, AudioBackend nextBackend) where T : IHardwareDeviceDriver, new()
+        IHardwareDeviceDriver? InitializeAudioBackend<T>(AudioBackend backend) where T : IHardwareDeviceDriver, new()
         {
             if (T.IsSupported)
             {
@@ -778,36 +763,21 @@ internal class EmulationHost
             }
 
             _logger.LogWarning(new EventId((int)LogClass.Audio, nameof(LogClass.Audio)),
-                "{backend} is not supported, falling back to {nextBackend}.", backend, nextBackend);
+                "The audio backend '{backend}' is not supported.", backend);
 
             return null;
         }
 
-        IHardwareDeviceDriver deviceDriver = null;
-
-        for (int i = 0; i < availableBackends.Count; i++)
+        var backend = _options.CurrentValue.Audio.Backend;
+        IHardwareDeviceDriver? deviceDriver = backend switch
         {
-            AudioBackend currentBackend = availableBackends[i];
-            AudioBackend nextBackend = i + 1 < availableBackends.Count ? availableBackends[i + 1] : AudioBackend.Dummy;
+            AudioBackend.SDL2 => InitializeAudioBackend<SDL2HardwareDeviceDriver>(AudioBackend.SDL2),
+            AudioBackend.SoundIo => InitializeAudioBackend<SoundIoHardwareDeviceDriver>(AudioBackend.SoundIo),
+            AudioBackend.OpenAl => InitializeAudioBackend<OpenALHardwareDeviceDriver>(AudioBackend.OpenAl),
+            _ => throw new NotSupportedException($"The backend '{backend}' is not supported.")
+        };
 
-            deviceDriver = currentBackend switch
-            {
-                AudioBackend.SDL2 => InitializeAudioBackend<SDL2HardwareDeviceDriver>(AudioBackend.SDL2, nextBackend),
-                AudioBackend.SoundIo => InitializeAudioBackend<SoundIoHardwareDeviceDriver>(AudioBackend.SoundIo, nextBackend),
-                AudioBackend.OpenAl => InitializeAudioBackend<OpenALHardwareDeviceDriver>(AudioBackend.OpenAl, nextBackend),
-                _ => new DummyHardwareDeviceDriver(),
-            };
-
-            if (deviceDriver != null)
-            {
-                ConfigurationState.Instance.System.AudioBackend.Value = currentBackend;
-                break;
-            }
-        }
-
-        MainWindowViewModel.SaveConfig();
-
-        return deviceDriver;
+        return deviceDriver ?? new DummyHardwareDeviceDriver();
     }
 
     private void Window_BoundsChanged(object sender, Size e)

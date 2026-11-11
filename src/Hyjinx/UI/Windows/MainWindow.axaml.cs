@@ -449,7 +449,8 @@ internal partial class MainWindow : StyleableWindow
             ConfigurationState.Instance.UI.WindowStartup.WindowPositionY.Value = Position.Y;
         }
 
-        MainWindowViewModel.SaveConfig();
+        // TODO: Viper - Fix this.
+        // MainWindowViewModel.SaveConfig();
     }
 
     protected override void OnOpened(EventArgs e)

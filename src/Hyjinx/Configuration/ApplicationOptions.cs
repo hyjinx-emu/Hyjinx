@@ -14,7 +14,12 @@ internal class ApplicationOptions
     public const string SectionName = "Application";
 
     /// <summary>
+    /// The audio options.
+    /// </summary>
+    public AudioOptions Audio { get; init; } = new AudioOptions();
+
+    /// <summary>
     /// The logging options.
     /// </summary>
-    public LoggingOptions Logging { get; set; } = new LoggingOptions();
+    public LoggingOptions Logging { get; init; } = new LoggingOptions();
 }

@@ -253,16 +253,6 @@ public class ConfigurationState
         public ReactiveObject<bool> EnableFsIntegrityChecks { get; private set; }
 
         /// <summary>
-        /// The selected audio backend
-        /// </summary>
-        public ReactiveObject<AudioBackend> AudioBackend { get; private set; }
-
-        /// <summary>
-        /// The audio backend volume
-        /// </summary>
-        public ReactiveObject<float> AudioVolume { get; private set; }
-
-        /// <summary>
         /// The selected memory manager mode
         /// </summary>
         public ReactiveObject<MemoryManagerMode> MemoryManagerMode { get; private set; }
@@ -292,11 +282,9 @@ public class ConfigurationState
             EnablePtc = new ReactiveObject<bool>();
             EnableInternetAccess = new ReactiveObject<bool>();
             EnableFsIntegrityChecks = new ReactiveObject<bool>();
-            AudioBackend = new ReactiveObject<AudioBackend>();
             MemoryManagerMode = new ReactiveObject<MemoryManagerMode>();
             ExpandRam = new ReactiveObject<bool>();
             IgnoreMissingServices = new ReactiveObject<bool>();
-            AudioVolume = new ReactiveObject<float>();
             UseHypervisor = new ReactiveObject<bool>();
         }
     }
@@ -572,8 +560,6 @@ public class ConfigurationState
             EnablePtc = System.EnablePtc,
             EnableInternetAccess = System.EnableInternetAccess,
             EnableFsIntegrityChecks = System.EnableFsIntegrityChecks,
-            AudioBackend = System.AudioBackend,
-            AudioVolume = System.AudioVolume,
             MemoryManagerMode = System.MemoryManagerMode,
             ExpandRam = System.ExpandRam,
             IgnoreMissingServices = System.IgnoreMissingServices,
@@ -676,8 +662,6 @@ public class ConfigurationState
         System.EnablePtc.Value = configurationFileFormat.EnablePtc;
         System.EnableInternetAccess.Value = configurationFileFormat.EnableInternetAccess;
         System.EnableFsIntegrityChecks.Value = configurationFileFormat.EnableFsIntegrityChecks;
-        System.AudioBackend.Value = configurationFileFormat.AudioBackend;
-        System.AudioVolume.Value = configurationFileFormat.AudioVolume;
         System.MemoryManagerMode.Value = configurationFileFormat.MemoryManagerMode;
         System.ExpandRam.Value = configurationFileFormat.ExpandRam;
         System.IgnoreMissingServices.Value = configurationFileFormat.IgnoreMissingServices;

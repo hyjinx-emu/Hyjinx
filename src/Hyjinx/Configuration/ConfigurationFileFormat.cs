@@ -157,16 +157,6 @@ public record ConfigurationFileFormat
     public bool EnableFsIntegrityChecks { get; set; } = true;
 
     /// <summary>
-    /// The selected audio backend
-    /// </summary>
-    public AudioBackend AudioBackend { get; set; } = AudioBackend.SDL2;
-
-    /// <summary>
-    /// The audio volume
-    /// </summary>
-    public float AudioVolume { get; set; } = 1;
-
-    /// <summary>
     /// The selected memory manager mode
     /// </summary>
     public MemoryManagerMode MemoryManagerMode { get; set; } = MemoryManagerMode.HostMappedUnsafe;
