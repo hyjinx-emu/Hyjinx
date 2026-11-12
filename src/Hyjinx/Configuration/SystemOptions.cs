@@ -1,5 +1,6 @@
 using Hyjinx.Ava.Configuration.System;
 using Hyjinx.Extensions.Abstractions;
+using Hyjinx.HLE.HOS;
 
 namespace Hyjinx.Ava.Configuration;
 
@@ -58,4 +59,14 @@ internal class SystemOptions
     /// Enables or disables guest Internet access
     /// </summary>
     public bool EnableInternetAccess { get; set; } = false;
+
+    /// <summary>
+    /// The selected memory manager mode.
+    /// </summary>
+    public MemoryManagerMode MemoryManagerMode { get; set; } = MemoryManagerMode.HostMappedUnsafe;
+
+    /// <summary>
+    /// Uses Hypervisor over JIT if available
+    /// </summary>
+    public bool UseHypervisor { get; set; } = true;
 }

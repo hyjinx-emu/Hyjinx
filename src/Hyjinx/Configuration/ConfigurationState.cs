@@ -226,23 +226,11 @@ public class ConfigurationState
         /// </summary>
         public ReactiveObject<float> AudioVolume { get; private set; }
 
-        /// <summary>
-        /// The selected memory manager mode
-        /// </summary>
-        public ReactiveObject<MemoryManagerMode> MemoryManagerMode { get; private set; }
-
-        /// <summary>
-        /// Uses Hypervisor over JIT if available
-        /// </summary>
-        public ReactiveObject<bool> UseHypervisor { get; private set; }
-
         public SystemSection()
         {
             EnableFsIntegrityChecks = new ReactiveObject<bool>();
             AudioBackend = new ReactiveObject<AudioBackend>();
-            MemoryManagerMode = new ReactiveObject<MemoryManagerMode>();
             AudioVolume = new ReactiveObject<float>();
-            UseHypervisor = new ReactiveObject<bool>();
         }
     }
 
@@ -512,8 +500,6 @@ public class ConfigurationState
             EnableFsIntegrityChecks = System.EnableFsIntegrityChecks,
             AudioBackend = System.AudioBackend,
             AudioVolume = System.AudioVolume,
-            MemoryManagerMode = System.MemoryManagerMode,
-            UseHypervisor = System.UseHypervisor,
             GuiColumns = new GuiColumns
             {
                 FavColumn = UI.GuiColumns.FavColumn,
@@ -607,8 +593,6 @@ public class ConfigurationState
         System.EnableFsIntegrityChecks.Value = configurationFileFormat.EnableFsIntegrityChecks;
         System.AudioBackend.Value = configurationFileFormat.AudioBackend;
         System.AudioVolume.Value = configurationFileFormat.AudioVolume;
-        System.MemoryManagerMode.Value = configurationFileFormat.MemoryManagerMode;
-        System.UseHypervisor.Value = configurationFileFormat.UseHypervisor;
         UI.GuiColumns.FavColumn.Value = configurationFileFormat.GuiColumns.FavColumn;
         UI.GuiColumns.IconColumn.Value = configurationFileFormat.GuiColumns.IconColumn;
         UI.GuiColumns.AppColumn.Value = configurationFileFormat.GuiColumns.AppColumn;

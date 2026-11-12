@@ -131,11 +131,6 @@ public record ConfigurationFileFormat
     public float AudioVolume { get; set; } = 1;
 
     /// <summary>
-    /// The selected memory manager mode
-    /// </summary>
-    public MemoryManagerMode MemoryManagerMode { get; set; } = MemoryManagerMode.HostMappedUnsafe;
-
-    /// <summary>
     /// Used to toggle columns in the GUI
     /// </summary>
     public GuiColumns GuiColumns { get; set; } = new()
@@ -310,11 +305,6 @@ public record ConfigurationFileFormat
     /// GUID for the network interface used by LAN (or 0 for default)
     /// </summary>
     public string MultiplayerLanInterfaceId { get; set; } = "0";
-
-    /// <summary>
-    /// Uses Hypervisor over JIT if available
-    /// </summary>
-    public bool UseHypervisor { get; set; } = true;
 
     /// <summary>
     /// Loads the configuration file from disk.

@@ -722,11 +722,11 @@ internal class EmulationHost
                                              _viewModel.Options.CurrentValue.Logging.FsGlobalAccessLogMode,
                                              _viewModel.Options.CurrentValue.System.TimeOffset,
                                              _viewModel.Options.CurrentValue.System.TimeZone,
-                                             ConfigurationState.Instance.System.MemoryManagerMode,
+                                             _viewModel.Options.CurrentValue.System.MemoryManagerMode,
                                              _viewModel.Options.CurrentValue.System.IgnoreMissingServices,
                                              ConfigurationState.Instance.Graphics.AspectRatio,
                                              ConfigurationState.Instance.System.AudioVolume,
-                                             ConfigurationState.Instance.System.UseHypervisor,
+                                             _viewModel.Options.CurrentValue.System.UseHypervisor,
                                              ConfigurationState.Instance.Multiplayer.LanInterfaceId.Value,
                                              ConfigurationState.Instance.Multiplayer.Mode);
 
