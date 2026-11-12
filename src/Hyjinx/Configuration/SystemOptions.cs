@@ -69,4 +69,9 @@ internal class SystemOptions
     /// Uses Hypervisor over JIT if available
     /// </summary>
     public bool UseHypervisor { get; set; } = true;
+
+    /// <summary>
+    /// Enables integrity checks on Game content files
+    /// </summary>
+    public bool EnableFsIntegrityChecks { get; set; } = true;
 }

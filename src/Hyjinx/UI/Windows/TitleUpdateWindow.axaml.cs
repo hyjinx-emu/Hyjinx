@@ -4,17 +4,19 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
 using FluentAvalonia.UI.Controls;
+using Hyjinx.Ava.Configuration;
 using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Ava.Emulation.Library;
 using Hyjinx.Ava.Localization;
 using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.HLE.FileSystem;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace Hyjinx.Ava.UI.Windows;
 
-public partial class TitleUpdateWindow : UserControl
+internal partial class TitleUpdateWindow : UserControl
 {
     public readonly TitleUpdateViewModel ViewModel;
 
@@ -25,21 +27,21 @@ public partial class TitleUpdateWindow : UserControl
         InitializeComponent();
     }
 
-    public TitleUpdateWindow(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
+    public TitleUpdateWindow(IOptionsMonitor<ApplicationOptions> options, VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
     {
-        DataContext = ViewModel = new TitleUpdateViewModel(virtualFileSystem, applicationData);
+        DataContext = ViewModel = new TitleUpdateViewModel(options, virtualFileSystem, applicationData);
 
         InitializeComponent();
     }
 
-    public static async Task Show(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
+    public static async Task Show(IOptionsMonitor<ApplicationOptions> options, VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
     {
         ContentDialog contentDialog = new()
         {
             PrimaryButtonText = "",
             SecondaryButtonText = "",
             CloseButtonText = "",
-            Content = new TitleUpdateWindow(virtualFileSystem, applicationData),
+            Content = new TitleUpdateWindow(options, virtualFileSystem, applicationData),
             Title = LocaleManager.Instance.UpdateAndGetDynamicValue(LocaleKeys.GameUpdateWindowHeading, applicationData.Name, applicationData.IdBaseString),
         };
 

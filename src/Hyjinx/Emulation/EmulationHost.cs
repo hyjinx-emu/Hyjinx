@@ -718,7 +718,7 @@ internal class EmulationHost
                                              _viewModel.DockedMode,
                                              _viewModel.Options.CurrentValue.System.EnablePtc,
                                              _viewModel.Options.CurrentValue.System.EnableInternetAccess,
-                                             ConfigurationState.Instance.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None,
+                                             _viewModel.Options.CurrentValue.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None,
                                              _viewModel.Options.CurrentValue.Logging.FsGlobalAccessLogMode,
                                              _viewModel.Options.CurrentValue.System.TimeOffset,
                                              _viewModel.Options.CurrentValue.System.TimeZone,

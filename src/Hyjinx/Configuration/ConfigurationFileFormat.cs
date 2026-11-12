@@ -116,11 +116,6 @@ public record ConfigurationFileFormat
     public bool EnableColorSpacePassthrough { get; set; } = false;
 
     /// <summary>
-    /// Enables integrity checks on Game content files
-    /// </summary>
-    public bool EnableFsIntegrityChecks { get; set; } = true;
-
-    /// <summary>
     /// The selected audio backend
     /// </summary>
     public AudioBackend AudioBackend { get; set; } = AudioBackend.SDL2;

@@ -212,11 +212,6 @@ public class ConfigurationState
     public class SystemSection
     {
         /// <summary>
-        /// Enables integrity checks on Game content files
-        /// </summary>
-        public ReactiveObject<bool> EnableFsIntegrityChecks { get; private set; }
-
-        /// <summary>
         /// The selected audio backend
         /// </summary>
         public ReactiveObject<AudioBackend> AudioBackend { get; private set; }
@@ -228,7 +223,6 @@ public class ConfigurationState
 
         public SystemSection()
         {
-            EnableFsIntegrityChecks = new ReactiveObject<bool>();
             AudioBackend = new ReactiveObject<AudioBackend>();
             AudioVolume = new ReactiveObject<float>();
         }
@@ -497,7 +491,6 @@ public class ConfigurationState
             EnableTextureRecompression = Graphics.EnableTextureRecompression,
             EnableMacroHLE = Graphics.EnableMacroHLE,
             EnableColorSpacePassthrough = Graphics.EnableColorSpacePassthrough,
-            EnableFsIntegrityChecks = System.EnableFsIntegrityChecks,
             AudioBackend = System.AudioBackend,
             AudioVolume = System.AudioVolume,
             GuiColumns = new GuiColumns
@@ -590,7 +583,6 @@ public class ConfigurationState
         Graphics.EnableTextureRecompression.Value = configurationFileFormat.EnableTextureRecompression;
         Graphics.EnableMacroHLE.Value = configurationFileFormat.EnableMacroHLE;
         Graphics.EnableColorSpacePassthrough.Value = configurationFileFormat.EnableColorSpacePassthrough;
-        System.EnableFsIntegrityChecks.Value = configurationFileFormat.EnableFsIntegrityChecks;
         System.AudioBackend.Value = configurationFileFormat.AudioBackend;
         System.AudioVolume.Value = configurationFileFormat.AudioVolume;
         UI.GuiColumns.FavColumn.Value = configurationFileFormat.GuiColumns.FavColumn;

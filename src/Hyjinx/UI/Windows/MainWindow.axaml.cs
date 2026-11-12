@@ -225,7 +225,7 @@ internal partial class MainWindow : StyleableWindow
         LibHacHorizonManager.InitializeBcatServer();
         LibHacHorizonManager.InitializeSystemClients();
 
-        IntegrityCheckLevel checkLevel = ConfigurationState.Instance.System.EnableFsIntegrityChecks
+        IntegrityCheckLevel checkLevel = ViewModel.Options.CurrentValue.System.EnableFsIntegrityChecks
             ? IntegrityCheckLevel.ErrorOnInvalid
             : IntegrityCheckLevel.None;
 

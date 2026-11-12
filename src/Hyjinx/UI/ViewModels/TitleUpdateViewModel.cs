@@ -21,6 +21,7 @@ using LibHac.Ns;
 using LibHac.Tools.FsSystem;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,12 +34,13 @@ using SpanHelpers = LibHac.Common.SpanHelpers;
 
 namespace Hyjinx.Ava.UI.ViewModels;
 
-public class TitleUpdateViewModel : BaseModel
+internal class TitleUpdateViewModel : BaseModel
 {
     public TitleUpdateMetadata TitleUpdateWindowData;
     public readonly string TitleUpdateJsonPath;
     private VirtualFileSystem VirtualFileSystem { get; }
     private ApplicationData ApplicationData { get; }
+    private IOptionsMonitor<ApplicationOptions> Options { get; }
 
     private AvaloniaList<TitleUpdateModel> _titleUpdates = new();
     private AvaloniaList<object> _views = new();
@@ -80,10 +82,10 @@ public class TitleUpdateViewModel : BaseModel
 
     public IStorageProvider StorageProvider;
 
-    public TitleUpdateViewModel(VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
+    public TitleUpdateViewModel(IOptionsMonitor<ApplicationOptions> options, VirtualFileSystem virtualFileSystem, ApplicationData applicationData)
     {
+        Options = options;
         VirtualFileSystem = virtualFileSystem;
-
         ApplicationData = applicationData;
 
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -165,7 +167,7 @@ public class TitleUpdateViewModel : BaseModel
             return;
         }
 
-        IntegrityCheckLevel checkLevel = ConfigurationState.Instance.System.EnableFsIntegrityChecks
+        IntegrityCheckLevel checkLevel = Options.CurrentValue.System.EnableFsIntegrityChecks
             ? IntegrityCheckLevel.ErrorOnInvalid
             : IntegrityCheckLevel.None;
 

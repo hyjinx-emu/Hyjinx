@@ -83,7 +83,7 @@ public class ApplicationContextMenu : MenuFlyout
 
         if (viewModel?.SelectedApplication != null)
         {
-            await TitleUpdateWindow.Show(viewModel.VirtualFileSystem, viewModel.SelectedApplication);
+            await TitleUpdateWindow.Show(viewModel.Options, viewModel.VirtualFileSystem, viewModel.SelectedApplication);
         }
     }
 
