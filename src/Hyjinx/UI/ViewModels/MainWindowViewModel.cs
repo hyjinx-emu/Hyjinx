@@ -209,6 +209,7 @@ internal class MainWindowViewModel : BaseModel, IDisposable
         if (AppHost != null)
         {
             AppHost.UpdateIgnoreMissingServicesState(opts.System.IgnoreMissingServices);
+            AppHost.UpdateEnableInternetAccessState(opts.System.EnableInternetAccess);
         }
     }
 

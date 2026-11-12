@@ -209,8 +209,6 @@ internal class EmulationHost
         ConfigurationState.Instance.Graphics.ScalingFilter.Event += UpdateScalingFilter;
         ConfigurationState.Instance.Graphics.ScalingFilterLevel.Event += UpdateScalingFilterLevel;
         ConfigurationState.Instance.Graphics.EnableColorSpacePassthrough.Event += UpdateColorSpacePassthrough;
-
-        ConfigurationState.Instance.System.EnableInternetAccess.Event += UpdateEnableInternetAccessState;
         ConfigurationState.Instance.Multiplayer.LanInterfaceId.Event += UpdateLanInterfaceIdState;
         ConfigurationState.Instance.Multiplayer.Mode.Event += UpdateMultiplayerModeState;
 
@@ -489,9 +487,9 @@ internal class EmulationHost
         });
     }
 
-    private void UpdateEnableInternetAccessState(object sender, ReactiveEventArgs<bool> e)
+    public void UpdateEnableInternetAccessState(bool newValue)
     {
-        Device.Configuration.EnableInternetAccess = e.NewValue;
+        Device.Configuration.EnableInternetAccess = newValue;
     }
 
     private void UpdateLanInterfaceIdState(object sender, ReactiveEventArgs<string> e)
@@ -718,8 +716,8 @@ internal class EmulationHost
                                              (RegionCode)_viewModel.Options.CurrentValue.System.Region,
                                              ConfigurationState.Instance.Graphics.EnableVsync,
                                              _viewModel.DockedMode,
-                                             ConfigurationState.Instance.System.EnablePtc,
-                                             ConfigurationState.Instance.System.EnableInternetAccess,
+                                             _viewModel.Options.CurrentValue.System.EnablePtc,
+                                             _viewModel.Options.CurrentValue.System.EnableInternetAccess,
                                              ConfigurationState.Instance.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None,
                                              _viewModel.Options.CurrentValue.Logging.FsGlobalAccessLogMode,
                                              _viewModel.Options.CurrentValue.System.TimeOffset,

@@ -48,4 +48,14 @@ internal class SystemOptions
     /// Enable or disable ignoring missing services
     /// </summary>
     public bool IgnoreMissingServices { get; set; } = false;
+
+    /// <summary>
+    /// Enables or disables profiled translation cache persistency
+    /// </summary>
+    public bool EnablePtc { get; set; } = true;
+
+    /// <summary>
+    /// Enables or disables guest Internet access
+    /// </summary>
+    public bool EnableInternetAccess { get; set; } = false;
 }
