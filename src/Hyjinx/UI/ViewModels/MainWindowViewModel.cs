@@ -141,7 +141,7 @@ internal class MainWindowViewModel : BaseModel, IDisposable
         {
             LoadConfigurableHotKeys();
 
-            Volume = ConfigurationState.Instance.System.AudioVolume;
+            Volume = Options.CurrentValue.Audio.AudioVolume;
         }
     }
 
@@ -210,6 +210,7 @@ internal class MainWindowViewModel : BaseModel, IDisposable
         {
             AppHost.UpdateIgnoreMissingServicesState(opts.System.IgnoreMissingServices);
             AppHost.UpdateEnableInternetAccessState(opts.System.EnableInternetAccess);
+            AppHost.UpdateAudioVolumeState(opts.Audio.AudioVolume);
         }
     }
 
@@ -641,9 +642,9 @@ internal class MainWindowViewModel : BaseModel, IDisposable
         {
             _volume = value;
 
-            if (_isGameRunning)
+            if (IsGameRunning)
             {
-                AppHost.Device.SetVolume(_volume);
+                AppHost.UpdateAudioVolumeState(_volume);
             }
 
             OnPropertyChanged(nameof(VolumeStatusText));

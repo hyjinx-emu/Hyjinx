@@ -116,16 +116,6 @@ public record ConfigurationFileFormat
     public bool EnableColorSpacePassthrough { get; set; } = false;
 
     /// <summary>
-    /// The selected audio backend
-    /// </summary>
-    public AudioBackend AudioBackend { get; set; } = AudioBackend.SDL2;
-
-    /// <summary>
-    /// The audio volume
-    /// </summary>
-    public float AudioVolume { get; set; } = 1;
-
-    /// <summary>
     /// Used to toggle columns in the GUI
     /// </summary>
     public GuiColumns GuiColumns { get; set; } = new()

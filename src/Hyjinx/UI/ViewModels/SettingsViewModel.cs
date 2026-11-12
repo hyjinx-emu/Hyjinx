@@ -223,9 +223,6 @@ public class SettingsViewModel : BaseModel
         set
         {
             _volume = value;
-
-            ConfigurationState.Instance.System.AudioVolume.Value = _volume / 100;
-
             OnPropertyChanged();
         }
     }

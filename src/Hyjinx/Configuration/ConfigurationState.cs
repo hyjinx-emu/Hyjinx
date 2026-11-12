@@ -207,28 +207,6 @@ public class ConfigurationState
     }
 
     /// <summary>
-    /// System configuration section
-    /// </summary>
-    public class SystemSection
-    {
-        /// <summary>
-        /// The selected audio backend
-        /// </summary>
-        public ReactiveObject<AudioBackend> AudioBackend { get; private set; }
-
-        /// <summary>
-        /// The audio backend volume
-        /// </summary>
-        public ReactiveObject<float> AudioVolume { get; private set; }
-
-        public SystemSection()
-        {
-            AudioBackend = new ReactiveObject<AudioBackend>();
-            AudioVolume = new ReactiveObject<float>();
-        }
-    }
-
-    /// <summary>
     /// Hid configuration section
     /// </summary>
     public class HidSection
@@ -403,11 +381,6 @@ public class ConfigurationState
     public UISection UI { get; private set; }
 
     /// <summary>
-    /// The System section
-    /// </summary>
-    public SystemSection System { get; private set; }
-
-    /// <summary>
     /// The Graphics section
     /// </summary>
     public GraphicsSection Graphics { get; private set; }
@@ -455,7 +428,6 @@ public class ConfigurationState
     private ConfigurationState()
     {
         UI = new UISection();
-        System = new SystemSection();
         Graphics = new GraphicsSection();
         Hid = new HidSection();
         Multiplayer = new MultiplayerSection();
@@ -491,8 +463,6 @@ public class ConfigurationState
             EnableTextureRecompression = Graphics.EnableTextureRecompression,
             EnableMacroHLE = Graphics.EnableMacroHLE,
             EnableColorSpacePassthrough = Graphics.EnableColorSpacePassthrough,
-            AudioBackend = System.AudioBackend,
-            AudioVolume = System.AudioVolume,
             GuiColumns = new GuiColumns
             {
                 FavColumn = UI.GuiColumns.FavColumn,
@@ -583,8 +553,6 @@ public class ConfigurationState
         Graphics.EnableTextureRecompression.Value = configurationFileFormat.EnableTextureRecompression;
         Graphics.EnableMacroHLE.Value = configurationFileFormat.EnableMacroHLE;
         Graphics.EnableColorSpacePassthrough.Value = configurationFileFormat.EnableColorSpacePassthrough;
-        System.AudioBackend.Value = configurationFileFormat.AudioBackend;
-        System.AudioVolume.Value = configurationFileFormat.AudioVolume;
         UI.GuiColumns.FavColumn.Value = configurationFileFormat.GuiColumns.FavColumn;
         UI.GuiColumns.IconColumn.Value = configurationFileFormat.GuiColumns.IconColumn;
         UI.GuiColumns.AppColumn.Value = configurationFileFormat.GuiColumns.AppColumn;

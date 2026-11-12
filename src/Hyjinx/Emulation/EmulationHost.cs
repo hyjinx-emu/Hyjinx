@@ -203,8 +203,6 @@ internal class EmulationHost
         }
 
         ConfigurationState.Instance.Graphics.AspectRatio.Event += UpdateAspectRatioState;
-        ConfigurationState.Instance.System.AudioVolume.Event += UpdateAudioVolumeState;
-        ConfigurationState.Instance.System.AudioVolume.Event += UpdateAudioVolumeState;
         ConfigurationState.Instance.Graphics.AntiAliasing.Event += UpdateAntiAliasing;
         ConfigurationState.Instance.Graphics.ScalingFilter.Event += UpdateScalingFilter;
         ConfigurationState.Instance.Graphics.ScalingFilterLevel.Event += UpdateScalingFilterLevel;
@@ -447,7 +445,7 @@ internal class EmulationHost
 
         _renderingThread.Start();
 
-        _viewModel.Volume = ConfigurationState.Instance.System.AudioVolume.Value;
+        _viewModel.Volume = _viewModel.Options.CurrentValue.Audio.AudioVolume;
 
         MainLoop();
 
@@ -477,13 +475,13 @@ internal class EmulationHost
         Device?.System.ChangeDockedModeState(newValue);
     }
 
-    private void UpdateAudioVolumeState(object sender, ReactiveEventArgs<float> e)
+    public void UpdateAudioVolumeState(float newValue)
     {
-        Device?.SetVolume(e.NewValue);
+        Device?.SetVolume(newValue);
 
         Dispatcher.UIThread.Post(() =>
         {
-            _viewModel.Volume = e.NewValue;
+            _viewModel.Volume = newValue;
         });
     }
 
@@ -559,7 +557,6 @@ internal class EmulationHost
         }
 
         ConfigurationState.Instance.Graphics.AspectRatio.Event -= UpdateAspectRatioState;
-        ConfigurationState.Instance.System.AudioVolume.Event -= UpdateAudioVolumeState;
         ConfigurationState.Instance.Graphics.ScalingFilter.Event -= UpdateScalingFilter;
         ConfigurationState.Instance.Graphics.ScalingFilterLevel.Event -= UpdateScalingFilterLevel;
         ConfigurationState.Instance.Graphics.AntiAliasing.Event -= UpdateAntiAliasing;
@@ -725,7 +722,7 @@ internal class EmulationHost
                                              _viewModel.Options.CurrentValue.System.MemoryManagerMode,
                                              _viewModel.Options.CurrentValue.System.IgnoreMissingServices,
                                              ConfigurationState.Instance.Graphics.AspectRatio,
-                                             ConfigurationState.Instance.System.AudioVolume,
+                                             _viewModel.Options.CurrentValue.Audio.AudioVolume,
                                              _viewModel.Options.CurrentValue.System.UseHypervisor,
                                              ConfigurationState.Instance.Multiplayer.LanInterfaceId.Value,
                                              ConfigurationState.Instance.Multiplayer.Mode);
@@ -733,66 +730,31 @@ internal class EmulationHost
         Device = new Switch(configuration);
     }
 
-    private static IHardwareDeviceDriver InitializeAudio()
+    private IHardwareDeviceDriver InitializeAudio()
     {
-        var availableBackends = new List<AudioBackend>
-        {
-            AudioBackend.SDL2,
-            AudioBackend.SoundIo,
-            AudioBackend.OpenAl,
-            AudioBackend.Dummy,
-        };
-
-        AudioBackend preferredBackend = ConfigurationState.Instance.System.AudioBackend.Value;
-
-        for (int i = 0; i < availableBackends.Count; i++)
-        {
-            if (availableBackends[i] == preferredBackend)
-            {
-                availableBackends.RemoveAt(i);
-                availableBackends.Insert(0, preferredBackend);
-                break;
-            }
-        }
-
-        static IHardwareDeviceDriver InitializeAudioBackend<T>(AudioBackend backend, AudioBackend nextBackend) where T : IHardwareDeviceDriver, new()
+        static IHardwareDeviceDriver? InitializeAudioBackend<T>(AudioBackend backend) where T : IHardwareDeviceDriver, new()
         {
             if (T.IsSupported)
             {
                 return new T();
             }
 
-            _logger.LogWarning(new EventId((int)LogClass.Audio, nameof(LogClass.Audio)),
-                "{backend} is not supported, falling back to {nextBackend}.", backend, nextBackend);
-
+            _logger.LogWarning(new EventId((int)LogClass.Audio, nameof(LogClass.Audio)), "{backend} is not supported.", backend);
             return null;
         }
 
-        IHardwareDeviceDriver deviceDriver = null;
+        IHardwareDeviceDriver? deviceDriver = null;
 
-        for (int i = 0; i < availableBackends.Count; i++)
+        AudioBackend preferredBackend = _viewModel.Options.CurrentValue.Audio.AudioBackend;
+        deviceDriver = preferredBackend switch
         {
-            AudioBackend currentBackend = availableBackends[i];
-            AudioBackend nextBackend = i + 1 < availableBackends.Count ? availableBackends[i + 1] : AudioBackend.Dummy;
+            AudioBackend.SDL2 => InitializeAudioBackend<SDL2HardwareDeviceDriver>(AudioBackend.SDL2),
+            AudioBackend.SoundIo => InitializeAudioBackend<SoundIoHardwareDeviceDriver>(AudioBackend.SoundIo),
+            AudioBackend.OpenAl => InitializeAudioBackend<OpenALHardwareDeviceDriver>(AudioBackend.OpenAl),
+            _ => throw new NotSupportedException($"The backend '{preferredBackend}' is not supported."),
+        };
 
-            deviceDriver = currentBackend switch
-            {
-                AudioBackend.SDL2 => InitializeAudioBackend<SDL2HardwareDeviceDriver>(AudioBackend.SDL2, nextBackend),
-                AudioBackend.SoundIo => InitializeAudioBackend<SoundIoHardwareDeviceDriver>(AudioBackend.SoundIo, nextBackend),
-                AudioBackend.OpenAl => InitializeAudioBackend<OpenALHardwareDeviceDriver>(AudioBackend.OpenAl, nextBackend),
-                _ => new DummyHardwareDeviceDriver(),
-            };
-
-            if (deviceDriver != null)
-            {
-                ConfigurationState.Instance.System.AudioBackend.Value = currentBackend;
-                break;
-            }
-        }
-
-        MainWindowViewModel.SaveConfig();
-
-        return deviceDriver;
+        return deviceDriver ?? new DummyHardwareDeviceDriver();
     }
 
     private void Window_BoundsChanged(object sender, Size e)
