@@ -1595,7 +1595,7 @@ internal class MainWindowViewModel : BaseModel, IDisposable
             return;
         }
 
-        SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, ConfigurationState.Instance.System.Language, application.Id);
+        SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, Options.CurrentValue.System.Language, application.Id);
 
         PrepareLoadScreen();
 

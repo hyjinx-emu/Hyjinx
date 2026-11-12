@@ -213,26 +213,6 @@ public class ConfigurationState
     public class SystemSection
     {
         /// <summary>
-        /// Change System Language
-        /// </summary>
-        public ReactiveObject<Language> Language { get; private set; }
-
-        /// <summary>
-        /// Change System Region
-        /// </summary>
-        public ReactiveObject<Region> Region { get; private set; }
-
-        /// <summary>
-        /// Change System TimeZone
-        /// </summary>
-        public ReactiveObject<string> TimeZone { get; private set; }
-
-        /// <summary>
-        /// System Time Offset in Seconds
-        /// </summary>
-        public ReactiveObject<long> SystemTimeOffset { get; private set; }
-
-        /// <summary>
         /// Enables or disables profiled translation cache persistency
         /// </summary>
         public ReactiveObject<bool> EnablePtc { get; private set; }
@@ -279,10 +259,6 @@ public class ConfigurationState
 
         public SystemSection()
         {
-            Language = new ReactiveObject<Language>();
-            Region = new ReactiveObject<Region>();
-            TimeZone = new ReactiveObject<string>();
-            SystemTimeOffset = new ReactiveObject<long>();
             EnablePtc = new ReactiveObject<bool>();
             EnableInternetAccess = new ReactiveObject<bool>();
             EnableFsIntegrityChecks = new ReactiveObject<bool>();
@@ -547,10 +523,6 @@ public class ConfigurationState
             ScalingFilter = Graphics.ScalingFilter,
             ScalingFilterLevel = Graphics.ScalingFilterLevel,
             GraphicsShadersDumpPath = Graphics.ShadersDumpPath,
-            SystemLanguage = System.Language,
-            SystemRegion = System.Region,
-            SystemTimeZone = System.TimeZone,
-            SystemTimeOffset = System.SystemTimeOffset,
             EnableDiscordIntegration = EnableDiscordIntegration,
             CheckUpdatesOnStart = CheckUpdatesOnStart,
             ShowConfirmExit = ShowConfirmExit,
@@ -650,10 +622,6 @@ public class ConfigurationState
         Graphics.AntiAliasing.Value = configurationFileFormat.AntiAliasing;
         Graphics.ScalingFilter.Value = configurationFileFormat.ScalingFilter;
         Graphics.ScalingFilterLevel.Value = configurationFileFormat.ScalingFilterLevel;
-        System.Language.Value = configurationFileFormat.SystemLanguage;
-        System.Region.Value = configurationFileFormat.SystemRegion;
-        System.TimeZone.Value = configurationFileFormat.SystemTimeZone;
-        System.SystemTimeOffset.Value = configurationFileFormat.SystemTimeOffset;
         EnableDiscordIntegration.Value = configurationFileFormat.EnableDiscordIntegration;
         CheckUpdatesOnStart.Value = configurationFileFormat.CheckUpdatesOnStart;
         ShowConfirmExit.Value = configurationFileFormat.ShowConfirmExit;

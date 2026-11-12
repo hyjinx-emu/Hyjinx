@@ -64,26 +64,6 @@ public record ConfigurationFileFormat
     public string GraphicsShadersDumpPath { get; set; } = string.Empty;
 
     /// <summary>
-    /// Change System Language
-    /// </summary>
-    public Language SystemLanguage { get; set; } = Language.AmericanEnglish;
-
-    /// <summary>
-    /// Change System Region
-    /// </summary>
-    public Region SystemRegion { get; set; } = Region.USA;
-
-    /// <summary>
-    /// Change System TimeZone
-    /// </summary>
-    public string SystemTimeZone { get; set; } = "UTC";
-
-    /// <summary>
-    /// Change System Time Offset in seconds
-    /// </summary>
-    public long SystemTimeOffset { get; set; } = 0;
-
-    /// <summary>
     /// Enables or disables Discord Rich Presence
     /// </summary>
     public bool EnableDiscordIntegration { get; set; } = true;

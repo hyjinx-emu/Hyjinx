@@ -231,7 +231,7 @@ internal partial class MainWindow : StyleableWindow
 
         ApplicationLibrary = new ApplicationLibrary(VirtualFileSystem, checkLevel)
         {
-            DesiredLanguage = ConfigurationState.Instance.System.Language,
+            DesiredLanguage = ViewModel.Options.CurrentValue.System.Language,
         };
 
         // Save data created before we supported extra data in directory save data will not work properly if
@@ -648,7 +648,7 @@ internal partial class MainWindow : StyleableWindow
 
         Thread applicationLibraryThread = new(() =>
         {
-            ApplicationLibrary.DesiredLanguage = ConfigurationState.Instance.System.Language;
+            ApplicationLibrary.DesiredLanguage = ViewModel.Options.CurrentValue.System.Language;
             ApplicationLibrary.LoadApplications(ConfigurationState.Instance.UI.GameDirs);
 
             _isLoading = false;
