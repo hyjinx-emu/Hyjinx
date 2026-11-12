@@ -4,6 +4,7 @@ using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.OpenGL;
 using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OpenTK.Graphics.OpenGL;
 using SPB.Graphics;
 using SPB.Graphics.Exceptions;
@@ -15,11 +16,8 @@ using System;
 
 namespace Hyjinx.Ava.UI.Renderer;
 
-public partial class EmbeddedWindowOpenGL : EmbeddedWindow
+internal partial class EmbeddedWindowOpenGL(IOptionsMonitor<LoggingOptions> options, ILogger<EmbeddedWindowOpenGL> logger) : EmbeddedWindow
 {
-    private static readonly ILogger<EmbeddedWindowOpenGL> _logger =
-        Logger.DefaultLoggerFactory.CreateLogger<EmbeddedWindowOpenGL>();
-
     private SwappableNativeWindowBase _window;
 
     public OpenGLContextBase Context { get; set; }
@@ -49,7 +47,7 @@ public partial class EmbeddedWindowOpenGL : EmbeddedWindow
         }
 
         var flags = OpenGLContextFlags.Compat;
-        if (ConfigurationState.Instance.Logger.GraphicsDebugLevel != GraphicsDebugLevel.None)
+        if (options.CurrentValue.GraphicsDebugLevel != GraphicsDebugLevel.None)
         {
             flags |= OpenGLContextFlags.Debug;
         }

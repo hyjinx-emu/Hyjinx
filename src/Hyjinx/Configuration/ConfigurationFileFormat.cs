@@ -19,11 +19,6 @@ namespace Hyjinx.Ava.Configuration;
 public record ConfigurationFileFormat
 {
     /// <summary>
-    /// Enables or disables logging to a file on disk
-    /// </summary>
-    public bool EnableFileLog { get; set; } = true;
-
-    /// <summary>
     /// Whether or not backend threading is enabled. The "Auto" setting will determine whether threading should be enabled at runtime.
     /// </summary>
     public BackendThreading BackendThreading { get; set; } = BackendThreading.Auto;
@@ -67,56 +62,6 @@ public record ConfigurationFileFormat
     /// Dumps shaders in this local directory
     /// </summary>
     public string GraphicsShadersDumpPath { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Enables printing debug log messages
-    /// </summary>
-    public bool LoggingEnableDebug { get; set; } = false;
-
-    /// <summary>
-    /// Enables printing stub log messages
-    /// </summary>
-    public bool LoggingEnableStub { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing info log messages
-    /// </summary>
-    public bool LoggingEnableInfo { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing warning log messages
-    /// </summary>
-    public bool LoggingEnableWarn { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing error log messages
-    /// </summary>
-    public bool LoggingEnableError { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing trace log messages
-    /// </summary>
-    public bool LoggingEnableTrace { get; set; } = false;
-
-    /// <summary>
-    /// Enables printing guest log messages
-    /// </summary>
-    public bool LoggingEnableGuest { get; set; } = true;
-
-    /// <summary>
-    /// Enables printing FS access log messages
-    /// </summary>
-    public bool LoggingEnableFsAccessLog { get; set; } = false;
-
-    /// <summary>
-    /// Controls which log messages are written to the log targets
-    /// </summary>
-    public LogClass[] LoggingFilteredClasses { get; set; } = [];
-
-    /// <summary>
-    /// Change Graphics API debug log level
-    /// </summary>
-    public GraphicsDebugLevel LoggingGraphicsDebugLevel { get; set; } = GraphicsDebugLevel.None;
 
     /// <summary>
     /// Change System Language
@@ -207,11 +152,6 @@ public record ConfigurationFileFormat
     /// Enables integrity checks on Game content files
     /// </summary>
     public bool EnableFsIntegrityChecks { get; set; } = true;
-
-    /// <summary>
-    /// Enables FS access log output to the console. Possible modes are 0-3
-    /// </summary>
-    public int FsGlobalAccessLogMode { get; set; } = 0;
 
     /// <summary>
     /// The selected audio backend

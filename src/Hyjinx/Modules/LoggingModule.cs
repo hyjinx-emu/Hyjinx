@@ -35,139 +35,183 @@ internal class LoggingModule : IModule
     public void RegisterServices(IServiceCollection services)
     {
         services.AddTransient<ISupportInitialization, Initializer>();
+        services.AddSingleton<ApplicationLogFactoryManager>();
+
         services.AddLogging(logging =>
         {
             logging.ClearProviders();
-            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace); // Make sure everything goes to NLog.
 
-            logging.AddNLog(sp =>
+            logging.AddNLog(sp => sp.GetRequiredService<ApplicationLogFactoryManager>().Get());
+        });
+    }
+
+    private class ApplicationLogFactoryManager : IDisposable
+    {
+        private readonly IOptionsMonitor<LoggingOptions> options;
+        private readonly IDisposable? subscription;
+
+        private static LogFactory factory = new LogFactory();
+
+        public ApplicationLogFactoryManager(IOptionsMonitor<LoggingOptions> options)
+        {
+            this.options = options;
+            subscription = options.OnChange(_ => OnLoggingOptionsChanged());
+        }
+
+        ~ApplicationLogFactoryManager()
+        {
+            Dispose(false);
+        }
+
+        private void OnLoggingOptionsChanged()
+        {
+            factory.Configuration = BuildConfiguration();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                var appConfig = sp.GetRequiredService<IOptions<ConfigurationFileFormat>>();
-                var nlogConfig = new NLog.Config.LoggingConfiguration();
+                subscription?.Dispose();
+            }
+        }
 
-                var console = CreateConsoleTarget();
-                var file = CreateFileTarget();
+        public LogFactory Get()
+        {
+            factory.Configuration = BuildConfiguration();
 
-                var levels = GetEnabledLevels(appConfig);
+            return factory;
+        }
 
-                foreach (var level in levels)
+        private NLog.Config.LoggingConfiguration BuildConfiguration()
+        {
+            var console = CreateConsoleTarget();
+            var file = CreateFileTarget();
+            var levels = GetEnabledLevels();
+
+            var nlogConfig = new NLog.Config.LoggingConfiguration();
+
+            foreach (var level in levels)
+            {
+                nlogConfig.AddRule(level, level, console);
+
+                if (options.CurrentValue.EnableFileLog)
                 {
-                    nlogConfig.AddRule(level, level, console);
-
-                    if (appConfig.Value.EnableFileLog)
-                    {
-                        nlogConfig.AddRule(level, level, file);
-                    }
+                    nlogConfig.AddRule(level, level, file);
                 }
+            }
 
-                return new LogFactory
-                {
-                    Configuration = nlogConfig
-                };
+            return nlogConfig;
+        }
+
+        private static Layout CreateLayout(string text)
+        {
+            var innerLayout = Layout.FromString(text);
+
+            return Layout.FromMethod(evnt =>
+                innerLayout.Render(evnt)
+                    .Replace(Environment.UserName, RedactedString, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static Target CreateConsoleTarget()
+        {
+            var console = new ColoredConsoleTarget("console")
+            {
+                Layout = CreateLayout("${processtime} |${replace:searchFor=F:replaceWith=N:inner=${level:format=FirstCharacter}}| ${logger:shortName=true}: ${message} ${exception:format=tostring}"),
+                UseDefaultRowHighlightingRules = false
+            };
+
+            console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
+            {
+                Condition = "level == LogLevel.Trace",
+                ForegroundColor = ConsoleOutputColor.DarkGray
             });
-        });
-    }
 
-    private static Layout CreateLayout(string text)
-    {
-        var innerLayout = Layout.FromString(text);
+            console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
+            {
+                Condition = "level == LogLevel.Debug",
+                ForegroundColor = ConsoleOutputColor.Gray
+            });
 
-        return Layout.FromMethod(evnt =>
-            innerLayout.Render(evnt)
-                .Replace(Environment.UserName, RedactedString, StringComparison.OrdinalIgnoreCase));
-    }
+            console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
+            {
+                Condition = "level == LogLevel.Info",
+                ForegroundColor = ConsoleOutputColor.White
+            });
 
-    private static Target CreateConsoleTarget()
-    {
-        var console = new ColoredConsoleTarget("console")
-        {
-            Layout = CreateLayout("${processtime} |${replace:searchFor=F:replaceWith=N:inner=${level:format=FirstCharacter}}| ${logger:shortName=true}: ${message} ${exception:format=tostring}"),
-            UseDefaultRowHighlightingRules = false
-        };
+            console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
+            {
+                Condition = "level == LogLevel.Warning",
+                ForegroundColor = ConsoleOutputColor.Yellow
+            });
 
-        console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
-        {
-            Condition = "level == LogLevel.Trace",
-            ForegroundColor = ConsoleOutputColor.DarkGray
-        });
+            console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
+            {
+                Condition = "level == LogLevel.Error",
+                ForegroundColor = ConsoleOutputColor.DarkRed
+            });
 
-        console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
-        {
-            Condition = "level == LogLevel.Debug",
-            ForegroundColor = ConsoleOutputColor.Gray
-        });
+            console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
+            {
+                Condition = "level == LogLevel.Fatal",
+                ForegroundColor = ConsoleOutputColor.DarkCyan
+            });
 
-        console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
-        {
-            Condition = "level == LogLevel.Info",
-            ForegroundColor = ConsoleOutputColor.White
-        });
-
-        console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
-        {
-            Condition = "level == LogLevel.Warning",
-            ForegroundColor = ConsoleOutputColor.Yellow
-        });
-
-        console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
-        {
-            Condition = "level == LogLevel.Error",
-            ForegroundColor = ConsoleOutputColor.DarkRed
-        });
-
-        console.RowHighlightingRules.Add(new ConsoleRowHighlightingRule
-        {
-            Condition = "level == LogLevel.Fatal",
-            ForegroundColor = ConsoleOutputColor.DarkCyan
-        });
-
-        return console;
-    }
-
-    private static Target CreateFileTarget()
-    {
-        var logsDir = AppDataManager.GetOrCreateLogsDir();
-
-        var target = new FileTarget
-        {
-            FileName = Path.Combine(logsDir, $"app-{DateTime.Now:yyyyMMdd_HHmmss}.log"),
-            Layout = CreateLayout("${processtime} |${level:format=FirstCharacter}| ${logger}: ${message} ${exception:format=tostring}"),
-            KeepFileOpen = true
-        };
-
-        return target;
-    }
-
-    private static NLog.LogLevel[] GetEnabledLevels(IOptions<ConfigurationFileFormat> options)
-    {
-        List<NLog.LogLevel> levels = new();
-        levels.Add(NLog.LogLevel.Fatal); // Fatal is always enabled.
-
-        if (options.Value.LoggingEnableTrace)
-        {
-            levels.Add(NLog.LogLevel.Trace);
+            return console;
         }
 
-        if (options.Value.LoggingEnableDebug)
+        private static Target CreateFileTarget()
         {
-            levels.Add(NLog.LogLevel.Debug);
+            var logsDir = AppDataManager.GetOrCreateLogsDir();
+
+            var target = new FileTarget
+            {
+                FileName = Path.Combine(logsDir, $"app-{DateTime.Now:yyyyMMdd_HHmmss}.log"),
+                Layout = CreateLayout("${processtime} |${level:format=FirstCharacter}| ${logger}: ${message} ${exception:format=tostring}"),
+                KeepFileOpen = true
+            };
+
+            return target;
         }
 
-        if (options.Value.LoggingEnableInfo)
+        private NLog.LogLevel[] GetEnabledLevels()
         {
-            levels.Add(NLog.LogLevel.Info);
-        }
+            List<NLog.LogLevel> levels = new();
+            levels.Add(NLog.LogLevel.Fatal); // Fatal is always enabled.
 
-        if (options.Value.LoggingEnableWarn)
-        {
-            levels.Add(NLog.LogLevel.Warn);
-        }
+            if (options.CurrentValue.EnableTrace)
+            {
+                levels.Add(NLog.LogLevel.Trace);
+            }
 
-        if (options.Value.LoggingEnableError)
-        {
-            levels.Add(NLog.LogLevel.Error);
-        }
+            if (options.CurrentValue.EnableDebug)
+            {
+                levels.Add(NLog.LogLevel.Debug);
+            }
 
-        return levels.ToArray();
+            if (options.CurrentValue.EnableInfo)
+            {
+                levels.Add(NLog.LogLevel.Info);
+            }
+
+            if (options.CurrentValue.EnableWarn)
+            {
+                levels.Add(NLog.LogLevel.Warn);
+            }
+
+            if (options.CurrentValue.EnableError)
+            {
+                levels.Add(NLog.LogLevel.Error);
+            }
+
+            return levels.ToArray();
+        }
     }
 }

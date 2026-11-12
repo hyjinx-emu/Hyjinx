@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Hyjinx.Ava.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Hyjinx.Ava.UI.Renderer;
@@ -12,18 +13,17 @@ public partial class RendererHost : UserControl, IDisposable
     public event EventHandler<EventArgs> WindowCreated;
     public event Action<object, Size> BoundsChanged;
 
-    public RendererHost()
+    public RendererHost(IServiceProvider serviceProvider)
     {
         InitializeComponent();
 
-        if (ConfigurationState.Instance.Graphics.GraphicsBackend.Value == GraphicsBackend.OpenGl)
+        var graphicsBackend = ConfigurationState.Instance.Graphics.GraphicsBackend.Value;
+        EmbeddedWindow = graphicsBackend switch
         {
-            EmbeddedWindow = new EmbeddedWindowOpenGL();
-        }
-        else
-        {
-            EmbeddedWindow = new EmbeddedWindowVulkan();
-        }
+            GraphicsBackend.OpenGl => serviceProvider.GetRequiredService<EmbeddedWindowOpenGL>(),
+            GraphicsBackend.Vulkan => serviceProvider.GetRequiredService<EmbeddedWindowVulkan>(),
+            _ => throw new NotSupportedException($"The graphics backend '{graphicsBackend}' is not supported.")
+        };
 
         Initialize();
     }

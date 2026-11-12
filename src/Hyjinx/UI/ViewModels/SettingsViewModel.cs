@@ -390,206 +390,208 @@ public class SettingsViewModel : BaseModel
 
     public void LoadCurrentConfiguration()
     {
-        ConfigurationState config = ConfigurationState.Instance;
+        // TODO: Viper - Fix this.
+        //ConfigurationState config = ConfigurationState.Instance;
 
-        // User Interface
-        EnableDiscordIntegration = config.EnableDiscordIntegration;
-        CheckUpdatesOnStart = config.CheckUpdatesOnStart;
-        ShowConfirmExit = config.ShowConfirmExit;
-        RememberWindowState = config.RememberWindowState;
-        HideCursor = (int)config.HideCursor.Value;
+        //// User Interface
+        //EnableDiscordIntegration = config.EnableDiscordIntegration;
+        //CheckUpdatesOnStart = config.CheckUpdatesOnStart;
+        //ShowConfirmExit = config.ShowConfirmExit;
+        //RememberWindowState = config.RememberWindowState;
+        //HideCursor = (int)config.HideCursor.Value;
 
-        GameDirectories.Clear();
-        GameDirectories.AddRange(config.UI.GameDirs.Value);
+        //GameDirectories.Clear();
+        //GameDirectories.AddRange(config.UI.GameDirs.Value);
 
-        BaseStyleIndex = config.UI.BaseStyle.Value switch
-        {
-            "Auto" => 0,
-            "Light" => 1,
-            "Dark" => 2,
-            _ => 0
-        };
+        //BaseStyleIndex = config.UI.BaseStyle.Value switch
+        //{
+        //    "Auto" => 0,
+        //    "Light" => 1,
+        //    "Dark" => 2,
+        //    _ => 0
+        //};
 
-        // Input
-        EnableDockedMode = config.System.EnableDockedMode;
-        EnableKeyboard = config.Hid.EnableKeyboard;
-        EnableMouse = config.Hid.EnableMouse;
+        //// Input
+        ////EnableDockedMode = config.System.EnableDockedMode;
+        //EnableKeyboard = config.Hid.EnableKeyboard;
+        //EnableMouse = config.Hid.EnableMouse;
 
-        // Keyboard Hotkeys
-        KeyboardHotkey = new HotkeyConfig(config.Hid.Hotkeys.Value);
+        //// Keyboard Hotkeys
+        //KeyboardHotkey = new HotkeyConfig(config.Hid.Hotkeys.Value);
 
-        // System
-        Region = (int)config.System.Region.Value;
-        Language = (int)config.System.Language.Value;
-        TimeZone = config.System.TimeZone;
+        //// System
+        //Region = (int)config.System.Region.Value;
+        //Language = (int)config.System.Language.Value;
+        //TimeZone = config.System.TimeZone;
 
-        DateTime currentHostDateTime = DateTime.Now;
-        TimeSpan systemDateTimeOffset = TimeSpan.FromSeconds(config.System.SystemTimeOffset);
-        DateTime currentDateTime = currentHostDateTime.Add(systemDateTimeOffset);
-        CurrentDate = currentDateTime.Date;
-        CurrentTime = currentDateTime.TimeOfDay;
+        //DateTime currentHostDateTime = DateTime.Now;
+        //TimeSpan systemDateTimeOffset = TimeSpan.FromSeconds(config.System.SystemTimeOffset);
+        //DateTime currentDateTime = currentHostDateTime.Add(systemDateTimeOffset);
+        //CurrentDate = currentDateTime.Date;
+        //CurrentTime = currentDateTime.TimeOfDay;
 
-        EnableVsync = config.Graphics.EnableVsync;
-        EnableFsIntegrityChecks = config.System.EnableFsIntegrityChecks;
-        ExpandDramSize = config.System.ExpandRam;
-        IgnoreMissingServices = config.System.IgnoreMissingServices;
+        //EnableVsync = config.Graphics.EnableVsync;
+        //EnableFsIntegrityChecks = config.System.EnableFsIntegrityChecks;
+        //ExpandDramSize = config.System.ExpandRam;
+        //IgnoreMissingServices = config.System.IgnoreMissingServices;
 
-        // CPU
-        EnablePptc = config.System.EnablePtc;
-        MemoryMode = (int)config.System.MemoryManagerMode.Value;
-        UseHypervisor = config.System.UseHypervisor;
+        //// CPU
+        //EnablePptc = config.System.EnablePtc;
+        //MemoryMode = (int)config.System.MemoryManagerMode.Value;
+        //UseHypervisor = config.System.UseHypervisor;
 
-        // Graphics
-        GraphicsBackendIndex = (int)config.Graphics.GraphicsBackend.Value;
-        // Physical devices are queried asynchronously hence the prefered index config value is loaded in LoadAvailableGpus().
-        EnableShaderCache = config.Graphics.EnableShaderCache;
-        EnableTextureRecompression = config.Graphics.EnableTextureRecompression;
-        EnableMacroHLE = config.Graphics.EnableMacroHLE;
-        EnableColorSpacePassthrough = config.Graphics.EnableColorSpacePassthrough;
-        ResolutionScale = config.Graphics.ResScale == -1 ? 4 : config.Graphics.ResScale - 1;
-        CustomResolutionScale = config.Graphics.ResScaleCustom;
-        MaxAnisotropy = config.Graphics.MaxAnisotropy == -1 ? 0 : (int)(MathF.Log2(config.Graphics.MaxAnisotropy));
-        AspectRatio = (int)config.Graphics.AspectRatio.Value;
-        GraphicsBackendMultithreadingIndex = (int)config.Graphics.BackendThreading.Value;
-        ShaderDumpPath = config.Graphics.ShadersDumpPath;
-        AntiAliasingEffect = (int)config.Graphics.AntiAliasing.Value;
-        ScalingFilter = (int)config.Graphics.ScalingFilter.Value;
-        ScalingFilterLevel = config.Graphics.ScalingFilterLevel.Value;
+        //// Graphics
+        //GraphicsBackendIndex = (int)config.Graphics.GraphicsBackend.Value;
+        //// Physical devices are queried asynchronously hence the prefered index config value is loaded in LoadAvailableGpus().
+        //EnableShaderCache = config.Graphics.EnableShaderCache;
+        //EnableTextureRecompression = config.Graphics.EnableTextureRecompression;
+        //EnableMacroHLE = config.Graphics.EnableMacroHLE;
+        //EnableColorSpacePassthrough = config.Graphics.EnableColorSpacePassthrough;
+        //ResolutionScale = config.Graphics.ResScale == -1 ? 4 : config.Graphics.ResScale - 1;
+        //CustomResolutionScale = config.Graphics.ResScaleCustom;
+        //MaxAnisotropy = config.Graphics.MaxAnisotropy == -1 ? 0 : (int)(MathF.Log2(config.Graphics.MaxAnisotropy));
+        //AspectRatio = (int)config.Graphics.AspectRatio.Value;
+        //GraphicsBackendMultithreadingIndex = (int)config.Graphics.BackendThreading.Value;
+        //ShaderDumpPath = config.Graphics.ShadersDumpPath;
+        //AntiAliasingEffect = (int)config.Graphics.AntiAliasing.Value;
+        //ScalingFilter = (int)config.Graphics.ScalingFilter.Value;
+        //ScalingFilterLevel = config.Graphics.ScalingFilterLevel.Value;
 
-        // Audio
-        AudioBackend = (int)config.System.AudioBackend.Value;
-        Volume = config.System.AudioVolume * 100;
+        //// Audio
+        //AudioBackend = (int)config.System.AudioBackend.Value;
+        //Volume = config.System.AudioVolume * 100;
 
-        // Network
-        EnableInternetAccess = config.System.EnableInternetAccess;
-        // LAN interface index is loaded asynchronously in PopulateNetworkInterfaces()
+        //// Network
+        //EnableInternetAccess = config.System.EnableInternetAccess;
+        //// LAN interface index is loaded asynchronously in PopulateNetworkInterfaces()
 
-        // Logging
-        EnableFileLog = config.Logger.EnableFileLog;
-        EnableStub = config.Logger.EnableStub;
-        EnableInfo = config.Logger.EnableInfo;
-        EnableWarn = config.Logger.EnableWarn;
-        EnableError = config.Logger.EnableError;
-        EnableTrace = config.Logger.EnableTrace;
-        EnableGuest = config.Logger.EnableGuest;
-        EnableDebug = config.Logger.EnableDebug;
-        EnableFsAccessLog = config.Logger.EnableFsAccessLog;
-        FsGlobalAccessLogMode = config.System.FsGlobalAccessLogMode;
-        OpenglDebugLevel = (int)config.Logger.GraphicsDebugLevel.Value;
+        //// Logging
+        //EnableFileLog = config.Logger.EnableFileLog;
+        //EnableStub = config.Logger.EnableStub;
+        //EnableInfo = config.Logger.EnableInfo;
+        //EnableWarn = config.Logger.EnableWarn;
+        //EnableError = config.Logger.EnableError;
+        //EnableTrace = config.Logger.EnableTrace;
+        //EnableGuest = config.Logger.EnableGuest;
+        //EnableDebug = config.Logger.EnableDebug;
+        //EnableFsAccessLog = config.Logger.EnableFsAccessLog;
+        //FsGlobalAccessLogMode = config.System.FsGlobalAccessLogMode;
+        //OpenglDebugLevel = (int)config.Logger.GraphicsDebugLevel.Value;
 
-        MultiplayerModeIndex = (int)config.Multiplayer.Mode.Value;
+        //MultiplayerModeIndex = (int)config.Multiplayer.Mode.Value;
     }
 
     private void ApplySettings()
     {
-        ConfigurationState config = ConfigurationState.Instance;
+        // TODO: Viper - Fix this.
+        //ConfigurationState config = ConfigurationState.Instance;
 
-        // User Interface
-        config.EnableDiscordIntegration.Value = EnableDiscordIntegration;
-        config.CheckUpdatesOnStart.Value = CheckUpdatesOnStart;
-        config.ShowConfirmExit.Value = ShowConfirmExit;
-        config.RememberWindowState.Value = RememberWindowState;
-        config.HideCursor.Value = (HideCursorMode)HideCursor;
+        //// User Interface
+        //config.EnableDiscordIntegration.Value = EnableDiscordIntegration;
+        //config.CheckUpdatesOnStart.Value = CheckUpdatesOnStart;
+        //config.ShowConfirmExit.Value = ShowConfirmExit;
+        //config.RememberWindowState.Value = RememberWindowState;
+        //config.HideCursor.Value = (HideCursorMode)HideCursor;
 
-        if (_directoryChanged)
-        {
-            List<string> gameDirs = new(GameDirectories);
-            config.UI.GameDirs.Value = gameDirs;
-        }
+        //if (_directoryChanged)
+        //{
+        //    List<string> gameDirs = new(GameDirectories);
+        //    config.UI.GameDirs.Value = gameDirs;
+        //}
 
-        config.UI.BaseStyle.Value = BaseStyleIndex switch
-        {
-            0 => "Auto",
-            1 => "Light",
-            2 => "Dark",
-            _ => "Auto"
-        };
+        //config.UI.BaseStyle.Value = BaseStyleIndex switch
+        //{
+        //    0 => "Auto",
+        //    1 => "Light",
+        //    2 => "Dark",
+        //    _ => "Auto"
+        //};
 
-        // Input
-        config.System.EnableDockedMode.Value = EnableDockedMode;
-        config.Hid.EnableKeyboard.Value = EnableKeyboard;
-        config.Hid.EnableMouse.Value = EnableMouse;
+        //// Input
+        ////config.System.EnableDockedMode.Value = EnableDockedMode;
+        //config.Hid.EnableKeyboard.Value = EnableKeyboard;
+        //config.Hid.EnableMouse.Value = EnableMouse;
 
-        // Keyboard Hotkeys
-        config.Hid.Hotkeys.Value = KeyboardHotkey.GetConfig();
+        //// Keyboard Hotkeys
+        //config.Hid.Hotkeys.Value = KeyboardHotkey.GetConfig();
 
-        // System
-        config.System.Region.Value = (Region)Region;
-        config.System.Language.Value = (Language)Language;
+        //// System
+        //config.System.Region.Value = (Region)Region;
+        //config.System.Language.Value = (Language)Language;
 
-        if (_validTzRegions.Contains(TimeZone))
-        {
-            config.System.TimeZone.Value = TimeZone;
-        }
+        //if (_validTzRegions.Contains(TimeZone))
+        //{
+        //    config.System.TimeZone.Value = TimeZone;
+        //}
 
-        config.System.SystemTimeOffset.Value = Convert.ToInt64((CurrentDate.ToUnixTimeSeconds() + CurrentTime.TotalSeconds) - DateTimeOffset.Now.ToUnixTimeSeconds());
-        config.Graphics.EnableVsync.Value = EnableVsync;
-        config.System.EnableFsIntegrityChecks.Value = EnableFsIntegrityChecks;
-        config.System.ExpandRam.Value = ExpandDramSize;
-        config.System.IgnoreMissingServices.Value = IgnoreMissingServices;
+        //config.System.SystemTimeOffset.Value = Convert.ToInt64((CurrentDate.ToUnixTimeSeconds() + CurrentTime.TotalSeconds) - DateTimeOffset.Now.ToUnixTimeSeconds());
+        //config.Graphics.EnableVsync.Value = EnableVsync;
+        //config.System.EnableFsIntegrityChecks.Value = EnableFsIntegrityChecks;
+        //config.System.ExpandRam.Value = ExpandDramSize;
+        //config.System.IgnoreMissingServices.Value = IgnoreMissingServices;
 
-        // CPU
-        config.System.EnablePtc.Value = EnablePptc;
-        config.System.MemoryManagerMode.Value = (MemoryManagerMode)MemoryMode;
-        config.System.UseHypervisor.Value = UseHypervisor;
+        //// CPU
+        //config.System.EnablePtc.Value = EnablePptc;
+        //config.System.MemoryManagerMode.Value = (MemoryManagerMode)MemoryMode;
+        //config.System.UseHypervisor.Value = UseHypervisor;
 
-        // Graphics
-        config.Graphics.GraphicsBackend.Value = (GraphicsBackend)GraphicsBackendIndex;
-        config.Graphics.PreferredGpu.Value = _gpuIds.ElementAtOrDefault(PreferredGpuIndex);
-        config.Graphics.EnableShaderCache.Value = EnableShaderCache;
-        config.Graphics.EnableTextureRecompression.Value = EnableTextureRecompression;
-        config.Graphics.EnableMacroHLE.Value = EnableMacroHLE;
-        config.Graphics.EnableColorSpacePassthrough.Value = EnableColorSpacePassthrough;
-        config.Graphics.ResScale.Value = ResolutionScale == 4 ? -1 : ResolutionScale + 1;
-        config.Graphics.ResScaleCustom.Value = CustomResolutionScale;
-        config.Graphics.MaxAnisotropy.Value = MaxAnisotropy == 0 ? -1 : MathF.Pow(2, MaxAnisotropy);
-        config.Graphics.AspectRatio.Value = (AspectRatio)AspectRatio;
-        config.Graphics.AntiAliasing.Value = (AntiAliasing)AntiAliasingEffect;
-        config.Graphics.ScalingFilter.Value = (ScalingFilter)ScalingFilter;
-        config.Graphics.ScalingFilterLevel.Value = ScalingFilterLevel;
+        //// Graphics
+        //config.Graphics.GraphicsBackend.Value = (GraphicsBackend)GraphicsBackendIndex;
+        //config.Graphics.PreferredGpu.Value = _gpuIds.ElementAtOrDefault(PreferredGpuIndex);
+        //config.Graphics.EnableShaderCache.Value = EnableShaderCache;
+        //config.Graphics.EnableTextureRecompression.Value = EnableTextureRecompression;
+        //config.Graphics.EnableMacroHLE.Value = EnableMacroHLE;
+        //config.Graphics.EnableColorSpacePassthrough.Value = EnableColorSpacePassthrough;
+        //config.Graphics.ResScale.Value = ResolutionScale == 4 ? -1 : ResolutionScale + 1;
+        //config.Graphics.ResScaleCustom.Value = CustomResolutionScale;
+        //config.Graphics.MaxAnisotropy.Value = MaxAnisotropy == 0 ? -1 : MathF.Pow(2, MaxAnisotropy);
+        //config.Graphics.AspectRatio.Value = (AspectRatio)AspectRatio;
+        //config.Graphics.AntiAliasing.Value = (AntiAliasing)AntiAliasingEffect;
+        //config.Graphics.ScalingFilter.Value = (ScalingFilter)ScalingFilter;
+        //config.Graphics.ScalingFilterLevel.Value = ScalingFilterLevel;
 
-        if (ConfigurationState.Instance.Graphics.BackendThreading != (BackendThreading)GraphicsBackendMultithreadingIndex)
-        {
-            DriverUtilities.ToggleOGLThreading(GraphicsBackendMultithreadingIndex == (int)BackendThreading.Off);
-        }
+        //if (ConfigurationState.Instance.Graphics.BackendThreading != (BackendThreading)GraphicsBackendMultithreadingIndex)
+        //{
+        //    DriverUtilities.ToggleOGLThreading(GraphicsBackendMultithreadingIndex == (int)BackendThreading.Off);
+        //}
 
-        config.Graphics.BackendThreading.Value = (BackendThreading)GraphicsBackendMultithreadingIndex;
-        config.Graphics.ShadersDumpPath.Value = ShaderDumpPath;
+        //config.Graphics.BackendThreading.Value = (BackendThreading)GraphicsBackendMultithreadingIndex;
+        //config.Graphics.ShadersDumpPath.Value = ShaderDumpPath;
 
-        // Audio
-        AudioBackend audioBackend = (AudioBackend)AudioBackend;
-        if (audioBackend != config.System.AudioBackend.Value)
-        {
-            config.System.AudioBackend.Value = audioBackend;
+        //// Audio
+        //AudioBackend audioBackend = (AudioBackend)AudioBackend;
+        //if (audioBackend != config.System.AudioBackend.Value)
+        //{
+        //    config.System.AudioBackend.Value = audioBackend;
 
-            Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                "AudioBackend toggled to: {audioBackend}", audioBackend);
-        }
+        //    Logger.DefaultLogger.LogInformation(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+        //        "AudioBackend toggled to: {audioBackend}", audioBackend);
+        //}
 
-        config.System.AudioVolume.Value = Volume / 100;
+        //config.System.AudioVolume.Value = Volume / 100;
 
-        // Network
-        config.System.EnableInternetAccess.Value = EnableInternetAccess;
+        //// Network
+        //config.System.EnableInternetAccess.Value = EnableInternetAccess;
 
-        // Logging
-        config.Logger.EnableFileLog.Value = EnableFileLog;
-        config.Logger.EnableStub.Value = EnableStub;
-        config.Logger.EnableInfo.Value = EnableInfo;
-        config.Logger.EnableWarn.Value = EnableWarn;
-        config.Logger.EnableError.Value = EnableError;
-        config.Logger.EnableTrace.Value = EnableTrace;
-        config.Logger.EnableGuest.Value = EnableGuest;
-        config.Logger.EnableDebug.Value = EnableDebug;
-        config.Logger.EnableFsAccessLog.Value = EnableFsAccessLog;
-        config.System.FsGlobalAccessLogMode.Value = FsGlobalAccessLogMode;
-        config.Logger.GraphicsDebugLevel.Value = (GraphicsDebugLevel)OpenglDebugLevel;
+        //// Logging
+        //config.Logger.EnableFileLog.Value = EnableFileLog;
+        //config.Logger.EnableStub.Value = EnableStub;
+        //config.Logger.EnableInfo.Value = EnableInfo;
+        //config.Logger.EnableWarn.Value = EnableWarn;
+        //config.Logger.EnableError.Value = EnableError;
+        //config.Logger.EnableTrace.Value = EnableTrace;
+        //config.Logger.EnableGuest.Value = EnableGuest;
+        //config.Logger.EnableDebug.Value = EnableDebug;
+        //config.Logger.EnableFsAccessLog.Value = EnableFsAccessLog;
+        //config.System.FsGlobalAccessLogMode.Value = FsGlobalAccessLogMode;
+        //config.Logger.GraphicsDebugLevel.Value = (GraphicsDebugLevel)OpenglDebugLevel;
 
-        config.Multiplayer.LanInterfaceId.Value = _networkInterfaces[NetworkInterfaceList[NetworkInterfaceIndex]];
-        config.Multiplayer.Mode.Value = (MultiplayerMode)MultiplayerModeIndex;
+        //config.Multiplayer.LanInterfaceId.Value = _networkInterfaces[NetworkInterfaceList[NetworkInterfaceIndex]];
+        //config.Multiplayer.Mode.Value = (MultiplayerMode)MultiplayerModeIndex;
 
-        MainWindow.UpdateGraphicsConfig();
+        //MainWindow.UpdateGraphicsConfig();
 
-        _directoryChanged = false;
+        //_directoryChanged = false;
     }
 
     private static void RevertIfNotSaved()

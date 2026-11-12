@@ -14,6 +14,11 @@ internal class ApplicationOptions
     public const string SectionPath = "Application";
 
     /// <summary>
+    /// The logging options.
+    /// </summary>
+    public LoggingOptions Logging { get; init; } = new();
+
+    /// <summary>
     /// The system options.
     /// </summary>
     public SystemOptions System { get; init; } = new();

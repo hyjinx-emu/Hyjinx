@@ -170,7 +170,7 @@ internal class EmulationHost
         _userChannelPersistence = userChannelPersistence;
         _renderingThread = new Thread(RenderLoop) { Name = "GUI.RenderThread" };
         _lastCursorMoveTime = Stopwatch.GetTimestamp();
-        _glLogLevel = ConfigurationState.Instance.Logger.GraphicsDebugLevel;
+        _glLogLevel = _viewModel.Options.CurrentValue.Logging.GraphicsDebugLevel;
         _topLevel = topLevel;
         _messenger = mesenger;
 
@@ -726,7 +726,7 @@ internal class EmulationHost
                                              ConfigurationState.Instance.System.EnablePtc,
                                              ConfigurationState.Instance.System.EnableInternetAccess,
                                              ConfigurationState.Instance.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None,
-                                             ConfigurationState.Instance.System.FsGlobalAccessLogMode,
+                                             _viewModel.Options.CurrentValue.Logging.FsGlobalAccessLogMode,
                                              ConfigurationState.Instance.System.SystemTimeOffset,
                                              ConfigurationState.Instance.System.TimeZone,
                                              ConfigurationState.Instance.System.MemoryManagerMode,

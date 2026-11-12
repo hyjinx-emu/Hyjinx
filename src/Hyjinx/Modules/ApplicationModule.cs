@@ -1,4 +1,5 @@
 using Hyjinx.Ava.UI.Messaging;
+using Hyjinx.Ava.UI.Renderer;
 using Hyjinx.Ava.UI.ViewModels;
 using Hyjinx.Ava.UI.Windows;
 using Hyjinx.Extensions.Abstractions;
@@ -18,5 +19,9 @@ internal class ApplicationModule : IModule
         services.AddSingleton<MainWindow>();
         services.AddSingleton<MainWindowViewModel>();
         services.AddSingleton<Messenger, Messenger.Default>();
+
+        services.AddTransient<RendererHost>();
+        services.AddTransient<EmbeddedWindowOpenGL>();
+        services.AddTransient<EmbeddedWindowVulkan>();
     }
 }
