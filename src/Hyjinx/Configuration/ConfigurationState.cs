@@ -1,4 +1,3 @@
-using Hyjinx.Ava.Configuration.System;
 using Hyjinx.Ava.Configuration.UI;
 using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Common.Configuration.Hid;
@@ -243,16 +242,6 @@ public class ConfigurationState
         public ReactiveObject<MemoryManagerMode> MemoryManagerMode { get; private set; }
 
         /// <summary>
-        /// Defines the amount of RAM available on the emulated system, and how it is distributed
-        /// </summary>
-        public ReactiveObject<bool> ExpandRam { get; private set; }
-
-        /// <summary>
-        /// Enable or disable ignoring missing services
-        /// </summary>
-        public ReactiveObject<bool> IgnoreMissingServices { get; private set; }
-
-        /// <summary>
         /// Uses Hypervisor over JIT if available
         /// </summary>
         public ReactiveObject<bool> UseHypervisor { get; private set; }
@@ -264,8 +253,6 @@ public class ConfigurationState
             EnableFsIntegrityChecks = new ReactiveObject<bool>();
             AudioBackend = new ReactiveObject<AudioBackend>();
             MemoryManagerMode = new ReactiveObject<MemoryManagerMode>();
-            ExpandRam = new ReactiveObject<bool>();
-            IgnoreMissingServices = new ReactiveObject<bool>();
             AudioVolume = new ReactiveObject<float>();
             UseHypervisor = new ReactiveObject<bool>();
         }
@@ -540,8 +527,6 @@ public class ConfigurationState
             AudioBackend = System.AudioBackend,
             AudioVolume = System.AudioVolume,
             MemoryManagerMode = System.MemoryManagerMode,
-            ExpandRam = System.ExpandRam,
-            IgnoreMissingServices = System.IgnoreMissingServices,
             UseHypervisor = System.UseHypervisor,
             GuiColumns = new GuiColumns
             {
@@ -639,8 +624,6 @@ public class ConfigurationState
         System.AudioBackend.Value = configurationFileFormat.AudioBackend;
         System.AudioVolume.Value = configurationFileFormat.AudioVolume;
         System.MemoryManagerMode.Value = configurationFileFormat.MemoryManagerMode;
-        System.ExpandRam.Value = configurationFileFormat.ExpandRam;
-        System.IgnoreMissingServices.Value = configurationFileFormat.IgnoreMissingServices;
         System.UseHypervisor.Value = configurationFileFormat.UseHypervisor;
         UI.GuiColumns.FavColumn.Value = configurationFileFormat.GuiColumns.FavColumn;
         UI.GuiColumns.IconColumn.Value = configurationFileFormat.GuiColumns.IconColumn;

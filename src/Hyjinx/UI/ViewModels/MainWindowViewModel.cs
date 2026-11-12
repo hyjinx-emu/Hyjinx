@@ -205,6 +205,11 @@ internal class MainWindowViewModel : BaseModel, IDisposable
     private void OnOptionsChanged(ApplicationOptions opts)
     {
         DockedMode = opts.System.DockedMode;
+
+        if (AppHost != null)
+        {
+            AppHost.UpdateIgnoreMissingServicesState(opts.System.IgnoreMissingServices);
+        }
     }
 
     #region Properties

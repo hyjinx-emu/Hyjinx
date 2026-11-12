@@ -38,4 +38,14 @@ internal class SystemOptions
     /// Change System Time Offset in seconds
     /// </summary>
     public long TimeOffset { get; set; } = 0;
+
+    /// <summary>
+    /// Expands the RAM amount on the emulated system from 4GiB to 8GiB
+    /// </summary>
+    public bool ExpandRam { get; set; } = false;
+
+    /// <summary>
+    /// Enable or disable ignoring missing services
+    /// </summary>
+    public bool IgnoreMissingServices { get; set; } = false;
 }
