@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace Hyjinx.Ava.Modules;
 
@@ -59,5 +61,26 @@ internal class ConfigurationModule : IModule
         services.AddTransient<ISupportInitialization, ConfigurationStateInitializer>();
         services.AddSingleton<IConfiguration>(config);
         services.AddOptions<ConfigurationFileFormat>().Bind(config);
+
+        // Find the internal configuration types.
+        var configurationTypes = Assembly.GetExecutingAssembly().GetTypes().Where(o => o is { IsClass: true, IsAbstract: false }
+            && o.GetCustomAttribute<ConfigurationSectionAttribute>() != null).ToArray();
+
+        foreach (var configurationType in configurationTypes)
+        {
+            typeof(ConfigurationModule).GetMethod(nameof(RegisterConfigurationSection), BindingFlags.Instance | BindingFlags.NonPublic)!.MakeGenericMethod(configurationType)
+                .Invoke(this, [services, config]);
+        }
+    }
+
+    private void RegisterConfigurationSection<T>(IServiceCollection services, IConfiguration config) where T : class
+    {
+        var attribute = typeof(T).GetCustomAttribute<ConfigurationSectionAttribute>();
+        if (attribute == null)
+        {
+            throw new NotSupportedException($"The type '{typeof(T).FullName}' must have the '{nameof(ConfigurationSectionAttribute)}' attribute.");
+        }
+
+        services.AddOptions<T>().Bind(config.GetSection(attribute.Path));
     }
 }

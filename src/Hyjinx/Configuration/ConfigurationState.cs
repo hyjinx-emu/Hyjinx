@@ -311,11 +311,6 @@ public class ConfigurationState
         public ReactiveObject<long> SystemTimeOffset { get; private set; }
 
         /// <summary>
-        /// Enables or disables Docked Mode
-        /// </summary>
-        public ReactiveObject<bool> EnableDockedMode { get; private set; }
-
-        /// <summary>
         /// Enables or disables profiled translation cache persistency
         /// </summary>
         public ReactiveObject<bool> EnablePtc { get; private set; }
@@ -371,7 +366,6 @@ public class ConfigurationState
             Region = new ReactiveObject<Region>();
             TimeZone = new ReactiveObject<string>();
             SystemTimeOffset = new ReactiveObject<long>();
-            EnableDockedMode = new ReactiveObject<bool>();
             EnablePtc = new ReactiveObject<bool>();
             EnableInternetAccess = new ReactiveObject<bool>();
             EnableFsIntegrityChecks = new ReactiveObject<bool>();
@@ -658,7 +652,6 @@ public class ConfigurationState
             SystemRegion = System.Region,
             SystemTimeZone = System.TimeZone,
             SystemTimeOffset = System.SystemTimeOffset,
-            DockedMode = System.EnableDockedMode,
             EnableDiscordIntegration = EnableDiscordIntegration,
             CheckUpdatesOnStart = CheckUpdatesOnStart,
             ShowConfirmExit = ShowConfirmExit,
@@ -774,7 +767,6 @@ public class ConfigurationState
         System.Region.Value = configurationFileFormat.SystemRegion;
         System.TimeZone.Value = configurationFileFormat.SystemTimeZone;
         System.SystemTimeOffset.Value = configurationFileFormat.SystemTimeOffset;
-        System.EnableDockedMode.Value = configurationFileFormat.DockedMode;
         EnableDiscordIntegration.Value = configurationFileFormat.EnableDiscordIntegration;
         CheckUpdatesOnStart.Value = configurationFileFormat.CheckUpdatesOnStart;
         ShowConfirmExit.Value = configurationFileFormat.ShowConfirmExit;

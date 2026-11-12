@@ -139,11 +139,6 @@ public record ConfigurationFileFormat
     public long SystemTimeOffset { get; set; } = 0;
 
     /// <summary>
-    /// Enables or disables Docked Mode
-    /// </summary>
-    public bool DockedMode { get; set; } = true;
-
-    /// <summary>
     /// Enables or disables Discord Rich Presence
     /// </summary>
     public bool EnableDiscordIntegration { get; set; } = true;
@@ -437,7 +432,7 @@ public record ConfigurationFileFormat
             throw new FileNotFoundException("The file does not exist.", fileName);
         }
 
-        return JsonHelper.DeserializeFromFile<ConfigurationFileFormat>(
+        return JsonHelper.DeserializeFromFile(
             fileName, ConfigurationFileFormatSettings.SerializerContext.ConfigurationFileFormat);
     }
 
@@ -447,11 +442,5 @@ public record ConfigurationFileFormat
     /// <param name="path">The path to the JSON configuration file</param>
     public void SaveConfig(string path)
     {
-        if (File.Exists(path))
-        {
-            File.Delete(path);
-        }
-
-        JsonHelper.SerializeToFile(path, this, ConfigurationFileFormatSettings.SerializerContext.ConfigurationFileFormat);
     }
 }

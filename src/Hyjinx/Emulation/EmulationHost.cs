@@ -204,9 +204,7 @@ internal class EmulationHost
 
         ConfigurationState.Instance.System.IgnoreMissingServices.Event += UpdateIgnoreMissingServicesState;
         ConfigurationState.Instance.Graphics.AspectRatio.Event += UpdateAspectRatioState;
-        ConfigurationState.Instance.System.EnableDockedMode.Event += UpdateDockedModeState;
         ConfigurationState.Instance.System.AudioVolume.Event += UpdateAudioVolumeState;
-        ConfigurationState.Instance.System.EnableDockedMode.Event += UpdateDockedModeState;
         ConfigurationState.Instance.System.AudioVolume.Event += UpdateAudioVolumeState;
         ConfigurationState.Instance.Graphics.AntiAliasing.Event += UpdateAntiAliasing;
         ConfigurationState.Instance.Graphics.ScalingFilter.Event += UpdateScalingFilter;
@@ -480,9 +478,9 @@ internal class EmulationHost
         _renderer?.Window?.SetAntiAliasing((Graphics.GAL.AntiAliasing)e.NewValue);
     }
 
-    private void UpdateDockedModeState(object sender, ReactiveEventArgs<bool> e)
+    public void UpdateDockedModeState(bool newValue)
     {
-        Device?.System.ChangeDockedModeState(e.NewValue);
+        Device?.System.ChangeDockedModeState(newValue);
     }
 
     private void UpdateAudioVolumeState(object sender, ReactiveEventArgs<float> e)
@@ -568,7 +566,6 @@ internal class EmulationHost
 
         ConfigurationState.Instance.System.IgnoreMissingServices.Event -= UpdateIgnoreMissingServicesState;
         ConfigurationState.Instance.Graphics.AspectRatio.Event -= UpdateAspectRatioState;
-        ConfigurationState.Instance.System.EnableDockedMode.Event -= UpdateDockedModeState;
         ConfigurationState.Instance.System.AudioVolume.Event -= UpdateAudioVolumeState;
         ConfigurationState.Instance.Graphics.ScalingFilter.Event -= UpdateScalingFilter;
         ConfigurationState.Instance.Graphics.ScalingFilterLevel.Event -= UpdateScalingFilterLevel;
@@ -725,7 +722,7 @@ internal class EmulationHost
                                              (SystemLanguage)ConfigurationState.Instance.System.Language.Value,
                                              (RegionCode)ConfigurationState.Instance.System.Region.Value,
                                              ConfigurationState.Instance.Graphics.EnableVsync,
-                                             ConfigurationState.Instance.System.EnableDockedMode,
+                                             _viewModel.DockedMode,
                                              ConfigurationState.Instance.System.EnablePtc,
                                              ConfigurationState.Instance.System.EnableInternetAccess,
                                              ConfigurationState.Instance.System.EnableFsIntegrityChecks ? IntegrityCheckLevel.ErrorOnInvalid : IntegrityCheckLevel.None,
@@ -924,7 +921,7 @@ internal class EmulationHost
     public void UpdateStatus()
     {
         // Run a status update only when a frame is to be drawn. This prevents from updating the ui and wasting a render when no frame is queued.
-        string dockedMode = ConfigurationState.Instance.System.EnableDockedMode ? LocaleManager.Instance[LocaleKeys.Docked] : LocaleManager.Instance[LocaleKeys.Handheld];
+        string dockedMode = _viewModel.DockedMode ? LocaleManager.Instance[LocaleKeys.Docked] : LocaleManager.Instance[LocaleKeys.Handheld];
 
         if (GraphicsConfig.ResScale != 1)
         {

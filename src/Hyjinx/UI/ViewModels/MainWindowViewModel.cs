@@ -20,7 +20,6 @@ using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Models.Generic;
 using Hyjinx.Ava.UI.Renderer;
 using Hyjinx.Ava.UI.Windows;
-using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Cpu;
 using Hyjinx.HLE;
@@ -33,6 +32,7 @@ using Hyjinx.Logging.Abstractions;
 using LibHac.Common;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -46,11 +46,14 @@ using ShaderCacheLoadingState = Hyjinx.Graphics.Gpu.Shader.ShaderCacheState;
 
 namespace Hyjinx.Ava.UI.ViewModels;
 
-internal class MainWindowViewModel : BaseModel
+internal class MainWindowViewModel : BaseModel, IDisposable
 {
     private const int HotKeyPressDelayMs = 500;
 
     private readonly ILogger<MainWindowViewModel> logger;
+    private readonly IOptionsMonitor<ApplicationOptions> options;
+    private readonly IDisposable? optionsChangeSubscription;
+
     private readonly Messenger messenger;
 
     private ObservableCollection<ApplicationData> _applications;
@@ -114,8 +117,10 @@ internal class MainWindowViewModel : BaseModel
 
     internal EmulationHost AppHost { get; set; }
 
-    public MainWindowViewModel(ILogger<MainWindowViewModel> logger, Messenger messenger)
+    public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IOptionsMonitor<ApplicationOptions> options, Messenger messenger)
     {
+        this.options = options;
+        optionsChangeSubscription = options.OnChange(OnOptionsChanged);
         this.logger = logger;
         this.messenger = messenger;
 
@@ -133,6 +138,25 @@ internal class MainWindowViewModel : BaseModel
             LoadConfigurableHotKeys();
 
             Volume = ConfigurationState.Instance.System.AudioVolume;
+        }
+    }
+
+    ~MainWindowViewModel()
+    {
+        Dispose(false);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            optionsChangeSubscription?.Dispose();
         }
     }
 
@@ -165,6 +189,18 @@ internal class MainWindowViewModel : BaseModel
         SwitchToGameControl = switchToGameControl;
         SetMainContent = setMainContent;
         TopLevel = topLevel;
+
+        // Pull the settings off the configuration for a starting point.
+        OnOptionsChanged(options.CurrentValue);
+    }
+
+    /// <summary>
+    /// Occurs when the options have changed externally of the environment.
+    /// </summary>
+    /// <param name="opts">The options to use.</param>
+    private void OnOptionsChanged(ApplicationOptions opts)
+    {
+        DockedMode = opts.System.DockedMode;
     }
 
     #region Properties
@@ -525,6 +561,29 @@ internal class MainWindowViewModel : BaseModel
         set
         {
             _backendText = value;
+
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _dockedMode;
+
+    public bool DockedMode
+    {
+        get => _dockedMode;
+        set
+        {
+            if (_dockedMode == value)
+            {
+                return;
+            }
+
+            _dockedMode = value;
+
+            if (IsGameRunning)
+            {
+                AppHost?.UpdateDockedModeState(value);
+            }
 
             OnPropertyChanged();
         }
@@ -1405,10 +1464,7 @@ internal class MainWindowViewModel : BaseModel
 
     public void ToggleDockMode()
     {
-        if (IsGameRunning)
-        {
-            ConfigurationState.Instance.System.EnableDockedMode.Value = !ConfigurationState.Instance.System.EnableDockedMode.Value;
-        }
+        DockedMode = !DockedMode;
     }
 
     public async Task ExitCurrentState()

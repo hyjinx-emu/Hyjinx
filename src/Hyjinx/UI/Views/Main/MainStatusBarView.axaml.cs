@@ -13,7 +13,7 @@ namespace Hyjinx.Ava.UI.Views.Main;
 
 internal partial class MainStatusBarView : UserControl
 {
-    public MainWindow Window;
+    public MainWindow Window { get; private set; }
 
     public MainStatusBarView()
     {
@@ -42,7 +42,7 @@ internal partial class MainStatusBarView : UserControl
 
     private void DockedStatus_PointerReleased(object sender, PointerReleasedEventArgs e)
     {
-        ConfigurationState.Instance.System.EnableDockedMode.Value = !ConfigurationState.Instance.System.EnableDockedMode.Value;
+        Window.ViewModel.ToggleDockMode();
     }
 
     private void AspectRatioStatus_OnClick(object sender, RoutedEventArgs e)
