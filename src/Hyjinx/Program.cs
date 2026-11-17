@@ -1,23 +1,17 @@
 using Avalonia;
-using Avalonia.Threading;
 using Hyjinx.Ava.Configuration;
 using Hyjinx.Ava.Emulation.Interop;
 using Hyjinx.Ava.Emulation.SystemInfo;
 using Hyjinx.Ava.Startup;
 using Hyjinx.Ava.UI.Messaging;
-using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Extensions.Abstractions;
 using Hyjinx.Extensions.Abstractions.Events;
-using Hyjinx.Graphics.Nvapi;
-using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.SDL2.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace Hyjinx.Ava;
 
@@ -30,12 +24,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
 
     public static double WindowScaleFactor { get; set; }
     public static double DesktopScaleFactor { get; set; } = 1.0;
-    public static bool PreviewerDetached { get; private set; }
-
-    [LibraryImport("user32.dll", SetLastError = true)]
-    public static partial int MessageBoxA(IntPtr hWnd, [MarshalAs(UnmanagedType.LPStr)] string text, [MarshalAs(UnmanagedType.LPStr)] string caption, uint type);
-
-    private const uint MbIconwarning = 0x30;
 
     static Program()
     {
@@ -44,8 +32,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
 
     public static int Main(string[] args)
     {
-        PreviewerDetached = true; // Likely used to identify whether the views are in design mode, setting to false will cause the emulator to not run.
-
         AppDataManager.Initialize();
         var program = Build();
 
@@ -110,26 +96,9 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
 
     private int Run(string[] args)
     {
-        if (OperatingSystem.IsWindows() && !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17134))
-        {
-            _ = MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nHyjinx supports Windows 10 version 1803 and newer.\n", $"Hyjinx", MbIconwarning);
-            return -1;
-        }
-
         PrintSystemInfo();
 
-        if (OperatingSystem.IsMacOS())
-        {
-            MVKInitialization.InitializeResolver();
-        }
-
-        // Initialize SDL2 driver
-        SDL2Driver.MainThreadDispatcher = action => Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Input);
-
         WindowScaleFactor = ForceDpiAware.GetWindowScaleFactor();
-
-        // Enable OGL multithreading on the driver, and some other flags.
-        DriverUtilities.InitDriverConfig(ConfigurationState.Instance.Graphics.BackendThreading == BackendThreading.Off);
 
         return AppBuilder.Configure(applicationServices.GetRequiredService<App>)
             .UsePlatformDetect()

@@ -1,3 +1,4 @@
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Hyjinx.Ava.Emulation.Models.Amiibo;
 using Hyjinx.Ava.Localization;
@@ -29,7 +30,7 @@ public partial class AmiiboWindow : StyleableWindow
 
         InitializeComponent();
 
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             Title = $"Hyjinx - {LocaleManager.Instance[LocaleKeys.Amiibo]}";
         }

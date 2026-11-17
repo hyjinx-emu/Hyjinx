@@ -1,3 +1,4 @@
+using Avalonia.Controls;
 using Hyjinx.Ava.Configuration;
 using Hyjinx.Ava.Emulation;
 using Hyjinx.Ava.Modules;
@@ -42,7 +43,7 @@ internal class LocaleManager : BaseModel
         LoadLanguage(localeLanguageCode);
 
         // Save whatever we ended up with.
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             ConfigurationState.Instance.UI.LanguageCode.Value = _localeLanguageCode;
 

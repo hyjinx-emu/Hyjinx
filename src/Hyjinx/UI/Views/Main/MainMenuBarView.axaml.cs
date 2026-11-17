@@ -50,7 +50,7 @@ internal partial class MainMenuBarView : UserControl
         return checkBoxes.ToArray();
     }
 
-    private static MenuItem[] GenerateLanguageMenuItems()
+    private MenuItem[] GenerateLanguageMenuItems()
     {
         List<MenuItem> menuItems = new();
 
@@ -67,7 +67,7 @@ internal partial class MainMenuBarView : UserControl
             string languageJson = EmbeddedResources.ReadAllText($"{localePath}/{languageCode}{localeExt}");
             var strings = JsonHelper.Deserialize(languageJson, CommonJsonContext.Default.StringDictionary);
 
-            if (!strings.TryGetValue("Language", out string languageName))
+            if (!strings.TryGetValue("Language", out string? languageName))
             {
                 languageName = languageCode;
             }
@@ -77,7 +77,7 @@ internal partial class MainMenuBarView : UserControl
                 Header = languageName,
                 Command = MiniCommand.Create(() =>
                 {
-                    MainWindowViewModel.ChangeLanguage(languageCode);
+                    Window.ViewModel.ChangeLanguage(languageCode);
                 }),
             };
 

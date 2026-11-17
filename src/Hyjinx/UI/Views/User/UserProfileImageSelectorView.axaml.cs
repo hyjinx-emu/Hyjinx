@@ -34,7 +34,7 @@ public partial class UserProfileImageSelectorView : UserControl
 
     private void NavigatedTo(NavigationEventArgs arg)
     {
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             switch (arg.NavigationMode)
             {
@@ -44,7 +44,7 @@ public partial class UserProfileImageSelectorView : UserControl
 
                     ((ContentDialog)_parent.Parent).Title = $"{LocaleManager.Instance[LocaleKeys.UserProfileWindowTitle]} - {LocaleManager.Instance[LocaleKeys.ProfileImageSelectionHeader]}";
 
-                    if (Program.PreviewerDetached)
+                    if (!Design.IsDesignMode)
                     {
                         DataContext = ViewModel = new UserProfileImageSelectorViewModel();
                         ViewModel.FirmwareFound = _contentManager.GetCurrentFirmwareVersion() != null;

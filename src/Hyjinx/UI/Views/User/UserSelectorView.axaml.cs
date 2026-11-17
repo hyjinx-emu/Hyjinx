@@ -21,7 +21,7 @@ public partial class UserSelectorViews : UserControl
     {
         InitializeComponent();
 
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             AddHandler(Frame.NavigatedToEvent, (s, e) =>
             {
@@ -32,7 +32,7 @@ public partial class UserSelectorViews : UserControl
 
     private void NavigatedTo(NavigationEventArgs arg)
     {
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             if (arg.NavigationMode == NavigationMode.New)
             {

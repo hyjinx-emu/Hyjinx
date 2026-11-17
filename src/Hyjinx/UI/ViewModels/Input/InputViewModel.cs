@@ -234,7 +234,7 @@ public class InputViewModel : BaseModel, IDisposable
 
     public InputViewModel(UserControl owner) : this()
     {
-        if (Program.PreviewerDetached)
+        if (!IsDesignMode)
         {
             _mainWindow =
                 (MainWindow)((IClassicDesktopStyleApplicationLifetime)Application.Current

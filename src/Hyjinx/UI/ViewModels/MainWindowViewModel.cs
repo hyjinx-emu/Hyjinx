@@ -20,7 +20,6 @@ using Hyjinx.Ava.UI.Models;
 using Hyjinx.Ava.UI.Models.Generic;
 using Hyjinx.Ava.UI.Renderer;
 using Hyjinx.Ava.UI.Windows;
-using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Cpu;
 using Hyjinx.HLE;
@@ -128,7 +127,7 @@ internal class MainWindowViewModel : BaseModel
 
         _rendererWaitEvent = new AutoResetEvent(false);
 
-        if (Program.PreviewerDetached)
+        if (!IsDesignMode)
         {
             LoadConfigurableHotKeys();
 
@@ -1425,11 +1424,11 @@ internal class MainWindowViewModel : BaseModel
         }
     }
 
-    public static void ChangeLanguage(object languageCode)
+    public void ChangeLanguage(object languageCode)
     {
         LocaleManager.Instance.LoadLanguage((string)languageCode);
 
-        if (Program.PreviewerDetached)
+        if (!IsDesignMode)
         {
             ConfigurationState.Instance.UI.LanguageCode.Value = (string)languageCode;
             ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);

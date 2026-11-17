@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
@@ -37,7 +38,7 @@ internal partial class App(ILogger<App> logger, IServiceProvider applicationServ
 
         base.OnFrameworkInitializationCompleted();
 
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             ApplyConfiguredTheme();
 

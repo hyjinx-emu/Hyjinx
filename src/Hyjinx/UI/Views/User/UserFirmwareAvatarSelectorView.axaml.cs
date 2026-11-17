@@ -37,13 +37,13 @@ public partial class UserFirmwareAvatarSelectorView : UserControl
 
     private void NavigatedTo(NavigationEventArgs arg)
     {
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             if (arg.NavigationMode == NavigationMode.New)
             {
                 (_parent, _profile) = ((NavigationDialogHost, TempProfile))arg.Parameter;
                 ContentManager = _parent.ContentManager;
-                if (Program.PreviewerDetached)
+                if (!Design.IsDesignMode)
                 {
                     ViewModel = new UserFirmwareAvatarSelectorViewModel();
                 }
