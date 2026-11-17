@@ -1,18 +1,13 @@
 using Avalonia;
-using Avalonia.Threading;
 using Hyjinx.Ava.Configuration;
 using Hyjinx.Ava.Emulation.Interop;
 using Hyjinx.Ava.Emulation.SystemInfo;
 using Hyjinx.Ava.Startup;
 using Hyjinx.Ava.UI.Messaging;
-using Hyjinx.Common;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Extensions.Abstractions;
 using Hyjinx.Extensions.Abstractions.Events;
-using Hyjinx.Graphics.Nvapi;
-using Hyjinx.Graphics.Vulkan.MoltenVK;
 using Hyjinx.Logging.Abstractions;
-using Hyjinx.SDL2.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -118,18 +113,7 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
 
         PrintSystemInfo();
 
-        if (OperatingSystem.IsMacOS())
-        {
-            MVKInitialization.InitializeResolver();
-        }
-
-        // Initialize SDL2 driver
-        SDL2Driver.MainThreadDispatcher = action => Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Input);
-
         WindowScaleFactor = ForceDpiAware.GetWindowScaleFactor();
-
-        // Enable OGL multithreading on the driver, and some other flags.
-        DriverUtilities.InitDriverConfig(ConfigurationState.Instance.Graphics.BackendThreading == BackendThreading.Off);
 
         return AppBuilder.Configure(applicationServices.GetRequiredService<App>)
             .UsePlatformDetect()
