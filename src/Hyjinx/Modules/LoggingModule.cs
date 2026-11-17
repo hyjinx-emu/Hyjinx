@@ -14,10 +14,17 @@ using System.IO;
 
 namespace Hyjinx.Ava.Modules;
 
+/// <summary>
+/// A module which supports initializing the logging infrastructure.
+/// </summary>
 internal class LoggingModule : IModule
 {
     private const string RedactedString = "[REDACTED]";
 
+    /// <summary>
+    /// A mechanism to initialize the application logger infrastructure.
+    /// </summary>
+    /// <param name="applicationServices">The application services.</param>
     private class Initializer(IServiceProvider applicationServices) : ISupportInitialization
     {
         public void Initialize()

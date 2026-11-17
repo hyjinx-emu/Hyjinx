@@ -15,6 +15,9 @@ internal class SDL2Module : IModule
         services.AddTransient<ISupportInitialization, SDL2DriverInitializer>();
     }
 
+    /// <summary>
+    /// A mechanism to initialize the SDL2 driver.
+    /// </summary>
     private class SDL2DriverInitializer : ISupportInitialization
     {
         public void Initialize()

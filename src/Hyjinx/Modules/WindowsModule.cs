@@ -6,6 +6,9 @@ using System.Runtime.Versioning;
 
 namespace Hyjinx.Ava.Modules;
 
+/// <summary>
+/// A module which handles initializing Windows specific functions.
+/// </summary>
 [SupportedOSPlatform("windows")]
 internal partial class WindowsModule : IModule
 {
@@ -14,6 +17,9 @@ internal partial class WindowsModule : IModule
         services.AddTransient<ISupportInitialization, WindowsVersionValidator>();
     }
 
+    /// <summary>
+    /// A mechanism used to validate whether the Windows version is sufficient to run the application.
+    /// </summary>
     private partial class WindowsVersionValidator : ISupportInitialization
     {
         [LibraryImport("user32.dll", SetLastError = true)]

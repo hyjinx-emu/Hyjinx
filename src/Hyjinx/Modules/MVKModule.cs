@@ -16,6 +16,9 @@ internal class MVKModule : IModule
         services.AddTransient<ISupportInitialization, MVKInitializer>();
     }
 
+    /// <summary>
+    /// A mechanism to initialize the MoltenVK resolver.
+    /// </summary>
     private class MVKInitializer : ISupportInitialization
     {
         public void Initialize()

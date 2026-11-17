@@ -9,6 +9,9 @@ using System.IO;
 
 namespace Hyjinx.Ava.Modules;
 
+/// <summary>
+/// A module for initializing the configuration infrastructure.
+/// </summary>
 internal class ConfigurationModule : IModule
 {
     public static string ConfigurationPath { get; private set; } = null!;
@@ -18,7 +21,11 @@ internal class ConfigurationModule : IModule
     /// </summary>
     private const string ConfigFileName = "config.json";
 
-    private class ConfigurationStateInitializer(IOptions<ConfigurationFileFormat> opts) : ISupportInitialization
+    /// <summary>
+    /// A mechanism to initialize the legacy configuration state object.
+    /// </summary>
+    /// <param name="opts">The configuration file options.</param>
+    private class LegacyConfigurationStateInitializer(IOptions<ConfigurationFileFormat> opts) : ISupportInitialization
     {
         public void Initialize()
         {
@@ -56,7 +63,7 @@ internal class ConfigurationModule : IModule
             .AddJsonFile(ConfigurationPath, optional: false, reloadOnChange: true)
             .Build();
 
-        services.AddTransient<ISupportInitialization, ConfigurationStateInitializer>();
+        services.AddTransient<ISupportInitialization, LegacyConfigurationStateInitializer>();
         services.AddSingleton<IConfiguration>(config);
         services.AddOptions<ConfigurationFileFormat>().Bind(config);
     }

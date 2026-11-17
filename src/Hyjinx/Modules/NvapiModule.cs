@@ -15,6 +15,9 @@ internal class NvapiModule : IModule
         services.AddTransient<ISupportInitialization, NvapiInitializer>();
     }
 
+    /// <summary>
+    /// A mechanism to initialize the NVAPI driver.
+    /// </summary>
     private class NvapiInitializer : ISupportInitialization
     {
         public void Initialize()
