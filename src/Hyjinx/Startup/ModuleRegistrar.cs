@@ -23,6 +23,11 @@ internal static partial class ModuleRegistrar
             services.AddSingleton<IModule, MVKModule>();
         }
 
+        if (OperatingSystem.IsWindows())
+        {
+            services.AddSingleton<IModule, WindowsModule>();
+        }
+
         foreach (var moduleType in KnownModuleTypes)
         {
             services.Add(new ServiceDescriptor(typeof(IModule), moduleType, ServiceLifetime.Singleton));

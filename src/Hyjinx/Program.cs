@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace Hyjinx.Ava;
 
@@ -25,11 +24,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
 
     public static double WindowScaleFactor { get; set; }
     public static double DesktopScaleFactor { get; set; } = 1.0;
-
-    [LibraryImport("user32.dll", SetLastError = true)]
-    public static partial int MessageBoxA(IntPtr hWnd, [MarshalAs(UnmanagedType.LPStr)] string text, [MarshalAs(UnmanagedType.LPStr)] string caption, uint type);
-
-    private const uint MbIconwarning = 0x30;
 
     static Program()
     {
@@ -102,12 +96,6 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
 
     private int Run(string[] args)
     {
-        if (OperatingSystem.IsWindows() && !OperatingSystem.IsWindowsVersionAtLeast(10, 0, 17134))
-        {
-            _ = MessageBoxA(IntPtr.Zero, "You are running an outdated version of Windows.\n\nHyjinx supports Windows 10 version 1803 and newer.\n", $"Hyjinx", MbIconwarning);
-            return -1;
-        }
-
         PrintSystemInfo();
 
         WindowScaleFactor = ForceDpiAware.GetWindowScaleFactor();
