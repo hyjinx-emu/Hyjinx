@@ -268,7 +268,7 @@ public class SettingsViewModel : BaseModel
     {
         _virtualFileSystem = virtualFileSystem;
         _contentManager = contentManager;
-        if (Program.PreviewerDetached)
+        if (!IsDesignMode)
         {
             Task.Run(LoadTimeZones);
         }
@@ -285,7 +285,7 @@ public class SettingsViewModel : BaseModel
         Task.Run(CheckSoundBackends);
         Task.Run(PopulateNetworkInterfaces);
 
-        if (Program.PreviewerDetached)
+        if (!IsDesignMode)
         {
             Task.Run(LoadAvailableGpus);
             LoadCurrentConfiguration();

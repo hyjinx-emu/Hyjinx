@@ -91,7 +91,7 @@ internal partial class MainWindow : StyleableWindow
 
         SetWindowSizePosition();
 
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             InputManager = new InputManager(new AvaloniaKeyboardDriver(this), new SDL2GamepadDriver());
 

@@ -22,7 +22,7 @@ public partial class UserRecovererView : UserControl
 
     private void NavigatedTo(NavigationEventArgs arg)
     {
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             switch (arg.NavigationMode)
             {

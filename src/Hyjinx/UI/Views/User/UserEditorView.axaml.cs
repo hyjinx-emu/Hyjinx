@@ -34,7 +34,7 @@ public partial class UserEditorView : UserControl
 
     private void NavigatedTo(NavigationEventArgs arg)
     {
-        if (Program.PreviewerDetached)
+        if (!Design.IsDesignMode)
         {
             switch (arg.NavigationMode)
             {
