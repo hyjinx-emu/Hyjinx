@@ -31,6 +31,7 @@ using Hyjinx.Input.HLE;
 using Hyjinx.Logging.Abstractions;
 using LibHac.Common;
 using LibHac.Tools.FsSystem.NcaUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using System;
@@ -48,7 +49,6 @@ namespace Hyjinx.Ava.UI.ViewModels;
 internal class MainWindowViewModel : BaseModel
 {
     private const int HotKeyPressDelayMs = 500;
-
     private readonly ILogger<MainWindowViewModel> logger;
     private readonly Messenger messenger;
 
@@ -113,8 +113,11 @@ internal class MainWindowViewModel : BaseModel
 
     internal EmulationHost AppHost { get; set; }
 
-    public MainWindowViewModel(ILogger<MainWindowViewModel> logger, Messenger messenger)
+    public IServiceProvider ApplicationServices { get; }
+
+    public MainWindowViewModel(IServiceProvider applicationServices, ILogger<MainWindowViewModel> logger, Messenger messenger)
     {
+        ApplicationServices = applicationServices;
         this.logger = logger;
         this.messenger = messenger;
 
@@ -1534,9 +1537,11 @@ internal class MainWindowViewModel : BaseModel
             return;
         }
 
-#if RELEASE
-        await PerformanceCheck();
-#endif
+        // Add the game configuration.
+        var registrar = ApplicationServices.GetRequiredService<IGameConfigurationManager>();
+        registrar.ApplyGameConfig(application.IdString);
+
+        await PerformanceCheckAsync();
 
         SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, ConfigurationState.Instance.System.Language, application.Id);
 
@@ -1691,7 +1696,7 @@ internal class MainWindowViewModel : BaseModel
         ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
     }
 
-    public static async Task PerformanceCheck()
+    public static async Task PerformanceCheckAsync()
     {
         if (ConfigurationState.Instance.Logger.EnableTrace.Value)
         {
@@ -1708,8 +1713,6 @@ internal class MainWindowViewModel : BaseModel
             if (result == UserResult.Yes)
             {
                 ConfigurationState.Instance.Logger.EnableTrace.Value = false;
-
-                SaveConfig();
             }
         }
 
@@ -1728,8 +1731,6 @@ internal class MainWindowViewModel : BaseModel
             if (result == UserResult.Yes)
             {
                 ConfigurationState.Instance.Graphics.ShadersDumpPath.Value = "";
-
-                SaveConfig();
             }
         }
     }

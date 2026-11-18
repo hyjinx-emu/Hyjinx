@@ -35,6 +35,7 @@ using Hyjinx.Input;
 using Hyjinx.Input.HLE;
 using Hyjinx.Logging.Abstractions;
 using LibHac.Tools.FsSystem;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Silk.NET.Vulkan;
 using SkiaSharp;
@@ -534,6 +535,9 @@ internal class EmulationHost
         _isActive = false;
 
         _messenger.Send(new GameStoppedEvent());
+
+        var configManager = _viewModel.ApplicationServices.GetRequiredService<IGameConfigurationManager>();
+        configManager.ClearGameConfig();
     }
 
     public void DisposeContext()
