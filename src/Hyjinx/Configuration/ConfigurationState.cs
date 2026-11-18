@@ -9,6 +9,7 @@ using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,18 +37,18 @@ public class ConfigurationState
             public ReactiveObject<bool> FileSizeColumn { get; private set; }
             public ReactiveObject<bool> PathColumn { get; private set; }
 
-            public Columns()
+            public Columns(IOptionsMonitor<ConfigurationFileFormat> options)
             {
-                FavColumn = new ReactiveObject<bool>();
-                IconColumn = new ReactiveObject<bool>();
-                AppColumn = new ReactiveObject<bool>();
-                DevColumn = new ReactiveObject<bool>();
-                VersionColumn = new ReactiveObject<bool>();
-                TimePlayedColumn = new ReactiveObject<bool>();
-                LastPlayedColumn = new ReactiveObject<bool>();
-                FileExtColumn = new ReactiveObject<bool>();
-                FileSizeColumn = new ReactiveObject<bool>();
-                PathColumn = new ReactiveObject<bool>();
+                FavColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.FavColumn);
+                IconColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.IconColumn);
+                AppColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.AppColumn);
+                DevColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.DevColumn);
+                VersionColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.VersionColumn);
+                TimePlayedColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.TimePlayedColumn);
+                LastPlayedColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.LastPlayedColumn);
+                FileExtColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.FileExtColumn);
+                FileSizeColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.FileSizeColumn);
+                PathColumn = new ReactiveObject<bool>(() => options.CurrentValue.GuiColumns.PathColumn);
             }
         }
 
@@ -56,10 +57,10 @@ public class ConfigurationState
             public ReactiveObject<int> SortColumnId { get; private set; }
             public ReactiveObject<bool> SortAscending { get; private set; }
 
-            public ColumnSortSettings()
+            public ColumnSortSettings(IOptionsMonitor<ConfigurationFileFormat> options)
             {
-                SortColumnId = new ReactiveObject<int>();
-                SortAscending = new ReactiveObject<bool>();
+                SortColumnId = new ReactiveObject<int>(() => options.CurrentValue.ColumnSort.SortColumnId);
+                SortAscending = new ReactiveObject<bool>(() => options.CurrentValue.ColumnSort.SortAscending);
             }
         }
 
@@ -75,14 +76,14 @@ public class ConfigurationState
             public ReactiveObject<bool> NRO { get; private set; }
             public ReactiveObject<bool> NSO { get; private set; }
 
-            public ShownFileTypeSettings()
+            public ShownFileTypeSettings(IOptionsMonitor<ConfigurationFileFormat> options)
             {
-                NSP = new ReactiveObject<bool>();
-                PFS0 = new ReactiveObject<bool>();
-                XCI = new ReactiveObject<bool>();
-                NCA = new ReactiveObject<bool>();
-                NRO = new ReactiveObject<bool>();
-                NSO = new ReactiveObject<bool>();
+                NSP = new ReactiveObject<bool>(() => options.CurrentValue.ShownFileTypes.NSP);
+                PFS0 = new ReactiveObject<bool>(() => options.CurrentValue.ShownFileTypes.PFS0);
+                XCI = new ReactiveObject<bool>(() => options.CurrentValue.ShownFileTypes.XCI);
+                NCA = new ReactiveObject<bool>(() => options.CurrentValue.ShownFileTypes.NCA);
+                NRO = new ReactiveObject<bool>(() => options.CurrentValue.ShownFileTypes.NRO);
+                NSO = new ReactiveObject<bool>(() => options.CurrentValue.ShownFileTypes.NSO);
             }
         }
 
@@ -97,13 +98,13 @@ public class ConfigurationState
             public ReactiveObject<int> WindowPositionY { get; private set; }
             public ReactiveObject<bool> WindowMaximized { get; private set; }
 
-            public WindowStartupSettings()
+            public WindowStartupSettings(IOptionsMonitor<ConfigurationFileFormat> options)
             {
-                WindowSizeWidth = new ReactiveObject<int>();
-                WindowSizeHeight = new ReactiveObject<int>();
-                WindowPositionX = new ReactiveObject<int>();
-                WindowPositionY = new ReactiveObject<int>();
-                WindowMaximized = new ReactiveObject<bool>();
+                WindowSizeWidth = new ReactiveObject<int>(() => options.CurrentValue.WindowStartup.WindowSizeWidth);
+                WindowSizeHeight = new ReactiveObject<int>(() => options.CurrentValue.WindowStartup.WindowSizeHeight);
+                WindowPositionX = new ReactiveObject<int>(() => options.CurrentValue.WindowStartup.WindowPositionX);
+                WindowPositionY = new ReactiveObject<int>(() => options.CurrentValue.WindowStartup.WindowPositionY);
+                WindowMaximized = new ReactiveObject<bool>(() => options.CurrentValue.WindowStartup.WindowMaximized);
             }
         }
 
@@ -187,24 +188,24 @@ public class ConfigurationState
         /// </summary>
         public ReactiveObject<bool> IsAscendingOrder { get; private set; }
 
-        public UISection()
+        public UISection(IOptionsMonitor<ConfigurationFileFormat> options)
         {
-            GuiColumns = new Columns();
-            ColumnSort = new ColumnSortSettings();
-            GameDirs = new ReactiveObject<List<string>>();
-            ShownFileTypes = new ShownFileTypeSettings();
-            WindowStartup = new WindowStartupSettings();
-            EnableCustomTheme = new ReactiveObject<bool>();
-            CustomThemePath = new ReactiveObject<string>();
-            BaseStyle = new ReactiveObject<string>();
-            StartFullscreen = new ReactiveObject<bool>();
-            GameListViewMode = new ReactiveObject<int>();
-            ShowNames = new ReactiveObject<bool>();
-            GridSize = new ReactiveObject<int>();
-            ApplicationSort = new ReactiveObject<int>();
-            IsAscendingOrder = new ReactiveObject<bool>();
-            LanguageCode = new ReactiveObject<string>();
-            ShowConsole = new ReactiveObject<bool>();
+            GuiColumns = new Columns(options);
+            ColumnSort = new ColumnSortSettings(options);
+            GameDirs = new ReactiveObject<List<string>>(() => options.CurrentValue.GameDirs);
+            ShownFileTypes = new ShownFileTypeSettings(options);
+            WindowStartup = new WindowStartupSettings(options);
+            EnableCustomTheme = new ReactiveObject<bool>(() => options.CurrentValue.EnableCustomTheme);
+            CustomThemePath = new ReactiveObject<string>(() => options.CurrentValue.CustomThemePath);
+            BaseStyle = new ReactiveObject<string>(() => options.CurrentValue.BaseStyle);
+            StartFullscreen = new ReactiveObject<bool>(() => options.CurrentValue.StartFullscreen);
+            GameListViewMode = new ReactiveObject<int>(() => options.CurrentValue.GameListViewMode);
+            ShowNames = new ReactiveObject<bool>(() => options.CurrentValue.ShowNames);
+            GridSize = new ReactiveObject<int>(() => options.CurrentValue.GridSize);
+            ApplicationSort = new ReactiveObject<int>(() => options.CurrentValue.ApplicationSort);
+            IsAscendingOrder = new ReactiveObject<bool>(() => options.CurrentValue.IsAscendingOrder);
+            LanguageCode = new ReactiveObject<string>(() => options.CurrentValue.LanguageCode);
+            ShowConsole = new ReactiveObject<bool>(() => options.CurrentValue.ShowConsole);
             ShowConsole.Event += static (s, e) => { ConsoleHelper.SetConsoleWindowState(e.NewValue); };
         }
     }
@@ -269,19 +270,19 @@ public class ConfigurationState
         /// </summary>
         public ReactiveObject<GraphicsDebugLevel> GraphicsDebugLevel { get; private set; }
 
-        public LoggerSection()
+        public LoggerSection(IOptionsMonitor<ConfigurationFileFormat> options)
         {
-            EnableDebug = new ReactiveObject<bool>();
-            EnableStub = new ReactiveObject<bool>();
-            EnableInfo = new ReactiveObject<bool>();
-            EnableWarn = new ReactiveObject<bool>();
-            EnableError = new ReactiveObject<bool>();
-            EnableTrace = new ReactiveObject<bool>();
-            EnableGuest = new ReactiveObject<bool>();
-            EnableFsAccessLog = new ReactiveObject<bool>();
-            FilteredClasses = new ReactiveObject<LogClass[]>();
-            EnableFileLog = new ReactiveObject<bool>();
-            GraphicsDebugLevel = new ReactiveObject<GraphicsDebugLevel>();
+            EnableDebug = new ReactiveObject<bool>(() => options.CurrentValue.LoggingEnableDebug);
+            EnableStub = new ReactiveObject<bool>(() => options.CurrentValue.LoggingEnableStub);
+            EnableInfo = new ReactiveObject<bool>(() => options.CurrentValue.LoggingEnableInfo);
+            EnableWarn = new ReactiveObject<bool>(() => options.CurrentValue.LoggingEnableWarn);
+            EnableError = new ReactiveObject<bool>(() => options.CurrentValue.LoggingEnableError);
+            EnableTrace = new ReactiveObject<bool>(() => options.CurrentValue.LoggingEnableTrace);
+            EnableGuest = new ReactiveObject<bool>(() => options.CurrentValue.LoggingEnableGuest);
+            EnableFsAccessLog = new ReactiveObject<bool>(() => options.CurrentValue.LoggingEnableFsAccessLog);
+            FilteredClasses = new ReactiveObject<LogClass[]>(() => options.CurrentValue.LoggingFilteredClasses);
+            EnableFileLog = new ReactiveObject<bool>(() => options.CurrentValue.EnableFileLog);
+            GraphicsDebugLevel = new ReactiveObject<GraphicsDebugLevel>(() => options.CurrentValue.LoggingGraphicsDebugLevel);
         }
     }
 
@@ -365,23 +366,23 @@ public class ConfigurationState
         /// </summary>
         public ReactiveObject<bool> UseHypervisor { get; private set; }
 
-        public SystemSection()
+        public SystemSection(IOptionsMonitor<ConfigurationFileFormat> options)
         {
-            Language = new ReactiveObject<Language>();
-            Region = new ReactiveObject<Region>();
-            TimeZone = new ReactiveObject<string>();
-            SystemTimeOffset = new ReactiveObject<long>();
-            EnableDockedMode = new ReactiveObject<bool>();
-            EnablePtc = new ReactiveObject<bool>();
-            EnableInternetAccess = new ReactiveObject<bool>();
-            EnableFsIntegrityChecks = new ReactiveObject<bool>();
-            FsGlobalAccessLogMode = new ReactiveObject<int>();
-            AudioBackend = new ReactiveObject<AudioBackend>();
-            MemoryManagerMode = new ReactiveObject<MemoryManagerMode>();
-            ExpandRam = new ReactiveObject<bool>();
-            IgnoreMissingServices = new ReactiveObject<bool>();
-            AudioVolume = new ReactiveObject<float>();
-            UseHypervisor = new ReactiveObject<bool>();
+            Language = new ReactiveObject<Language>(() => options.CurrentValue.SystemLanguage);
+            Region = new ReactiveObject<Region>(() => options.CurrentValue.SystemRegion);
+            TimeZone = new ReactiveObject<string>(() => options.CurrentValue.SystemTimeZone);
+            SystemTimeOffset = new ReactiveObject<long>(() => options.CurrentValue.SystemTimeOffset);
+            EnableDockedMode = new ReactiveObject<bool>(() => options.CurrentValue.DockedMode);
+            EnablePtc = new ReactiveObject<bool>(() => options.CurrentValue.EnablePtc);
+            EnableInternetAccess = new ReactiveObject<bool>(() => options.CurrentValue.EnableInternetAccess);
+            EnableFsIntegrityChecks = new ReactiveObject<bool>(() => options.CurrentValue.EnableFsIntegrityChecks);
+            FsGlobalAccessLogMode = new ReactiveObject<int>(() => options.CurrentValue.FsGlobalAccessLogMode);
+            AudioBackend = new ReactiveObject<AudioBackend>(() => options.CurrentValue.AudioBackend);
+            MemoryManagerMode = new ReactiveObject<MemoryManagerMode>(() => options.CurrentValue.MemoryManagerMode);
+            ExpandRam = new ReactiveObject<bool>(() => options.CurrentValue.ExpandRam);
+            IgnoreMissingServices = new ReactiveObject<bool>(() => options.CurrentValue.IgnoreMissingServices);
+            AudioVolume = new ReactiveObject<float>(() => options.CurrentValue.AudioVolume);
+            UseHypervisor = new ReactiveObject<bool>(() => options.CurrentValue.UseHypervisor);
         }
     }
 
@@ -412,12 +413,16 @@ public class ConfigurationState
         /// </summary>
         public ReactiveObject<List<InputConfig>> InputConfig { get; private set; }
 
-        public HidSection()
+        public HidSection(IOptionsMonitor<ConfigurationFileFormat> options)
         {
-            EnableKeyboard = new ReactiveObject<bool>();
-            EnableMouse = new ReactiveObject<bool>();
-            Hotkeys = new ReactiveObject<KeyboardHotkeys>();
-            InputConfig = new ReactiveObject<List<InputConfig>>();
+            EnableKeyboard = new ReactiveObject<bool>(() => options.CurrentValue.EnableKeyboard);
+            EnableMouse = new ReactiveObject<bool>(() => options.CurrentValue.EnableMouse);
+            Hotkeys = new ReactiveObject<KeyboardHotkeys>(() => options.CurrentValue.Hotkeys);
+
+            var configs = new List<InputConfig>();
+            configs.AddRange(options.CurrentValue.InputOptions.ControllerBindings);
+            configs.AddRange(options.CurrentValue.InputOptions.KeyboardBindings);
+            InputConfig = new ReactiveObject<List<InputConfig>>(configs);
         }
     }
 
@@ -506,24 +511,24 @@ public class ConfigurationState
         /// </summary>
         public ReactiveObject<string> PreferredGpu { get; private set; }
 
-        public GraphicsSection()
+        public GraphicsSection(IOptionsMonitor<ConfigurationFileFormat> options)
         {
-            BackendThreading = new ReactiveObject<BackendThreading>();
-            ResScale = new ReactiveObject<int>();
-            ResScaleCustom = new ReactiveObject<float>();
-            MaxAnisotropy = new ReactiveObject<float>();
-            AspectRatio = new ReactiveObject<AspectRatio>();
-            ShadersDumpPath = new ReactiveObject<string>();
-            EnableVsync = new ReactiveObject<bool>();
-            EnableShaderCache = new ReactiveObject<bool>();
-            EnableTextureRecompression = new ReactiveObject<bool>();
-            GraphicsBackend = new ReactiveObject<GraphicsBackend>();
-            PreferredGpu = new ReactiveObject<string>();
-            EnableMacroHLE = new ReactiveObject<bool>();
-            EnableColorSpacePassthrough = new ReactiveObject<bool>();
-            AntiAliasing = new ReactiveObject<AntiAliasing>();
-            ScalingFilter = new ReactiveObject<ScalingFilter>();
-            ScalingFilterLevel = new ReactiveObject<int>();
+            BackendThreading = new ReactiveObject<BackendThreading>(() => options.CurrentValue.BackendThreading);
+            ResScale = new ReactiveObject<int>(() => options.CurrentValue.ResScale);
+            ResScaleCustom = new ReactiveObject<float>(() => options.CurrentValue.ResScaleCustom);
+            MaxAnisotropy = new ReactiveObject<float>(() => options.CurrentValue.MaxAnisotropy);
+            AspectRatio = new ReactiveObject<AspectRatio>(() => options.CurrentValue.AspectRatio);
+            ShadersDumpPath = new ReactiveObject<string>(() => options.CurrentValue.GraphicsShadersDumpPath);
+            EnableVsync = new ReactiveObject<bool>(() => options.CurrentValue.EnableVsync);
+            EnableShaderCache = new ReactiveObject<bool>(() => options.CurrentValue.EnableShaderCache);
+            EnableTextureRecompression = new ReactiveObject<bool>(() => options.CurrentValue.EnableTextureRecompression);
+            GraphicsBackend = new ReactiveObject<GraphicsBackend>(() => options.CurrentValue.GraphicsBackend);
+            PreferredGpu = new ReactiveObject<string>(() => options.CurrentValue.PreferredGpu);
+            EnableMacroHLE = new ReactiveObject<bool>(() => options.CurrentValue.EnableMacroHLE);
+            EnableColorSpacePassthrough = new ReactiveObject<bool>(() => options.CurrentValue.EnableColorSpacePassthrough);
+            AntiAliasing = new ReactiveObject<AntiAliasing>(() => options.CurrentValue.AntiAliasing);
+            ScalingFilter = new ReactiveObject<ScalingFilter>(() => options.CurrentValue.ScalingFilter);
+            ScalingFilterLevel = new ReactiveObject<int>(() => options.CurrentValue.ScalingFilterLevel);
         }
     }
 
@@ -542,17 +547,26 @@ public class ConfigurationState
         /// </summary>
         public ReactiveObject<MultiplayerMode> Mode { get; private set; }
 
-        public MultiplayerSection()
+        public MultiplayerSection(IOptionsMonitor<ConfigurationFileFormat> options)
         {
-            LanInterfaceId = new ReactiveObject<string>();
-            Mode = new ReactiveObject<MultiplayerMode>();
+            LanInterfaceId = new ReactiveObject<string>(() => options.CurrentValue.MultiplayerLanInterfaceId);
+            Mode = new ReactiveObject<MultiplayerMode>(() => options.CurrentValue.MultiplayerMode);
         }
     }
 
     /// <summary>
     /// The default configuration instance
     /// </summary>
-    public static ConfigurationState Instance { get; } = new();
+    public static ConfigurationState Instance { get; private set; } = null!;
+
+    /// <summary>
+    /// Initializes the configuration state.
+    /// </summary>
+    /// <param name="options">The configuration options to monitor for changes.</param>
+    public static void Initialize(IOptionsMonitor<ConfigurationFileFormat> options)
+    {
+        Instance = new ConfigurationState(options);
+    }
 
     /// <summary>
     /// The UI section
@@ -614,20 +628,20 @@ public class ConfigurationState
     /// </summary>
     public ReactiveObject<HideCursorMode> HideCursor { get; private set; }
 
-    private ConfigurationState()
+    private ConfigurationState(IOptionsMonitor<ConfigurationFileFormat> options)
     {
-        UI = new UISection();
-        Logger = new LoggerSection();
-        System = new SystemSection();
-        Graphics = new GraphicsSection();
-        Hid = new HidSection();
-        Multiplayer = new MultiplayerSection();
-        EnableDiscordIntegration = new ReactiveObject<bool>();
-        CheckUpdatesOnStart = new ReactiveObject<bool>();
-        ShowConfirmExit = new ReactiveObject<bool>();
-        RememberWindowState = new ReactiveObject<bool>();
-        EnableHardwareAcceleration = new ReactiveObject<bool>();
-        HideCursor = new ReactiveObject<HideCursorMode>();
+        UI = new UISection(options);
+        Logger = new LoggerSection(options);
+        System = new SystemSection(options);
+        Graphics = new GraphicsSection(options);
+        Hid = new HidSection(options);
+        Multiplayer = new MultiplayerSection(options);
+        EnableDiscordIntegration = new ReactiveObject<bool>(() => options.CurrentValue.EnableDiscordIntegration);
+        CheckUpdatesOnStart = new ReactiveObject<bool>(() => options.CurrentValue.CheckUpdatesOnStart);
+        ShowConfirmExit = new ReactiveObject<bool>(() => options.CurrentValue.ShowConfirmExit);
+        RememberWindowState = new ReactiveObject<bool>(() => options.CurrentValue.RememberWindowState);
+        EnableHardwareAcceleration = new ReactiveObject<bool>(() => options.CurrentValue.EnableHardwareAcceleration);
+        HideCursor = new ReactiveObject<HideCursorMode>(() => options.CurrentValue.HideCursor);
     }
 
     public ConfigurationFileFormat ToFileFormat()
@@ -744,103 +758,6 @@ public class ConfigurationState
         };
 
         return configurationFile;
-    }
-
-    public void Load(ConfigurationFileFormat configurationFileFormat)
-    {
-        Logger.EnableFileLog.Value = configurationFileFormat.EnableFileLog;
-        Graphics.ResScale.Value = configurationFileFormat.ResScale;
-        Graphics.ResScaleCustom.Value = configurationFileFormat.ResScaleCustom;
-        Graphics.MaxAnisotropy.Value = configurationFileFormat.MaxAnisotropy;
-        Graphics.AspectRatio.Value = configurationFileFormat.AspectRatio;
-        Graphics.ShadersDumpPath.Value = configurationFileFormat.GraphicsShadersDumpPath;
-        Graphics.BackendThreading.Value = configurationFileFormat.BackendThreading;
-        Graphics.GraphicsBackend.Value = configurationFileFormat.GraphicsBackend;
-        Graphics.PreferredGpu.Value = configurationFileFormat.PreferredGpu;
-        Graphics.AntiAliasing.Value = configurationFileFormat.AntiAliasing;
-        Graphics.ScalingFilter.Value = configurationFileFormat.ScalingFilter;
-        Graphics.ScalingFilterLevel.Value = configurationFileFormat.ScalingFilterLevel;
-        Logger.EnableDebug.Value = configurationFileFormat.LoggingEnableDebug;
-        Logger.EnableStub.Value = configurationFileFormat.LoggingEnableStub;
-        Logger.EnableInfo.Value = configurationFileFormat.LoggingEnableInfo;
-        Logger.EnableWarn.Value = configurationFileFormat.LoggingEnableWarn;
-        Logger.EnableError.Value = configurationFileFormat.LoggingEnableError;
-        Logger.EnableTrace.Value = configurationFileFormat.LoggingEnableTrace;
-        Logger.EnableGuest.Value = configurationFileFormat.LoggingEnableGuest;
-        Logger.EnableFsAccessLog.Value = configurationFileFormat.LoggingEnableFsAccessLog;
-        Logger.FilteredClasses.Value = configurationFileFormat.LoggingFilteredClasses;
-        Logger.GraphicsDebugLevel.Value = configurationFileFormat.LoggingGraphicsDebugLevel;
-        System.Language.Value = configurationFileFormat.SystemLanguage;
-        System.Region.Value = configurationFileFormat.SystemRegion;
-        System.TimeZone.Value = configurationFileFormat.SystemTimeZone;
-        System.SystemTimeOffset.Value = configurationFileFormat.SystemTimeOffset;
-        System.EnableDockedMode.Value = configurationFileFormat.DockedMode;
-        EnableDiscordIntegration.Value = configurationFileFormat.EnableDiscordIntegration;
-        CheckUpdatesOnStart.Value = configurationFileFormat.CheckUpdatesOnStart;
-        ShowConfirmExit.Value = configurationFileFormat.ShowConfirmExit;
-        RememberWindowState.Value = configurationFileFormat.RememberWindowState;
-        EnableHardwareAcceleration.Value = configurationFileFormat.EnableHardwareAcceleration;
-        HideCursor.Value = configurationFileFormat.HideCursor;
-        Graphics.EnableVsync.Value = configurationFileFormat.EnableVsync;
-        Graphics.EnableShaderCache.Value = configurationFileFormat.EnableShaderCache;
-        Graphics.EnableTextureRecompression.Value = configurationFileFormat.EnableTextureRecompression;
-        Graphics.EnableMacroHLE.Value = configurationFileFormat.EnableMacroHLE;
-        Graphics.EnableColorSpacePassthrough.Value = configurationFileFormat.EnableColorSpacePassthrough;
-        System.EnablePtc.Value = configurationFileFormat.EnablePtc;
-        System.EnableInternetAccess.Value = configurationFileFormat.EnableInternetAccess;
-        System.EnableFsIntegrityChecks.Value = configurationFileFormat.EnableFsIntegrityChecks;
-        System.FsGlobalAccessLogMode.Value = configurationFileFormat.FsGlobalAccessLogMode;
-        System.AudioBackend.Value = configurationFileFormat.AudioBackend;
-        System.AudioVolume.Value = configurationFileFormat.AudioVolume;
-        System.MemoryManagerMode.Value = configurationFileFormat.MemoryManagerMode;
-        System.ExpandRam.Value = configurationFileFormat.ExpandRam;
-        System.IgnoreMissingServices.Value = configurationFileFormat.IgnoreMissingServices;
-        System.UseHypervisor.Value = configurationFileFormat.UseHypervisor;
-        UI.GuiColumns.FavColumn.Value = configurationFileFormat.GuiColumns.FavColumn;
-        UI.GuiColumns.IconColumn.Value = configurationFileFormat.GuiColumns.IconColumn;
-        UI.GuiColumns.AppColumn.Value = configurationFileFormat.GuiColumns.AppColumn;
-        UI.GuiColumns.DevColumn.Value = configurationFileFormat.GuiColumns.DevColumn;
-        UI.GuiColumns.VersionColumn.Value = configurationFileFormat.GuiColumns.VersionColumn;
-        UI.GuiColumns.TimePlayedColumn.Value = configurationFileFormat.GuiColumns.TimePlayedColumn;
-        UI.GuiColumns.LastPlayedColumn.Value = configurationFileFormat.GuiColumns.LastPlayedColumn;
-        UI.GuiColumns.FileExtColumn.Value = configurationFileFormat.GuiColumns.FileExtColumn;
-        UI.GuiColumns.FileSizeColumn.Value = configurationFileFormat.GuiColumns.FileSizeColumn;
-        UI.GuiColumns.PathColumn.Value = configurationFileFormat.GuiColumns.PathColumn;
-        UI.ColumnSort.SortColumnId.Value = configurationFileFormat.ColumnSort.SortColumnId;
-        UI.ColumnSort.SortAscending.Value = configurationFileFormat.ColumnSort.SortAscending;
-        UI.GameDirs.Value = configurationFileFormat.GameDirs;
-        UI.ShownFileTypes.NSP.Value = configurationFileFormat.ShownFileTypes.NSP;
-        UI.ShownFileTypes.PFS0.Value = configurationFileFormat.ShownFileTypes.PFS0;
-        UI.ShownFileTypes.XCI.Value = configurationFileFormat.ShownFileTypes.XCI;
-        UI.ShownFileTypes.NCA.Value = configurationFileFormat.ShownFileTypes.NCA;
-        UI.ShownFileTypes.NRO.Value = configurationFileFormat.ShownFileTypes.NRO;
-        UI.ShownFileTypes.NSO.Value = configurationFileFormat.ShownFileTypes.NSO;
-        UI.EnableCustomTheme.Value = configurationFileFormat.EnableCustomTheme;
-        UI.LanguageCode.Value = configurationFileFormat.LanguageCode;
-        UI.CustomThemePath.Value = configurationFileFormat.CustomThemePath;
-        UI.BaseStyle.Value = configurationFileFormat.BaseStyle;
-        UI.GameListViewMode.Value = configurationFileFormat.GameListViewMode;
-        UI.ShowNames.Value = configurationFileFormat.ShowNames;
-        UI.IsAscendingOrder.Value = configurationFileFormat.IsAscendingOrder;
-        UI.GridSize.Value = configurationFileFormat.GridSize;
-        UI.ApplicationSort.Value = configurationFileFormat.ApplicationSort;
-        UI.StartFullscreen.Value = configurationFileFormat.StartFullscreen;
-        UI.ShowConsole.Value = configurationFileFormat.ShowConsole;
-        UI.WindowStartup.WindowSizeWidth.Value = configurationFileFormat.WindowStartup.WindowSizeWidth;
-        UI.WindowStartup.WindowSizeHeight.Value = configurationFileFormat.WindowStartup.WindowSizeHeight;
-        UI.WindowStartup.WindowPositionX.Value = configurationFileFormat.WindowStartup.WindowPositionX;
-        UI.WindowStartup.WindowPositionY.Value = configurationFileFormat.WindowStartup.WindowPositionY;
-        UI.WindowStartup.WindowMaximized.Value = configurationFileFormat.WindowStartup.WindowMaximized;
-        Hid.EnableKeyboard.Value = configurationFileFormat.EnableKeyboard;
-        Hid.EnableMouse.Value = configurationFileFormat.EnableMouse;
-        Hid.Hotkeys.Value = configurationFileFormat.Hotkeys;
-
-        Hid.InputConfig.Value = new List<InputConfig>();
-        Hid.InputConfig.Value.AddRange(configurationFileFormat.InputOptions.KeyboardBindings);
-        Hid.InputConfig.Value.AddRange(configurationFileFormat.InputOptions.ControllerBindings);
-
-        Multiplayer.LanInterfaceId.Value = configurationFileFormat.MultiplayerLanInterfaceId;
-        Multiplayer.Mode.Value = configurationFileFormat.MultiplayerMode;
     }
 
     private static GraphicsBackend DefaultGraphicsBackend()

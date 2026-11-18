@@ -1,4 +1,6 @@
 using System;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 
 namespace Hyjinx.Ava.Configuration;
@@ -7,34 +9,72 @@ public class ReactiveObject<T>
 {
     private readonly ReaderWriterLockSlim _readerWriterLock = new();
     private bool _isInitialized;
-    private T _value;
+    private readonly PropertyAccessor _accessor;
 
     public event EventHandler<ReactiveEventArgs<T>> Event;
+
+    public ReactiveObject(Expression<Func<T>> expression)
+    {
+        var member = (MemberExpression)expression.Body;
+        var property = (PropertyInfo)member.Member;
+
+        var propertyExpression = Expression.Property(member.Expression, property);
+        var value = Expression.Parameter(typeof(T), "value");
+
+        _accessor = new PropertyAccessor(Expression.Lambda<Func<T>>(propertyExpression).Compile(),
+            Expression.Lambda<Action<T>>(Expression.Assign(propertyExpression, value), value).Compile());
+    }
+
+    public ReactiveObject(T value)
+    {
+        _accessor = new PropertyAccessor(() => value, _ => { });
+    }
+
+    private class PropertyAccessor
+    {
+        public Func<T> Get { get; }
+        public Action<T> Set { get; }
+
+        public PropertyAccessor(Func<T> getter, Action<T> setter)
+        {
+            Get = getter;
+            Set = setter;
+        }
+    }
 
     public T Value
     {
         get
         {
-            _readerWriterLock.EnterReadLock();
-            T value = _value;
-            _readerWriterLock.ExitReadLock();
-
-            return value;
+            try
+            {
+                _readerWriterLock.EnterReadLock();
+                return _accessor.Get();
+            }
+            finally
+            {
+                _readerWriterLock.ExitReadLock();
+            }
         }
         set
         {
-            _readerWriterLock.EnterWriteLock();
-
-            T oldValue = _value;
-
+            var oldValue = Value;
             bool oldIsInitialized = _isInitialized;
 
-            _isInitialized = true;
-            _value = value;
+            try
+            {
+                _readerWriterLock.EnterWriteLock();
 
-            _readerWriterLock.ExitWriteLock();
+                _accessor.Set(value);
+                _isInitialized = true;
+            }
+            finally
+            {
+                _readerWriterLock.ExitWriteLock();
+            }
 
-            if (!oldIsInitialized || oldValue == null || !oldValue.Equals(_value))
+            // The value wasn't already initialized, or it has been modified raise the event.
+            if (!oldIsInitialized || oldValue == null || !oldValue.Equals(value))
             {
                 Event?.Invoke(this, new ReactiveEventArgs<T>(oldValue, value));
             }

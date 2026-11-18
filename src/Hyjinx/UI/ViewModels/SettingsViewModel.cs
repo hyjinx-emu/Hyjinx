@@ -594,8 +594,9 @@ public class SettingsViewModel : BaseModel
 
     private static void RevertIfNotSaved()
     {
-        var config = ConfigurationFileFormat.Load(ConfigurationModule.ConfigurationPath);
-        ConfigurationState.Instance.Load(config);
+        // TODO: Viper - Need to deal with reverting the configuration.
+        //var config = ConfigurationFileFormat.Load(ConfigurationModule.ConfigurationPath);
+        //ConfigurationState.Instance.Load(config);
     }
 
     public void ApplyButton()
