@@ -94,7 +94,7 @@ internal class ConfigurationModule : IModule
 
             GuardGameConfigMustNotAlreadyBeActive();
 
-            var gameConfigPath = Path.Join(AppDataManager.GamesDirPath, applicationId, "config.json");
+            var gameConfigPath = Path.Join(AppDataManager.GamesDirPath, applicationId, ConfigFileName);
 
             _configManager.AddJsonFile(gameConfigPath, true, true);
             _currentGameConfig = gameConfigPath;
