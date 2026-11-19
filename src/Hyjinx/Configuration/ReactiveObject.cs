@@ -141,7 +141,7 @@ public class ReactiveObject<T>
             }
 
             // The value wasn't already initialized, or it has been modified raise the event.
-            if (!oldIsInitialized || oldValue == null || !EqualityComparer<T>.Default.Equals(value, oldValue))
+            if (!oldIsInitialized || EqualityComparer<T>.Default.Equals(value, default) || !EqualityComparer<T>.Default.Equals(value, oldValue))
             {
                 Event?.Invoke(this, new ReactiveEventArgs<T>(oldValue, value));
             }
