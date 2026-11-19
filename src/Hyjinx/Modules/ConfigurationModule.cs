@@ -29,6 +29,7 @@ internal class ConfigurationModule : IModule
     /// </summary>
     private ApplicationConfigurationManager? ConfigurationManager { get; set; }
 
+    [ExcludeFromCodeCoverage]
     public void RegisterServices(IServiceCollection services)
     {
         string localConfigurationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigFileName);
