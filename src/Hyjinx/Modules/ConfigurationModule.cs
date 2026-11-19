@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -26,19 +27,7 @@ internal class ConfigurationModule : IModule
     /// <summary>
     /// The configuration manager in use.
     /// </summary>
-    private ApplicationConfigurationManager ConfigurationManager { get; } = new();
-
-    /// <summary>
-    /// A mechanism to initialize the legacy configuration state object.
-    /// </summary>
-    /// <param name="opts">The configuration file options.</param>
-    private class ConfigurationStateInitializer(IOptionsMonitor<ConfigurationFileFormat> opts) : ISupportInitialization
-    {
-        public void Initialize()
-        {
-            ConfigurationState.Initialize(opts);
-        }
-    }
+    private ApplicationConfigurationManager? ConfigurationManager { get; set; }
 
     public void RegisterServices(IServiceCollection services)
     {
@@ -67,7 +56,9 @@ internal class ConfigurationModule : IModule
         }
 
         // Add the user configuration settings.
+        ConfigurationManager = new ApplicationConfigurationManager();
         ConfigurationManager.ApplyUserConfig(ConfigurationPath);
+
         services.AddSingleton<IGameConfigurationManager>(ConfigurationManager);
 
         var config = ConfigurationManager.Get();
@@ -78,7 +69,23 @@ internal class ConfigurationModule : IModule
         services.AddTransient<ISupportInitialization, ConfigurationStateInitializer>();
     }
 
-    private sealed class ApplicationConfigurationManager : IGameConfigurationManager, IDisposable
+    /// <summary>
+    /// A mechanism to initialize the legacy configuration state object.
+    /// </summary>
+    /// <param name="opts">The configuration file options.</param>
+    [ExcludeFromCodeCoverage]
+    internal class ConfigurationStateInitializer(IOptionsMonitor<ConfigurationFileFormat> opts) : ISupportInitialization
+    {
+        public void Initialize()
+        {
+            ConfigurationState.Initialize(opts);
+        }
+    }
+
+    /// <summary>
+    /// A manager for handling application configuration files being applied during execution.
+    /// </summary>
+    internal sealed class ApplicationConfigurationManager : IGameConfigurationManager, IDisposable
     {
         private readonly ConfigurationManager _configManager = new();
         private string? _currentGameConfig;
