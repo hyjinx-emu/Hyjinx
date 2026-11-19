@@ -422,7 +422,7 @@ public class ConfigurationState
             var configs = new List<InputConfig>();
             configs.AddRange(options.CurrentValue.InputOptions.ControllerBindings);
             configs.AddRange(options.CurrentValue.InputOptions.KeyboardBindings);
-            InputConfig = new ReactiveObject<List<InputConfig>>(configs);
+            InputConfig = new ReactiveClassObject<List<InputConfig>>(configs);
         }
     }
 

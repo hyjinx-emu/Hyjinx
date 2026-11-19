@@ -6,6 +6,43 @@ using System.Threading;
 
 namespace Hyjinx.Ava.Configuration;
 
+/// <summary>
+/// A reactive object which requires a reference type and raises events when the value changes.
+/// </summary>
+/// <typeparam name="T">The type of value.</typeparam>
+public class ReactiveClassObject<T> : ReactiveObject<T>
+    where T : class
+{
+    public ReactiveClassObject(T value) : base(new ValueAccessor(value)) { }
+
+    /// <summary>
+    /// An <see cref="IValueAccessor"/> which directly accesses a locally held value within the accessor.
+    /// </summary>
+    private class ValueAccessor : IValueAccessor
+    {
+        private T currentValue;
+
+        public T Get()
+        {
+            return currentValue;
+        }
+
+        public void Set(T value)
+        {
+            currentValue = value;
+        }
+
+        public ValueAccessor(T value)
+        {
+            currentValue = value;
+        }
+    }
+}
+
+/// <summary>
+/// A reactive object which raises events when the value changes.
+/// </summary>
+/// <typeparam name="T">The type of value.</typeparam>
 public class ReactiveObject<T>
 {
     private readonly ReaderWriterLockSlim _readerWriterLock = new();
@@ -26,44 +63,25 @@ public class ReactiveObject<T>
             Expression.Lambda<Action<T>>(Expression.Assign(propertyExpression, value), value).Compile());
     }
 
-    public ReactiveObject(T value)
+    protected ReactiveObject(IValueAccessor accessor)
     {
-        _accessor = new ValueAccessor(value);
+        _accessor = accessor;
     }
 
     /// <summary>
     /// A mechanism to abstract how the values are interacted with by the reactive object.
     /// </summary>
-    private interface IValueAccessor
+    protected interface IValueAccessor
     {
         /// <summary>
         /// Gets the value.
         /// </summary>
-        public Func<T> Get { get; }
+        public T Get();
 
         /// <summary>
         /// Sets the value.
         /// </summary>
-        public Action<T> Set { get; }
-    }
-
-    /// <summary>
-    /// An <see cref="IValueAccessor"/> which directly accesses a locally held value within the accessor.
-    /// </summary>
-    private class ValueAccessor : IValueAccessor
-    {
-        private T currentValue;
-
-        public Func<T> Get { get; }
-        public Action<T> Set { get; }
-
-        public ValueAccessor(T value)
-        {
-            currentValue = value;
-
-            Get = () => currentValue;
-            Set = (newValue) => currentValue = newValue;
-        }
+        public void Set(T value);
     }
 
     /// <summary>
@@ -71,13 +89,23 @@ public class ReactiveObject<T>
     /// </summary>
     private class LambdaExpressionAccessor : IValueAccessor
     {
-        public Func<T> Get { get; }
-        public Action<T> Set { get; }
+        private readonly Func<T> getter;
+        private readonly Action<T> setter;
+
+        public T Get()
+        {
+            return getter();
+        }
+
+        public void Set(T value)
+        {
+            setter(value);
+        }
 
         public LambdaExpressionAccessor(Func<T> getter, Action<T> setter)
         {
-            Get = getter;
-            Set = setter;
+            this.getter = getter;
+            this.setter = setter;
         }
     }
 

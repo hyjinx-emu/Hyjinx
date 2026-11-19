@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Hyjinx.Memory.Tests\Hyjinx.Memory.Tests.csproj" />
     <ProjectReference Include="..\Hyjinx.Tests.Unicorn\Hyjinx.Tests.Unicorn.csproj" />
     <ProjectReference Include="..\ARMeilleure\ARMeilleure.csproj" />
+    <ProjectReference Include="..\Hyjinx\Hyjinx.csproj" />
   </ItemGroup>
 
   <Target Name="CopyUnicorn" AfterTargets="Build">
