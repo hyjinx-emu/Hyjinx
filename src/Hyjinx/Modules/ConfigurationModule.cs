@@ -4,6 +4,7 @@ using Hyjinx.Extensions.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -62,8 +63,9 @@ internal class ConfigurationModule : IModule
 
         services.AddSingleton<IGameConfigurationManager>(ConfigurationManager);
 
-        var config = ConfigurationManager.Get();
-        services.AddSingleton<IConfiguration>(config);
+        // Attach the configuration and bind the object.
+        var config = ConfigurationManager.GetConfiguration();
+        services.AddSingleton(config);
         services.AddOptions<ConfigurationFileFormat>().Bind(config);
 
         // Add the configuration state initializer.
@@ -88,8 +90,15 @@ internal class ConfigurationModule : IModule
     /// </summary>
     internal sealed class ApplicationConfigurationManager : IGameConfigurationManager, IDisposable
     {
-        private readonly ConfigurationManager _configManager = new();
+        private readonly ConfigurationManager _configManager;
         private string? _currentGameConfig;
+
+        public ApplicationConfigurationManager() : this(new()) { }
+
+        public ApplicationConfigurationManager(ConfigurationManager configManager)
+        {
+            _configManager = configManager;
+        }
 
         ~ApplicationConfigurationManager()
         {
@@ -102,10 +111,12 @@ internal class ConfigurationModule : IModule
 
             GuardGameConfigMustNotAlreadyBeActive();
 
-            var gameConfigPath = Path.Join(AppDataManager.GamesDirPath, applicationId, ConfigFileName);
-
-            _configManager.AddJsonFile(gameConfigPath, true, true);
-            _currentGameConfig = gameConfigPath;
+            var gameConfigFile = new FileInfo(Path.Join(AppDataManager.GamesDirPath, applicationId, ConfigFileName));
+            if (gameConfigFile.Exists)
+            {
+                _configManager.AddJsonFile(gameConfigFile.FullName, false, true);
+                _currentGameConfig = gameConfigFile.FullName;
+            }
         }
 
         private void GuardGameConfigMustNotAlreadyBeActive()
@@ -130,10 +141,15 @@ internal class ConfigurationModule : IModule
                 return;
             }
 
-            var existing = _configManager.Sources.OfType<JsonConfigurationSource>().Where(o => string.Equals(_currentGameConfig, o.Path, StringComparison.CurrentCultureIgnoreCase)).SingleOrDefault();
+            var current = new FileInfo(_currentGameConfig);
+            var existing = _configManager.Sources.OfType<JsonConfigurationSource>().SingleOrDefault(o =>
+                string.Equals(o.Path, current.Name, StringComparison.CurrentCultureIgnoreCase) &&
+                string.Equals(Path.TrimEndingDirectorySeparator(((PhysicalFileProvider)o.FileProvider!)?.Root!), current.Directory!.FullName, StringComparison.CurrentCultureIgnoreCase));
+
             if (existing != null)
             {
                 _configManager.Sources.Remove(existing);
+                _currentGameConfig = null;
             }
         }
 
@@ -148,10 +164,11 @@ internal class ConfigurationModule : IModule
             if (disposing)
             {
                 _configManager.Dispose();
+                _currentGameConfig = null;
             }
         }
 
-        public IConfigurationRoot Get()
+        public IConfiguration GetConfiguration()
         {
             return _configManager;
         }
