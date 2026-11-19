@@ -12,7 +12,7 @@ internal partial class ConfigurationModuleTests
     [OneTimeSetUp]
     public void Init()
     {
-        AppDataManager.Initialize(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\TestData"));
+        AppDataManager.Initialize(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../../TestData"));
     }
 
     [SetUp]
