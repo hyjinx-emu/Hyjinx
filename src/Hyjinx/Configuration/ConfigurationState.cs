@@ -12,11 +12,13 @@ using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json.Nodes;
 
 namespace Hyjinx.Ava.Configuration;
 
+[ExcludeFromCodeCoverage(Justification = "This class is to be removed.")]
 public class ConfigurationState
 {
     /// <summary>
