@@ -12,6 +12,10 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>SYSLIB1025;CS8618</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Audio\Hyjinx.Audio.csproj" />
     <ProjectReference Include="..\Hyjinx.Cpu\Hyjinx.Cpu.csproj" />

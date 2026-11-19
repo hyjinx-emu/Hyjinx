@@ -25,6 +25,13 @@ internal partial class ConfigurationModuleTests
     }
 
     [Test]
+    public void CreatesDefaultInstance()
+    {
+        var target = new ConfigurationModule.ApplicationConfigurationManager();
+        Assert.That(target.GetConfiguration(), Is.Not.Null);
+    }
+
+    [Test]
     public void GetsTheConfigurationManager()
     {
         var config = target.GetConfiguration();
@@ -37,6 +44,14 @@ internal partial class ConfigurationModuleTests
     {
         Assert.Throws<ArgumentNullException>(() => target.ApplyGameConfig(null!));
         Assert.Throws<ArgumentException>(() => target.ApplyGameConfig(""));
+    }
+
+    [Test]
+    public void AppliesTheUserConfiguration()
+    {
+        target.ApplyUserConfig();
+
+        Assert.That(configManager.Sources.Count, Is.EqualTo(1));
     }
 
     [Test]

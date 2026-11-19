@@ -17,6 +17,11 @@ public partial class AppDataManager
     private const string KeysDir = "system";
     private const string LogsDir = "logs";
 
+    /// <summary>
+    /// Defines the name of the configuration file.
+    /// </summary>
+    private const string ConfigFileName = "config.json";
+
     public enum LaunchMode
     {
         UserProfile,
@@ -49,6 +54,24 @@ public partial class AppDataManager
     {
         _logger = new NullLogger<AppDataManager>();
         KeysDirPathUser = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".switch");
+    }
+
+    /// <summary>
+    /// Gets the user configuration file information.
+    /// </summary>
+    /// <returns>The file info.</returns>
+    public static FileInfo GetUserConfigFile()
+    {
+        return new FileInfo(Path.Combine(BaseDirPath, ConfigFileName));
+    }
+
+    /// <summary>
+    /// Gets the game configuration file information.
+    /// </summary>
+    /// <returns>The file info.</returns>
+    public static FileInfo GetGameConfigFile(string applicationId)
+    {
+        return new FileInfo(Path.Combine(GamesDirPath, applicationId, ConfigFileName));
     }
 
     public static void Initialize(string? baseDirPath = null)

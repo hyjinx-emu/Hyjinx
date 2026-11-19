@@ -18,48 +18,23 @@ namespace Hyjinx.Ava.Modules;
 /// </summary>
 internal class ConfigurationModule : IModule
 {
-    public static string ConfigurationPath { get; private set; } = null!;
-
     /// <summary>
-    /// Defines the name of the configuration file.
+    /// The path of the user configuration file.
     /// </summary>
-    private const string ConfigFileName = "config.json";
+    [Obsolete($"This field should no longer be used. Please use the {nameof(AppDataManager)}:{nameof(AppDataManager.GetUserConfigFile)}() method instead.")]
+    public static string ConfigurationPath => AppDataManager.GetUserConfigFile().FullName;
 
     /// <summary>
     /// The configuration manager in use.
     /// </summary>
-    private ApplicationConfigurationManager? ConfigurationManager { get; set; }
+    private static ApplicationConfigurationManager? ConfigurationManager { get; set; }
 
     [ExcludeFromCodeCoverage]
     public void RegisterServices(IServiceCollection services)
     {
-        string localConfigurationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigFileName);
-        string appDataConfigurationPath = Path.Combine(AppDataManager.BaseDirPath, ConfigFileName);
-
-        string? configurationPath = null;
-        // Now load the configuration as the other subsystems are now registered
-        if (File.Exists(localConfigurationPath))
-        {
-            configurationPath = localConfigurationPath;
-        }
-        else if (File.Exists(appDataConfigurationPath))
-        {
-            configurationPath = appDataConfigurationPath;
-        }
-
-        if (configurationPath == null)
-        {
-            ConfigurationPath = appDataConfigurationPath;
-            new ConfigurationFileFormat().SaveConfig(ConfigurationPath);
-        }
-        else
-        {
-            ConfigurationPath = configurationPath;
-        }
-
         // Add the user configuration settings.
         ConfigurationManager = new ApplicationConfigurationManager();
-        ConfigurationManager.ApplyUserConfig(ConfigurationPath);
+        ConfigurationManager.ApplyUserConfig();
 
         services.AddSingleton<IGameConfigurationManager>(ConfigurationManager);
 
@@ -76,7 +51,7 @@ internal class ConfigurationModule : IModule
     /// A mechanism to initialize the legacy configuration state object.
     /// </summary>
     /// <param name="opts">The configuration file options.</param>
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage(Justification = "The class being initialized will be removed.")]
     internal class ConfigurationStateInitializer(IOptionsMonitor<ConfigurationFileFormat> opts) : ISupportInitialization
     {
         public void Initialize()
@@ -111,7 +86,7 @@ internal class ConfigurationModule : IModule
 
             GuardGameConfigMustNotAlreadyBeActive();
 
-            var gameConfigFile = new FileInfo(Path.Join(AppDataManager.GamesDirPath, applicationId, ConfigFileName));
+            var gameConfigFile = AppDataManager.GetGameConfigFile(applicationId);
             if (gameConfigFile.Exists)
             {
                 _configManager.AddJsonFile(gameConfigFile.FullName, false, true);
@@ -127,11 +102,20 @@ internal class ConfigurationModule : IModule
             }
         }
 
-        public void ApplyUserConfig(string path)
+        public void ApplyUserConfig(bool autoCreate = true)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(path);
+            var userConfigFile = AppDataManager.GetUserConfigFile();
+            if (!userConfigFile.Exists)
+            {
+                if (!autoCreate)
+                {
+                    throw new FileNotFoundException($"The user config file '{userConfigFile.FullName}' does not exist.", userConfigFile.FullName);
+                }
 
-            _configManager.AddJsonFile(path, false, true);
+                new ConfigurationFileFormat().SaveConfig(userConfigFile.FullName);
+            }
+
+            _configManager.AddJsonFile(userConfigFile.FullName, false, true);
         }
 
         public void ClearGameConfig()
