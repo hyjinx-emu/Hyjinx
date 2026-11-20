@@ -12,7 +12,6 @@ using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Ava.Emulation.Input;
 using Hyjinx.Ava.Emulation.Library;
 using Hyjinx.Ava.Localization;
-using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Controls;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Messaging;
@@ -1308,6 +1307,7 @@ internal class MainWindowViewModel : BaseModel
     public void ToggleShowConsole()
     {
         ShowConsole = !ShowConsole;
+        ConsoleHelper.SetConsoleWindowState(ShowConsole);
     }
 
     public void SetListMode()

@@ -122,7 +122,7 @@ public class ConfigurationState : IDisposable
         /// <summary>
         /// Hide / Show Console Window
         /// </summary>
-        public ReactiveObject<bool> ShowConsole { get; }
+        public ReactiveObject<bool> ShowConsole { get; } = new();
 
         /// <summary>
         /// View Mode of the Game list
@@ -148,12 +148,6 @@ public class ConfigurationState : IDisposable
         /// Sets if Grid is ordered in Ascending Order
         /// </summary>
         public ReactiveObject<bool> IsAscendingOrder { get; } = new();
-
-        public UISection()
-        {
-            ShowConsole = new ReactiveObject<bool>();
-            ShowConsole.Event += static (s, e) => { ConsoleHelper.SetConsoleWindowState(e.NewValue); };
-        }
     }
 
     /// <summary>
