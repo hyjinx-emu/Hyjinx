@@ -21,13 +21,13 @@ internal class ConfigurationModule : IModule
     /// <summary>
     /// The configuration manager in use.
     /// </summary>
-    private static ApplicationConfigurationManager? ConfigurationManager { get; set; }
+    [ExcludeFromCodeCoverage]
+    private static ApplicationConfigurationManager ConfigurationManager { get; } = new();
 
     [ExcludeFromCodeCoverage]
     public void RegisterServices(IServiceCollection services)
     {
         // Add the user configuration settings.
-        ConfigurationManager = new ApplicationConfigurationManager();
         ConfigurationManager.ApplyUserConfig();
 
         services.AddSingleton<IGameConfigurationManager>(ConfigurationManager);
