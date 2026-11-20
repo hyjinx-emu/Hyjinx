@@ -469,7 +469,7 @@ internal partial class MainWindow : StyleableWindow
         config.ShownFileTypes.NCA = ConfigurationState.Instance.UI.ShownFileTypes.NCA.Value;
         config.ShownFileTypes.NRO = ConfigurationState.Instance.UI.ShownFileTypes.NRO.Value;
         config.ShownFileTypes.NSO = ConfigurationState.Instance.UI.ShownFileTypes.NSO.Value;
-        
+
         // Persist the changes to disk.
         config.SaveConfig(ConfigurationModule.ConfigurationPath);
     }
