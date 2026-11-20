@@ -800,8 +800,6 @@ internal class EmulationHost
             }
         }
 
-        MainWindowViewModel.SaveConfig();
-
         return deviceDriver;
     }
 

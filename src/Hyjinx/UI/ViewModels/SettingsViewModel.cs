@@ -594,8 +594,7 @@ public class SettingsViewModel : BaseModel
 
     private static void RevertIfNotSaved()
     {
-        var config = ConfigurationFileFormat.Load(ConfigurationModule.ConfigurationPath);
-        ConfigurationState.Instance.Load(config);
+        ConfigurationState.Instance.Reload();
     }
 
     public void ApplyButton()
@@ -605,12 +604,13 @@ public class SettingsViewModel : BaseModel
 
     public void OkButton()
     {
+        SaveSettingsEvent?.Invoke();
+
         ApplySettings();
 
         ConfigurationState.Instance.ToFileFormat()
             .SaveConfig(ConfigurationModule.ConfigurationPath);
 
-        SaveSettingsEvent?.Invoke();
         CloseWindow?.Invoke();
     }
 

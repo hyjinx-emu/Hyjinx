@@ -25,11 +25,11 @@ internal class ConfigurationModule : IModule
     /// A mechanism to initialize the legacy configuration state object.
     /// </summary>
     /// <param name="opts">The configuration file options.</param>
-    private class LegacyConfigurationStateInitializer(IOptions<ConfigurationFileFormat> opts) : ISupportInitialization
+    private class LegacyConfigurationStateInitializer(IOptionsMonitor<ConfigurationFileFormat> opts) : ISupportInitialization
     {
         public void Initialize()
         {
-            ConfigurationState.Instance.Load(opts.Value);
+            ConfigurationState.Instance.Initialize(opts);
         }
     }
 

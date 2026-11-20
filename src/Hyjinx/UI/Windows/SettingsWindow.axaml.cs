@@ -38,11 +38,6 @@ public partial class SettingsWindow : StyleableWindow
     public void SaveSettings()
     {
         InputPage.InputView?.SaveCurrentProfile();
-
-        if (Owner is MainWindow window && ViewModel.DirectoryChanged)
-        {
-            window.LoadApplications();
-        }
     }
 
     private void Load()
