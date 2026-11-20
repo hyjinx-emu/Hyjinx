@@ -381,20 +381,6 @@ public record ConfigurationFileFormat
     };
 
     /// <summary>
-    /// Legacy keyboard control bindings
-    /// </summary>
-    /// <remarks>Kept for file format compatibility (to avoid possible failure when parsing configuration on old versions)</remarks>
-    [Obsolete("Remove this when those older versions aren't in use anymore")]
-    public List<JsonObject> KeyboardConfig { get; set; } = [];
-
-    /// <summary>
-    /// Legacy controller control bindings
-    /// </summary>
-    /// <remarks>Kept for file format compatibility (to avoid possible failure when parsing configuration on old versions)</remarks>
-    [Obsolete("Remove this when those older versions aren't in use anymore")]
-    public List<JsonObject> ControllerConfig { get; set; } = [];
-
-    /// <summary>
     /// Input configurations.
     /// </summary>
     public InputOptions InputOptions { get; set; } = new();

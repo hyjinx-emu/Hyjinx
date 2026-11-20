@@ -606,8 +606,6 @@ public class ConfigurationState : IDisposable
             EnableKeyboard = Hid.EnableKeyboard,
             EnableMouse = Hid.EnableMouse,
             Hotkeys = Hid.Hotkeys,
-            KeyboardConfig = new List<JsonObject>(),
-            ControllerConfig = new List<JsonObject>(),
             InputOptions =
             {
                 KeyboardBindings = Hid.InputConfig.Value.OfType<StandardKeyboardInputConfig>().ToList(),
