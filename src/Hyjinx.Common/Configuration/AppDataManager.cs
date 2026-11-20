@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.IO;
-using System.Runtime.Versioning;
 
 namespace Hyjinx.Common.Configuration;
 
@@ -16,6 +15,8 @@ public partial class AppDataManager
     private const string ProfilesDir = "profiles";
     private const string KeysDir = "system";
     private const string LogsDir = "logs";
+
+    private const string ConfigFileName = "config.json";
 
     public enum LaunchMode
     {
@@ -264,104 +265,11 @@ public partial class AppDataManager
         }
     }
 
-    [SupportedOSPlatform("macos")]
-    public static void FixMacOSConfigurationFolders()
-    {
-        var oldConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config", DefaultBaseDir);
-        if (Path.Exists(oldConfigPath) && !IsPathSymlink(oldConfigPath) && !Path.Exists(BaseDirPath))
-        {
-            FileSystemUtils.MoveDirectory(oldConfigPath, BaseDirPath);
-            Directory.CreateSymbolicLink(oldConfigPath, BaseDirPath);
-        }
+    public static string GetUserConfigPath() =>
+        Path.Combine(BaseDirPath, ConfigFileName);
 
-        string correctApplicationDataDirectoryPath =
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DefaultBaseDir);
-        if (IsPathSymlink(correctApplicationDataDirectoryPath))
-        {
-            //copy the files somewhere temporarily
-            string tempPath = Path.Combine(Path.GetTempPath(), DefaultBaseDir);
-            try
-            {
-                FileSystemUtils.CopyDirectory(correctApplicationDataDirectoryPath, tempPath, true);
-            }
-            catch (Exception exception)
-            {
-                LogErrorCopyingApplicationDataIntoTemp(_logger, tempPath, exception);
-
-                try
-                {
-                    var resolvedDirectoryInfo = Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
-                    string resolvedPath = resolvedDirectoryInfo!.FullName;
-
-                    LogMoveYourDataNotification(_logger, resolvedPath, correctApplicationDataDirectoryPath);
-                }
-                catch (Exception symlinkException)
-                {
-                    LogErrorResolvingSymlink(_logger, correctApplicationDataDirectoryPath, symlinkException);
-                }
-                return;
-            }
-
-            //delete the symlink
-            try
-            {
-                //This will fail if this is an actual directory, so there is no way we can actually delete user data here.
-                File.Delete(correctApplicationDataDirectoryPath);
-            }
-            catch (Exception exception)
-            {
-                LogErrorDeletingSymlink(_logger, correctApplicationDataDirectoryPath, exception);
-
-                try
-                {
-                    var resolvedDirectoryInfo = Directory.ResolveLinkTarget(correctApplicationDataDirectoryPath, true);
-                    string resolvedPath = resolvedDirectoryInfo!.FullName;
-
-                    LogMoveYourDataNotification(_logger, resolvedPath, correctApplicationDataDirectoryPath);
-                }
-                catch (Exception symlinkException)
-                {
-                    LogErrorResolvingSymlink(_logger, correctApplicationDataDirectoryPath, symlinkException);
-                }
-                return;
-            }
-
-            //put the files back
-            try
-            {
-                FileSystemUtils.CopyDirectory(tempPath, correctApplicationDataDirectoryPath, true);
-            }
-            catch (Exception exception)
-            {
-                LogErrorCopyingApplicationData(_logger, tempPath, correctApplicationDataDirectoryPath, exception);
-            }
-        }
-    }
-
-    [LoggerMessage(LogLevel.Critical,
-        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-        Message = "An error while copying your application data into the {tempPath} folder.")]
-    private static partial void LogErrorCopyingApplicationDataIntoTemp(ILogger logger, string tempPath, Exception ex);
-
-    [LoggerMessage(LogLevel.Critical,
-        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-        Message = "Please manually move your Hyjinx data from {resolvedPath} to {correctApplicationDataDirectoryPath}, and remove the symlink.")]
-    private static partial void LogMoveYourDataNotification(ILogger logger, string resolvedPath, string correctApplicationDataDirectoryPath);
-
-    [LoggerMessage(LogLevel.Error,
-        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-        Message = "An error occurred while deleting the Hyjinx application data folder symlink at {correctApplicationDataDirectoryPath}.")]
-    private static partial void LogErrorDeletingSymlink(ILogger logger, string correctApplicationDataDirectoryPath, Exception ex);
-
-    [LoggerMessage(LogLevel.Critical,
-        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-        Message = "Unable to resolve the symlink for Hyjinx application data: Follow the symlink at {correctApplicationDataDirectoryPath} and move your data back to the Application Support folder.")]
-    private static partial void LogErrorResolvingSymlink(ILogger logger, string correctApplicationDataDirectoryPath, Exception ex);
-
-    [LoggerMessage(LogLevel.Critical,
-        EventId = (int)LogClass.Application, EventName = nameof(LogClass.Application),
-        Message = "An error occurred copying Hyjinx application data into the correct location. Please manually move your application data from {tempPath} to {correctApplicationDataDirectoryPath}.")]
-    private static partial void LogErrorCopyingApplicationData(ILogger logger, string tempPath, string correctApplicationDataDirectoryPath, Exception ex);
+    public static string GetGameConfigPath(string applicationId) =>
+        Path.Combine(GamesDirPath, applicationId, ConfigFileName);
 
     public static string GetModsPath() =>
         CustomModsPath ?? Directory.CreateDirectory(Path.Combine(BaseDirPath, DefaultModsDir)).FullName;

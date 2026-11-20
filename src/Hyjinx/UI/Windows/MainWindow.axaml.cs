@@ -16,6 +16,7 @@ using Hyjinx.Ava.UI.Applet;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Messaging;
 using Hyjinx.Ava.UI.ViewModels;
+using Hyjinx.Common.Configuration;
 using Hyjinx.Extensions.Abstractions.Events;
 using Hyjinx.Graphics.Gpu;
 using Hyjinx.HLE.FileSystem;
@@ -438,7 +439,8 @@ internal partial class MainWindow : StyleableWindow
     private void SaveWindowSizePosition()
     {
         // Read the user config file.
-        ConfigurationFileFormat config = ConfigurationFileFormat.Load(ConfigurationModule.ConfigurationPath);
+        var userConfigFile = AppDataManager.GetUserConfigPath();
+        ConfigurationFileFormat config = ConfigurationFileFormat.Load(userConfigFile);
 
         // Persist the settings we want upon close.
         config.LanguageCode = LocaleManager.Instance.CurrentLanguage;
@@ -471,7 +473,7 @@ internal partial class MainWindow : StyleableWindow
         config.ShownFileTypes.NSO = ConfigurationState.Instance.UI.ShownFileTypes.NSO.Value;
 
         // Persist the changes to disk.
-        config.SaveConfig(ConfigurationModule.ConfigurationPath);
+        config.SaveConfig(userConfigFile);
     }
 
     protected override void OnOpened(EventArgs e)

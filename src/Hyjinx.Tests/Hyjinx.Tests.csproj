@@ -12,6 +12,10 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CS8618</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Hyjinx.Audio\Hyjinx.Audio.csproj" />
     <ProjectReference Include="..\Hyjinx.Cpu\Hyjinx.Cpu.csproj" />
@@ -20,6 +24,7 @@
     <ProjectReference Include="..\Hyjinx.Memory.Tests\Hyjinx.Memory.Tests.csproj" />
     <ProjectReference Include="..\Hyjinx.Tests.Unicorn\Hyjinx.Tests.Unicorn.csproj" />
     <ProjectReference Include="..\ARMeilleure\ARMeilleure.csproj" />
+    <ProjectReference Include="..\Hyjinx\Hyjinx.csproj" />
   </ItemGroup>
 
   <Target Name="CopyUnicorn" AfterTargets="Build">
