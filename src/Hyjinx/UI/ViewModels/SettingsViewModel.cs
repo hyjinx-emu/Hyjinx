@@ -604,12 +604,13 @@ public class SettingsViewModel : BaseModel
 
     public void OkButton()
     {
+        SaveSettingsEvent?.Invoke();
+
         ApplySettings();
 
         ConfigurationState.Instance.ToFileFormat()
             .SaveConfig(ConfigurationModule.ConfigurationPath);
 
-        SaveSettingsEvent?.Invoke();
         CloseWindow?.Invoke();
     }
 
