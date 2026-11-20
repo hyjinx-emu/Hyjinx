@@ -1,6 +1,5 @@
 using Hyjinx.Ava.Configuration.System;
 using Hyjinx.Ava.Configuration.UI;
-using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
@@ -13,7 +12,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Nodes;
 
 namespace Hyjinx.Ava.Configuration;
 
