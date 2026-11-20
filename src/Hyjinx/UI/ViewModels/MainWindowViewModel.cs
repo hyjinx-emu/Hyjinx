@@ -30,6 +30,7 @@ using Hyjinx.Input.HLE;
 using Hyjinx.Logging.Abstractions;
 using LibHac.Common;
 using LibHac.Tools.FsSystem.NcaUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SkiaSharp;
 using System;
@@ -111,9 +112,11 @@ internal class MainWindowViewModel : BaseModel
     public ApplicationData GridSelectedApplication;
 
     internal EmulationHost AppHost { get; set; }
+    public IServiceProvider ApplicationServices { get; }
 
-    public MainWindowViewModel(ILogger<MainWindowViewModel> logger, Messenger messenger)
+    public MainWindowViewModel(IServiceProvider applicationServices, ILogger<MainWindowViewModel> logger, Messenger messenger)
     {
+        ApplicationServices = applicationServices;
         this.logger = logger;
         this.messenger = messenger;
 
@@ -1517,9 +1520,10 @@ internal class MainWindowViewModel : BaseModel
             return;
         }
 
-#if RELEASE
-        await PerformanceCheck();
-#endif
+        var registrar = ApplicationServices.GetRequiredService<IGameConfigurationManager>();
+        registrar.ApplyGameConfig(application.IdString);
+
+        await PerformanceCheckAsync();
 
         SelectedIcon ??= ApplicationLibrary.GetApplicationIcon(application.Path, ConfigurationState.Instance.System.Language, application.Id);
 
@@ -1669,7 +1673,7 @@ internal class MainWindowViewModel : BaseModel
         IsFullScreen = WindowState == WindowState.FullScreen;
     }
 
-    public static async Task PerformanceCheck()
+    private static async Task PerformanceCheckAsync()
     {
         if (ConfigurationState.Instance.Logger.EnableTrace.Value)
         {
