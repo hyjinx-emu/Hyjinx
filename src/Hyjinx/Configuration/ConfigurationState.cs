@@ -1,11 +1,9 @@
 using Hyjinx.Ava.Configuration.System;
 using Hyjinx.Ava.Configuration.UI;
-using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Common.Configuration.Hid;
 using Hyjinx.Common.Configuration.Hid.Controller;
 using Hyjinx.Common.Configuration.Hid.Keyboard;
 using Hyjinx.Graphics.GAL;
-using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.Logging.Abstractions;
@@ -13,7 +11,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Nodes;
 
 namespace Hyjinx.Ava.Configuration;
 
@@ -755,17 +752,5 @@ public class ConfigurationState : IDisposable
 
         Multiplayer.LanInterfaceId.Value = configurationFileFormat.MultiplayerLanInterfaceId;
         Multiplayer.Mode.Value = configurationFileFormat.MultiplayerMode;
-    }
-
-    private static GraphicsBackend DefaultGraphicsBackend()
-    {
-        // Any system running macOS or returning any amount of valid Vulkan devices should default to Vulkan.
-        // Checks for if the Vulkan version and featureset is compatible should be performed within VulkanRenderer.
-        if (OperatingSystem.IsMacOS() || VulkanRenderer.GetPhysicalDevices().Length > 0)
-        {
-            return GraphicsBackend.Vulkan;
-        }
-
-        return GraphicsBackend.OpenGl;
     }
 }

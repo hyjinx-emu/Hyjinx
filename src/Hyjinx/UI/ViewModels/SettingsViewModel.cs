@@ -7,10 +7,10 @@ using Hyjinx.Audio.Backends.SoundIo;
 using Hyjinx.Ava.Configuration;
 using Hyjinx.Ava.Configuration.System;
 using Hyjinx.Ava.Localization;
-using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Models.Input;
 using Hyjinx.Ava.UI.Windows;
+using Hyjinx.Common.Configuration;
 using Hyjinx.Graphics.GAL;
 using Hyjinx.Graphics.Nvapi;
 using Hyjinx.Graphics.Vulkan;
@@ -609,7 +609,7 @@ public class SettingsViewModel : BaseModel
         ApplySettings();
 
         ConfigurationState.Instance.ToFileFormat()
-            .SaveConfig(ConfigurationModule.ConfigurationPath);
+            .SaveConfig(AppDataManager.GetUserConfigPath());
 
         CloseWindow?.Invoke();
     }

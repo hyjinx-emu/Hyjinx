@@ -6,10 +6,8 @@ using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.HLE.Utilities;
 using Hyjinx.Logging.Abstractions;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json.Nodes;
 
 namespace Hyjinx.Ava.Configuration;
 
