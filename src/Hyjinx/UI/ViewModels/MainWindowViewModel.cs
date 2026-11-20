@@ -716,9 +716,6 @@ internal class MainWindowViewModel : BaseModel
         set
         {
             ConfigurationState.Instance.UI.StartFullscreen.Value = value;
-
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
-
             OnPropertyChanged();
         }
     }
@@ -729,9 +726,6 @@ internal class MainWindowViewModel : BaseModel
         set
         {
             ConfigurationState.Instance.UI.ShowConsole.Value = value;
-
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
-
             OnPropertyChanged();
         }
     }
@@ -773,8 +767,6 @@ internal class MainWindowViewModel : BaseModel
             OnPropertyChanged();
             OnPropertyChanged(nameof(IsGrid));
             OnPropertyChanged(nameof(IsList));
-
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         }
     }
 
@@ -787,8 +779,6 @@ internal class MainWindowViewModel : BaseModel
             OnPropertyChanged();
             OnPropertyChanged(nameof(GridSizeScale));
             OnPropertyChanged(nameof(GridItemSelectorSize));
-
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         }
     }
 
@@ -801,8 +791,6 @@ internal class MainWindowViewModel : BaseModel
 
             OnPropertyChanged();
             OnPropertyChanged(nameof(SortName));
-
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         }
     }
 
@@ -856,8 +844,6 @@ internal class MainWindowViewModel : BaseModel
             OnPropertyChanged(nameof(ListItemSelectorSize));
             OnPropertyChanged(nameof(GridItemSelectorSize));
             OnPropertyChanged(nameof(ShowNames));
-
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         }
     }
 
@@ -890,8 +876,6 @@ internal class MainWindowViewModel : BaseModel
             OnPropertyChanged();
             OnPropertyChanged(nameof(SortMode));
             OnPropertyChanged(nameof(SortName));
-
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         }
     }
 
@@ -1431,7 +1415,6 @@ internal class MainWindowViewModel : BaseModel
         if (!IsDesignMode)
         {
             ConfigurationState.Instance.UI.LanguageCode.Value = (string)languageCode;
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         }
     }
 
@@ -1686,11 +1669,6 @@ internal class MainWindowViewModel : BaseModel
         IsFullScreen = WindowState == WindowState.FullScreen;
     }
 
-    public static void SaveConfig()
-    {
-        ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
-    }
-
     public static async Task PerformanceCheck()
     {
         if (ConfigurationState.Instance.Logger.EnableTrace.Value)
@@ -1708,8 +1686,6 @@ internal class MainWindowViewModel : BaseModel
             if (result == UserResult.Yes)
             {
                 ConfigurationState.Instance.Logger.EnableTrace.Value = false;
-
-                SaveConfig();
             }
         }
 
@@ -1728,8 +1704,6 @@ internal class MainWindowViewModel : BaseModel
             if (result == UserResult.Yes)
             {
                 ConfigurationState.Instance.Graphics.ShadersDumpPath.Value = "";
-
-                SaveConfig();
             }
         }
     }

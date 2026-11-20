@@ -19,7 +19,6 @@ internal class LocaleManager : BaseModel
     private readonly Dictionary<LocaleKeys, string> _localeStrings;
     private Dictionary<LocaleKeys, string> _localeDefaultStrings;
     private readonly ConcurrentDictionary<LocaleKeys, object[]> _dynamicValues;
-    private string _localeLanguageCode;
 
     public static LocaleManager Instance { get; } = new();
     public event Action LocaleChanged;
@@ -42,12 +41,9 @@ internal class LocaleManager : BaseModel
         LoadDefaultLanguage();
         LoadLanguage(localeLanguageCode);
 
-        // Save whatever we ended up with.
         if (!Design.IsDesignMode)
         {
-            ConfigurationState.Instance.UI.LanguageCode.Value = _localeLanguageCode;
-
-            ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
+            ConfigurationState.Instance.UI.LanguageCode.Value = CurrentLanguage;
         }
     }
 
@@ -105,7 +101,7 @@ internal class LocaleManager : BaseModel
 
     public bool IsRTL()
     {
-        return _localeLanguageCode switch
+        return CurrentLanguage switch
         {
             "ar_SA" or "he_IL" => true,
             _ => false
@@ -126,18 +122,22 @@ internal class LocaleManager : BaseModel
         _localeDefaultStrings = LoadJsonLanguage(DefaultLanguageCode);
     }
 
+    /// <summary>
+    /// Gets the current language.
+    /// </summary>
+    public string CurrentLanguage { get; private set; }
+
     public void LoadLanguage(string languageCode)
     {
         var locale = LoadJsonLanguage(languageCode);
-
         if (locale == null)
         {
-            _localeLanguageCode = DefaultLanguageCode;
+            CurrentLanguage = DefaultLanguageCode;
             locale = _localeDefaultStrings;
         }
         else
         {
-            _localeLanguageCode = languageCode;
+            CurrentLanguage = languageCode;
         }
 
         foreach (var item in locale)

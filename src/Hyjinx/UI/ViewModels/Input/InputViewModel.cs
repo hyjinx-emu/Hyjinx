@@ -869,8 +869,6 @@ public class InputViewModel : BaseModel, IDisposable
         // Atomically replace and signal input change.
         // NOTE: Do not modify InputConfig.Value directly as other code depends on the on-change event.
         ConfigurationState.Instance.Hid.InputConfig.Value = newConfig;
-
-        ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
     }
 
     public void NotifyChange(string property)

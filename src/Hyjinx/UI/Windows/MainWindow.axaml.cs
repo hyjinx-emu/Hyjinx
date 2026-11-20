@@ -437,19 +437,41 @@ internal partial class MainWindow : StyleableWindow
 
     private void SaveWindowSizePosition()
     {
-        ConfigurationState.Instance.UI.WindowStartup.WindowMaximized.Value = WindowState == WindowState.Maximized;
+        // Read the user config file.
+        ConfigurationFileFormat config = ConfigurationFileFormat.Load(ConfigurationModule.ConfigurationPath);
 
-        // Only save rectangle properties if the window is not in a maximized state.
-        if (WindowState != WindowState.Maximized)
+        // Persist the settings we want upon close.
+        config.LanguageCode = LocaleManager.Instance.CurrentLanguage;
+        config.StartFullscreen = ViewModel.StartGamesInFullscreen;
+        config.GameListViewMode = (int)ViewModel.Glyph;
+        config.ShowNames = ViewModel.ShowNames;
+        config.ShowConsole = ViewModel.ShowConsole;
+        config.ApplicationSort = (int)ViewModel.SortMode;
+        config.GridSize = ViewModel.GridSizeScale;
+        config.IsAscendingOrder = ViewModel.IsAscending;
+
+        if (WindowState == WindowState.Maximized)
         {
-            ConfigurationState.Instance.UI.WindowStartup.WindowSizeHeight.Value = (int)Height;
-            ConfigurationState.Instance.UI.WindowStartup.WindowSizeWidth.Value = (int)Width;
-
-            ConfigurationState.Instance.UI.WindowStartup.WindowPositionX.Value = Position.X;
-            ConfigurationState.Instance.UI.WindowStartup.WindowPositionY.Value = Position.Y;
+            config.WindowStartup.WindowMaximized = true;
+        }
+        else
+        {
+            config.WindowStartup.WindowMaximized = false;
+            config.WindowStartup.WindowSizeHeight = (int)Height;
+            config.WindowStartup.WindowSizeWidth = (int)Width;
+            config.WindowStartup.WindowPositionX = Position.X;
+            config.WindowStartup.WindowPositionY = Position.Y;
         }
 
-        MainWindowViewModel.SaveConfig();
+        config.ShownFileTypes.NSP = ConfigurationState.Instance.UI.ShownFileTypes.NSP.Value;
+        config.ShownFileTypes.PFS0 = ConfigurationState.Instance.UI.ShownFileTypes.PFS0.Value;
+        config.ShownFileTypes.XCI = ConfigurationState.Instance.UI.ShownFileTypes.XCI.Value;
+        config.ShownFileTypes.NCA = ConfigurationState.Instance.UI.ShownFileTypes.NCA.Value;
+        config.ShownFileTypes.NRO = ConfigurationState.Instance.UI.ShownFileTypes.NRO.Value;
+        config.ShownFileTypes.NSO = ConfigurationState.Instance.UI.ShownFileTypes.NSO.Value;
+        
+        // Persist the changes to disk.
+        config.SaveConfig(ConfigurationModule.ConfigurationPath);
     }
 
     protected override void OnOpened(EventArgs e)
@@ -633,7 +655,6 @@ internal partial class MainWindow : StyleableWindow
 #pragma warning restore IDE0055
         };
 
-        ConfigurationState.Instance.ToFileFormat().SaveConfig(ConfigurationModule.ConfigurationPath);
         LoadApplications();
     }
 
