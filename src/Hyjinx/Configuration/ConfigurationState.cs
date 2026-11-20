@@ -9,6 +9,7 @@ using Hyjinx.Graphics.Vulkan;
 using Hyjinx.HLE.HOS;
 using Hyjinx.HLE.HOS.Services.Ldn.UserServiceCreator;
 using Hyjinx.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ using System.Text.Json.Nodes;
 
 namespace Hyjinx.Ava.Configuration;
 
-public class ConfigurationState
+public class ConfigurationState : IDisposable
 {
     /// <summary>
     /// UI configuration section
@@ -25,42 +26,22 @@ public class ConfigurationState
     {
         public class Columns
         {
-            public ReactiveObject<bool> FavColumn { get; private set; }
-            public ReactiveObject<bool> IconColumn { get; private set; }
-            public ReactiveObject<bool> AppColumn { get; private set; }
-            public ReactiveObject<bool> DevColumn { get; private set; }
-            public ReactiveObject<bool> VersionColumn { get; private set; }
-            public ReactiveObject<bool> TimePlayedColumn { get; private set; }
-            public ReactiveObject<bool> LastPlayedColumn { get; private set; }
-            public ReactiveObject<bool> FileExtColumn { get; private set; }
-            public ReactiveObject<bool> FileSizeColumn { get; private set; }
-            public ReactiveObject<bool> PathColumn { get; private set; }
-
-            public Columns()
-            {
-                FavColumn = new ReactiveObject<bool>();
-                IconColumn = new ReactiveObject<bool>();
-                AppColumn = new ReactiveObject<bool>();
-                DevColumn = new ReactiveObject<bool>();
-                VersionColumn = new ReactiveObject<bool>();
-                TimePlayedColumn = new ReactiveObject<bool>();
-                LastPlayedColumn = new ReactiveObject<bool>();
-                FileExtColumn = new ReactiveObject<bool>();
-                FileSizeColumn = new ReactiveObject<bool>();
-                PathColumn = new ReactiveObject<bool>();
-            }
+            public ReactiveObject<bool> FavColumn { get; } = new();
+            public ReactiveObject<bool> IconColumn { get; } = new();
+            public ReactiveObject<bool> AppColumn { get; } = new();
+            public ReactiveObject<bool> DevColumn { get; } = new();
+            public ReactiveObject<bool> VersionColumn { get; } = new();
+            public ReactiveObject<bool> TimePlayedColumn { get; } = new();
+            public ReactiveObject<bool> LastPlayedColumn { get; } = new();
+            public ReactiveObject<bool> FileExtColumn { get; } = new();
+            public ReactiveObject<bool> FileSizeColumn { get; } = new();
+            public ReactiveObject<bool> PathColumn { get; } = new();
         }
 
         public class ColumnSortSettings
         {
-            public ReactiveObject<int> SortColumnId { get; private set; }
-            public ReactiveObject<bool> SortAscending { get; private set; }
-
-            public ColumnSortSettings()
-            {
-                SortColumnId = new ReactiveObject<int>();
-                SortAscending = new ReactiveObject<bool>();
-            }
+            public ReactiveObject<int> SortColumnId { get; } = new();
+            public ReactiveObject<bool> SortAscending { get; } = new();
         }
 
         /// <summary>
@@ -68,22 +49,12 @@ public class ConfigurationState
         /// </summary>
         public class ShownFileTypeSettings
         {
-            public ReactiveObject<bool> NSP { get; private set; }
-            public ReactiveObject<bool> PFS0 { get; private set; }
-            public ReactiveObject<bool> XCI { get; private set; }
-            public ReactiveObject<bool> NCA { get; private set; }
-            public ReactiveObject<bool> NRO { get; private set; }
-            public ReactiveObject<bool> NSO { get; private set; }
-
-            public ShownFileTypeSettings()
-            {
-                NSP = new ReactiveObject<bool>();
-                PFS0 = new ReactiveObject<bool>();
-                XCI = new ReactiveObject<bool>();
-                NCA = new ReactiveObject<bool>();
-                NRO = new ReactiveObject<bool>();
-                NSO = new ReactiveObject<bool>();
-            }
+            public ReactiveObject<bool> NSP { get; } = new();
+            public ReactiveObject<bool> PFS0 { get; } = new();
+            public ReactiveObject<bool> XCI { get; } = new();
+            public ReactiveObject<bool> NCA { get; } = new();
+            public ReactiveObject<bool> NRO { get; } = new();
+            public ReactiveObject<bool> NSO { get; } = new();
         }
 
         // <summary>
@@ -91,119 +62,95 @@ public class ConfigurationState
         ///<summary>
         public class WindowStartupSettings
         {
-            public ReactiveObject<int> WindowSizeWidth { get; private set; }
-            public ReactiveObject<int> WindowSizeHeight { get; private set; }
-            public ReactiveObject<int> WindowPositionX { get; private set; }
-            public ReactiveObject<int> WindowPositionY { get; private set; }
-            public ReactiveObject<bool> WindowMaximized { get; private set; }
-
-            public WindowStartupSettings()
-            {
-                WindowSizeWidth = new ReactiveObject<int>();
-                WindowSizeHeight = new ReactiveObject<int>();
-                WindowPositionX = new ReactiveObject<int>();
-                WindowPositionY = new ReactiveObject<int>();
-                WindowMaximized = new ReactiveObject<bool>();
-            }
+            public ReactiveObject<int> WindowSizeWidth { get; } = new();
+            public ReactiveObject<int> WindowSizeHeight { get; } = new();
+            public ReactiveObject<int> WindowPositionX { get; } = new();
+            public ReactiveObject<int> WindowPositionY { get; } = new();
+            public ReactiveObject<bool> WindowMaximized { get; } = new();
         }
 
         /// <summary>
         /// Used to toggle columns in the GUI
         /// </summary>
-        public Columns GuiColumns { get; private set; }
+        public Columns GuiColumns { get; } = new();
 
         /// <summary>
         /// Used to configure column sort settings in the GUI
         /// </summary>
-        public ColumnSortSettings ColumnSort { get; private set; }
+        public ColumnSortSettings ColumnSort { get; } = new();
 
         /// <summary>
         /// A list of directories containing games to be used to load games into the games list
         /// </summary>
-        public ReactiveObject<List<string>> GameDirs { get; private set; }
+        public ReactiveObject<List<string>> GameDirs { get; } = new();
 
         /// <summary>
         /// A list of file types to be hidden in the games List
         /// </summary>
-        public ShownFileTypeSettings ShownFileTypes { get; private set; }
+        public ShownFileTypeSettings ShownFileTypes { get; } = new();
 
         /// <summary>
         /// Determines main window start-up position, size and state
         /// </summary>
-        public WindowStartupSettings WindowStartup { get; private set; }
+        public WindowStartupSettings WindowStartup { get; } = new();
 
         /// <summary>
         /// Language Code for the UI
         /// </summary>
-        public ReactiveObject<string> LanguageCode { get; private set; }
+        public ReactiveObject<string> LanguageCode { get; } = new();
 
         /// <summary>
         /// Enable or disable custom themes in the GUI
         /// </summary>
-        public ReactiveObject<bool> EnableCustomTheme { get; private set; }
+        public ReactiveObject<bool> EnableCustomTheme { get; } = new();
 
         /// <summary>
         /// Path to custom GUI theme
         /// </summary>
-        public ReactiveObject<string> CustomThemePath { get; private set; }
+        public ReactiveObject<string> CustomThemePath { get; } = new();
 
         /// <summary>
         /// Selects the base style
         /// </summary>
-        public ReactiveObject<string> BaseStyle { get; private set; }
+        public ReactiveObject<string> BaseStyle { get; } = new();
 
         /// <summary>
         /// Start games in fullscreen mode
         /// </summary>
-        public ReactiveObject<bool> StartFullscreen { get; private set; }
+        public ReactiveObject<bool> StartFullscreen { get; } = new();
 
         /// <summary>
         /// Hide / Show Console Window
         /// </summary>
-        public ReactiveObject<bool> ShowConsole { get; private set; }
+        public ReactiveObject<bool> ShowConsole { get; }
 
         /// <summary>
         /// View Mode of the Game list
         /// </summary>
-        public ReactiveObject<int> GameListViewMode { get; private set; }
+        public ReactiveObject<int> GameListViewMode { get; } = new();
 
         /// <summary>
         /// Show application name in Grid Mode
         /// </summary>
-        public ReactiveObject<bool> ShowNames { get; private set; }
+        public ReactiveObject<bool> ShowNames { get; } = new();
 
         /// <summary>
         /// Sets App Icon Size in Grid Mode
         /// </summary>
-        public ReactiveObject<int> GridSize { get; private set; }
+        public ReactiveObject<int> GridSize { get; } = new();
 
         /// <summary>
         /// Sorts Apps in Grid Mode
         /// </summary>
-        public ReactiveObject<int> ApplicationSort { get; private set; }
+        public ReactiveObject<int> ApplicationSort { get; } = new();
 
         /// <summary>
         /// Sets if Grid is ordered in Ascending Order
         /// </summary>
-        public ReactiveObject<bool> IsAscendingOrder { get; private set; }
+        public ReactiveObject<bool> IsAscendingOrder { get; } = new();
 
         public UISection()
         {
-            GuiColumns = new Columns();
-            ColumnSort = new ColumnSortSettings();
-            GameDirs = new ReactiveObject<List<string>>();
-            ShownFileTypes = new ShownFileTypeSettings();
-            WindowStartup = new WindowStartupSettings();
-            EnableCustomTheme = new ReactiveObject<bool>();
-            CustomThemePath = new ReactiveObject<string>();
-            BaseStyle = new ReactiveObject<string>();
-            StartFullscreen = new ReactiveObject<bool>();
-            GameListViewMode = new ReactiveObject<int>();
-            ShowNames = new ReactiveObject<bool>();
-            GridSize = new ReactiveObject<int>();
-            ApplicationSort = new ReactiveObject<int>();
-            IsAscendingOrder = new ReactiveObject<bool>();
-            LanguageCode = new ReactiveObject<string>();
             ShowConsole = new ReactiveObject<bool>();
             ShowConsole.Event += static (s, e) => { ConsoleHelper.SetConsoleWindowState(e.NewValue); };
         }
@@ -217,72 +164,57 @@ public class ConfigurationState
         /// <summary>
         /// Enables printing debug log messages
         /// </summary>
-        public ReactiveObject<bool> EnableDebug { get; private set; }
+        public ReactiveObject<bool> EnableDebug { get; } = new();
 
         /// <summary>
         /// Enables printing stub log messages
         /// </summary>
-        public ReactiveObject<bool> EnableStub { get; private set; }
+        public ReactiveObject<bool> EnableStub { get; } = new();
 
         /// <summary>
         /// Enables printing info log messages
         /// </summary>
-        public ReactiveObject<bool> EnableInfo { get; private set; }
+        public ReactiveObject<bool> EnableInfo { get; } = new();
 
         /// <summary>
         /// Enables printing warning log messages
         /// </summary>
-        public ReactiveObject<bool> EnableWarn { get; private set; }
+        public ReactiveObject<bool> EnableWarn { get; } = new();
 
         /// <summary>
         /// Enables printing error log messages
         /// </summary>
-        public ReactiveObject<bool> EnableError { get; private set; }
+        public ReactiveObject<bool> EnableError { get; } = new();
 
         /// <summary>
         /// Enables printing trace log messages
         /// </summary>
-        public ReactiveObject<bool> EnableTrace { get; private set; }
+        public ReactiveObject<bool> EnableTrace { get; } = new();
 
         /// <summary>
         /// Enables printing guest log messages
         /// </summary>
-        public ReactiveObject<bool> EnableGuest { get; private set; }
+        public ReactiveObject<bool> EnableGuest { get; } = new();
 
         /// <summary>
         /// Enables printing FS access log messages
         /// </summary>
-        public ReactiveObject<bool> EnableFsAccessLog { get; private set; }
+        public ReactiveObject<bool> EnableFsAccessLog { get; } = new();
 
         /// <summary>
         /// Controls which log messages are written to the log targets
         /// </summary>
-        public ReactiveObject<LogClass[]> FilteredClasses { get; private set; }
+        public ReactiveObject<LogClass[]> FilteredClasses { get; } = new();
 
         /// <summary>
         /// Enables or disables logging to a file on disk
         /// </summary>
-        public ReactiveObject<bool> EnableFileLog { get; private set; }
+        public ReactiveObject<bool> EnableFileLog { get; } = new();
 
         /// <summary>
         /// Controls which OpenGL log messages are recorded in the log
         /// </summary>
-        public ReactiveObject<GraphicsDebugLevel> GraphicsDebugLevel { get; private set; }
-
-        public LoggerSection()
-        {
-            EnableDebug = new ReactiveObject<bool>();
-            EnableStub = new ReactiveObject<bool>();
-            EnableInfo = new ReactiveObject<bool>();
-            EnableWarn = new ReactiveObject<bool>();
-            EnableError = new ReactiveObject<bool>();
-            EnableTrace = new ReactiveObject<bool>();
-            EnableGuest = new ReactiveObject<bool>();
-            EnableFsAccessLog = new ReactiveObject<bool>();
-            FilteredClasses = new ReactiveObject<LogClass[]>();
-            EnableFileLog = new ReactiveObject<bool>();
-            GraphicsDebugLevel = new ReactiveObject<GraphicsDebugLevel>();
-        }
+        public ReactiveObject<GraphicsDebugLevel> GraphicsDebugLevel { get; } = new();
     }
 
     /// <summary>
@@ -293,96 +225,77 @@ public class ConfigurationState
         /// <summary>
         /// Change System Language
         /// </summary>
-        public ReactiveObject<Language> Language { get; private set; }
+        public ReactiveObject<Language> Language { get; } = new();
 
         /// <summary>
         /// Change System Region
         /// </summary>
-        public ReactiveObject<Region> Region { get; private set; }
+        public ReactiveObject<Region> Region { get; } = new();
 
         /// <summary>
         /// Change System TimeZone
         /// </summary>
-        public ReactiveObject<string> TimeZone { get; private set; }
+        public ReactiveObject<string> TimeZone { get; } = new();
 
         /// <summary>
         /// System Time Offset in Seconds
         /// </summary>
-        public ReactiveObject<long> SystemTimeOffset { get; private set; }
+        public ReactiveObject<long> SystemTimeOffset { get; } = new();
 
         /// <summary>
         /// Enables or disables Docked Mode
         /// </summary>
-        public ReactiveObject<bool> EnableDockedMode { get; private set; }
+        public ReactiveObject<bool> EnableDockedMode { get; } = new();
 
         /// <summary>
         /// Enables or disables profiled translation cache persistency
         /// </summary>
-        public ReactiveObject<bool> EnablePtc { get; private set; }
+        public ReactiveObject<bool> EnablePtc { get; } = new();
 
         /// <summary>
         /// Enables or disables guest Internet access
         /// </summary>
-        public ReactiveObject<bool> EnableInternetAccess { get; private set; }
+        public ReactiveObject<bool> EnableInternetAccess { get; } = new();
 
         /// <summary>
         /// Enables integrity checks on Game content files
         /// </summary>
-        public ReactiveObject<bool> EnableFsIntegrityChecks { get; private set; }
+        public ReactiveObject<bool> EnableFsIntegrityChecks { get; } = new();
 
         /// <summary>
         /// Enables FS access log output to the console. Possible modes are 0-3
         /// </summary>
-        public ReactiveObject<int> FsGlobalAccessLogMode { get; private set; }
+        public ReactiveObject<int> FsGlobalAccessLogMode { get; } = new();
 
         /// <summary>
         /// The selected audio backend
         /// </summary>
-        public ReactiveObject<AudioBackend> AudioBackend { get; private set; }
+        public ReactiveObject<AudioBackend> AudioBackend { get; } = new();
 
         /// <summary>
         /// The audio backend volume
         /// </summary>
-        public ReactiveObject<float> AudioVolume { get; private set; }
+        public ReactiveObject<float> AudioVolume { get; } = new();
 
         /// <summary>
         /// The selected memory manager mode
         /// </summary>
-        public ReactiveObject<MemoryManagerMode> MemoryManagerMode { get; private set; }
+        public ReactiveObject<MemoryManagerMode> MemoryManagerMode { get; } = new();
 
         /// <summary>
         /// Defines the amount of RAM available on the emulated system, and how it is distributed
         /// </summary>
-        public ReactiveObject<bool> ExpandRam { get; private set; }
+        public ReactiveObject<bool> ExpandRam { get; } = new();
 
         /// <summary>
         /// Enable or disable ignoring missing services
         /// </summary>
-        public ReactiveObject<bool> IgnoreMissingServices { get; private set; }
+        public ReactiveObject<bool> IgnoreMissingServices { get; } = new();
 
         /// <summary>
         /// Uses Hypervisor over JIT if available
         /// </summary>
-        public ReactiveObject<bool> UseHypervisor { get; private set; }
-
-        public SystemSection()
-        {
-            Language = new ReactiveObject<Language>();
-            Region = new ReactiveObject<Region>();
-            TimeZone = new ReactiveObject<string>();
-            SystemTimeOffset = new ReactiveObject<long>();
-            EnableDockedMode = new ReactiveObject<bool>();
-            EnablePtc = new ReactiveObject<bool>();
-            EnableInternetAccess = new ReactiveObject<bool>();
-            EnableFsIntegrityChecks = new ReactiveObject<bool>();
-            FsGlobalAccessLogMode = new ReactiveObject<int>();
-            AudioBackend = new ReactiveObject<AudioBackend>();
-            MemoryManagerMode = new ReactiveObject<MemoryManagerMode>();
-            ExpandRam = new ReactiveObject<bool>();
-            IgnoreMissingServices = new ReactiveObject<bool>();
-            AudioVolume = new ReactiveObject<float>();
-            UseHypervisor = new ReactiveObject<bool>();
-        }
+        public ReactiveObject<bool> UseHypervisor { get; } = new();
     }
 
     /// <summary>
@@ -393,32 +306,24 @@ public class ConfigurationState
         /// <summary>
         /// Enable or disable keyboard support (Independent from controllers binding)
         /// </summary>
-        public ReactiveObject<bool> EnableKeyboard { get; private set; }
+        public ReactiveObject<bool> EnableKeyboard { get; } = new();
 
         /// <summary>
         /// Enable or disable mouse support (Independent from controllers binding)
         /// </summary>
-        public ReactiveObject<bool> EnableMouse { get; private set; }
+        public ReactiveObject<bool> EnableMouse { get; } = new();
 
         /// <summary>
         /// Hotkey Keyboard Bindings
         /// </summary>
-        public ReactiveObject<KeyboardHotkeys> Hotkeys { get; private set; }
+        public ReactiveObject<KeyboardHotkeys> Hotkeys { get; } = new();
 
         /// <summary>
         /// Input device configuration.
         /// NOTE: This ReactiveObject won't issue an event when the List has elements added or removed.
         /// TODO: Implement a ReactiveList class.
         /// </summary>
-        public ReactiveObject<List<InputConfig>> InputConfig { get; private set; }
-
-        public HidSection()
-        {
-            EnableKeyboard = new ReactiveObject<bool>();
-            EnableMouse = new ReactiveObject<bool>();
-            Hotkeys = new ReactiveObject<KeyboardHotkeys>();
-            InputConfig = new ReactiveObject<List<InputConfig>>();
-        }
+        public ReactiveObject<List<InputConfig>> InputConfig { get; } = new();
     }
 
     /// <summary>
@@ -429,102 +334,82 @@ public class ConfigurationState
         /// <summary>
         /// Whether or not backend threading is enabled. The "Auto" setting will determine whether threading should be enabled at runtime.
         /// </summary>
-        public ReactiveObject<BackendThreading> BackendThreading { get; private set; }
+        public ReactiveObject<BackendThreading> BackendThreading { get; } = new();
 
         /// <summary>
         /// Max Anisotropy. Values range from 0 - 16. Set to -1 to let the game decide.
         /// </summary>
-        public ReactiveObject<float> MaxAnisotropy { get; private set; }
+        public ReactiveObject<float> MaxAnisotropy { get; } = new();
 
         /// <summary>
         /// Aspect Ratio applied to the renderer window.
         /// </summary>
-        public ReactiveObject<AspectRatio> AspectRatio { get; private set; }
+        public ReactiveObject<AspectRatio> AspectRatio { get; } = new();
 
         /// <summary>
         /// Resolution Scale. An integer scale applied to applicable render targets. Values 1-4, or -1 to use a custom floating point scale instead.
         /// </summary>
-        public ReactiveObject<int> ResScale { get; private set; }
+        public ReactiveObject<int> ResScale { get; } = new();
 
         /// <summary>
         /// Custom Resolution Scale. A custom floating point scale applied to applicable render targets. Only active when Resolution Scale is -1.
         /// </summary>
-        public ReactiveObject<float> ResScaleCustom { get; private set; }
+        public ReactiveObject<float> ResScaleCustom { get; } = new();
 
         /// <summary>
         /// Dumps shaders in this local directory
         /// </summary>
-        public ReactiveObject<string> ShadersDumpPath { get; private set; }
+        public ReactiveObject<string> ShadersDumpPath { get; } = new();
 
         /// <summary>
         /// Enables or disables Vertical Sync
         /// </summary>
-        public ReactiveObject<bool> EnableVsync { get; private set; }
+        public ReactiveObject<bool> EnableVsync { get; } = new();
 
         /// <summary>
         /// Enables or disables Shader cache
         /// </summary>
-        public ReactiveObject<bool> EnableShaderCache { get; private set; }
+        public ReactiveObject<bool> EnableShaderCache { get; } = new();
 
         /// <summary>
         /// Enables or disables texture recompression
         /// </summary>
-        public ReactiveObject<bool> EnableTextureRecompression { get; private set; }
+        public ReactiveObject<bool> EnableTextureRecompression { get; } = new();
 
         /// <summary>
         /// Enables or disables Macro high-level emulation
         /// </summary>
-        public ReactiveObject<bool> EnableMacroHLE { get; private set; }
+        public ReactiveObject<bool> EnableMacroHLE { get; } = new();
 
         /// <summary>
         /// Enables or disables color space passthrough, if available.
         /// </summary>
-        public ReactiveObject<bool> EnableColorSpacePassthrough { get; private set; }
+        public ReactiveObject<bool> EnableColorSpacePassthrough { get; } = new();
 
         /// <summary>
         /// Graphics backend
         /// </summary>
-        public ReactiveObject<GraphicsBackend> GraphicsBackend { get; private set; }
+        public ReactiveObject<GraphicsBackend> GraphicsBackend { get; } = new();
 
         /// <summary>
         /// Applies anti-aliasing to the renderer.
         /// </summary>
-        public ReactiveObject<AntiAliasing> AntiAliasing { get; private set; }
+        public ReactiveObject<AntiAliasing> AntiAliasing { get; } = new();
 
         /// <summary>
         /// Sets the framebuffer upscaling type.
         /// </summary>
-        public ReactiveObject<ScalingFilter> ScalingFilter { get; private set; }
+        public ReactiveObject<ScalingFilter> ScalingFilter { get; } = new();
 
         /// <summary>
         /// Sets the framebuffer upscaling level.
         /// </summary>
-        public ReactiveObject<int> ScalingFilterLevel { get; private set; }
+        public ReactiveObject<int> ScalingFilterLevel { get; } = new();
 
         /// <summary>
         /// Preferred GPU
         /// </summary>
-        public ReactiveObject<string> PreferredGpu { get; private set; }
-
-        public GraphicsSection()
-        {
-            BackendThreading = new ReactiveObject<BackendThreading>();
-            ResScale = new ReactiveObject<int>();
-            ResScaleCustom = new ReactiveObject<float>();
-            MaxAnisotropy = new ReactiveObject<float>();
-            AspectRatio = new ReactiveObject<AspectRatio>();
-            ShadersDumpPath = new ReactiveObject<string>();
-            EnableVsync = new ReactiveObject<bool>();
-            EnableShaderCache = new ReactiveObject<bool>();
-            EnableTextureRecompression = new ReactiveObject<bool>();
-            GraphicsBackend = new ReactiveObject<GraphicsBackend>();
-            PreferredGpu = new ReactiveObject<string>();
-            EnableMacroHLE = new ReactiveObject<bool>();
-            EnableColorSpacePassthrough = new ReactiveObject<bool>();
-            AntiAliasing = new ReactiveObject<AntiAliasing>();
-            ScalingFilter = new ReactiveObject<ScalingFilter>();
-            ScalingFilterLevel = new ReactiveObject<int>();
-        }
+        public ReactiveObject<string> PreferredGpu { get; } = new();
     }
 
     /// <summary>
@@ -535,99 +420,96 @@ public class ConfigurationState
         /// <summary>
         /// GUID for the network interface used by LAN (or 0 for default)
         /// </summary>
-        public ReactiveObject<string> LanInterfaceId { get; private set; }
+        public ReactiveObject<string> LanInterfaceId { get; } = new();
 
         /// <summary>
         /// Multiplayer Mode
         /// </summary>
-        public ReactiveObject<MultiplayerMode> Mode { get; private set; }
-
-        public MultiplayerSection()
-        {
-            LanInterfaceId = new ReactiveObject<string>();
-            Mode = new ReactiveObject<MultiplayerMode>();
-        }
+        public ReactiveObject<MultiplayerMode> Mode { get; } = new();
     }
 
     /// <summary>
-    /// The default configuration instance
+    /// The default configuration instance.
     /// </summary>
     public static ConfigurationState Instance { get; } = new();
 
     /// <summary>
     /// The UI section
     /// </summary>
-    public UISection UI { get; private set; }
+    public UISection UI { get; } = new();
 
     /// <summary>
     /// The Logger section
     /// </summary>
-    public LoggerSection Logger { get; private set; }
+    public LoggerSection Logger { get; } = new();
 
     /// <summary>
     /// The System section
     /// </summary>
-    public SystemSection System { get; private set; }
+    public SystemSection System { get; } = new();
 
     /// <summary>
     /// The Graphics section
     /// </summary>
-    public GraphicsSection Graphics { get; private set; }
+    public GraphicsSection Graphics { get; } = new();
 
     /// <summary>
     /// The Hid section
     /// </summary>
-    public HidSection Hid { get; private set; }
+    public HidSection Hid { get; } = new();
 
     /// <summary>
     /// The Multiplayer section
     /// </summary>
-    public MultiplayerSection Multiplayer { get; private set; }
+    public MultiplayerSection Multiplayer { get; } = new();
 
     /// <summary>
     /// Enables or disables Discord Rich Presence
     /// </summary>
-    public ReactiveObject<bool> EnableDiscordIntegration { get; private set; }
+    public ReactiveObject<bool> EnableDiscordIntegration { get; } = new();
 
     /// <summary>
     /// Checks for updates when Hyjinx starts when enabled
     /// </summary>
-    public ReactiveObject<bool> CheckUpdatesOnStart { get; private set; }
+    public ReactiveObject<bool> CheckUpdatesOnStart { get; } = new();
 
     /// <summary>
     /// Show "Confirm Exit" Dialog
     /// </summary>
-    public ReactiveObject<bool> ShowConfirmExit { get; private set; }
+    public ReactiveObject<bool> ShowConfirmExit { get; } = new();
 
     /// <summary>
     /// Enables or disables save window size, position and state on close.
     /// </summary>
-    public ReactiveObject<bool> RememberWindowState { get; private set; }
+    public ReactiveObject<bool> RememberWindowState { get; } = new();
 
     /// <summary>
     /// Enables hardware-accelerated rendering for Avalonia
     /// </summary>
-    public ReactiveObject<bool> EnableHardwareAcceleration { get; private set; }
+    public ReactiveObject<bool> EnableHardwareAcceleration { get; } = new();
 
     /// <summary>
     /// Hide Cursor on Idle
     /// </summary>
-    public ReactiveObject<HideCursorMode> HideCursor { get; private set; }
+    public ReactiveObject<HideCursorMode> HideCursor { get; } = new();
 
-    private ConfigurationState()
+    ~ConfigurationState()
     {
-        UI = new UISection();
-        Logger = new LoggerSection();
-        System = new SystemSection();
-        Graphics = new GraphicsSection();
-        Hid = new HidSection();
-        Multiplayer = new MultiplayerSection();
-        EnableDiscordIntegration = new ReactiveObject<bool>();
-        CheckUpdatesOnStart = new ReactiveObject<bool>();
-        ShowConfirmExit = new ReactiveObject<bool>();
-        RememberWindowState = new ReactiveObject<bool>();
-        EnableHardwareAcceleration = new ReactiveObject<bool>();
-        HideCursor = new ReactiveObject<HideCursorMode>();
+        Dispose(false);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _onChangeSubscription?.Dispose();
+        }
     }
 
     public ConfigurationFileFormat ToFileFormat()
@@ -746,7 +628,47 @@ public class ConfigurationState
         return configurationFile;
     }
 
-    public void Load(ConfigurationFileFormat configurationFileFormat)
+    private IOptionsMonitor<ConfigurationFileFormat>? _options;
+    private IDisposable? _onChangeSubscription;
+
+    private bool _initialized;
+
+    /// <summary>
+    /// Initializes the configuration state using the persisted configuration settings.
+    /// </summary>
+    /// <param name="options">The options.</param>
+    /// <exception cref="InvalidOperationException">The instance has already been initialized.</exception>
+    public void Initialize(IOptionsMonitor<ConfigurationFileFormat> options)
+    {
+        if (_initialized)
+        {
+            throw new InvalidOperationException("The instance is already initialized.");
+        }
+
+        _options = options;
+        _onChangeSubscription = options.OnChange(Load);
+
+        Load(options.CurrentValue);
+
+        _initialized = true;
+    }
+
+    /// <summary>
+    /// Reloads the configuration using the persisted configuration settings.
+    /// </summary>
+    /// <remarks>NOTE: This method will overwrite any changes made in memory while running with the configuration settings which were already persisted. Any changes will be lost!</remarks>
+    /// <exception cref="InvalidOperationException">The instance has not been initialized.</exception>
+    public void Reload()
+    {
+        if (!_initialized)
+        {
+            throw new InvalidOperationException("The instance has not been initialized.");
+        }
+
+        Load(_options!.CurrentValue);
+    }
+
+    private void Load(ConfigurationFileFormat configurationFileFormat)
     {
         Logger.EnableFileLog.Value = configurationFileFormat.EnableFileLog;
         Graphics.ResScale.Value = configurationFileFormat.ResScale;

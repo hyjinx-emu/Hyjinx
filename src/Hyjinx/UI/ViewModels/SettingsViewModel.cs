@@ -594,8 +594,7 @@ public class SettingsViewModel : BaseModel
 
     private static void RevertIfNotSaved()
     {
-        var config = ConfigurationFileFormat.Load(ConfigurationModule.ConfigurationPath);
-        ConfigurationState.Instance.Load(config);
+        ConfigurationState.Instance.Reload();
     }
 
     public void ApplyButton()
