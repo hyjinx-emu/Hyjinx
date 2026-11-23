@@ -10,7 +10,10 @@ internal class LoggerAdapter : ILogSink
 {
     private readonly ILogger _logger;
 
-    private LoggerAdapter(ILogger logger)
+    private const int EventId = (int)AppLogClass.UI;
+    private const string EventName = nameof(AppLogClass.UI);
+
+    public LoggerAdapter(ILogger logger)
     {
         _logger = logger;
     }
@@ -35,7 +38,7 @@ internal class LoggerAdapter : ILogSink
         return true; // Always return true as the logger will internally check it regardless.
     }
 
-    private static LogLevel ConvertLevel(AvaLogLevel input)
+    public static LogLevel ConvertLevel(AvaLogLevel input)
     {
         return input switch
         {
@@ -51,13 +54,11 @@ internal class LoggerAdapter : ILogSink
 
     void ILogSink.Log(AvaLogLevel level, string area, object? source, string messageTemplate)
     {
-        _logger.Log(ConvertLevel(level), new EventId((int)AppLogClass.UI, nameof(AppLogClass.UI)),
-            messageTemplate);
+        _logger.Log(ConvertLevel(level), new EventId(EventId, EventName), messageTemplate);
     }
 
     void ILogSink.Log(AvaLogLevel level, string area, object? source, string messageTemplate, params object?[] propertyValues)
     {
-        _logger.Log(ConvertLevel(level), new EventId((int)AppLogClass.UI, nameof(AppLogClass.UI)),
-            messageTemplate, propertyValues);
+        _logger.Log(ConvertLevel(level), new EventId(EventId, EventName), messageTemplate, propertyValues);
     }
 }
