@@ -191,6 +191,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Slowdowns",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "All",
   "SettingsTabLoggingEnableDebugLogs": "Enable Debug Logs",
+  "SettingsTabLoggingEnableUILogs": "Enable User Interface Logs",
+  "SettingsTabLoggingEnableUILogsToolTip": "Enables the user interface logs to be output.",
   "SettingsTabInput": "Input",
   "SettingsTabInputEnableDockedMode": "Docked Mode",
   "SettingsTabInputDirectKeyboardAccess": "Direct Keyboard Access",
