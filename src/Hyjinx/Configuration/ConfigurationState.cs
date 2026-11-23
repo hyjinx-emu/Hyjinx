@@ -203,6 +203,11 @@ public class ConfigurationState : IDisposable
         public ReactiveObject<bool> EnableFileLog { get; } = new();
 
         /// <summary>
+        /// Enables or disables logging the user interface interactions.
+        /// </summary>
+        public ReactiveObject<bool> EnableUILog { get; } = new();
+
+        /// <summary>
         /// Controls which OpenGL log messages are recorded in the log
         /// </summary>
         public ReactiveObject<GraphicsDebugLevel> GraphicsDebugLevel { get; } = new();
@@ -509,6 +514,7 @@ public class ConfigurationState : IDisposable
         {
             BackendThreading = Graphics.BackendThreading,
             EnableFileLog = Logger.EnableFileLog,
+            EnableUILog = Logger.EnableUILog,
             ResScale = Graphics.ResScale,
             ResScaleCustom = Graphics.ResScaleCustom,
             MaxAnisotropy = Graphics.MaxAnisotropy,
@@ -660,6 +666,7 @@ public class ConfigurationState : IDisposable
     private void Load(ConfigurationFileFormat configurationFileFormat)
     {
         Logger.EnableFileLog.Value = configurationFileFormat.EnableFileLog;
+        Logger.EnableUILog.Value = configurationFileFormat.EnableUILog;
         Graphics.ResScale.Value = configurationFileFormat.ResScale;
         Graphics.ResScaleCustom.Value = configurationFileFormat.ResScaleCustom;
         Graphics.MaxAnisotropy.Value = configurationFileFormat.MaxAnisotropy;
