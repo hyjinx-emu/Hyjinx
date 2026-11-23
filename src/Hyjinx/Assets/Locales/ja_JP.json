@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "パフォーマンス低下",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "すべて",
   "SettingsTabLoggingEnableDebugLogs": "デバッグログを有効にする",
+  "SettingsTabLoggingEnableUILogs": "ユーザーインターフェースログを有効にする",
+  "SettingsTabLoggingEnableUILogsToolTip": "ユーザーインターフェースログの出力を有効にします。",
   "SettingsTabInput": "入力",
   "SettingsTabInputEnableDockedMode": "ドッキングモード",
   "SettingsTabInputDirectKeyboardAccess": "キーボード直接アクセス",

@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Уповільнення",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "Все",
   "SettingsTabLoggingEnableDebugLogs": "Увімкнути журнали налагодження",
+  "SettingsTabLoggingEnableUILogs": "Увімкнути журнали інтерфейсу користувача",
+  "SettingsTabLoggingEnableUILogsToolTip": "Вмикає виведення журналів інтерфейсу користувача.",
   "SettingsTabInput": "Введення",
   "SettingsTabInputEnableDockedMode": "Режим док-станції",
   "SettingsTabInputDirectKeyboardAccess": "Прямий доступ з клавіатури",

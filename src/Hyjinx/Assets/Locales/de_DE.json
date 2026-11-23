@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Verlangsamungen",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "Alle",
   "SettingsTabLoggingEnableDebugLogs": "Aktiviere Debug-Log",
+  "SettingsTabLoggingEnableUILogs": "Aktiviere Benutzeroberflächen-Protokolle",
+  "SettingsTabLoggingEnableUILogsToolTip": "Aktiviert die Ausgabe der Benutzeroberflächen-Protokolle.",
   "SettingsTabInput": "Eingabe",
   "SettingsTabInputEnableDockedMode": "Angedockter Modus",
   "SettingsTabInputDirectKeyboardAccess": "Direkter Tastaturzugriff",

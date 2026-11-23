@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Yavaşlamalar",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "Hepsi",
   "SettingsTabLoggingEnableDebugLogs": "Hata Ayıklama Loglarını Etkinleştir",
+  "SettingsTabLoggingEnableUILogs": "Kullanıcı Arayüzü Günlüklerini Etkinleştir",
+  "SettingsTabLoggingEnableUILogsToolTip": "Kullanıcı arayüzü günlüklerinin çıktısını etkinleştirir.",
   "SettingsTabInput": "Giriş Yöntemi",
   "SettingsTabInputEnableDockedMode": "Docked Modu Etkinleştir",
   "SettingsTabInputDirectKeyboardAccess": "Doğrudan Klavye Erişimi",

@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Ralentissements",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "Tout",
   "SettingsTabLoggingEnableDebugLogs": "Activer les journaux de debug",
+  "SettingsTabLoggingEnableUILogs": "Activer les journaux de l’interface utilisateur",
+  "SettingsTabLoggingEnableUILogsToolTip": "Active la sortie des journaux de l’interface utilisateur.",
   "SettingsTabInput": "Contrôles",
   "SettingsTabInputEnableDockedMode": "Active le mode station d'accueil",
   "SettingsTabInputDirectKeyboardAccess": "Accès direct au clavier",

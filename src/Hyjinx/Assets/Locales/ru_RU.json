@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Замедления",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "Всё",
   "SettingsTabLoggingEnableDebugLogs": "Включить журнал отладки",
+  "SettingsTabLoggingEnableUILogs": "Включить журналы пользовательского интерфейса",
+  "SettingsTabLoggingEnableUILogsToolTip": "Включает вывод журналов пользовательского интерфейса.",
   "SettingsTabInput": "Управление",
   "SettingsTabInputEnableDockedMode": "Стационарный режим",
   "SettingsTabInputDirectKeyboardAccess": "Прямой ввод клавиатуры",
