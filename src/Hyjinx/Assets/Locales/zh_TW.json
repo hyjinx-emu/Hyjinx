@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "減速",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "全部",
   "SettingsTabLoggingEnableDebugLogs": "啟用偵錯日誌",
+  "SettingsTabLoggingEnableUILogs": "啟用使用者介面日誌",
+  "SettingsTabLoggingEnableUILogsToolTip": "啟用使用者介面日誌的輸出。",
   "SettingsTabInput": "輸入",
   "SettingsTabInputEnableDockedMode": "底座模式",
   "SettingsTabInputDirectKeyboardAccess": "鍵盤直接存取",

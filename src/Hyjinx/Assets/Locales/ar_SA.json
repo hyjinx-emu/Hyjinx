@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "تباطؤ",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "الكل",
   "SettingsTabLoggingEnableDebugLogs": "تمكين سجلات التصحيح",
+  "SettingsTabLoggingEnableUILogs": "تفعيل سجلات واجهة المستخدم",
+  "SettingsTabLoggingEnableUILogsToolTip": "يعمل على إخراج سجلات واجهة المستخدم.",
   "SettingsTabInput": "الإدخال",
   "SettingsTabInputEnableDockedMode": "تركيب بالمنصة",
   "SettingsTabInputDirectKeyboardAccess": "الوصول المباشر للوحة المفاتيح",
