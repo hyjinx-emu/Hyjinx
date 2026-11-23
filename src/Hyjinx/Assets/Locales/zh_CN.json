@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "减速",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "全部",
   "SettingsTabLoggingEnableDebugLogs": "启用调试日志",
+  "SettingsTabLoggingEnableUILogs": "启用用户界面日志",
+  "SettingsTabLoggingEnableUILogsToolTip": "启用用户界面日志的输出。",
   "SettingsTabInput": "输入",
   "SettingsTabInputEnableDockedMode": "主机模式",
   "SettingsTabInputDirectKeyboardAccess": "直通键盘控制",

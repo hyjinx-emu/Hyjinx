@@ -153,6 +153,7 @@ public class SettingsViewModel : BaseModel
     public bool EnableColorSpacePassthrough { get; set; }
     public bool ColorSpacePassthroughAvailable => IsMacOS;
     public bool EnableFileLog { get; set; }
+    public bool EnableUILog { get; set; }
     public bool EnableStub { get; set; }
     public bool EnableInfo { get; set; }
     public bool EnableWarn { get; set; }
@@ -466,6 +467,7 @@ public class SettingsViewModel : BaseModel
 
         // Logging
         EnableFileLog = config.Logger.EnableFileLog;
+        EnableUILog = config.Logger.EnableUILog;
         EnableStub = config.Logger.EnableStub;
         EnableInfo = config.Logger.EnableInfo;
         EnableWarn = config.Logger.EnableWarn;
@@ -573,6 +575,7 @@ public class SettingsViewModel : BaseModel
 
         // Logging
         config.Logger.EnableFileLog.Value = EnableFileLog;
+        config.Logger.EnableUILog.Value = EnableUILog;
         config.Logger.EnableStub.Value = EnableStub;
         config.Logger.EnableInfo.Value = EnableInfo;
         config.Logger.EnableWarn.Value = EnableWarn;

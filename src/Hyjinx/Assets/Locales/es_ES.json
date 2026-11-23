@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Ralentizaciones",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "Todo",
   "SettingsTabLoggingEnableDebugLogs": "Habilitar registros de debug",
+  "SettingsTabLoggingEnableUILogs": "Activar registros de la interfaz de usuario",
+  "SettingsTabLoggingEnableUILogsToolTip": "Activa la salida de los registros de la interfaz de usuario.",
   "SettingsTabInput": "Entrada",
   "SettingsTabInputEnableDockedMode": "Modo dock/TV",
   "SettingsTabInputDirectKeyboardAccess": "Acceso directo al teclado",

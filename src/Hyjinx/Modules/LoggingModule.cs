@@ -1,4 +1,5 @@
 using Hyjinx.Ava.Configuration;
+using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Common.Configuration;
 using Hyjinx.Extensions.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ internal class LoggingModule : IModule
     public void RegisterServices(IServiceCollection services)
     {
         services.AddTransient<ISupportInitialization, LegacyLoggingInitializer>();
+        services.AddTransient<ISupportInitialization, LoggerAdapterInitializer>();
         services.AddSingleton<ApplicationLogFactoryManager>();
 
         services.AddLogging(logging =>
@@ -43,9 +45,60 @@ internal class LoggingModule : IModule
             Logging.Abstractions.Logger.Initialize(
                 applicationServices.GetRequiredService<ILoggerFactory>(),
                 applicationServices.GetRequiredService<ILogger<Program>>());
+        }
+    }
 
-            // TODO: Viper - Fix this so it's configuration driven (it's too noisy).
-            // LoggerAdapter.Register();
+    internal class LoggerAdapterInitializer : ISupportInitialization, IDisposable
+    {
+        private readonly ILogger<LoggerAdapterInitializer> logger;
+        private readonly ILoggerFactory loggerFactory;
+        private readonly IOptionsMonitor<ConfigurationFileFormat> options;
+        private readonly IDisposable? onChangeSubscription;
+
+        public LoggerAdapterInitializer(ILogger<LoggerAdapterInitializer> logger, ILoggerFactory loggerFactory, IOptionsMonitor<ConfigurationFileFormat> options)
+        {
+            this.logger = logger;
+            this.loggerFactory = loggerFactory;
+            this.options = options;
+            onChangeSubscription = options.OnChange(Refresh);
+        }
+
+        ~LoggerAdapterInitializer()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                onChangeSubscription?.Dispose();
+            }
+        }
+
+        public void Initialize()
+        {
+            Refresh(options.CurrentValue);
+        }
+
+        protected void Refresh(ConfigurationFileFormat config)
+        {
+            if (config.EnableUILog && !LoggerAdapter.IsAttached)
+            {
+                LoggerAdapter.Attach(loggerFactory.CreateLogger<LoggerAdapter>());
+                logger.LogInformation("Attached UI log sink.");
+            }
+            else if (!config.EnableUILog && LoggerAdapter.IsAttached)
+            {
+                LoggerAdapter.Detach();
+                logger.LogInformation("Detached UI log sink.");
+            }
         }
     }
 
@@ -59,7 +112,7 @@ internal class LoggingModule : IModule
         public ApplicationLogFactoryManager(IOptionsMonitor<ConfigurationFileFormat> options)
         {
             this.options = options;
-            subscription = options.OnChange(_ => OnLoggingOptionsChanged());
+            subscription = options.OnChange(OnLoggingOptionsChanged);
         }
 
         ~ApplicationLogFactoryManager()
@@ -67,9 +120,9 @@ internal class LoggingModule : IModule
             Dispose(false);
         }
 
-        private void OnLoggingOptionsChanged()
+        private void OnLoggingOptionsChanged(ConfigurationFileFormat config)
         {
-            factory.Configuration = BuildConfiguration();
+            factory.Configuration = BuildConfiguration(config);
         }
 
         public void Dispose()
@@ -88,16 +141,16 @@ internal class LoggingModule : IModule
 
         public LogFactory Get()
         {
-            factory.Configuration = BuildConfiguration();
+            factory.Configuration = BuildConfiguration(options.CurrentValue);
 
             return factory;
         }
 
-        private NLog.Config.LoggingConfiguration BuildConfiguration()
+        private static NLog.Config.LoggingConfiguration BuildConfiguration(ConfigurationFileFormat config)
         {
             var console = CreateConsoleTarget();
             var file = CreateFileTarget();
-            var levels = GetEnabledLevels();
+            var levels = GetEnabledLevels(config);
 
             var nlogConfig = new NLog.Config.LoggingConfiguration();
 
@@ -105,7 +158,7 @@ internal class LoggingModule : IModule
             {
                 nlogConfig.AddRule(level, level, console);
 
-                if (options.CurrentValue.EnableFileLog)
+                if (config.EnableFileLog)
                 {
                     nlogConfig.AddRule(level, level, file);
                 }
@@ -184,32 +237,32 @@ internal class LoggingModule : IModule
             return target;
         }
 
-        private NLog.LogLevel[] GetEnabledLevels()
+        private static NLog.LogLevel[] GetEnabledLevels(ConfigurationFileFormat config)
         {
             List<NLog.LogLevel> levels = new();
             levels.Add(NLog.LogLevel.Fatal); // Fatal is always enabled.
 
-            if (options.CurrentValue.LoggingEnableTrace)
+            if (config.LoggingEnableTrace)
             {
                 levels.Add(NLog.LogLevel.Trace);
             }
 
-            if (options.CurrentValue.LoggingEnableDebug)
+            if (config.LoggingEnableDebug)
             {
                 levels.Add(NLog.LogLevel.Debug);
             }
 
-            if (options.CurrentValue.LoggingEnableInfo)
+            if (config.LoggingEnableInfo)
             {
                 levels.Add(NLog.LogLevel.Info);
             }
 
-            if (options.CurrentValue.LoggingEnableWarn)
+            if (config.LoggingEnableWarn)
             {
                 levels.Add(NLog.LogLevel.Warn);
             }
 
-            if (options.CurrentValue.LoggingEnableError)
+            if (config.LoggingEnableError)
             {
                 levels.Add(NLog.LogLevel.Error);
             }

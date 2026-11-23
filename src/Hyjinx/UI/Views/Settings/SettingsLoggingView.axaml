@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="Hyjinx.Ava.UI.Views.Settings.SettingsLoggingView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -74,6 +74,10 @@
                                   ToolTip.Tip="{locale:Locale DebugLogTooltip}">
                             <TextBlock Text="{locale:Locale SettingsTabLoggingEnableDebugLogs}" />
                         </CheckBox>
+                      <CheckBox IsChecked="{Binding EnableUILog}"
+                                  ToolTip.Tip="{locale:Locale SettingsTabLoggingEnableUILogsToolTip}">
+                        <TextBlock Text="{locale:Locale SettingsTabLoggingEnableUILogs}" />
+                      </CheckBox>
                         <StackPanel Margin="0,10,0,0" Orientation="Horizontal" VerticalAlignment="Stretch">
                             <TextBlock VerticalAlignment="Center"
                                     ToolTip.Tip="{locale:Locale FSAccessLogModeTooltip}"

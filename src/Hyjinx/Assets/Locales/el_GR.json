@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Επιβραδύνσεις",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "Όλα",
   "SettingsTabLoggingEnableDebugLogs": "Ενεργοποίηση Αρχείων Καταγραφής Εντοπισμού Σφαλμάτων",
+  "SettingsTabLoggingEnableUILogs": "Ενεργοποίηση αρχείων καταγραφής διεπαφής χρήστη",
+  "SettingsTabLoggingEnableUILogsToolTip": "Ενεργοποιεί την εξαγωγή αρχείων καταγραφής διεπαφής χρήστη.",
   "SettingsTabInput": "Χειρισμός",
   "SettingsTabInputEnableDockedMode": "Ενεργοποίηση Docked Mode",
   "SettingsTabInputDirectKeyboardAccess": "Άμεση Πρόσβαση στο Πληκτρολόγιο",

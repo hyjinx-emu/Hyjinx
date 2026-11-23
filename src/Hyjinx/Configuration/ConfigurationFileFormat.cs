@@ -22,6 +22,11 @@ public record ConfigurationFileFormat
     public bool EnableFileLog { get; set; } = true;
 
     /// <summary>
+    /// Enables or disables the user interface logging.
+    /// </summary>
+    public bool EnableUILog { get; set; } = false;
+
+    /// <summary>
     /// Whether or not backend threading is enabled. The "Auto" setting will determine whether threading should be enabled at runtime.
     /// </summary>
     public BackendThreading BackendThreading { get; set; } = BackendThreading.Auto;
@@ -421,8 +426,7 @@ public record ConfigurationFileFormat
             throw new FileNotFoundException("The file does not exist.", fileName);
         }
 
-        return JsonHelper.DeserializeFromFile<ConfigurationFileFormat>(
-            fileName, ConfigurationFileFormatSettings.SerializerContext.ConfigurationFileFormat);
+        return JsonHelper.DeserializeFromFile(fileName, ConfigurationFileFormatSettings.SerializerContext.ConfigurationFileFormat);
     }
 
     /// <summary>

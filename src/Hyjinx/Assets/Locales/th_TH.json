@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "ช้าลง",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "ทั้งหมด",
   "SettingsTabLoggingEnableDebugLogs": "เปิดใช้งาน ประวัติแก้ไขข้อบกพร่อง",
+  "SettingsTabLoggingEnableUILogs": "เปิดใช้งานบันทึกส่วนติดต่อผู้ใช้",
+  "SettingsTabLoggingEnableUILogsToolTip": "เปิดใช้งานการส่งออกบันทึกส่วนติดต่อผู้ใช้",
   "SettingsTabInput": "ป้อนข้อมูล",
   "SettingsTabInputEnableDockedMode": "ด็อกโหมด",
   "SettingsTabInputDirectKeyboardAccess": "เข้าถึงคีย์บอร์ดโดยตรง",

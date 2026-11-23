@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "האטות",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "הכל",
   "SettingsTabLoggingEnableDebugLogs": "אפשר רישום ניפוי באגים",
+  "SettingsTabLoggingEnableUILogs": "הפעל יומני ממשק משתמש",
+  "SettingsTabLoggingEnableUILogsToolTip": "מפעיל את פלט יומני ממשק המשתמש.",
   "SettingsTabInput": "קלט",
   "SettingsTabInputEnableDockedMode": "מצב עגינה",
   "SettingsTabInputDirectKeyboardAccess": "גישה ישירה למקלדת",

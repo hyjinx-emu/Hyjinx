@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "느려짐",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "모두",
   "SettingsTabLoggingEnableDebugLogs": "디버그 로그 활성화",
+  "SettingsTabLoggingEnableUILogs": "사용자 인터페이스 로그 활성화",
+  "SettingsTabLoggingEnableUILogsToolTip": "사용자 인터페이스 로그의 출력을 활성화합니다.",
   "SettingsTabInput": "입력",
   "SettingsTabInputEnableDockedMode": "도킹 모드",
   "SettingsTabInputDirectKeyboardAccess": "직접 키보드 접속",

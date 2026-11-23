@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Lentidão",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "Todos",
   "SettingsTabLoggingEnableDebugLogs": "Habilitar logs de depuração",
+  "SettingsTabLoggingEnableUILogs": "Ativar registros da interface do usuário",
+  "SettingsTabLoggingEnableUILogsToolTip": "Habilita a saída dos registros da interface do usuário.",
   "SettingsTabInput": "Controle",
   "SettingsTabInputEnableDockedMode": "Habilitar modo TV",
   "SettingsTabInputDirectKeyboardAccess": "Acesso direto ao teclado",

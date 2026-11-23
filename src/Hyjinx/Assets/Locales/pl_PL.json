@@ -189,6 +189,8 @@
   "SettingsTabLoggingGraphicsBackendLogLevelPerformance": "Spowolnienia",
   "SettingsTabLoggingGraphicsBackendLogLevelAll": "Wszystko",
   "SettingsTabLoggingEnableDebugLogs": "Włącz dzienniki zdarzeń do debugowania",
+  "SettingsTabLoggingEnableUILogs": "Włącz dzienniki interfejsu użytkownika",
+  "SettingsTabLoggingEnableUILogsToolTip": "Włącza wyprowadzanie dzienników interfejsu użytkownika.",
   "SettingsTabInput": "Sterowanie",
   "SettingsTabInputEnableDockedMode": "Tryb zadokowany",
   "SettingsTabInputDirectKeyboardAccess": "Bezpośredni dostęp do klawiatury",
