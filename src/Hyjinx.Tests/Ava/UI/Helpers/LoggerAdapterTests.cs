@@ -11,25 +11,25 @@ internal class LoggerAdapterTests
     public void RegistersAndUnregistersTheLogger()
     {
         Mock<ILogger> logger = new();
-        LoggerAdapter.Register(logger.Object);
+        LoggerAdapter.Attach(logger.Object);
 
-        Assert.That(AvaLogger.Sink, Is.Not.Null);
+        Assert.That(LoggerAdapter.IsAttached, Is.True);
 
-        LoggerAdapter.Unregister();
+        LoggerAdapter.Detach();
 
-        Assert.That(AvaLogger.Sink, Is.Null);
+        Assert.That(LoggerAdapter.IsAttached, Is.False);
     }
 
     [Test]
     public void DoesNotChangeTheLoggerOnceSet()
     {
         Mock<ILogger> logger = new();
-        LoggerAdapter.Register(logger.Object);
+        LoggerAdapter.Attach(logger.Object);
 
         var expected = AvaLogger.Sink!.GetHashCode();
 
         var logger2 = new Mock<ILogger>();
-        LoggerAdapter.Register(logger2.Object);
+        LoggerAdapter.Attach(logger2.Object);
 
         var actual = AvaLogger.Sink!.GetHashCode();
 

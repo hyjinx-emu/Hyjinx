@@ -50,13 +50,15 @@ internal class LoggingModule : IModule
 
     internal class LoggerAdapterInitializer : ISupportInitialization, IDisposable
     {
-        private readonly IServiceProvider applicationServices;
+        private readonly ILogger<LoggerAdapterInitializer> logger;
+        private readonly ILoggerFactory loggerFactory;
         private readonly IOptionsMonitor<ConfigurationFileFormat> options;
         private readonly IDisposable? onChangeSubscription;
 
-        public LoggerAdapterInitializer(IServiceProvider applicationServices, IOptionsMonitor<ConfigurationFileFormat> options)
+        public LoggerAdapterInitializer(ILogger<LoggerAdapterInitializer> logger, ILoggerFactory loggerFactory, IOptionsMonitor<ConfigurationFileFormat> options)
         {
-            this.applicationServices = applicationServices;
+            this.logger = logger;
+            this.loggerFactory = loggerFactory;
             this.options = options;
             onChangeSubscription = options.OnChange(Refresh);
         }
@@ -85,15 +87,17 @@ internal class LoggingModule : IModule
             Refresh(options.CurrentValue);
         }
 
-        private void Refresh(ConfigurationFileFormat config)
+        protected void Refresh(ConfigurationFileFormat config)
         {
-            if (config.EnableUILog)
+            if (config.EnableUILog && !LoggerAdapter.IsAttached)
             {
-                LoggerAdapter.Register(applicationServices.GetRequiredService<ILogger<LoggerAdapter>>());
+                LoggerAdapter.Attach(loggerFactory.CreateLogger<LoggerAdapter>());
+                logger.LogInformation("Attached UI log sink.");
             }
-            else
+            else if (!config.EnableUILog && LoggerAdapter.IsAttached)
             {
-                LoggerAdapter.Unregister();
+                LoggerAdapter.Detach();
+                logger.LogInformation("Detached UI log sink.");
             }
         }
     }

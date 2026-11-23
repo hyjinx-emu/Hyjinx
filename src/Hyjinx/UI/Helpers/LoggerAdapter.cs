@@ -18,7 +18,11 @@ internal class LoggerAdapter : ILogSink
         _logger = logger;
     }
 
-    public static void Register(ILogger logger)
+    /// <summary>
+    /// Attaches the adapter.
+    /// </summary>
+    /// <param name="logger">The logger to receive the logging messages.</param>
+    public static void Attach(ILogger logger)
     {
         if (AvaLogger.Sink != null)
         {
@@ -28,10 +32,18 @@ internal class LoggerAdapter : ILogSink
         AvaLogger.Sink = new LoggerAdapter(logger);
     }
 
-    public static void Unregister()
+    /// <summary>
+    /// Detaches the adapter.
+    /// </summary>
+    public static void Detach()
     {
         AvaLogger.Sink = null;
     }
+
+    /// <summary>
+    /// Identifies whether the logger adapter has been attached.
+    /// </summary>
+    public static bool IsAttached => AvaLogger.Sink != null;
 
     public bool IsEnabled(AvaLogLevel level, string area)
     {

@@ -19,7 +19,7 @@ internal partial class ConfigurationModuleTests
         services.AddSingleton(configuration);
         services.AddOptions<ConfigurationFileFormat>().Bind(configuration);
 
-        var serviceProvider = services.BuildServiceProvider();
+        using var serviceProvider = services.BuildServiceProvider();
 
         var target = new ConfigurationModule.ConfigurationStateInitializer(serviceProvider.GetRequiredService<IOptionsMonitor<ConfigurationFileFormat>>());
         Assert.DoesNotThrow(target.Initialize);
