@@ -10,12 +10,13 @@ using Hyjinx.Extensions.Abstractions.Events;
 using Hyjinx.Logging.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Reflection;
 
 namespace Hyjinx.Ava;
 
-internal sealed partial class Program(ILogger<Program> logger, IServiceProvider applicationServices) : IDisposable
+internal sealed partial class Program : IDisposable
 {
     /// <summary>
     /// Identifies the version of the application.
@@ -46,6 +47,17 @@ internal sealed partial class Program(ILogger<Program> logger, IServiceProvider 
         }
     }
 
+    private readonly IOptions<ConfigurationFileFormat> _options;
+    private readonly ILogger<Program> _logger;
+    private readonly IServiceProvider _applicationServices;
+
+    private Program(IOptions<ConfigurationFileFormat> options, ILogger<Program> logger, IServiceProvider applicationServices)
+    {
+        _options = options;
+        _logger = logger;
+        _applicationServices = applicationServices;
+    }
+
     ~Program()
     {
         Dispose(false);
@@ -61,7 +73,7 @@ internal sealed partial class Program(ILogger<Program> logger, IServiceProvider 
     {
         if (disposing)
         {
-            (applicationServices as IDisposable)?.Dispose();
+            (_applicationServices as IDisposable)?.Dispose();
         }
     }
 
@@ -86,6 +98,7 @@ internal sealed partial class Program(ILogger<Program> logger, IServiceProvider 
         }
 
         return new Program(
+            applicationServices.GetRequiredService<IOptions<ConfigurationFileFormat>>(),
             applicationServices.GetRequiredService<ILogger<Program>>(),
             applicationServices);
     }
@@ -102,11 +115,11 @@ internal sealed partial class Program(ILogger<Program> logger, IServiceProvider 
 
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
-        logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), (Exception)e.ExceptionObject, "An unhandled exception was caught.");
+        _logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)), (Exception)e.ExceptionObject, "An unhandled exception was caught.");
 
         if (e.IsTerminating)
         {
-            applicationServices.GetRequiredService<Messenger>().Send(new ApplicationClosingEvent
+            _applicationServices.GetRequiredService<Messenger>().Send(new ApplicationClosingEvent
             {
                 Terminating = e.IsTerminating
             });
@@ -119,21 +132,21 @@ internal sealed partial class Program(ILogger<Program> logger, IServiceProvider 
 
         WindowScaleFactor = ForceDpiAware.GetWindowScaleFactor();
 
-        return AppBuilder.Configure(applicationServices.GetRequiredService<App>)
+        return AppBuilder.Configure(_applicationServices.GetRequiredService<App>)
             .UsePlatformDetect()
             .With(new X11PlatformOptions
             {
                 EnableMultiTouch = true,
                 EnableIme = true,
                 EnableInputFocusProxy = Environment.GetEnvironmentVariable("XDG_CURRENT_DESKTOP") == "gamescope",
-                RenderingMode = ConfigurationState.Instance.EnableHardwareAcceleration.Value ?
+                RenderingMode = _options.Value.EnableHardwareAcceleration ?
                     new[] { X11RenderingMode.Glx, X11RenderingMode.Software } :
                     new[] { X11RenderingMode.Software },
             })
             .With(new Win32PlatformOptions
             {
                 WinUICompositionBackdropCornerRadius = 8.0f,
-                RenderingMode = ConfigurationState.Instance.EnableHardwareAcceleration.Value ?
+                RenderingMode = _options.Value.EnableHardwareAcceleration ?
                     new[] { Win32RenderingMode.AngleEgl, Win32RenderingMode.Software } :
                     new[] { Win32RenderingMode.Software },
             })
@@ -143,18 +156,18 @@ internal sealed partial class Program(ILogger<Program> logger, IServiceProvider 
 
     private void PrintSystemInfo()
     {
-        logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+        _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
             "Version: {Version}", Version);
         SystemInfo.Gather().Print();
 
         if (AppDataManager.Mode == AppDataManager.LaunchMode.Custom)
         {
-            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+            _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
             "Launch Mode: Custom Path {BaseDirPath}", AppDataManager.BaseDirPath);
         }
         else
         {
-            logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
+            _logger.LogCritical(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
              "Launch Mode: {Mode}", AppDataManager.Mode);
         }
     }
