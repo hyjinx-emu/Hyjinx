@@ -122,9 +122,6 @@
                 HotKey="Escape"
                 Content="{locale:Locale SettingsButtonCancel}"
                 Command="{Binding CancelButton}" />
-            <Button
-                Content="{locale:Locale SettingsButtonApply}"
-                Command="{Binding ApplyButton}" />
         </ReversibleStackPanel>
     </Grid>
 </window:StyleableWindow>
