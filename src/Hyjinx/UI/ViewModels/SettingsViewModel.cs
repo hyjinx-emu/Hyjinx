@@ -600,11 +600,6 @@ public class SettingsViewModel : BaseModel
         ConfigurationState.Instance.Reload();
     }
 
-    public void ApplyButton()
-    {
-        ApplySettings();
-    }
-
     public void OkButton()
     {
         SaveSettingsEvent?.Invoke();
