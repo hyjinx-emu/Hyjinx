@@ -1,17 +1,13 @@
 using Avalonia.Controls;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Hyjinx.Ava.UI.ViewModels;
 
-public class BaseModel : INotifyPropertyChanged
+public class BaseModel : ObservableObject
 {
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    public bool IsDesignMode => Design.IsDesignMode;
-
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    /// <summary>
+    /// Identifies whether the user interface is in design mode.
+    /// </summary>
+    /// <remarks>This value will be false during runtime, and true while in the designer.</remarks>
+    public static bool IsDesignMode => Design.IsDesignMode;
 }
