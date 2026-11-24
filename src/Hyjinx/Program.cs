@@ -15,7 +15,7 @@ using System.Reflection;
 
 namespace Hyjinx.Ava;
 
-internal partial class Program(ILogger<Program> logger, IServiceProvider applicationServices)
+internal sealed partial class Program(ILogger<Program> logger, IServiceProvider applicationServices) : IDisposable
 {
     /// <summary>
     /// Identifies the version of the application.
@@ -33,7 +33,7 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
     public static int Main(string[] args)
     {
         AppDataManager.Initialize();
-        var program = Build();
+        using Program program = Build();
 
         try
         {
@@ -43,6 +43,25 @@ internal partial class Program(ILogger<Program> logger, IServiceProvider applica
         finally
         {
             program.DetachGlobalEventListeners();
+        }
+    }
+
+    ~Program()
+    {
+        Dispose(false);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            (applicationServices as IDisposable)?.Dispose();
         }
     }
 
