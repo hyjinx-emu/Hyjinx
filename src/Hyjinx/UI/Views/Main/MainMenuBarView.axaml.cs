@@ -122,8 +122,6 @@ internal partial class MainMenuBarView : UserControl
         await Window.SettingsWindow.ShowDialog(Window);
 
         Window.SettingsWindow = null;
-
-        ViewModel.LoadConfigurableHotKeys();
     }
 
     public async void OpenMiiApplet(object sender, RoutedEventArgs e)

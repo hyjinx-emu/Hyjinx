@@ -33,6 +33,7 @@ using LibHac.Common;
 using LibHac.Tools.FsSystem.NcaUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -53,8 +54,6 @@ internal partial class MainWindowViewModel : BaseModel
     private readonly ILogger<MainWindowViewModel> logger;
     private readonly Messenger messenger;
 
-    private ObservableCollection<ApplicationData> _applications;
-
     private string _searchText;
     private Timer _searchTimer;
     private bool _isAmiiboRequested;
@@ -63,10 +62,6 @@ internal partial class MainWindowViewModel : BaseModel
     private bool _isAppletMenuActive;
     private bool _statusBarVisible;
     private ReadOnlyObservableCollection<ApplicationData> _appsObservableList;
-
-    private string _showUiKey = "F4";
-    private string _pauseKey = "F5";
-    private string _screenshotKey = "F8";
     private float _volume;
     private ApplicationData _currentApplicationData;
     private readonly AutoResetEvent _rendererWaitEvent;
@@ -76,12 +71,18 @@ internal partial class MainWindowViewModel : BaseModel
 
     internal EmulationHost AppHost { get; set; }
     public IServiceProvider ApplicationServices { get; }
+    public IOptionsMonitor<ConfigurationFileFormat> Options { get; }
 
-    public MainWindowViewModel(IServiceProvider applicationServices, ILogger<MainWindowViewModel> logger, Messenger messenger)
+    private IDisposable? _onOptionsChangedSubscription;
+
+    public MainWindowViewModel(IOptionsMonitor<ConfigurationFileFormat> options, IServiceProvider applicationServices, ILogger<MainWindowViewModel> logger, Messenger messenger)
     {
+        Options = options;
         ApplicationServices = applicationServices;
+
         this.logger = logger;
         this.messenger = messenger;
+        _onOptionsChangedSubscription = options.OnChange(OnOptionsChanged);
 
         Applications = new ObservableCollection<ApplicationData>();
 
@@ -94,9 +95,28 @@ internal partial class MainWindowViewModel : BaseModel
 
         if (!IsDesignMode)
         {
-            LoadConfigurableHotKeys();
-
             Volume = ConfigurationState.Instance.System.AudioVolume;
+        }
+    }
+
+    private void OnOptionsChanged(ConfigurationFileFormat config)
+    {
+        StartGamesInFullscreen = config.StartFullscreen;
+        ShowConsole = config.ShowConsole;
+
+        if (AvaloniaKeyboardMappingHelper.TryGetAvaKey((Key)config.Hotkeys.ShowUI, out var showUiKey))
+        {
+            ShowUiKey = new KeyGesture(showUiKey);
+        }
+
+        if (AvaloniaKeyboardMappingHelper.TryGetAvaKey((Key)config.Hotkeys.Screenshot, out var screenshotKey))
+        {
+            ScreenshotKey = new KeyGesture(screenshotKey);
+        }
+
+        if (AvaloniaKeyboardMappingHelper.TryGetAvaKey((Key)config.Hotkeys.Pause, out var pauseKey))
+        {
+            PauseKey = new KeyGesture(pauseKey);
         }
     }
 
@@ -395,44 +415,22 @@ internal partial class MainWindowViewModel : BaseModel
         RefreshView();
     }
 
-    public bool StartGamesInFullscreen
-    {
-        get => ConfigurationState.Instance.UI.StartFullscreen;
-        set
-        {
-            ConfigurationState.Instance.UI.StartFullscreen.Value = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public bool ShowConsole
-    {
-        get => ConfigurationState.Instance.UI.ShowConsole;
-        set
-        {
-            ConfigurationState.Instance.UI.ShowConsole.Value = value;
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial bool StartGamesInFullscreen { get; set; }
 
     [ObservableProperty]
-    public partial string Title { get; set; } = "Hyjinx";
+    public partial bool ShowConsole { get; set; }
 
     public bool ShowConsoleVisible
     {
         get => ConsoleHelper.SetConsoleWindowStateSupported;
     }
 
-    public ObservableCollection<ApplicationData> Applications
-    {
-        get => _applications;
-        set
-        {
-            _applications = value;
+    [ObservableProperty]
+    public partial string Title { get; set; } = "Hyjinx";
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial ObservableCollection<ApplicationData> Applications { get; set; }
 
     public Glyph Glyph
     {
@@ -556,37 +554,14 @@ internal partial class MainWindowViewModel : BaseModel
         }
     }
 
-    public KeyGesture ShowUiKey
-    {
-        get => KeyGesture.Parse(_showUiKey);
-        set
-        {
-            _showUiKey = value.ToString();
+    [ObservableProperty]
+    public partial KeyGesture ShowUiKey { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial KeyGesture ScreenshotKey { get; set; }
 
-    public KeyGesture ScreenshotKey
-    {
-        get => KeyGesture.Parse(_screenshotKey);
-        set
-        {
-            _screenshotKey = value.ToString();
-
-            OnPropertyChanged();
-        }
-    }
-
-    public KeyGesture PauseKey
-    {
-        get => KeyGesture.Parse(_pauseKey); set
-        {
-            _pauseKey = value.ToString();
-
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial KeyGesture PauseKey { get; set; }
 
     public ContentManager ContentManager { get; private set; }
     public IStorageProvider StorageProvider { get; private set; }
@@ -947,24 +922,6 @@ internal partial class MainWindowViewModel : BaseModel
 
         emulationContext.Gpu.ShaderCacheStateChanged -= ProgressHandler;
         emulationContext.Gpu.ShaderCacheStateChanged += ProgressHandler;
-    }
-
-    public void LoadConfigurableHotKeys()
-    {
-        if (AvaloniaKeyboardMappingHelper.TryGetAvaKey((Key)ConfigurationState.Instance.Hid.Hotkeys.Value.ShowUI, out var showUiKey))
-        {
-            ShowUiKey = new KeyGesture(showUiKey);
-        }
-
-        if (AvaloniaKeyboardMappingHelper.TryGetAvaKey((Key)ConfigurationState.Instance.Hid.Hotkeys.Value.Screenshot, out var screenshotKey))
-        {
-            ScreenshotKey = new KeyGesture(screenshotKey);
-        }
-
-        if (AvaloniaKeyboardMappingHelper.TryGetAvaKey((Key)ConfigurationState.Instance.Hid.Hotkeys.Value.Pause, out var pauseKey))
-        {
-            PauseKey = new KeyGesture(pauseKey);
-        }
     }
 
     public void TakeScreenshot()
