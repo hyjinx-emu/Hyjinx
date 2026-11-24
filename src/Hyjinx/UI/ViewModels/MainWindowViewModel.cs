@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using DynamicData.Binding;
 using Hyjinx.Ava.Configuration;
@@ -45,7 +46,7 @@ using ShaderCacheLoadingState = Hyjinx.Graphics.Gpu.Shader.ShaderCacheState;
 
 namespace Hyjinx.Ava.UI.ViewModels;
 
-internal class MainWindowViewModel : BaseModel
+internal partial class MainWindowViewModel : BaseModel
 {
     private const int HotKeyPressDelayMs = 500;
 
@@ -53,40 +54,13 @@ internal class MainWindowViewModel : BaseModel
     private readonly Messenger messenger;
 
     private ObservableCollection<ApplicationData> _applications;
-    private string _aspectStatusText;
 
-    private string _loadHeading;
-    private string _cacheLoadStatus;
     private string _searchText;
     private Timer _searchTimer;
-    private string _dockedStatusText;
-    private string _fifoStatusText;
-    private string _gameStatusText;
-    private string _volumeStatusText;
-    private string _gpuStatusText;
     private bool _isAmiiboRequested;
     private bool _isGameRunning;
-    private bool _isFullScreen;
-    private int _progressMaximum;
-    private int _progressValue;
-    private long _lastFullscreenToggle = Environment.TickCount64;
     private bool _showLoadProgress;
-    private bool _showMenuAndStatusBar = true;
-    private bool _showStatusSeparator;
-    private Brush _progressBarForegroundColor;
-    private Brush _progressBarBackgroundColor;
-    private Brush _vsyncColor;
-    private byte[] _selectedIcon;
     private bool _isAppletMenuActive;
-    private int _statusBarProgressMaximum;
-    private int _statusBarProgressValue;
-    private string _statusBarProgressStatusText;
-    private bool _statusBarProgressStatusVisible;
-    private bool _isPaused;
-    private bool _showContent = true;
-    private bool _isLoadingIndeterminate = true;
-    private bool _showAll;
-    private string _lastScannedAmiiboId;
     private bool _statusBarVisible;
     private ReadOnlyObservableCollection<ApplicationData> _appsObservableList;
 
@@ -94,19 +68,8 @@ internal class MainWindowViewModel : BaseModel
     private string _pauseKey = "F5";
     private string _screenshotKey = "F8";
     private float _volume;
-    private float _volumeBeforeMute;
-    private string _backendText;
-
-    private Cursor _cursor;
-    private string _title = "Hyjinx";
     private ApplicationData _currentApplicationData;
     private readonly AutoResetEvent _rendererWaitEvent;
-    private WindowState _windowState;
-    private double _windowWidth;
-    private double _windowHeight;
-
-    private bool _isActive;
-    private bool _isSubMenuOpen;
 
     public ApplicationData ListSelectedApplication;
     public ApplicationData GridSelectedApplication;
@@ -191,15 +154,8 @@ internal class MainWindowViewModel : BaseModel
         _searchTimer = null;
     }
 
-    public Cursor Cursor
-    {
-        get => _cursor;
-        set
-        {
-            _cursor = value;
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial Cursor Cursor { get; set; }
 
     public ReadOnlyObservableCollection<ApplicationData> AppsObservableList
     {
@@ -212,27 +168,11 @@ internal class MainWindowViewModel : BaseModel
         }
     }
 
-    public bool IsPaused
-    {
-        get => _isPaused;
-        set
-        {
-            _isPaused = value;
+    [ObservableProperty]
+    public partial bool IsPaused { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
-
-    public long LastFullscreenToggle
-    {
-        get => _lastFullscreenToggle;
-        set
-        {
-            _lastFullscreenToggle = value;
-
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial long LastFullscreenToggle { get; set; } = Environment.TickCount64;
 
     public bool StatusBarVisible
     {
@@ -292,60 +232,20 @@ internal class MainWindowViewModel : BaseModel
         }
     }
 
-    public string GameStatusText
-    {
-        get => _gameStatusText;
-        set
-        {
-            _gameStatusText = value;
+    [ObservableProperty]
+    public partial string GameStatusText { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial bool IsFullScreen { get; set; }
 
-    public bool IsFullScreen
-    {
-        get => _isFullScreen;
-        set
-        {
-            _isFullScreen = value;
+    [ObservableProperty]
+    public partial bool IsSubMenuOpen { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial bool ShowAll { get; set; }
 
-    public bool IsSubMenuOpen
-    {
-        get => _isSubMenuOpen;
-        set
-        {
-            _isSubMenuOpen = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public bool ShowAll
-    {
-        get => _showAll;
-        set
-        {
-            _showAll = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public string LastScannedAmiiboId
-    {
-        get => _lastScannedAmiiboId;
-        set
-        {
-            _lastScannedAmiiboId = value;
-
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial string LastScannedAmiiboId { get; set; }
 
     public ApplicationData SelectedApplication
     {
@@ -366,203 +266,59 @@ internal class MainWindowViewModel : BaseModel
 
     public bool OpenBcatSaveDirectoryEnabled => !SelectedApplication.ControlHolder.ByteSpan.IsZeros() && SelectedApplication.ControlHolder.Value.BcatDeliveryCacheStorageSize > 0;
 
-    public string LoadHeading
-    {
-        get => _loadHeading;
-        set
-        {
-            _loadHeading = value;
+    [ObservableProperty]
+    public partial string LoadHeading { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial string CacheLoadStatus { get; set; }
 
-    public string CacheLoadStatus
-    {
-        get => _cacheLoadStatus;
-        set
-        {
-            _cacheLoadStatus = value;
+    [ObservableProperty]
+    public partial Brush ProgressBarBackgroundColor { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial Brush ProgressBarForegroundColor { get; set; }
 
-    public Brush ProgressBarBackgroundColor
-    {
-        get => _progressBarBackgroundColor;
-        set
-        {
-            _progressBarBackgroundColor = value;
+    [ObservableProperty]
+    public partial Brush VsyncColor { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial byte[] SelectedIcon { get; set; }
 
-    public Brush ProgressBarForegroundColor
-    {
-        get => _progressBarForegroundColor;
-        set
-        {
-            _progressBarForegroundColor = value;
+    [ObservableProperty]
+    public partial int ProgressMaximum { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial int ProgressValue { get; set; }
 
-    public Brush VsyncColor
-    {
-        get => _vsyncColor;
-        set
-        {
-            _vsyncColor = value;
+    [ObservableProperty]
+    public partial int StatusBarProgressMaximum { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial int StatusBarProgressValue { get; set; }
 
-    public byte[] SelectedIcon
-    {
-        get => _selectedIcon;
-        set
-        {
-            _selectedIcon = value;
+    [ObservableProperty]
+    public partial bool StatusBarProgressStatusVisible { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial string StatusBarProgressStatusText { get; set; }
 
-    public int ProgressMaximum
-    {
-        get => _progressMaximum;
-        set
-        {
-            _progressMaximum = value;
+    [ObservableProperty]
+    public partial string FifoStatusText { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial string GpuNameText { get; set; }
 
-    public int ProgressValue
-    {
-        get => _progressValue;
-        set
-        {
-            _progressValue = value;
+    [ObservableProperty]
+    public partial string BackendText { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial string DockedStatusText { get; set; }
 
-    public int StatusBarProgressMaximum
-    {
-        get => _statusBarProgressMaximum;
-        set
-        {
-            _statusBarProgressMaximum = value;
+    [ObservableProperty]
+    public partial string AspectRatioStatusText { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
-
-    public int StatusBarProgressValue
-    {
-        get => _statusBarProgressValue;
-        set
-        {
-            _statusBarProgressValue = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public bool StatusBarProgressStatusVisible
-    {
-        get => _statusBarProgressStatusVisible;
-        set
-        {
-            _statusBarProgressStatusVisible = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public string StatusBarProgressStatusText
-    {
-        get => _statusBarProgressStatusText;
-        set
-        {
-            _statusBarProgressStatusText = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public string FifoStatusText
-    {
-        get => _fifoStatusText;
-        set
-        {
-            _fifoStatusText = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public string GpuNameText
-    {
-        get => _gpuStatusText;
-        set
-        {
-            _gpuStatusText = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public string BackendText
-    {
-        get => _backendText;
-        set
-        {
-            _backendText = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public string DockedStatusText
-    {
-        get => _dockedStatusText;
-        set
-        {
-            _dockedStatusText = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public string AspectRatioStatusText
-    {
-        get => _aspectStatusText;
-        set
-        {
-            _aspectStatusText = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public string VolumeStatusText
-    {
-        get => _volumeStatusText;
-        set
-        {
-            _volumeStatusText = value;
-
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial string VolumeStatusText { get; set; }
 
     public bool VolumeMuted => _volume == 0;
 
@@ -584,72 +340,23 @@ internal class MainWindowViewModel : BaseModel
         }
     }
 
-    public float VolumeBeforeMute
-    {
-        get => _volumeBeforeMute;
-        set
-        {
-            _volumeBeforeMute = value;
+    [ObservableProperty]
+    public partial float VolumeBeforeMute { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial bool ShowStatusSeparator { get; set; }
 
-    public bool ShowStatusSeparator
-    {
-        get => _showStatusSeparator;
-        set
-        {
-            _showStatusSeparator = value;
+    [ObservableProperty]
+    public partial bool ShowMenuAndStatusBar { get; set; } = true;
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial bool IsLoadingIndeterminate { get; set; }
 
-    public bool ShowMenuAndStatusBar
-    {
-        get => _showMenuAndStatusBar;
-        set
-        {
-            _showMenuAndStatusBar = value;
+    [ObservableProperty]
+    public partial bool IsActive { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
-
-    public bool IsLoadingIndeterminate
-    {
-        get => _isLoadingIndeterminate;
-        set
-        {
-            _isLoadingIndeterminate = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public bool IsActive
-    {
-        get => _isActive;
-        set
-        {
-            _isActive = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-
-    public bool ShowContent
-    {
-        get => _showContent;
-        set
-        {
-            _showContent = value;
-
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial bool ShowContent { get; set; } = true;
 
     public bool IsAppletMenuActive
     {
@@ -662,38 +369,14 @@ internal class MainWindowViewModel : BaseModel
         }
     }
 
-    public WindowState WindowState
-    {
-        get => _windowState;
-        internal set
-        {
-            _windowState = value;
+    [ObservableProperty]
+    public partial WindowState WindowState { get; set; }
 
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial double WindowWidth { get; set; }
 
-    public double WindowWidth
-    {
-        get => _windowWidth;
-        set
-        {
-            _windowWidth = value;
-
-            OnPropertyChanged();
-        }
-    }
-
-    public double WindowHeight
-    {
-        get => _windowHeight;
-        set
-        {
-            _windowHeight = value;
-
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial double WindowHeight { get; set; }
 
     public bool IsGrid => Glyph == Glyph.Grid;
     public bool IsList => Glyph == Glyph.List;
@@ -732,16 +415,8 @@ internal class MainWindowViewModel : BaseModel
         }
     }
 
-    public string Title
-    {
-        get => _title;
-        set
-        {
-            _title = value;
-
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial string Title { get; set; } = "Hyjinx";
 
     public bool ShowConsoleVisible
     {
