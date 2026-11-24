@@ -93,7 +93,7 @@ internal partial class MainWindowViewModel : BaseModel
 
         if (!IsDesignMode)
         {
-            Volume = ConfigurationState.Instance.System.AudioVolume;
+            OnOptionsChanged(options.CurrentValue);
         }
     }
 
@@ -101,6 +101,7 @@ internal partial class MainWindowViewModel : BaseModel
     {
         StartGamesInFullscreen = config.StartFullscreen;
         ShowConsole = config.ShowConsole;
+        Volume = config.AudioVolume;
 
         if (AvaloniaKeyboardMappingHelper.TryGetAvaKey((Key)config.Hotkeys.ShowUI, out var showUiKey))
         {
