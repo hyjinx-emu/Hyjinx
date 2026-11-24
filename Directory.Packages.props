@@ -3,10 +3,10 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia" Version="11.3.22" />
+    <PackageVersion Include="Avalonia" Version="11.3.23" />
     <PackageVersion Include="Avalonia.Controls.DataGrid" Version="11.3.13" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.3.22" />
-    <PackageVersion Include="Avalonia.Markup.Xaml.Loader" Version="11.3.22" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.23" />
+    <PackageVersion Include="Avalonia.Markup.Xaml.Loader" Version="11.3.23" />
     <PackageVersion Include="Avalonia.Svg" Version="11.3.0" />
     <PackageVersion Include="Avalonia.Svg.Skia" Version="11.3.0" />
     <PackageVersion Include="BouncyCastle.Cryptography" Version="2.7.0" />
@@ -15,7 +15,7 @@
     <PackageVersion Include="Concentus" Version="2.2.0" />
     <PackageVersion Include="DiscordRichPresence" Version="1.2.1.24" />
     <PackageVersion Include="DynamicData" Version="9.5.0" />
-    <PackageVersion Include="FluentAvaloniaUI" Version="2.3.0" />
+    <PackageVersion Include="FluentAvaloniaUI" Version="2.5.1" />
     <PackageVersion Include="Hyjinx.ARMeilleure.native" Version="1.0.0" />
     <PackageVersion Include="Hyjinx.FFmpeg.native" Version="5.1.4" />
     <PackageVersion Include="Hyjinx.MoltenVK.native" Version="1.2.0" />
