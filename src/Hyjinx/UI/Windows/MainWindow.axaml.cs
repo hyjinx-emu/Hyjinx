@@ -6,12 +6,10 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using FluentAvalonia.UI.Controls;
 using Hyjinx.Ava.Configuration;
-using Hyjinx.Ava.Emulation;
 using Hyjinx.Ava.Emulation.Helper;
 using Hyjinx.Ava.Emulation.Input;
 using Hyjinx.Ava.Emulation.Library;
 using Hyjinx.Ava.Localization;
-using Hyjinx.Ava.Modules;
 using Hyjinx.Ava.UI.Applet;
 using Hyjinx.Ava.UI.Helpers;
 using Hyjinx.Ava.UI.Messaging;
@@ -28,7 +26,6 @@ using Hyjinx.Logging.Abstractions;
 using LibHac.Tools.FsSystem;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,10 +43,6 @@ internal partial class MainWindow : StyleableWindow
     private bool _applicationsLoadedOnce;
 
     private UserChannelPersistence _userChannelPersistence;
-    private static bool _deferLoad;
-    private static string _launchPath;
-    private static string _launchApplicationId;
-    private static bool _startFullscreen;
     internal readonly AvaHostUIHandler UiHandler;
 
     public VirtualFileSystem VirtualFileSystem { get; private set; }
@@ -180,14 +173,6 @@ internal partial class MainWindow : StyleableWindow
         }
 
         args.Handled = true;
-    }
-
-    internal static void DeferLoadApplication(string launchPathArg, string launchApplicationId, bool startFullscreenArg)
-    {
-        _deferLoad = true;
-        _launchPath = launchPathArg;
-        _launchApplicationId = launchApplicationId;
-        _startFullscreen = startFullscreenArg;
     }
 
     public void SwitchToGameControl(bool startFullscreen = false)
@@ -324,56 +309,6 @@ internal partial class MainWindow : StyleableWindow
                 await Dispatcher.UIThread.InvokeAsync(ShowVmMaxMapCountWarning);
             }
         }
-
-        if (_deferLoad)
-        {
-            _deferLoad = false;
-
-            if (ApplicationLibrary.TryGetApplicationsFromFile(_launchPath, out List<ApplicationData> applications))
-            {
-                ApplicationData applicationData;
-
-                if (_launchApplicationId != null)
-                {
-                    applicationData = applications.Find(application => application.IdString == _launchApplicationId);
-
-                    if (applicationData != null)
-                    {
-                        await ViewModel.LoadApplicationAsync(applicationData, _startFullscreen);
-                    }
-                    else
-                    {
-                        logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                            "Couldn't find requested application id '{launchApplicationId}' in '{launchPath}'.", _launchApplicationId, _launchPath);
-
-                        await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
-                    }
-                }
-                else
-                {
-                    applicationData = applications[0];
-                    await ViewModel.LoadApplicationAsync(applicationData, _startFullscreen);
-                }
-            }
-            else
-            {
-                logger.LogError(new EventId((int)LogClass.Application, nameof(LogClass.Application)),
-                    "Couldn't find any application in '{launchPath}'.", _launchPath);
-
-                await Dispatcher.UIThread.InvokeAsync(async () => await UserErrorDialog.ShowUserErrorDialogAsync(UserError.ApplicationNotFound));
-            }
-        }
-
-        // MIRROR ADJ: We aren't using semver release tags for the time being
-        /*
-        if (ConfigurationState.Instance.CheckUpdatesOnStart.Value && Updater.CanUpdate(false))
-        {
-            await Updater.BeginParse(this, false).ContinueWith(task =>
-            {
-                Logger.Error?.Print(LogClass.Application, $"Updater Error: {task.Exception}");
-            }, TaskContinuationOptions.OnlyOnFaulted);
-        }
-        */
     }
 
     private void Load()
@@ -507,11 +442,7 @@ internal partial class MainWindow : StyleableWindow
 
         ViewModel.RefreshFirmwareStatus();
 
-        // Load applications if no application was requested by the command line
-        if (!_deferLoad)
-        {
-            LoadApplications();
-        }
+        LoadApplications();
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         CheckLaunchState();
