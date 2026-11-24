@@ -51,7 +51,7 @@ internal partial class MainWindowViewModel : BaseModel
 {
     private const int HotKeyPressDelayMs = 500;
 
-    private readonly ILogger<MainWindowViewModel> logger;
+    private readonly ILogger<MainWindowViewModel> _logger;
     private readonly Messenger messenger;
 
     private string _searchText;
@@ -75,17 +75,15 @@ internal partial class MainWindowViewModel : BaseModel
 
     private IDisposable? _onOptionsChangedSubscription;
 
-    public MainWindowViewModel(IOptionsMonitor<ConfigurationFileFormat> options, IServiceProvider applicationServices, ILogger<MainWindowViewModel> logger, Messenger messenger)
+    public MainWindowViewModel(IOptionsMonitor<ConfigurationFileFormat> options, IServiceProvider applicationServices, Messenger messenger)
     {
         Options = options;
         ApplicationServices = applicationServices;
 
-        this.logger = logger;
         this.messenger = messenger;
         _onOptionsChangedSubscription = options.OnChange(OnOptionsChanged);
 
         Applications = new ObservableCollection<ApplicationData>();
-
         Applications.ToObservableChangeSet()
             .Filter(Filter)
             .Sort(GetComparer())
@@ -118,6 +116,16 @@ internal partial class MainWindowViewModel : BaseModel
         {
             PauseKey = new KeyGesture(pauseKey);
         }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _onOptionsChangedSubscription?.Dispose();
+        }
+
+        base.Dispose(disposing);
     }
 
     public void Initialize(
